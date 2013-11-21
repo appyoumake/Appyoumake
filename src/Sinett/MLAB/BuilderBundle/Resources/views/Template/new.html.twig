@@ -1,0 +1,15 @@
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Template creation</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('template') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

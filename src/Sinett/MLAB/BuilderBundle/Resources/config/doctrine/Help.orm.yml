@@ -1,0 +1,43 @@
+Sinett\MLAB\BuilderBundle\Entity\Help:
+  type: entity
+  table: help
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\HelpRepository
+  indexes:
+    bundle_index:
+      columns: [ bundle ]
+    controller_index:
+      columns: [ controller ]
+    action_index:
+      columns: [ action ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+          
+  fields:
+    bundle:
+      type: string
+      length: 255
+      fixed: false
+      nullable: false
+        
+    controller:
+      type: string
+      length: 255
+      fixed: false
+      nullable: true
+        
+    action:
+      type: string
+      length: 255
+      fixed: false
+      nullable: true
+        
+    message:
+      type: string
+      fixed: false
+      nullable: false
+          
+  lifecycleCallbacks: {  }

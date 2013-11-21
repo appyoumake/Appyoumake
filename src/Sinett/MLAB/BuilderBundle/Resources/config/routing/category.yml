@@ -1,0 +1,30 @@
+category:
+    pattern:  /
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:index" }
+
+category_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:show" }
+
+category_new:
+    pattern:  /new
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:new" }
+
+category_create:
+    pattern:  /create
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:create" }
+    requirements: { _method: post }
+
+category_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:edit" }
+
+category_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:update" }
+    requirements: { _method: post|put }
+
+category_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:delete" }
+    requirements: { _method: post|delete }

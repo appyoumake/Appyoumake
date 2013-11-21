@@ -1,0 +1,56 @@
+# list of installed templates
+Sinett\MLAB\BuilderBundle\Entity\Template:
+  type: entity
+  table: template
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\TemplateRepository
+  indexes:
+    name_index:
+      columns: [ name ]
+    compatible_with_index:
+      columns: [ compatible_with ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+    name:
+      type: string
+      length: 255
+      fixed: false
+      nullable: false
+          
+    description:
+      type: text
+      nullable: false
+
+# string that is the same for all templates that can be substituted for each other 
+    compatibleWith:
+      type: string
+      length: 255
+      fixed: false
+      column: compatible_with
+
+# link to apps that use this template
+  oneToOne:
+    app:
+      targetEntity: App
+      mappedBy: template
+
+# templates can be limited by group membership
+  manyToMany:
+    groups:
+      targetEntity: Group
+      inversedBy: templates
+      joinTable:
+        name: templates_groups
+        joinColumns:
+          template_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          group_id:
+            referencedColumnName: id
+            
+  lifecycleCallbacks: {  }

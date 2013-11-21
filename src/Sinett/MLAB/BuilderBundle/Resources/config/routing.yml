@@ -1,0 +1,43 @@
+sinett_mlab_builder_homepage:
+    pattern:  /
+    defaults: { _controller: SinettMLABBuilderBundle:Default:index }
+
+SinettMLABBuilderBundle_app:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/app.yml"
+    prefix:   /app
+
+SinettMLABBuilderBundle_category:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/category.yml"
+    prefix:   /category
+
+SinettMLABBuilderBundle_component:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/component.yml"
+    prefix:   /component
+
+SinettMLABBuilderBundle_group:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/group.yml"
+    prefix:   /group
+
+SinettMLABBuilderBundle_help:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/help.yml"
+    prefix:   /help
+
+SinettMLABBuilderBundle_menu:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/menu.yml"
+    prefix:   /menu
+
+SinettMLABBuilderBundle_template:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/template.yml"
+    prefix:   /template
+    
+SinettMLABBuilderBundle_tracking:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/tracking.yml"
+    prefix:   /tracking
+
+SinettMLABBuilderBundle_user:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/user.yml"
+    prefix:   /user
+
+SinettMLABBuilderBundle_admin_apps:
+    path:   /admin/apps
+    defaults: { _controller: SinettMLABBuilderBundle:Admin:apps }

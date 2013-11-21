@@ -1,0 +1,64 @@
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Menu</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Parentid</th>
+                <td>{{ entity.parentId }}</td>
+            </tr>
+            <tr>
+                <th>Orderby</th>
+                <td>{{ entity.orderBy }}</td>
+            </tr>
+            <tr>
+                <th>Contenthtml</th>
+                <td>{{ entity.contentHtml }}</td>
+            </tr>
+            <tr>
+                <th>Contentphp</th>
+                <td>{{ entity.contentPhp }}</td>
+            </tr>
+            <tr>
+                <th>Class</th>
+                <td>{{ entity.class }}</td>
+            </tr>
+            <tr>
+                <th>Help</th>
+                <td>{{ entity.help }}</td>
+            </tr>
+            <tr>
+                <th>Filterrole</th>
+                <td>{{ entity.filterRole }}</td>
+            </tr>
+            <tr>
+                <th>Filterurl</th>
+                <td>{{ entity.filterUrl }}</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+                <td>{{ entity.url }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('menu') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('menu_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

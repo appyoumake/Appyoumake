@@ -1,0 +1,115 @@
+# user details, uses FosUserbundle for management
+Sinett\MLAB\BuilderBundle\Entity\User:
+  type: entity
+  table: usr
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\UserRepository
+  indexes:
+    username_index:
+      columns: [ username ]
+    is_active_index:
+      columns: [ is_active ]
+    email_index:
+      columns: [ email ]
+    password_index:
+      columns: [ password ]
+    created_index:
+      columns: [ created ]
+    updated_index:
+      columns: [ updated ]
+  
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+#    email:
+#      type: string
+#      length: 255
+#      fixed: false
+#      nullable: true
+        
+#    username:
+#      type: string
+#      length: 50
+#      fixed: false
+#      nullable: true
+      
+#    password:
+#      type: string
+#      length: 128
+#      fixed: false
+#      nullable: false
+#
+#    salt:
+#      type: string
+#      length: 128
+#      fixed: false
+#      nullable: false
+        
+    created:
+      type: date
+      gedmo:
+        timestampable:
+          on: create
+    
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+
+    isActive:
+      type: boolean
+      nullable: true
+      column: is_active
+      options:
+          default: true
+            
+#the branch they belong to, if any, used to define categories for apps
+          
+  oneToOne:
+    categoryOne:
+      targetEntity: Category
+      joinColumn:
+        name: category_1
+        referencedColumnName: id
+
+    categoryTwo:
+      targetEntity: Category
+      joinColumn:
+        name: category_2
+        referencedColumnName: id
+
+    categoryThree:
+      targetEntity: Category
+      joinColumn:
+        name: category_3
+        referencedColumnName: id
+        
+    app:
+      targetEntity: App
+      mappedBy: user
+
+    appUpdatedBy:
+      targetEntity: App
+      mappedBy: user
+      joinColumn:
+        name: id
+        referencedColumnName: updateby_id
+
+  manyToMany:
+    groups:
+      targetEntity: Group
+      inversedBy: users
+      joinTable:
+        name: users_groups
+        joinColumns:
+          user_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          group_id:
+            referencedColumnName: id
+            
+  lifecycleCallbacks: {  }

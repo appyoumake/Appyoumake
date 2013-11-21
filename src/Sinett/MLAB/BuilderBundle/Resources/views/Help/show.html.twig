@@ -1,0 +1,44 @@
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Help</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Bundle</th>
+                <td>{{ entity.bundle }}</td>
+            </tr>
+            <tr>
+                <th>Controller</th>
+                <td>{{ entity.controller }}</td>
+            </tr>
+            <tr>
+                <th>Action</th>
+                <td>{{ entity.action }}</td>
+            </tr>
+            <tr>
+                <th>Message</th>
+                <td>{{ entity.message }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('help') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('help_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

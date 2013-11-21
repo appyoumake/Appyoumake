@@ -1,0 +1,30 @@
+component:
+    pattern:  /
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:index" }
+
+component_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:show" }
+
+component_new:
+    pattern:  /new
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:new" }
+
+component_create:
+    pattern:  /create
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:create" }
+    requirements: { _method: post }
+
+component_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:edit" }
+
+component_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:update" }
+    requirements: { _method: post|put }
+
+component_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "SinettMLABBuilderBundle:Component:delete" }
+    requirements: { _method: post|delete }

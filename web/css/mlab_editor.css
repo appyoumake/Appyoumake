@@ -1,0 +1,185 @@
+@CHARSET "UTF-8";
+
+body.mlab_editor div.container {
+	margin-right: 0;
+	margin-left: 0;
+	display: table;
+	line-height: 0;
+	content: "";
+}
+
+/* sets the minimum width of the page so that the content don't wrap if the screen is made smaler */
+body.mlab_editor div.containerAll {
+	margin-right: 0;
+	margin-left: 0;
+	display: block;
+	min-width: 1024px;
+}
+
+body.mlab_editor footer {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 30px;
+  margin-left: 20px;
+  margin-top: 0px;
+}
+
+body.mlab_editor p {
+  	margin: 0px;
+  	display: block;
+}
+
+div#mlab_toolbar_components {
+	width: 128px;
+	float: left;
+	padding-top: 8px;
+}
+
+div#mlab_editor_chrome {
+	border-radius: 20px;
+	border: 22px solid black;
+	margin: 10px;
+	margin-top: 20px;
+	float: left;
+}
+
+div#mlab_editor_page {
+	width: 600px;
+	height: 800px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+div#mlab_editor_page  {
+	overflow: hidden;
+}
+/*
+div#mlab_editor_page [data-mlab-type="map"] {
+	overflow: visible;
+}
+*/
+
+#mlab_button_rotate {
+	width: 32px;
+	height: 32px;
+	float: left;
+	margin-top: 15px;
+	background-position:center; 
+	background-repeat: no-repeat;
+	background: url("/img/rotate.png") -0px -0px no-repeat;
+	
+}
+
+#mlab_button_rotate.portret {
+		background-image: url("/img/rotate2.png");
+}
+
+
+div.mlab_button_components {
+	width: 64px;
+	height: 64px;
+	float: left;
+	background-position:center; 
+	background-repeat: no-repeat;
+}
+
+.mlab_component_placeholder {
+	border: 2px dotted gray;
+	height: 50px;
+	width: 98%;
+	margin: 0 1%;
+	background-color: #d7eef7;
+}
+
+.mlab_button_close, .mlab_button_drag, .mlab_button_setproperty {
+	height: 16px;
+	width: 16px;
+	overflow: hidden;
+	background: url("/img/delete.png") -0px -0px no-repeat;
+	float: right;
+	z-index: 1000000000;
+	border: none;
+	cursor: pointer;
+	margin-left: 8px;
+}
+
+.mlab_button_drag { 
+	background: url("/img/drag.png") -0px -0px no-repeat;
+}
+
+.mlab_button_setproperty {
+	background: url("/img/settings.png") -0px -0px no-repeat;
+}
+
+.mlab_buttons_item_manipulation {
+	float: right;
+	z-index: 1000000000;
+	height: 16px;
+	width: 80px;
+	display: none;
+	position: relative;
+	background-color: white;
+}
+
+
+.pure-button-success,
+.pure-button-error,
+.pure-button-warning,
+.pure-button-secondary {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.pure-button-success {
+    background: rgb(28, 184, 65); /* this is a green */
+}
+
+.pure-button-error {
+    background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.pure-button-warning {
+    background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.pure-button-secondary {
+    background: rgb(66, 184, 221); /* this is a light blue */
+}
+
+.right {
+	float: right;
+}
+
+#mlab_megamenu {
+	
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+* html .clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
+.mlab_template_select {
+	width: 267px; 
+	height: 232px; 
+}
+
+.template_select {
+	border: 1px solid blue;
+}
+
+.has-js .label_check,
+.has-js .label_radio { padding-left: 34px; }
+.has-js .label_radio { background: url(radio-off.png) no-repeat; }
+.has-js .label_check { background: url(check-off.png) no-repeat; }
+.has-js label.c_on { background: url(check-on.png) no-repeat; }
+.has-js label.r_on { background: url(radio-on.png) no-repeat; }
+.has-js .label_check input,
+.has-js .label_radio input { position: absolute; left: -9999px; }

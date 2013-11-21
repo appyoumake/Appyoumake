@@ -1,0 +1,30 @@
+tracking:
+    pattern:  /
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:index" }
+
+tracking_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:show" }
+
+tracking_new:
+    pattern:  /new
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:new" }
+
+tracking_create:
+    pattern:  /create
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:create" }
+    requirements: { _method: post }
+
+tracking_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:edit" }
+
+tracking_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:update" }
+    requirements: { _method: post|put }
+
+tracking_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "SinettMLABBuilderBundle:Tracking:delete" }
+    requirements: { _method: post|delete }

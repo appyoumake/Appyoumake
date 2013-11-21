@@ -1,0 +1,65 @@
+Sinett\MLAB\BuilderBundle\Entity\Group:
+  type: entity
+  table: grp
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\GroupRepository
+  indexes:
+    name_index:
+      columns: [ name ]
+    is_default_index:
+      columns: [ is_default ]
+    is_active_index:
+      columns: [ is_active ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+    name:
+        type: string
+        length: 255
+        fixed: false
+        nullable: false
+
+    description:
+        type: text
+        nullable: true
+
+    isDefault:
+        type: boolean
+        nullable: true
+        column: is_default
+        options:
+          default: false
+
+    isActive:
+        type: boolean
+        nullable: true
+        column: is_active
+        options:
+          default: true
+                          
+  manyToMany:
+    users:
+      targetEntity: User
+      mappedBy: groups
+
+    menus:
+      targetEntity: Menu
+      mappedBy: groups
+
+    apps:
+      targetEntity: App
+      mappedBy: groups      
+      
+    templates:
+      targetEntity: Template
+      mappedBy: groups      
+      
+    components:
+      targetEntity: Component
+      mappedBy: groups      
+
+  lifecycleCallbacks: {  }

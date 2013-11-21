@@ -1,0 +1,70 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}SinettMLABBuilderBundle:Admin:index{% endblock %}
+
+{% block body %}
+	<h1>{% trans %}Welcome to MLAB App Admin page{% endtrans %}</h1>
+	<div id="tabs_admin_apps">
+	  <ul>
+	  	{% for href, tab in tabs %}
+	    	<li><a href="{{ url(href) }}">{% trans %}%tab%{% endtrans %}</a></li>
+	    {% endfor %}
+	  </ul>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+	
+/**
+ * This function will send data back to the forms action using ajax
+ * the result should be the index page which we display in the calling tab
+ */
+  		function assignSubmitDataHandler(dialog_id) {
+  			$( "#" + dialog_id + " form").submit(function( event ) {
+  				event.preventDefault();
+  			  	var form = $( this ),
+  			    	url = form.attr( "action" );
+  				var posting = $.post( url,  form.serialize() );
+  			 	posting.done(function( data ) {
+  			    	console.log( data );
+  			  	});
+  			}); 
+	  	}
+
+/**
+ * Initialises the tabs on this page
+ */
+		$(function() {
+		    $( "#tabs_admin_apps" ).tabs({
+		    	load: function( event, ui ) {
+		    		
+		    		$(ui.panel[0]).find("a").bind( "click", {
+		    			  dialog_id: $(ui.panel[0]).attr("id") + "_dialog"
+		    			}, function( event ) {
+		    			    event.preventDefault();
+		    			    if ($("#" + event.data.dialog_id).length == 0 ) {
+			    		        $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
+		    		        	.load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id);} )
+		    		        	.appendTo('body')
+		    		        	.dialog({modal: true});
+
+		    			    } else {
+		    			    	$("#" + event.data.dialog_id + ' form')[0].reset();
+			    		        $("#" + event.data.dialog_id).dialog().show();
+			    		        
+		    			    }
+		    			});
+		    	},
+		    	
+		      	beforeLoad: function( event, ui ) {
+		        	ui.jqXHR.error(function() {
+		          		ui.panel.html("Waiting to load data." );
+		        	});
+		      	}
+		    });
+		});
+		
+	</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+
+<h1 onclick='$("li").css("color", "red")'>{% trans %}MLAB{% endtrans %}</h1> 
+<p>
+	Midlertidig forside
+</p>
+<ul>
+	<li><a href="{{ url('app')}}">Apps</a></li>
+	<li><a href="{{ url('category')}}">Categories</a></li>
+	<li><a href="{{ url('component')}}">Components</a></li>
+	<li><a href="{{ url('group')}}">Groups</a></li>
+	<li><a href="{{ url('help')}}">Help</a></li>
+	<li><a href="{{ url('menu')}}">Menus</a></li>
+	<li><a href="{{ url('template')}}">Templates</a></li>
+	<li><a href="{{ url('tracking')}}">Tracking</a></li>
+	<li><a href="{{ url('user')}}">Users</a></li>
+</ul>
+
+{% endblock %}
