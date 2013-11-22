@@ -24,7 +24,7 @@
   		function assignSubmitDataHandler(dialog_id) {
   			$( "#" + dialog_id + " form").submit(function( event ) {
   				event.preventDefault();
-  				$( "#" + dialog_id).dialog().close();
+  				$( "#" + dialog_id ).dialog( "close" );
   			  	var form = $( this ),
   			    	url = form.attr( "action" );
   				var posting = $.post( url,  form.serialize() );
@@ -41,18 +41,20 @@
 		    $( "#tabs_admin_apps" ).tabs({
 		    	load: function( event, ui ) {
 		    		$(ui.panel[0]).find("a").each(function () {
+		    			var this_link = this.href.substr(this.href.lastIndexOf('/') + 1);
 		    			$(this).bind( "click", {
-		    									dialog_id: $(ui.panel[0]).attr("id") + "_dialog", 
-		    									link: this 
+		    									dialog_id: $(ui.panel[0]).attr("id") + "_dialog_" + this_link, 
+		    									link: this_link
 		    								}, //end parameters to send to function that is bound 
 							    			function( event ) {
 							    			   	event.preventDefault();
-							    			   	console.log(event.data.link);
 								    		    if ($("#" + event.data.dialog_id).length == 0 ) {
 									    	        $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
 									    	        	.load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id);} )
 									    	        	.appendTo('body')
 									    	        	.dialog({modal: true});
+								    		    } else if ( event.data.link == "edit" || event.data.link == "show" ) {
+								    		    	$("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
 							    			    } else {
 							    			    	$("#" + event.data.dialog_id + ' form')[0].reset();
 								    		        $("#" + event.data.dialog_id).dialog().show();

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 20, 2013 at 10:08 AM
+-- Generation Time: Nov 22, 2013 at 01:29 PM
 -- Server version: 5.5.25a
 -- PHP Version: 5.4.4
 
@@ -79,18 +79,20 @@ CREATE TABLE IF NOT EXISTS `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `system` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `IDX_64C19C1727ACA70` (`parent_id`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES
-(1, NULL, 'Test'),
-(2, 1, 'Barn');
+INSERT INTO `category` (`id`, `parent_id`, `name`, `system`) VALUES
+(1, NULL, 'Test', 0),
+(2, 1, 'Barn', 0),
+(3, 2, 'MyNameIsEarl', 1);
 
 -- --------------------------------------------------------
 
@@ -136,7 +138,16 @@ CREATE TABLE IF NOT EXISTS `grp` (
   KEY `name_index` (`name`),
   KEY `is_default_index` (`is_default`),
   KEY `is_active_index` (`is_active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `grp`
+--
+
+INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `is_active`) VALUES
+(1, 'Testy', 'Festy', 1, 1),
+(2, 'sdfsd', 'sdfsdf', 0, 1),
+(3, 'edfw', 'werwer', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -324,9 +335,9 @@ CREATE TABLE IF NOT EXISTS `usr` (
 -- Dumping data for table `usr`
 --
 
-INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `is_active`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`) VALUES
-(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-20 10:02:42', NULL, 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-11-20 10:02:42', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL),
-(4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-20 10:02:42', NULL, 'cecilie', 'cecilie', 'Cecilie.Jackbo.Gran@ffi.no', 1, '2013-11-20 10:02:42', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL);
+INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`) VALUES
+(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-22 11:25:43', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-11-22 11:25:43', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
+(4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-20 10:02:42', 'cecilie', 'cecilie', 'Cecilie.Jackbo.Gran@ffi.no', 1, '2013-11-20 10:02:42', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL);
 
 --
 -- Constraints for dumped tables

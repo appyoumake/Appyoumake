@@ -186,10 +186,10 @@ class CategoryController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+//        $form = $this->createDeleteForm($id);
+//        $form->handleRequest($request);
 
-        if ($form->isValid()) {
+//        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('SinettMLABBuilderBundle:Category')->find($id);
 
@@ -199,7 +199,7 @@ class CategoryController extends Controller
 
             $em->remove($entity);
             $em->flush();
-        }
+//        }
 
         return $this->redirect($this->generateUrl('category'));
     }
