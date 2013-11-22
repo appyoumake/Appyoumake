@@ -47,7 +47,7 @@ SinettMLABBuilderBundle_admin_users:
     defaults: { _controller: SinettMLABBuilderBundle:Admin:users }
 
 SinettMLABBuilderBundle_system:
-    path:   /system
+    path:   /system/
     defaults: { _controller: SinettMLABBuilderBundle:Admin:system }
 
 index:

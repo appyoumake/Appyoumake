@@ -24,7 +24,7 @@
   		function assignSubmitDataHandler(dialog_id) {
   			$( "#" + dialog_id + " form").submit(function( event ) {
   				event.preventDefault();
-  				$( "#" + dialog_id).dialog().hide();
+  				$( "#" + dialog_id).dialog().close();
   			  	var form = $( this ),
   			    	url = form.attr( "action" );
   				var posting = $.post( url,  form.serialize() );
@@ -37,27 +37,31 @@
 /**
  * Initialises the tabs on this page
  */
-		$(function() {
+ 		$(document).ready(function() {
 		    $( "#tabs_admin_apps" ).tabs({
 		    	load: function( event, ui ) {
-		    		
-		    		$(ui.panel[0]).find("a").bind( "click", {
-		    			  dialog_id: $(ui.panel[0]).attr("id") + "_dialog"
-		    			}, function( event ) {
-		    			    event.preventDefault();
-		    			    if ($("#" + event.data.dialog_id).length == 0 ) {
-			    		        $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
-		    		        	.load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id);} )
-		    		        	.appendTo('body')
-		    		        	.dialog({modal: true});
-
-		    			    } else {
-		    			    	$("#" + event.data.dialog_id + ' form')[0].reset();
-			    		        $("#" + event.data.dialog_id).dialog().show();
-			    		        
-		    			    }
-		    			});
-		    	},
+		    		$(ui.panel[0]).find("a").each(function () {
+		    			$(this).bind( "click", {
+		    									dialog_id: $(ui.panel[0]).attr("id") + "_dialog", 
+		    									link: this 
+		    								}, //end parameters to send to function that is bound 
+							    			function( event ) {
+							    			   	event.preventDefault();
+							    			   	console.log(event.data.link);
+								    		    if ($("#" + event.data.dialog_id).length == 0 ) {
+									    	        $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
+									    	        	.load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id);} )
+									    	        	.appendTo('body')
+									    	        	.dialog({modal: true});
+							    			    } else {
+							    			    	$("#" + event.data.dialog_id + ' form')[0].reset();
+								    		        $("#" + event.data.dialog_id).dialog().show();
+							    			    } // end check if loaded 
+							    			} // end function to run when click 
+		    					) // end bind call 
+		    			} // end function to run for each link  
+		    		); // end each function 
+		    	}, // end load parameters 
 		    	
 		      	beforeLoad: function( event, ui ) {
 		        	ui.jqXHR.error(function() {
