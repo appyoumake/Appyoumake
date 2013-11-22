@@ -20,10 +20,6 @@ class GroupType extends AbstractType
             ->add('isDefault')
             ->add('isActive')
             ->add('users')
-            ->add('menus')
-            ->add('apps')
-            ->add('templates')
-            ->add('components')
         ;
     }
     
@@ -39,7 +35,7 @@ class GroupType extends AbstractType
 
     /**
      * @return string
-     */
+     */ 
     public function getName()
     {
         return 'sinett_mlab_builderbundle_group';

@@ -45,11 +45,6 @@ class User extends BaseUser
     protected $updated;
 
     /**
-     * @var boolean
-     */
-    private $isActive;
-
-    /**
      * @var \Sinett\MLAB\BuilderBundle\Entity\Category
      */
     private $categoryOne;
@@ -148,29 +143,6 @@ class User extends BaseUser
     public function getUpdated()
     {
         return $this->updated;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     * @return User
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean 
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
     }
 
     /**
@@ -316,6 +288,26 @@ class User extends BaseUser
     public function __toString()
     {
     	return $this->username;
+    }
+    
+    /**
+     * Get expiresAt
+     *
+     * @return \DateTime
+     */
+    public function getExpiresAt()
+    {
+    	return $this->expiresAt;
+    }
+    
+    /**
+     * Get credentials_expire_at
+     *
+     * @return \DateTime
+     */
+    public function getCredentialsExpireAt()
+    {
+    	return $this->credentialsExpireAt;
     }
 
 }

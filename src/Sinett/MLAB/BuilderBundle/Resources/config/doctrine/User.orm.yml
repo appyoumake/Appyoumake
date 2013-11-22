@@ -6,8 +6,6 @@ Sinett\MLAB\BuilderBundle\Entity\User:
   indexes:
     username_index:
       columns: [ username ]
-    is_active_index:
-      columns: [ is_active ]
     email_index:
       columns: [ email ]
     password_index:
@@ -60,13 +58,6 @@ Sinett\MLAB\BuilderBundle\Entity\User:
         timestampable:
           on: update
 
-    isActive:
-      type: boolean
-      nullable: true
-      column: is_active
-      options:
-          default: true
-            
 #the branch they belong to, if any, used to define categories for apps
           
   oneToOne:

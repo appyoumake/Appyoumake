@@ -28,7 +28,12 @@ use Sinett\MLAB\BuilderBundle\Form\GroupType;
 
 class AdminController extends Controller
 {
-    public function appsAction()
+
+/**
+ * Action that deals with app/template etc management, it is all done via AJAX calls to various table specific CRUD
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
+	public function appsAction()
     {
     	//die($this->container->parameters['mlab']['paths']['apps']);
     	$tabs = array(
@@ -38,10 +43,38 @@ class AdminController extends Controller
     			"category" => "Categories",
     			);
     	
-    	return $this->render('SinettMLABBuilderBundle:Admin:apps.html.twig', array("tabs" => $tabs));
+    	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));
     }
 
+/**
+ * Action that deals with user management, as above it is all done via AJAX calls to various table specific CRUD
+ * We use identical code, just different names of tabs and URLs to load :-)
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
     public function usersAction()
     {
+    	$tabs = array(
+    			"user" => "Users",
+    			"group" => "Groups"
+    			);
+    	
+    	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));
     }
+    
+/**
+ * Action that deals with user management, as above it is all done via AJAX calls to various table specific CRUD
+ * We use identical code, just different names of tabs and URLs to load :-)
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
+    public function systemAction()
+    {
+    	$tabs = array(
+    			"menu" => "Menus",
+    			"category" => "Categories",
+    			"help" => "Help"
+    	);
+    	 
+    	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));
+    }
+    
 }

@@ -286,5 +286,15 @@ class Menu
      */
     private $contentPhp;
 
+    /**
+     * Get display value
+     *
+     * @return \String
+     */
+    public function __toString()
+    {
+    	return $this->contentHtml . " " . $this->help;
+    }
+    
 
 }

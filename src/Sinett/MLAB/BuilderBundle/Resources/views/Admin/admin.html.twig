@@ -24,6 +24,7 @@
   		function assignSubmitDataHandler(dialog_id) {
   			$( "#" + dialog_id + " form").submit(function( event ) {
   				event.preventDefault();
+  				$( "#" + dialog_id).dialog().hide();
   			  	var form = $( this ),
   			    	url = form.attr( "action" );
   				var posting = $.post( url,  form.serialize() );

@@ -1,15 +1,47 @@
+# This file is auto-generated during the composer install
 parameters:
-    database_driver:   pdo_mysql
-    database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: mlab-symfony
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en_GB
+    secret: flurkysnarkish
 
-    mailer_transport:  smtp
-    mailer_host:       127.0.0.1
-    mailer_user:       ~
-    mailer_password:   ~
-
-    locale:            en
-    secret:            ThisTokenIsNotSoSecretChangeIt
+    
+    mlab:
+        paths:
+          apps: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/apps/
+          components: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/components/
+          templates: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/templates/
+        
+        urls:
+            apps: /mlab_elements/apps/
+            components: /mlab_elements/components/
+            templates: /mlab_elements/templates/
+        
+# paths etc for cordova
+        cordova:
+            bin_path: /opt/cordova-2.6.0/bin/
+            platform_paths:
+                android: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools"]
+            app_creator_identifier: no.ffi.sinett
+            asset_path: /assets/www/
+            
+# when a user is uploading a file these files have to be present to be accepted
+        verify_uploads:    
+            templates: [ frontpage.html, index.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css ]
+            components: [ html.txt, icon.png, exec.js ]
+            apps: [ html.txt, icon.png ]
+    
+        
+        app:
+            copy_files: { frontpage.html: index.html, page.html: 001.html, js: js, css: css, img: img }
+            new_page: page.html
+            
+            
