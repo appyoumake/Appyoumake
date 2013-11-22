@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+
+   #ServerName mlabsymfony
+   #ServerName <%= scope.lookupvar('config::servername') %>
+  
+   ServerAdmin webmaster@localhost
+   
+   ErrorLog <%= scope.lookupvar('config::ApacheLog') %>
+
+   # DocumentRoot /my/path/to/mlab-symfony/web/
+   DocumentRoot <%= scope.lookupvar('config::DocumentRoot') %>
+   <Directory <%= scope.lookupvar('config::DocumentRoot') %> >
+
+       Options Indexes FollowSymLinks MultiViews
+       AllowOverride None
+       Order allow,deny
+       allow from all
+       #Require all granted
+       <IfModule mod_rewrite.c>
+           RewriteEngine On
+           RewriteCond %{REQUEST_FILENAME} !-f
+           RewriteRule ^(.*)$ /app.php [QSA,L]
+
+       </IfModule>
+
+   </Directory>
+</VirtualHost>
