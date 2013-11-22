@@ -20,7 +20,7 @@ security:
             anonymous:    true
 
     access_control:
-        # - { path: ^/, role: ROLE_USER }
+        - { path: ^/[a-z].*, role: ROLE_USER }
         - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
