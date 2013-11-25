@@ -27,4 +27,4 @@ menu_update:
 menu_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Menu:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

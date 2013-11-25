@@ -14,15 +14,21 @@ Sinett\MLAB\BuilderBundle\Entity\Component:
           strategy: AUTO
 
   fields:
-      name:
-          type: string
-          length: 255
-          fixed: false
-          nullable: false
+    name:
+        type: string
+        length: 255
+        fixed: false
+        nullable: false
+        
+    path:
+      type: string
+      length: 255
+      fixed: false
+      nullable: false
           
-      description:
-          type: text
-          nullable: false
+    description:
+        type: text
+        nullable: false
 
 # components can be limited by group membership
   manyToMany:

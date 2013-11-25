@@ -27,4 +27,4 @@ group_update:
 group_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Group:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

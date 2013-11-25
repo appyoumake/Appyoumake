@@ -6,7 +6,6 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Parentid</th>
                 <th>Orderby</th>
                 <th>Contenthtml</th>
@@ -21,8 +20,7 @@
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('menu_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <tr id="row_group_{{ entity.id }}">
                 <td>{{ entity.parentId }}</td>
                 <td>{{ entity.orderBy }}</td>
                 <td>{{ entity.contentHtml }}</td>
@@ -35,7 +33,7 @@
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('menu_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('menu_delete', { 'id': entity.id }) }}">delete</a>
                     </li>
                     <li>
                         <a href="{{ path('menu_edit', { 'id': entity.id }) }}">edit</a>

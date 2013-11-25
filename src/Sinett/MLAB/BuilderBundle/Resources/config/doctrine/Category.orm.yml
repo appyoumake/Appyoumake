@@ -2,11 +2,15 @@
 # it is also used to categoriese users, this is simply used to provide default categories for new apps they create 
 # this will support three levels, top = branch, mid = job area, bottom = anything.
 # it is a simple tree with parent_id pointing to id in same table
+# Uses Gedmo extension to provide tree functionality
 
 Sinett\MLAB\BuilderBundle\Entity\Category:
   type: entity
   table: category
-  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\CategoryRepository
+  repositoryClass: Gedmo\Tree\Entity\Repository\NestedTreeRepository
+  gedmo:
+    tree:
+      type: nested
   indexes:
     name_index:
       columns: [ name ]
@@ -30,14 +34,43 @@ Sinett\MLAB\BuilderBundle\Entity\Category:
           options:
             default: false
             
-  oneToMany:
-    children:
-      targetEntity: Category
-      mappedBy: parent
-  
+      lft:
+        type: integer
+        gedmo:
+          - treeLeft
+          
+      rgt:
+        type: integer
+        gedmo:
+          - treeRight
+          
+      root:
+        type: integer
+        nullable: true
+        gedmo:
+          - treeRoot
+          
+      lvl:
+        type: integer
+        gedmo:
+          - treeLevel
+          
   manyToOne:
     parent:
-      targetEntity: Category
+      targetEntity: Sinett\MLAB\BuilderBundle\Entity\Category
       inversedBy: children
+      joinColumn:
+        name: parent_id
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeParent
+        
+  oneToMany:
+    children:
+      targetEntity: Sinett\MLAB\BuilderBundle\Entity\Category
+      mappedBy: parent
+      orderBy:
+        lft: ASC
       
   lifecycleCallbacks: {  }

@@ -42,20 +42,44 @@
 		    	load: function( event, ui ) {
 		    		$(ui.panel[0]).find("a").each(function () {
 		    			var this_link = this.href.substr(this.href.lastIndexOf('/') + 1);
+		    			temp_url_elements = this.href.split("/");
+		    			var this_id = temp_url_elements[temp_url_elements.length - 2];
 		    			$(this).bind( "click", {
 		    									dialog_id: $(ui.panel[0]).attr("id") + "_dialog_" + this_link, 
-		    									link: this_link
+		    									link: this_link,
+		    									id: this_id
 		    								}, //end parameters to send to function that is bound 
+		    								
+// this function is called when a link is clicked, the last parameter indicates action (new, delete, etc)
+// we use this to see what we should do 
 							    			function( event ) {
 							    			   	event.preventDefault();
-								    		    if ($("#" + event.data.dialog_id).length == 0 ) {
+// check if want to delete, then send request back. 
+//May be denied depending on what roles they have, if record is used for somethign etc.
+							    			   	if ( event.data.link == "delete" ) { 
+							    			   		if (confirm("{% trans %}Do you want to delete this item?{% endtrans %}")) {
+							    			   			$.getJSON("{{ path("category") }}" + event.data.id + "/delete", function( data ) {
+							    			   				if (data.result == "SUCCESS" && parseInt(data.db_id) > 0) {
+							    			   					$("#row_" + data.db_table + "_" + data.db_id).remove();
+							    			   				} else {
+							    			   					alert("{% trans %}Unable to delete record: {% endtrans %}" + data.message);
+							    			   				}
+							    			   			});
+							    			   		}
+							    			   		
+// not delete and dialog box is not created yet, so make new one and fill it 
+		    									} else if ($("#" + event.data.dialog_id).length == 0 ) {  
 									    	        $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
 									    	        	.load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id);} )
 									    	        	.appendTo('body')
 									    	        	.dialog({modal: true});
-								    		    } else if ( event.data.link == "edit" || event.data.link == "show" ) {
+									    	        
+// need to reload data if edit record AND already created dialog box
+								    		    } else if ( event.data.link == "edit" ) {  
 								    		    	$("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
-							    			    } else {
+								    		    	
+// in all other cases just re-display dialog box, usually for new record
+							    			    } else {  
 							    			    	$("#" + event.data.dialog_id + ' form')[0].reset();
 								    		        $("#" + event.data.dialog_id).dialog().show();
 							    			    } // end check if loaded 
@@ -67,7 +91,7 @@
 		    	
 		      	beforeLoad: function( event, ui ) {
 		        	ui.jqXHR.error(function() {
-		          		ui.panel.html("Waiting to load data." );
+		          		ui.panel.html("{% trans %}Waiting to load data.{% endtrans %}");
 		        	});
 		      	}
 		    });

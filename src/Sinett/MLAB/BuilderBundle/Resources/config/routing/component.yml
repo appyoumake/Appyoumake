@@ -27,4 +27,4 @@ component_update:
 component_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Component:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

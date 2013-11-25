@@ -27,4 +27,4 @@ help_update:
 help_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Help:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

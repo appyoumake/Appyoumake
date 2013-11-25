@@ -101,11 +101,11 @@ class AppController extends Controller
             throw $this->createNotFoundException('Unable to find App entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        
 
         return $this->render('SinettMLABBuilderBundle:App:show.html.twig', array(
             'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+                    ));
     }
 
     /**
@@ -123,12 +123,12 @@ class AppController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        
 
         return $this->render('SinettMLABBuilderBundle:App:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            
         ));
     }
 
@@ -150,6 +150,7 @@ class AppController extends Controller
 
         return $form;
     }
+    
     /**
      * Edits an existing App entity.
      *
@@ -164,20 +165,24 @@ class AppController extends Controller
             throw $this->createNotFoundException('Unable to find App entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('app_edit', array('id' => $id)));
+//            return $this->redirect($this->generateUrl('app_edit', array('id' => $id)));
+            return new JsonResponse(array('db_table' => 'app',
+            		'record' => $entity,
+            		'result' => 'success',
+            		'message' => ''));
         }
 
         return $this->render('SinettMLABBuilderBundle:App:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            
         ));
     }
     /**
@@ -186,38 +191,22 @@ class AppController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find App entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'app',
+        							      'db_id' => $id,
+        							  	  'result' => 'FAILURE',
+        								  'message' => ''));
         }
 
-        return $this->redirect($this->generateUrl('app'));
+        $em->remove($entity);
+        $em->flush();
+        return new JsonResponse(array('db_table' => 'app',
+        							  'db_id' => $id,
+        							  'result' => 'SUCCESS',
+        						 	  'message' => ''));
     }
 
-    /**
-     * Creates a form to delete a App entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('app_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
-    }
 }

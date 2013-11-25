@@ -2,8 +2,15 @@
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
+use Monolog\Handler\error_log;
+
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 use Sinett\MLAB\BuilderBundle\Entity\Category;
 use Sinett\MLAB\BuilderBundle\Form\CategoryType;
@@ -17,16 +24,36 @@ class CategoryController extends Controller
 
     /**
      * Lists all Category entities.
-     *
+     * See https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Category')->findAll();
-
+        $repo = $em->getRepository('SinettMLABBuilderBundle:Category');
+        
+        //$arrayTree = $repo->childrenHierarchy();
+        
+        $options = array(
+        		'decorate' => true,
+        		'rootOpen' => '<ul>',
+        		'rootClose' => '</ul>',
+        		'childOpen' => '<li>',
+        		'childClose' => '</li>',
+        		'nodeDecorator' => function($node) {
+        			return '<a href="' . $this->generateUrl('category_edit', array("id" => $node['id'])) .'">' . $node["name"] . '</a>' . 
+          			'<a class="tree_delete" href="' . $this->generateUrl('category_delete', array("id" => $node['id'])) .'">Delete</a>';
+        		}
+        );
+        
+        $htmlTree = $repo->childrenHierarchy(
+        		null, /* starting from root nodes */
+        		false, /* true: load all children, false: only direct */
+        		$options
+        );
+        
+        
         return $this->render('SinettMLABBuilderBundle:Category:index.html.twig', array(
-            'entities' => $entities,
+            'category_tree' => $htmlTree,
         ));
     }
     /**
@@ -101,11 +128,11 @@ class CategoryController extends Controller
             throw $this->createNotFoundException('Unable to find Category entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        
 
         return $this->render('SinettMLABBuilderBundle:Category:show.html.twig', array(
             'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+                    ));
     }
 
     /**
@@ -123,12 +150,12 @@ class CategoryController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        
 
         return $this->render('SinettMLABBuilderBundle:Category:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            
         ));
     }
 
@@ -159,65 +186,63 @@ class CategoryController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:Category')->find($id);
-
+        
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Category entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
-
-            return $this->redirect($this->generateUrl('category_edit', array('id' => $id)));
+            
+            /*$encoders = array(new JsonEncoder());
+            $normalizers = array(new GetSetMethodNormalizer());
+            
+            $serializer = new Serializer($normalizers, $encoders);
+            $jsonContent = $serializer->serialize($entity, 'json');*/
+            
+            return new JsonResponse(array('db_table' => 'category',
+            		'record' => array("name" => $entity->getName(), "system" => $entity->getSystem(), "id" => $entity->getId()),
+            		'result' => 'success',
+            		'message' => ''));
+            
+            //return $this->redirect($this->generateUrl('category_edit', array('id' => $id)));
         }
 
         return $this->render('SinettMLABBuilderBundle:Category:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            
         ));
     }
+
     /**
      * Deletes a Category entity.
+     * Must have role_super_admin rights to delete system ones 
      *
      */
     public function deleteAction(Request $request, $id)
     {
-//        $form = $this->createDeleteForm($id);
-//        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('SinettMLABBuilderBundle:Category')->find($id);
 
-//        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('SinettMLABBuilderBundle:Category')->find($id);
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'category',
+        							      'db_id' => $id,
+        							  	  'result' => 'FAILURE',
+        								  'message' => ''));
+        }
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Category entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-//        }
-
-        return $this->redirect($this->generateUrl('category'));
+        $em->remove($entity);
+        $em->flush();
+        return new JsonResponse(array('db_table' => 'category',
+        							  'db_id' => $id,
+        							  'result' => 'SUCCESS',
+        							  'message' => ''));
     }
 
-    /**
-     * Creates a form to delete a Category entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('category_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
-    }
+ 
 }

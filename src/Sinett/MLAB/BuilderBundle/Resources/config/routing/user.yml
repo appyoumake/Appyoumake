@@ -27,4 +27,4 @@ user_update:
 user_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:User:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

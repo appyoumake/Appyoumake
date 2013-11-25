@@ -3,9 +3,6 @@
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-
 
 /**
  * Template
@@ -221,69 +218,4 @@ class Template
     }
     
     
-    /**
-     * @var string
-     */
-    private $path;
-
-
-    /**
-     * Set path
-     *
-     * @param string $path
-     * @return Template
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-    
-        return $this;
-    }
-
-    /**
-     * Get path
-     *
-     * @return string 
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    public function upload()
-    {
-// the file property can be empty if the field is not required
-    	if (null === $this->getZipFile()) {
-    		return;
-    	}
-    	//if ($this->getZipFile()->isValid()) {
-    
-// sanitize filename and use this as the path
-    	$temp_name = $this->getZipFile()->getClientOriginalName();
-    	
-    	$rep = array(	"a" => "/[ÂÃÄÀÁÅàáâãäå]/",
-    			"ae" => "/[Ææ]/",
-    			"c" => "/[Çç]/",
-    			"e" => "/[ÈÉÊËèéêë]/",
-    			"i" => "/[ÌÍÎÏìíîï]/",
-    			"o" => "/[ÒÓÔÕÖØòóôõöø]/",
-    			"n" => "/[Ññ]/",
-    			"u" => "/[ÙÚÛÜùúûü]/",
-    			"y" => "/[Ýýÿ]/",
-    			"_" => "/[^A-Za-z0-9]/");
-		
-    	exec('unzip -d ');
-    	// move takes the target directory and then the
-    	// target filename to move to
-    	$this->getZipFile()->move(
-    			$this->getUploadRootDir(),
-    			$this->getZipFile()->getClientOriginalName()
-    	);
-    
-    	// set the path property to the filename where you've saved the file
-    	$this->path = $this->getFile()->getClientOriginalName();
-    
-    	// clean up the file property as you won't need it anymore
-    	$this->file = null;
-    }
 }

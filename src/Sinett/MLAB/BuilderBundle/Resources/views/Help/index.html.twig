@@ -6,7 +6,6 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Bundle</th>
                 <th>Controller</th>
                 <th>Action</th>
@@ -25,7 +24,7 @@
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('help_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('help_delete', { 'id': entity.id }) }}">delete</a>
                     </li>
                     <li>
                         <a href="{{ path('help_edit', { 'id': entity.id }) }}">edit</a>

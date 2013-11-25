@@ -7,11 +7,11 @@
 	Midlertidig forside
 </p>
 <ul>
-	<li><a href="{{ url('admin/users')}}">Admin Users</a></li>
-	<li><a href="{{ url('admin/apps')}}">Admin Apps</a></li>
-	<li><a href="{{ url('system')}}">System</a></li>
-	<li><a href="{{ url('appbuilder')}}">App builder front page</a></li>
-	<li><a href="{{ url('appbuilder/edit')}}">App builder</a></li>
+	<li><a href="{{ path('admin_users')}}">Admin Users</a></li>
+	<li><a href="{{ path('admin_apps')}}">Admin Apps</a></li>
+	<li><a href="{{ path('system')}}">System</a></li>
+	<li><a href="{{ path('app_builder_index')}}">App builder front page</a></li>
+	<li><a href="{{ path('app_builder_editor', {'app_id': 1, 'page_id': 1, 'version_num': 2} ) }}">App builder editor</a></li>
 </ul>
 <ul>
 	<li><a href="{{ url('app')}}">Apps</a></li>

@@ -6,27 +6,25 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Compatiblewith</th>
+                <th>Compatible with</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('template_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <tr id="row_group_{{ entity.id }}">
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.description }}</td>
                 <td>{{ entity.compatibleWith }}</td>
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('template_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('template_delete', { 'id': entity.id }) }}">delete</a>
                     </li>
                     <li>
-                        <a href="{{ path('template_edit', { 'id': entity.id }) }}">edit</a>
+                        <a href="{{ path('template_edit', { 'id': entity.id }) }}">edit access</a>
                     </li>
                 </ul>
                 </td>

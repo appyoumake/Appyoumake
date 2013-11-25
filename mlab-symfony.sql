@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 22, 2013 at 01:29 PM
+-- Generation Time: Nov 25, 2013 at 04:59 PM
 -- Server version: 5.5.25a
 -- PHP Version: 5.4.4
 
@@ -80,19 +80,23 @@ CREATE TABLE IF NOT EXISTS `category` (
   `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `system` tinyint(1) NOT NULL DEFAULT '0',
+  `lft` int(11) NOT NULL,
+  `rgt` int(11) NOT NULL,
+  `root` int(11) DEFAULT NULL,
+  `lvl` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_64C19C1727ACA70` (`parent_id`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`id`, `parent_id`, `name`, `system`) VALUES
-(1, NULL, 'Test', 0),
-(2, 1, 'Barn', 0),
-(3, 2, 'MyNameIsEarl', 1);
+INSERT INTO `category` (`id`, `parent_id`, `name`, `system`, `lft`, `rgt`, `root`, `lvl`) VALUES
+(2, NULL, 'TestyParent2', 1, 1, 4, 2, 0),
+(3, NULL, 'Testy2', 1, 1, 2, 3, 0),
+(4, 2, 'Sjø', 1, 2, 3, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -104,6 +108,7 @@ CREATE TABLE IF NOT EXISTS `component` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name_index` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -234,6 +239,7 @@ CREATE TABLE IF NOT EXISTS `template` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
   `compatible_with` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name_index` (`name`),
   KEY `compatible_with_index` (`compatible_with`)
@@ -336,7 +342,7 @@ CREATE TABLE IF NOT EXISTS `usr` (
 --
 
 INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`) VALUES
-(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-22 11:25:43', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-11-22 11:25:43', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
+(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-22 14:47:25', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-11-22 14:47:25', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
 (4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-20 10:02:42', 'cecilie', 'cecilie', 'Cecilie.Jackbo.Gran@ffi.no', 1, '2013-11-20 10:02:42', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL);
 
 --
@@ -365,7 +371,7 @@ ALTER TABLE `apps_groups`
 -- Constraints for table `category`
 --
 ALTER TABLE `category`
-  ADD CONSTRAINT `FK_64C19C1727ACA70` FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`);
+  ADD CONSTRAINT `FK_64C19C1727ACA70` FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `components_groups`

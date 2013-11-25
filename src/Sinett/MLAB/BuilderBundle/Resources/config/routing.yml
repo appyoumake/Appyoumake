@@ -38,17 +38,25 @@ SinettMLABBuilderBundle_user:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/user.yml"
     prefix:   /user
 
-SinettMLABBuilderBundle_admin_apps:
+admin_apps:
     path:   /admin/apps
     defaults: { _controller: SinettMLABBuilderBundle:Admin:apps }
 
-SinettMLABBuilderBundle_admin_users:
+admin_users:
     path:   /admin/users
     defaults: { _controller: SinettMLABBuilderBundle:Admin:users }
 
-SinettMLABBuilderBundle_system:
+system:
     path:   /system/
     defaults: { _controller: SinettMLABBuilderBundle:Admin:system }
+
+app_builder_index:
+    path:   /builder/
+    defaults: { _controller: SinettMLABBuilderBundle:Builder:index }
+
+app_builder_editor:
+    path:   /builder/{app_id}/{version_num}/{page_id}/edit
+    defaults: { _controller: SinettMLABBuilderBundle:Builder:edit }
 
 index:
     pattern: /index

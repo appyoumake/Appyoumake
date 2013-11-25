@@ -22,6 +22,12 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
       fixed: false
       nullable: false
           
+    path:
+      type: string
+      length: 255
+      fixed: false
+      nullable: false
+          
     description:
       type: text
       nullable: false

@@ -6,7 +6,6 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Actions</th>
@@ -14,14 +13,13 @@
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('component_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <tr id="row_component_{{ entity.id }}">
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.description }}</td>
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('component_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('component_delete', { 'id': entity.id }) }}">delete</a>
                     </li>
                     <li>
                         <a href="{{ path('component_edit', { 'id': entity.id }) }}">edit</a>
