@@ -4,6 +4,7 @@ namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Menu;
 use Sinett\MLAB\BuilderBundle\Form\MenuType;

@@ -5,7 +5,7 @@ namespace Sinett\MLAB\BuilderBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-
+use ZipArchive;
 
 /**
  * Template
@@ -250,40 +250,82 @@ class Template
         return $this->path;
     }
 
-    public function upload()
+	/**
+	 * Checks that file is valid, moves it and then returns true or false
+	 * @param array $valid_files: array of file names that MUST be in zip file
+	 * @param array $replace_chars: array of characters to replace, internally we always use ascii < 128 only.
+	 * 
+	 * @return array result/message
+	 */
+    public function handleUpload($valid_files, $replace_chars, $destination)
     {
 // the file property can be empty if the field is not required
     	if (null === $this->getZipFile()) {
     		return;
     	}
-    	//if ($this->getZipFile()->isValid()) {
-    
-// sanitize filename and use this as the path
-    	$temp_name = $this->getZipFile()->getClientOriginalName();
     	
-    	$rep = array(	"a" => "/[ÂÃÄÀÁÅàáâãäå]/",
-    			"ae" => "/[Ææ]/",
-    			"c" => "/[Çç]/",
-    			"e" => "/[ÈÉÊËèéêë]/",
-    			"i" => "/[ÌÍÎÏìíîï]/",
-    			"o" => "/[ÒÓÔÕÖØòóôõöø]/",
-    			"n" => "/[Ññ]/",
-    			"u" => "/[ÙÚÛÜùúûü]/",
-    			"y" => "/[Ýýÿ]/",
-    			"_" => "/[^A-Za-z0-9]/");
-		
-    	exec('unzip -d ');
-    	// move takes the target directory and then the
-    	// target filename to move to
-    	$this->getZipFile()->move(
-    			$this->getUploadRootDir(),
-    			$this->getZipFile()->getClientOriginalName()
-    	);
-    
-    	// set the path property to the filename where you've saved the file
-    	$this->path = $this->getFile()->getClientOriginalName();
-    
-    	// clean up the file property as you won't need it anymore
-    	$this->file = null;
+    	if ($this->getZipFile()->isValid()) {
+    		
+// sanitize filename and use this as the path
+    		$temp_name = $this->getZipFile()->getPathname();
+    		$path_parts = pathinfo($this->getZipFile()->getClientOriginalName());
+    		$template_name = $path_parts['filename'];
+    		$dir_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $template_name);
+    		$full_path = $destination . "/" . $dir_name;
+    		$files = array();
+    		
+    		$zip = new ZipArchive();
+    		$res = $zip->open($temp_name);
+    		
+//loop through and see if all required files are present 
+    		if ($res === TRUE) {
+    			for( $i = 0; $i < $zip->numFiles; $i++ ){
+    				$f = $zip->statIndex( $i )['name'];
+    				if (in_array($f, $valid_files)) {
+    					unset($valid_files[array_search($f, $valid_files)]);
+    				}
+    			}
+    			
+//missing file, return error
+    			if (!empty($valid_files)) {
+// clean up the file property, not persisted to DB
+    				$this->zip_file = null;    	
+    				return array("result" => false, "message" => "Missing files: " . implode(",", $valid_files));
+    			}
+    			
+//unable to make dir, return error
+    			if (!file_exists($full_path)) {
+	    			if (!mkdir($full_path, 0777, true)) {
+// clean up the file property, not persisted to DB
+    					$this->zip_file = null;    	
+	    				return array("result" => false, "message" => "Unable to create folder for template: " . $full_path);
+	    			}
+	    		}
+	    		
+//try to unzip it
+	    		if (!$zip->extractTo($full_path)) {
+// clean up the file property, not persisted to DB
+    				$this->zip_file = null;    	
+	    			return array("result" => false, "message" => "Unable to unzip template: " . $zip->getStatusString());
+	    		}
+	    		$zip->close();
+	    		
+// finally set the path, name and description properties
+	    		$this->setDescription(readfile($full_path . "/description.txt"));
+	    		$this->setPath($dir_name);
+	    		$this->setName($template_name);
+	    		 
+	    		
+// clean up the file property, not persisted to DB
+    			$this->zip_file = null;    	
+	    		return array("result" => true);
+    		} else {
+
+// clean up the file property, not persisted to DB
+    			$this->zip_file = null;    	
+    			return array("result" => false, "message" => "Unable to open zip file");
+    		}
+	    
+    	}
     }
 }

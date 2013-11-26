@@ -3,6 +3,7 @@
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class DefaultController extends Controller

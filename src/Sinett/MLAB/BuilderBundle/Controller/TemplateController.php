@@ -4,6 +4,7 @@ namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Form\TemplateType;
@@ -35,6 +36,7 @@ class TemplateController extends Controller
      */
     public function createAction(Request $request)
     {
+    	
         $entity = new Template();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -43,10 +45,26 @@ class TemplateController extends Controller
 //if correct we unzip it and check content
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('template_show', array('id' => $entity->getId())));
+            $valid_files = $this->container->parameters['mlab']['verify_uploads']['templates'];
+            $replace_chars = $this->container->parameters['mlab']['rep'];
+            $destination = $this->container->parameters['mlab']['paths']['templates'];
+            $res = $entity->handleUpload($valid_files, $replace_chars, $destination);
+            
+            if ($res["result"]) {
+	            $em->persist($entity);
+	            $em->flush();
+	            return new JsonResponse(array('db_table' => 'template',
+	            		'db_id' => $entity->getId(),
+	            		'result' => 'SUCCESS',
+	            		'message' => ''));
+	             
+            } else {
+            	return new JsonResponse(array('db_table' => 'template',
+            			'db_id' => null,
+            			'result' => 'FAILURE',
+            			'message' => $res["message"]));
+            }
+            
         }
 
         return $this->render('SinettMLABBuilderBundle:Template:new.html.twig', array(

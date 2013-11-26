@@ -11,12 +11,22 @@
 	    {% endfor %}
 	  </ul>
 	</div>
+	<progress></progress>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
 	<script>
 	
+		function progressHandlingFunction(e){
+		    if(e.lengthComputable){
+		        $('progress').attr({value:e.loaded,max:e.total});
+		    }
+		}
+		
+		function errorHandler(e) {
+			console.log(e);
+		}
 /**
  * This function will send data back to the forms action using ajax
  * the result should be the index page which we display in the calling tab
@@ -25,12 +35,40 @@
   			$( "#" + dialog_id + " form").submit(function( event ) {
   				event.preventDefault();
   				$( "#" + dialog_id ).dialog( "close" );
+  				
+  				var form = $( this ),
+			    	url = form.attr( "action" ),
+  					formData = new FormData(this);
+  				
+  			    $.ajax({
+  			        url: form.attr( "action" ),  //Server script to process data
+  			        type: 'POST',
+  			        xhr: function() {  // Custom XMLHttpRequest
+  			            var myXhr = $.ajaxSettings.xhr();
+  			            if(myXhr.upload){ // Check if upload property exists
+  			                myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload
+  			            }
+  			            return myXhr;
+  			        },
+  			        success: function( data ) {
+  	  			    	alert( data.message );
+  	  			  	},
+  			        error: errorHandler,
+  			        // Form data 
+  			        data: formData,
+  			        //Options to tell jQuery not to process data or worry about content-type. 
+  			        cache: false,
+  			        contentType: false,
+  			        processData: false
+  			    });
+  			    
+  			    /*
   			  	var form = $( this ),
   			    	url = form.attr( "action" );
   				var posting = $.post( url,  form.serialize() );
   			 	posting.done(function( data ) {
   			    	console.log( data );
-  			  	});
+  			  	});*/
   			}); 
 	  	}
 
@@ -79,8 +117,10 @@
 								    		    	$("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
 								    		    	
 // in all other cases just re-display dialog box, usually for new record
-							    			    } else {  
-							    			    	$("#" + event.data.dialog_id + ' form')[0].reset();
+							    			    } else { 
+							    			    	if ($("#" + event.data.dialog_id + ' form').length > 0) {
+							    			    		$("#" + event.data.dialog_id + ' form')[0].reset();
+							    			    	}
 								    		        $("#" + event.data.dialog_id).dialog().show();
 							    			    } // end check if loaded 
 							    			} // end function to run when click 

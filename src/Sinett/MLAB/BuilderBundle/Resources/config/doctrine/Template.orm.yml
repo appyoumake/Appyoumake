@@ -38,6 +38,7 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
       length: 255
       fixed: false
       column: compatible_with
+      nullable: true
 
 # link to apps that use this template
   oneToOne:
