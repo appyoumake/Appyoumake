@@ -30,6 +30,7 @@ class GroupController extends Controller
             'entities' => $entities,
         ));
     }
+    
     /**
      * Creates a new Group entity.
      *
@@ -45,13 +46,17 @@ class GroupController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('group_show', array('id' => $entity->getId())));
+            return new JsonResponse(array('db_table' => 'group',
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Group:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:Group:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'group',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
     }
 
     /**
@@ -172,15 +177,19 @@ class GroupController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('group_edit', array('id' => $id)));
+            return new JsonResponse(array('db_table' => 'group',
+            		'action' => 'UPDATE',
+            		'db_id' => $id,
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Group:show.html.twig', array('entity' => $entity))));
         }
-
-        return $this->render('SinettMLABBuilderBundle:Group:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            
-        ));
+        
+        return new JsonResponse(array('db_table' => 'group',
+        		'db_id' => $id,
+        		'result' => 'FAILURE',
+        		'message' => 'Unable to create new record'));
     }
+    
     /**
      * Deletes a Group entity.
      *
@@ -204,6 +213,5 @@ class GroupController extends Controller
         		'message' => ''));
         
     }
-
 
 }

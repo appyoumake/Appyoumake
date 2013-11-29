@@ -14,10 +14,18 @@ class TemplateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('groups')
-            ->add('zip_file', 'file');
-        ;
+    	$action = explode("/", $options["action"]);
+    	$action = array_pop($action);
+    	if ($action == "create") {
+	    	$builder->add('enabled')
+	    			->add('groups')
+	            	->add('zip_file', 'file');
+	    } else {
+	    	$builder->add('enabled')
+	    			->add('groups');
+	    	
+	    }
+	    	
     }
     
     /**

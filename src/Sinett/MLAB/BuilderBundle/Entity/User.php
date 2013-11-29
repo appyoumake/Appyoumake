@@ -310,4 +310,27 @@ class User extends BaseUser
     	return $this->credentialsExpireAt;
     }
 
+
+    /**
+     * Add groups
+     *
+     * @param \FOS\UserBundle\Model\GroupInterface $groups
+     * @return User
+     */
+    public function addGroup(\FOS\UserBundle\Model\GroupInterface $groups)
+    {
+        $this->groups[] = $groups;
+    
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \FOS\UserBundle\Model\GroupInterface $groups
+     */
+    public function removeGroup(\FOS\UserBundle\Model\GroupInterface $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
 }

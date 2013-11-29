@@ -30,6 +30,12 @@ class Component
      * @var \Doctrine\Common\Collections\Collection
      */
     private $groups;
+    
+    /**
+     * zip file that is uploaded
+     */
+    private $zip_file;
+    
 
     /**
      * Constructor
@@ -166,5 +172,82 @@ class Component
     public function getPath()
     {
         return $this->path;
+    }
+    /**
+     * @var boolean
+     */
+    private $enabled;
+
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     * @return Component
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean 
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setZipFile(UploadedFile $zip_file = null)
+    {
+    	$this->zip_file = $zip_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getZipFile()
+    {
+    	return $this->zip_file;
+    }
+    
+    /**
+     * @var float
+     */
+    private $version;
+
+
+    /**
+     * Set version
+     *
+     * @param float $version
+     * @return Component
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+    
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return float 
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 }

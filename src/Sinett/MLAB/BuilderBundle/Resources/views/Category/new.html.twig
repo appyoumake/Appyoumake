@@ -1,4 +1,4 @@
-{% extends '::base.html.twig' %}
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
     <h1>Category creation</h1>

@@ -12,4 +12,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserRepository extends EntityRepository
 {
+	
+	/**
+	 * Bit of a hack to hide  
+	 * @param unknown $role
+	 */
+	public function findByRole($role) {
+		if ($role == "ROLE_SUPER_ADMIN") {
+			return $this->findAll();
+			
+		} else if ($role == "ROLE_ADMIN") {
+			$qb = $this->getEntityManager()->createQueryBuilder();
+    		$qb->select(array('u', 'g'))
+	            ->from($this->getEntityName(), 'u')
+	            ->leftJoin('u.groups', 'g')
+	            ->where('u.roles NOT LIKE :roles')
+	            ->setParameter('roles', '%"ROLE_SUPER_ADMIN"%');
+    		return $qb->getQuery()->getResult();
+		} 
+	}
 }

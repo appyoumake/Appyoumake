@@ -15,20 +15,16 @@ class MenuType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('content')
-            ->add('phpFunction')
-            ->add('html')
-            ->add('class')
-            ->add('help')
             ->add('parentId')
-            ->add('javascript')
+        	->add('contentHtml')
+            ->add('contentPhp')
             ->add('orderBy')
-            ->add('bundle')
-            ->add('controller')
-            ->add('action')
-            ->add('groups')
-            ->add('roles')
-        ;
+            ->add('class')
+            ->add('url')
+            ->add('help')
+            ->add('filterRole')
+            ->add('filterUrl')
+            ;
     }
     
     /**

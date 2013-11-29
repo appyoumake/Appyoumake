@@ -77,4 +77,30 @@ class MenuRepository extends EntityRepository
 		return $menus;
 			
 	}
+
+
+	public function findMenuItemsRaw() {
+	
+		$menus = array();
+	
+		$sql = "SELECT m FROM SinettMLABBuilderBundle:Menu AS m
+				WHERE m.parentId = 0
+				ORDER BY m.orderBy";
+	
+		$menus = $this->getEntityManager()->createQuery($sql)->getArrayResult();
+	
+		foreach ($menus as $id => $menu_item) {
+
+			$sql = "SELECT m FROM SinettMLABBuilderBundle:Menu AS m
+					WHERE m.parentId = {$menu_item["id"]}
+					ORDER BY m.orderBy";
+				
+			$menus[$id]["children"] = $this->getEntityManager()->createQuery($sql)->getArrayResult();
+		}	
+		
+		return $menus;
+				
+	}
+	
+	
 }

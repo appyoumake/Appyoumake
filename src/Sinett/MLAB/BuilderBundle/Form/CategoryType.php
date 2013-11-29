@@ -14,11 +14,20 @@ class CategoryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name')
-            ->add('parent')
-            ->add('system')
-        ;
+    	$action = explode("/", $options["action"]);
+    	$action = array_pop($action);
+    	if ($action == "create") {
+    		$builder
+    		->add('name')
+    		->add('parent', null, array('data' => $options['parent_category_id']))
+    		->add('system');
+    	} else {
+    		$builder
+    		->add('name')
+    		->add('parent')
+    		->add('system');
+    	}
+    	
     }
     
     /**
@@ -27,7 +36,8 @@ class CategoryType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Sinett\MLAB\BuilderBundle\Entity\Category'
+            'data_class' => 'Sinett\MLAB\BuilderBundle\Entity\Category',
+        	'parent_category_id' => 0
         ));
     }
 
@@ -39,3 +49,4 @@ class CategoryType extends AbstractType
         return 'sinett_mlab_builderbundle_category';
     }
 }
+

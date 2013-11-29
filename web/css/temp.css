@@ -18,7 +18,7 @@
 	background-image: url("/img/0.png");
 }
 
-.tree_delete {
+.tree_delete, .tree_add {
 	background-image: url("/img/delete.png");
 	background-repeat: no-repeat;
 	width: 1em;
@@ -27,4 +27,20 @@
 	text-indent: 100%;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+.tree_add {
+	background-image: url("/img/newVersion.png");
+}
+
+.ui-tabs-panel ul li div.system {
+	color: blue;
+}
+
+.menu_child {
+	font-size: 0.8em;
+}
+
+.menu_parent {
+	font-weight: bold;
 }

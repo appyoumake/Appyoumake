@@ -45,32 +45,34 @@ class TemplateController extends Controller
 //if correct we unzip it and check content
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $valid_files = $this->container->parameters['mlab']['verify_uploads']['templates'];
-            $replace_chars = $this->container->parameters['mlab']['rep'];
-            $destination = $this->container->parameters['mlab']['paths']['templates'];
-            $res = $entity->handleUpload($valid_files, $replace_chars, $destination);
+            
+            $file_mgmt = $this->get('file_management');
+            $file_mgmt->setConfig('template');
+            $res = $file_mgmt->handleUpload($entity);
             
             if ($res["result"]) {
 	            $em->persist($entity);
 	            $em->flush();
+
 	            return new JsonResponse(array('db_table' => 'template',
-	            		'db_id' => $entity->getId(),
-	            		'result' => 'SUCCESS',
-	            		'message' => ''));
-	             
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $entity))));
+            
             } else {
             	return new JsonResponse(array('db_table' => 'template',
-            			'db_id' => null,
-            			'result' => 'FAILURE',
-            			'message' => $res["message"]));
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to upload template'));
             }
             
         }
-
-        return $this->render('SinettMLABBuilderBundle:Template:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        
+    	return new JsonResponse(array('db_table' => 'template',
+			'db_id' => 0,
+			'result' => 'FAILURE',
+			'message' => 'Unable to upload template'));
     }
 
     /**
@@ -189,17 +191,36 @@ class TemplateController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $em->flush();
+        	
+        	$file_mgmt = $this->get('file_management');
+        	$file_mgmt->setConfig('template');
+        	$res = $file_mgmt->handleUpload($entity);
 
-            return $this->redirect($this->generateUrl('template_edit', array('id' => $id)));
-        }
-
-        return $this->render('SinettMLABBuilderBundle:Template:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            
-        ));
+        	if ($res["result"]) {
+        	 
+            	$em->flush();
+        		return new JsonResponse(array('db_table' => 'template',
+	        			'action' => 'UPDATE',
+	        			'db_id' => $entity->getId(),
+	        			'result' => 'SUCCESS',
+	        			'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $entity))));
+	        	
+        	} else {
+        		return new JsonResponse(array('db_table' => 'template',
+        				'db_id' => 0,
+        				'result' => 'FAILURE',
+        				'message' => 'Unable to upload template'));
+        	
+        	}
+    	
+    	}
+    	
+    	return new JsonResponse(array('db_table' => 'template',
+    			'db_id' => 0,
+    			'result' => 'FAILURE',
+    			'message' => 'Unable to upload template'));
     }
+    
     /**
      * Deletes a Template entity.
      *

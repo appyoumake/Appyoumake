@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findAll();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findByRole($this->getUser()->getRoles()[0]);
 
         return $this->render('SinettMLABBuilderBundle:User:index.html.twig', array(
             'entities' => $entities,
@@ -45,13 +45,17 @@ class UserController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('user_show', array('id' => $entity->getId())));
+            return new JsonResponse(array('db_table' => 'user',
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:User:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:User:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'user',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
     }
 
     /**
@@ -66,6 +70,7 @@ class UserController extends Controller
         $form = $this->createForm(new UserType(), $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
+        	'current_user_role' => $this->getUser()->getRoles()[0], 
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -118,8 +123,12 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:User')->find($id);
-
-        if (!$entity) {
+        if ($this->getUser()->getRoles()[0] == "ROLE_SUPER_ADMIN") {
+        	$can_edit = ($entity->getRoles()[0] != "ROLE_SUPER_ADMIN");
+        } else {
+        	$can_edit = true;
+        }
+        if (!$entity || !$can_edit) {
             throw $this->createNotFoundException('Unable to find User entity.');
         }
 
@@ -172,14 +181,18 @@ class UserController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('user_edit', array('id' => $id)));
+            return new JsonResponse(array('db_table' => 'user',
+            		'action' => 'UPDATE',
+            		'db_id' => $id,
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:User:show.html.twig', array('entity' => $entity))));
         }
-
-        return $this->render('SinettMLABBuilderBundle:User:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+        
+        return new JsonResponse(array('db_table' => 'user',
+        		'db_id' => $id,
+        		'result' => 'FAILURE',
+        		'message' => 'Unable to create new record'));
             
-        ));
     }
     /**
      * Deletes a User entity.

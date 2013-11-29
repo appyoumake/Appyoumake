@@ -7,7 +7,7 @@ category_show:
     defaults: { _controller: "SinettMLABBuilderBundle:Category:show" }
 
 category_new:
-    pattern:  /new
+    pattern:  /{id}/new
     defaults: { _controller: "SinettMLABBuilderBundle:Category:new" }
 
 category_create:
@@ -27,4 +27,4 @@ category_update:
 category_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Category:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

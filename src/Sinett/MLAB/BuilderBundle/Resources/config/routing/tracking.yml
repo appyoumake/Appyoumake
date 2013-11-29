@@ -27,4 +27,4 @@ tracking_update:
 tracking_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:delete" }
-    requirements: { _method: post|delete }
+#    requirements: { _method: post|delete }

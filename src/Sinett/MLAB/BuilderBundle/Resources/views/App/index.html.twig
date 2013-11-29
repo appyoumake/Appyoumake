@@ -4,40 +4,20 @@
 
     <h1>App list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_app">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Path</th>
-                <th>Description</th>
-                <th>Keywords</th>
                 <th>Version</th>
-                <th>Created</th>
+                <th>Description</th>
                 <th>Updated</th>
+                <th>Groups</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr id="row_category_{{ entity.id }}">
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.path }}</td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.keywords }}</td>
-                <td>{{ entity.version }}</td>
-                <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.updated %}{{ entity.updated|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('app_delete', { 'id': entity.id }) }}">delete</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('app_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
+            {{ include( 'SinettMLABBuilderBundle:App:show.html.twig', { 'entity': entity } ) }}
         {% endfor %}
         </tbody>
     </table>

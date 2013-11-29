@@ -3,36 +3,18 @@
 {% block body -%}
     <h1>Help list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_help">
         <thead>
             <tr>
-                <th>Bundle</th>
-                <th>Controller</th>
-                <th>Action</th>
+                <th>Route</th>
                 <th>Message</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('help_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.bundle }}</td>
-                <td>{{ entity.controller }}</td>
-                <td>{{ entity.action }}</td>
-                <td>{{ entity.message }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('help_delete', { 'id': entity.id }) }}">delete</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('help_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
+	        {% for entity in entities %}
+		        {{ include( 'SinettMLABBuilderBundle:Help:show.html.twig', { 'entity': entity } ) }}
+	        {% endfor %}
         </tbody>
     </table>
 

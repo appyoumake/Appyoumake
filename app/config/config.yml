@@ -2,7 +2,8 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: doctrine_extensions.yml }
-
+    - { resource: "@SinettMLABBuilderBundle/Resources/config/services.yml" }
+    
 framework:
     #esi:             ~
     translator:      { fallback: en_GB }

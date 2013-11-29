@@ -43,7 +43,7 @@ class MenuController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Menu')->findAll();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:Menu')->findMenuItemsRaw();
 
         return $this->render('SinettMLABBuilderBundle:Menu:index.html.twig', array(
             'entities' => $entities,
@@ -64,13 +64,17 @@ class MenuController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('menu_show', array('id' => $entity->getId())));
+            return new JsonResponse(array('db_table' => 'menu',
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Menu:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:Menu:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'menu',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
     }
 
     /**
@@ -191,14 +195,18 @@ class MenuController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('menu_edit', array('id' => $id)));
+            return new JsonResponse(array('db_table' => 'menu',
+            		'action' => 'UPDATE',
+            		'db_id' => $id,
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Menu:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:Menu:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            
-        ));
+        return new JsonResponse(array('db_table' => 'menu',
+        			'db_id' => $id,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
+           
     }
     /**
      * Deletes a Menu entity.

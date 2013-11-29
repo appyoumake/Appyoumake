@@ -3,34 +3,19 @@
 {% block body -%}
     <h1>Group list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_group">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Isdefault</th>
-                <th>Isactive</th>
+                <th>Enabled</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr id="row_group_{{ entity.id }}">
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.isDefault }}</td>
-                <td>{{ entity.isActive }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('group_delete', { 'id': entity.id }) }}">delete</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('group_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
+        	{{ include( 'SinettMLABBuilderBundle:Group:show.html.twig', { 'entity': entity } ) }}
         {% endfor %}
         </tbody>
     </table>

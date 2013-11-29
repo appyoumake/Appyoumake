@@ -22,30 +22,6 @@ Sinett\MLAB\BuilderBundle\Entity\User:
           strategy: AUTO
 
   fields:
-#    email:
-#      type: string
-#      length: 255
-#      fixed: false
-#      nullable: true
-        
-#    username:
-#      type: string
-#      length: 50
-#      fixed: false
-#      nullable: true
-      
-#    password:
-#      type: string
-#      length: 128
-#      fixed: false
-#      nullable: false
-#
-#    salt:
-#      type: string
-#      length: 128
-#      fixed: false
-#      nullable: false
-        
     created:
       type: date
       gedmo:

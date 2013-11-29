@@ -45,13 +45,17 @@ class AppController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('app_show', array('id' => $entity->getId())));
+            return new JsonResponse(array('db_table' => 'app',
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:App:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:App:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'app',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
     }
 
     /**
@@ -172,20 +176,21 @@ class AppController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-
-//            return $this->redirect($this->generateUrl('app_edit', array('id' => $id)));
-            return new JsonResponse(array('db_table' => 'app',
-            		'record' => $entity,
-            		'result' => 'success',
-            		'message' => ''));
-        }
-
-        return $this->render('SinettMLABBuilderBundle:App:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
             
-        ));
+            return new JsonResponse(array('db_table' => 'app',
+            		'action' => 'UPDATE',
+            		'db_id' => $id,
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:App:show.html.twig', array('entity' => $entity))));
+        }
+            
+        return new JsonResponse(array('db_table' => 'app',
+        		'db_id' => $id,
+        		'result' => 'FAILURE',
+        		'message' => 'Unable to create new record'));
+            
     }
+    
     /**
      * Deletes a App entity.
      *
@@ -210,4 +215,23 @@ class AppController extends Controller
         						 	  'message' => ''));
     }
 
+    /**
+     * Sends message to app store that a particular app should be removed.
+     * @param unknown $id
+     */
+    public function removeAppStoreAction($id)
+    {
+    	
+    }
+    
+    /**
+     * Sends message to app store that a particular app should be recalled, 
+     * this will remove it AND tell all installed versions to uninstall
+     * @param unknown $id
+     */
+    public function recallAction($id)
+    {
+    	
+    }
+    
 }

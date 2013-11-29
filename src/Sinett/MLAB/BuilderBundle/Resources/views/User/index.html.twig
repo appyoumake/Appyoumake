@@ -3,7 +3,7 @@
 {% block body -%}
     <h1>User list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_user">
         <thead>
             <tr>
                 <th>Username</th>
@@ -12,6 +12,7 @@
                 <th>Lastlogin</th>
                 <th>Expired</th>
                 <th>Roles</th>
+                <th>Groups</th>
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Actions</th>
@@ -19,26 +20,7 @@
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr id="row_group_{{ entity.id }}">
-                <td>{{ entity.username }}</td>
-                <td>{{ entity.email }}</td>
-                <td>{{ entity.enabled }}</td>
-                <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ entity.expired }}</td>
-                <td>{{ entity.roles|join(',') }}</td>
-                <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.updated %}{{ entity.updated|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('user_delete', { 'id': entity.id }) }}">delete</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('user_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
+        	{{ include( 'SinettMLABBuilderBundle:User:show.html.twig', { 'entity': entity } ) }}
         {% endfor %}
         </tbody>
     </table>

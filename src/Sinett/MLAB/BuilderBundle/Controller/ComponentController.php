@@ -42,16 +42,34 @@ class ComponentController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('component_show', array('id' => $entity->getId())));
+            
+            $file_mgmt = $this->get('file_management');
+            $file_mgmt->setConfig('component');
+            $res = $file_mgmt->handleUpload($entity);
+            
+            if ($res["result"]) {
+            
+	            $em->persist($entity);
+	            $em->flush();
+	
+	            return new JsonResponse(array('db_table' => 'component',
+	            		'action' => 'ADD',
+	            		'db_id' => $entity->getId(),
+	            		'result' => 'SUCCESS',
+	            		'record' => $this->renderView('SinettMLABBuilderBundle:Component:show.html.twig', array('entity' => $entity))));
+	        } else {
+	        	return new JsonResponse(array('db_table' => 'component',
+	        			'db_id' => 0,
+	        			'result' => 'FAILURE',
+	        			'message' => 'Unable to upload component'));
+	        }
+	             
         }
 
-        return $this->render('SinettMLABBuilderBundle:Component:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'component',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to upload component'));
     }
 
     /**
@@ -152,7 +170,7 @@ class ComponentController extends Controller
         return $form;
     }
     /**
-     * Edits an existing Component entity.
+     * Edits an existing Component entity, this will include an upload
      *
      */
     public function updateAction(Request $request, $id)
@@ -170,16 +188,35 @@ class ComponentController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('component_edit', array('id' => $id)));
-        }
-
-        return $this->render('SinettMLABBuilderBundle:Component:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
             
-        ));
+        	$file_mgmt = $this->get('file_management');
+            $file_mgmt->setConfig('component');
+            $res = $file_mgmt->handleUpload($entity, true);
+        	
+            if ($res["result"]) {
+            	$em->flush();
+
+            	return new JsonResponse(array('db_table' => 'component',
+            			'action' => 'UPDATE',
+            			'db_id' => $id,
+            			'result' => 'SUCCESS',
+            			'record' => $this->renderView('SinettMLABBuilderBundle:Component:show.html.twig', array('entity' => $entity))));
+            	
+        	} else {
+        		return new JsonResponse(array('db_table' => 'component',
+        				'db_id' => $id,
+        				'result' => 'FAILURE',
+        				'message' => 'Unable to upload component'));
+        		
+        	}
+        	
+        }
+        
+        return new JsonResponse(array('db_table' => 'component',
+        		'db_id' => $id,
+        		'result' => 'FAILURE',
+        		'message' => 'Unable to upload component'));
+        	 
     }
     /**
      * Deletes a Component entity.

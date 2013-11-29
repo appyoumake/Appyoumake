@@ -25,7 +25,11 @@ class HelpController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('SinettMLABBuilderBundle:Help')->findAll();
-
+        
+        $router = $this->container->get('router');
+        $collection = $router->getRouteCollection();
+        $allRoutes = $collection->all();
+die(print_r($allRoutes, true));
         return $this->render('SinettMLABBuilderBundle:Help:index.html.twig', array(
             'entities' => $entities,
         ));
@@ -45,13 +49,17 @@ class HelpController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('help_show', array('id' => $entity->getId())));
+            return new JsonResponse(array('db_table' => 'help',
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Help:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:Help:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'help',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
     }
 
     /**
@@ -165,21 +173,23 @@ class HelpController extends Controller
             throw $this->createNotFoundException('Unable to find Help entity.');
         }
 
-        
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('help_edit', array('id' => $id)));
+            return new JsonResponse(array('db_table' => 'help',
+            		'action' => 'UPDATE',
+            		'db_id' => $id,
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Help:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:Help:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            
-        ));
+        return new JsonResponse(array('db_table' => 'help',
+        			'db_id' => $id,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to update record'));
     }
     /**
      * Deletes a Help entity.

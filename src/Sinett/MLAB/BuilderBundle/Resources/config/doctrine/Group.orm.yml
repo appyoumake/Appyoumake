@@ -7,8 +7,8 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
       columns: [ name ]
     is_default_index:
       columns: [ is_default ]
-    is_active_index:
-      columns: [ is_active ]
+    enabled_index:
+      columns: [ enabled ]
 
   id:
     id: 
@@ -18,36 +18,33 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
 
   fields:
     name:
-        type: string
-        length: 255
-        fixed: false
-        nullable: false
+      type: string
+      length: 255
+      fixed: false
+      nullable: false
 
     description:
-        type: text
-        nullable: true
+      type: text
+      nullable: true
 
     isDefault:
-        type: boolean
-        nullable: true
-        column: is_default
-        options:
-          default: false
+      type: boolean
+      nullable: true
+      column: is_default
+      options:
+        default: false
 
-    isActive:
-        type: boolean
-        nullable: true
-        column: is_active
-        options:
-          default: true
+    enabled:
+      type: boolean
+      nullable: true
+      options:
+        default: true
+            
+
                           
   manyToMany:
     users:
       targetEntity: User
-      mappedBy: groups
-
-    menus:
-      targetEntity: Menu
       mappedBy: groups
 
     apps:
@@ -62,4 +59,4 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
       targetEntity: Component
       mappedBy: groups      
 
-  lifecycleCallbacks: {  }
+  

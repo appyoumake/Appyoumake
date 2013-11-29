@@ -74,6 +74,4 @@ Sinett\MLAB\BuilderBundle\Entity\Menu:
     url:
       type: text
       nullable: true
-
-            
-  lifecycleCallbacks: {  }
+      

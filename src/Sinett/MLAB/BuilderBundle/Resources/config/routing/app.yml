@@ -27,4 +27,11 @@ app_update:
 app_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:App:delete" }
-    requirements: { _method: post|delete }
+
+app_remove_from_appstore:
+    pattern:  /{id}/removeAppStore
+    defaults: { _controller: "SinettMLABBuilderBundle:App:removeAppStore" }
+
+app_recall:
+    pattern:  /{id}/recall
+    defaults: { _controller: "SinettMLABBuilderBundle:App:recall" }

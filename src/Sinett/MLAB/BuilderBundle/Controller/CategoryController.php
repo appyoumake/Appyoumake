@@ -40,8 +40,9 @@ class CategoryController extends Controller
         		'childOpen' => '<li>',
         		'childClose' => '</li>',
         		'nodeDecorator' => function($node) {
-        			return '<a href="' . $this->generateUrl('category_edit', array("id" => $node['id'])) .'">' . $node["name"] . '</a>' . 
-          			'<a class="tree_delete" href="' . $this->generateUrl('category_delete', array("id" => $node['id'])) .'">Delete</a>';
+        			return "<div class='treeview " . ($node['system'] ? " system " : "") . "' id='row_category_{$node['id']}'><a href='" . $this->generateUrl('category_edit', array('id' => $node['id'])) . "'>" . $node['name'] . "</a>" .
+          			"<a class='tree_add' href='" . $this->generateUrl('category_new', array('id' => $node['id'])) . "'>Add sub-category</a>" . 
+          			"<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "'>Delete</a></div>";
         		}
         );
         
@@ -71,13 +72,18 @@ class CategoryController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('category_show', array('id' => $entity->getId())));
+            return new JsonResponse(array('db_table' => 'category',
+            		'action' => 'ADD',
+            		'db_id' => $entity->getId(),
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Category:show.html.twig', array('entity' => $entity))));
         }
 
-        return $this->render('SinettMLABBuilderBundle:Category:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return new JsonResponse(array('db_table' => 'category',
+        			'db_id' => 0,
+        			'result' => 'FAILURE',
+        			'message' => 'Unable to create new record'));
+        
     }
 
     /**
@@ -87,11 +93,12 @@ class CategoryController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(Category $entity)
+    private function createCreateForm(Category $entity, $parent_id = 0)
     {
         $form = $this->createForm(new CategoryType(), $entity, array(
             'action' => $this->generateUrl('category_create'),
             'method' => 'POST',
+       		'parent_category_id' => $parent_id
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -103,14 +110,14 @@ class CategoryController extends Controller
      * Displays a form to create a new Category entity.
      *
      */
-    public function newAction()
+    public function newAction($id)
     {
         $entity = new Category();
-        $form   = $this->createCreateForm($entity);
+        $form   = $this->createCreateForm($entity, $id);
 
         return $this->render('SinettMLABBuilderBundle:Category:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form'   => $form->createView()
         ));
     }
 
@@ -198,25 +205,18 @@ class CategoryController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
             
-            /*$encoders = array(new JsonEncoder());
-            $normalizers = array(new GetSetMethodNormalizer());
-            
-            $serializer = new Serializer($normalizers, $encoders);
-            $jsonContent = $serializer->serialize($entity, 'json');*/
-            
             return new JsonResponse(array('db_table' => 'category',
-            		'record' => array("name" => $entity->getName(), "system" => $entity->getSystem(), "id" => $entity->getId()),
-            		'result' => 'success',
-            		'message' => ''));
-            
-            //return $this->redirect($this->generateUrl('category_edit', array('id' => $id)));
+            		'action' => 'UPDATE',
+            		'db_id' => $id,
+            		'result' => 'SUCCESS',
+            		'record' => $this->renderView('SinettMLABBuilderBundle:Category:show.html.twig', array('entity' => $entity))));
         }
-
-        return $this->render('SinettMLABBuilderBundle:Category:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            
-        ));
+        
+        return new JsonResponse(array('db_table' => 'category',
+        		'db_id' => $id,
+        		'result' => 'FAILURE',
+        		'message' => 'Unable to create new record'));
+        
     }
 
     /**

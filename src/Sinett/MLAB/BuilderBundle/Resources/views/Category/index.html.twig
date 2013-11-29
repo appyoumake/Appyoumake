@@ -2,11 +2,11 @@
 
 {% block body -%}
     <h1>Category list</h1>
-
-    {% autoescape false %}{{ category_tree }}{% endautoescape %}
-
+	<div id="table_category">
+    	{% autoescape false %}{{ category_tree }}{% endautoescape %}
+	</div>
     <p>
-        <a href="{{ path('category_new') }}">
+        <a href="{{ path('category_new', { 'id': 0 }) }}">
             Create a new top level category
         </a>
     </p>

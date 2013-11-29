@@ -3,44 +3,22 @@
 {% block body -%}
     <h1>Menu list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_menu">
         <thead>
             <tr>
-                <th>Parentid</th>
-                <th>Orderby</th>
                 <th>Contenthtml</th>
                 <th>Contentphp</th>
-                <th>Class</th>
                 <th>Help</th>
-                <th>Filterrole</th>
-                <th>Filterurl</th>
                 <th>Url</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr id="row_group_{{ entity.id }}">
-                <td>{{ entity.parentId }}</td>
-                <td>{{ entity.orderBy }}</td>
-                <td>{{ entity.contentHtml }}</td>
-                <td>{{ entity.contentPhp }}</td>
-                <td>{{ entity.class }}</td>
-                <td>{{ entity.help }}</td>
-                <td>{{ entity.filterRole }}</td>
-                <td>{{ entity.filterUrl }}</td>
-                <td>{{ entity.url }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('menu_delete', { 'id': entity.id }) }}">delete</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('menu_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
+        	{{ include( 'SinettMLABBuilderBundle:Menu:show.html.twig', { 'entity': entity, 'class': 'menu_parent' } ) }}
+        	{% for sub_entity in entity.children %}
+        		{{ include( 'SinettMLABBuilderBundle:Menu:show.html.twig', { 'entity': sub_entity, 'class': 'menu_child' } ) }}
+        	{% endfor %}
         {% endfor %}
         </tbody>
     </table>

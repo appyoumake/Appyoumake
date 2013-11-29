@@ -17,17 +17,7 @@ class Help
     /**
      * @var string
      */
-    private $bundle;
-
-    /**
-     * @var string
-     */
-    private $controller;
-
-    /**
-     * @var string
-     */
-    private $action;
+    private $route;
 
     /**
      * @var string
@@ -43,75 +33,6 @@ class Help
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set bundle
-     *
-     * @param string $bundle
-     * @return Help
-     */
-    public function setBundle($bundle)
-    {
-        $this->bundle = $bundle;
-    
-        return $this;
-    }
-
-    /**
-     * Get bundle
-     *
-     * @return string 
-     */
-    public function getBundle()
-    {
-        return $this->bundle;
-    }
-
-    /**
-     * Set controller
-     *
-     * @param string $controller
-     * @return Help
-     */
-    public function setController($controller)
-    {
-        $this->controller = $controller;
-    
-        return $this;
-    }
-
-    /**
-     * Get controller
-     *
-     * @return string 
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * Set action
-     *
-     * @param string $action
-     * @return Help
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-    
-        return $this;
-    }
-
-    /**
-     * Get action
-     *
-     * @return string 
-     */
-    public function getAction()
-    {
-        return $this->action;
     }
 
     /**
@@ -135,5 +56,28 @@ class Help
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * Set route
+     *
+     * @param string $route
+     * @return Help
+     */
+    public function setRoute($route)
+    {
+        $this->route = $route;
+    
+        return $this;
+    }
+
+    /**
+     * Get route
+     *
+     * @return string 
+     */
+    public function getRoute()
+    {
+        return $this->route;
     }
 }

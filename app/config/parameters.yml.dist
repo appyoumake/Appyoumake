@@ -12,16 +12,17 @@ parameters:
     mailer_password: null
     locale: en_GB
     secret: flurkysnarkish
+    
     mlab: 
         paths:
-          apps: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/apps/
-          components: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/components/
-          templates: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/templates/
+          app: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/apps/
+          component: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/components/
+          template: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/templates/
         
         urls:
-          apps: /mlab_elements/apps/
-          components: /mlab_elements/components/
-          templates: /mlab_elements/templates/
+          app: /mlab_elements/apps/
+          component: /mlab_elements/components/
+          template: /mlab_elements/templates/
         
 # paths etc for cordova
         cordova:
@@ -33,13 +34,13 @@ parameters:
             
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
-            templates: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, description.txt ]
-            components: [ html.txt, icon.png, exec.js ]
-            apps: [ html.txt, icon.png ]
+            template: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, description.txt ]
+            component: [ html.txt, icon.png, exec.js ]
+            app: [ html.txt, icon.png ]
     
         
         app:
             copy_files: { frontpage.html: index.html, page.html: 001.html, js: js, css: css, img: img }
             new_page: page.html
             
-        rep: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    
+        replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    

@@ -446,4 +446,32 @@ class App
     	return $this->name . " (" . $this->version . ")";
     }
     
+    /**
+     * @var boolean
+     */
+    private $enabled;
+
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     * @return App
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean 
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
 }

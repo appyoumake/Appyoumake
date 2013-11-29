@@ -11,7 +11,7 @@
 	    {% endfor %}
 	  </ul>
 	</div>
-	<progress></progress>
+	<progress value="0" max="0" class="hidden"></progress>
 {% endblock %}
 
 {% block javascripts %}
@@ -46,12 +46,20 @@
   			        xhr: function() {  // Custom XMLHttpRequest
   			            var myXhr = $.ajaxSettings.xhr();
   			            if(myXhr.upload){ // Check if upload property exists
-  			                myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload
+  			                myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload 
   			            }
   			            return myXhr;
   			        },
   			        success: function( data ) {
-  	  			    	alert( data.message );
+  	  			    	if (data.result == 'FAILURE') {
+  	  			    		alert("{% trans %}Unable to update record{% endtrans %}");
+  	  			    	} else {
+  	  			    		if (data.action == 'ADD') {
+  	  			    			$("#table_" + data.db_table + " tr:last").after(data.record);
+  	  			    		} else if (data.action == 'EDIT') {
+  	  			    			$("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
+  	  			    		}
+  	  			    	}
   	  			  	},
   			        error: errorHandler,
   			        // Form data 
@@ -61,14 +69,7 @@
   			        contentType: false,
   			        processData: false
   			    });
-  			    
-  			    /*
-  			  	var form = $( this ),
-  			    	url = form.attr( "action" );
-  				var posting = $.post( url,  form.serialize() );
-  			 	posting.done(function( data ) {
-  			    	console.log( data );
-  			  	});*/
+
   			}); 
 	  	}
 
@@ -79,12 +80,14 @@
 		    $( "#tabs_admin_apps" ).tabs({
 		    	load: function( event, ui ) {
 		    		$(ui.panel[0]).find("a").each(function () {
-		    			var this_link = this.href.substr(this.href.lastIndexOf('/') + 1);
-		    			temp_url_elements = this.href.split("/");
+		    			var temp_url_elements = this.href.split("/");
+		    			var this_link = temp_url_elements[temp_url_elements.length - 1];
 		    			var this_id = temp_url_elements[temp_url_elements.length - 2];
+		    			var this_entity = temp_url_elements[temp_url_elements.length - 3];
 		    			$(this).bind( "click", {
 		    									dialog_id: $(ui.panel[0]).attr("id") + "_dialog_" + this_link, 
 		    									link: this_link,
+		    									entity: this_entity,
 		    									id: this_id
 		    								}, //end parameters to send to function that is bound 
 		    								
@@ -96,9 +99,14 @@
 //May be denied depending on what roles they have, if record is used for somethign etc.
 							    			   	if ( event.data.link == "delete" ) { 
 							    			   		if (confirm("{% trans %}Do you want to delete this item?{% endtrans %}")) {
-							    			   			$.getJSON("{{ path("category") }}" + event.data.id + "/delete", function( data ) {
+							    			   			$.getJSON("{{ path('sinett_mlab_builder_homepage') }}" + event.data.entity + "/" + event.data.id + "/delete", function( data ) {
 							    			   				if (data.result == "SUCCESS" && parseInt(data.db_id) > 0) {
-							    			   					$("#row_" + data.db_table + "_" + data.db_id).remove();
+//treeviews use a div inside a list item, need to delete parent 
+							    			   					if ($("#row_" + data.db_table + "_" + data.db_id).prop('tagName').toLowerCase() == "div") {
+							    			   						$("#row_" + data.db_table + "_" + data.db_id).parent().remove();
+							    			   					} else {
+							    			   						$("#row_" + data.db_table + "_" + data.db_id).remove();
+							    			   					}
 							    			   				} else {
 							    			   					alert("{% trans %}Unable to delete record: {% endtrans %}" + data.message);
 							    			   				}

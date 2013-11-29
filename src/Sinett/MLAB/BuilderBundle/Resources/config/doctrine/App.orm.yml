@@ -27,6 +27,8 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       columns: [ template_id ]
     user_id_index:
       columns: [ user_id ]
+    enabled_index:
+      columns: [ enabled ]
 
   id:
     id: 
@@ -60,6 +62,12 @@ Sinett\MLAB\BuilderBundle\Entity\App:
           unsigned: false
           nullable: false
 
+      enabled:
+          type: boolean
+          nullable: true
+          options:
+            default: true
+            
       created:
         type: date
         gedmo:

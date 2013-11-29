@@ -15,9 +15,7 @@ class HelpType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('bundle')
-            ->add('controller')
-            ->add('action')
+            ->add('route')
             ->add('message')
         ;
     }

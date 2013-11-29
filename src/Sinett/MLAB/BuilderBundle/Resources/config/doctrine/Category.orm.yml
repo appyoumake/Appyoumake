@@ -14,6 +14,8 @@ Sinett\MLAB\BuilderBundle\Entity\Category:
   indexes:
     name_index:
       columns: [ name ]
+    enabled_index:
+      columns: [ enabled ]
   
   id:
     id: 
@@ -30,9 +32,15 @@ Sinett\MLAB\BuilderBundle\Entity\Category:
 
       system:
           type: boolean
-          nullable: false
+          nullable: true
           options:
             default: false
+            
+      enabled:
+          type: boolean
+          nullable: true
+          options:
+            default: true
             
       lft:
         type: integer

@@ -3,12 +3,8 @@ Sinett\MLAB\BuilderBundle\Entity\Help:
   table: help
   repositoryClass: Sinett\MLAB\BuilderBundle\Entity\HelpRepository
   indexes:
-    bundle_index:
-      columns: [ bundle ]
-    controller_index:
-      columns: [ controller ]
-    action_index:
-      columns: [ action ]
+    route_index:
+      columns: [ route ]
 
   id:
     id: 
@@ -17,27 +13,14 @@ Sinett\MLAB\BuilderBundle\Entity\Help:
           strategy: AUTO
           
   fields:
-    bundle:
+    route:
       type: string
       length: 255
       fixed: false
       nullable: false
         
-    controller:
-      type: string
-      length: 255
-      fixed: false
-      nullable: true
-        
-    action:
-      type: string
-      length: 255
-      fixed: false
-      nullable: true
-        
     message:
-      type: string
-      fixed: false
+      type: text
       nullable: false
           
   lifecycleCallbacks: {  }

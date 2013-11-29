@@ -8,6 +8,8 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
       columns: [ name ]
     compatible_with_index:
       columns: [ compatible_with ]
+    enabled_index:
+      columns: [ enabled ]
 
   id:
     id: 
@@ -39,6 +41,17 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
       fixed: false
       column: compatible_with
       nullable: true
+
+    version:
+        type: float
+        unsigned: false
+        nullable: true
+
+    enabled:
+        type: boolean
+        nullable: true
+        options:
+          default: true
 
 # link to apps that use this template
   oneToOne:

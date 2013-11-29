@@ -3,32 +3,20 @@
 {% block body -%}
     <h1>Template list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_template">
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Version</th>
                 <th>Description</th>
                 <th>Compatible with</th>
+                <th>Groups</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr id="row_group_{{ entity.id }}">
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.compatibleWith }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('template_delete', { 'id': entity.id }) }}">delete</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('template_edit', { 'id': entity.id }) }}">edit access</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
+        	{{ include( 'SinettMLABBuilderBundle:Template:show.html.twig', { 'entity': entity } ) }}
         {% endfor %}
         </tbody>
     </table>

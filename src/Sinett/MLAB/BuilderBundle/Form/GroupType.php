@@ -18,7 +18,7 @@ class GroupType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('isDefault')
-            ->add('isActive')
+            ->add('enabled')
             ->add('users')
         ;
     }

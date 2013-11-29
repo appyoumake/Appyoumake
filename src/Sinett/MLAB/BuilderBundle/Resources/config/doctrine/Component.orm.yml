@@ -6,6 +6,8 @@ Sinett\MLAB\BuilderBundle\Entity\Component:
   indexes:
     name_index:
       columns: [ name ]
+    enabled_index:
+      columns: [ enabled ]
 
   id:
     id: 
@@ -29,6 +31,17 @@ Sinett\MLAB\BuilderBundle\Entity\Component:
     description:
         type: text
         nullable: false
+        
+    version:
+        type: float
+        unsigned: false
+        nullable: true
+
+    enabled:
+        type: boolean
+        nullable: true
+        options:
+          default: true
 
 # components can be limited by group membership
   manyToMany:

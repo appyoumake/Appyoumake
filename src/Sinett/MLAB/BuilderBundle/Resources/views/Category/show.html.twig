@@ -1,52 +1,5 @@
-{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
-
-{% block body -%}
-    <h1>Category</h1>
-
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ entity.name }}</td>
-            </tr>
-            <tr>
-                <th>System</th>
-                <td>{{ entity.system }}</td>
-            </tr>
-            <tr>
-                <th>Lft</th>
-                <td>{{ entity.lft }}</td>
-            </tr>
-            <tr>
-                <th>Rgt</th>
-                <td>{{ entity.rgt }}</td>
-            </tr>
-            <tr>
-                <th>Root</th>
-                <td>{{ entity.root }}</td>
-            </tr>
-            <tr>
-                <th>Lvl</th>
-                <td>{{ entity.lvl }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('category') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('category_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    
-</ul>
-{% endblock %}
+<div class='treeview {{ path('category_delete', { 'id': entity.id }) }}' id='row_category_{{entity.id}}'>
+	<a href="{{ path('category_edit', { 'id': entity.id }) }}">{{ entity.name }}</a> 
+	<a class="tree_add" href="{{ path('category_new', { 'id': entity.id }) }}">add</a>
+	<a class="tree_delete" href="{{ path('category_delete', { 'id': entity.id }) }}">delete</a>
+</div>";

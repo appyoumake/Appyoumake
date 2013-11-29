@@ -7,17 +7,17 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Group
  */
-class Group
+class Group extends \FOS\UserBundle\Model\Group
 {
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
@@ -28,11 +28,6 @@ class Group
      * @var boolean
      */
     private $isDefault;
-
-    /**
-     * @var boolean
-     */
-    private $isActive;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -148,29 +143,6 @@ class Group
     public function getIsDefault()
     {
         return $this->isDefault;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     * @return Group
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean 
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
     }
 
     /**
@@ -346,6 +318,35 @@ class Group
     public function __toString()
     {
     	return $this->name;
+    }
+    
+    /**
+     * @var boolean
+     */
+    private $enabled;
+
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     * @return Group
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean 
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
     }
     
 }
