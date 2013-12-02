@@ -1,13 +1,3 @@
-@import url("/css/pure.css");
-@import url("/css/buttons-core.css");
-@import url("/css/buttons.css");
-@import url("/css/forms.css");
-@import url("/css/forms-r.css");
-@import url("/css/grids-core.css");
-@import url("/css/grids-r.css");
-@import url("/css/grids-units.css");
-@import url("/css/tables.css");
-
 .boolean_1, .boolean_0 { 
 	background-image: url("/img/1.png");
 	background-position: center center;

@@ -1,21 +1,8 @@
-<tr id="row_user_{{ entity.id }}">
-    <td>{{ entity.username }}</td>
+<tr id="row_group_{{ entity.id }}" class="row_activ_{{ entity.enabled }}">
+    <td class="mlab_role_icon" title="{% trans %}app.admin.users.tooltip.username{% endtrans %} - {{ entity.roles|join(',') }}"><a href="{{ path('user_edit', { 'id': entity.id }) }}">{{ entity.username }}</a></td>
     <td>{{ entity.email }}</td>
-    <td>{{ entity.enabled }}</td>
-    <td>{% if entity.lastLogin %}{{ entity.lastLogin|date('Y-m-d H:i:s') }}{% endif %}</td>
-    <td>{{ entity.expired }}</td>
-    <td>{{ entity.roles|join(',') }}</td>
-    <td>{{ entity.groups|join(':') }}</td>
-    <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
-    <td>{% if entity.updated %}{{ entity.updated|date('Y-m-d H:i:s') }}{% endif %}</td>
-    <td>
-    <ul>
-        <li>
-            <a href="{{ path('user_delete', { 'id': entity.id }) }}">delete</a>
-        </li>
-        <li>
-            <a href="{{ path('user_edit', { 'id': entity.id }) }}">edit</a>
-        </li>
-    </ul>
+     <td> {{ entity.roles|join(',') }}</td>
+    {% if entity.lastLogin %}<td title="{{ entity.lastLogin|date('Y-m-d H:i:s') }}">{{ entity.lastLogin|date('Y-m-d') }}</td>{% else %}<td>-</td>{% endif %}
+    <td><a href="{{ path('user_delete', { 'id': entity.id }) }}" class="mlab_delete_icon" title="{% trans %}app.admin.users.tooltip.delete{% endtrans %}"></a>
     </td>
 </tr>

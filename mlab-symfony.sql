@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 25, 2013 at 04:59 PM
+-- Generation Time: Dec 02, 2013 at 10:10 AM
 -- Server version: 5.5.25a
 -- PHP Version: 5.4.4
 
@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `app` (
   `version` double NOT NULL,
   `created` date NOT NULL,
   `updated` datetime NOT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_C96E70CF9BAE1BDD` (`category_1`),
   UNIQUE KEY `UNIQ_C96E70CF2A74A67` (`category_2`),
@@ -52,7 +53,8 @@ CREATE TABLE IF NOT EXISTS `app` (
   KEY `path_index` (`path`),
   KEY `version_index` (`version`),
   KEY `created_index` (`created`),
-  KEY `updated_index` (`updated`)
+  KEY `updated_index` (`updated`),
+  KEY `enabled_index` (`enabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -79,24 +81,26 @@ CREATE TABLE IF NOT EXISTS `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `system` tinyint(1) NOT NULL DEFAULT '0',
+  `system` tinyint(1) DEFAULT '0',
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   `root` int(11) DEFAULT NULL,
   `lvl` int(11) NOT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `IDX_64C19C1727ACA70` (`parent_id`),
-  KEY `name_index` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+  KEY `name_index` (`name`),
+  KEY `enabled_index` (`enabled`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`id`, `parent_id`, `name`, `system`, `lft`, `rgt`, `root`, `lvl`) VALUES
-(2, NULL, 'TestyParent2', 1, 1, 4, 2, 0),
-(3, NULL, 'Testy2', 1, 1, 2, 3, 0),
-(4, 2, 'Sjø', 1, 2, 3, 2, 1);
+INSERT INTO `category` (`id`, `parent_id`, `name`, `system`, `lft`, `rgt`, `root`, `lvl`, `enabled`) VALUES
+(2, NULL, 'TestyParent2', 1, 1, 2, 2, 0, 1),
+(3, NULL, 'Testy2', 1, 1, 2, 3, 0, 1),
+(8, NULL, 'Testy2 child', 0, 2, 3, 3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -109,8 +113,11 @@ CREATE TABLE IF NOT EXISTS `component` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
+  `version` double DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name_index` (`name`)
+  KEY `name_index` (`name`),
+  KEY `enabled_index` (`enabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -138,21 +145,24 @@ CREATE TABLE IF NOT EXISTS `grp` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci,
   `is_default` tinyint(1) DEFAULT '0',
-  `is_active` tinyint(1) DEFAULT '1',
+  `enabled` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name_index` (`name`),
   KEY `is_default_index` (`is_default`),
-  KEY `is_active_index` (`is_active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+  KEY `enabled_index` (`enabled`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `grp`
 --
 
-INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `is_active`) VALUES
-(1, 'Testy', 'Festy', 1, 1),
-(2, 'sdfsd', 'sdfsdf', 0, 1),
-(3, 'edfw', 'werwer', 0, 0);
+INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`) VALUES
+(1, 'Testy', 'Festy', 0, 1),
+(2, 'dfgdfgdfgdfg', 'dfgdfgdfgdfg', 0, 0),
+(3, 'edfw', 'werwer', 1, 1),
+(4, 'Snurky', 'Burky', 0, 1),
+(6, 'sdfsdf', 'sdfsdf', 0, 0),
+(12, 'dsdfdsf', 'sdfsdfsdf', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -162,15 +172,20 @@ INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `is_active`) VALUE
 
 CREATE TABLE IF NOT EXISTS `help` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `bundle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `controller` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `action` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `message` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `route` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `message` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `bundle_index` (`bundle`),
-  KEY `controller_index` (`controller`),
-  KEY `action_index` (`action`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  KEY `route_index` (`route`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `help`
+--
+
+INSERT INTO `help` (`id`, `route`, `message`) VALUES
+(2, 'mlab', 'This is a test'),
+(3, 'sdsdf', 'sdfsdf'),
+(5, 'ddddd', 'aaaa');
 
 -- --------------------------------------------------------
 
@@ -194,15 +209,13 @@ CREATE TABLE IF NOT EXISTS `menu` (
   KEY `filter_url` (`filter_url`),
   KEY `order_by_index` (`order_by`),
   KEY `filter_role_index` (`filter_role`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `menu`
 --
 
 INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_by`, `url`, `filter_url`, `content_php`, `filter_role`) VALUES
-(1, NULL, 'mlab_menu_logo', 'Gå tilbake til forsiden', 0, 1, '/', NULL, NULL, NULL),
-(2, NULL, 'mlab_menu_help', 'Hjelp', 0, 2000, '', NULL, NULL, NULL),
 (3, NULL, 'mlab_menu_user', 'Bruker', 0, 1000, '', NULL, '$user->getUsername();', NULL),
 (4, 'Gå til', NULL, 'Gå til annen modul i MLAB', 0, 100, '', NULL, NULL, NULL),
 (5, 'App', NULL, 'App', 0, 200, '', '/app/design', NULL, NULL),
@@ -216,7 +229,6 @@ INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_b
 (13, 'Marked', NULL, 'Se App Marked', 4, 30, '/market/', NULL, NULL, NULL),
 (14, 'Marked Admin', NULL, 'Administrer App Marked', 4, 40, '/market-admin/', NULL, NULL, NULL),
 (15, 'Logg ut', NULL, 'Logg av MLAB', 3, 30, '/user/logout', NULL, NULL, NULL),
-(16, 'Logg inn', NULL, 'Logg inn til MLAB', 3, 40, '/user/login', NULL, NULL, NULL),
 (17, 'Egenskaper', NULL, 'Oppdater egenskapene til denne appen', 5, 30, '', '/app/design', NULL, NULL),
 (18, 'Ny app', NULL, 'Start en ny app', 5, 20, '', '/app/design', NULL, NULL),
 (19, 'Test app i nettleser', NULL, 'Dette vil åpne en ny side som ser ut som en smarttelefon hvor du kan se hvordan appen vil se ut til slutt', 7, 10, 'javascript: appTestLocal(); return false;', NULL, NULL, NULL),
@@ -238,12 +250,22 @@ CREATE TABLE IF NOT EXISTS `template` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `compatible_with` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `compatible_with` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
+  `version` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name_index` (`name`),
-  KEY `compatible_with_index` (`compatible_with`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  KEY `compatible_with_index` (`compatible_with`),
+  KEY `enabled_index` (`enabled`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `template`
+--
+
+INSERT INTO `template` (`id`, `name`, `description`, `compatible_with`, `path`, `enabled`, `version`) VALUES
+(1, 'mlabFFIDemo', 'This is a new template that has everything you''ll ever want.', NULL, 'mlabFFIDemo', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -258,6 +280,14 @@ CREATE TABLE IF NOT EXISTS `templates_groups` (
   KEY `IDX_F43FD2D35DA0FB8` (`template_id`),
   KEY `IDX_F43FD2D3FE54D947` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `templates_groups`
+--
+
+INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES
+(1, 1),
+(1, 2);
 
 -- --------------------------------------------------------
 
@@ -294,6 +324,15 @@ CREATE TABLE IF NOT EXISTS `users_groups` (
   KEY `IDX_FF8AB7E0A76ED395` (`user_id`),
   KEY `IDX_FF8AB7E0FE54D947` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `users_groups`
+--
+
+INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES
+(4, 1),
+(4, 2),
+(7, 1);
 
 -- --------------------------------------------------------
 
@@ -335,15 +374,16 @@ CREATE TABLE IF NOT EXISTS `usr` (
   KEY `created_index` (`created`),
   KEY `updated_index` (`updated`),
   KEY `username_index` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `usr`
 --
 
 INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`) VALUES
-(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-22 14:47:25', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-11-22 14:47:25', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
-(4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-20 10:02:42', 'cecilie', 'cecilie', 'Cecilie.Jackbo.Gran@ffi.no', 1, '2013-11-20 10:02:42', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL);
+(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-12-02 09:30:14', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-12-02 09:30:14', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
+(4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-29 15:07:04', 'cecilie', 'cecilie', 'cecilie.jackbo.gran@ffi.no', 1, '2013-11-29 15:07:04', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL),
+(7, 2, 2, 2, 'test@test.com', 'e+qqNLhIDWFo3wW/sKn4vH8HFF1nGXq239arDSexjkYMwVgUT1ZdWWINbSl1HlGYLVhRFUOjZ761C1sTtzhOxw==', 'ma6ja813m6o84wgow0wwoksso0ck4cg', '2013-11-29', '2013-11-29 15:36:08', 'testy', 'testy', 'test@test.com', 1, NULL, 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL);
 
 --
 -- Constraints for dumped tables

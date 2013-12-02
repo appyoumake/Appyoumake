@@ -14,8 +14,7 @@ class EventListener
 	 */	
 	public function postPersist(LifecycleEventArgs $args)
 	{
-		error_log("here----------------");
-		$entity = $args->getEntity();
+/*		$entity = $args->getEntity();
     	if ($entity->getIsDefault() == true) {
     		
     		$entityManager = $args->getEntityManager();
@@ -23,7 +22,7 @@ class EventListener
     		$q = $entityManager->createQuery("UPDATE SinettMLABBuilderBundle:Group g SET g.isDefault = :default WHERE g.id <> :id")
     						   ->setParameters(array('default' => false, 'id' => $entity->getId()));
     		return $q->getResult();
-    	}
+    	}*/
 	}
 	
 	public function postUpdate(LifecycleEventArgs $args)

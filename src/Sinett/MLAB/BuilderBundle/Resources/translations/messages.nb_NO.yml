@@ -1,0 +1,21 @@
+MLAB: MobLærAppBygs
+
+
+
+
+app.admin.users.username: Brukernavn
+app.admin.users.email: E-post
+app.admin.users.groups: Grupper
+app.admin.users.last.login: Siste innlogging
+
+app.admin.users.tooltip.username: Rediger bruker
+app.admin.users.tooltip.delete: Slett bruker
+app.admin.users.tooltip.new.user: Opprett ny bruker
+
+
+
+app.admin.groups.name: Navn
+app.admin.groups.description: Beskrivelse
+
+app.admin.groups.tooltip.name: Rediger gruppe
+app.admin.groups.tooltip.delete: Slett gruppe

@@ -29,7 +29,7 @@ class HelpController extends Controller
         $router = $this->container->get('router');
         $collection = $router->getRouteCollection();
         $allRoutes = $collection->all();
-die(print_r($allRoutes, true));
+
         return $this->render('SinettMLABBuilderBundle:Help:index.html.twig', array(
             'entities' => $entities,
         ));

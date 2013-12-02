@@ -1,19 +1,28 @@
 @CHARSET "UTF-8";
 
+/* added so that the elements of the container don't wrap if the screen is made smaler than the min width */
+body.mlab_editor div#mlab_min_page_width {
+	min-width: 1024px;
+}
+
+/* makes the background of the top menu bar expand to the width of the browser */
+body.mlab_editor div#mlab_top_bar_back {
+background-color: rgb(0,0,0);
+height: 45px;
+}
+
+/* aligns the top right menu elements to the width of the container */
+body.mlab_editor div#mlab_align_menu_elements {
+	display: table;
+	float: left;
+}
+
 body.mlab_editor div.container {
 	margin-right: 0;
 	margin-left: 0;
 	display: table;
 	line-height: 0;
 	content: "";
-}
-
-/* sets the minimum width of the page so that the content don't wrap if the screen is made smaler */
-body.mlab_editor div.containerAll {
-	margin-right: 0;
-	margin-left: 0;
-	display: block;
-	min-width: 1024px;
 }
 
 body.mlab_editor footer {
@@ -53,6 +62,7 @@ div#mlab_editor_page {
 div#mlab_editor_page  {
 	overflow: hidden;
 }
+
 /*
 div#mlab_editor_page [data-mlab-type="map"] {
 	overflow: visible;
