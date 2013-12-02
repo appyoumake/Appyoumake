@@ -30,6 +30,7 @@ class AppController extends Controller
             'entities' => $entities,
         ));
     }
+    
     /**
      * Creates a new App entity.
      *
@@ -239,28 +240,39 @@ class AppController extends Controller
      * Lists all App entities for management by app designer 
      * (similar to the indexAction, but adds many other actionsr)
      * 
-     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function manageAction()
+    public function builderAction()
     {
     	$em = $this->getDoctrine()->getManager();
-    
-    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllForCurrentUser();
-    
-    	return $this->render('SinettMLABBuilderBundle:App:manage.html.twig', array(
+    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+    	$this->getLockStatus($apps);
+    	$apps[1]["locked_pages"] = array(1);
+    	return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
     	));
     }
     
-    public function designAction()
+    /**
+     * Opens an app on the front page, just a matter of using a regular call
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editAppAction($id, $version, $page_num)
     {
-    	$em = $this->getDoctrine()->getManager();
+    	$html_for_app_page = $this->getPage($id, $version, $page_num);
     
-    	$entities = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
-    
-    	return $this->render('SinettMLABBuilderBundle:App:index.html.twig', array(
-    			'entities' => $entities,
+    	return $this->render('SinettMLABBuilderBundle:App:edit_app.html.twig', array(
+    			'html_for_app_page' => $html_for_app_page,
     	));
+    }
+    
+    /**
+     * Will look through all folders nad see if page is locked, will update the locked_pages array for each app, 
+     * see Sinett\MLAB\BuilderBundle\Entity\App->getArray()
+     * @param unknown $apps
+     */
+    public function getLockStatus(&$apps) {
+    	
     }
     
 }

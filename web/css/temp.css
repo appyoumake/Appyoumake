@@ -34,3 +34,57 @@
 .menu_parent {
 	font-weight: bold;
 }
+
+td.builder_appname {
+	
+}
+
+td.builder_app_actions {
+	padding-left: 20px;
+}
+
+.builder_app_properties {
+	background-image: url("/img/properties.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 8px;
+}
+
+td.builder_app_publish {
+	
+}
+
+.builder_app_published {
+	background-image: url("/img/published.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 8px;
+}
+
+.builder_app_not_published {
+	background-image: url("/img/notPublished.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 8px;
+}
+
+.builder_app_locked {
+	background-image: url("/img/locked.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+}
+
+.builder_app_publish {
+	background-image: url("/img/publish.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 8px 16px;
+}
+
+.builder_app_newversion {
+	background-image: url("/img/newVersion.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 8px;
+	
+}

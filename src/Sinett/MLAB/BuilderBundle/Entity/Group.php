@@ -53,7 +53,13 @@ class Group extends \FOS\UserBundle\Model\Group
      * @var \Doctrine\Common\Collections\Collection
      */
     private $components;
+    
+    /**
+     * @var boolean
+     */
+    private $enabled;
 
+    
     /**
      * Constructor
      */
@@ -320,12 +326,6 @@ class Group extends \FOS\UserBundle\Model\Group
     	return $this->name;
     }
     
-    /**
-     * @var boolean
-     */
-    private $enabled;
-
-
     /**
      * Set enabled
      *

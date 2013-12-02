@@ -53,6 +53,36 @@ class Category
      * @var \Entity\Category
      */
     private $parent;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $appsCategory1;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $appsCategory2;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $appsCategory3;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $usersCategory1;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $usersCategory2;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $usersCategory3;
 
     /**
      * Constructor
@@ -303,5 +333,203 @@ class Category
     public function getEnabled()
     {
         return $this->enabled;
+    }
+
+    /**
+     * Add appsCategory1
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsCategory1
+     * @return Category
+     */
+    public function addAppsCategory1(\Sinett\MLAB\BuilderBundle\Entity\App $appsCategory1)
+    {
+        $this->appsCategory1[] = $appsCategory1;
+    
+        return $this;
+    }
+
+    /**
+     * Remove appsCategory1
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsCategory1
+     */
+    public function removeAppsCategory1(\Sinett\MLAB\BuilderBundle\Entity\App $appsCategory1)
+    {
+        $this->appsCategory1->removeElement($appsCategory1);
+    }
+
+    /**
+     * Get appsCategory1
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAppsCategory1()
+    {
+        return $this->appsCategory1;
+    }
+
+    /**
+     * Add appsCategory2
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsCategory2
+     * @return Category
+     */
+    public function addAppsCategory2(\Sinett\MLAB\BuilderBundle\Entity\App $appsCategory2)
+    {
+        $this->appsCategory2[] = $appsCategory2;
+    
+        return $this;
+    }
+
+    /**
+     * Remove appsCategory2
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsCategory2
+     */
+    public function removeAppsCategory2(\Sinett\MLAB\BuilderBundle\Entity\App $appsCategory2)
+    {
+        $this->appsCategory2->removeElement($appsCategory2);
+    }
+
+    /**
+     * Get appsCategory2
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAppsCategory2()
+    {
+        return $this->appsCategory2;
+    }
+
+    /**
+     * Add appsCategory3
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsCategory3
+     * @return Category
+     */
+    public function addAppsCategory3(\Sinett\MLAB\BuilderBundle\Entity\App $appsCategory3)
+    {
+        $this->appsCategory3[] = $appsCategory3;
+    
+        return $this;
+    }
+
+    /**
+     * Remove appsCategory3
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsCategory3
+     */
+    public function removeAppsCategory3(\Sinett\MLAB\BuilderBundle\Entity\App $appsCategory3)
+    {
+        $this->appsCategory3->removeElement($appsCategory3);
+    }
+
+    /**
+     * Get appsCategory3
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAppsCategory3()
+    {
+        return $this->appsCategory3;
+    }
+
+    /**
+     * Add usersCategory1
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\User $usersCategory1
+     * @return Category
+     */
+    public function addUsersCategory1(\Sinett\MLAB\BuilderBundle\Entity\User $usersCategory1)
+    {
+        $this->usersCategory1[] = $usersCategory1;
+    
+        return $this;
+    }
+
+    /**
+     * Remove usersCategory1
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\User $usersCategory1
+     */
+    public function removeUsersCategory1(\Sinett\MLAB\BuilderBundle\Entity\User $usersCategory1)
+    {
+        $this->usersCategory1->removeElement($usersCategory1);
+    }
+
+    /**
+     * Get usersCategory1
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsersCategory1()
+    {
+        return $this->usersCategory1;
+    }
+
+    /**
+     * Add usersCategory2
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\User $usersCategory2
+     * @return Category
+     */
+    public function addUsersCategory2(\Sinett\MLAB\BuilderBundle\Entity\User $usersCategory2)
+    {
+        $this->usersCategory2[] = $usersCategory2;
+    
+        return $this;
+    }
+
+    /**
+     * Remove usersCategory2
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\User $usersCategory2
+     */
+    public function removeUsersCategory2(\Sinett\MLAB\BuilderBundle\Entity\User $usersCategory2)
+    {
+        $this->usersCategory2->removeElement($usersCategory2);
+    }
+
+    /**
+     * Get usersCategory2
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsersCategory2()
+    {
+        return $this->usersCategory2;
+    }
+
+    /**
+     * Add usersCategory3
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\User $usersCategory3
+     * @return Category
+     */
+    public function addUsersCategory3(\Sinett\MLAB\BuilderBundle\Entity\User $usersCategory3)
+    {
+        $this->usersCategory3[] = $usersCategory3;
+    
+        return $this;
+    }
+
+    /**
+     * Remove usersCategory3
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\User $usersCategory3
+     */
+    public function removeUsersCategory3(\Sinett\MLAB\BuilderBundle\Entity\User $usersCategory3)
+    {
+        $this->usersCategory3->removeElement($usersCategory3);
+    }
+
+    /**
+     * Get usersCategory3
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsersCategory3()
+    {
+        return $this->usersCategory3;
     }
 }

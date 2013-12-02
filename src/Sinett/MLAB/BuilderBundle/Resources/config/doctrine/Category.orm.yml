@@ -80,5 +80,47 @@ Sinett\MLAB\BuilderBundle\Entity\Category:
       mappedBy: parent
       orderBy:
         lft: ASC
-      
+        
+    appsCategory1:
+      targetEntity: App
+      mappedBy: category
+      joinColumn:
+        name: id
+        referencedColumnName: category_1
+
+    appsCategory2:
+      targetEntity: App
+      mappedBy: category
+      joinColumn:
+        name: id
+        referencedColumnName: category_2
+        
+    appsCategory3:
+      targetEntity: App
+      mappedBy: category
+      joinColumn:
+        name: id
+        referencedColumnName: category_3
+
+    usersCategory1:
+      targetEntity: User
+      mappedBy: category
+      joinColumn:
+        name: id
+        referencedColumnName: category_1
+
+    usersCategory2:
+      targetEntity: User
+      mappedBy: category
+      joinColumn:
+        name: id
+        referencedColumnName: category_2
+        
+    usersCategory3:
+      targetEntity: User
+      mappedBy: category
+      joinColumn:
+        name: id
+        referencedColumnName: category_3
+
   lifecycleCallbacks: {  }

@@ -36,7 +36,12 @@ class Component
      */
     private $zip_file;
     
-
+    /**
+     * @var float
+     */
+    private $version;
+    
+    
     /**
      * Constructor
      */
@@ -146,12 +151,6 @@ class Component
     
     
     /**
-     * @var string
-     */
-    private $path;
-
-
-    /**
      * Set path
      *
      * @param string $path
@@ -178,7 +177,12 @@ class Component
      */
     private $enabled;
 
-
+    /**
+     * @var string
+     */
+    private $path;
+    
+    
     /**
      * Set enabled
      *
@@ -222,12 +226,6 @@ class Component
     	return $this->zip_file;
     }
     
-    /**
-     * @var float
-     */
-    private $version;
-
-
     /**
      * Set version
      *

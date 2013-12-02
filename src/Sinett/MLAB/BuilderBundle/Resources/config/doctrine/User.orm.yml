@@ -36,7 +36,7 @@ Sinett\MLAB\BuilderBundle\Entity\User:
 
 #the branch they belong to, if any, used to define categories for apps
           
-  oneToOne:
+  manyToOne:
     categoryOne:
       targetEntity: Category
       joinColumn:
@@ -55,11 +55,12 @@ Sinett\MLAB\BuilderBundle\Entity\User:
         name: category_3
         referencedColumnName: id
         
-    app:
+  oneToMany:
+    apps:
       targetEntity: App
       mappedBy: user
 
-    appUpdatedBy:
+    appsUpdatedBy:
       targetEntity: App
       mappedBy: user
       joinColumn:

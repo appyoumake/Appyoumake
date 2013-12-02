@@ -1,0 +1,60 @@
+# list of installed components
+Sinett\MLAB\BuilderBundle\Entity\Component:
+  type: entity
+  table: component
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\ComponentRepository
+  indexes:
+    name_index:
+      columns: [ name ]
+    enabled_index:
+      columns: [ enabled ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+    name:
+        type: string
+        length: 255
+        fixed: false
+        nullable: false
+        
+    path:
+      type: string
+      length: 255
+      fixed: false
+      nullable: false
+          
+    description:
+        type: text
+        nullable: false
+        
+    version:
+        type: float
+        unsigned: false
+        nullable: true
+
+    enabled:
+        type: boolean
+        nullable: true
+        options:
+          default: true
+
+# components can be limited by group membership
+  manyToMany:
+    groups:
+      targetEntity: Group
+      inversedBy: components
+      joinTable:
+        name: components_groups
+        joinColumns:
+          component_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          group_id:
+            referencedColumnName: id
+    
+  lifecycleCallbacks: {  }

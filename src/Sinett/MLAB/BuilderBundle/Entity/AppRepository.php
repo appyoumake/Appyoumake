@@ -14,11 +14,18 @@ class AppRepository extends EntityRepository
 {
 
 	/**
-	 * Returns a list of all apps that the current user is allowed to see through their group memberships
-	 * @param unknown $user
+	 * Returns a list of all apps that is allowed for the specified groups
+	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
-	public function findAllForCurrentUser(Sinett\MLAB\BuilderBundle\Entity\User $user) {
-		$groups = $user->getGroups();
-		die(print_r($groups, true));
+	public function findAllByGroups ( $groups) {
+		$apps = array();
+		foreach ($groups as $group) {
+			$temp_apps = $group->getApps();
+			foreach ($temp_apps as $temp_app) {
+				$apps[$temp_app->getId()] = $temp_app->getArray();
+			}
+		}
+		return $apps;
 	} 
+	
 }

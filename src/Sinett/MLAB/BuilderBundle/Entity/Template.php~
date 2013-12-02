@@ -47,6 +47,22 @@ class Template
     private $zip_file;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $apps;
+    
+    /**
+     * @var string
+     */
+    private $path;
+    
+    /**
+     * @var boolean
+     */
+    private $enabled;
+    
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -219,13 +235,6 @@ class Template
     	return $this->zip_file;
     }
     
-    
-    /**
-     * @var string
-     */
-    private $path;
-
-
     /**
      * Set path
      *
@@ -248,12 +257,6 @@ class Template
     {
         return $this->path;
     }
-
-    /**
-     * @var boolean
-     */
-    private $enabled;
-
 
     /**
      * Set enabled
@@ -304,5 +307,38 @@ class Template
     public function getVersion()
     {
         return $this->version;
+    }
+    
+    /**
+     * Add apps
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $apps
+     * @return Template
+     */
+    public function addApp(\Sinett\MLAB\BuilderBundle\Entity\App $apps)
+    {
+        $this->apps[] = $apps;
+    
+        return $this;
+    }
+
+    /**
+     * Remove apps
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $apps
+     */
+    public function removeApp(\Sinett\MLAB\BuilderBundle\Entity\App $apps)
+    {
+        $this->apps->removeElement($apps);
+    }
+
+    /**
+     * Get apps
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getApps()
+    {
+        return $this->apps;
     }
 }

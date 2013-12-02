@@ -360,6 +360,7 @@ class YamlDriver extends FileDriver
         // Evaluate oneToMany relationships
         if (isset($element['oneToMany'])) {
             foreach ($element['oneToMany'] as $name => $oneToManyElement) {
+//print_r($oneToManyElement);
                 $mapping = array(
                     'fieldName' => $name,
                     'targetEntity' => $oneToManyElement['targetEntity'],

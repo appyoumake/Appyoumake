@@ -34,12 +34,15 @@ Sinett\MLAB\BuilderBundle\Entity\Tracking:
   oneToOne:
     component:
       targetEntity: Component
+      inversedBy: trackings
 
     user:
       targetEntity: User
+      inversedBy: trackings
           
     app:
       targetEntity: App
+      inversedBy: trackings
           
 
   lifecycleCallbacks: {  }

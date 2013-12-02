@@ -72,3 +72,5 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: Sinett\MLAB\BuilderBundle\Entity\User
+    group:
+        group_class: Sinett\MLAB\BuilderBundle\Entity\Group

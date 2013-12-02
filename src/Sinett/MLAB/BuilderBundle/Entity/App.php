@@ -87,6 +87,12 @@ class App
     private $groups;
 
     /**
+     * @var boolean
+     */
+    private $published;
+    
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -474,4 +480,53 @@ class App
     {
         return $this->enabled;
     }
+    
+    /**
+     * Set published
+     *
+     * @param boolean $published
+     * @return App
+     */
+    public function setPublished($published)
+    {
+    	$this->published = $published;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get published
+     *
+     * @return boolean
+     */
+    public function getPublished()
+    {
+    	return $this->published;
+    }
+    
+    /**
+     * Returns all properties as an array, it also has a placeholder for the pages that are locked
+     */
+    public function getArray() {
+    	return array(
+    		'id' => $this->id,
+    		'name' => $this->name,
+    		'path' => $this->path,
+    		'description' => $this->description,
+    		'keywords' => $this->keywords,
+    		'version' => $this->version,
+    		'created' => $this->created,
+    		'updated' => $this->updated,
+    		'categoryOne' => $this->categoryOne,
+    		'categoryTwo' => $this->categoryTwo,
+    		'categoryThree' => $this->categoryThree,
+    		'template' => $this->template,
+    		'user' => $this->user,
+    		'updatedBy' => $this->updatedBy,
+    		'groups' => $this->groups,
+    		'published' => $this->published,
+    		'locked_pages' => array() //this is an array that will have the pages that are locked as an array
+    		);
+    }
+
 }

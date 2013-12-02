@@ -78,6 +78,17 @@ class User extends BaseUser
      * @var \Doctrine\Common\Collections\Collection
      */
     protected $roles;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $apps;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $appsUpdatedBy;
+    
 
     /**
      * Constructor
@@ -332,5 +343,71 @@ class User extends BaseUser
     public function removeGroup(\FOS\UserBundle\Model\GroupInterface $groups)
     {
         $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Add apps
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $apps
+     * @return User
+     */
+    public function addApp(\Sinett\MLAB\BuilderBundle\Entity\App $apps)
+    {
+        $this->apps[] = $apps;
+    
+        return $this;
+    }
+
+    /**
+     * Remove apps
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $apps
+     */
+    public function removeApp(\Sinett\MLAB\BuilderBundle\Entity\App $apps)
+    {
+        $this->apps->removeElement($apps);
+    }
+
+    /**
+     * Get apps
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getApps()
+    {
+        return $this->apps;
+    }
+
+    /**
+     * Add appsUpdatedBy
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsUpdatedBy
+     * @return User
+     */
+    public function addAppsUpdatedBy(\Sinett\MLAB\BuilderBundle\Entity\App $appsUpdatedBy)
+    {
+        $this->appsUpdatedBy[] = $appsUpdatedBy;
+    
+        return $this;
+    }
+
+    /**
+     * Remove appsUpdatedBy
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $appsUpdatedBy
+     */
+    public function removeAppsUpdatedBy(\Sinett\MLAB\BuilderBundle\Entity\App $appsUpdatedBy)
+    {
+        $this->appsUpdatedBy->removeElement($appsUpdatedBy);
+    }
+
+    /**
+     * Get appsUpdatedBy
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAppsUpdatedBy()
+    {
+        return $this->appsUpdatedBy;
     }
 }

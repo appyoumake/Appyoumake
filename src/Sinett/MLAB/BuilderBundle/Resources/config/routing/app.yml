@@ -35,3 +35,16 @@ app_remove_from_appstore:
 app_recall:
     pattern:  /{id}/recall
     defaults: { _controller: "SinettMLABBuilderBundle:App:recall" }
+
+app_builder_index:
+    path:   /builder/
+    defaults: { _controller: SinettMLABBuilderBundle:App:builder }
+
+app_builder_editor:
+    path:   /builder/{id}/{version}/{page_num}/edit
+    defaults: { _controller: SinettMLABBuilderBundle:App: editApp }
+
+app_builder_copy_app:
+    path:   /builder/{id}/{version}/copy
+    defaults: { _controller: SinettMLABBuilderBundle:App: copyApp }
+

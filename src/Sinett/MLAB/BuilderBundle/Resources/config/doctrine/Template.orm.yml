@@ -54,8 +54,8 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
           default: true
 
 # link to apps that use this template
-  oneToOne:
-    app:
+  oneToMany:
+    apps:
       targetEntity: App
       mappedBy: template
 

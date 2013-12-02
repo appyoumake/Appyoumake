@@ -68,6 +68,12 @@ Sinett\MLAB\BuilderBundle\Entity\App:
           options:
             default: true
             
+      published:
+          type: boolean
+          nullable: true
+          options:
+            default: false
+            
       created:
         type: date
         gedmo:
@@ -95,36 +101,39 @@ Sinett\MLAB\BuilderBundle\Entity\App:
 
 #the categories for this apps
           
-  oneToOne:
+  manyToOne:
     categoryOne:
       targetEntity: Category
+      inversedBy: apps
       joinColumn:
         name: category_1
         referencedColumnName: id
 
     categoryTwo:
       targetEntity: Category
+      inversedBy: apps
       joinColumn:
         name: category_2
         referencedColumnName: id
 
     categoryThree:
       targetEntity: Category
+      inversedBy: apps
       joinColumn:
         name: category_3
         referencedColumnName: id
 
     template:
       targetEntity: Template
-      inversedBy: template
+      inversedBy: apps
 
     user:
       targetEntity: User
-      inversedBy: user
+      inversedBy: apps
           
     updatedBy:
       targetEntity: User
-      inversedBy: user
+      inversedBy: apps
       joinColumn:
         name: updatedby_id
         referencedColumnName: id

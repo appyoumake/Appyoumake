@@ -1,0 +1,145 @@
+# core table, the list of apps that is being developed, it is NOT linked to market,
+# the apps table there is updated when new apps are updated  
+Sinett\MLAB\BuilderBundle\Entity\App:
+  type: entity
+  table: app
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\AppRepository
+  indexes:
+    name_index:
+      columns: [ name ]
+    path_index:
+      columns: [ path ]
+    version_index:
+      columns: [ version ]
+    created_index:
+      columns: [ created ]
+    updated_index:
+      columns: [ updated ]
+    category_1_index:
+      columns: [ category_1 ]
+    category_2_index:
+      columns: [ category_2 ]
+    category_3_index:
+      columns: [ category_3 ]
+    updatedby_id_index:
+      columns: [ updatedby_id ]
+    template_id_index:
+      columns: [ template_id ]
+    user_id_index:
+      columns: [ user_id ]
+    enabled_index:
+      columns: [ enabled ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+      name:
+          type: string
+          length: 255
+          fixed: false
+          nullable: false
+
+      path:
+          type: string
+          length: 255
+          fixed: false
+          nullable: false
+          
+      description:
+          type: text
+          nullable: false
+
+      keywords:
+          type: text
+          nullable: true
+
+      version:
+          type: float
+          unsigned: false
+          nullable: false
+
+      enabled:
+          type: boolean
+          nullable: true
+          options:
+            default: true
+            
+      created:
+        type: date
+        gedmo:
+          timestampable:
+            on: create
+    
+      updated:
+        type: datetime
+        gedmo:
+          timestampable:
+            on: update
+
+#      templateId:
+#        type: integer
+#        unsigned: false
+#        nullable: false
+#        column: template_id
+#          
+#      userId:
+#        type: integer
+#        unsigned: false
+#        nullable: false
+#        column: user_id
+
+
+#the categories for this apps
+          
+  oneToOne:
+    categoryOne:
+      targetEntity: Category
+      joinColumn:
+        name: category_1
+        referencedColumnName: id
+
+    categoryTwo:
+      targetEntity: Category
+      joinColumn:
+        name: category_2
+        referencedColumnName: id
+
+    categoryThree:
+      targetEntity: Category
+      joinColumn:
+        name: category_3
+        referencedColumnName: id
+
+    template:
+      targetEntity: Template
+      inversedBy: template
+
+    user:
+      targetEntity: User
+      inversedBy: user
+          
+    updatedBy:
+      targetEntity: User
+      inversedBy: user
+      joinColumn:
+        name: updatedby_id
+        referencedColumnName: id
+          
+  manyToMany:
+    groups:
+      targetEntity: Group
+      inversedBy: apps
+      joinTable:
+        name: apps_groups
+        joinColumns:
+          app_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          group_id:
+            referencedColumnName: id
+    
+  lifecycleCallbacks: {  }
