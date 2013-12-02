@@ -9,7 +9,7 @@
                 <th>{% trans %}app.admin.users.email{% endtrans %}</th>
                 <th>{% trans %}app.admin.users.groups{% endtrans %}</th>
                 <th>{% trans %}app.admin.users.last.login{% endtrans %}</th>
-                <th> <button class="icon_button new-user-button" url="{{ path('user_new') }}" title="{% trans %}app.admin.users.tooltip.new.user{% endtrans %}"></a></th>
+                <th> <a href="{{ path('user_new') }}" class="icon_button new-user-button" title="{% trans %}app.admin.users.tooltip.new.user{% endtrans %}"></a></th>
             </tr>
         </thead>
         <tbody>

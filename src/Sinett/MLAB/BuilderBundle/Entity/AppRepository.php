@@ -12,4 +12,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class AppRepository extends EntityRepository
 {
+
+	/**
+	 * Returns a list of all apps that the current user is allowed to see through their group memberships
+	 * @param unknown $user
+	 */
+	public function findAllForCurrentUser(Sinett\MLAB\BuilderBundle\Entity\User $user) {
+		$groups = $user->getGroups();
+		die(print_r($groups, true));
+	} 
 }

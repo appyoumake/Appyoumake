@@ -22,7 +22,7 @@ class AppController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
+    	$em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
 
@@ -232,6 +232,35 @@ class AppController extends Controller
     public function recallAction($id)
     {
     	
+    }
+
+/******* EDIT FUNCTIONALITY *******/
+    /**
+     * Lists all App entities for management by app designer 
+     * (similar to the indexAction, but adds many other actionsr)
+     * 
+     *
+     */
+    public function manageAction()
+    {
+    	$em = $this->getDoctrine()->getManager();
+    
+    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllForCurrentUser();
+    
+    	return $this->render('SinettMLABBuilderBundle:App:manage.html.twig', array(
+    			'apps' => $apps,
+    	));
+    }
+    
+    public function designAction()
+    {
+    	$em = $this->getDoctrine()->getManager();
+    
+    	$entities = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
+    
+    	return $this->render('SinettMLABBuilderBundle:App:index.html.twig', array(
+    			'entities' => $entities,
+    	));
     }
     
 }

@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
+    	$em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findByRole($this->getUser()->getRoles()[0]);
 

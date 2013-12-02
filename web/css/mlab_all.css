@@ -635,7 +635,7 @@ tr.row_activ_ a {
    Buttons with icons
    ========================================================================== */
 
-button.icon_button {
+a.icon_button {
     padding: 0.3em 0.5em 0.3em;
     color: #444; /* rgba not supported (IE 8) */
     color: rgba(0, 0, 0, 0.80); /* rgba supported */
@@ -653,7 +653,7 @@ button.icon_button {
     vertical-align: top;
 	}
 
-button.new-user-button {
+a.new-user-button {
     height: 31px;
 	width: 32px;
 	background-color: white;
