@@ -19,3 +19,8 @@ app.admin.groups.description: Beskrivelse
 
 app.admin.groups.tooltip.name: Rediger gruppe
 app.admin.groups.tooltip.delete: Slett gruppe
+
+builder.new.app.name.details: Navn
+builder.new.app.more.details: Klassifiser
+builder.choose.template.or.app: Baser på
+builder.new.app.submit: Lag

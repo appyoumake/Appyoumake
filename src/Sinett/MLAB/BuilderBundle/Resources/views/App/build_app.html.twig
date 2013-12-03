@@ -1,0 +1,536 @@
+{% extends '::editor.html.twig' %}
+
+{% block body -%}
+
+<!-- This is the actual content of the page, very little is required as it is loaded from external files -->	
+	<div id="mlab_template_warning"></div>	                     
+	
+	<div id="mlab_buttons_item_manipulation" class="mlab_buttons_item_manipulation">
+		<div id="mlab_button_close" class="mlab_button_close" onclick="mlabDeleteComponent(this);"></div>
+		<div id="mlab_button_drag" class="mlab_button_drag"></div>
+		<div id="mlab_button_setproperty" class="mlab_button_setproperty" onclick="mlabGetProperties(this);"></div>
+	</div>
+		
+	<div id="mlab_toolbar_components">
+		{{ for component in mlab_components }}
+			<div data-mlab-type='{{ component.path }}' title='{{ component.description }}' class='mlab_button_components' style='background-image: url("{{ mlab_url_css ~ component.path ~ mlab_component_icon_path}}");'></div>";
+		}}
+	</div>
+	<div id="mlab_editor_chrome">
+		<div id="mlab_editor_page"></div>
+		<p/>
+	</div>
+
+	<div title="Use this to rotate the device" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
+	
+	
+	<script type="text/javascript">	 
+	/*
+	 * DOMParser HTML extension
+	 * 2012-09-04
+	 * 
+	 * By Eli Grey, http://eligrey.com
+	 * Public domain.
+	 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+	 */
+
+	/*! @source https://gist.github.com/1129031 */
+	/*global document, DOMParser*/
+  
+	
+	(function(DOMParser) {
+		"use strict";
+
+		var
+		  DOMParser_proto = DOMParser.prototype
+		, real_parseFromString = DOMParser_proto.parseFromString
+		;
+
+		// Firefox/Opera/IE throw errors on unsupported types
+		try {
+			// WebKit returns null on unsupported types
+			if ((new DOMParser).parseFromString("", "text/html")) {
+				// text/html parsing is natively supported
+				return;
+			}
+		} catch (ex) {}
+
+		DOMParser_proto.parseFromString = function(markup, type) {
+			if (/^\s*text\/html\s*(?:;|$)/i.test(type)) {
+				var doc = document.implementation.createHTMLDocument("") ;
+	      		if (markup.toLowerCase().indexOf('<!doctype') > -1) {
+        			doc.documentElement.innerHTML = markup;
+      			}
+      			else {
+        			doc.body.innerHTML = markup;
+      			}
+				return doc;
+			} else {
+				return real_parseFromString.apply(this, arguments);
+			}
+		};
+	}(DOMParser));
+	
+//constants/paths, carried over from config files in Zend (specifically /mlab-base/src/config/autoload/mlabcore.local.php) 
+		<?php foreach ($this->environment as $key => $value) { echo "var $key = '$value';\n"; } ?>
+
+//current app/page information 
+		document.mlab_current_app = <?php print json_encode($this->app_details); ?>;
+
+//list of components 
+		var mlab_components = <?php print json_encode($this->mlab_components); ?>;
+		var mlab_buttons_item_manipulation = $("#mlab_buttons_item_manipulation");
+		var mlab_flag_dirty = false;
+		var mlab_drag_origin = 'sortable';
+
+		var droppable_options = {
+			    drop: function( event, ui ) {
+				    if (mlab_drag_origin === 'draggable') {
+						mlab_drag_origin = 'sortable';
+						
+//replace the cloned drag item with relevant HTML code from the component 
+				    	var id = $(ui.draggable[0]).data("mlab-type");
+			    		ui.draggable.empty().append(mlab_components[id].html);
+			    		ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
+			    		ui.draggable.hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
+			    		
+			    		mlab_run_component_code(ui.draggable, id);
+						
+//execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
+//this is ONLY done if exec_server = true 
+						if (mlab_components[id].exec_server !== false) {
+							var new_component = ui.draggable;
+							var request = $.ajax({
+								type: "GET",
+								url: "/builder/edit-page/component-added",
+								data: { comp_id: id, app_path: document.mlab_current_app.path, app_version: document.mlab_current_app.version },
+								dataType: "json"
+							});
+	
+							request.done(function( result ) {
+								if (result.result == "success") {
+									console.log("success");
+								} else {
+									alert(result.msg + "'\n\nLegg til komponenten igjen.");
+									$(new_component).remove();
+								}
+							});
+								 
+							request.fail(function( jqXHR, textStatus ) {
+								alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
+								$(new_component).remove(); 
+							});
+						}
+						
+			    	}
+				    mlab_flag_dirty = true;
+			    }
+			};
+		
+		var sortable_options = { 
+				placeholder: "mlab_component_placeholder", 
+				revert: false, 
+				helper: "clone",
+				cancel: "[contenteditable]",
+				stop: function(event, ui){
+//make editable after dragging to sort								
+					if (mlab_drag_origin == 'sortable' && ui.item.data("contenteditable") == "true") { 
+						ui.item.attr("contenteditable", "true");
+					};
+					mlab_flag_dirty = true;
+				}
+			};
+
+		function mlab_run_component_code(el, comp_id) {
+//execute the javascript if it exists, we first need to attach it to document so we can use it globally 
+			if (mlab_components[comp_id].exec_browser !== false && (typeof (document["mlab_code_" + comp_id]) === "undefined")) {
+				eval(mlab_components[comp_id].exec_browser);
+			}
+			
+			if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
+				document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, $( "#mlab_editor_page" ));
+//if there is a getproperties registered, it means we should display a 3rd button here. Store info in data tag for quick decision making...
+	    		$(el).attr("data-properties", typeof(document["mlab_code_" + comp_id].getProperties) !== "undefined");
+			} else {
+				$(el).attr("data-properties", false);
+			}
+		}
+
+/* Utility functions to ensure that the CSS is only applied to the editor */
+function renderCSSForSelector(css, selector) {
+    return css.replace(/\n|\t/g, " ").replace(/\s+/g, " ").replace(/\s*\/\*.*?\*\/\s*/g, " ").replace(/(^|\})(.*?)(\{)/g, function($0, $1, $2, $3) {
+        var collector = [], parts = $2.split(",");
+        for (var i in parts)
+            collector.push(selector + " " + parts[i].replace(/^\s*|\s*$/, ""));
+        return $1 + " " + collector.join(", ") + " " + $3;
+    });
+}
+
+function applyCSSToElement(css, elementSelector) {
+	var styles = renderCSSForSelector(css, elementSelector);
+    $("head").append("<style type=\"text/css\">" + styles + "</style>");
+}
+
+function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbackError) {
+    callbackSuccess = callbackSuccess || function(){};
+    callbackError = callbackError || function(){};
+    $.ajax({
+        url: cssUrl,
+        success: function(data) {
+            applyCSSToElement(data, elementSelector);
+            callbackSuccess();
+        },
+        error: function(jqXHR) {
+            callbackError();
+        }
+    })
+}
+		
+/* functions to open and save a page */
+ 
+/* this function processes a standalone page that was retrieved.
+ * It does the following:
+	 	Remove old HTML from designer
+	 	Remove old stylesheets from previously edited page
+		Add new stylesheets from doc to 
+		Extract body
+		Remove body and store remaing HTML in current doc var
+*/
+
+		function mlab_page_process (page) {
+            var comp_id, temp_comp, temp_link;
+            var temp_stylesheets = "";
+            var start_dir = "<?php echo $this->environment["MLAB_URL_APPS_ROOT"]; ?>" + document.mlab_current_app.path + "/" + document.mlab_current_app.version + "<?php echo $this->environment["MLAB_URL_CORDOVA_SUBDIR"]; ?>";
+            
+//remove old stuff
+			$("#mlab_editor_page").empty();
+			$("link[rel=stylesheet][href~='<?php echo $this->environment["MLAB_URL_APPS_ROOT"]; ?>']").remove();
+	
+
+//parse doc and insert stylesheets
+			var doc = (new DOMParser()).parseFromString(page,"text/html");
+			var head = doc.getElementsByTagName("head")[0];
+		    var divs = doc.getElementsByTagName("body")[0].childNodes;
+			var stylesheets = head.getElementsByTagName("link");
+			for ( var i = 0; i < stylesheets.length; i++) {
+	        	temp_link = stylesheets[i].getAttribute("href");
+	        	//applyCSSFileToElement(start_dir + temp_link, "#mlab_editor_page");
+	        	temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + start_dir + temp_link + "' type='text/css'>" + "\n";
+	        }
+
+	        //TODO $("head link[rel='stylesheet']").last().after(temp_stylesheets);
+
+//(new XMLSerializer()).serializeToString(doc.getElementsByTagName("head")[0]);
+//need to loop through all divs and add manually, otherwise the styles for dragging/dropping do not work
+		    for (var i = 0, len = divs.length; i < len; i++) {
+		    	if (divs[i].nodeName.toLowerCase() == "div") {
+			    	var div_html = (new XMLSerializer()).serializeToString(divs[i]);
+			    	temp_comp = $(div_html).droppable(droppable_options)
+		    						  .sortable(sortable_options)
+		    						  .hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
+
+		    		comp_id = temp_comp.data("mlab-type");
+			        $('#mlab_editor_page').append(temp_comp)
+			        //temp_comp.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc;
+			        mlab_run_component_code(temp_comp, comp_id);
+//TODO major hack, find out why these events are added here, when not added when drag'n'drop 
+			        temp_comp.off("click mousedown remove");
+		    	}
+		    } // end loop inserting html for editing 
+
+//assign vars to current app var 
+			var body = doc.getElementsByTagName("body")[0];
+			while (body.firstChild) {
+				body.removeChild(body.firstChild);
+			}
+	        document.mlab_current_app.curr_page_html = doc;
+	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+		    
+		}
+		
+		function mlab_page_open(app_id, version, page_num) {
+			$.get( "/builder/editpage/open-page/id/" + app_id + "/version/" + version + "/page/"+ page_num, function( data ) {
+				if (data.result == "success") {
+					mlab_page_process ( data.html );
+				} else {
+					alert(data.msg);
+				}
+				
+			});
+		} 
+
+//to save a page we need to reassemble it, 
+//first clone current body from the editor 
+//clean it up using the onSave function 
+//then pick up doc variable which has empty body, then insert the cleaned elements
+//finally convert to text to send back
+		function mlab_page_save() {
+			var app_id = document.mlab_current_app.application_id;
+			var page_num = document.mlab_current_app.current_page;
+			var version = document.mlab_current_app.version;
+
+			
+			var new_body = $("#mlab_editor_page").clone(true, true).attr("id", "mlab_new_body");
+			var items = new_body.children();
+			for (var i = 0, len = items.length; i < len; i++) {
+				comp_id = $(items[i]).data("mlab-type");
+				if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
+					document["mlab_code_" + comp_id].onSave(items[i]);
+				}
+			}
+			var final_doc = document.mlab_current_app.curr_page_html;
+			final_doc.getElementsByTagName("body")[0].innerHTML = $(new_body).html();
+			var html = (new XMLSerializer()).serializeToString(final_doc);
+			
+			$.post( "/builder/editpage/save-page/id/" + app_id + "/version/" + version + "/page/"+ page_num, {html: html}, function( data ) {
+				if (data.result == "success") {
+					$("#mlab_status").text("Saved page");
+					mlab_flag_dirty = false;
+					
+				} else {
+					$("#mlab_status").text("Unable to save page: " + data.msg);
+				}
+				
+			});
+			
+		}
+		
+		function createAppWizard() {
+			$('#mlab_dialog_new_app').dialog('open');
+		}
+		
+		function updateAppWizard() {
+			$('#mlab_dialog_new_app').dialog('open');
+		}
+		
+/* General functions to manipulate components */
+//wrapper to call the getProperties function for a control if it exists 
+//this in turn will call the mlab_propterties_dialoge to display the dialoge 
+//when OK is clicked the setProperties function is called 
+		function mlabGetProperties(el) {
+			var comp = $(el).parent().parent();
+			if (typeof (document["mlab_code_" + comp.data("mlab-type")]) !== "undefined") {
+				document["mlab_code_" + comp.data("mlab-type")].getProperties(comp);
+			}
+		}
+
+		function mlabDeleteComponent(el) {
+			var comp = $(el).parent().parent();
+			mlab_buttons_item_manipulation = $(el).parent().detach();
+			comp.remove();
+		}
+
+//displays the drag/delete/proprty buttons, this is stored as a non-connected HTML fragment when not visible, see below 
+		function mlabShowComponentManipulationButtons(el) {
+			if ($(".mlab_buttons_item_manipulation").length > 0) { return; }
+			var h = $(el).outerHeight();
+			mlab_buttons_item_manipulation.css("margin-top", "-" + h + "px").appendTo($(el)).show();
+			if ($(el).data("properties") == true) {
+				$("#mlab_button_setproperty").show();
+			} else {
+				$("#mlab_button_setproperty").hide();
+			}
+		}
+		
+		function mlabHideComponentManipulationButtons() {
+			mlab_buttons_item_manipulation.hide();
+			mlab_buttons_item_manipulation = $(mlab_buttons_item_manipulation).detach();
+		}
+
+		function mlabRotateEditor() {
+			var h = $("#mlab_editor_page").height();
+			var w = $("#mlab_editor_page").width();
+			$("#mlab_editor_page").height(w).width(h);
+
+			if (w <= h) {
+				$("#mlab_button_rotate").addClass("portret");
+			} else {
+				$("#mlab_button_rotate").removeClass("portret");
+			}
+		}
+		
+//uses qtip to display a dialog getting input, this is positioned next to the properties button 
+//when the click on OK we will call the specified callback function 
+//The content is an object, certain predefined actions can be configured: 
+//upload: fileformats 
+//title: prompt 
+//url: string that is used as a URL 
+//latlong: position 
+		function mlab_properties_dialogue(title, explanation, fields, component_id, component) {
+			content = $('<form />', {id: "mlab_form_properties" });
+			content.append($('<p />', { text: explanation }));
+			
+			for (item in fields) {
+				if (item == "mlab_property_title") {
+					content.append( $('<label />', { 'text': 'Tittel:', 'for': item }) );
+					content.append( $('<input />', { id: item, name: item }) );
+					
+				} else if (item == "mlab_property_uploadfiles") {
+					content.append( $('<p />') );
+					content.append( $('<div />', { id: item, name: item, text: 'Velg filer', data: fields[item] }) );
+
+					content.append( $('<p />') );
+					content.append( $('<div />', { id: item + '_start', name: item + '_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
+					
+				} else if (item == "mlab_property_url") {
+					content.append( $('<label />', { 'text': 'URL:', 'for': item }) );
+					content.append( $('<input />', { id: item, name: item }) );
+					
+				} else if (item == "mlab_property_coordinates") {
+					content.append( $('<label />', { 'text': 'Latitude:', 'for': 'mlab_property_coordinates_lat' }) );
+					content.append( $('<input />', { id: 'mlab_property_coordinates_lat', name: 'mlab_property_coordinates_lat' }) );
+					content.append( $('<label />', { 'text': 'Longitude:', 'for': 'mlab_property_coordinates_long' }) );
+					content.append( $('<input />', { id: 'mlab_property_coordinates_long', name: 'mlab_property_coordinates_long' }) );
+					
+				}
+			}
+			content.append( $('<p />') );
+			content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall" }) );
+			content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right" }) );
+
+			this.component_id = component_id;
+			this.component = component;
+		    $(component).qtip({
+		        content: {text: content, title: title },
+		        position: { my: 'leftMiddle', at: 'rightMiddle' },
+		        show: { ready: true, modal: { on: true, blur: false } },
+		        hide: false,
+		        style: { classes: 'qtip-tipped' },
+		        events: { render: function(event, api) {
+			        			this.component = component;
+			        			this.component_id = component_id;
+
+//upload files
+			        			if ($("#mlab_property_button_ok").length > 0) {
+									var uploadObj = $("#mlab_property_uploadfiles").uploadFile({
+										url: "/builder/edit-page/upload-file-for-component",
+										formData: { comp_id: component_id, app_path: document.mlab_current_app.path, app_version: document.mlab_current_app.version },
+										multiple: $("#mlab_property_uploadfiles").data()["multiple"],
+										autoSubmit: false,
+										fileName: "mlab_files",
+										showStatusAfterSuccess: true,
+										allowedTypes: $("#mlab_property_uploadfiles").data()["allowedTypes"],
+										onSuccess: function(files, data, xhr) {
+													document["mlab_code_" + component_id].filesUploaded( files, data, this );
+													api.hide(); 
+											}.bind(component),
+										onError: function(files,status,errMsg) { 
+											alert(errMsg); 
+										}
+									});
+	
+									$("#mlab_property_uploadfiles_start").click(function() {
+										uploadObj.startUpload();
+									});
+			        			}
+		                		$('#mlab_property_button_ok', api.elements.content).click(	
+				                		function(e) {
+											api.hide(e); 
+											if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
+												document["mlab_code_" + component_id].setProperties( $("#mlab_form_properties").serializeArray(), this );
+											}
+			                			}.bind(component));
+		                		$('#mlab_property_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
+		            		},
+		            		hide: function(event, api) { api.destroy(); }
+		        }
+		    });
+		}
+
+		
+		
+		$(document).ready(function() {
+
+//must turn off content ediatble to be able to drag items, store it in data property so can turn it on again 
+    		$('#mlab_button_drag').mousedown(function(e) {
+        		var comp = $(this).parent().parent();
+        		if (comp.attr("contenteditable") == "true") {
+        			comp.removeAttr("contenteditable");
+        			comp.data("contenteditable", "true");
+        		}
+        		console.log(comp.data("mlab-type"));
+        		comp.trigger(e); 
+			});
+
+//hide buttons correctly (stored in a var when this is called) 
+    		mlabHideComponentManipulationButtons();
+    		
+    		window.onbeforeunload = function() {
+				if (mlab_flag_dirty) {
+    		    	return 'You have unsaved changes, do you want to lose these?';
+				}
+    		};
+    					
+    		$( "#mlab_dialog_help" ).dialog({
+    		      autoOpen: false,
+    		      show: { effect: "blind", duration: 500 },
+    		      hide: { effect: "blind", duration: 500 },
+    		      position: [1100,100]
+    		});
+
+			$( "#mlab_dialog_new_app" ).dialog({
+			    autoOpen: false,
+			    show: { effect: "blind", duration: 500 },
+			    hide: { effect: "blind", duration: 500 },
+			    width: 600,
+			    height: 500, 
+			    open: function () {
+			    	$(this).load("/builder/index/add", function() {
+			    		$('#base_on').ddslick();
+			    		$('#app-template_id').ddslick();
+			    		
+			    	});
+			    	
+			    }
+			});
+			
+			$( "#mlab_editor_page" ).droppable(droppable_options).sortable(sortable_options);
+
+			$( ".mlab_button_components" ).draggable({
+			      connectToSortable: "#mlab_editor_page",
+			      helper: "clone",
+			      revert: "invalid",
+			      opacity: 0.5,
+			      start: function () { mlab_drag_origin = 'draggable'; }
+			});
+			
+//we always load pages using AJAX, this takes the parameters from the URL, see index.phtml where it displays the list of apps 
+			var parameters = window.location.pathname.split(/\//);
+			var id = parameters[parameters.indexOf('id') + 1];
+			var page = parameters[parameters.indexOf('page') + 1];
+			var version = parameters[parameters.indexOf('version') + 1];
+			mlab_page_open(id, version, page);
+			
+		});
+
+		$(document).ready(function() {
+			//to get the help and user icon to vertical align with start posistion of the rotate icon
+return; //added by Arild temporary as changed IDs etc 
+			//get the left posison of the rotate icon relativ to the document
+			 var rot = $("#mlab_button_rotate");
+			 var rotoffset = rot.offset();
+			 var rotleft = rotoffset.left;
+			 
+			//set the left posison of the help icon so it lines up with the rotate icon
+			 var help = $("#mlab_button_help");
+			 help.offset({ left: rotleft });
+
+			//set the left posison of the user icon so posisoned after the help icon
+			 var helpoffset = help.offset();
+			 var helpleft = helpoffset.left;
+			 var helpwidth = help.width();
+			 var userpos = helpleft + helpwidth;
+			 var user = $("#mlab_button_user");
+
+			 user.offset({ left: userpos });
+			 
+			 //console.log(userpos);
+		
+		});
+		
+	</script>
+	<div id="mlab_status"></div>
+	<div id="mlab_dialog_new_app" class="hide"></div>
+
+{% endblock %}

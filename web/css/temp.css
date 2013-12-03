@@ -54,18 +54,25 @@ td.builder_app_publish {
 	
 }
 
-.builder_app_published {
+.builder_app_current_version_published {
 	background-image: url("/img/published.png");
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding: 8px;
+	padding-left: 20px;
+}
+
+.builder_app_old_version_published {
+	background-image: url("/img/edited.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 20px;
 }
 
 .builder_app_not_published {
 	background-image: url("/img/notPublished.png");
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding: 8px;
+	padding-left: 20px;
 }
 
 .builder_app_locked {

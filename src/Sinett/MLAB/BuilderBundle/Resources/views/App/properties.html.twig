@@ -1,0 +1,116 @@
+{% extends "::ajax.html.twig" %}
+
+{% block body -%}
+
+<div id="build_app_properties">
+	<ul>
+		{% if mode == 'add' %}
+	    	<li><a href="#builder_app_property_tabs-1">{% trans %}builder.choose.template.or.app{% endtrans %}</a></li>
+	    {% endif %}
+	    <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.details{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.more.details{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit{% endtrans %}</a></li>
+	  </ul>
+	  
+	{{ form_start(form) }}
+<!-- output list of templates and apps -->
+		{% if mode == 'add' %}
+			<div class="mlab_form_tab" id="builder_app_property_tabs-1">
+				<h2>{% trans %}builder_choose_template_or_app{% endtrans %}</h2>
+				<p>En app kan baseres på en mal eller en eksisterende app. Velg utgangspunktet for din app nedenfor</p>
+	
+			    <div>
+			        {{ form_label(form.template) }}
+			        {{ form_errors(form.template) }}
+			        {{ form_widget(form.template) }}
+			    </div>
+
+			    <div>
+			    	<label for="builder_app_copy_from">Base on form</label>
+			    	<select id="builder_app_copy_from" name="builder_app_copy_from" onclick='baseOn("app");'>
+			    		<option value=""></option>
+				    	{% for app in apps %}
+					    	<option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ cordova_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
+					    {% endfor %}
+				    </select>
+			    </div>
+
+			</div>
+		{% endif %}
+		
+<!-- name etc -->
+		<div class="mlab_form_tab" id="builder_app_property_tabs-2">
+		
+			<h2>{% trans %}builder.new.app.name.details{% endtrans %}</h2>
+			
+		    <div>
+		        {{ form_label(form.name) }}
+		        {{ form_errors(form.name) }}
+		        {{ form_widget(form.name) }}
+		    </div>
+			
+		    <div>
+		        {{ form_label(form.description) }}
+		        {{ form_errors(form.description) }}
+		        {{ form_widget(form.description) }}
+		    </div>
+			
+		    <div>
+		        {{ form_label(form.iconFile) }}
+		        {{ form_errors(form.iconFile) }}
+		        {{ form_widget(form.iconFile) }}
+		    </div>
+
+		    <div>
+		        {{ form_label(form.splashFile) }}
+		        {{ form_errors(form.splashFile) }}
+		        {{ form_widget(form.splashFile) }}
+		    </div>
+		    
+		</div>
+		
+<!-- classification etc -->
+		<div class="mlab_form_tab" id="builder_app_property_tabs-3">
+
+			<h2>{% trans %}builder.new.app.more.details{% endtrans %}</h2>
+			
+			<div>
+		        {{ form_label(form.keywords) }}
+		        {{ form_errors(form.keywords) }}
+		        {{ form_widget(form.keywords) }}
+		    </div>
+			
+			<div>
+		        {{ form_label(form.categoryOne) }}
+		        {{ form_errors(form.categoryOne) }}
+		        {{ form_widget(form.categoryOne) }}
+		    </div>
+
+			<div>
+		        {{ form_label(form.categoryTwo) }}
+		        {{ form_errors(form.categoryTwo) }}
+		        {{ form_widget(form.categoryTwo) }}
+		    </div>
+
+			<div>
+		        {{ form_label(form.categoryThree) }}
+		        {{ form_errors(form.categoryThree) }}
+		        {{ form_widget(form.categoryThree) }}
+		    </div>
+		    			
+		</div>
+		
+<!-- summary -->
+		<div class="mlab_form_tab" id="builder_app_property_tabs-4">
+			<h2>{% trans %}builder_new_app_submit{% endtrans %}</h2>
+			{{ form_errors(form) }}
+			{{ form_widget(form.save) }}
+		</div>
+	{{ form_end(form) }}
+</div>
+
+<button class="button_wizard" onclick="$('#build_app_properties').tabs('option', 'active', $('#build_app_properties').tabs('option', 'active') - 1);">{% trans %}<- Previous{% endtrans %}</button>
+<button class="button_wizard" onclick="$('#build_app_properties').tabs('option', 'active', $('#build_app_properties').tabs('option', 'active') + 1);">{% trans %}Next ->{% endtrans %}</button>
+
+
+{% endblock %}

@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\App;
 use Sinett\MLAB\BuilderBundle\Form\AppType;
+use Sinett\MLAB\BuilderBundle\Entity\Template;
+use Sinett\MLAB\BuilderBundle\Entity\Component;
 
 /**
  * App controller.
@@ -33,7 +35,13 @@ class AppController extends Controller
     
     /**
      * Creates a new App entity.
-     *
+     * It receives relevant data from a regular SYmfony form, then it will (if data is valid):
+     * 1: Determine if this is based on a template or an app
+     * 2: If app, copy it across
+     * 3: If template, 
+     * 3.1: Try to generate the new app using cordova command line options
+     * 3.2: If successful, copy across base files from template
+     * 4: If 2 or 3.x is successful, redirect to edit the app
      */
     public function createAction(Request $request)
     {
@@ -42,21 +50,15 @@ class AppController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            die("OK");
+        	$em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
 
-            return new JsonResponse(array('db_table' => 'app',
-            		'action' => 'ADD',
-            		'db_id' => $entity->getId(),
-            		'result' => 'SUCCESS',
-            		'record' => $this->renderView('SinettMLABBuilderBundle:App:show.html.twig', array('entity' => $entity))));
         }
 
-        return new JsonResponse(array('db_table' => 'app',
-        			'db_id' => 0,
-        			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        die("notOK");
+        
     }
 
     /**
@@ -84,13 +86,41 @@ class AppController extends Controller
      */
     public function newAction()
     {
-        $entity = new App();
-        $form   = $this->createCreateForm($entity);
-
-        return $this->render('SinettMLABBuilderBundle:App:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
+    	$em = $this->getDoctrine()->getManager();
+    	
+    	$entity = new App();
+    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
+    	$url_apps = $this->container->parameters['mlab']['urls']['app'];
+    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
+    	$cordova_icon_path = $this->container->parameters['mlab']['cordova']['icon_path'];
+    	
+        $form = $this->createFormBuilder($entity)
+        								  ->setAction($this->generateUrl("app_create"))
+        								  ->setMethod('POST')
+									      ->add('name')
+									      ->add('description')
+									      ->add('iconFile', 'file')
+									      ->add('splashFile', 'file')
+									      ->add('keywords')
+									      ->add('categoryOne')
+									      ->add('categoryTwo')
+									      ->add('categoryThree')
+									      ->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => ''))
+									      ->add('save', 'submit')
+        								  ->getForm();
+        
+        return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
+        	'entity' => $entity,
+        	'apps' => $apps,
+        	'templates' => $templates,
+            'form' => $form->createView(),
+        	'mode' => 'add',
+        	'url_templates' => $url_templates,
+        	'url_apps' => $url_apps,
+        	'cordova_icon_path' => $cordova_icon_path,
         ));
+        
     }
 
     /**
@@ -128,13 +158,29 @@ class AppController extends Controller
             throw $this->createNotFoundException('Unable to find App entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+        $templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
         
-
-        return $this->render('SinettMLABBuilderBundle:App:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            
+        $editForm = $this->createFormBuilder($entity)
+								        ->setAction($this->generateUrl('app_update', array('id' => $entity->getId())))
+								        ->setMethod('POST')
+								        ->add('name')
+								        ->add('description')
+								        ->add('iconFile', 'file')
+								        ->add('splashFile', 'file')
+								        ->add('keywords')
+								        ->add('categoryOne')
+								        ->add('categoryTwo')
+								        ->add('categoryThree')
+								        ->add('save', 'submit', array('label' => 'Update'))
+								        ->getForm();
+        
+        return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
+        		'entity' => $entity,
+        		'apps' => $apps,
+        		'templates' => $templates,
+        		'form' => $editForm->createView(),
+        		'mode' => 'edit'
         ));
     }
 
@@ -254,15 +300,33 @@ class AppController extends Controller
     }
     
     /**
-     * Opens an app on the front page, just a matter of using a regular call
+     * Opens an app on the front page:
+     * 1: Check page is not locked
+     * 2: Lock it
+     * 3: Unlock all other pages!
+     * 4: Render page
+     * 5: In page use getPageHtml() call in this controller
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editAppAction($id, $version, $page_num)
+    public function buildAppAction($id, $version, $page_num)
     {
-    	$html_for_app_page = $this->getPage($id, $version, $page_num);
-    
-    	return $this->render('SinettMLABBuilderBundle:App:edit_app.html.twig', array(
-    			'html_for_app_page' => $html_for_app_page,
+    	$em = $this->getDoctrine()->getManager();
+    	$components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllByGroups($this->getUser()->getGroups());
+    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findById($id);
+    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
+    	$url_css = $this->container->parameters['mlab']['urls']['css'];
+    	$component_icon_path = $this->container->parameters['mlab']['filenames']['component_icon'];
+    	
+    	
+    	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
+    			"mlab_app_page_num" => $page_num,
+    			"mlab_app_id" => $id, 
+    			"mlab_app_version" => $version, 
+    			"mlab_components" => $components,
+    			"mlab_app" => $app,
+    			"mlab_url_templates" => $url_templates,
+    			"mlab_url_css" => $url_css,
+    			"mlab_component_icon_path" => $component_icon_path,
     	));
     }
     

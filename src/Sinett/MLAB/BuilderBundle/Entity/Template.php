@@ -341,4 +341,19 @@ class Template
     {
         return $this->apps;
     }
+    
+    /**
+     * Returns all properties as an array
+     */
+    public function getArray() {
+    	return array(
+    			'id' => $this->id,
+    			'name' => $this->name,
+    			'path' => $this->path,
+    			'description' => $this->description,
+    			'version' => $this->version,
+    			'groups' => $this->groups,
+    			'enabled' => $this->enabled
+    	);
+    }    
 }

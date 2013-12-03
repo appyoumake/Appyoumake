@@ -86,11 +86,29 @@ class App
      */
     private $groups;
 
+    const MARKET_NOT_PUBLISHED = 0;
+    const MARKET_OLD_VERSION = 1;
+    const MARKET_CURRENT_VERSION = 2;
+    
     /**
      * @var boolean
      */
-    private $published;
+    private $published = self::MARKET_NOT_PUBLISHED;
     
+    /**
+     * zip file that is uploaded
+     */
+    private $zip_file;
+    
+    /**
+     * icon that is uploaded
+     */
+    private $icon_file;
+    
+    /**
+     * splah image that is uploaded
+     */
+    private $splash_file;
     
     /**
      * Constructor
@@ -525,8 +543,72 @@ class App
     		'updatedBy' => $this->updatedBy,
     		'groups' => $this->groups,
     		'published' => $this->published,
+    		'enabled' => $this->enabled,
     		'locked_pages' => array() //this is an array that will have the pages that are locked as an array
     		);
     }
+    
+/**** FILES RELATED TO AN APP ****/
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setZipFile(UploadedFile $zip_file = null)
+    {
+    	$this->zip_file = $zip_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getZipFile()
+    {
+    	return $this->zip_file;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setIconFile(UploadedFile $icon_file = null)
+    {
+    	$this->icon_file = $icon_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getIconFile()
+    {
+    	return $this->icon_file;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setSplashFile(UploadedFile $splash_file = null)
+    {
+    	$this->splash_file = $splash_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getSplashFile()
+    {
+    	return $this->splash_file;
+    }
+    
+    
 
 }

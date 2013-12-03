@@ -2,7 +2,9 @@
 
 {% block body -%}
 
-    <h1>App list</h1>
+    <h1>Apps</h1>
+	<p>{% trans %}builder.welcome.info{% endtrans %}</p>
+	<p><a onclick="newApp(); return false;">{% trans %}New app{% endtrans %}</a></p>
 
     <table class="records_list" id="table_app">
         <thead>
@@ -18,17 +20,17 @@
 	        {% for app in apps %}
 		        <tr id="row_app_{{ app.id }}">
 				    <td class="builder_appname">
-				    	<a href="{{ path('app_builder_editor', { 'id': app.id, 'version': app.version, 'page_num': 1 }) }}">{{ app.name }}</a>
+				    	<a href="{{ path('app_builder_editor', { 'id': app.id, 'version': app.version, 'page_num': 'last' }) }}">{{ app.name }}</a>
 				    </td>
 				    <td class="builder_app_actions {% if app.locked_pages %}builder_app_locked{% endif %}">
-				    	<a class="builder_app_properties" onclick="{% if not app.locked_pages %} editAppProperties({{ app.id }}); {% endif %}return false;"></a>
+				    	<a class="builder_app_properties" onclick="editAppProperties({{ app.id }}); return false;"></a>
 				    </td>
-				    <td class="builder_app_publish_status">
-				    	<a class="{% if app.published %}builder_app_published{% else %}builder_app_not_published{% endif %}">&nbsp;</a>
+			    	{# TODO: fix this constant stuff #}
+				    <td class="{% if app.published == 0 %}builder_app_not_published{% elseif app.published == 1 %}builder_app_old_version_published{% else %}builder_app_current_version_published{% endif %}">
 				    	<a class="builder_app_publish" onclick="publishApp({{ app.id }}); return false;">&nbsp;</a>
 				    </td>
 				    <td>
-				    	{{ app.version }}
+				    	<span class="builder_app_version">{{ app.version }}</span>
 				    	<a class="builder_app_newversion" href="{{ path('app_builder_copy_app', { 'id': app.id, 'version': app.version }) }}">&nbsp;</a>
 				    </td>
 				    <td>{% if app.updated %}{{ app.updated|date('Y-m-d H:i:s') }}{% endif %}</td>
@@ -36,5 +38,51 @@
 	        {% endfor %}
         </tbody>
     </table>
-    
+    <div id="builder_dialog_new_app"></div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('/js/ddslick.js') }}"></script>
+	<script>
+		var url_new = "{{ path('app_new') }}";
+		var url_edit = "{{ path('app_edit', {id: 0} ) }}";
+		
+		$(document).ready(function() {
+
+			$("#builder_dialog_new_app").dialog( {
+					title: "{% trans %}App details{% endtrans %}",
+					autoOpen: false,
+				    show: { effect: "blind", duration: 500 },
+				    hide: { effect: "blind", duration: 500 },
+				    width: 900,
+				    height: 500,
+				    modal: true,
+				});
+			
+		});
+
+		/**
+		 * Opens up the properties dialog and displays a blank form
+		*/
+		function newApp () {
+			$("#builder_dialog_new_app").load(url_new, function() {
+				$('#builder_app_copy_from').ddslick();
+	    		//$('#form_template').ddslick();
+	    		$( "#build_app_properties" ).tabs();
+	    	}).dialog("open");
+		};
+		
+		/**
+		 * Opens up the properties dialog for a given app, uses the predefiend URL and replaces the 0 placeholder
+		*/
+		function editAppProperties (id) {
+			var url_temp = url_edit.replace(/0/ , id);
+			console.log(url_temp);
+			$("#builder_dialog_new_app").load(url_temp, function() {
+	    		$( "#build_app_properties" ).tabs();
+	    	}).dialog("open");
+		};
+		
+	</script>
 {% endblock %}

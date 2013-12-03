@@ -38,13 +38,13 @@ app_recall:
 
 app_builder_index:
     path:   /builder/
-    defaults: { _controller: SinettMLABBuilderBundle:App:builder }
+    defaults: { _controller: "SinettMLABBuilderBundle:App:builder" }
 
 app_builder_editor:
-    path:   /builder/{id}/{version}/{page_num}/edit
-    defaults: { _controller: SinettMLABBuilderBundle:App: editApp }
+    path:   /builder/{id}/{version}/{page_num}/build
+    defaults: { _controller: "SinettMLABBuilderBundle:App:buildApp" }
 
 app_builder_copy_app:
     path:   /builder/{id}/{version}/copy
-    defaults: { _controller: SinettMLABBuilderBundle:App: copyApp }
+    defaults: { _controller: "SinettMLABBuilderBundle:App:copyApp" }
 

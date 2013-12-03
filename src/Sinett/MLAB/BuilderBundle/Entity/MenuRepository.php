@@ -20,7 +20,6 @@ class MenuRepository extends EntityRepository
 	 * @return array of menu items
 	 */
 	public function findMenuItems($user, $filter_url, $role_hierarchy) {
-
 		$roles = $menus = array();
 
 //roles can contain roles that contain roles, pick up top level first, then loop through to get rest
@@ -38,7 +37,7 @@ class MenuRepository extends EntityRepository
 
 		$sql = "SELECT m FROM SinettMLABBuilderBundle:Menu AS m
 		WHERE m.parentId = 0
-		AND (COALESCE(m.filterUrl, '') = '' OR m.filterUrl = '{$filter_url}%')
+		AND (COALESCE(m.filterUrl, '') = '' OR m.filterUrl LIKE '{$filter_url}%')
 		AND (COALESCE(m.filterRole, '') = '' OR m.filterRole IN('{$filter_roles}'))
 		ORDER BY m.orderBy";
 		

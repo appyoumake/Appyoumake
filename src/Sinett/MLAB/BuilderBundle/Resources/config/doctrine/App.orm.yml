@@ -69,10 +69,10 @@ Sinett\MLAB\BuilderBundle\Entity\App:
             default: true
             
       published:
-          type: boolean
+          type: integer
           nullable: true
           options:
-            default: false
+            default: 0
             
       created:
         type: date

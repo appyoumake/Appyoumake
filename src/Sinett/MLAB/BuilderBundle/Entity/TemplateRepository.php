@@ -12,4 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class TemplateRepository extends EntityRepository
 {
+	/**
+	 * Returns a list of all templates that is allowed for the specified groups
+	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
+	 */
+	public function findAllByGroups ( $groups) {
+		$templates = array();
+		foreach ($groups as $group) {
+			$temp_templates = $group->getTemplates();
+			foreach ($temp_templates as $temp_template) {
+				$templates[$temp_template->getId()] = $temp_template->getArray();
+			}
+		}
+		return $templates;
+	}
+	
+	
 }
