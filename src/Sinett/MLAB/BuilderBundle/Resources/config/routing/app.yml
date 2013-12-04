@@ -44,6 +44,10 @@ app_builder_editor:
     path:   /builder/{id}/{version}/{page_num}/build
     defaults: { _controller: "SinettMLABBuilderBundle:App:buildApp" }
 
+app_builder_page_get:
+    path:   /builder/{app_id}/{version}/{page_num}/page_get
+    defaults: { _controller: "SinettMLABBuilderBundle:App:getPage" }
+
 app_builder_copy_app:
     path:   /builder/{id}/{version}/copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyApp" }

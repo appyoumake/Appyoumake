@@ -16,6 +16,11 @@ class FileManagement {
         $this->config = $mlab;
     }
 	
+    /**
+     * Little kludge, we use same code for all uploads, here we specify which type we are working with and set certain variables based on that, 
+     * helps to make this independednt from parameters, etc
+     * @param unknown $entity_type
+     */
     public function setConfig($entity_type) {
     	$this->entity_type = $entity_type;
     	$this->required_files = $this->config['verify_uploads'][$entity_type];
@@ -118,5 +123,57 @@ class FileManagement {
 			}
 		  
 		}
+	}
+	
+	/**
+	 * This loads *all components*, the user's access to it is noted in the accessible element
+	 * This is because they may not have access to a component, but they need it in an existing app that they are given rights to...
+	 * We therefore load all, but do not display them in the editor. 
+	 * @param array $access: what components are they allowed to access
+	 * @param string $path
+	 * @param string $config: data from parameters.yml
+	 * @throws \Exception
+	 * @return array
+	 */
+	function loadComponents($access, $path, $config) {
+		
+		$components = array();
+		if ($handle = opendir($path)) {
+			while (false !== ($entry = readdir($handle))) {
+				$comp_dir = $path . $entry . "/";
+				
+				if ( is_dir($comp_dir) && substr($entry, 0, 1) != "." ) {
+//always add html, rest we add content or set bool values that will let us know what to do later
+						$components[$entry] = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
+								"js" => file_exists("$comp_dir$entry.js"),
+								"exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
+								"exec_server" => file_exists($comp_dir . $config["PHP"]),
+								"rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
+								"conf" => @file_get_contents($comp_dir . $config["CONFIG"]),
+								"accessible" => in_array($entry, $access)); //we hide 
+	
+//convert the conf.text to an associative array, this way can use it a a lookup
+						if ($components[$entry]["conf"] !== false) {
+							$tmp = explode("\n", $components[$entry]["conf"]);
+							$components[$entry]["conf"] = array();
+							foreach ($tmp as $line) {
+								$line = trim($line);
+								if (strlen($line) > 0 && substr($line, 0, 1) != ";") {
+									list($key, $val) = explode("=", $line);
+									$components[$entry]["conf"][$key] = $val;
+								}
+							}
+						}
+						
+//tooltips are in the conf file (or not!), so add it here, or blank if none
+						$components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
+				}
+			}
+			
+		} else {
+			throw new \Exception("Unable to load components");
+		}
+		ksort($components);
+		return $components;
 	}
 }

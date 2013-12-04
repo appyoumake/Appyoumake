@@ -28,4 +28,21 @@ class ComponentRepository extends EntityRepository
 		return $components;
 	}
 	
+	/**
+	 * Returns an array of *paths* of all components that is allowed for the specified groups
+	 * This path = the internal component type/name which = the folder name of the component
+	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
+	 */
+	public function findAccessByGroups ( $groups) {
+		$components = array();
+		foreach ($groups as $group) {
+			$temp_components = $group->getComponents();
+			foreach ($temp_components as $temp_component) {
+				$components[] = $temp_component->getPath();
+			}
+		}
+		return $components;
+	}
+	
+	
 }

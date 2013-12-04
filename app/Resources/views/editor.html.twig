@@ -10,15 +10,16 @@
 			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.megamenu.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
+			<link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body class="mlab_base">
+    <body class="mlab_editor">
     	<div class="mlab_min_page_width">
     		<div class="mlab_align_menu_elements">
-    		{% if app.user %}
-    			{{ render(controller('SinettMLABBuilderBundle:Menu:buildMenu', {'path': "/builder/1/1/last/build" } )) }}
-	    	{% endif %}
+	    		{% if app.user %}
+	    			{{ render(controller('SinettMLABBuilderBundle:Menu:buildMenu', {'path': path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) } )) }}
+		    	{% endif %}
 	    	<div class="container">
 	 			{% block body %}{% endblock %}
 	 		</div>
@@ -28,6 +29,7 @@
 	        	<script src="{{ asset('/js/jquery.uploadfile.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.qtip.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.megamenu.js') }}"></script>  
+	        	<script src="{{ asset('/js/ddslick.js') }}"></script>
 		        <script type="text/javascript">	 
 			        $(document).ready(function() {
 			        	jQuery("#mlab_megamenu").megamenu();

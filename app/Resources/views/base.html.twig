@@ -16,9 +16,9 @@
     <body class="mlab_base">
     	<div class="mlab_min_page_width">
     		<div class="mlab_align_menu_elements">
-    		{% if app.user %}
-	    		{{ render(controller('SinettMLABBuilderBundle:Menu:buildMenu', {'path': path(app.request.attributes.get('_route')) } )) }}
-	    	{% endif %}
+	    		{% if app.user %}
+	    			{{ render(controller('SinettMLABBuilderBundle:Menu:buildMenu', {'path': path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) } )) }}
+		    	{% endif %}
 	    	<div class="container">
 	 			{% block body %}{% endblock %}
 	 		</div>

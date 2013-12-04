@@ -548,6 +548,35 @@ class App
     		);
     }
     
+    /**
+     * Returns all properties as an array, it also has a placeholder for the pages that are locked
+     */
+    public function getArrayFlat() {
+    	$groups = array();
+    	foreach ($this->groups as $group) {
+    		$groups[] = $group->getName();
+    	}
+    	return array(
+    			'id' => $this->id,
+    			'name' => $this->name,
+    			'path' => $this->path,
+    			'description' => $this->description,
+    			'keywords' => $this->keywords,
+    			'version' => $this->version,
+    			'created' => $this->created->format('Y-m-d H:i:s'),
+    			'updated' => $this->updated->format('Y-m-d H:i:s'),
+    			'categoryOne' => !empty($this->categoryOne) ? $this->categoryOne->getName() : "",
+    			'categoryTwo' => !empty($this->categoryTwo) ? $this->categoryTwo->getName() : "",
+    			'categoryThree' => !empty($this->categoryThree) ? $this->categoryThree->getName() : "",
+    			'template' => $this->template->getName(),
+    			'user' => $this->user->getUserName(),
+    			'updatedBy' => $this->updatedBy->getUserName(),
+    			'groups' => $groups,
+    			'published' => $this->published,
+    			'enabled' => $this->enabled,
+    			'locked_pages' => array() //this is an array that will have the pages that are locked as an array
+    	);
+    }    
 /**** FILES RELATED TO AN APP ****/
     /**
      * Sets file.

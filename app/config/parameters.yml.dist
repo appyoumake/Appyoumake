@@ -23,21 +23,28 @@ parameters:
           app: /mlab_elements/apps/
           component: /mlab_elements/components/
           template: /mlab_elements/templates/
+          
+        filenames:
+          component_icon: icon.png
         
 # paths etc for cordova
         cordova:
-          bin_path: /opt/cordova-2.6.0/bin/
+          default_platform: android
+          bin_path: 
+              android: /opt/cordova-3.2.0/cordova-android/bin
           platform_paths:
-              android: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools"]
+              android: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
           app_creator_identifier: no.ffi.sinett
           asset_path: /assets/www/
+          icon_path: /assets/www/res/icon/android/icon-72-hdpi.png
             
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
-            template: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, description.txt ]
-            component: [ html.txt, icon.png, exec.js ]
-            app: [ html.txt, icon.png ]
-    
+            template: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
+            component: [ html.txt, icon.png, exec.js, conf.txt ]
+            app: [ asset/www ]
+            
+        component_files: { ICON: icon.png, HTML: html.txt, CONFIG: conf.txt, SCRIPTS: exec.js, PHP: exec.php, RIGHTS: rights.xml }
         
         app:
             copy_files: { frontpage.html: index.html, page.html: 001.html, js: js, css: css, img: img }

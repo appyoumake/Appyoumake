@@ -8,17 +8,17 @@
 {# top level menus *with* children have extra div under and additional class #}
 		{% if menu_item.children %}
 			<li class='mlab_menu_top_children {{ menu_item.class }}'>
-				<a class='header'>{{ menu_item.contentHtml }}</a>
+				<a class='header'>{{ menu_item.contentHtml|raw }}</a>
 				<div class='mlab_menu_content'>
 					{% for menu_child_item in menu_item.children %}
-						<div><a class='{{ menu_child_item.class}}' href='{{ menu_child_item.url }}'>{{ menu_child_item.contentHtml }}</a></div>
+						<div><a class='{{ menu_child_item.class}}' href='{{ menu_child_item.url }}'>{{ menu_child_item.contentHtml|raw }}</a></div>
 					{% endfor %}
 				</div>
 			</li>
 
 		{% else %}
 			<li class='{{ menu_item.class }}'>
-				<div><a class='{{ menu_item.class}}' href='{{ menu_item.url }}'>{{ menu_item.contentHtml }}</a></div>
+				<div><a class='{{ menu_item.class}}' href='{{ menu_item.url }}'>{{ menu_item.contentHtml|raw }}</a></div>
 			</li>
 
 		{% endif %}

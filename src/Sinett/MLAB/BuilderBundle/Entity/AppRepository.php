@@ -26,6 +26,6 @@ class AppRepository extends EntityRepository
 			}
 		}
 		return $apps;
-	} 
+	}
 	
 }

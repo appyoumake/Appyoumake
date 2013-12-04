@@ -1,0 +1,6 @@
+<h1>H1 enter headline here</h1>
+<script type="text/javascript">
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		alert("hi from H1");
+	}	
+</script>

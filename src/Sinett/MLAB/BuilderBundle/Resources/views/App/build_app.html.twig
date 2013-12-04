@@ -1,7 +1,6 @@
 {% extends '::editor.html.twig' %}
 
 {% block body -%}
-
 <!-- This is the actual content of the page, very little is required as it is loaded from external files -->	
 	<div id="mlab_template_warning"></div>	                     
 	
@@ -12,9 +11,9 @@
 	</div>
 		
 	<div id="mlab_toolbar_components">
-		{{ for component in mlab_components }}
-			<div data-mlab-type='{{ component.path }}' title='{{ component.description }}' class='mlab_button_components' style='background-image: url("{{ mlab_url_css ~ component.path ~ mlab_component_icon_path}}");'></div>";
-		}}
+		{% for type, component in mlab_components if component.accessible %}
+			<div data-mlab-type='{{ type }}' title='{{ component.tooltip }}' class='mlab_button_components' style='background-image: url("{{ mlab_config.paths.component ~ type ~ '/' ~ mlab_config.component_files.ICON }}");'></div>
+		{% endfor %}
 	</div>
 	<div id="mlab_editor_chrome">
 		<div id="mlab_editor_page"></div>
@@ -22,125 +21,137 @@
 	</div>
 
 	<div title="Use this to rotate the device" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
-	
-	
+	<div id="mlab_status"></div>
+	<div id="mlab_dialog_new_app" class="hide"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
 	<script type="text/javascript">	 
-	/*
-	 * DOMParser HTML extension
-	 * 2012-09-04
-	 * 
-	 * By Eli Grey, http://eligrey.com
-	 * Public domain.
-	 * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
-	 */
-
-	/*! @source https://gist.github.com/1129031 */
-	/*global document, DOMParser*/
-  
 	
-	(function(DOMParser) {
-		"use strict";
+//first set a few variables that are carried over from the server side 
 
-		var
-		  DOMParser_proto = DOMParser.prototype
-		, real_parseFromString = DOMParser_proto.parseFromString
-		;
-
-		// Firefox/Opera/IE throw errors on unsupported types
-		try {
-			// WebKit returns null on unsupported types
-			if ((new DOMParser).parseFromString("", "text/html")) {
-				// text/html parsing is natively supported
-				return;
-			}
-		} catch (ex) {}
-
-		DOMParser_proto.parseFromString = function(markup, type) {
-			if (/^\s*text\/html\s*(?:;|$)/i.test(type)) {
-				var doc = document.implementation.createHTMLDocument("") ;
-	      		if (markup.toLowerCase().indexOf('<!doctype') > -1) {
-        			doc.documentElement.innerHTML = markup;
-      			}
-      			else {
-        			doc.body.innerHTML = markup;
-      			}
-				return doc;
-			} else {
-				return real_parseFromString.apply(this, arguments);
-			}
-		};
-	}(DOMParser));
-	
-//constants/paths, carried over from config files in Zend (specifically /mlab-base/src/config/autoload/mlabcore.local.php) 
-		<?php foreach ($this->environment as $key => $value) { echo "var $key = '$value';\n"; } ?>
-
+//configuration stuff from parameter.yml
+		mlab_config = {{ mlab_config|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 //current app/page information 
-		document.mlab_current_app = <?php print json_encode($this->app_details); ?>;
-
+		document.mlab_current_app = {{ mlab_app|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 //list of components 
-		var mlab_components = <?php print json_encode($this->mlab_components); ?>;
-		var mlab_buttons_item_manipulation = $("#mlab_buttons_item_manipulation");
-		var mlab_flag_dirty = false;
-		var mlab_drag_origin = 'sortable';
+		mlab_components = {{ mlab_components|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 
-		var droppable_options = {
-			    drop: function( event, ui ) {
-				    if (mlab_drag_origin === 'draggable') {
-						mlab_drag_origin = 'sortable';
+//constants/paths which are defined in parameteres.yml, a single object called mlab_config with everything in parameters.yml as sub objects
+// so to get path of cordova executables we use mlab_config.cordova.bin_path, etc 
+		mlab_buttons_item_manipulation = $("#mlab_buttons_item_manipulation");
+		mlab_flag_dirty = false;
+		mlab_drag_origin = 'sortable';
+		mlab_url_new = "{{ path('app_new') }}";
+		mlab_url_edit = "{{ path('app_edit', {id: '_ID_'} ) }}";
+
+		droppable_options = {
+		    drop: function( event, ui ) {
+			    if (mlab_drag_origin === 'draggable') {
+					mlab_drag_origin = 'sortable';
 						
 //replace the cloned drag item with relevant HTML code from the component 
-				    	var id = $(ui.draggable[0]).data("mlab-type");
-			    		ui.draggable.empty().append(mlab_components[id].html);
-			    		ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
-			    		ui.draggable.hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
-			    		
-			    		mlab_run_component_code(ui.draggable, id);
+			    	var id = $(ui.draggable[0]).data("mlab-type");
+		    		ui.draggable.empty().append(mlab_components[id].html);
+		    		ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
+		    		ui.draggable.hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
+		    		
+		    		mlab_run_component_code(ui.draggable, id);
 						
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
 //this is ONLY done if exec_server = true 
-						if (mlab_components[id].exec_server !== false) {
-							var new_component = ui.draggable;
-							var request = $.ajax({
-								type: "GET",
-								url: "/builder/edit-page/component-added",
-								data: { comp_id: id, app_path: document.mlab_current_app.path, app_version: document.mlab_current_app.version },
-								dataType: "json"
-							});
+					if (mlab_components[id].exec_server !== false) {
+						var new_component = ui.draggable;
+						var request = $.ajax({
+							type: "GET",
+							url: "/builder/edit-page/component-added",
+							data: { comp_id: id, app_path: document.mlab_current_app.path, app_version: document.mlab_current_app.version },
+							dataType: "json"
+						});
+
+						request.done(function( result ) {
+							if (result.result == "success") {
+								console.log("success");
+							} else {
+								alert(result.msg + "'\n\nLegg til komponenten igjen.");
+								$(new_component).remove();
+							}
+						});
+							 
+						request.fail(function( jqXHR, textStatus ) {
+							alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
+							$(new_component).remove(); 
+						});
+					}
+					
+		    	}
+			    mlab_flag_dirty = true;
+		    }
+		};
 	
-							request.done(function( result ) {
-								if (result.result == "success") {
-									console.log("success");
-								} else {
-									alert(result.msg + "'\n\nLegg til komponenten igjen.");
-									$(new_component).remove();
-								}
-							});
-								 
-							request.fail(function( jqXHR, textStatus ) {
-								alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
-								$(new_component).remove(); 
-							});
-						}
-						
-			    	}
-				    mlab_flag_dirty = true;
-			    }
-			};
-		
-		var sortable_options = { 
-				placeholder: "mlab_component_placeholder", 
-				revert: false, 
-				helper: "clone",
-				cancel: "[contenteditable]",
-				stop: function(event, ui){
+		var sortable_options = {
+			placeholder: "mlab_component_placeholder", 
+			revert: false, 
+			helper: "clone",
+			cancel: "[contenteditable]",
+			stop: function(event, ui){
 //make editable after dragging to sort								
-					if (mlab_drag_origin == 'sortable' && ui.item.data("contenteditable") == "true") { 
-						ui.item.attr("contenteditable", "true");
-					};
-					mlab_flag_dirty = true;
+				if (mlab_drag_origin == 'sortable' && ui.item.data("contenteditable") == "true") { 
+					ui.item.attr("contenteditable", "true");
+				};
+				mlab_flag_dirty = true;
+			}
+		};
+
+/*
+ * DOMParser HTML extension
+ * 2012-09-04
+ * 
+ * By Eli Grey, http://eligrey.com
+ * Public domain.
+ * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+ */
+
+/*! @source https://gist.github.com/1129031 */
+/*global document, DOMParser*/
+  
+		
+		(function(DOMParser) {
+			"use strict";
+	
+			var
+			  DOMParser_proto = DOMParser.prototype
+			, real_parseFromString = DOMParser_proto.parseFromString
+			;
+	
+			// Firefox/Opera/IE throw errors on unsupported types
+			try {
+				// WebKit returns null on unsupported types
+				if ((new DOMParser).parseFromString("", "text/html")) {
+					// text/html parsing is natively supported
+					return;
+				}
+			} catch (ex) {}
+	
+			DOMParser_proto.parseFromString = function(markup, type) {
+				if (/^\s*text\/html\s*(?:;|$)/i.test(type)) {
+					var doc = document.implementation.createHTMLDocument("") ;
+		      		if (markup.toLowerCase().indexOf('<!doctype') > -1) {
+	        			doc.documentElement.innerHTML = markup;
+	      			}
+	      			else {
+	        			doc.body.innerHTML = markup;
+	      			}
+					return doc;
+				} else {
+					return real_parseFromString.apply(this, arguments);
 				}
 			};
-
+		}(DOMParser));
+	
 		function mlab_run_component_code(el, comp_id) {
 //execute the javascript if it exists, we first need to attach it to document so we can use it globally 
 			if (mlab_components[comp_id].exec_browser !== false && (typeof (document["mlab_code_" + comp_id]) === "undefined")) {
@@ -157,34 +168,34 @@
 		}
 
 /* Utility functions to ensure that the CSS is only applied to the editor */
-function renderCSSForSelector(css, selector) {
-    return css.replace(/\n|\t/g, " ").replace(/\s+/g, " ").replace(/\s*\/\*.*?\*\/\s*/g, " ").replace(/(^|\})(.*?)(\{)/g, function($0, $1, $2, $3) {
-        var collector = [], parts = $2.split(",");
-        for (var i in parts)
-            collector.push(selector + " " + parts[i].replace(/^\s*|\s*$/, ""));
-        return $1 + " " + collector.join(", ") + " " + $3;
-    });
-}
-
-function applyCSSToElement(css, elementSelector) {
-	var styles = renderCSSForSelector(css, elementSelector);
-    $("head").append("<style type=\"text/css\">" + styles + "</style>");
-}
-
-function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbackError) {
-    callbackSuccess = callbackSuccess || function(){};
-    callbackError = callbackError || function(){};
-    $.ajax({
-        url: cssUrl,
-        success: function(data) {
-            applyCSSToElement(data, elementSelector);
-            callbackSuccess();
-        },
-        error: function(jqXHR) {
-            callbackError();
-        }
-    })
-}
+		function renderCSSForSelector(css, selector) {
+		    return css.replace(/\n|\t/g, " ").replace(/\s+/g, " ").replace(/\s*\/\*.*?\*\/\s*/g, " ").replace(/(^|\})(.*?)(\{)/g, function($0, $1, $2, $3) {
+		        var collector = [], parts = $2.split(",");
+		        for (var i in parts)
+		            collector.push(selector + " " + parts[i].replace(/^\s*|\s*$/, ""));
+		        return $1 + " " + collector.join(", ") + " " + $3;
+		    });
+		}
+		
+		function applyCSSToElement(css, elementSelector) {
+			var styles = renderCSSForSelector(css, elementSelector);
+		    $("head").append("<style type=\"text/css\">" + styles + "</style>");
+		}
+		
+		function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbackError) {
+		    callbackSuccess = callbackSuccess || function(){};
+		    callbackError = callbackError || function(){};
+		    $.ajax({
+		        url: cssUrl,
+		        success: function(data) {
+		            applyCSSToElement(data, elementSelector);
+		            callbackSuccess();
+		        },
+		        error: function(jqXHR) {
+		            callbackError();
+		        }
+		    })
+		}
 		
 /* functions to open and save a page */
  
@@ -200,11 +211,11 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 		function mlab_page_process (page) {
             var comp_id, temp_comp, temp_link;
             var temp_stylesheets = "";
-            var start_dir = "<?php echo $this->environment["MLAB_URL_APPS_ROOT"]; ?>" + document.mlab_current_app.path + "/" + document.mlab_current_app.version + "<?php echo $this->environment["MLAB_URL_CORDOVA_SUBDIR"]; ?>";
+            var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
             
 //remove old stuff
 			$("#mlab_editor_page").empty();
-			$("link[rel=stylesheet][href~='<?php echo $this->environment["MLAB_URL_APPS_ROOT"]; ?>']").remove();
+			$("link[rel=stylesheet][href~='" + mlab_config.urls.app + "']").remove();
 	
 
 //parse doc and insert stylesheets
@@ -249,8 +260,17 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 		    
 		}
 		
+/**
+ * Retrieve content of a page from server and insert it
+ * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
+ */
 		function mlab_page_open(app_id, version, page_num) {
-			$.get( "/builder/editpage/open-page/id/" + app_id + "/version/" + version + "/page/"+ page_num, function( data ) {
+			var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'version': '_VERSION_', 'page_num': '_PAGE_NUM_' }) }}";
+			url = url.replace("_ID_", app_id);
+			url = url.replace("_VERSION_", version);
+			url = url.replace("_PAGE_NUM_", page_num);
+			
+			$.get( url, function( data ) {
 				if (data.result == "success") {
 					mlab_page_process ( data.html );
 				} else {
@@ -297,11 +317,18 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 		}
 		
 		function createAppWizard() {
-			$('#mlab_dialog_new_app').dialog('open');
+			$("#mlab_dialog_new_app").load(mlab_url_new, function() {
+				$('#builder_app_copy_from').ddslick();
+	    		//$('#form_template').ddslick();
+	    		$( "#build_app_properties" ).tabs();
+	    	}).dialog("open");
 		}
 		
 		function updateAppWizard() {
-			$('#mlab_dialog_new_app').dialog('open');
+			var url_temp = mlab_url_edit.replace("_ID_", document.mlab_current_app.id);
+			$("#mlab_dialog_new_app").load(url_temp, function() {
+	    		$( "#mlab_dialog_new_app" ).tabs();
+	    	}).dialog("open");
 		}
 		
 /* General functions to manipulate components */
@@ -325,7 +352,7 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 		function mlabShowComponentManipulationButtons(el) {
 			if ($(".mlab_buttons_item_manipulation").length > 0) { return; }
 			var h = $(el).outerHeight();
-			mlab_buttons_item_manipulation.css("margin-top", "-" + h + "px").appendTo($(el)).show();
+			$(mlab_buttons_item_manipulation).css("margin-top", "-" + h + "px").appendTo($(el)).show();
 			if ($(el).data("properties") == true) {
 				$("#mlab_button_setproperty").show();
 			} else {
@@ -334,7 +361,7 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 		}
 		
 		function mlabHideComponentManipulationButtons() {
-			mlab_buttons_item_manipulation.hide();
+			$(mlab_buttons_item_manipulation).hide();
 			mlab_buttons_item_manipulation = $(mlab_buttons_item_manipulation).detach();
 		}
 
@@ -401,7 +428,7 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 			        			this.component = component;
 			        			this.component_id = component_id;
 
-//upload files
+//upload files 
 			        			if ($("#mlab_property_button_ok").length > 0) {
 									var uploadObj = $("#mlab_property_uploadfiles").uploadFile({
 										url: "/builder/edit-page/upload-file-for-component",
@@ -439,98 +466,52 @@ function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbac
 		}
 
 		
-		
 		$(document).ready(function() {
 
 //must turn off content ediatble to be able to drag items, store it in data property so can turn it on again 
-    		$('#mlab_button_drag').mousedown(function(e) {
-        		var comp = $(this).parent().parent();
-        		if (comp.attr("contenteditable") == "true") {
-        			comp.removeAttr("contenteditable");
-        			comp.data("contenteditable", "true");
-        		}
-        		console.log(comp.data("mlab-type"));
-        		comp.trigger(e); 
-			});
+	    	$('#mlab_button_drag').mousedown(function(e) {
+	        		var comp = $(this).parent().parent();
+	        		if (comp.attr("contenteditable") == "true") {
+	        			comp.removeAttr("contenteditable");
+	        			comp.data("contenteditable", "true");
+	        		}
+	        		console.log(comp.data("mlab-type"));
+	        		comp.trigger(e); 
+				});
 
 //hide buttons correctly (stored in a var when this is called) 
-    		mlabHideComponentManipulationButtons();
-    		
-    		window.onbeforeunload = function() {
-				if (mlab_flag_dirty) {
-    		    	return 'You have unsaved changes, do you want to lose these?';
-				}
-    		};
-    					
-    		$( "#mlab_dialog_help" ).dialog({
-    		      autoOpen: false,
-    		      show: { effect: "blind", duration: 500 },
-    		      hide: { effect: "blind", duration: 500 },
-    		      position: [1100,100]
-    		});
-
+	    	mlabHideComponentManipulationButtons();
+	    		
+	    	window.onbeforeunload = function() {
+					if (mlab_flag_dirty) {
+	    		    	return 'You have unsaved changes, do you want to lose these?';
+					}
+	    		};
+	    				
 			$( "#mlab_dialog_new_app" ).dialog({
-			    autoOpen: false,
+				title: "{% trans %}App details{% endtrans %}",
+				autoOpen: false,
 			    show: { effect: "blind", duration: 500 },
 			    hide: { effect: "blind", duration: 500 },
-			    width: 600,
-			    height: 500, 
-			    open: function () {
-			    	$(this).load("/builder/index/add", function() {
-			    		$('#base_on').ddslick();
-			    		$('#app-template_id').ddslick();
-			    		
-			    	});
-			    	
-			    }
-			});
-			
+			    width: 900,
+			    height: 500,
+			    modal: true,
+				});
+				
 			$( "#mlab_editor_page" ).droppable(droppable_options).sortable(sortable_options);
-
+	
 			$( ".mlab_button_components" ).draggable({
-			      connectToSortable: "#mlab_editor_page",
-			      helper: "clone",
-			      revert: "invalid",
-			      opacity: 0.5,
-			      start: function () { mlab_drag_origin = 'draggable'; }
-			});
+				      connectToSortable: "#mlab_editor_page",
+				      helper: "clone",
+				      revert: "invalid",
+				      opacity: 0.5,
+				      start: function () { mlab_drag_origin = 'draggable'; }
+				});
 			
-//we always load pages using AJAX, this takes the parameters from the URL, see index.phtml where it displays the list of apps 
-			var parameters = window.location.pathname.split(/\//);
-			var id = parameters[parameters.indexOf('id') + 1];
-			var page = parameters[parameters.indexOf('page') + 1];
-			var version = parameters[parameters.indexOf('version') + 1];
-			mlab_page_open(id, version, page);
-			
-		});
-
-		$(document).ready(function() {
-			//to get the help and user icon to vertical align with start posistion of the rotate icon
-return; //added by Arild temporary as changed IDs etc 
-			//get the left posison of the rotate icon relativ to the document
-			 var rot = $("#mlab_button_rotate");
-			 var rotoffset = rot.offset();
-			 var rotleft = rotoffset.left;
+//we always load pages using AJAX, this takes the parameters passed from the controller 
+			mlab_page_open( '{{ mlab_app_id }}', '{{ mlab_app_version }}', '{{ mlab_app_page_num }}' );
 			 
-			//set the left posison of the help icon so it lines up with the rotate icon
-			 var help = $("#mlab_button_help");
-			 help.offset({ left: rotleft });
-
-			//set the left posison of the user icon so posisoned after the help icon
-			 var helpoffset = help.offset();
-			 var helpleft = helpoffset.left;
-			 var helpwidth = help.width();
-			 var userpos = helpleft + helpwidth;
-			 var user = $("#mlab_button_user");
-
-			 user.offset({ left: userpos });
-			 
-			 //console.log(userpos);
-		
 		});
 		
 	</script>
-	<div id="mlab_status"></div>
-	<div id="mlab_dialog_new_app" class="hide"></div>
-
 {% endblock %}

@@ -311,12 +311,20 @@ class AppController extends Controller
     public function buildAppAction($id, $version, $page_num)
     {
     	$em = $this->getDoctrine()->getManager();
-    	$components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllByGroups($this->getUser()->getGroups());
-    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findById($id);
-    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
-    	$url_css = $this->container->parameters['mlab']['urls']['css'];
-    	$component_icon_path = $this->container->parameters['mlab']['filenames']['component_icon'];
+    	$config = $this->container->parameters['mlab'];
     	
+    	$file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('component');
+    	
+    	unset($config["app"]);
+    	unset($config["replace_in_filenames"]);
+    	unset($config["verify_uploads"]);
+    	
+    	 
+    	 
+    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
+    	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"]);
+    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
     	
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
@@ -324,10 +332,76 @@ class AppController extends Controller
     			"mlab_app_version" => $version, 
     			"mlab_components" => $components,
     			"mlab_app" => $app,
-    			"mlab_url_templates" => $url_templates,
-    			"mlab_url_css" => $url_css,
-    			"mlab_component_icon_path" => $component_icon_path,
+    			"mlab_config" => $config,
     	));
+    }
+    
+    /**
+     * Always called by AJAX to get the HTML content of the page that is to be edited
+     * @param unknown $app_id
+     * @param unknown $version
+     * @param unknown $page_num
+     * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
+     */
+    public function getPageAction ($app_id, $version, $page_num) {
+    	
+    	if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    		
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    		
+    	}
+    	
+//create the path to the file to open
+        if ($version > 0) {
+    		$app_path = $this->container->parameters['mlab']['paths']['app'] .
+    					$app->getPath() . 
+    					"/" . 
+    					$version . 
+    					$this->container->parameters['mlab']['cordova']['asset_path'];
+    		
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Version not specified: %d", $version)));
+    		
+    	}
+    	
+    	if ($page_num == 'last') {
+    		$pages = glob ( $app_path . "/???.html" );
+    		$doc = explode("/", array_pop($pages));
+    		$doc = array_pop($doc);
+    		
+    	} else if ($page_num == 'first') {
+    		$doc = 'index.html';
+    		
+    	} else {
+    		if ($page_num > 0 ) {
+    			$doc = substr("000" . $page_num, -3) . ".html";
+    		} else {
+    			return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf("Page not specified: %d", $page_num)));
+    		
+    		}
+    	}
+
+    	if (file_exists("$app_path$doc")) {
+    		$html = file_get_contents("$app_path$doc");
+    		return new JsonResponse(array(
+    				'result' => 'success',
+    				'html' => $html));
+    		 
+    	} else {
+    		return new JsonResponse(array(
+    				'result' => 'error',
+    				'msg' => sprintf("File does not exists, contact support: %s", "$app_path$doc")));
+    		 
+    	}
     }
     
     /**

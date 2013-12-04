@@ -19,7 +19,7 @@ class MenuRepository extends EntityRepository
 	 * @param unknown $url: Current URL used to filter against
 	 * @return array of menu items
 	 */
-	public function findMenuItems($user, $filter_url, $role_hierarchy) {
+	public function findMenuItems($user, $current_url, $role_hierarchy) {
 		$roles = $menus = array();
 
 //roles can contain roles that contain roles, pick up top level first, then loop through to get rest
@@ -33,13 +33,30 @@ class MenuRepository extends EntityRepository
 				$roles = array_merge($roles, $role_hierarchy[$sub_role]);
 			}
 		}
+		
+//store roles as a CSV so we can use it in an IN statement
 		$filter_roles = implode(",", $roles);
 
+//the URLs in Symfony usually have the action last and parameters (such as ID to lookup etc) in the middle.
+//Therefore we need to take the current URL and replace all but first and last element 
+		$url_elements = explode("/", $current_url);
+		if (empty($url_elements[0])) {
+			array_shift($url_elements);
+		}
+		if (empty($url_elements[sizeof($url_elements) - 1])) {
+			array_pop($url_elements);
+		}
+		
+		$current_url = array_shift($url_elements) . "-" . array_pop($url_elements);
+		if($current_url == "-") {
+			$current_url = "";
+		}
+
 		$sql = "SELECT m FROM SinettMLABBuilderBundle:Menu AS m
-		WHERE m.parentId = 0
-		AND (COALESCE(m.filterUrl, '') = '' OR m.filterUrl LIKE '{$filter_url}%')
-		AND (COALESCE(m.filterRole, '') = '' OR m.filterRole IN('{$filter_roles}'))
-		ORDER BY m.orderBy";
+				WHERE m.parentId = 0
+				AND ((COALESCE(m.filterUrl, '') = '') OR ('{$current_url}' <> '' AND COALESCE(m.filterUrl, '') <> '' AND m.filterUrl LIKE '%{$current_url}%'))
+				AND ((COALESCE(m.filterRole, '') = '') OR m.filterRole IN('{$filter_roles}'))
+				ORDER BY m.orderBy";
 		
 		$top_menus = $this->getEntityManager()->createQuery($sql)->getArrayResult();
 
@@ -52,13 +69,14 @@ class MenuRepository extends EntityRepository
 				
 			$sql = "SELECT m FROM SinettMLABBuilderBundle:Menu AS m
 					WHERE m.parentId = {$menu_item["id"]}
-					AND (COALESCE(m.filterUrl, '') = '' OR m.filterUrl LIKE '{$filter_url}%')
-					AND (COALESCE(m.filterRole, '') = '' OR m.filterRole IN('{$filter_roles}'))
+					AND ((COALESCE(m.filterUrl, '') = '') OR ('{$current_url}' <> '' AND COALESCE(m.filterUrl, '') <> '' AND m.filterUrl LIKE '%{$current_url}%'))
+					AND ((COALESCE(m.filterRole, '') = '') OR m.filterRole IN('{$filter_roles}'))
 					ORDER BY m.orderBy";
 			
 			$sub_menus = $this->getEntityManager()->createQuery($sql)->getArrayResult();
 				
 			$menu_item["children"] = array();
+			
 			foreach ($sub_menus as $sub_row) {
 				$menu_subitem = (array) $sub_row;
 				if (isset($menu_subitem["contentPhp"]) && !empty($menu_subitem["contentPhp"])) {
@@ -77,7 +95,10 @@ class MenuRepository extends EntityRepository
 			
 	}
 
-
+	/**
+	 * Returns all items without filtering by access
+	 * @return unknown
+	 */
 	public function findMenuItemsRaw() {
 	
 		$menus = array();
