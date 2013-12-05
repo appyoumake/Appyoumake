@@ -176,4 +176,70 @@ class FileManagement {
 		ksort($components);
 		return $components;
 	}
+	
+	/**
+	 * Function called to create a new app, first calls cordova to generate structure, then copiues across relevant template files
+	 * Default platform is usually android, but could be iOS if run on mac for instance...
+	 */
+	public function createAppFromTemplate ($template, $app) {
+		
+//prepare all the paths to use
+		$default_platform = $this->config["cordova"]["default_platform"];
+		$cordova_bin_path = $this->config["cordova"][$default_platform]["bin_path"];
+		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
+		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
+		$template_items_to_copy = $this->config["app"]["copy_files"];
+		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
+		$app_domain = $this->config["cordova"]["app_creator_identifier"];
+		
+		$cmd = "$cordova_bin_path/create $app_path $app_domain \"" . $app->getPath() . "\" 2>&1";
+		
+		if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
+			return array("Could not set path for Cordova");
+		}
+		
+		$output = array();
+		$exit_code = 0;
+		exec($cmd, $output, $exit_code);
+		
+		//TODO FIX
+		$exit_code = 0;
+		
+//check exit code, anything except 0 = fail
+		if ($exit_code != 0) {
+			return $output + array("Exit code: " . $exit_code);
+		} else {
+			foreach ($template_items_to_copy as $from => $to) {
+				$cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
+				$ret = shell_exec($cmd);
+			}
+			return true;
+		}
+	}
+	
+	/**
+	 * Function called to create a new app, first calls cordova to generate structure, then copiues across relevant template files
+	 * Default platform is usually android, but could be iOS if run on mac for instance...
+	 */
+	public function lockPage ($app, $page_num) {
+		
+	}
+	
+	/**
+	 * simple function to copy an app folder to a new one
+	 * @param string $sourceApp
+	 * @param string $targetApp
+	 */
+	public static function copyDirectory($sourceApp, $targetApp) {
+	    if (!file_exists($sourceApp)) return false;
+	    if (!is_dir($sourceApp)) return copy($sourceApp, $targetApp);
+	    if (!mkdir($targetApp)) return false;
+	    foreach (scandir($sourceApp) as $item) {
+	    	if ($item == '.' || $item == '..') continue;
+	    	if (!self::copyDirectory($sourceApp.DIRECTORY_SEPARATOR.$item, $targetApp.DIRECTORY_SEPARATOR.$item)) return false;
+	    }
+	    return true;
+	}
+		
 }

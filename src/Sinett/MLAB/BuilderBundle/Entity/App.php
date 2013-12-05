@@ -163,7 +163,32 @@ class App
     
         return $this;
     }
-
+    
+    /**
+     * generate a sanitised pathname from name of app
+     *
+     * @param array $replace: search / replace array
+     * @return App
+     */
+    public function generatePath($replace)
+    {
+        $this->path = strtolower(preg_replace(array_values($replace), array_keys($replace), trim($this->name)));
+    
+        return $this;
+    }
+    
+    /**
+     * calculate the path of this app, using the starting path from the parameter which = mlab:paths:app parameter setting 
+     *
+     * @param string $start_path
+     * @return App
+     */
+    public function calculateFullPath($start_path)
+    {
+        return $start_path . $this->getPath() . "/" . $this->getVersion() . "/" ;
+    }
+    
+        
     /**
      * Get path
      *
@@ -549,7 +574,7 @@ class App
     }
     
     /**
-     * Returns all properties as an array, it also has a placeholder for the pages that are locked
+     * Returns all properties as simple array, i.e. templates are the name and not an object
      */
     public function getArrayFlat() {
     	$groups = array();

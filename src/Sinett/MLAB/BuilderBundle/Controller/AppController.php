@@ -45,20 +45,100 @@ class AppController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new App();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
-
+    	$entity = new App();
+        $form = $this->createAppForm($entity);
+        $form->bind($request);
+       	
         if ($form->isValid()) {
-            die("OK");
+        	
+//store values in array for easy access
+        	$app_data = $request->request->all()["form"];
+//get config values
+        	$config = $this->container->parameters['mlab'];
+//prepare doctrine manager
         	$em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+        	 
+//generate the path name and get full path
+        	$entity->generatePath($config["replace_in_filenames"]);
+        	$entity->setVersion(1);
+        	$usr= $this->get('security.context')->getToken()->getUser();
+        	$entity->setUser($usr);
+        	$entity->setUpdatedBy($usr);
+        	foreach ($usr->getGroups() as $group) {
+        		$entity->addGroup($group);
+        	}
+        	
 
+        	$app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+        	
+//check if this already exists, first check name in DB then file path
+			if (!file_exists($app_destination)) { //TODO
+				return new JsonResponse(array(
+	        		'action' => 'ADD',
+	        		'result' => 'FAILURE',
+	        		'message' => 'App path already exists, chose a different name'));
+			} else if ($em->getRepository('SinettMLABBuilderBundle:App')->findOneByName($entity->getName())) {
+				return new JsonResponse(array(
+						'action' => 'ADD',
+						'result' => 'FAILURE',
+						'message' => 'App name already exists, chose a different name'));
+        	}
+
+//prepare file management service
+		    $file_mgmt = $this->get('file_management');
+		    $file_mgmt->setConfig('app');
+		    
+//do they want to copy an existing app?
+		    if ($app_data["copy_app"] != '') {
+		    	$orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copy_app"]);
+		    	$result = false;
+		    	if ($orig_app) {
+		    		$result = $file_mgmt->copyDirectory($app_data["copy_app"], $app_destination);
+		    	} 
+		    	
+		    	if ($result == false) {
+		    		return new JsonResponse(array(
+		    				'action' => 'ADD',
+		    				'result' => 'FAILURE',
+		    				'message' => 'Unable to copy app files'));
+		    	} 
+        		
+//otherwise we use the template they specified 
+        	} else if ($app_data["template"] != '') {
+        		$result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+        		$result = true; //TODO
+        		if ($result !== true) {
+        			return new JsonResponse(array(
+        					'action' => 'ADD',
+        					'result' => 'FAILURE',
+        					'message' => 'Unable to create app, Cordova error: ' . implode("\n", $result)));
+        		}
+        		
+        	} else {
+				return new JsonResponse(array(
+						'action' => 'ADD',
+						'result' => 'FAILURE',
+						'message' => 'Neither app to copy nor template specified'));
+        		        		
+        	}
+        	
+        	$em->persist($entity);
+        	$em->flush();
+        	return new JsonResponse(array(
+        			'action' => 'ADD',
+        			'result' => 'SUCCESS',
+        			'mlab_app_page_num' => 1,
+        			'mlab_app_id' => $entity->getId(),
+        			'mlab_app_version' => $entity->getVersion(),
+        			'mlab_app' => $entity->getArrayFlat()));
+        	 
         }
-
-        die("notOK");
         
+        return new JsonResponse(array(
+        		'action' => 'ADD',
+        		'result' => 'FAILURE',
+        		'message' => 'Incorrect data submitted, may be a field missing'));
+                    
     }
 
     /**
@@ -80,6 +160,24 @@ class AppController extends Controller
         return $form;
     }
 
+    public function createAppForm($entity) {
+    	return $this->createFormBuilder($entity, array('attr' => array('id' => 'mlab_form_app')))
+				    	->setAction($this->generateUrl("app_create"))
+				    	->setMethod('POST')
+				    	->add('name')
+				    	->add('description')
+				    	->add('iconFile', 'file')
+				    	->add('splashFile', 'file')
+				    	->add('keywords')
+				    	->add('categoryOne')
+				    	->add('categoryTwo')
+				    	->add('categoryThree')
+				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => ''))
+				    	->add('version', "hidden")
+				    	->add("copy_app", "hidden", array("mapped" => false))
+				    	->add('save', 'submit')
+				    	->getForm();
+    }
     /**
      * Displays a form to create a new App entity.
      *
@@ -95,20 +193,7 @@ class AppController extends Controller
     	$url_templates = $this->container->parameters['mlab']['urls']['template'];
     	$cordova_icon_path = $this->container->parameters['mlab']['cordova']['icon_path'];
     	
-        $form = $this->createFormBuilder($entity)
-        								  ->setAction($this->generateUrl("app_create"))
-        								  ->setMethod('POST')
-									      ->add('name')
-									      ->add('description')
-									      ->add('iconFile', 'file')
-									      ->add('splashFile', 'file')
-									      ->add('keywords')
-									      ->add('categoryOne')
-									      ->add('categoryTwo')
-									      ->add('categoryThree')
-									      ->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => ''))
-									      ->add('save', 'submit')
-        								  ->getForm();
+        $form = $this->createAppForm($entity);
         
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
         	'entity' => $entity,
@@ -331,7 +416,7 @@ class AppController extends Controller
     			"mlab_app_id" => $id, 
     			"mlab_app_version" => $version, 
     			"mlab_components" => $components,
-    			"mlab_app" => $app,
+    			"mlab_app" => $app->getArrayFlat(),
     			"mlab_config" => $config,
     	));
     }

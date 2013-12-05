@@ -257,6 +257,18 @@ class Template
     {
         return $this->path;
     }
+    
+    /**
+     * calculate the path of this app, using the starting path from the parameter which = mlab:paths:app parameter setting
+     *
+     * @param string $start_path
+     * @return App
+     */
+    public function calculateFullPath($start_path)
+    {
+    	return $start_path . $this->getPath() . "/" ;
+    }
+    
 
     /**
      * Set enabled

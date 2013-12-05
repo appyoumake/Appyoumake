@@ -33,10 +33,11 @@
 	
 //first set a few variables that are carried over from the server side 
 
+//current app/page information, this will be updated when they create a new app or edit properties 
+		document.mlab_current_app = {{ mlab_app|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
+
 //configuration stuff from parameter.yml
 		mlab_config = {{ mlab_config|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
-//current app/page information 
-		document.mlab_current_app = {{ mlab_app|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 //list of components 
 		mlab_components = {{ mlab_components|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 
@@ -197,7 +198,58 @@
 		    })
 		}
 		
-/* functions to open and save a page */
+/*********** functions to create new app or edit apps ***********/
+
+		/**
+		 * Initiates and opens up the dialog box where we collect details of the new app  
+		 */
+		function mlab_app_new() {
+			$("#mlab_dialog_new_app").load(mlab_url_new, function() {
+	    		$( "#build_app_properties" ).tabs();
+	    	}).dialog("open");
+		}
+		
+		/**
+		 * Same as code for mlab_app_new, except inisde the dialog open function we hide the first tab, they can NOT base the app on anything new  
+		 */
+		function mlab_app_update() {
+			var url_temp = mlab_url_edit.replace("_ID_", document.mlab_current_app.id);
+			$("#mlab_dialog_new_app").load(url_temp, function() {
+	    		$( "#build_app_properties" ).tabs();
+	    	}).dialog("open");
+		}
+
+		/**
+		 * Initiates and opens up the dialog box where we collect details of the new app  
+		 */
+		function mlab_app_submit_properties(form) {
+			var frm = document.getElementById(form.attr('id'));
+			formData = new FormData(frm);
+			$("#mlab_dialog_new_app").dialog("close");
+			$.ajax({
+		        url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
+		        type: 'POST',
+		        success: function( data ) {
+			    	if (data.result == 'FAILURE') {
+			    		alert(data.message);
+			    	} else {
+//we set the current variable to the data coming back in, then if this is an added record we open the page to edit 
+			    		document.mlab_current_app = data.mlab_app;
+			    		if (data.action == 'ADD') {
+			    			mlab_page_open(data.mlab_app_id, data.mlab_app_version, data.mlab_app_page_num) ;
+			    		}
+			    	}
+			  	},
+		        error: function(e) {alert('error'); console.log(e)},
+		        // Form data 
+		        data: form.serialize(),
+		        dataType: "json",
+		    });
+		}
+		
+		
+		
+/*********** functions to open and save a page ***********/
  
 /* this function processes a standalone page that was retrieved.
  * It does the following:
@@ -216,7 +268,6 @@
 //remove old stuff
 			$("#mlab_editor_page").empty();
 			$("link[rel=stylesheet][href~='" + mlab_config.urls.app + "']").remove();
-	
 
 //parse doc and insert stylesheets
 			var doc = (new DOMParser()).parseFromString(page,"text/html");
@@ -316,22 +367,8 @@
 			
 		}
 		
-		function mlab_app_new() {
-			$("#mlab_dialog_new_app").load(mlab_url_new, function() {
-				$('#builder_app_copy_from').ddslick();
-	    		//$('#form_template').ddslick();
-	    		$( "#build_app_properties" ).tabs();
-	    	}).dialog("open");
-		}
-		
-		function mlab_app_update() {
-			var url_temp = mlab_url_edit.replace("_ID_", document.mlab_current_app.id);
-			$("#mlab_dialog_new_app").load(url_temp, function() {
-	    		$( "#mlab_dialog_new_app" ).tabs();
-	    	}).dialog("open");
-		}
-		
-/* General functions to manipulate components */
+/*********** General functions to manipulate components ***********/
+
 //wrapper to call the getProperties function for a control if it exists 
 //this in turn will call the mlab_propterties_dialoge to display the dialoge 
 //when OK is clicked the setProperties function is called 
@@ -365,18 +402,6 @@
 			mlab_buttons_item_manipulation = $(mlab_buttons_item_manipulation).detach();
 		}
 
-		function mlabRotateEditor() {
-			var h = $("#mlab_editor_page").height();
-			var w = $("#mlab_editor_page").width();
-			$("#mlab_editor_page").height(w).width(h);
-
-			if (w <= h) {
-				$("#mlab_button_rotate").addClass("portret");
-			} else {
-				$("#mlab_button_rotate").removeClass("portret");
-			}
-		}
-		
 //uses qtip to display a dialog getting input, this is positioned next to the properties button 
 //when the click on OK we will call the specified callback function 
 //The content is an object, certain predefined actions can be configured: 
@@ -465,7 +490,22 @@
 		    });
 		}
 
+
+/*********** Utility functions ***********/  
+		function mlabRotateEditor() {
+			var h = $("#mlab_editor_page").height();
+			var w = $("#mlab_editor_page").width();
+			$("#mlab_editor_page").height(w).width(h);
+
+			if (w <= h) {
+				$("#mlab_button_rotate").addClass("portret");
+			} else {
+				$("#mlab_button_rotate").removeClass("portret");
+			}
+		}
+
 		
+/*********** Startup code ***********/  
 		$(document).ready(function() {
 
 //must turn off content ediatble to be able to drag items, store it in data property so can turn it on again 

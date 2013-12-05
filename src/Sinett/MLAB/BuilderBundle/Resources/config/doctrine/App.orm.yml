@@ -47,7 +47,7 @@ Sinett\MLAB\BuilderBundle\Entity\App:
           type: string
           length: 255
           fixed: false
-          nullable: false
+          nullable: true
           
       description:
           type: text
@@ -60,7 +60,9 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       version:
           type: float
           unsigned: false
-          nullable: false
+          nullable: true
+          options:
+            default: 1
 
       enabled:
           type: boolean
