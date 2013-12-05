@@ -2,17 +2,14 @@
 
 {% block body -%}
 
-    <h1>App list</h1>
-
     <table class="records_list" id="table_app">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Description</th>
-                <th>Updated</th>
-                <th>Groups</th>
-                <th>Actions</th>
+            	<th>{% trans %}app.admin.apps.name{% endtrans %}</th>
+                <th>{% trans %}app.admin.apps.version{% endtrans %}</th>
+                <th>{% trans %}app.admin.apps.description{% endtrans %}</th>
+                <th>{% trans %}app.admin.apps.Updated{% endtrans %}</th>
+                <th>{% trans %}app.admin.apps.groups{% endtrans %}</th>
             </tr>
         </thead>
         <tbody>

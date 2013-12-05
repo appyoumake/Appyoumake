@@ -1,8 +1,10 @@
-MLAB: MobLærAppBygs
+app.admin.welcome: Velkommen til MLAB App Admin sidene
+%Users%: brukere
 
 
-
-
+#-----------------------------------------------------
+# Users tab
+#-----------------------------------------------------
 app.admin.users.username: Brukernavn
 app.admin.users.email: E-post
 app.admin.users.groups: Grupper
@@ -10,15 +12,112 @@ app.admin.users.last.login: Siste innlogging
 
 app.admin.users.tooltip.username: Rediger bruker
 app.admin.users.tooltip.delete: Slett bruker
-app.admin.users.tooltip.new.user: Opprett ny bruker
+app.admin.users.tooltip.new: Opprett ny bruker
 
 
 
+#-----------------------------------------------------
+# Edit and new user
+#-----------------------------------------------------
+app.admin.users.new.heading: Opprett ny bruker
+app.admin.users.edit.heading: Rediger bruker
+
+#???????For the new user form???????
+email: E-post
+username: Brukernavn
+plainPassword: Passord
+passwor: Passord
+categoryOne: Kategori en
+categoryTwo: Kategori to
+categoryThree: Kategori tre
+groups: Grupper
+roles: Roller
+enabled: Aktiv
+create: Opprett
+
+
+
+#-----------------------------------------------------
+# Groups tab
+#-----------------------------------------------------
 app.admin.groups.name: Navn
 app.admin.groups.description: Beskrivelse
+app.admin.groups.isdefault: gruppen er satt som default
 
 app.admin.groups.tooltip.name: Rediger gruppe
 app.admin.groups.tooltip.delete: Slett gruppe
+app.admin.groups.tooltip.new: Opprett ny gruppe
+
+
+
+#-----------------------------------------------------
+# Edit and new group
+#-----------------------------------------------------
+app.admin.groups.new.heading: Opprett ny gruppe
+app.admin.groups.edit.heading: Rediger gruppe
+
+
+
+#-----------------------------------------------------
+# App tab
+#-----------------------------------------------------
+app.admin.apps.name: Navn
+app.admin.apps.version: Versjon
+app.admin.apps.description: Beskrivelse
+app.admin.apps.Updated: Oppdatert
+app.admin.apps.groups: Grupper
+
+app.admin.apps.tooltip.name: Rediger app
+app.admin.apps.tooltip.delete: Slett app
+
+
+#-----------------------------------------------------
+# Edit app
+#-----------------------------------------------------
+app.admin.apps.edit.heading: Rediger app
+
+
+
+#-----------------------------------------------------
+# Template tab
+#-----------------------------------------------------
+app.admin.templates.name: Navn
+app.admin.templates.version: Versjon
+app.admin.templates.description: Beskrivelse
+app.admin.templates.compatiblewith: Kompatibel med
+app.admin.templates.groups: Grupper
+
+app.admin.templates.tooltip.name: Rediger template
+app.admin.templates.tooltip.delete: Slett tempalte
+app.admin.templates.tooltip.new: Opprett ny template
+
+
+#-----------------------------------------------------
+# Edit and new template
+#-----------------------------------------------------
+app.admin.templates.new.heading: Opprett ny template
+app.admin.templates.edit.heading: Rediger template
+
+
+
+#-----------------------------------------------------
+# Components tab
+#-----------------------------------------------------
+app.admin.components.name: Navn
+app.admin.components.version: Versjon
+app.admin.components.description: Beskrivelse
+app.admin.components.groups: Grupper
+
+app.admin.components.tooltip.name: Rediger komponent
+app.admin.components.tooltip.delete: Slett komponent
+app.admin.components.tooltip.new: Opprett ny komponent
+
+
+#-----------------------------------------------------
+# Edit and new component
+#-----------------------------------------------------
+app.admin.components.new.heading: Opprett ny komponent
+app.admin.components.edit.heading: Rediger komponent
 
 builder.new.app.name.details: Navn
 builder.new.app.more.details: Klassifiser

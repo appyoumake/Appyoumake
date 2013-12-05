@@ -1,16 +1,19 @@
 <tr id="row_component_{{ entity.id }}">
-    <td>{{ entity.name }}</td>
-    <td>{{ entity.version }}</td>
-    <td>{{ entity.description }}</td>
-    <td>{{ entity.groups|join(":") }}</td>
-    <td>
-    <ul>
-        <li>
-            <a href="{{ path('component_delete', { 'id': entity.id }) }}">delete</a>
-        </li>
-        <li>
-            <a href="{{ path('component_edit', { 'id': entity.id }) }}">edit</a>
-        </li>
-    </ul>
+
+	<td>
+    	<a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.name{% endtrans %}">
+    		{{ entity.name }}
+   		</a>
     </td>
+    
+    <td>{{ entity.version }}</td>
+    
+    <td>{{ entity.description }}</td>
+    
+    <td>{{ entity.groups|join(", ") }}</td>
+
+    <td>
+		<a href="{{ path('component_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.components.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+	</td>
+
 </tr>

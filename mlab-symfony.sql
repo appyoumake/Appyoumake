@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 02, 2013 at 10:10 AM
+-- Generation Time: Dec 05, 2013 at 09:55 AM
 -- Server version: 5.5.25a
 -- PHP Version: 5.4.4
 
@@ -42,20 +42,29 @@ CREATE TABLE IF NOT EXISTS `app` (
   `created` date NOT NULL,
   `updated` datetime NOT NULL,
   `enabled` tinyint(1) DEFAULT '1',
+  `published` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_C96E70CF9BAE1BDD` (`category_1`),
-  UNIQUE KEY `UNIQ_C96E70CF2A74A67` (`category_2`),
-  UNIQUE KEY `UNIQ_C96E70CF75A07AF1` (`category_3`),
-  UNIQUE KEY `UNIQ_C96E70CF5DA0FB8` (`template_id`),
-  UNIQUE KEY `UNIQ_C96E70CFA76ED395` (`user_id`),
-  UNIQUE KEY `UNIQ_C96E70CFA43E35E8` (`updatedby_id`),
   KEY `name_index` (`name`),
   KEY `path_index` (`path`),
   KEY `version_index` (`version`),
   KEY `created_index` (`created`),
   KEY `updated_index` (`updated`),
-  KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  KEY `enabled_index` (`enabled`),
+  KEY `IDX_C96E70CF9BAE1BDD` (`category_1`),
+  KEY `IDX_C96E70CF2A74A67` (`category_2`),
+  KEY `IDX_C96E70CF75A07AF1` (`category_3`),
+  KEY `IDX_C96E70CF5DA0FB8` (`template_id`),
+  KEY `IDX_C96E70CFA76ED395` (`user_id`),
+  KEY `IDX_C96E70CFA43E35E8` (`updatedby_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `app`
+--
+
+INSERT INTO `app` (`id`, `category_1`, `category_2`, `category_3`, `template_id`, `user_id`, `updatedby_id`, `name`, `path`, `description`, `keywords`, `version`, `created`, `updated`, `enabled`, `published`) VALUES
+(1, 2, 3, NULL, 1, 3, 3, 'Test app number 1', 'test_app_number_1', 'Test description', 'sdfsdfs sdf sd fsd fsf', 1, '2013-12-01', '2013-12-01 01:13:18', 1, 1),
+(5, 2, 8, NULL, 1, 3, 3, 'Test app number 2', 'test_app_number_2', 'Test description 2', 'This is a test of rapping to the beat...', 1, '2013-12-02', '2013-11-08 00:00:00', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -70,6 +79,14 @@ CREATE TABLE IF NOT EXISTS `apps_groups` (
   KEY `IDX_4ADA29A77987212D` (`app_id`),
   KEY `IDX_4ADA29A7FE54D947` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `apps_groups`
+--
+
+INSERT INTO `apps_groups` (`app_id`, `group_id`) VALUES
+(1, 1),
+(5, 2);
 
 -- --------------------------------------------------------
 
@@ -118,7 +135,19 @@ CREATE TABLE IF NOT EXISTS `component` (
   PRIMARY KEY (`id`),
   KEY `name_index` (`name`),
   KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `component`
+--
+
+INSERT INTO `component` (`id`, `name`, `description`, `path`, `enabled`, `version`) VALUES
+(1, 'Headline', 'Top level headline', 'h1', 1, 1),
+(2, 'Sub headline', 'Medium level headline', 'h2', 1, 1),
+(3, 'Lower headline', 'Lowest level headline', 'h3', 1, 1),
+(4, 'Image', 'Use this to add images', 'img', 1, 1),
+(5, 'Simple Map', 'This uses Google maps to present a simple map with no additional information.', 'map', 1, 1),
+(6, 'Bullet points', 'Use this to create a list of un-numbered bullet points ', 'ul', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -133,6 +162,15 @@ CREATE TABLE IF NOT EXISTS `components_groups` (
   KEY `IDX_178B28C3E2ABAFFF` (`component_id`),
   KEY `IDX_178B28C3FE54D947` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `components_groups`
+--
+
+INSERT INTO `components_groups` (`component_id`, `group_id`) VALUES
+(1, 1),
+(2, 2),
+(4, 2);
 
 -- --------------------------------------------------------
 
@@ -209,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   KEY `filter_url` (`filter_url`),
   KEY `order_by_index` (`order_by`),
   KEY `filter_role_index` (`filter_role`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
 
 --
 -- Dumping data for table `menu`
@@ -218,27 +256,25 @@ CREATE TABLE IF NOT EXISTS `menu` (
 INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_by`, `url`, `filter_url`, `content_php`, `filter_role`) VALUES
 (3, NULL, 'mlab_menu_user', 'Bruker', 0, 1000, '', NULL, '$user->getUsername();', NULL),
 (4, 'Gå til', NULL, 'Gå til annen modul i MLAB', 0, 100, '', NULL, NULL, NULL),
-(5, 'App', NULL, 'App', 0, 200, '', '/app/design', NULL, NULL),
-(6, 'Side', NULL, 'Sider', 0, 300, '', '/app/design', NULL, NULL),
-(7, 'Lag App', NULL, 'Lag app', 0, 400, '', '/app/design', NULL, NULL),
+(5, 'App', NULL, 'App', 0, 200, '', 'app-builder, app-build', NULL, NULL),
+(6, 'Side', NULL, 'Sider', 0, 300, '', 'app-build', NULL, NULL),
+(7, 'Bygg App', NULL, 'Lag app', 5, 400, '', 'app-build', NULL, NULL),
 (8, 'Forandre passord                                        ', NULL, 'Her kan du oppdatere passordet ditt', 3, 20, '/user/change-password', NULL, NULL, NULL),
-(9, NULL, NULL, 'Navn på app du redigerer', 5, 10, '#', '/app/design', NULL, NULL),
-(10, NULL, 'mlab_menu_loggedin_as', 'Du er logget inn som', 3, 10, '', NULL, NULL, NULL),
+(9, NULL, 'mlab_menu_get_app_name();', 'Navn på app du redigerer', 5, 10, '#', 'app-build', NULL, NULL),
+(10, NULL, 'mlab_menu_loggedin_as();', 'Du er logget inn som', 3, 10, '', NULL, NULL, NULL),
 (11, 'App Bygger', '', 'Lag eller rediger apper', 4, 10, '/builder/', NULL, NULL, NULL),
 (12, 'App Bygger Admin', NULL, 'Administrer brukere, apper, maler, etc', 4, 20, '/builder-admin/', NULL, NULL, NULL),
-(13, 'Marked', NULL, 'Se App Marked', 4, 30, '/market/', NULL, NULL, NULL),
-(14, 'Marked Admin', NULL, 'Administrer App Marked', 4, 40, '/market-admin/', NULL, NULL, NULL),
 (15, 'Logg ut', NULL, 'Logg av MLAB', 3, 30, '/user/logout', NULL, NULL, NULL),
-(17, 'Egenskaper', NULL, 'Oppdater egenskapene til denne appen', 5, 30, '', '/app/design', NULL, NULL),
-(18, 'Ny app', NULL, 'Start en ny app', 5, 20, '', '/app/design', NULL, NULL),
-(19, 'Test app i nettleser', NULL, 'Dette vil åpne en ny side som ser ut som en smarttelefon hvor du kan se hvordan appen vil se ut til slutt', 7, 10, 'javascript: appTestLocal(); return false;', NULL, NULL, NULL),
-(20, 'Test app på mobil enhet', NULL, 'Dette vil laste ned appen så du kan installere den på mobilen din for å teste den', 7, 20, 'javascript: appTestMobile();; return false;', NULL, NULL, NULL),
-(21, 'Send app til marked', NULL, 'Dette vil laste appen opp på markedet så den er tilgjengelig for alle andre', 7, 30, 'javascript: appSubmit();; return false;', NULL, NULL, NULL),
-(22, 'Tittel: <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"/>', NULL, 'Her kan du oppdatere tittelen på gjeldende side', 6, 10, 'javascript: savePageTitle();; return false;', '/app/design', NULL, NULL),
-(23, '<select name="groups[]" id="groups" multiple="multiple">\r\n					<option value="1">Index side</option>\r\n					<option value="2">Introduiksjon</option>\r\n					<option value="3">F&oslash;rste leksjon</option>\r\n					<option value="4">Fremad marsj</option>\r\n			</select> ', NULL, 'Åpne andre sider i appen', 6, 20, 'javascript: mlab_page_open(1); return false;', '/app/design', NULL, NULL),
-(24, 'Lagre side', NULL, 'Her kan du lagre gjeldende side', 6, 30, 'javascript: mlab_page_save();; return false;', '/app/design', NULL, NULL),
-(25, 'Slette side', NULL, 'Her kan du slette gjeldende side', 6, 40, 'javascript: mlab_page_delete();; return false;', '/app/design', NULL, NULL),
-(26, 'Kopier side', NULL, 'Her kan du kopiere gjeldende side', 6, 50, 'javascript: mlab_page_copy();; return false;', '/app/design', NULL, NULL);
+(17, 'Egenskaper', NULL, 'Oppdater egenskapene til denne appen', 5, 30, 'javascript: mlab_app_update();', 'app-build', NULL, NULL),
+(18, 'Ny app', NULL, 'Start en ny app', 5, 20, 'javascript: mlab_app_new();', 'app-builder, app-build', NULL, NULL),
+(19, 'Test app i nettleser', NULL, 'Dette vil åpne en ny side som ser ut som en smarttelefon hvor du kan se hvordan appen vil se ut til slutt', 7, 10, 'javascript: mlab_app_test_local(); ', 'app-build', NULL, NULL),
+(20, 'Test app på mobil enhet', NULL, 'Dette vil laste ned appen så du kan installere den på mobilen din for å teste den', 7, 20, 'javascript: mlab_app_download();', 'app-build', NULL, NULL),
+(21, 'Send app til marked', NULL, 'Dette vil laste appen opp på markedet så den er tilgjengelig for alle andre', 7, 30, 'javascript: mlab_app_submit();', 'app-build', NULL, NULL),
+(22, 'Tittel: <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"/>', NULL, 'Her kan du oppdatere tittelen på gjeldende side', 6, 10, 'javascript: mlab_page_save_title();', 'app-build', NULL, NULL),
+(23, '<select name="groups[]" id="groups" multiple="multiple">\r\n					<option value="1">Index side</option>\r\n					<option value="2">Introduiksjon</option>\r\n					<option value="3">F&oslash;rste leksjon</option>\r\n					<option value="4">Fremad marsj</option>\r\n			</select> ', NULL, 'Åpne andre sider i appen', 6, 20, 'javascript: mlab_page_open();', 'app-build', NULL, NULL),
+(24, 'Lagre side', NULL, 'Her kan du lagre gjeldende side', 6, 30, 'javascript: mlab_page_save();', 'app-build', NULL, NULL),
+(25, 'Slette side', NULL, 'Her kan du slette gjeldende side', 6, 40, 'javascript: mlab_page_delete();', 'app-build', NULL, NULL),
+(26, 'Kopier side', NULL, 'Her kan du kopiere gjeldende side', 6, 50, 'javascript: mlab_page_copy();', 'app-build', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -330,6 +366,8 @@ CREATE TABLE IF NOT EXISTS `users_groups` (
 --
 
 INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES
+(3, 1),
+(3, 2),
 (4, 1),
 (4, 2),
 (7, 1);
@@ -366,14 +404,14 @@ CREATE TABLE IF NOT EXISTS `usr` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_1762498C92FC23A8` (`username_canonical`),
   UNIQUE KEY `UNIQ_1762498CA0D96FBF` (`email_canonical`),
-  UNIQUE KEY `UNIQ_1762498C9BAE1BDD` (`category_1`),
-  UNIQUE KEY `UNIQ_1762498C2A74A67` (`category_2`),
-  UNIQUE KEY `UNIQ_1762498C75A07AF1` (`category_3`),
   KEY `email_index` (`email`),
   KEY `password_index` (`password`),
   KEY `created_index` (`created`),
   KEY `updated_index` (`updated`),
-  KEY `username_index` (`username`)
+  KEY `username_index` (`username`),
+  KEY `IDX_1762498C9BAE1BDD` (`category_1`),
+  KEY `IDX_1762498C2A74A67` (`category_2`),
+  KEY `IDX_1762498C75A07AF1` (`category_3`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
 
 --
@@ -381,7 +419,7 @@ CREATE TABLE IF NOT EXISTS `usr` (
 --
 
 INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`) VALUES
-(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-12-02 09:30:14', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-12-02 09:30:14', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
+(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-12-03 09:20:35', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-12-03 09:20:35', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
 (4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-29 15:07:04', 'cecilie', 'cecilie', 'cecilie.jackbo.gran@ffi.no', 1, '2013-11-29 15:07:04', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL),
 (7, 2, 2, 2, 'test@test.com', 'e+qqNLhIDWFo3wW/sKn4vH8HFF1nGXq239arDSexjkYMwVgUT1ZdWWINbSl1HlGYLVhRFUOjZ761C1sTtzhOxw==', 'ma6ja813m6o84wgow0wwoksso0ck4cg', '2013-11-29', '2013-11-29 15:36:08', 'testy', 'testy', 'test@test.com', 1, NULL, 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL);
 

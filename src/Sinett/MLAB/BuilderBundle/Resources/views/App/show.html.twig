@@ -1,17 +1,25 @@
 <tr id="row_app_{{ entity.id }}">
-    <td>{{ entity.name }}</td>
-    <td>{{ entity.version }}</td>
-    <td>{{ entity.description }}</td>
-    <td>{% if entity.updated %}{{ entity.updated|date('Y-m-d H:i:s') }}{% endif %}</td>
-    <td>{{ entity.groups|join(":") }}</td>
+    
     <td>
+    	<a href="{{ path('app_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.app.tooltip.name{% endtrans %}">
+    		{{ entity.name }}
+   		</a>
+    </td>
+    
+    <td>{{ entity.version }}</td>
+    
+    <td>{{ entity.description }}</td>
+    
+    <td>{% if entity.updated %}
+    		{{ entity.updated|date('Y-m-d H:i:s') }}
+    	{% endif %}
+    </td>
+    
+    <td>{{ entity.groups|join(", ") }}</td>
+    
+    <td>
+    	<a href="{{ path('app_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.app.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
     <ul>
-        <li>
-            <a href="{{ path('app_delete', { 'id': entity.id }) }}">delete</a>
-        </li>
-        <li>
-            <a href="{{ path('app_edit', { 'id': entity.id }) }}">edit</a>
-        </li>
         <li>
             <a href="{{ path('app_remove_from_appstore', { 'id': entity.id }) }}">remove from app store</a>
         </li>

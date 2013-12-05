@@ -316,7 +316,7 @@
 			
 		}
 		
-		function createAppWizard() {
+		function mlab_app_new() {
 			$("#mlab_dialog_new_app").load(mlab_url_new, function() {
 				$('#builder_app_copy_from').ddslick();
 	    		//$('#form_template').ddslick();
@@ -324,7 +324,7 @@
 	    	}).dialog("open");
 		}
 		
-		function updateAppWizard() {
+		function mlab_app_update() {
 			var url_temp = mlab_url_edit.replace("_ID_", document.mlab_current_app.id);
 			$("#mlab_dialog_new_app").load(url_temp, function() {
 	    		$( "#mlab_dialog_new_app" ).tabs();

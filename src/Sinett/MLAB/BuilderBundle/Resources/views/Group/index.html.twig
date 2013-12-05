@@ -1,16 +1,16 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Group list</h1>
 
     <table class="records_list" id="table_group">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Isdefault</th>
-                <th>Enabled</th>
-                <th>Actions</th>
+            	<th></th>
+                <th>{% trans %}app.admin.groups.name{% endtrans %}</th>
+                <th>{% trans %}app.admin.groups.description{% endtrans %}</th>
+                <th> 
+                	<a class="mlab_button_new_group" href="{{ path('group_new') }}" title="{% trans %}app.admin.groups.tooltip.new{% endtrans %}"></a>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -20,11 +20,4 @@
         </tbody>
     </table>
 
-        <ul>
-        <li>
-            <a href="{{ path('group_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+{% endblock %}

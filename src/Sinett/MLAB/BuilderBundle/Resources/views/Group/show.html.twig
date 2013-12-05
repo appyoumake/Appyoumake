@@ -1,16 +1,21 @@
 <tr id="row_group_{{ entity.id }}">
-    <td>{{ entity.name }}</td>
-    <td>{{ entity.description }}</td>
-    <td>{{ entity.isDefault }}</td>
-    <td>{{ entity.Enabled }}</td>
-    <td>
-    <ul>
-        <li>
-            <a href="{{ path('group_delete', { 'id': entity.id }) }}">delete</a>
-        </li>
-        <li>
-            <a href="{{ path('group_edit', { 'id': entity.id }) }}">edit</a>
-        </li>
-    </ul>
+
+	{% if entity.isDefault %}
+		<td class="mlab_icon_group_isdefault" title="{% trans %}app.admin.groups.isdefault{% endtrans %}">
+    {% else %}
+    	<td>
+    {% endif %}
     </td>
+    
+    <td>
+    	<a href="{{ path('group_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.groups.tooltip.name{% endtrans %}">
+    		{{ entity.name }}
+   		</a>
+    </td>
+
+	<td>{{ entity.description }}</td>
+	
+	<td>
+		<a href="{{ path('group_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.groups.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+	</td>
 </tr>
