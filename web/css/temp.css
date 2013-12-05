@@ -95,3 +95,7 @@ td.builder_app_publish {
 	padding: 8px;
 	
 }
+
+.hidden {
+	display: none;
+}

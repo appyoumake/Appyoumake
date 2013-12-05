@@ -109,16 +109,13 @@
 	{{ form_end(form) }}
 </div>
 
-<button class="button_wizard" onclick="mlab_app_new_previous();">{% trans %}<- Previous{% endtrans %}</button>
-<button class="button_wizard" onclick="mlab_app_new_next();">{% trans %}Next ->{% endtrans %}</button>
+<button class="hidden button_wizard" onclick="mlab_app_new_move(-1);">{% trans %}<- Previous{% endtrans %}</button>
+<button class="button_wizard" onclick="mlab_app_new_move(1);">{% trans %}Next ->{% endtrans %}</button>
 
 <script type="text/javascript">
-	function mlab_app_new_previous() {
-		$('#build_app_properties').tabs('option', 'active', $('#build_app_properties').tabs('option', 'active') - 1);
+	function mlab_app_new_move(direction) {
+		$('#build_app_properties').tabs('option', 'active', $('#build_app_properties').tabs('option', 'active') + direction);
 	}
 
-	function mlab_app_new_next() {
-		$('#build_app_properties').tabs('option', 'active', $('#build_app_properties').tabs('option', 'active') + 1);
-	}
 </script>
 {% endblock %}
