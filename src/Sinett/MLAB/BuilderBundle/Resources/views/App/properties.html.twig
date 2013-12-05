@@ -109,12 +109,34 @@
 	{{ form_end(form) }}
 </div>
 
-<button class="hidden button_wizard" onclick="mlab_app_new_move(-1);">{% trans %}<- Previous{% endtrans %}</button>
-<button class="button_wizard" onclick="mlab_app_new_move(1);">{% trans %}Next ->{% endtrans %}</button>
+<button class="hidden button_wizard" id="mlab_app_new_previous" onclick="mlab_app_new_move(-1);">{% trans %}app.wizard.button.previous{% endtrans %}</button>
+<button class="button_wizard" id="mlab_app_new_next" onclick="mlab_app_new_move(1);">{% trans %}app.wizard.button.next{% endtrans %}</button>
 
 <script type="text/javascript">
+
+//function to move back and forth in new app/properties wizard 
 	function mlab_app_new_move(direction) {
-		$('#build_app_properties').tabs('option', 'active', $('#build_app_properties').tabs('option', 'active') + direction);
+		var caption_next = "{% trans %}app.wizard.button.next{% endtrans %}";
+		var caption_finished = "{% trans %}app.wizard.button.finished{% endtrans %}";
+		var curr_tab = $('#build_app_properties').tabs('option', 'active');
+		var tot_tabs = $('#build_app_properties >ul >li').size();
+		
+//going forward: display previous button, change title of next button if on last page, verify data 
+		if (direction > 0) {
+			$("#mlab_app_new_previous").removeClass("hidden");
+			if (curr_tab == (tot_tabs - 2)) {
+				$("#mlab_app_new_next").text(caption_finished);
+			}
+			
+//going backward: hide previous button if first page, rename next button 
+		} else {
+			if (curr_tab == 1) {
+				$("#mlab_app_new_previous").addClass("hidden");
+			}
+			$("#mlab_app_new_next").text(caption_next);
+		}
+		$('#build_app_properties').tabs('option', 'active', curr_tab + direction);
+		
 	}
 
 </script>
