@@ -299,7 +299,7 @@
 			}
 			
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
-			$("#mlab_editor_chrome").append(body);
+			$("#mlab_editor_chrome").append(body.innerHTML);
 
 //need to loop through all divs and add manually, otherwise the styles for dragging/dropping do not work 
 		    for (var i = 0, len = divs.length; i < len; i++) {
