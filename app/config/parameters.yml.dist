@@ -49,5 +49,6 @@ parameters:
         app:
             copy_files: { frontpage.html: index.html, page.html: 001.html, js: js, css: css, img: img }
             new_page: page.html
+            content_id: mlab_editable_area
             
         replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    

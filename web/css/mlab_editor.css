@@ -50,16 +50,8 @@ div#mlab_editor_chrome {
 	margin: 10px;
 	margin-top: 20px;
 	float: left;
-}
-
-div#mlab_editor_page {
-	width: 600px;
-	height: 800px;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
-div#mlab_editor_page  {
+	width: 644px;
+	height: 844px;
 	overflow: hidden;
 }
 

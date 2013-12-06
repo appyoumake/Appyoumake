@@ -401,7 +401,6 @@ class AppController extends Controller
     	$file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
     	
-    	unset($config["app"]);
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
     	

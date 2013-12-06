@@ -113,3 +113,32 @@ h1 {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
 }
+
+.coolheader, .coolfooter {
+    background-color: black;
+    color: white;
+    height: 20px;
+    width: 100%;
+}
+
+div.clear {
+	clear: both;
+}
+
+.coolleft, .coolright {
+	float: left;
+	width: 10px;
+	height: 0px;
+	border-top: 120px solid transparent;
+	border-bottom: 120px solid transparent;
+	border-left: 10px solid gray;
+}
+
+.coolright {
+	float: right;
+	border-right: 10px solid gray;
+	border-left: none;
+}
+
+#mlab_editable_area {
+}

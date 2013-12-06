@@ -33,3 +33,10 @@
     width: 143px;
     height: 39px;
 }
+
+.coolheader, .coolfooter {
+    background-color: black;
+    color: white;
+    height: 20px;
+    width: 100%;
+}
