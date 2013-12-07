@@ -1,0 +1,9 @@
+[submodule "vendor/friendsofsymfony/user-bundle/FOS/UserBundle"]
+        path = vendor/friendsofsymfony/user-bundle/FOS/UserBundle
+        url = https://github.com/FriendsOfSymfony/FOSUserBundle.git
+
+[submodule "vendor/gedmo/doctrine-extensions"]
+        path = vendor/gedmo/doctrine-extensions
+        url = git://github.com/l3pp4rd/DoctrineExtensions.git
+
+
