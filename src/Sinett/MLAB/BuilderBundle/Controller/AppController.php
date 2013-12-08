@@ -11,11 +11,13 @@ use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
 
+//use Symfony\Component\HttpFoundation\File\UploadedFile
+
 /**
  * App controller.
  *
  */
-class AppController extends Controller
+class AppController extends Controller 
 {
 
     /**
@@ -393,7 +395,7 @@ class AppController extends Controller
      * 5: In page use getPageHtml() call in this controller
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function buildAppAction($id, $version, $page_num)
+    public function buildAppAction($id, $page_num)
     {
     	$em = $this->getDoctrine()->getManager();
     	$config = $this->container->parameters['mlab'];
@@ -403,31 +405,31 @@ class AppController extends Controller
     	
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
-    	
-    	 
     	 
     	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
     	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"]);
     	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
     	
+        
+        
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
     			"mlab_app_id" => $id, 
-    			"mlab_app_version" => $version, 
+    			"mlab_app_version" => $app->getVersion(), 
     			"mlab_components" => $components,
     			"mlab_app" => $app->getArrayFlat(),
     			"mlab_config" => $config,
+                "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999)
     	));
     }
     
     /**
      * Always called by AJAX to get the HTML content of the page that is to be edited
      * @param unknown $app_id
-     * @param unknown $version
      * @param unknown $page_num
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
      */
-    public function getPageAction ($app_id, $version, $page_num) {
+    public function getPageAction ($app_id, $page_num) {
     	
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
@@ -441,24 +443,12 @@ class AppController extends Controller
     	}
     	
 //create the path to the file to open
-        if ($version > 0) {
-    		$app_path = $this->container->parameters['mlab']['paths']['app'] .
-    					$app->getPath() . 
-    					"/" . 
-    					$version . 
-    					$this->container->parameters['mlab']['cordova']['asset_path'];
-    		
-    	} else {
-    		return new JsonResponse(array(
-    			'result' => 'error',
-    			'msg' => sprintf("Version not specified: %d", $version)));
-    		
-    	}
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
     	
     	if ($page_num == 'last') {
+//pick up last page, get the whole array, pop off last element and get filename
     		$pages = glob ( $app_path . "/???.html" );
-    		$doc = explode("/", array_pop($pages));
-    		$doc = array_pop($doc);
+    		$doc = basename(array_pop($pages));
     		
     	} else if ($page_num == 'first') {
     		$doc = 'index.html';
@@ -478,7 +468,8 @@ class AppController extends Controller
     		$html = file_get_contents("$app_path$doc");
     		return new JsonResponse(array(
     				'result' => 'success',
-    				'html' => $html));
+    				'html' => $html,
+                    'page_num' => $page_num));
     		 
     	} else {
     		return new JsonResponse(array(
@@ -486,6 +477,100 @@ class AppController extends Controller
     				'msg' => sprintf("File does not exists, contact support: %s", "$app_path$doc")));
     		 
     	}
+    }
+    
+    /**
+     * This is the function that stores a page in the app
+     * @param type $app_id
+     * @param type $page_num
+     */
+    public function putPageAction (Request $request, $app_id, $page_num) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+        
+        if ($page_num > 0 ) {
+            $page_name = substr("000" . $page_num, -3) . ".html";
+        } else {
+            return new JsonResponse(array(
+                    'result' => 'error',
+                    'msg' => sprintf("Page not specified: %d", $page_num)));
+        }
+        
+        $html = $request->request->all()["html"];
+        $file_mgmt = $this->get('file_management');
+        $res = $file_mgmt->savePage($app, $page_num, $html);
+        if ($res === false) {
+            return new JsonResponse(array(
+                'result' => 'failure',
+                'msg' => "Unable to save file, please try again"));
+        }
+
+        return new JsonResponse(array(
+            'result' => 'success'));
+
+    }
+    
+    /**
+     * New page is created by copying the standard page.html from the template
+     * @param type $app_id
+     */
+    public function newPageAction (Request $request, $app_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    		
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    		
+    	}
+        
+//copy the template file to the app
+        $title = $request->request->all()["title"];
+        $file_mgmt = $this->get('file_management');
+        $new_page_num = $file_mgmt->newPage($app, $title);
+        if ($new_page_num === false) {
+            return new JsonResponse(array(
+                'result' => 'failure',
+                'msg' => "Unable to create a new file, maximum app size of 999 pages reached!"));
+        }
+        
+    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num)));
+    }
+
+    /**
+     * Copy a page.
+     * @param type $app_id
+     * @param type $page_num
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function copyPageAction ($app_id, $page_num) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+    	
+//create the name of the file to create
+	    $file_mgmt = $this->get('file_management');
+        $new_page_num = $file_mgmt->copyPage($app, $page_num);
+        if ($new_page_num === false) {
+            return new JsonResponse(array(
+                'result' => 'failure',
+                'msg' => "Unable to copy the page, please try again"));
+        }	 
+    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num)));
+        
     }
     
     /**
@@ -497,4 +582,173 @@ class AppController extends Controller
     	
     }
     
+    /**
+     * Handles a file being uploaded
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param type $app_id
+     * @param type $comp_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function componentUploadAction(Request $request, $app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+
+        if ( !isset($comp_id) ) {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf("Component type not specified: %s", $comp_id)));
+        }
+
+        $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $replace_chars = $this->container->parameters['mlab']['replace_in_filenames'];
+        
+//loop through list of files and place it in relevant folder based on mime type, move file and then return the file path
+        foreach($request->files as $uploadedFile) {
+            $width = $height = $type = $attr = null;
+            $orig_name = $uploadedFile->getClientOriginalName();
+//TODO fix hack so keep extension properly
+            $ext = $uploadedFile->getClientOriginalExtension();
+            $file_name = str_replace("_$ext", ".$ext", preg_replace(array_values($replace_chars), array_keys($replace_chars), $orig_name)) ;
+            $sub_folder = false;
+            foreach ($this->container->parameters['mlab']['uploads_allowed'] as $folder => $formats) {
+                if (in_array($uploadedFile->getMimeType(), $formats)) {
+                    $sub_folder = $folder;
+                    break;
+                }
+            }
+            
+            if ( !$sub_folder ) {
+                return new JsonResponse(array(
+                    'result' => 'failure',
+                    'msg' => 'File type not allowed, please convert to another format'));
+            }
+            
+            if ($sub_folder == "img") {
+                //list($width, $height, $type, $attr) = getimagesize($uploadedFile["tmp_name"]);
+            }
+            
+//url of file to return
+            $url = $app->calculateFullPath($this->container->parameters['mlab']['urls']['app']) .  $this->container->parameters['mlab']['cordova']['asset_path'] . $sub_folder . "/" . $file_name;
+        
+            $uploadedFile->move($path_app . $sub_folder, $file_name);
+            /*{
+                return new JsonResponse(array(
+                    'result' => 'failure',
+                    'msg' => 'Unable to copy uploaded file to app folder'));
+            }*/
+            
+            
+            
+            return new JsonResponse(array(
+                    'result' => 'success',
+                    "url" => $url,
+                    "file_name" => $orig_name,
+                    "file_width" => $width,
+                    "file_height" => $height,
+                    "file_type" => $type));
+        
+        }
+    }
+
+    /**
+     * Whenever a component is added on the front end this function is called to copy files if required and run the exec_php code
+     * @param type $app_id
+     * @param type $comp_id
+     * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function componentAddedAction($app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+        
+        if ( !isset($comp_id) ) {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf("Component type not specified: %s", $comp_id)));
+        }
+
+        $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
+        $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $path_app_assets = $path_app . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $path_app_js = $path_app_assets . "js/";
+        
+//check if path to component and app exists
+            if ( is_dir($path_component) && is_dir($path_app) && is_dir($path_app_assets) ) {
+            
+//1: Copy JS file
+                if (file_exists( $path_component . $comp_id  . ".js") && !file_exists( $path_app_js . $comp_id . ".js")) {
+                    if (!@copy($path_component . $comp_id  . ".js", $path_app_js . $comp_id . ".js")) {
+                        return new JsonResponse(array(
+                            'result' => 'failure',
+                            'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
+                    }
+                }
+
+//2: Add rights to the manifest file
+                if (file_exists($path_component . "permissions.txt")) {
+                    if (!file_exists( $path_app . "AndroidManifest.xml")) {
+                        touch($path_app . "AndroidManifest.xml");
+                    }
+                    $xml = simplexml_load_file($path_app . "AndroidManifest.xml");
+
+                    $new_permissions = file($path_component . "permissions.txt", FILE_IGNORE_NEW_LINES);
+                    $existing_permissions = array();
+                    foreach($xml->{'uses-permission'} as $permission) {
+                        $existing_permissions[] = (string) $permission->attributes('http://schemas.android.com/apk/res/android');
+                    }
+
+                    $add_permissions = array_diff($new_permissions, $existing_permissions);
+
+//only add permissions if it is not already there
+                    if (count($add_permissions) > 0) {
+                        foreach ($add_permissions as $add_permission) {
+                            $perm = $xml->addChild('uses-permission');
+                            $perm->addAttribute("android:name", $add_permission, 'http://schemas.android.com/apk/res/android');
+                        }
+
+                        if (!$xml->asXML($path_app . "AndroidManifest.xml")) {
+                            return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => "Unable to update the permissions for this application"));
+                        }
+                    }
+                }
+
+//3: run the exec.php file if it exists
+                if (file_exists($path_component . "exec.php")) {
+                    if (!@(include($path_component . "exec.php"))) {
+                        return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => "Unable to load exec.php file"));
+                    } else {
+                        if (!onInit($path_app, $path_app_assets, $path_component, $comp_id)) {
+                            return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => "Unable to run application on server"));
+                        }
+                    }
+                }
+
+                return new JsonResponse(array('result' => 'success'));
+            
+            } else {
+                    $error = "";
+                    if (!is_dir($path_component)) { $error .= "Component not found\n"; }
+                    if (!is_dir($path_app)) { $error .= "App not found\n"; }
+                    return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => $error));
+            }            
+    }
 }

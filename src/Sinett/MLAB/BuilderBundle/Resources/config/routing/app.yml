@@ -41,14 +41,37 @@ app_builder_index:
     defaults: { _controller: "SinettMLABBuilderBundle:App:builder" }
 
 app_builder_editor:
-    path:   /builder/{id}/{version}/{page_num}/build
+    path:   /builder/{id}/{page_num}/build
     defaults: { _controller: "SinettMLABBuilderBundle:App:buildApp" }
 
 app_builder_page_get:
-    path:   /builder/{app_id}/{version}/{page_num}/page_get
+    path:   /builder/{app_id}/{page_num}/page_get
     defaults: { _controller: "SinettMLABBuilderBundle:App:getPage" }
 
+app_builder_page_save:
+    path:   /builder/{app_id}/{page_num}/page_put
+    defaults: { _controller: "SinettMLABBuilderBundle:App:putPage" }
+    requirements: { _method: post }
+
+app_builder_page_new:
+    path:   /builder/{app_id}/page_new
+    defaults: { _controller: "SinettMLABBuilderBundle:App:newPage" }
+    requirements: { _method: post }
+
+app_builder_page_copy:
+    path:   /builder/{app_id}/{page_num}/page_copy
+    defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }
+
 app_builder_copy_app:
-    path:   /builder/{id}/{version}/copy
+    path:   /builder/{id}/{new_version}/copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyApp" }
+
+app_builder_component_added:
+    path:   /builder/{app_id}/{comp_id}/component_added
+    defaults: { _controller: "SinettMLABBuilderBundle:App:componentAdded" }
+
+app_builder_component_upload:
+    path:   /builder/{app_id}/{comp_id}/component_upload
+    defaults: { _controller: "SinettMLABBuilderBundle:App:componentUpload" }
+    requirements: { _method: post }
 
