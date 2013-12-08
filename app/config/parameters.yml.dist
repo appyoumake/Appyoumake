@@ -14,10 +14,16 @@ parameters:
     secret: flurkysnarkish
     
     mlab: 
+        uploads_allowed:
+          img: [image/gif, image/jpeg, image/png]
+          video: [video/mpeg, video/mp4, video/x-flv]
+          audio: [audio/mp4, audio/mpeg, audio/vnd.wave]
+          
+          
         paths:
-          app: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/apps/
-          component: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/components/
-          template: /home/utvikler/git/MLAB-symfony/mlab-symfony/mlab_elements/templates/
+          app: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/apps/
+          component: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/components/
+          template: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/templates/
         
         urls:
           app: /mlab_elements/apps/
