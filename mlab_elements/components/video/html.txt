@@ -1,1 +1,11 @@
-<iframe class="existent-video" src="http://www.youtube.com/embed/z4HmOvGAi1Y" allowfullscreen="true" frameborder="0" ></iframe>
+<video poster="" style="cursor: pointer;" >
+</video>
+
+<script type="text/javascript">
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		var video = document.getElementById('video');
+		video.addEventListener('click',function(){
+			video.play();
+		},false);
+	}
+</script>

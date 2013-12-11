@@ -1,3 +1,6 @@
 ; Configuration file
 ; Comments start with ';'
+;
+;key = values
 active = true
+

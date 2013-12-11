@@ -20,7 +20,7 @@
 	        {% for app in apps %}
 		        <tr id="row_app_{{ app.id }}">
 				    <td class="builder_appname">
-				    	<a href="{{ path('app_builder_editor', { 'id': app.id, 'version': app.version, 'page_num': 'last' }) }}">{{ app.name }}</a>
+				    	<a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
 				    </td>
 				    <td class="builder_app_actions {% if app.locked_pages %}builder_app_locked{% endif %}">
 				    	<a class="builder_app_properties" onclick="editAppProperties({{ app.id }}); return false;"></a>

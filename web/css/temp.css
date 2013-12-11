@@ -99,3 +99,11 @@ td.builder_app_publish {
 .hidden {
 	display: none;
 }
+
+#mlab_existing_pages .mlab_copy_file {
+	background-image: url("/img/copy_page.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 0 15px;
+    
+}

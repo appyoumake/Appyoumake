@@ -185,7 +185,6 @@ class FileManagement {
 		
 //prepare all the paths to use
 		$default_platform = $this->config["cordova"]["default_platform"];
-		$cordova_bin_path = $this->config["cordova"][$default_platform]["bin_path"];
 		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
@@ -193,23 +192,35 @@ class FileManagement {
 		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
 		$app_domain = $this->config["cordova"]["app_creator_identifier"];
 		
-		$cmd = "$cordova_bin_path/create $app_path $app_domain \"" . $app->getPath() . "\" 2>&1";
+		$cordova_create_command = $this->config["cordova"]["cmds"]["create"];
+		$cordova_create_command = str_replace(
+				array("_FOLDER_", "_DOMAIN_", "_TITLE_"),
+				array($app_path, $app_domain, $app->getPath()),
+				$cordova_create_command
+		);
 		
-		if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
+		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
+		
+		$cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
+		
+		/*if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
 			return array("Could not set path for Cordova");
-		}
+		}*/
+		
 		
 		$output = array();
 		$exit_code = 0;
-		exec($cmd, $output, $exit_code);
 		
-		//TODO FIX
-		$exit_code = 0;
+		//TODO
+		return true;
+		
+		exec($cordova_create_command . " 2>&1", $output, $exit_code);
 		
 //check exit code, anything except 0 = fail
 		if ($exit_code != 0) {
 			return $output + array("Exit code: " . $exit_code);
 		} else {
+			shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
 			foreach ($template_items_to_copy as $from => $to) {
 				$cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
 				$ret = shell_exec($cmd);
@@ -241,5 +252,102 @@ class FileManagement {
 	    }
 	    return true;
 	}
+
+    /**
+     * generate new name, get a list of pages in folder, select last one, turn into an int, 
+     * then keep increasing it until it is not found (in vcase someone else creates a file inthe mean time)
+     * @param type $app_path
+     * @return array(int $new_page_num, string $new_page_path (complete path to file))
+     */
+    public function getNewPageNum($app) {
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+
+   		$pages = glob ( $app_path . "/???.html" );
+   		$new_page_num = intval(basename(array_pop($pages))) + 1;
+        $new_page_name = substr("000" . $new_page_num, -3) . ".html";
+    	
+    	while (file_exists("$app_path$new_page_name")) {
+            if ($new_page_num == 999) {
+                return array(false, false);
+            }
+            $new_page_num++;
+            $new_page_name = substr("000" . $new_page_num, -3) . ".html";
+        }
+        
+        $new_page_path = $app_path . $new_page_name;
+        return array($new_page_num, $new_page_path);
+    }
+    
+    /**
+     * Copies a template page
+     * @param type $app
+     * @return bool
+     */
+    public function newPage($app, $title) {
+//get path of template file to copy
+        $template_path = $app->getTemplate()->calculateFullPath($this->config['paths']['template']) . $this->config['app']['new_page'];
+        
+//create the name of the file to create
+	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
+        if ($new_page_num === false) {
+            return false;
+        }
+
+        $temp = file_get_contents($template_path);
+        $temp = preg_replace('/<title>(.+)<\/title>/', "<title>$title</title>", $temp);
+        if (file_put_contents ($new_page_path, $temp)) {
+            return $new_page_num;
+        } else {
+            return false;
+        }
+    }
+    
+    public function savePage($app, $page_num, $html) {
+//get path of file to save
+        $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+        
+        return file_put_contents ($file_path, $html) ;
+    }
+    
+    /**
+     * copies a page
+     * @param type $app
+     * @param type $page_num
+     * @return boolean
+     */
+    public function copyPage($app, $page_num) {
+//get path of file to copy
+        $source_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+        
+//create the name of the file to create
+	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
+        if ($new_page_num === false) {
+            return false;
+        }
+
+        $temp = file_get_contents($source_path);
+        $temp = preg_replace('/<title>(.+)<\/title>/', '<title>Copy of $1</title>', $temp);
+        if (file_put_contents ($new_page_path, $temp)) {
+            return $new_page_num;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    public function getPageIdAndTitles($app) {
+        $pages = array("index" => "Front page");
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+   		$files = glob ( $app_path . "/???.html" );
+        
+        foreach ($files as $file) {
+            if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$file"), $matches) && isset($matches[1])) {
+                $pages[intval(basename($file))] = $matches[1];
+            } else {
+                $pages[intval(basename($file))] = "Untitled [{$file}]";
+            }
+        }
+        return $pages;
+    }
 		
 }

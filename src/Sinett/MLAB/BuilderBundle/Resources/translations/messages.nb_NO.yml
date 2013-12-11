@@ -119,7 +119,25 @@ app.admin.components.tooltip.new: Opprett ny komponent
 app.admin.components.new.heading: Opprett ny komponent
 app.admin.components.edit.heading: Rediger komponent
 
-builder.new.app.name.details: Navn
-builder.new.app.more.details: Klassifiser
-builder.choose.template.or.app: Baser på
-builder.new.app.submit: Lag
+
+
+#-----------------------------------------------------
+# New app form 
+#-----------------------------------------------------
+builder.new.app.basedon.tab: Baser på
+builder.new.app.name.tab: Navn
+builder.new.app.more.details.tab: Klassifiser
+builder.new.app.submit.tab: Lag
+
+builder.new.app.basedon.heading: Baser på
+builder.new.app.basedon.description: En app kan baseres på en mal eller en eksisterende app. Velg utgangspunktet for din app nedenfor
+
+builder.new.app.name.heading: Navn
+
+builder.new.app.more.details.heading: Klassifiser
+
+builder.new.app.submit.heading: App detaljer
+
+app.wizard.button.previous: < Forrige
+app.wizard.button.next: Neste >
+app.wizard.button.finished: Ferdig

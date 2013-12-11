@@ -9,12 +9,43 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Sinett\MLAB\BuilderBundle\Entity\Menu;
 use Sinett\MLAB\BuilderBundle\Form\MenuType;
 
+// additional entities used to return data
+use Sinett\MLAB\BuilderBundle\Entity\App;
 /**
  * Menu controller.
  *
  */
 class MenuController extends Controller
 {
+    
+    /**
+     * Utility function to get name of app specified in URL
+     */
+    private function getAppName($path) {
+        $elements = explode("/", $path);
+        $em = $this->getDoctrine()->getManager();
+		
+		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($elements[3]);
+        if ($app) {
+            return $app->getName();
+        }
+    }
+
+    /**
+     * Utility function to get name of app specified in URL
+     */
+    private function getAppPages($path) {
+        $elements = explode("/", $path);
+        $em = $this->getDoctrine()->getManager();
+		
+		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($elements[3]);
+        if ($app) {
+            $file_mgmt = $this->get('file_management');
+		    $file_mgmt->setConfig('app');
+    		$pages = $file_mgmt->getPageIdAndTitles($app);
+            return $this->renderView('SinettMLABBuilderBundle:App:pages.html.twig', array('pages' => $pages));
+        }
+    }
 
 
 	/**
@@ -29,6 +60,20 @@ class MenuController extends Controller
     	$em = $this->getDoctrine()->getManager();
 		
 		$menus = $em->getRepository('SinettMLABBuilderBundle:Menu')->findMenuItems($this->getUser(), $path, $this->container->getParameter('security.role_hierarchy.roles'));
+
+        foreach ($menus as $key => $menu) {
+    		if (isset($menu["contentPhp"]) && !empty($menu["contentPhp"])) {
+				$menus[$key]["contentHtml"] = eval("return " . $menu["contentPhp"]);
+			}
+            
+            if (isset($menu["children"])) {
+                foreach ($menu["children"] as $sub_key => $sub_menu) {
+                    if (isset($sub_menu["contentPhp"]) && !empty($sub_menu["contentPhp"])) {
+                        $menus[$key]["children"][$sub_key]["contentHtml"] = eval("return " . $sub_menu["contentPhp"]);
+                    }
+                }
+            }
+        }
 
 		return $this->render('::menu.html.twig', array(
 				'menus' => $menus,

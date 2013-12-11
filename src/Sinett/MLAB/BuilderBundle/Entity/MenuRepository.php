@@ -4,6 +4,7 @@ namespace Sinett\MLAB\BuilderBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+
 /**
  * MenuRepository
  *
@@ -12,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class MenuRepository extends EntityRepository
 {
+    
 	/**
 	 * Builds a query based on the users roles and groups + current URL and returns all the menus they should see 
 	 * 
@@ -61,10 +63,6 @@ class MenuRepository extends EntityRepository
 		$top_menus = $this->getEntityManager()->createQuery($sql)->getArrayResult();
 
 		foreach ($top_menus as $menu_item) {
-			if (isset($menu_item["contentPhp"]) && !empty($menu_item["contentPhp"])) {
-				$menu_item["contentHtml"] = eval("return " . $menu_item["contentPhp"]);
-			}
-				
 			$menu_item["help"] = htmlspecialchars($menu_item["help"]);
 				
 			$sql = "SELECT m FROM SinettMLABBuilderBundle:Menu AS m
@@ -79,10 +77,6 @@ class MenuRepository extends EntityRepository
 			
 			foreach ($sub_menus as $sub_row) {
 				$menu_subitem = (array) $sub_row;
-				if (isset($menu_subitem["contentPhp"]) && !empty($menu_subitem["contentPhp"])) {
-					$menu_subitem["contentHtml"] = eval("return " . $menu_subitem["contentPhp"]);
-				}
-					
 				$menu_subitem["help"] = htmlspecialchars($menu_subitem["help"]);
 				$menu_item["children"][] = $menu_subitem;
 			}
