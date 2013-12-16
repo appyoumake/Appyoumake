@@ -1,2 +1,0 @@
-android.permission.RECEIVE_SMS
-android.permission.INTERNAL_SYSTEM_WINDOW

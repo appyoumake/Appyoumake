@@ -1,3 +1,0 @@
-; Configuration file
-; Comments start with ';'
-active = true

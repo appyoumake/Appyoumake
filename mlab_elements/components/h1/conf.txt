@@ -1,4 +1,0 @@
-; Configuration file
-; Comments start with ';'
-active = true
-tooltip=This is a regular headline, use only once per page

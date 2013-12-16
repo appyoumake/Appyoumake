@@ -336,7 +336,11 @@ class FileManagement {
     
     
     public function getPageIdAndTitles($app) {
+<<<<<<< HEAD
         $pages = array("index" => "Front page");
+=======
+        $pages = array("index.html" => "Front page");
+>>>>>>> 850064bd2708b25e3a15654f2c35b16dac054fb7
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
    		$files = glob ( $app_path . "/???.html" );
         
