@@ -610,21 +610,13 @@ class AppController extends Controller
 //loop through list of files and place it in relevant folder based on mime type, move file and then return the file path
         foreach($request->files as $uploadedFile) {
             $width = $height = $type = $attr = null;
-<<<<<<< HEAD
-            $type = $uploadedFile->getMimeType();
-=======
->>>>>>> 850064bd2708b25e3a15654f2c35b16dac054fb7
             $orig_name = $uploadedFile->getClientOriginalName();
 //TODO fix hack so keep extension properly
             $ext = $uploadedFile->getClientOriginalExtension();
             $file_name = str_replace("_$ext", ".$ext", preg_replace(array_values($replace_chars), array_keys($replace_chars), $orig_name)) ;
             $sub_folder = false;
             foreach ($this->container->parameters['mlab']['uploads_allowed'] as $folder => $formats) {
-<<<<<<< HEAD
-                if (in_array($type, $formats)) {
-=======
                 if (in_array($uploadedFile->getMimeType(), $formats)) {
->>>>>>> 850064bd2708b25e3a15654f2c35b16dac054fb7
                     $sub_folder = $folder;
                     break;
                 }
@@ -636,39 +628,20 @@ class AppController extends Controller
                     'msg' => 'File type not allowed, please convert to another format'));
             }
             
-<<<<<<< HEAD
-=======
             if ($sub_folder == "img") {
                 //list($width, $height, $type, $attr) = getimagesize($uploadedFile["tmp_name"]);
             }
->>>>>>> 850064bd2708b25e3a15654f2c35b16dac054fb7
             
 //url of file to return
             $url = $app->calculateFullPath($this->container->parameters['mlab']['urls']['app']) .  $this->container->parameters['mlab']['cordova']['asset_path'] . $sub_folder . "/" . $file_name;
         
             $uploadedFile->move($path_app . $sub_folder, $file_name);
-<<<<<<< HEAD
-            if (!file_exists($path_app . $sub_folder . "/" . $file_name)) {
-                return new JsonResponse(array(
-                    'result' => 'failure',
-                    'msg' => 'Unable to copy uploaded file to app folder'));
-            }
-            if ($sub_folder == "img") {
-            	list($width, $height, $type, $attr) = getimagesize($path_app . $sub_folder . "/" . $file_name);
-            } else if ($sub_folder == "video") {
-            	
-            } else if ($sub_folder == "audio") {
-            	
-            }
-=======
             /*{
                 return new JsonResponse(array(
                     'result' => 'failure',
                     'msg' => 'Unable to copy uploaded file to app folder'));
             }*/
             
-            
->>>>>>> 850064bd2708b25e3a15654f2c35b16dac054fb7
             
             return new JsonResponse(array(
                     'result' => 'success',
@@ -677,10 +650,6 @@ class AppController extends Controller
                     "file_width" => $width,
                     "file_height" => $height,
                     "file_type" => $type));
-<<<<<<< HEAD
-=======
-        
->>>>>>> 850064bd2708b25e3a15654f2c35b16dac054fb7
         }
     }
 
@@ -777,6 +746,6 @@ class AppController extends Controller
                     return new JsonResponse(array(
                                 'result' => 'failure',
                                 'msg' => $error));
-            }            
+            }
     }
 }
