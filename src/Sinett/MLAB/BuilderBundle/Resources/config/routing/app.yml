@@ -63,7 +63,7 @@ app_builder_page_copy:
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }
 
 app_builder_copy_app:
-    path:   /builder/{id}/{new_version}/copy
+    path:   /builder/{id}/copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyApp" }
 
 app_builder_component_added:
