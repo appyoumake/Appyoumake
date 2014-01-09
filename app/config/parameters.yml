@@ -1,0 +1,60 @@
+# This file is auto-generated during the composer installation
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: mlab-symfony
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: no_NB
+    secret: flurkysnarkish
+    
+    mlab: 
+        uploads_allowed:
+          img: [image/gif, image/jpeg, image/png]
+          video: [video/mpeg, video/mp4, video/x-flv]
+          audio: [audio/mp4, audio/mpeg, audio/vnd.wave]
+          
+          
+        paths:
+          app: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/apps/
+          component: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/components/
+          template: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/templates/
+        
+        urls:
+          app: /mlab_elements/apps/
+          component: /mlab_elements/components/
+          template: /mlab_elements/templates/
+          
+        filenames:
+          component_icon: icon.png
+        
+# paths etc for cordova
+        cordova:
+          default_platform: android
+          bin_path: 
+              android: /opt/cordova-3.2.0/cordova-android/bin
+          platform_paths:
+              android: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
+          app_creator_identifier: no.ffi.sinett
+          asset_path: /assets/www/
+          icon_path: /assets/www/res/icon/android/icon-72-hdpi.png
+            
+# when a user is uploading a file these files have to be present to be accepted
+        verify_uploads:    
+            template: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
+            component: [ html.txt, icon.png, exec.js, conf.txt ]
+            app: [ asset/www ]
+            
+        component_files: { ICON: icon.png, HTML: html.txt, CONFIG: conf.txt, SCRIPTS: exec.js, PHP: exec.php, RIGHTS: rights.xml }
+        
+        app:
+            copy_files: { frontpage.html: index.html, page.html: 001.html, js: js, css: css, img: img }
+            new_page: page.html
+            content_id: mlab_editable_area
+            
+        replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    
