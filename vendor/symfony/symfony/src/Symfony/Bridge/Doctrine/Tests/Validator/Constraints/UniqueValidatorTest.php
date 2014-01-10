@@ -295,7 +295,7 @@ class UniqueValidatorTest extends \PHPUnit_Framework_TestCase
         $repository->expects($this->once())
             ->method('findByCustom')
             ->will(
-                $this->returnCallback(function() use ($entity) {
+                $this->returnCallback(function () use ($entity) {
                     $returnValue = array(
                         $entity,
                     );
@@ -366,5 +366,51 @@ class UniqueValidatorTest extends \PHPUnit_Framework_TestCase
             'Associated entities are not allowed to have more than one identifier field'
         );
         $violationsList = $validator->validate($associated);
+    }
+
+    public function testDedicatedEntityManagerNullObject()
+    {
+        $uniqueFields = array('name');
+        $entityManagerName = 'foo';
+
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+
+        $constraint = new UniqueEntity(array(
+            'fields' => $uniqueFields,
+            'em' => $entityManagerName,
+        ));
+
+        $uniqueValidator = new UniqueEntityValidator($registry);
+
+        $entity = new SingleIntIdEntity(1, null);
+
+        $this->setExpectedException(
+            'Symfony\Component\Validator\Exception\ConstraintDefinitionException',
+            'Object manager "foo" does not exist.'
+        );
+
+        $uniqueValidator->validate($entity, $constraint);
+    }
+
+    public function testEntityManagerNullObject()
+    {
+        $uniqueFields = array('name');
+
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+
+        $constraint = new UniqueEntity(array(
+            'fields' => $uniqueFields,
+        ));
+
+        $uniqueValidator = new UniqueEntityValidator($registry);
+
+        $entity = new SingleIntIdEntity(1, null);
+
+        $this->setExpectedException(
+            'Symfony\Component\Validator\Exception\ConstraintDefinitionException',
+            'Unable to find the object manager associated with an entity of class "Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity"'
+        );
+
+        $uniqueValidator->validate($entity, $constraint);
     }
 }
