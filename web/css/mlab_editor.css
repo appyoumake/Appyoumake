@@ -1,23 +1,707 @@
 @CHARSET "UTF-8";
 
+
+
+ul.megamenu {
+
+
+/* only not inherited styels... */
+
+background-color: rgb(0, 0, 0);
+border-bottom-color: rgb(204, 204, 204);
+border-bottom-style: solid;
+border-bottom-width: 0px;
+border-top-color: rgb(0, 0, 0);
+border-top-style: none;
+border-top-width: 0px;
+display: block;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+height: 45px;
+line-height: 30px;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-bottom: 0px;
+padding-left: 14px;
+padding-right: 77px;
+padding-top: 0px;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+}
+
+
+
+#mlab_megamenu .mlab_menu_logo {
+
+/* Only not inherited styels... */
+
+background-image: url(http://mlabsymfony/img/logo_menu.png);
+background-repeat: no-repeat;
+color: rgb(0, 0, 0);
+display: list-item;
+float: left;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+height: 18px;
+line-height: 30px;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 0px;
+margin-right: 100px;
+margin-top: 20px;
+text-align: left;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+width: 68px;
+font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+
+
+ 
+#mlab_megamenu .mlab_menu_top_children {
+
+
+/* Only not inherited styels... */
+
+
+color: rgb(0, 0, 0);
+display: list-item;
+float: left;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+height: 46px;
+line-height: 30px;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+text-align: left;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+width: 81px;
+font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+
+ 
+#mlab_megamenu .header {
+
+/* Only not inherited styels... */
+
+background-image: url(http://mlabsymfony/img/menuarrow.png);
+background-position: 0% 50%;
+background-repeat: no-repeat;
+border-bottom-color: rgb(254, 254, 254);
+border-bottom-style: solid;
+border-bottom-width: 0px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(254, 254, 254);
+border-left-style: solid;
+border-left-width: 0px;
+border-right-color: rgb(254, 254, 254);
+border-right-style: solid;
+border-right-width: 0px;
+border-top-color: rgb(254, 254, 254);
+border-top-style: solid;
+border-top-width: 0px;
+color: rgb(254, 254, 254);
+cursor: default;
+display: block;
+float: right;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+height: 28px;
+line-height: 28px;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-left: 36px;
+margin-top: 18px;
+padding-bottom: 0px;
+padding-left: 12px;
+padding-right: 0px;
+padding-top: 0px;
+text-align: left;
+text-decoration: none solid rgb(254, 254, 254);
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+vertical-align: middle;
+width: 81px;
+font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+
+
+ 
+
+#mlab_megamenu .mlab_menu_content {
+
+
+
+/* Only not inherited styels... */
+
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgb(255, 255, 255);
+background-image: none;
+background-origin: padding-box;
+background-size: auto;
+border-bottom-color: rgb(204, 204, 204);
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(204, 204, 204);
+border-left-style: solid;
+border-left-width: 1px;
+border-right-color: rgb(204, 204, 204);
+border-right-style: solid;
+border-right-width: 2px;
+border-top-color: rgb(0, 0, 0);
+border-top-style: none;
+border-top-width: 0px;
+color: rgb(0, 0, 0);
+display: none;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+font-weight: normal;
+height: auto;
+line-height: normal;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-bottom: 0px;
+padding-left: 0px;
+padding-right: 0px;
+padding-top: 0px;
+position: absolute;
+text-align: left;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+white-space: nowrap;
+width: auto;
+z-index: 9;
+
+
+}
+
+
+
+
+ 
+#mlab_megamenu .mm-content-base {
+
+
+/* Only not inherited styels... */
+
+
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgb(255, 255, 255);
+background-image: none;
+background-origin: padding-box;
+background-size: auto;
+color: rgb(0, 0, 0);
+display: block;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+font-weight: normal;
+height: auto;
+line-height: normal;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-top: 0px;
+padding-bottom: 10px;
+padding-left: 25px;
+padding-right: 25px;
+padding-top: 1px;
+position: relative;
+text-align: left;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+white-space: nowrap;
+width: auto;
+z-index: 11;
+font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+}
+
+
+
+
+
+ 
+#mlab_megamenu .mm-js-shadow {
+
+
+
+/* Only not inherited styels... */
+
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgba(0, 0, 0, 0);
+background-image: none;
+background-origin: padding-box;
+background-size: auto;
+color: rgb(0, 0, 0);
+display: block;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+font-weight: normal;
+height: auto;
+line-height: normal;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+position: absolute;
+text-align: left;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+white-space: nowrap;
+width: auto;
+z-index: 10;
+font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+
+
+
+#mlab_megamenu .mlab_menu_user  {
+
+
+/* Only not inherited styels... */
+ 
+background-image: url(http://mlabsymfony/img/user.png);
+background-position: 50% 50%;
+background-repeat: no-repeat;
+color: rgb(0, 0, 0);
+display: list-item;
+float: right;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-size: 14px;
+height: 29px;
+line-height: 30px;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 0px;
+margin-right: 8px;
+margin-top: 18px;
+text-align: left;
+text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
+width: 20px;
+font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+
+
+
+
+#mlab_container {
+
+/* Only not inherited styels... */
+ 
+
+
+display: table;
+font-family: Verdana, Arial, sans-serif;
+height: 918px;
+line-height: 0px;
+margin-left: 0px;
+margin-right: 0px;
+width: 868px;
+
+
+
+
+
+}
+
+#mlab_toolbar_components {
+
+
+
+/* Only not inherited styels...*/
+ display: block;
+float: left;
+font-family: Verdana, Arial, sans-serif;
+height: 128px;
+line-height: 0px;
+padding-top: 8px;
+width: 128px;
+
+
+
+
+}
+
+ 
+ 
+#mlab_template_warning {
+
+
+/* only not inherited styels... */
+display: block;
+font-family: Verdana, Arial, sans-serif;
+height: 0px;
+line-height: 0px;
+width: 868px;
+
+
+}
+
+
+
+#mlab_toolbar_components .mlab_button_components {
+
+/* only not inherited styels... */
+background-image: url(http://mlabsymfony/Users/cjg/GitHub/nyeMLAB/mlab_elements/components/h1/icon.png);
+background-position: 50% 50%;
+background-repeat: no-repeat;
+display: block;
+float: left;
+font-family: Verdana, Arial, sans-serif;
+height: 64px;
+line-height: 0px;
+width: 64px;
+
+
+}
+
+
+
+#mlab_editor_chrome {
+
+
+/* only not inherited styels... */
+border-bottom-color: rgb(0, 0, 0);
+border-bottom-left-radius: 20px;
+border-bottom-right-radius: 20px;
+border-bottom-style: solid;
+border-bottom-width: 22px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(0, 0, 0);
+border-left-style: solid;
+border-left-width: 22px;
+border-right-color: rgb(0, 0, 0);
+border-right-style: solid;
+border-right-width: 22px;
+border-top-color: rgb(0, 0, 0);
+border-top-left-radius: 20px;
+border-top-right-radius: 20px;
+border-top-style: solid;
+border-top-width: 22px;
+display: block;
+float: left;
+font-family: Verdana, Arial, sans-serif;
+height: 844px;
+line-height: 0px;
+margin-bottom: 10px;
+margin-left: 10px;
+margin-right: 10px;
+margin-top: 20px;
+overflow-x: hidden;
+overflow-y: hidden;
+width: 644px;
+
+
+}
+
+
+
+#mlab_button_rotate {
+
+/* only not inherited styels... */
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgba(0, 0, 0, 0);
+background-image: url(http://mlabsymfony/img/rotate.png);
+background-origin: padding-box;
+background-position: 0px 0px;
+background-repeat: no-repeat;
+background-size: auto;
+display: block;
+float: left;
+font-family: Verdana, Arial, sans-serif;
+height: 32px;
+line-height: 0px;
+margin-top: 15px;
+width: 32px;
+
+
+}
+ 
+ 
+ 
+ 
+ 
+#mlab_status  {
+/* tullete det jeg fant... only not inherited styels... */
+
+}
+ 
+ 
+ 
+#mlab_dialog_new_app  {
+
+/* only not inherited styels... */
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgba(0, 0, 0, 0);
+background-image: none;
+background-origin: padding-box;
+background-size: auto;
+border-bottom-color: rgb(34, 34, 34);
+border-bottom-style: none;
+border-bottom-width: 0px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(34, 34, 34);
+border-left-style: none;
+border-left-width: 0px;
+border-right-color: rgb(34, 34, 34);
+border-right-style: none;
+border-right-width: 0px;
+border-top-color: rgb(34, 34, 34);
+border-top-style: none;
+border-top-width: 0px;
+color: rgb(34, 34, 34);
+display: block;
+font-family: Verdana, Arial, sans-serif;
+font-size: 18px;
+height: 435px;
+max-height: none;
+min-height: 0px;
+overflow-x: auto;
+overflow-y: auto;
+padding-bottom: 8.800000190734863px;
+padding-left: 17.600000381469727px;
+padding-right: 17.600000381469727px;
+padding-top: 8.800000190734863px;
+position: relative;
+}
+
+#mlab_min_page_width {
+/* trengs dette???.. */
+display: block;
+}
+ 
+#mlab_align_menu_elements {
+/* trengs dette???... */
+display: block;
+}
+
+#mlab_buttons_item_manipulation {
+
+/* only not inherited styels... */
+background-color: rgb(255, 255, 255);
+display: block;
+float: right;
+font-family: Verdana, Arial, sans-serif;
+height: 16px;
+line-height: 0px;
+margin-top: 0px;
+position: relative;
+width: 80px;
+z-index: 1000000000;
+
+
+}
+
+
+
+#mlab_button_close {
+
+/* only not inherited styels... */
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgba(0, 0, 0, 0);
+background-image: url(http://mlabsymfony/img/delete.png);
+background-origin: padding-box;
+background-size: auto;
+border-bottom-color: rgb(0, 0, 0);
+border-bottom-style: none;
+border-bottom-width: 0px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(0, 0, 0);
+border-left-style: none;
+border-left-width: 0px;
+border-right-color: rgb(0, 0, 0);
+border-right-style: none;
+border-right-width: 0px;
+border-top-color: rgb(0, 0, 0);
+border-top-style: none;
+border-top-width: 0px;
+cursor: pointer;
+display: block;
+float: right;
+font-family: Verdana, Arial, sans-serif;
+height: 16px;
+line-height: 0px;
+margin-left: 8px;
+overflow-x: hidden;
+overflow-y: hidden;
+width: 16px;
+z-index: auto;
+
+
+}
+
+
+
+#mlab_button_drag {
+
+/* only not inherited styels... */
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgba(0, 0, 0, 0);
+background-image: url(http://mlabsymfony/img/drag.png);
+background-origin: padding-box;
+background-size: auto;
+border-bottom-color: rgb(0, 0, 0);
+border-bottom-style: none;
+border-bottom-width: 0px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(0, 0, 0);
+border-left-style: none;
+border-left-width: 0px;
+border-right-color: rgb(0, 0, 0);
+border-right-style: none;
+border-right-width: 0px;
+border-top-color: rgb(0, 0, 0);
+border-top-style: none;
+border-top-width: 0px;
+cursor: pointer;
+display: block;
+float: right;
+font-family: Verdana, Arial, sans-serif;
+height: 16px;
+line-height: 0px;
+margin-left: 8px;
+overflow-x: hidden;
+overflow-y: hidden;
+width: 16px;
+z-index: auto;
+}
+
+
+#mlab_button_setproperty {
+/* only not inherited styels... */
+-webkit-background-clip: border-box;
+-webkit-background-origin: padding-box;
+-webkit-background-size: auto;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: rgba(0, 0, 0, 0);
+background-image: url(http://mlabsymfony/img/settings.png);
+background-origin: padding-box;
+background-size: auto;
+border-bottom-color: rgb(0, 0, 0);
+border-bottom-style: none;
+border-bottom-width: 0px;
+border-image-outset: 0px;
+border-image-repeat: stretch;
+border-image-slice: 100%;
+border-image-source: none;
+border-image-width: 1;
+border-left-color: rgb(0, 0, 0);
+border-left-style: none;
+border-left-width: 0px;
+border-right-color: rgb(0, 0, 0);
+border-right-style: none;
+border-right-width: 0px;
+border-top-color: rgb(0, 0, 0);
+border-top-style: none;
+border-top-width: 0px;
+cursor: pointer;
+display: none;
+float: right;
+font-family: Verdana, Arial, sans-serif;
+height: 16px;
+line-height: 0px;
+margin-left: 8px;
+overflow-x: hidden;
+overflow-y: hidden;
+width: 16px;
+z-index: auto;
+}
+
+
+body#mlab_editor_body {
+  	margin: 0px;
+}
+
 /* added so that the elements of the container don't wrap if the screen is made smaler than the min width */
-body.mlab_editor div#mlab_min_page_width {
+div#mlab_min_page_width {
 	min-width: 1024px;
 }
 
 /* makes the background of the top menu bar expand to the width of the browser */
-body.mlab_editor div#mlab_top_bar_back {
+div#mlab_top_bar_back {
 background-color: rgb(0,0,0);
 height: 45px;
 }
 
 /* aligns the top right menu elements to the width of the container */
-body.mlab_editor div#mlab_align_menu_elements {
+div#mlab_align_menu_elements {
 	display: table;
 	float: left;
 }
 
-body.mlab_editor div.container {
+div#mlab_container {
 	margin-right: 0;
 	margin-left: 0;
 	display: table;
@@ -25,7 +709,7 @@ body.mlab_editor div.container {
 	content: "";
 }
 
-body.mlab_editor footer {
+body#mlab_editor_body footer {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 30px;
@@ -33,7 +717,7 @@ body.mlab_editor footer {
   margin-top: 0px;
 }
 
-body.mlab_editor p {
+body#mlab_editor_body p {
   	margin: 0px;
   	display: block;
 }
@@ -55,11 +739,6 @@ div#mlab_editor_chrome {
 	overflow: hidden;
 }
 
-/*
-div#mlab_editor_page [data-mlab-type="map"] {
-	overflow: visible;
-}
-*/
 
 #mlab_button_rotate {
 	width: 32px;
@@ -153,9 +832,7 @@ div.mlab_button_components {
 	float: right;
 }
 
-#mlab_megamenu {
-	
-}
+
 
 .clearfix:after {
     visibility: hidden;
@@ -186,8 +863,310 @@ div.mlab_button_components {
 .has-js .label_check input,
 .has-js .label_radio input { position: absolute; left: -9999px; }
 
-#mlab_property_uploadfiles, #mlab_property_uploadfiles_start {
-	float: left;
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+
+#mlab_dialog_new_app p  {
+/*	border: 1px solid blue;*/
+	font-size: 0.9em !important;
+	max-width: 810px;
+	white-space: normal;
+	margin-bottom: 1em;
+}
+
+#mlab_dialog_new_app label {
+	font-size: 0.8em !important;
+	margin-bottom: 0.6em;
 	clear: both;
+ 	float: left;
+ 	width: 40%;
+}
+
+#mlab_dialog_new_app input, textarea, select  {
+	font-size: 0.8em !important;
+	margin-bottom:0.6em;
+ 	float: left;
+ 	width: 55%;
+}
+
+
+#mlab_dialog_new_app button {
+	font-size: 0.8em !important;
+	margin-bottom: 0.6em;
+	margin-top: 2em;
+	margin-left: 1.9em;
+	width: 6em;
+ 	height: 3em;
+}
+
+#mlab_app_new_previous{
+ 	position: absolute;
+ 	bottom: 1.5em;
+ 	left: 1.8em;
+}
+
+#mlab_app_new_next {
+ 	position: absolute;
+ 	bottom: 1.5em;
+ 	left: 8.5em;
+}
+
+
+
+/* ==========================================================================
+   Menu - mega....
+   ========================================================================== */
+
+
+ul.megamenu {
+  background-color: rgb(0, 0, 0);
+  border-top: none;
+  border-bottom: 0px solid rgb(204, 204, 204);
+  height: 45px;
+  padding: 0em 5.5em 0em 1em;
+  list-style: none;
+  display: none;
+  margin: 0px;
+}
+
+.megamenu, .mm-item {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 30px;
+  text-shadow: 0 -1px 0 rgba(204, 204, 204,0.35);
+}
+
+ul.megamenu li a.header {
+  color: rgb(254, 254, 254);
+  border: 0px solid rgb(254, 254, 254);
+  padding: 0px 0px;
+  margin-left: 36px;
+  margin-top: 18px;
+  float: right;
+}
+
+li.mm-item a, li.mm-item p {
+	width: 100%
 	
 }
+
+ul.megamenu li {
+  color: rgb(0, 0, 0);
+  margin: 0px;
+}
+
+ul.megamenu li.clear-fix {
+  float: none;
+  clear: both;
+  margin: 0px;
+  padding: 0px;
+  height: 0px;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+ul.megamenu a.mm-item-link:link, ul.megamenu a.mm-item-link:visited {
+  position: relative;
+  display: inline-block;
+  color: #FFF;
+  padding: 8px 15px;
+  margin: 0px 3px 0px 0px;
+  text-decoration: none;
+  z-index: 10;
+  font-size: 14px;
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+
+*html ul.megamenu a.mm-item-link:link, *html ul.megamenu a.mm-item-link:visited {
+  border-color: pink;
+  filter: chroma(color=pink);
+}
+
+ul.megamenu a.mm-item-link-hover:link, ul.megamenu a.mm-item-link-hover:visited {
+	/*bare relatert til bilder i toppmenyen (ikke bakgrunnsbilder)
+	
+  color: #444;
+  background: none;
+  border-top: 1px solid none;
+  border-left: 1px solid none;
+  border-right: 1px solid none;
+  -moz-border-radius: 3px 3px 0px 0px;
+  border-radius: 3px 3px 0px 0px;
+  */
+    background: transparent none;
+}
+
+ul.megamenu div.mm-item-content {
+  background: #FFF;
+  padding: 0px;
+  position: absolute;
+  border: 1px solid rgb(204, 204, 204);
+  border-bottom:2px solid rgb(204, 204, 204);
+  border-right:2px solid rgb(204, 204, 204);
+  border-top:none;
+  z-index: 9;
+}
+
+.mm-content-base {
+  background: #FFF;
+  position: relative;
+  z-index: 11;
+  padding-left: 25px;
+  padding-top: 1px;
+  padding-bottom: 10px;
+  padding-right: 25px;
+  margin-top: 0px;
+}
+
+.mm-js-shadow {
+  background: transparent;
+  position: absolute;
+  z-index: 10;
+}
+
+.mlab_menu_content {
+	/*border-radius: 10px;*/
+  color: rgb(0, 0, 0);
+  border: 0px;
+  margin: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  padding: 0px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  text-shadow:black;
+  white-space: nowrap;
+}
+
+a.mlab_menu_content {
+  color: rgb(0, 0, 0);
+  border: 0px;
+  margin: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  padding: 0px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  text-shadow:black;
+}
+
+
+/* adds a small app icon - used in App drop down menu */
+/*Do we want to use this? 
+#mlab_app_icon {
+	position:absolute;
+	width: 16px;
+	height: 16px;
+	top: 15px;
+	background-position:center; 
+	background-repeat: no-repeat;
+	background: url("/img/appicon.png") -0px -0px;
+}
+*/
+
+#mlab_app_name {
+	margin-left: 20px;
+}
+
+#mlab_underline {
+	height: 22px;
+	border-bottom: 1px dotted #e9e9e9;
+}
+
+/* adds DOWN ARROW for menus with sub items */
+ul.megamenu li.mlab_menu_top_children a.header {
+	padding-left: 12px;
+	background-position: left; 
+	background-repeat: no-repeat;
+	background-image: url("/img/menuarrow.png");
+}
+
+/* adds the USER icon in the menu to the right */
+ ul.megamenu li.mlab_menu_top_children.mlab_menu_user {
+	width: 20px;
+	height: 29px;
+	float: right;
+	margin-top: 18px;
+	margin-right: 8px;
+	background-position: center; 
+	background-repeat: no-repeat;
+	background-image: url("/img/user.png");
+	float: right !important;
+}
+
+/* adds the HELP icon in the menu to the right */
+ul.megamenu li.mlab_menu_help {
+	width: 30px;
+	height: 20px;
+	margin-top: 17px;
+	padding: 0px;
+	background-position:center; 
+	background-repeat: no-repeat;
+	background-image: url("/img/help.png");
+	cursor: help;
+	float: right !important;
+}
+
+/* adds the LOGO */
+ul.megamenu li.mlab_menu_logo {
+	margin-top: 20px;
+	margin-right: 100px;
+	background-image: url('/img/logo_menu.png');
+	background-repeat: no-repeat;
+	width: 68px;
+	height: 18px;
+}
+
+ul.megamenu li a {
+	text-decoration: none;
+	color: black;
+	line-height: 2em;
+	vertical-align: middle;
+	cursor: default;
+	
+}
+
+
+
+
+
+.megamenu{
+/* test */
+background-color: rgb(204, 0, 0);
+}
+
+ul{
+/* test */
+background-color: rgb(204, 0, 0);
+}
+
+
+li{
+/* test */
+color: rgb(204, 0, 0);
+}
+
+
+a{
+/* test */
+color: rgb(204, 0, 0);
+}
+
+h2{
+/* test */
+color: rgb(204, 0, 0);
+}
+
+#mlab_property_uploadfiles, #mlab_property_uploadfiles_start {
+    float: left;
+    clear: both;
+}
+
