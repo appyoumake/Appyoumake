@@ -5,20 +5,19 @@
 <div id="build_app_properties">
 	<ul>
 		{% if mode == 'add' %}
-	    	<li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
+	    	<li><a href="#builder_app_property_tabs-1">{% trans %}builder.choose.template.or.app{% endtrans %}</a></li>
 	    {% endif %}
-	    <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
-	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.more.details.tab{% endtrans %}</a></li>
-	    <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.details{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.more.details{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit{% endtrans %}</a></li>
 	  </ul>
 	  
 	{{ form_start(form) }}
 <!-- output list of templates and apps -->
 		{% if mode == 'add' %}
 			<div class="mlab_form_tab" id="builder_app_property_tabs-1">
-			
-				<h3>{% trans %}builder.new.app.basedon.heading{% endtrans %}</h3>			
-				<p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
+				<h2>{% trans %}builder_choose_template_or_app{% endtrans %}</h2>
+				<p>En app kan baseres på en mal eller en eksisterende app. Velg utgangspunktet for din app nedenfor</p>
 <!-- dummy field used when they copy an app -->
 		        {{ form_widget(form.copy_app) }}
 		        {{ form_widget(form.version) }}
@@ -27,13 +26,11 @@
 			        {{ form_label(form.template) }}
 			        {{ form_errors(form.template) }}
 			        {{ form_widget(form.template) }}
-			     <div>   
-			     <div>   
-					<label>eller</label>
-			   	 </div>
-			     </div>
-			    	<label for="mlab_builder_app_copy_from">Base on </label>
-			    	<select id="mlab_builder_app_copy_from" name="mlab_builder_app_copy_from" onclick='baseOn("app");'>
+			    </div>
+
+			    <div>
+			    	<label for="builder_app_copy_from">Base on form</label>
+			    	<select id="builder_app_copy_from" name="builder_app_copy_from" onclick='baseOn("app");'>
 			    		<option value=""></option>
 				    	{% for app in apps %}
 					    	<option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ cordova_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
@@ -47,7 +44,7 @@
 <!-- name etc -->
 		<div class="mlab_form_tab" id="builder_app_property_tabs-2">
 		
-			<h3>{% trans %}builder.new.app.name.heading{% endtrans %}</h3>
+			<h2>{% trans %}builder.new.app.name.details{% endtrans %}</h2>
 			
 		    <div>
 		        {{ form_label(form.name) }}
@@ -78,7 +75,7 @@
 <!-- classification etc -->
 		<div class="mlab_form_tab" id="builder_app_property_tabs-3">
 
-			<h3>{% trans %}builder.new.app.more.details.heading{% endtrans %}</h3>
+			<h2>{% trans %}builder.new.app.more.details{% endtrans %}</h2>
 			
 			<div>
 		        {{ form_label(form.keywords) }}
@@ -108,7 +105,7 @@
 		
 <!-- summary -->
 		<div class="mlab_form_tab" id="builder_app_property_tabs-4">
-			<h3>{% trans %}builder.new.app.submit.heading{% endtrans %}</h3>
+			<h2>{% trans %}builder_new_app_submit{% endtrans %}</h2>
 			{{ form_errors(form) }}
 			<div id="mlab_app_new_summary"></div>
 		</div>
@@ -124,7 +121,7 @@
 //add onclick/onchange functions for the two dropdown menus here 
 	$(document).ready(function (){
 		
-		$('#mlab_builder_app_copy_from').ddslick({
+		$('#builder_app_copy_from').ddslick({
 		    width: 300,
 		    height: 110,
 		    imagePosition: "left",
@@ -136,7 +133,7 @@
 		    }
 		});
 		
-		$('#form_template').on("click", function() { $('#mlab_builder_app_copy_from').ddslick('select', {index: 0 }); });
+		$('#form_template').on("click", function() { $('#builder_app_copy_from').ddslick('select', {index: 0 }); });
 		//$('#form_template').ddslick();
 	});
 	
@@ -151,7 +148,7 @@
 		if (direction > 0) {
 			var msg = '';
 			if (curr_tab == 0) {
-				if ($('#form_template').val() == '' && $('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
+				if ($('#form_template').val() == '' && $('#builder_app_copy_from').data('ddslick').selectedIndex == 0) {
 					msg = msg + "{% trans %}You must select an app to copy or a template to use{% endtrans %}\n";
 				}  
 
@@ -185,7 +182,7 @@
 				if (msg == '') {
 					$("#form_copy_app").val($('#builder_app_copy_from').data('ddslick').selectedData.value);
 					$("#mlab_app_new_summary").html(
-							"<span class='mlab_app_new_summary'>{% trans %}app.new.base{% endtrans %}:</span> " + $('#form_template option:selected').html() + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
+							"<span class='mlab_app_new_summary'>{% trans %}app.new.base{% endtrans %}:</span> " + $('#form_template option:selected').html() + $('#builder_app_copy_from').data('ddslick').selectedData.text +
 							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.name{% endtrans %}:</span> " + $('#form_name').val() +
 							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.description{% endtrans %}:</span> " + $('#form_description').val() +
 							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.keywords{% endtrans %}:</span> " + $('#form_keywords').val() +

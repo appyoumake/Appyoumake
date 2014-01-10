@@ -1,0 +1,901 @@
+/* 
+Based on html5doctor.com Reset Stylesheet v1.6.1
+
+OK
+00 #mlab_editor_html
+00 #mlab_editor_body
+01 #mlab_min_page_width
+02 #mlab_align_menu_elements
+03 #mlab_template_warning
+04 #mlab_buttons_item_manipulation
+05 #mlab_button_close
+06 #mlab_button_drag
+07 #mlab_button_setproperty
+08 #mlab_toolbar_components
+09 #mlab_toolbar_components .mlab_button_components
+10 #mlab_editor_chrome
+11 #mlab_button_rotate
+12 #mlab_status
+
+HVORDAN GJØR VI DETTE?
+13 #mlab_dialog_new_app 
+14 #mlab_megamenu
+
+ok
+15 #mlab_menu_logo
+
+HVORDAN GJØR VI DETTE?
+16 #mlab_megamenu .mlab_menu_top_children
+17 #mlab_megamenu .header
+18 #mlab_megamenu .mlab_menu_content
+*/
+
+
+/* reset 00 #mlab_editor_html */ 
+html#mlab_editor_html {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 00 #mlab_editor_body  */
+body#mlab_editor_body {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+    line-height:1;
+}
+
+/* reset 01 #mlab_min_page_width */ 
+#mlab_min_page_width div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 02 #mlab_align_menu_elements  */
+#mlab_align_menu_elements div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 03 #mlab_template_warning  */
+#mlab_template_warning div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 04 #mlab_buttons_item_manipulation  */
+#mlab_buttons_item_manipulation div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 05 #mlab_button_close  */
+#mlab_button_close div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 06 #mlab_button_drag */ 
+#mlab_button_drag div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 07 #mlab_button_setproperty */ 
+#mlab_button_setproperty div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 08 #mlab_toolbar_components  */
+#mlab_toolbar_components div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 09 #mlab_toolbar_components .mlab_button_components */
+#mlab_toolbar_components .mlab_button_components div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+
+/* reset 10 #mlab_editor_chrome  */ 
+div#mlab_editor_chrome {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 11 #mlab_button_rotate  */
+#mlab_button_rotate div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 12 #mlab_status  */
+#mlab_status div {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 13 #mlab_dialog_new_app */
+#mlab_dialog_new_app html, 
+#mlab_dialog_new_app body, 
+#mlab_dialog_new_app div, 
+#mlab_dialog_new_app span, 
+#mlab_dialog_new_app object, 
+#mlab_dialog_new_app iframe,
+#mlab_dialog_new_app h1, 
+#mlab_dialog_new_app h2, 
+#mlab_dialog_new_app h3, 
+#mlab_dialog_new_app h4, 
+#mlab_dialog_new_app h5, 
+#mlab_dialog_new_app h6, 
+#mlab_dialog_new_app p, 
+#mlab_dialog_new_app blockquote, 
+#mlab_dialog_new_app pre,
+#mlab_dialog_new_app abbr, 
+#mlab_dialog_new_app address, 
+#mlab_dialog_new_app cite, 
+#mlab_dialog_new_app code,
+#mlab_dialog_new_app del, 
+#mlab_dialog_new_app dfn, 
+#mlab_dialog_new_app em, 
+#mlab_dialog_new_app img, 
+#mlab_dialog_new_app ins, 
+#mlab_dialog_new_app kbd, 
+#mlab_dialog_new_app q, 
+#mlab_dialog_new_app samp,
+#mlab_dialog_new_app small, 
+#mlab_dialog_new_app strong, 
+#mlab_dialog_new_app sub, 
+#mlab_dialog_new_app sup, 
+#mlab_dialog_new_app var,
+#mlab_dialog_new_app b, 
+#mlab_dialog_new_app i,
+#mlab_dialog_new_app dl, 
+#mlab_dialog_new_app dt, 
+#mlab_dialog_new_app dd, 
+#mlab_dialog_new_app ol, 
+#mlab_dialog_new_app ul, 
+#mlab_dialog_new_app li,
+#mlab_dialog_new_app fieldset, 
+#mlab_dialog_new_app form, 
+#mlab_dialog_new_app label, 
+#mlab_dialog_new_app legend,
+#mlab_dialog_new_app table, 
+#mlab_dialog_new_app caption, 
+#mlab_dialog_new_app tbody, 
+#mlab_dialog_new_app tfoot, 
+#mlab_dialog_new_app thead, 
+#mlab_dialog_new_app tr, 
+#mlab_dialog_new_app th, 
+#mlab_dialog_new_app td,
+#mlab_dialog_new_app article, 
+#mlab_dialog_new_app aside, 
+#mlab_dialog_new_app canvas, 
+#mlab_dialog_new_app details, 
+#mlab_dialog_new_app figcaption, 
+#mlab_dialog_new_app figure, 
+#mlab_dialog_new_app footer, 
+#mlab_dialog_new_app header, 
+#mlab_dialog_new_app hgroup, 
+#mlab_dialog_new_app menu, 
+#mlab_dialog_new_app nav, 
+#mlab_dialog_new_app section, 
+#mlab_dialog_new_app summary,
+#mlab_dialog_new_app time, 
+#mlab_dialog_new_app mark, 
+#mlab_dialog_new_app audio, 
+#mlab_dialog_new_app video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+#mlab_dialog_new_app body {
+    line-height:1;
+}
+
+#mlab_dialog_new_app article,
+#mlab_dialog_new_app aside,
+#mlab_dialog_new_app details,
+#mlab_dialog_new_app figcaption,
+#mlab_dialog_new_app figure,
+#mlab_dialog_new_app footer,
+#mlab_dialog_new_app header,
+#mlab_dialog_new_app hgroup,
+#mlab_dialog_new_app menu,
+#mlab_dialog_new_app nav,
+#mlab_dialog_new_app section { 
+    display:block;
+}
+
+#mlab_dialog_new_app nav ul {
+    list-style:none;
+}
+
+#mlab_dialog_new_app blockquote, 
+#mlab_dialog_new_app q {
+    quotes:none;
+}
+
+#mlab_dialog_new_app blockquote:before, 
+#mlab_dialog_new_app blockquote:after,
+#mlab_dialog_new_app q:before, 
+#mlab_dialog_new_app q:after {
+    content:'';
+    content:none;
+}
+
+#mlab_dialog_new_app a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+#mlab_dialog_new_app ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+#mlab_dialog_new_app mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+#mlab_dialog_new_app del {
+    text-decoration: line-through;
+}
+
+#mlab_dialog_new_app abbr[title], 
+#mlab_dialog_new_app dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+#mlab_dialog_new_app table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+#mlab_dialog_new_app hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+#mlab_dialog_new_app input, 
+#mlab_dialog_new_app select {
+    vertical-align:middle;
+}
+
+/* reset 14 #mlab_megamenu */ 
+ul.megamenu {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+    list-style:none;
+}
+
+/* reset 15 #mlab_menu_logo  */
+#mlab_menu_logo li {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* reset 16 #mlab_megamenu .mlab_menu_top_children  */ 
+#mlab_megamenu .mlab_menu_top_children li {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+
+/* reset 17 #mlab_megamenu.header  */
+
+#mlab_megamenu .header html, 
+#mlab_megamenu .header body, 
+#mlab_megamenu .header div, 
+#mlab_megamenu .header span, 
+#mlab_megamenu .header object, 
+#mlab_megamenu .header iframe,
+#mlab_megamenu .header h1, 
+#mlab_megamenu .header h2, 
+#mlab_megamenu .header h3, 
+#mlab_megamenu .header h4, 
+#mlab_megamenu .header h5, 
+#mlab_megamenu .header h6, 
+#mlab_megamenu .header p, 
+#mlab_megamenu .header blockquote, 
+#mlab_megamenu .header pre,
+#mlab_megamenu .header abbr, 
+#mlab_megamenu .header address, 
+#mlab_megamenu .header cite, 
+#mlab_megamenu .header code,
+#mlab_megamenu .header del, 
+#mlab_megamenu .header dfn, 
+#mlab_megamenu .header em, 
+#mlab_megamenu .header img, 
+#mlab_megamenu .header ins, 
+#mlab_megamenu .header kbd, 
+#mlab_megamenu .header q, 
+#mlab_megamenu .header samp,
+#mlab_megamenu .header small, 
+#mlab_megamenu .header strong, 
+#mlab_megamenu .header sub, 
+#mlab_megamenu .header sup, 
+#mlab_megamenu .header var,
+#mlab_megamenu .header b, 
+#mlab_megamenu .header i,
+#mlab_megamenu .header dl, 
+#mlab_megamenu .header dt, 
+#mlab_megamenu .header dd, 
+#mlab_megamenu .header ol, 
+#mlab_megamenu .header ul, 
+#mlab_megamenu .header li,
+#mlab_megamenu .header fieldset, 
+#mlab_megamenu .header form, 
+#mlab_megamenu .header label, 
+#mlab_megamenu .header legend,
+#mlab_megamenu .header table, 
+#mlab_megamenu .header caption, 
+#mlab_megamenu .header tbody, 
+#mlab_megamenu .header tfoot, 
+#mlab_megamenu .header thead, 
+#mlab_megamenu .header tr, 
+#mlab_megamenu .header th, 
+#mlab_megamenu .header td,
+#mlab_megamenu .header article, 
+#mlab_megamenu .header aside, 
+#mlab_megamenu .header canvas, 
+#mlab_megamenu .header details, 
+#mlab_megamenu .header figcaption, 
+#mlab_megamenu .header figure, 
+#mlab_megamenu .header footer, 
+#mlab_megamenu .header header, 
+#mlab_megamenu .header hgroup, 
+#mlab_megamenu .header menu, 
+#mlab_megamenu .header nav, 
+#mlab_megamenu .header section, 
+#mlab_megamenu .header summary,
+#mlab_megamenu .header time, 
+#mlab_megamenu .header mark, 
+#mlab_megamenu .header audio, 
+#mlab_megamenu .header video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+#mlab_megamenu .header body {
+    line-height:1;
+}
+
+#mlab_megamenu .header article,
+#mlab_megamenu .header aside,
+#mlab_megamenu .header details,
+#mlab_megamenu .header figcaption,
+#mlab_megamenu .header figure,
+#mlab_megamenu .header footer,
+#mlab_megamenu .header header,
+#mlab_megamenu .header hgroup,
+#mlab_megamenu .header menu,
+#mlab_megamenu .header nav,
+#mlab_megamenu .header section { 
+    display:block;
+}
+
+#mlab_megamenu .header nav ul {
+    list-style:none;
+}
+
+#mlab_megamenu .header blockquote, 
+#mlab_megamenu .header q {
+    quotes:none;
+}
+
+#mlab_megamenu .header blockquote:before, 
+#mlab_megamenu .header blockquote:after,
+#mlab_megamenu .header q:before, 
+#mlab_megamenu .header q:after {
+    content:'';
+    content:none;
+}
+
+#mlab_megamenu .header a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+#mlab_megamenu .header ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+#mlab_megamenu .header mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+#mlab_megamenu .header del {
+    text-decoration: line-through;
+}
+
+#mlab_megamenu .header abbr[title], 
+#mlab_megamenu .header dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+#mlab_megamenu .header table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+#mlab_megamenu .header hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+#mlab_megamenu .header input, 
+#mlab_megamenu .header select {
+    vertical-align:middle;
+}
+
+
+
+/* reset 18 #mlab_megamenu.mlab_menu_content  */
+
+#mlab_megamenu .mlab_menu_content html, 
+#mlab_megamenu .mlab_menu_content body, 
+#mlab_megamenu .mlab_menu_content div, 
+#mlab_megamenu .mlab_menu_content span, 
+#mlab_megamenu .mlab_menu_content object, 
+#mlab_megamenu .mlab_menu_content iframe,
+#mlab_megamenu .mlab_menu_content h1, 
+#mlab_megamenu .mlab_menu_content h2, 
+#mlab_megamenu .mlab_menu_content h3, 
+#mlab_megamenu .mlab_menu_content h4, 
+#mlab_megamenu .mlab_menu_content h5, 
+#mlab_megamenu .mlab_menu_content h6, 
+#mlab_megamenu .mlab_menu_content p, 
+#mlab_megamenu .mlab_menu_content blockquote, 
+#mlab_megamenu .mlab_menu_content pre,
+#mlab_megamenu .mlab_menu_content abbr, 
+#mlab_megamenu .mlab_menu_content address, 
+#mlab_megamenu .mlab_menu_content cite, 
+#mlab_megamenu .mlab_menu_content code,
+#mlab_megamenu .mlab_menu_content del, 
+#mlab_megamenu .mlab_menu_content dfn, 
+#mlab_megamenu .mlab_menu_content em, 
+#mlab_megamenu .mlab_menu_content img, 
+#mlab_megamenu .mlab_menu_content ins, 
+#mlab_megamenu .mlab_menu_content kbd, 
+#mlab_megamenu .mlab_menu_content q, 
+#mlab_megamenu .mlab_menu_content samp,
+#mlab_megamenu .mlab_menu_content small, 
+#mlab_megamenu .mlab_menu_content strong, 
+#mlab_megamenu .mlab_menu_content sub, 
+#mlab_megamenu .mlab_menu_content sup, 
+#mlab_megamenu .mlab_menu_content var,
+#mlab_megamenu .mlab_menu_content b, 
+#mlab_megamenu .mlab_menu_content i,
+#mlab_megamenu .mlab_menu_content dl, 
+#mlab_megamenu .mlab_menu_content dt, 
+#mlab_megamenu .mlab_menu_content dd, 
+#mlab_megamenu .mlab_menu_content ol, 
+#mlab_megamenu .mlab_menu_content ul, 
+#mlab_megamenu .mlab_menu_content li,
+#mlab_megamenu .mlab_menu_content fieldset, 
+#mlab_megamenu .mlab_menu_content form, 
+#mlab_megamenu .mlab_menu_content label, 
+#mlab_megamenu .mlab_menu_content legend,
+#mlab_megamenu .mlab_menu_content table, 
+#mlab_megamenu .mlab_menu_content caption, 
+#mlab_megamenu .mlab_menu_content tbody, 
+#mlab_megamenu .mlab_menu_content tfoot, 
+#mlab_megamenu .mlab_menu_content thead, 
+#mlab_megamenu .mlab_menu_content tr, 
+#mlab_megamenu .mlab_menu_content th, 
+#mlab_megamenu .mlab_menu_content td,
+#mlab_megamenu .mlab_menu_content article, 
+#mlab_megamenu .mlab_menu_content aside, 
+#mlab_megamenu .mlab_menu_content canvas, 
+#mlab_megamenu .mlab_menu_content details, 
+#mlab_megamenu .mlab_menu_content figcaption, 
+#mlab_megamenu .mlab_menu_content figure, 
+#mlab_megamenu .mlab_menu_content footer, 
+#mlab_megamenu .mlab_menu_content header, 
+#mlab_megamenu .mlab_menu_content hgroup, 
+#mlab_megamenu .mlab_menu_content menu, 
+#mlab_megamenu .mlab_menu_content nav, 
+#mlab_megamenu .mlab_menu_content section, 
+#mlab_megamenu .mlab_menu_content summary,
+#mlab_megamenu .mlab_menu_content time, 
+#mlab_megamenu .mlab_menu_content mark, 
+#mlab_megamenu .mlab_menu_content audio, 
+#mlab_megamenu .mlab_menu_content video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+#mlab_megamenu .mlab_menu_content body {
+    line-height:1;
+}
+
+#mlab_megamenu .mlab_menu_content article,
+#mlab_megamenu .mlab_menu_content aside,
+#mlab_megamenu .mlab_menu_content details,
+#mlab_megamenu .mlab_menu_content figcaption,
+#mlab_megamenu .mlab_menu_content figure,
+#mlab_megamenu .mlab_menu_content footer,
+#mlab_megamenu .mlab_menu_content header,
+#mlab_megamenu .mlab_menu_content hgroup,
+#mlab_megamenu .mlab_menu_content menu,
+#mlab_megamenu .mlab_menu_content nav,
+#mlab_megamenu .mlab_menu_content section { 
+    display:block;
+}
+
+#mlab_megamenu .mlab_menu_content nav ul {
+    list-style:none;
+}
+
+#mlab_megamenu .mlab_menu_content blockquote, 
+#mlab_megamenu .mlab_menu_content q {
+    quotes:none;
+}
+
+#mlab_megamenu .mlab_menu_content blockquote:before, 
+#mlab_megamenu .mlab_menu_content blockquote:after,
+#mlab_megamenu .mlab_menu_content q:before, 
+#mlab_megamenu .mlab_menu_content q:after {
+    content:'';
+    content:none;
+}
+
+#mlab_megamenu .mlab_menu_content a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+#mlab_megamenu .mlab_menu_content ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+#mlab_megamenu .mlab_menu_content mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+#mlab_megamenu .mlab_menu_content del {
+    text-decoration: line-through;
+}
+
+#mlab_megamenu .mlab_menu_content abbr[title], 
+#mlab_megamenu .mlab_menu_content dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+#mlab_megamenu .mlab_menu_content table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+#mlab_megamenu .mlab_menu_content hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+#mlab_megamenu .mlab_menu_content input, 
+#mlab_megamenu .mlab_menu_content select {
+    vertical-align:middle;
+}
+
+
+
+/* reset...............
+
+html, 
+body, 
+div, 
+span, 
+object, 
+iframe,
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6, 
+p, 
+blockquote, 
+pre,
+abbr, 
+address, 
+cite, 
+code,
+del, 
+dfn, 
+em, 
+img, 
+ins, 
+kbd, 
+q, 
+samp,
+small, 
+strong, 
+sub, 
+sup, 
+var,
+b, 
+i,
+dl, 
+dt, 
+dd, 
+ol, 
+ul, 
+li,
+fieldset, 
+form, 
+label, 
+legend,
+table, 
+caption, 
+tbody, 
+tfoot, 
+thead, 
+tr, 
+th, 
+td,
+article, 
+aside, 
+canvas, 
+details, 
+figcaption, 
+figure, 
+footer, 
+header, 
+hgroup, 
+menu, 
+nav, 
+section, 
+summary,
+time, 
+mark, 
+audio, 
+video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section { 
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, 
+q {
+    quotes:none;
+}
+
+blockquote:before, 
+blockquote:after,
+q:before, 
+q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], 
+dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, 
+select {
+    vertical-align:middle;
+}
+
+
+*/
