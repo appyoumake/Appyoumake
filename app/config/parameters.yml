@@ -3,9 +3,9 @@ parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
-    database_name: mlab-symfony
+    database_name: mlab
     database_user: root
-    database_password: null
+    database_password: ntoctomto
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: null
@@ -21,9 +21,9 @@ parameters:
           
           
         paths:
-          app: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/apps/
-          component: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/components/
-          template: /home/arild/NetBeansProjects/nyeMLAB/mlab_elements/templates/
+          app: /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/
+          component: /home/utvikler/workspace/mlab.local.dev/mlab_elements/components/
+          template: /home/utvikler/workspace/mlab.local.dev/mlab_elements/templates/
         
         urls:
           app: /mlab_elements/apps/

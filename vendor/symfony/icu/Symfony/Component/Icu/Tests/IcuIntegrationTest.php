@@ -29,7 +29,7 @@ class IcuIntegrationTest extends IcuTestCase
     {
         $bundle = new IcuCurrencyBundle(new StructuredBundleReader(new BinaryBundleReader()));
 
-        $this->assertSame('€', $bundle->getCurrencySymbol('EUR', 'en'));
+        $this->assertSame('€', $bundle->getCurrencySymbol('EUR'));
     }
 
     public function testLanguageBundle()
