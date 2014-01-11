@@ -1,0 +1,2 @@
+nothing=
+tooltip=This is a new template that has everything you'll ever want.
