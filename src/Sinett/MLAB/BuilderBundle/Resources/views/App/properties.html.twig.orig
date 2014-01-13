@@ -1,0 +1,224 @@
+{% extends "::ajax.html.twig" %}
+
+{% block body -%}
+
+<div id="build_app_properties">
+	<ul>
+		{% if mode == 'add' %}
+	    	<li><a href="#builder_app_property_tabs-1">{% trans %}builder.choose.template.or.app{% endtrans %}</a></li>
+	    {% endif %}
+	    <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.details{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.more.details{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit{% endtrans %}</a></li>
+	  </ul>
+	  
+	{{ form_start(form) }}
+<!-- output list of templates and apps -->
+		{% if mode == 'add' %}
+			<div class="mlab_form_tab" id="builder_app_property_tabs-1">
+				<h2>{% trans %}builder_choose_template_or_app{% endtrans %}</h2>
+				<p>En app kan baseres på en mal eller en eksisterende app. Velg utgangspunktet for din app nedenfor</p>
+<!-- dummy field used when they copy an app -->
+		        {{ form_widget(form.copy_app) }}
+		        {{ form_widget(form.version) }}
+	
+			    <div>
+			        {{ form_label(form.template) }}
+			        {{ form_errors(form.template) }}
+			        {{ form_widget(form.template) }}
+			    </div>
+
+			    <div>
+			    	<label for="builder_app_copy_from">Base on form</label>
+			    	<select id="builder_app_copy_from" name="builder_app_copy_from" onclick='baseOn("app");'>
+			    		<option value=""></option>
+				    	{% for app in apps %}
+					    	<option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ cordova_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
+					    {% endfor %}
+				    </select>
+			    </div>
+
+			</div>
+		{% endif %}
+		
+<!-- name etc -->
+		<div class="mlab_form_tab" id="builder_app_property_tabs-2">
+		
+			<h2>{% trans %}builder.new.app.name.details{% endtrans %}</h2>
+			
+		    <div>
+		        {{ form_label(form.name) }}
+		        {{ form_errors(form.name) }}
+		        {{ form_widget(form.name) }}
+		    </div>
+			
+		    <div>
+		        {{ form_label(form.description) }}
+		        {{ form_errors(form.description) }}
+		        {{ form_widget(form.description) }}
+		    </div>
+			
+		    <div>
+		        {{ form_label(form.iconFile) }}
+		        {{ form_errors(form.iconFile) }}
+		        {{ form_widget(form.iconFile) }}
+		    </div>
+
+		    <div>
+		        {{ form_label(form.splashFile) }}
+		        {{ form_errors(form.splashFile) }}
+		        {{ form_widget(form.splashFile) }}
+		    </div>
+		    
+		</div>
+		
+<!-- classification etc -->
+		<div class="mlab_form_tab" id="builder_app_property_tabs-3">
+
+			<h2>{% trans %}builder.new.app.more.details{% endtrans %}</h2>
+			
+			<div>
+		        {{ form_label(form.keywords) }}
+		        {{ form_errors(form.keywords) }}
+		        {{ form_widget(form.keywords) }}
+		    </div>
+			
+			<div>
+		        {{ form_label(form.categoryOne) }}
+		        {{ form_errors(form.categoryOne) }}
+		        {{ form_widget(form.categoryOne) }}
+		    </div>
+
+			<div>
+		        {{ form_label(form.categoryTwo) }}
+		        {{ form_errors(form.categoryTwo) }}
+		        {{ form_widget(form.categoryTwo) }}
+		    </div>
+
+			<div>
+		        {{ form_label(form.categoryThree) }}
+		        {{ form_errors(form.categoryThree) }}
+		        {{ form_widget(form.categoryThree) }}
+		    </div>
+		    			
+		</div>
+		
+<!-- summary -->
+		<div class="mlab_form_tab" id="builder_app_property_tabs-4">
+			<h2>{% trans %}builder_new_app_submit{% endtrans %}</h2>
+			{{ form_errors(form) }}
+			<div id="mlab_app_new_summary"></div>
+		</div>
+		{{ form_widget(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+</div>
+
+<button class="hidden button_wizard" id="mlab_app_new_previous" onclick="mlab_app_new_move(-1);">{% trans %}app.wizard.button.previous{% endtrans %}</button>
+<button class="button_wizard" id="mlab_app_new_next" onclick="mlab_app_new_move(1);">{% trans %}app.wizard.button.next{% endtrans %}</button>
+
+<script type="text/javascript">
+
+//add onclick/onchange functions for the two dropdown menus here 
+	$(document).ready(function (){
+		
+		$('#builder_app_copy_from').ddslick({
+		    width: 300,
+		    height: 110,
+		    imagePosition: "left",
+		    selectText: "{% trans %}app.select.app.to.copy{% endtrans %}",
+		    onSelected: function (data) {
+		        if (data.selectedIndex > 0) {
+		        	document.getElementById('form_template').selectedIndex = 0;
+		        }
+		    }
+		});
+		
+		$('#form_template').on("click", function() { $('#builder_app_copy_from').ddslick('select', {index: 0 }); });
+		//$('#form_template').ddslick();
+	});
+	
+//function to move back and forth in new app/properties wizard 
+	function mlab_app_new_move(direction) {
+		var caption_next = "{% trans %}app.wizard.button.next{% endtrans %}";
+		var caption_finished = "{% trans %}app.wizard.button.finished{% endtrans %}";
+		var curr_tab = $('#build_app_properties').tabs('option', 'active');
+		var tot_tabs = $('#build_app_properties >ul >li').size();
+ 
+//going forward: verify data, if ok: display previous button, change title of next button if on last page 
+		if (direction > 0) {
+			var msg = '';
+			if (curr_tab == 0) {
+				if ($('#form_template').val() == '' && $('#builder_app_copy_from').data('ddslick').selectedIndex == 0) {
+					msg = msg + "{% trans %}You must select an app to copy or a template to use{% endtrans %}\n";
+				}  
+
+			} else if (curr_tab == 1) {
+				if ($('#form_name').val().trim() == "") {
+					msg = msg + "{% trans %}You must enter a name for this app{% endtrans %}\n";
+				}
+				
+				if ($('#form_description').val().trim() == "") {
+					msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
+				}  
+
+			} else if (curr_tab == 2) {
+				if ($('#form_keywords').val().trim() == "") {
+					msg = msg + "{% trans %}You must enter one or more keywords for this app{% endtrans %}\n";
+				}
+				
+				if ($('#form_categoryOne').val() == '') {
+					msg = msg + "{% trans %}You must select a main category for this app{% endtrans %}\n";
+				}  
+
+				if ($('#form_categoryTwo').val() == '') {
+					msg = msg + "{% trans %}You must select a secondary category for this app{% endtrans %}\n";
+				}  
+
+				if ($('#form_categoryThree').val() == '') {
+					msg = msg + "{% trans %}You must select a final category for this app{% endtrans %}\n";
+				}
+				
+//last page, here we submit the data via AJAX 
+				if (msg == '') {
+					$("#form_copy_app").val($('#builder_app_copy_from').data('ddslick').selectedData.value);
+					$("#mlab_app_new_summary").html(
+							"<span class='mlab_app_new_summary'>{% trans %}app.new.base{% endtrans %}:</span> " + $('#form_template option:selected').html() + $('#builder_app_copy_from').data('ddslick').selectedData.text +
+							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.name{% endtrans %}:</span> " + $('#form_name').val() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.description{% endtrans %}:</span> " + $('#form_description').val() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.keywords{% endtrans %}:</span> " + $('#form_keywords').val() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryOne{% endtrans %}:</span> " + $('#form_categoryOne option:selected').html() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryTwo{% endtrans %}:</span> " + $('#form_categoryTwo option:selected').html() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryThree{% endtrans %}:</span> " + $('#form_categoryThree option:selected').html() 
+					);
+				}
+			} else if (curr_tab == (tot_tabs - 1)) { 
+
+//call function that must be in page that this dialog is called up in!  			    
+				mlab_app_submit_properties($("#mlab_form_app"));
+			} 
+
+			if (msg != '') {
+				alert(msg);
+				return false;
+			}
+			
+			$("#mlab_app_new_previous").removeClass("hidden");
+			
+//operning final tab 
+			if (curr_tab == (tot_tabs - 2)) {
+				$("#mlab_app_new_next").text(caption_finished);
+			}
+			
+//going backward: hide previous button if first page, rename next button 
+		} else {
+			if (curr_tab == 1) {
+				$("#mlab_app_new_previous").addClass("hidden");
+			}
+			$("#mlab_app_new_next").text(caption_next);
+		}
+		$('#build_app_properties').tabs('option', 'active', curr_tab + direction);
+		
+	}
+
+</script>
+{% endblock %}
