@@ -27,6 +27,9 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+#    form:
+#        resources:
+#            - 'SinettMLABBuilderBundle:Form:selectElement.html.twig'
 
 # Assetic Configuration
 assetic:

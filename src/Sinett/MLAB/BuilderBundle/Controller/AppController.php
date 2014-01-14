@@ -197,14 +197,14 @@ class AppController extends Controller
         $form = $this->createAppForm($entity);
         
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
-        	'entity' => $entity,
-        	'apps' => $apps,
-        	'templates' => $templates,
+            'entity' => $entity,
+            'apps' => $apps,
+            'templates' => $templates,
             'form' => $form->createView(),
-        	'mode' => 'add',
-        	'url_templates' => $url_templates,
-        	'url_apps' => $url_apps,
-        	'cordova_icon_path' => $cordova_icon_path,
+            'mode' => 'add',
+            'url_templates' => $url_templates,
+            'url_apps' => $url_apps,
+            'cordova_icon_path' => $cordova_icon_path,
         ));
         
     }

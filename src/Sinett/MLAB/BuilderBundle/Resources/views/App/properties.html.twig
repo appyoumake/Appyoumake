@@ -13,32 +13,38 @@
 	  </ul>
 	  
 	{{ form_start(form) }}
+                {% form_theme form.template 'SinettMLABBuilderBundle:Form:fields.html.twig' %}
 <!-- output list of templates and apps -->
 		{% if mode == 'add' %}
 			<div class="mlab_form_tab" id="builder_app_property_tabs-1">
 			
-				<h3>{% trans %}builder.new.app.basedon.heading{% endtrans %}</h3>			
-				<p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
-				{{ form_widget(form.copy_app) }}
-			        {{ form_widget(form.version) }}
+                            <h3>{% trans %}builder.new.app.basedon.heading{% endtrans %}</h3>			
+                            <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
+                            {{ form_widget(form.copy_app) }}
+                            {{ form_widget(form.version) }}
 
 			    <div>
-			        {{ form_label(form.template) }}
-			        {{ form_errors(form.template) }}
-			        {{ form_widget(form.template) }}
-			     <div>   
-			     <div>   
-					<label>eller</label>
-			   	 </div>
-			     </div>
+			        {{ form_row(form.template, {'url_templates': url_templates}) }}
+                            </div>
+			    <div>   
+                                 <label>eller</label>
+                            </div>
+                            <div>   
 			    	<label for="mlab_builder_app_copy_from">Base on </label>
 			    	<select id="mlab_builder_app_copy_from" name="mlab_builder_app_copy_from" onclick='baseOn("app");'>
-			    		<option value=""></option>
-				    	{% for app in apps %}
-					    	<option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ cordova_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
-					    {% endfor %}
-				    </select>
+                                    <option value=""></option>
+                                    {% for app in apps %}
+                                        <option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ cordova_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
+                                    {% endfor %}
+				</select>
 			    </div>
+			    <div>   
+                                 <label>eller</label>
+                            </div>
+			    <div>   
+			    	<label for="mlab_builder_app_copy_from">Import PPT or DOC file</label>
+			    	<input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from">
+                            </div>
 
 			</div>
 		{% endif %}
@@ -130,13 +136,23 @@
 		    selectText: "{% trans %}app.select.app.to.copy{% endtrans %}",
 		    onSelected: function (data) {
 		        if (data.selectedIndex > 0) {
-		        	document.getElementById('form_template').selectedIndex = 0;
+                            $('#form_template').ddslick('select', {index: 0 });
+		        }
+		    }
+		});
+
+                $('#form_template').ddslick({
+		    width: 300,
+		    height: 110,
+		    imagePosition: "left",
+		    selectText: "{% trans %}app.select.template{% endtrans %}",
+		    onSelected: function (data) {
+		        if (data.selectedIndex > 0) {
+                            $('#mlab_builder_app_copy_from').ddslick('select', {index: 0 });
 		        }
 		    }
 		});
 		
-		$('#form_template').on("click", function() { $('#mlab_builder_app_copy_from').ddslick('select', {index: 0 }); });
-		//$('#form_template').ddslick();
 	});
 	
 //function to move back and forth in new app/properties wizard 

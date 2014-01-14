@@ -39,7 +39,7 @@ text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
 
 /* Only not inherited styels... */
 
-background-image: url(http://mlabsymfony/img/logo_menu.png);
+background-image: url(/img/logo_menu.png);
 background-repeat: no-repeat;
 color: rgb(0, 0, 0);
 display: list-item;
@@ -96,7 +96,7 @@ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 /* Only not inherited styels... */
 
-background-image: url(http://mlabsymfony/img/menuarrow.png);
+background-image: url(/img/menuarrow.png);
 background-position: 0% 50%;
 background-repeat: no-repeat;
 border-bottom-color: rgb(254, 254, 254);
@@ -296,7 +296,7 @@ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 /* Only not inherited styels... */
  
-background-image: url(http://mlabsymfony/img/user.png);
+background-image: url(/img/user.png);
 background-position: 50% 50%;
 background-repeat: no-repeat;
 color: rgb(0, 0, 0);
@@ -381,7 +381,7 @@ width: 868px;
 #mlab_toolbar_components .mlab_button_components {
 
 /* only not inherited styels... */
-background-image: url(http://mlabsymfony/Users/cjg/GitHub/nyeMLAB/mlab_elements/components/h1/icon.png);
+background-image: url(/Users/cjg/GitHub/nyeMLAB/mlab_elements/components/h1/icon.png);
 background-position: 50% 50%;
 background-repeat: no-repeat;
 display: block;
@@ -448,7 +448,7 @@ width: 644px;
 background-attachment: scroll;
 background-clip: border-box;
 background-color: rgba(0, 0, 0, 0);
-background-image: url(http://mlabsymfony/img/rotate.png);
+background-image: url(/img/rotate.png);
 background-origin: padding-box;
 background-position: 0px 0px;
 background-repeat: no-repeat;
@@ -558,7 +558,7 @@ z-index: 1000000000;
 background-attachment: scroll;
 background-clip: border-box;
 background-color: rgba(0, 0, 0, 0);
-background-image: url(http://mlabsymfony/img/delete.png);
+background-image: url(/img/delete.png);
 background-origin: padding-box;
 background-size: auto;
 border-bottom-color: rgb(0, 0, 0);
@@ -604,7 +604,7 @@ z-index: auto;
 background-attachment: scroll;
 background-clip: border-box;
 background-color: rgba(0, 0, 0, 0);
-background-image: url(http://mlabsymfony/img/drag.png);
+background-image: url(/img/drag.png);
 background-origin: padding-box;
 background-size: auto;
 border-bottom-color: rgb(0, 0, 0);
@@ -646,7 +646,7 @@ z-index: auto;
 background-attachment: scroll;
 background-clip: border-box;
 background-color: rgba(0, 0, 0, 0);
-background-image: url(http://mlabsymfony/img/settings.png);
+background-image: url(/img/settings.png);
 background-origin: padding-box;
 background-size: auto;
 border-bottom-color: rgb(0, 0, 0);
@@ -1170,3 +1170,6 @@ color: rgb(204, 0, 0);
     clear: both;
 }
 
+[contentEditable=true]:empty:not(:focus):before {
+        content:attr(data-mlab_placeholder)
+}
