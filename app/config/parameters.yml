@@ -12,6 +12,7 @@ parameters:
     mailer_password: null
     locale: no_NB
     secret: flurkysnarkish
+    security.authentication.success_handler.class: Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
     
     mlab: 
         uploads_allowed:
@@ -58,3 +59,4 @@ parameters:
             content_id: mlab_editable_area
             
         replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    
+

@@ -334,7 +334,11 @@ class FileManagement {
         }
     }
     
-    
+/**
+ * returns an associative array of file names and titles of the pages for an app
+ * @param type $app
+ * @return type
+ */
     public function getPageIdAndTitles($app) {
         $pages = array("index.html" => "Front page");
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
@@ -350,4 +354,28 @@ class FileManagement {
         return $pages;
     }
 		
+    
+/**
+ * Converts a page number/name to file name, allows for first, last, index, number
+ * @param type $app_path
+ * @param type $page_num
+ * @return boolean or string
+ */
+    public function getPageFileName($app_path, $page_num) {
+        if ($page_num == 'last') {
+//pick up last page, get the whole array, pop off last element and get filename
+    		$pages = glob ( $app_path . "/???.html" );
+    		return basename(array_pop($pages));
+    		
+    	} else if ($page_num == 'first' || $page_num == 'index') {
+    		return 'index.html';
+    		
+    	} else {
+    		if ($page_num > 0 ) {
+    			return substr("000" . $page_num, -3) . ".html";
+    		} else {
+    			return false;    		
+    		}
+    	}
+    }
 }

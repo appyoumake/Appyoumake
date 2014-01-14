@@ -13,7 +13,9 @@
 	  </ul>
 	  
 	{{ form_start(form) }}
-                {% form_theme form.template 'SinettMLABBuilderBundle:Form:fields.html.twig' %}
+        {% if mode == 'add' %}
+            {% form_theme form.template 'SinettMLABBuilderBundle:Form:fields.html.twig' %}
+        {% endif %}
 <!-- output list of templates and apps -->
 		{% if mode == 'add' %}
 			<div class="mlab_form_tab" id="builder_app_property_tabs-1">

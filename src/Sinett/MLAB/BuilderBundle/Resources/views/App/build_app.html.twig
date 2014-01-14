@@ -377,6 +377,10 @@
             $.get( url, function( data ) {
 				if (data.result == "success") {
                     mlab_page_process ( data.html, data.page_num );
+                    var path = window.location.pathname.split("/");
+                    path[path.length - 3] = data.app_id;
+                    path[path.length - 2] = data.page_num;
+                    history.pushState({id: data.app_id, page: data.page_num }, document.mlab_current_app.curr_pagetitle, path.join("/"));
 				} else {
 					alert(data.msg);
 				}

@@ -444,31 +444,23 @@ class AppController extends Controller
 //create the path to the file to open
         $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
     	
-    	if ($page_num == 'last') {
-//pick up last page, get the whole array, pop off last element and get filename
-    		$pages = glob ( $app_path . "/???.html" );
-    		$doc = basename(array_pop($pages));
-    		
-    	} else if ($page_num == 'first' || $page_num == 'index') {
-    		$doc = 'index.html';
-    		
-    	} else {
-    		if ($page_num > 0 ) {
-    			$doc = substr("000" . $page_num, -3) . ".html";
-    		} else {
-    			return new JsonResponse(array(
+//calculate page number
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $doc = $file_mgmt->getPageFileName($app_path, $page_num);
+        if (!$doc) {
+            return new JsonResponse(array(
     					'result' => 'error',
     					'msg' => sprintf("Page not specified: %d", $page_num)));
-    		
-    		}
-    	}
+        }
 
     	if (file_exists("$app_path$doc")) {
     		$html = file_get_contents("$app_path$doc");
     		return new JsonResponse(array(
     				'result' => 'success',
     				'html' => $html,
-                    'page_num' => $page_num));
+                    'page_num' => $page_num,
+                    'app_id' => $app_id));
     		 
     	} else {
     		return new JsonResponse(array(
@@ -493,16 +485,20 @@ class AppController extends Controller
     			'msg' => sprintf("Application ID not specified: %d", $app_id)));
     	}
         
-        if ($page_num > 0 ) {
-            $page_name = substr("000" . $page_num, -3) . ".html";
-        } else {
-            return new JsonResponse(array(
-                    'result' => 'error',
-                    'msg' => sprintf("Page not specified: %d", $page_num)));
-        }
+//create the path to the file to open
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
         
+//calculate page number
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $doc = $file_mgmt->getPageFileName($app_path, $page_num);
+        if (!$doc) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf("Page not specified: %d", $page_num)));
+        }
+
         $html = $request->request->all()["html"];
-        $file_mgmt = $this->get('file_management');
         $res = $file_mgmt->savePage($app, $page_num, $html);
         if ($res === false) {
             return new JsonResponse(array(
