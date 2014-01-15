@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.2
+-- version 4.0.6deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 05, 2013 at 09:55 AM
--- Server version: 5.5.25a
--- PHP Version: 5.4.4
+-- Generation Time: Jan 15, 2014 at 04:35 PM
+-- Server version: 5.5.34-0ubuntu0.13.10.1
+-- PHP Version: 5.5.3-1ubuntu2.1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `mlab-symfony`
+-- Database: `mlab`
 --
 
 -- --------------------------------------------------------
@@ -247,34 +247,32 @@ CREATE TABLE IF NOT EXISTS `menu` (
   KEY `filter_url` (`filter_url`),
   KEY `order_by_index` (`order_by`),
   KEY `filter_role_index` (`filter_role`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
 
 --
 -- Dumping data for table `menu`
 --
 
 INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_by`, `url`, `filter_url`, `content_php`, `filter_role`) VALUES
-(3, NULL, 'mlab_menu_user', 'Bruker', 0, 1000, '', NULL, '$user->getUsername();', NULL),
 (4, 'Gå til', NULL, 'Gå til annen modul i MLAB', 0, 100, '', NULL, NULL, NULL),
 (5, 'App', NULL, 'App', 0, 200, '', 'app-builder, app-build', NULL, NULL),
 (6, 'Side', NULL, 'Sider', 0, 300, '', 'app-build', NULL, NULL),
-(7, 'Bygg App', NULL, 'Lag app', 5, 400, '', 'app-build', NULL, NULL),
 (8, 'Forandre passord                                        ', NULL, 'Her kan du oppdatere passordet ditt', 3, 20, '/user/change-password', NULL, NULL, NULL),
-(9, NULL, 'mlab_menu_get_app_name();', 'Navn på app du redigerer', 5, 10, '#', 'app-build', NULL, NULL),
-(10, NULL, 'mlab_menu_loggedin_as();', 'Du er logget inn som', 3, 10, '', NULL, NULL, NULL),
-(11, 'App Bygger', '', 'Lag eller rediger apper', 4, 10, '/builder/', NULL, NULL, NULL),
-(12, 'App Bygger Admin', NULL, 'Administrer brukere, apper, maler, etc', 4, 20, '/builder-admin/', NULL, NULL, NULL),
+(11, 'App Bygger', '', 'Lag eller rediger apper', 4, 10, '/app/builder/', NULL, NULL, NULL),
+(12, 'App Bygger Admin', NULL, 'Administrer brukere, apper, maler, etc', 4, 20, '/admin/apps', NULL, NULL, NULL),
 (15, 'Logg ut', NULL, 'Logg av MLAB', 3, 30, '/user/logout', NULL, NULL, NULL),
 (17, 'Egenskaper', NULL, 'Oppdater egenskapene til denne appen', 5, 30, 'javascript: mlab_app_update();', 'app-build', NULL, NULL),
 (18, 'Ny app', NULL, 'Start en ny app', 5, 20, 'javascript: mlab_app_new();', 'app-builder, app-build', NULL, NULL),
-(19, 'Test app i nettleser', NULL, 'Dette vil åpne en ny side som ser ut som en smarttelefon hvor du kan se hvordan appen vil se ut til slutt', 7, 10, 'javascript: mlab_app_test_local(); ', 'app-build', NULL, NULL),
-(20, 'Test app på mobil enhet', NULL, 'Dette vil laste ned appen så du kan installere den på mobilen din for å teste den', 7, 20, 'javascript: mlab_app_download();', 'app-build', NULL, NULL),
-(21, 'Send app til marked', NULL, 'Dette vil laste appen opp på markedet så den er tilgjengelig for alle andre', 7, 30, 'javascript: mlab_app_submit();', 'app-build', NULL, NULL),
-(22, 'Tittel: <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"/>', NULL, 'Her kan du oppdatere tittelen på gjeldende side', 6, 10, 'javascript: mlab_page_save_title();', 'app-build', NULL, NULL),
-(23, '<select name="groups[]" id="groups" multiple="multiple">\r\n					<option value="1">Index side</option>\r\n					<option value="2">Introduiksjon</option>\r\n					<option value="3">F&oslash;rste leksjon</option>\r\n					<option value="4">Fremad marsj</option>\r\n			</select> ', NULL, 'Åpne andre sider i appen', 6, 20, 'javascript: mlab_page_open();', 'app-build', NULL, NULL),
+(19, 'Test app i nettleser', NULL, 'Dette vil åpne en ny side som ser ut som en smarttelefon hvor du kan se hvordan appen vil se ut til slutt', 5, 110, 'javascript: mlab_app_test_local(); ', 'app-build', NULL, NULL),
+(20, 'Test app på mobil enhet', NULL, 'Dette vil laste ned appen så du kan installere den på mobilen din for å teste den', 5, 120, 'javascript: mlab_app_download();', 'app-build', NULL, NULL),
+(21, 'Send app til marked', NULL, 'Dette vil laste appen opp på markedet så den er tilgjengelig for alle andre', 5, 130, 'javascript: mlab_app_submit_to_market();', 'app-build', NULL, NULL),
+(22, 'Tittel: <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"/><br /><button onclick="mlab_update_page_title();">Oppdater</button><br />', NULL, 'Her kan du oppdatere tittelen på gjeldende side', 6, 10, '', 'app-build', NULL, NULL),
+(23, '', NULL, 'Åpne andre sider i appen', 6, 20, 'javascript: mlab_page_open();', 'app-build', 'getAppPages', NULL),
 (24, 'Lagre side', NULL, 'Her kan du lagre gjeldende side', 6, 30, 'javascript: mlab_page_save();', 'app-build', NULL, NULL),
-(25, 'Slette side', NULL, 'Her kan du slette gjeldende side', 6, 40, 'javascript: mlab_page_delete();', 'app-build', NULL, NULL),
-(26, 'Kopier side', NULL, 'Her kan du kopiere gjeldende side', 6, 50, 'javascript: mlab_page_copy();', 'app-build', NULL, NULL);
+(25, 'Slette side', NULL, 'Her kan du slette gjeldende side', 6, 50, 'javascript: mlab_page_delete();', 'app-build', NULL, NULL),
+(26, 'Kopier side', NULL, 'Her kan du kopiere gjeldende side', 6, 36, 'javascript: mlab_page_copy();', 'app-build', NULL, NULL),
+(27, 'Ny side', NULL, 'Her kan du lage en side', 6, 33, 'javascript: mlab_page_new();', 'app-build', NULL, NULL),
+(28, '<hr>', NULL, '', 6, 40, '', 'app-build', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -419,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `usr` (
 --
 
 INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`) VALUES
-(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-12-03 09:20:35', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2013-12-03 09:20:35', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
+(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2014-01-15 10:37:28', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2014-01-15 10:37:28', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL),
 (4, NULL, NULL, NULL, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2013-11-29 15:07:04', 'cecilie', 'cecilie', 'cecilie.jackbo.gran@ffi.no', 1, '2013-11-29 15:07:04', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL),
 (7, 2, 2, 2, 'test@test.com', 'e+qqNLhIDWFo3wW/sKn4vH8HFF1nGXq239arDSexjkYMwVgUT1ZdWWINbSl1HlGYLVhRFUOjZ761C1sTtzhOxw==', 'ma6ja813m6o84wgow0wwoksso0ck4cg', '2013-11-29', '2013-11-29 15:36:08', 'testy', 'testy', 'test@test.com', 1, NULL, 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL);
 

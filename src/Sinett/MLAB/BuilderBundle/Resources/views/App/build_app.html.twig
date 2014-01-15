@@ -318,7 +318,9 @@
 				while (editable_section.firstChild) {
 					editable_section.removeChild(editable_section.firstChild);
 				}
-			}
+			} else {
+                alert("No editable section found, this template will not work correctly");
+            }
 			
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
 			$("#mlab_editor_chrome").append(body.innerHTML);
@@ -387,20 +389,13 @@
 				
 			});
 		} 
-
-        /**
-         * Wrapper function to open a page selected in the drop down list
-         */
-        function mlab_page_prepare_open(page_num) {
-            var app_id = document.mlab_current_app.id;
-            mlab_page_open(app_id, page_num);
-        }
         
         /**
          * This will update the title of the currently open page
          */
         function mlab_update_page_title() {
-            alert($("#mlab_curr_pagetitle").val());
+            mlab_flag_dirty = true;
+            document.mlab_current_app.curr_pagetitle = $("#mlab_curr_pagetitle").val();
         }
 //to save a page we need to reassemble it, 
 //first clone current body from the editor (and give it a new ID!)
@@ -425,6 +420,7 @@
 			}
 			var final_doc = document.mlab_current_app.curr_page_html;
 			final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = $(new_body).html();
+            final_doc.title = document.mlab_current_app.curr_pagetitle;
 			var html = (new XMLSerializer()).serializeToString(final_doc);
 			
 			$.post( url, {html: html}, function( data ) {
@@ -466,9 +462,9 @@
                /**
         * Creates a new file on the server and opens it
         */
-       function mlab_page_copy(page_num) {
+       function mlab_page_copy(app_id, page_num) {
 			var url = "{{ path('app_builder_page_copy', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_' }) }}";
-			url = url.replace("_ID_", document.mlab_current_app.id);
+			url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", page_num);
 			
 			$.get( url, function( data ) {
@@ -479,8 +475,12 @@
 				}
 				
 			});
-
        }
+       
+        function mlab_page_delete () {
+            alert('Not implemented yet');
+        }
+
 		
 /*********** General functions to manipulate components ***********/
 
@@ -516,6 +516,20 @@
 			$(mlab_buttons_item_manipulation).hide();
 			mlab_buttons_item_manipulation = $(mlab_buttons_item_manipulation).detach();
 		}
+        
+
+// APP FUNCTIONS, build, new, etc
+        function mlab_app_test_local () {
+            alert('Not implemented yet');
+        }
+
+        function mlab_app_download () {
+            alert('Not implemented yet');
+        }
+
+        function mlab_app_submit_to_market () {
+            alert('Not implemented yet');
+        }
 
 //uses qtip to display a dialog getting input, this is positioned next to the properties button 
 //when the click on OK we will call the specified callback function 

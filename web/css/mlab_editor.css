@@ -1173,3 +1173,9 @@ color: rgb(204, 0, 0);
 [contentEditable=true]:empty:not(:focus):before {
         content:attr(data-mlab_placeholder)
 }
+
+#mlab_existing_pages {
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

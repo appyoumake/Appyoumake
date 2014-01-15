@@ -31,6 +31,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {   
         $paths = $this->container->parameters['mlab']['paths'];
+        $env = $this->container->getParameter('kernel.environment');
         foreach ($paths as $path) {
             if (!file_exists($path)) {
                 if (!mkdir($path, 0777, true)) {
@@ -38,7 +39,14 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
                 }
             }            
         }
-        return new RedirectResponse($request->getSession()->get('_security.main.target_path', null));
+        
+//add env. prefix if required
+        if ($env != "prod") {
+            $def_url = "app_$env.php/"; 
+        } else {
+            $def_url = '/';
+        }
+        return new RedirectResponse($request->getSession()->get('_security.main.target_path', $def_url));
         
     } 
 }
