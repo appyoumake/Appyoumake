@@ -31,8 +31,11 @@
 	{{ parent() }}
 
 	<script type="text/javascript">	 
-	
-//first set a few variables that are carried over from the server side 
+// define what the header and footer for a HTML page is, this is used when we save files
+        mlab_html_header = "<!DOCTYPE html>\n<html>\n<head><title>%TITLE%</title></head>\n<body>\n";
+        mlab_html_footer = "\n</body></html>";
+    
+// set a few variables that are carried over from the server side 
 
 //unique ID for this tab/window, used to lock pages
         mlab_uid = "{{ mlab_uid }}";
@@ -178,35 +181,6 @@
 			}
 		}
 
-/* Utility functions to ensure that the CSS is only applied to the editor */
-		function renderCSSForSelector(css, selector) {
-		    return css.replace(/\n|\t/g, " ").replace(/\s+/g, " ").replace(/\s*\/\*.*?\*\/\s*/g, " ").replace(/(^|\})(.*?)(\{)/g, function($0, $1, $2, $3) {
-		        var collector = [], parts = $2.split(",");
-		        for (var i in parts)
-		            collector.push(selector + " " + parts[i].replace(/^\s*|\s*$/, ""));
-		        return $1 + " " + collector.join(", ") + " " + $3;
-		    });
-		}
-		
-		function applyCSSToElement(css, elementSelector) {
-			var styles = renderCSSForSelector(css, elementSelector);
-		    $("head").append("<style type=\"text/css\">" + styles + "</style>");
-		}
-		
-		function applyCSSFileToElement(cssUrl, elementSelector, callbackSuccess, callbackError) {
-		    callbackSuccess = callbackSuccess || function(){};
-		    callbackError = callbackError || function(){};
-		    $.ajax({
-		        url: cssUrl,
-		        success: function(data) {
-		            applyCSSToElement(data, elementSelector);
-		            callbackSuccess();
-		        },
-		        error: function(jqXHR) {
-		            callbackError();
-		        }
-		    });
-		}
 		
 /*********** functions to create new app or edit apps ***********/
 
@@ -246,7 +220,7 @@
 //we set the current variable to the data coming back in, then if this is an added record we open the page to edit 
 			    		document.mlab_current_app = data.mlab_app;
 			    		if (data.action == 'ADD') {
-			    			mlab_page_open(data.mlab_app_id, data.mlab_app_page_num) ;
+			    			mlab_app_open(data.mlab_app_id, data.mlab_app_page_num) ;
 			    		}
 			    	}
 			  	},
@@ -257,34 +231,13 @@
 		    });
 		}
 		
-        function addcss(css){
-            var head = document.getElementsByTagName('head')[0];
-            var s = document.createElement('link');
-            s.setAttribute('type', 'text/css');
-            if (s.styleSheet) {   // IE
-                s.href = css;
-            } else {                // the world
-                s.appendChild(document.createTextNode(css));
-            }
-            head.appendChild(s);
-         }
-		
-		
-/*********** functions to open and save a page ***********/
- 
-/* this function processes a standalone page that was retrieved.
- * It does the following:
-	 	Remove old HTML from the editing div (mlab_editor_chrome)
-	 	Remove old stylesheets from previously edited page
-		Add new stylesheets from page that is opened for editing to *this page*
-		Extract BODY
-		From body, extract the DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area)
-		Process the top level DIVs inside this DIV so they are moveable/sortable
-		Remove content of DIV with ID = mlab_config["app"]["content_id"] and store remaing HTML of entire page that is opened in current doc var
-			(This means we just insert the editable area into this when we save the page)
-*/
-
-		function mlab_page_process (page, page_num) {
+        
+/*********** functions to open and save pages ***********/
+ 		function test (page, page_num) {
+            
+            $("#mlab_editor_chrome").html(page).page();
+            $( "div#mlab_editable_area[data-role=page]" ).page( "destroy" ).page();
+            return;
             var comp_id, temp_comp, temp_link;
             var temp_stylesheets = "";
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
@@ -303,8 +256,6 @@
 //insert stylesheets 
 			for ( var i = 0; i < stylesheets.length; i++) {
 	        	temp_link = stylesheets[i].getAttribute("href");
-                //addcss(temp_link);
-	        	//applyCSSFileToElement(start_dir + temp_link, "#" + mlab_config["app"]["content_id"]);
 	        	temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + start_dir + temp_link + "' type='text/css'>" + "\n";
 	        }
 	        $("head link[rel='stylesheet']").last().after(temp_stylesheets); 
@@ -313,35 +264,13 @@
 
 
 //now we clean out the content of the editable DIV in the body that we will be inserting into the mlab_editor_chrome 
-			var editable_section = body.getElementsByClassName(mlab_config["app"]["content_id"])[0];
-			if (editable_section) {
-				while (editable_section.firstChild) {
-					editable_section.removeChild(editable_section.firstChild);
-				}
-			} else {
-                alert("No editable section found, this template will not work correctly");
-            }
+			body.getElementsByClassName(mlab_config["app"]["content_id"]).innerHTML = ""
 			
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
 			$("#mlab_editor_chrome").append(body.innerHTML);
 
-//need to loop through all divs and add manually, otherwise the styles for dragging/dropping do not work 
-		    for (var i = 0, len = divs.length; i < len; i++) {
-		    	if (divs[i].nodeName.toLowerCase() == "div") {
-			    	var div_html = (new XMLSerializer()).serializeToString(divs[i]);
-			    	temp_comp = $(div_html).droppable(droppable_options)
-		    						  .sortable(sortable_options)
-		    						  .hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
-
-		    		comp_id = temp_comp.data("mlab-type");
-			        $('#' + mlab_config["app"]["content_id"]).append(temp_comp)
-			        //temp_comp.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc;
-			        mlab_run_component_code(temp_comp, comp_id);
-//TODO major hack, find out why these events are added here, when not added when drag'n'drop 
-			        temp_comp.off("click mousedown remove");
-		    	}
-		    } // end loop inserting html for editing 
-
+            mlab_prepare_editable_area();
+            
 //assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
 //this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area 
  			var content = doc.getElementById(mlab_config["app"]["content_id"]);
@@ -352,19 +281,97 @@
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
-            $("#mlab_existing_pages").val(document.mlab_current_app.curr_page_num);
             
-		    
-//set draggable/sortable options for the editable area 
-	        $( "#" + mlab_config["app"]["content_id"] ).droppable(droppable_options).sortable(sortable_options);
-	    	
-			$( ".mlab_button_components" ).draggable({
-				      connectToSortable: "#" + mlab_config["app"]["content_id"],
-				      helper: "clone",
-				      revert: "invalid",
-				      opacity: 0.5,
-				      start: function () { mlab_drag_origin = 'draggable'; }
-				});
+		}
+ 
+
+ 
+/* this function processes the index page that was retrieved.
+ * 
+ * It does the following:
+	 	Remove old HTML from the editing div (mlab_editor_chrome)
+	 	Remove old stylesheets from previously edited page from *this page*
+		Add new stylesheets from page that is opened for editing to *this page*
+		Extract BODY and insert content into mlab_editor_chrome
+		Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
+*/
+
+		function mlab_index_page_process (page, page_num) {
+            var comp_id, temp_comp, temp_link;
+            var temp_stylesheets = "";
+            var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
+            
+//remove old stuff 
+			$("#mlab_editor_chrome").empty();
+			$("link[rel=stylesheet][href^='" + mlab_config.urls.app + "']").remove();
+
+//parse doc into variables 
+			var doc = (new DOMParser()).parseFromString(page,"text/html");
+			var head = doc.getElementsByTagName("head")[0];
+			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
+		    var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
+			var stylesheets = head.getElementsByTagName("link");
+			
+//insert stylesheets 
+			for ( var i = 0; i < stylesheets.length; i++) {
+	        	temp_link = stylesheets[i].getAttribute("href");
+	        	temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + start_dir + temp_link + "' type='text/css'>" + "\n";
+	        }
+	        $("head link[rel='stylesheet']").last().after(temp_stylesheets); 
+
+//(new XMLSerializer()).serializeToString(doc.getElementsByTagName("head")[0]);
+
+
+//now we clean out the content of the editable DIV in the body that we will be inserting into the mlab_editor_chrome 
+			body.getElementsByClassName(mlab_config["app"]["content_id"]).innerHTML = ""
+			
+//here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
+			$("#mlab_editor_chrome").append(body.innerHTML);
+
+            mlab_prepare_editable_area();
+            
+//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
+//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area 
+ 			var content = doc.getElementById(mlab_config["app"]["content_id"]);
+ 			while (content.firstChild) {
+ 				content.removeChild(content.firstChild);
+ 			}
+	        document.mlab_current_app.curr_page_html = doc;
+	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+            document.mlab_current_app.curr_page_num = page_num;
+	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+            
+		}
+        
+        
+/* this function processes a regular page that was retrieved.
+ * 
+ * It does the following:
+	 	Remove old HTML from the internal editing div (mlab_config["app"]["content_id"])
+        Extract title and save it to JS var
+		Extract BODY and insert content into mlab_config["app"]["content_id"]
+		Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
+*/
+
+		function mlab_regular_page_process (page, page_num) {
+            var comp_id, temp_comp, temp_link;
+            var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
+            
+//remove old stuff 
+			$("#" + mlab_config["app"]["content_id"]).html(doc.getElementsByTagName("body")[0]);
+
+//parse doc into variables 
+			var doc = (new DOMParser()).parseFromString(page,"text/html");
+			var head = doc.getElementsByTagName("head")[0];
+			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
+		    var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
+			
+	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+            document.mlab_current_app.curr_page_num = page_num;
+	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+
+            mlab_prepare_editable_area();
+            
 		}
 		
 /**
@@ -378,11 +385,15 @@
 
             $.get( url, function( data ) {
 				if (data.result == "success") {
-                    mlab_page_process ( data.html, data.page_num );
-                    var path = window.location.pathname.split("/");
-                    path[path.length - 3] = data.app_id;
-                    path[path.length - 2] = data.page_num;
-                    history.pushState({id: data.app_id, page: data.page_num }, document.mlab_current_app.curr_pagetitle, path.join("/"));
+                    if (page_num == 0 || page_num == "index" ) {
+                        alert("add code");
+                    } else {
+                        mlab_page_process ( data.html, data.page_num );
+                        var path = window.location.pathname.split("/");
+                        path[path.length - 3] = data.app_id;
+                        path[path.length - 2] = data.page_num;
+                        history.pushState({id: data.app_id, page: data.page_num }, document.mlab_current_app.curr_pagetitle, path.join("/"));
+                    }
 				} else {
 					alert(data.msg);
 				}
@@ -390,9 +401,9 @@
 			});
 		} 
         
-        /**
-         * This will update the title of the currently open page
-         */
+/**
+ * This will update the title of the currently open page
+ */
         function mlab_update_page_title() {
             mlab_flag_dirty = true;
             document.mlab_current_app.curr_pagetitle = $("#mlab_curr_pagetitle").val();
@@ -442,14 +453,18 @@
         function mlab_page_new() {
             var title = prompt("Please enter the title of the new page");
             if (title != null) {
+                $("#" + mlab_config["app"]["content_id"]).empty();
                 var url = "{{ path('app_builder_page_new', { 'app_id': '_ID_' }) }}";
                 url = url.replace("_ID_", document.mlab_current_app.id);
 
 
-                $.post( url, {title: title}, function( data ) {
+                $.post( url, {}, function( data ) {
                     if (data.result == "success") {
-                        
-                        mlab_page_process ( data.html, data.page_num );
+                        document.mlab_current_app.curr_page_html = "";
+                        document.mlab_current_app.curr_pagetitle = title;
+                        document.mlab_current_app.curr_page_num = data.page_num;
+                        $("#mlab_curr_pagetitle").val(title);
+                                                
                     } else {
                         alert(data.msg);
                     }
@@ -459,9 +474,9 @@
             
        }
        
-               /**
-        * Creates a new file on the server and opens it
-        */
+/**
+ * Creates a new file on the server and opens it
+ */
        function mlab_page_copy(app_id, page_num) {
 			var url = "{{ path('app_builder_page_copy', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_' }) }}";
 			url = url.replace("_ID_", app_id);
@@ -517,8 +532,64 @@
 			mlab_buttons_item_manipulation = $(mlab_buttons_item_manipulation).detach();
 		}
         
+/*
+ * 
+ * @param divs (html/DOM) all divs to edit
+ */
+        function mlab_prepare_editable_area(divs) {
+//need to loop through all divs in the editable box after they have been added 
+//and set the styles for dragging/dropping so it works OK
+		    $( "#" + mlab_config["app"]["content_id"] + " div" ).each(function( index ) {
+                $( this ).droppable(droppable_options)
+		    			 .sortable(sortable_options)
+		    			 .hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
+
+    		    comp_id = $( this ).data("mlab-type");
+			    //temp_comp.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc;
+			    mlab_run_component_code($( this ), comp_id);
+//TODO major hack, find out why these events are added here, when not added when drag'n'drop 
+			    $( this ).off("click mousedown remove");
+            });
+		    
+//set draggable/sortable options for the editable area 
+	        $( "#" + mlab_config["app"]["content_id"] ).droppable(droppable_options).sortable(sortable_options);
+	    	
+			$( ".mlab_button_components" ).draggable({
+				      connectToSortable: "#" + mlab_config["app"]["content_id"],
+				      helper: "clone",
+				      revert: "invalid",
+				      opacity: 0.5,
+				      start: function () { mlab_drag_origin = 'draggable'; }
+			});
+        }
+        
 
 // APP FUNCTIONS, build, new, etc
+
+/*
+ * This function will first open the index.html file in an app, this has all the css/js/formatting etc in it.
+ * Then it will open the page specified (if it is not == index | 0 )
+ * @param {type} app_id
+ * @param {type} page_num
+ */
+		function mlab_app_open(app_id, page_num) {
+			var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_' }) }}";
+			url = url.replace("_ID_", app_id);
+			url = url.replace("_PAGE_NUM_", 'index');
+
+            $.get( url, function( data ) {
+				if (data.result == "success") {
+                    test ( data.html, data.page_num );
+                    if (data.page_num != "0" && data.page_num != "index") {
+                        mlab_page_open(data.app_id, data.page_num);
+                    }
+				} else {
+					alert(data.msg);
+				}
+				
+			});
+		} 
+        
         function mlab_app_test_local () {
             alert('Not implemented yet');
         }
@@ -671,11 +742,9 @@
 			    modal: true,
 				});
 			
-            //$("#mlab_existing_pages").dropdownchecklist();
-            
             
 //we always load pages using AJAX, this takes the parameters passed from the controller 
-			mlab_page_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );
+			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );
 			 
 		});
 		

@@ -283,9 +283,7 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function newPage($app, $title) {
-//get path of template file to copy
-        $template_path = $app->getTemplate()->calculateFullPath($this->config['paths']['template']) . $this->config['app']['new_page'];
+    public function newPage($app) {
         
 //create the name of the file to create
 	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
@@ -293,9 +291,7 @@ class FileManagement {
             return false;
         }
 
-        $temp = file_get_contents($template_path);
-        $temp = preg_replace('/<title>(.+)<\/title>/', "<title>$title</title>", $temp);
-        if (file_put_contents ($new_page_path, $temp)) {
+        if (touch ($new_page_path)) {
             return $new_page_num;
         } else {
             return false;
@@ -367,7 +363,10 @@ class FileManagement {
     		$pages = glob ( $app_path . "/???.html" );
     		return basename(array_pop($pages));
     		
-    	} else if ($page_num == 'first' || $page_num == 'index') {
+    	} else if ($page_num == 'first') {
+    		return '001.html';
+    		
+    	} else if ($page_num == '0' || $page_num == 'index') {
     		return 'index.html';
     		
     	} else {

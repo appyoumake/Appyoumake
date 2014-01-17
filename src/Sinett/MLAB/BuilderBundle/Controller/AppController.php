@@ -512,7 +512,8 @@ class AppController extends Controller
     }
     
     /**
-     * New page is created by copying the standard page.html from the template
+     * New page is created by just making an empty file with the right name, this makes sure that if more than one person works on 
+     * the app it will not create two with the same name
      * @param type $app_id
      */
     public function newPageAction (Request $request, $app_id) {
@@ -524,13 +525,12 @@ class AppController extends Controller
     		return new JsonResponse(array(
     			'result' => 'error',
     			'msg' => sprintf("Application ID not specified: %d", $app_id)));
-    		
     	}
         
 //copy the template file to the app
-        $title = $request->request->all()["title"];
+// not required anymore        $title = $request->request->all()["title"];
         $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app, $title);
+        $new_page_num = $file_mgmt->newPage($app);
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
