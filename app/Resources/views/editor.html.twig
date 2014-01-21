@@ -4,13 +4,9 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-        	<link href="{{ asset("/css/temp.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.qtip.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.megamenu.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/ui.dropdownchecklist.standalone.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
 			
@@ -36,7 +32,6 @@
 	        	<script src="{{ asset('/js/jquery.qtip.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.megamenu.js') }}"></script>  
 	        	<script src="{{ asset('/js/ddslick.js') }}"></script>
-                <script src="{{ asset('/js/ui.dropdownchecklist-1.4-min.js') }}"></script>
                 
 		        <script type="text/javascript">	 
 			        $(document).ready(function() {
@@ -47,6 +42,5 @@
 	        </div>
 	        <div class="mlab_top_bar_back"></div>
 	    </div>
-        <h1 contenteditable="true">Test edit</h1>
     </body>
 </html>

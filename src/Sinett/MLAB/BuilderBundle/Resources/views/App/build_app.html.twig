@@ -234,9 +234,6 @@
         
 /*********** functions to open and save pages ***********/
  		function test (page, page_num) {
-            
-            $("#mlab_editor_chrome").html(page).page();
-            $( "div#mlab_editable_area[data-role=page]" ).page( "destroy" ).page();
             return;
             var comp_id, temp_comp, temp_link;
             var temp_stylesheets = "";
@@ -301,9 +298,12 @@
             var temp_stylesheets = "";
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
             
+//set the base href to the folder of the app
+            document.getElementsByTagName("base")[0].href = start_dir;
+            
 //remove old stuff 
 			$("#mlab_editor_chrome").empty();
-			$("link[rel=stylesheet][href^='" + mlab_config.urls.app + "']").remove();
+			$("link[rel=stylesheet][href^='css']").remove();
 
 //parse doc into variables 
 			var doc = (new DOMParser()).parseFromString(page,"text/html");
@@ -315,19 +315,24 @@
 //insert stylesheets 
 			for ( var i = 0; i < stylesheets.length; i++) {
 	        	temp_link = stylesheets[i].getAttribute("href");
-	        	temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + start_dir + temp_link + "' type='text/css'>" + "\n";
+	        	temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
 	        }
 	        $("head link[rel='stylesheet']").last().after(temp_stylesheets); 
 
 //(new XMLSerializer()).serializeToString(doc.getElementsByTagName("head")[0]);
 
-
 //now we clean out the content of the editable DIV in the body that we will be inserting into the mlab_editor_chrome 
-			body.getElementsByClassName(mlab_config["app"]["content_id"]).innerHTML = ""
-			
+/*            var editable_section = body.getElementsByClassName(mlab_config["app"]["content_id"])[0];
+            if (editable_section) {
+                    while (editable_section.firstChild) {
+                            editable_section.removeChild(editable_section.firstChild);
+                    }
+            }*/
+
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
 			$("#mlab_editor_chrome").append(body.innerHTML);
 
+//now we need to make the internal code editable
             mlab_prepare_editable_area();
             
 //assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
@@ -336,10 +341,30 @@
  			while (content.firstChild) {
  				content.removeChild(content.firstChild);
  			}
-	        document.mlab_current_app.curr_page_html = doc;
+	        document.mlab_current_app.curr_indexpage_html = doc;
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+
+//finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
+            $.mobile.initializePage();
+            
+//JS to fix the toolbars in a jQuery mobile page
+            $("[data-role=header]").css("position", "absolute");
+            $("[data-role=footer]").css("position", "absolute");
+            $("[data-role=page]").css("width", "100%");
+            $("[data-role=page]").css("height", "100%");
+            $("[data-role=page]").css("min-height", "");
+            $("[data-role=page]").css("position", "absolute");
+            $("[data-role=page]").css("margin", "0");
+            $("[data-role=page]").css("padding", "0");
+            $("[data-role=page]").css("padding-top", $("[data-role=header]").height() + "px");
+            $("[data-role=page]").css("padding-bottom", $("[data-role=footer]").height() + "px");
+
+//TODO: hack de luxe
+            $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
+            $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
+
             
 		}
         
@@ -579,9 +604,10 @@
 
             $.get( url, function( data ) {
 				if (data.result == "success") {
-                    test ( data.html, data.page_num );
+                    mlab_index_page_process ( data.html, data.page_num );
                     if (data.page_num != "0" && data.page_num != "index") {
-                        mlab_page_open(data.app_id, data.page_num);
+                        alert("reimplement");
+                        //mlab_page_open(data.app_id, data.page_num);
                     }
 				} else {
 					alert(data.msg);
@@ -708,9 +734,12 @@
 			}
 		}
 
+//turn off automatic initialisation of mobile pages
+        $.mobile.autoInitializePage = false;
 		
 /*********** Startup code ***********/  
 		$(document).ready(function() {
+            
 
 //must turn off content ediatble to be able to drag items, store it in data property so can turn it on again 
 	    	$('#mlab_button_drag').mousedown(function(e) {

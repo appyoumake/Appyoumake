@@ -737,6 +737,7 @@ div#mlab_editor_chrome {
 	width: 644px;
 	height: 844px;
 	overflow: hidden;
+    position: relative;
 }
 
 
