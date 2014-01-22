@@ -628,8 +628,8 @@ class AppController extends Controller
                 //list($width, $height, $type, $attr) = getimagesize($uploadedFile["tmp_name"]);
             }
             
-//url of file to return
-            $url = $app->calculateFullPath($this->container->parameters['mlab']['urls']['app']) .  $this->container->parameters['mlab']['cordova']['asset_path'] . $sub_folder . "/" . $file_name;
+//url of file to return, this is always a relative path, it comes from the uploads_allowed section in parameters.yml 
+            $url = $sub_folder . "/" . $file_name;
         
             $uploadedFile->move($path_app . $sub_folder, $file_name);
             /*{
