@@ -4,7 +4,8 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-			<link href="{{ asset("/css/jquery.qtip.css") }}" rel="stylesheet" />
+			<link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery.qtip.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.megamenu.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
@@ -23,6 +24,7 @@
 		    	{% endif %}
 	    	<div class="container">
 	 			{% block body %}{% endblock %}
+                <div style="clear: both;">&nbsp;</div>
 	 		</div>
 	        {% block javascripts %}
 	        	<script src="{{ asset('/js/jquery-1.10.2.js') }}"></script>

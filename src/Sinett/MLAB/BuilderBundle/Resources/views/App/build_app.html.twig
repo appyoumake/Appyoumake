@@ -6,9 +6,9 @@
 	<div id="mlab_template_warning"></div>	                     
 	
 	<div id="mlab_buttons_item_manipulation" class="mlab_buttons_item_manipulation">
-		<div id="mlab_button_close" class="mlab_button_close" onclick="mlabDeleteComponent(this);"></div>
-		<div id="mlab_button_drag" class="mlab_button_drag"></div>
-		<div id="mlab_button_setproperty" class="mlab_button_setproperty" onclick="mlabGetProperties(this);"></div>
+		<img id="mlab_button_setproperty" class="mlab_button_setproperty" onclick="mlabGetProperties(this);" />
+		<img id="mlab_button_close" class="mlab_button_close" onclick="mlabDeleteComponent(this);" />
+		<img id="mlab_button_drag" class="mlab_button_drag" />
 	</div>
 		
 	<div id="mlab_toolbar_components">
@@ -59,14 +59,15 @@
 
 		droppable_options = {
 		    drop: function( event, ui ) {
+                
 			    if (mlab_drag_origin === 'draggable') {
 					mlab_drag_origin = 'sortable';
 						
 //replace the cloned drag item with relevant HTML code from the component 
 			    	var id = $(ui.draggable[0]).data("mlab-type");
-		    		ui.draggable.empty().append(mlab_components[id].html);
+                    ui.draggable.empty().append(mlab_components[id].html);
 		    		ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
-		    		ui.draggable.hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
+		    		ui.draggable.hover(function(e){mlabShowComponentManipulationButtons(e, this);}, function(){mlabHideComponentManipulationButtons();});
 		    		
 		    		mlab_run_component_code(ui.draggable, id);
 						
@@ -117,6 +118,13 @@
 			}
 		};
 
+// Calculate width of text from DOM element or string. By Phil Freo <http://philfreo.com>
+        $.fn.textWidth = function(text, font) {
+            if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
+            $.fn.textWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));
+            return $.fn.textWidth.fakeEl.width();
+        };
+        
 /*
  * DOMParser HTML extension
  * 2012-09-04
@@ -350,8 +358,10 @@
             $.mobile.initializePage();
             
 //JS to fix the toolbars in a jQuery mobile page
+            var border_width = (parseInt($("#mlab_editor_chrome").css("margin-bottom")) * 2) + parseInt($("#mlab_editor_chrome").css("border-bottom-width"));
             $("[data-role=header]").css("position", "absolute");
             $("[data-role=footer]").css("position", "absolute");
+            $("[data-role=footer]").css("bottom", ($("[data-role=footer]").height() + border_width) + "px");
             $("[data-role=page]").css("width", "100%");
             $("[data-role=page]").css("height", "100%");
             $("[data-role=page]").css("min-height", "");
@@ -361,11 +371,10 @@
             $("[data-role=page]").css("padding-top", $("[data-role=header]").height() + "px");
             $("[data-role=page]").css("padding-bottom", $("[data-role=footer]").height() + "px");
 
-//TODO: hack de luxe
+//TODO: hack de luxe, refreshes images that for some reason can't be seen
             $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
             $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
 
-            
 		}
         
         
@@ -541,10 +550,15 @@
 		}
 
 //displays the drag/delete/proprty buttons, this is stored as a non-connected HTML fragment when not visible, see below 
-		function mlabShowComponentManipulationButtons(el) {
+		function mlabShowComponentManipulationButtons(evt, el) {
 			if ($(".mlab_buttons_item_manipulation").length > 0) { return; }
-			//var h = $(el).outerHeight(); "-" + h + "px"
-			$(mlab_buttons_item_manipulation).css("margin-top", "-10px").appendTo($(el)).show();
+            var parentOffset = $(el).offset(); 
+            var relX = evt.pageX - parentOffset.left;
+            var relY = evt.pageY - parentOffset.top;
+            $(el).css("position", "relative");
+			$(mlab_buttons_item_manipulation).appendTo($(el))
+                    .show()
+                    .css({position: "absolute", top: 0 + "px", left: relX + "px"});
 			if ($(el).data("properties") == true) {
 				$("#mlab_button_setproperty").show();
 			} else {
@@ -567,7 +581,7 @@
 		    $( "#" + mlab_config["app"]["content_id"] + " div" ).each(function( index ) {
                 $( this ).droppable(droppable_options)
 		    			 .sortable(sortable_options)
-		    			 .hover(function(){mlabShowComponentManipulationButtons(this);}, function(){mlabHideComponentManipulationButtons();});
+		    			 .hover(function(e){mlabShowComponentManipulationButtons(e, this);}, function(){mlabHideComponentManipulationButtons();});
 
     		    comp_id = $( this ).data("mlab-type");
 			    //temp_comp.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc;
@@ -748,7 +762,6 @@
 	        			comp.removeAttr("contenteditable");
 	        			comp.data("contenteditable", "true");
 	        		}
-	        		console.log(comp.data("mlab-type"));
 	        		comp.trigger(e); 
 				});
 
@@ -777,5 +790,6 @@
 			 
 		});
 		
+        
 	</script>
 {% endblock %}
