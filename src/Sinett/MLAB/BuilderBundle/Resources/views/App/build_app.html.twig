@@ -241,56 +241,7 @@
 		
         
 /*********** functions to open and save pages ***********/
- 		function test (page, page_num) {
-            return;
-            var comp_id, temp_comp, temp_link;
-            var temp_stylesheets = "";
-            var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
-            
-//remove old stuff 
-			$("#mlab_editor_chrome").empty();
-			$("link[rel=stylesheet][href^='" + mlab_config.urls.app + "']").remove();
 
-//parse doc into variables 
-			var doc = (new DOMParser()).parseFromString(page,"text/html");
-			var head = doc.getElementsByTagName("head")[0];
-			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
-		    var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
-			var stylesheets = head.getElementsByTagName("link");
-			
-//insert stylesheets 
-			for ( var i = 0; i < stylesheets.length; i++) {
-	        	temp_link = stylesheets[i].getAttribute("href");
-	        	temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + start_dir + temp_link + "' type='text/css'>" + "\n";
-	        }
-	        $("head link[rel='stylesheet']").last().after(temp_stylesheets); 
-
-//(new XMLSerializer()).serializeToString(doc.getElementsByTagName("head")[0]);
-
-
-//now we clean out the content of the editable DIV in the body that we will be inserting into the mlab_editor_chrome 
-			body.getElementsByClassName(mlab_config["app"]["content_id"]).innerHTML = ""
-			
-//here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
-			$("#mlab_editor_chrome").append(body.innerHTML);
-
-            mlab_prepare_editable_area();
-            
-//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
-//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area 
- 			var content = doc.getElementById(mlab_config["app"]["content_id"]);
- 			while (content.firstChild) {
- 				content.removeChild(content.firstChild);
- 			}
-	        document.mlab_current_app.curr_page_html = doc;
-	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-            document.mlab_current_app.curr_page_num = page_num;
-	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
-            
-		}
- 
-
- 
 /* this function processes the index page that was retrieved.
  * 
  * It does the following:
@@ -301,7 +252,7 @@
 		Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-		function mlab_index_page_process (page, page_num) {
+		function mlab_index_page_process (page, page_num, real_page_num) {
             var comp_id, temp_comp, temp_link;
             var temp_stylesheets = "";
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
@@ -359,17 +310,9 @@
             
 //JS to fix the toolbars in a jQuery mobile page
             var border_width = (parseInt($("#mlab_editor_chrome").css("margin-bottom")) * 2) + parseInt($("#mlab_editor_chrome").css("border-bottom-width"));
-            $("[data-role=header]").css("position", "absolute");
-            $("[data-role=footer]").css("position", "absolute");
-            $("[data-role=footer]").css("bottom", ($("[data-role=footer]").height() + border_width) + "px");
-            $("[data-role=page]").css("width", "100%");
-            $("[data-role=page]").css("height", "100%");
-            $("[data-role=page]").css("min-height", "");
-            $("[data-role=page]").css("position", "absolute");
-            $("[data-role=page]").css("margin", "0");
-            $("[data-role=page]").css("padding", "0");
-            $("[data-role=page]").css("padding-top", $("[data-role=header]").height() + "px");
-            $("[data-role=page]").css("padding-bottom", $("[data-role=footer]").height() + "px");
+            $("[data-role=header]").css( {"position": "absolute", "z-index": 0} );
+            $("[data-role=footer]").css( { "position": "absolute", "bottom": ($("[data-role=footer]").height() + border_width) + "px" } );
+            $("[data-role=page]").css( {"width": "100%", "height": "100%", "min-height": "", "position": "absolute", "margin": "0", "padding": "0", "padding-top": $("[data-role=header]").height() + "px", "padding-bottom": $("[data-role=footer]").height() + "px" } );
 
 //TODO: hack de luxe, refreshes images that for some reason can't be seen
             $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
@@ -392,20 +335,23 @@
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
             
 //remove old stuff 
-			$("#" + mlab_config["app"]["content_id"]).html(doc.getElementsByTagName("body")[0]);
+			$("#" + mlab_config["app"]["content_id"]).html("");
 
 //parse doc into variables 
 			var doc = (new DOMParser()).parseFromString(page,"text/html");
 			var head = doc.getElementsByTagName("head")[0];
 			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
-		    var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
+		    
 			
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
 
+//add body content 
+			$("#" + mlab_config["app"]["content_id"]).html(body.innerHTML);
+
             mlab_prepare_editable_area();
-            
+            $.mobile.initializePage();
 		}
 		
 /**
@@ -422,7 +368,7 @@
                     if (page_num == 0 || page_num == "index" ) {
                         alert("add code");
                     } else {
-                        mlab_page_process ( data.html, data.page_num );
+                        mlab_regular_page_process ( data.html, data.page_num );
                         var path = window.location.pathname.split("/");
                         path[path.length - 3] = data.app_id;
                         path[path.length - 2] = data.page_num;
@@ -518,7 +464,7 @@
 			
 			$.get( url, function( data ) {
 				if (data.result == "success") {
-                    mlab_page_process ( data.html, data.page_num );
+                    mlab_regular_page_process ( data.html, data.page_num );
 				} else {
 					alert(data.msg);
 				}
@@ -612,16 +558,16 @@
  * @param {type} page_num
  */
 		function mlab_app_open(app_id, page_num) {
-			var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_' }) }}";
+			var local_page_num = page_num;
+            var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_' }) }}";
 			url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", 'index');
 
             $.get( url, function( data ) {
 				if (data.result == "success") {
-                    mlab_index_page_process ( data.html, data.page_num );
-                    if (data.page_num != "0" && data.page_num != "index") {
-                        alert("reimplement");
-                        //mlab_page_open(data.app_id, data.page_num);
+                    mlab_index_page_process ( data.html, data.page_num, local_page_num);
+                    if (local_page_num != "0" && local_page_num != "index") {
+                        mlab_page_open(data.app_id, local_page_num);
                     }
 				} else {
 					alert(data.msg);
