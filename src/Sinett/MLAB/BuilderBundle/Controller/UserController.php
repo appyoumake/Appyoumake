@@ -123,13 +123,18 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:User')->find($id);
-        if ($this->getUser()->getRoles()[0] == "ROLE_SUPER_ADMIN") {
-        	$can_edit = ($entity->getRoles()[0] != "ROLE_SUPER_ADMIN");
-        } else {
-        	$can_edit = true;
-        }
-        if (!$entity || !$can_edit) {
+        if (!$entity) {
             throw $this->createNotFoundException('Unable to find User entity.');
+        }
+        
+        if ($this->getUser()->getRoles()[0] == "ROLE_SUPER_ADMIN") {
+        	$can_edit = true;
+        } else {
+        	$can_edit = ($entity->getRoles()[0] != "ROLE_SUPER_ADMIN");
+        }
+        
+        if (!$can_edit) {
+            return new JsonResponse("You do not have the rights to edit this user, must be Super Admin");
         }
 
         $editForm = $this->createEditForm($entity);

@@ -211,22 +211,52 @@ class FileManagement {
 		$output = array();
 		$exit_code = 0;
 		
-		//TODO
-		return true;
-		
-		exec($cordova_create_command . " 2>&1", $output, $exit_code);
+//if they are offline we just extract a ZIP file that has to be present, 
+        //and then we need to update a few files with new data
+        if ($this->config["cordova"]["offline"]) {
+            if (!file_exists($this->config["cordova"]["offline_archive"])) {
+                return array("You are working offine, but the ZIP archive to use for a new app was not found:" . $this->config["cordova"]["offline_archive"]);
+            }
+            $zip = new ZipArchive();
+			$res = $zip->open($this->config["cordova"]["offline_archive"]);
+	
+//loop through and see if all required files are present
+			if ($res === TRUE) {
+            if (!mkdir($app_path, 0777, true)) { return array("Unable to create directory: $app_path");}
+//try to unzip it
+				if (!$zip->extractTo($app_path)) {
+// clean up the file property, not persisted to DB
+					$entity->setZipFile(null);
+					return array("Unable to unzip : " . $zip->getStatusString());
+				}
+				$zip->close();
+                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_name"] . "/" . $app->getPath() . "/'");
+                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_identifier"] . "/" . $app_domain . "/'");
+                foreach ($template_items_to_copy as $from => $to) {
+                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
+                    $ret = shell_exec($cmd);
+                }
+                return true;
+            } else {
+                return array("Unable to unzip : " . $res);
+            }
+            
+                
+        } else {
+            exec($cordova_create_command . " 2>&1", $output, $exit_code);
 		
 //check exit code, anything except 0 = fail
-		if ($exit_code != 0) {
-			return $output + array("Exit code: " . $exit_code);
-		} else {
-			shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
-			foreach ($template_items_to_copy as $from => $to) {
-				$cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-				$ret = shell_exec($cmd);
-			}
-			return true;
-		}
+            if ($exit_code != 0) {
+                return $output + array("Exit code: " . $exit_code);
+            } else {
+                shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
+                foreach ($template_items_to_copy as $from => $to) {
+                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
+                    $ret = shell_exec($cmd);
+                }
+                return true;
+            }
+        }
 	}
 	
 	/**

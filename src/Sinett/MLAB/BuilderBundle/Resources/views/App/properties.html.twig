@@ -138,19 +138,19 @@
 		    selectText: "{% trans %}app.select.app.to.copy{% endtrans %}",
 		    onSelected: function (data) {
 		        if (data.selectedIndex > 0) {
-                            $('#form_template').ddslick('select', {index: 0 });
+                    $('#form_template').ddslick('select', {index: 0 });
 		        }
 		    }
 		});
 
-                $('#form_template').ddslick({
+        $('#form_template').ddslick({
 		    width: 300,
 		    height: 110,
 		    imagePosition: "left",
 		    selectText: "{% trans %}app.select.template{% endtrans %}",
 		    onSelected: function (data) {
 		        if (data.selectedIndex > 0) {
-                            $('#mlab_builder_app_copy_from').ddslick('select', {index: 0 });
+                    $('#mlab_builder_app_copy_from').ddslick('select', {index: 0 });
 		        }
 		    }
 		});
@@ -168,7 +168,7 @@
 		if (direction > 0) {
 			var msg = '';
 			if (curr_tab == 0) {
-				if ($('#form_template').val() == '' && $('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
+				if ($('#form_template').data('ddslick').selectedIndex == 0 && $('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
 					msg = msg + "{% trans %}You must select an app to copy or a template to use{% endtrans %}\n";
 				}  
 
@@ -200,9 +200,9 @@
 				
 //last page, here we submit the data via AJAX 
 				if (msg == '') {
-					$("#form_copy_app").val($('#builder_app_copy_from').data('ddslick').selectedData.value);
+					$("#form_copy_app").val($('#mlab_builder_app_copy_from').data('ddslick').selectedData.value);
 					$("#mlab_app_new_summary").html(
-							"<span class='mlab_app_new_summary'>{% trans %}app.new.base{% endtrans %}:</span> " + $('#form_template option:selected').html() + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
+							"<span class='mlab_app_new_summary'>{% trans %}app.new.base{% endtrans %}:</span> " + $('#form_template').data('ddslick').selectedData.text + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
 							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.name{% endtrans %}:</span> " + $('#form_name').val() +
 							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.description{% endtrans %}:</span> " + $('#form_description').val() +
 							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.keywords{% endtrans %}:</span> " + $('#form_keywords').val() +
@@ -213,8 +213,11 @@
 				}
 			} else if (curr_tab == (tot_tabs - 1)) { 
 
+//reset the template select box so it returns value properly
+                $('#form_template').ddslick('destroy');
 //call function that must be in page that this dialog is called up in!  			    
 				mlab_app_submit_properties($("#mlab_form_app"));
+                
 			} 
 
 			if (msg != '') {

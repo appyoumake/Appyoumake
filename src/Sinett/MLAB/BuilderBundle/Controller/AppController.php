@@ -131,7 +131,9 @@ class AppController extends Controller
         			'mlab_app_page_num' => 1,
         			'mlab_app_id' => $entity->getId(),
         			'mlab_app_version' => $entity->getVersion(),
-        			'mlab_app' => $entity->getArrayFlat()));
+        			'mlab_app' => $entity->getArrayFlat(),
+                    'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity)))
+            );
         	 
         }
         
@@ -378,8 +380,6 @@ class AppController extends Controller
     {
     	$em = $this->getDoctrine()->getManager();
     	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	$this->getLockStatus($apps);
-    	$apps[1]["locked_pages"] = array(1);
     	return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
     	));
@@ -566,15 +566,6 @@ class AppController extends Controller
         }	 
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num)));
         
-    }
-    
-    /**
-     * Will look through all folders nad see if page is locked, will update the locked_pages array for each app, 
-     * see Sinett\MLAB\BuilderBundle\Entity\App->getArray()
-     * @param unknown $apps
-     */
-    public function getLockStatus(&$apps) {
-    	
     }
     
     /**
