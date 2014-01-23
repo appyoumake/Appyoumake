@@ -1,1 +1,1 @@
-<h1>Legg til overskrift her</h1>
+<h1>Enter headline level 1 here</h1>
