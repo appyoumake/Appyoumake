@@ -5,11 +5,12 @@ document.mlab_code_h1 = new function() {
 //el = element this is initialising, config = global config from conf.txt
 	this.onLoad = function (el, config) {
         this.config = config;
-        $(el).attr("contenteditable", "true");
+        $(el).find("h1").attr("contenteditable", "true");
+        $(el).find("h1").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text("Add content"); } } ) ;
     };
     
 	this.onSave = function (el) {
-		$(el).removeAttr("contenteditable");
+		$(el).find("h1").removeAttr("contenteditable");
     };
             
 

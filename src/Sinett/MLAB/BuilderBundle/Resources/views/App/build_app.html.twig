@@ -388,6 +388,8 @@
             mlab_flag_dirty = true;
             document.mlab_current_app.curr_pagetitle = $("#mlab_curr_pagetitle").val();
         }
+        
+        
 //to save a page we need to reassemble it, 
 //first clone current body from the editor (and give it a new ID!)
 //clean it up using the onSave function for each component
@@ -409,10 +411,16 @@
 					document["mlab_code_" + comp_id].onSave(items[i]);
 				}
 			}
-			var final_doc = document.mlab_current_app.curr_page_html;
-			final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = $(new_body).html();
-            final_doc.title = document.mlab_current_app.curr_pagetitle;
-			var html = (new XMLSerializer()).serializeToString(final_doc);
+            
+//if this is the index page we add the full HTML page, if not we only require a very simple header/footer
+            if (page_num == 0 || page_num == "index" ) {
+                var final_doc = document.mlab_current_app.curr_page_html;
+                final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = $(new_body).html();
+                final_doc.title = document.mlab_current_app.curr_pagetitle;
+                var html = (new XMLSerializer()).serializeToString(final_doc);
+            } else {
+                var html = "<!DOCTYPE html>\n<html><head><title>" + document.mlab_current_app.curr_pagetitle + "</title></head><body>" + $(new_body).html() + "</body></html>";
+            }
 			
 			$.post( url, {html: html}, function( data ) {
 				if (data.result == "success") {

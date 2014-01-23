@@ -1,1 +1,1 @@
-<p>Some text Here</p>
+<p>Enter your body text here</p>
