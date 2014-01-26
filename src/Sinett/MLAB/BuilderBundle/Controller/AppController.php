@@ -428,7 +428,7 @@ class AppController extends Controller
      * @param unknown $page_num
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
      */
-    public function getPageAction ($app_id, $page_num) {
+    public function getPageAction ($app_id, $page_num, $uid) {
     	
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
@@ -455,10 +455,12 @@ class AppController extends Controller
         }
 
     	if (file_exists("$app_path$doc")) {
-    		$html = file_get_contents("$app_path$doc");
+            $page = $file_mgmt->getPageContent("$app_path$doc", $uid);
+            
     		return new JsonResponse(array(
     				'result' => 'success',
-    				'html' => $html,
+    				'html' => $page["html"],
+    				'lock_status' => $page["lock_status"],
                     'page_num' => $page_num,
                     'app_id' => $app_id));
     		 
@@ -509,6 +511,15 @@ class AppController extends Controller
         return new JsonResponse(array(
             'result' => 'success'));
 
+    }
+    
+    /**
+     * Removes all locks by the specified uid
+     * @param type $uid
+     */
+    public function closeEditorAction($uid) {
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->clearLocks($uid);
     }
     
     /**

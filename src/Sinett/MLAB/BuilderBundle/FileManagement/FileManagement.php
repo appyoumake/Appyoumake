@@ -407,4 +407,43 @@ class FileManagement {
     		}
     	}
     }
+    
+    /**
+     * 
+     * @param type $uidRemove all potential locks on all other apps
+     */
+    public function clearLocks($uid) {
+        $apps_location = $this->config['paths']['app'];
+        `find $apps_location -type f -name "*.$uid.lock" -exec rm {} \;`;
+    }
+    /**
+     * Simple file loader which will check if file is locked and add lock of own if not found
+     * Any other locks with the same UID will be removed as UID is unique to a tab/window, so can only have one open
+     * A file lock = filename.UID.lock
+     * TODO: Improve with flock
+     * @param type $filename
+     * @param type $uid
+     * @return string|boolean
+     */
+    public function getPageContent($filename, $uid) {
+        $result = array("html" => file_get_contents($filename));
+        
+//already open
+        if (file_exists(("$filename.$uid.lock"))) {
+            $result["lock_status"] = "unlocked";
+            
+//opened by someone else
+        } else if (!empty(glob("$filename.*.lock"))) {
+            $result["lock_status"] = "locked";
+
+//open it first time and clear all other locks
+        } else {
+            $this->clearLocks($uid);
+            touch("$filename.$uid.lock");
+            $result["lock_status"] = "unlocked";
+        }
+        
+        return $result;
+    }
+    
 }
