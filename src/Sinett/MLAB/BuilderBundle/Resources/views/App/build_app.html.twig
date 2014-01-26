@@ -24,7 +24,7 @@
 	<div title="Use this to rotate the device" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
 	<div id="mlab_status"></div>
 	<div id="mlab_dialog_new_app" class="hide"></div>
-
+    <div id="mlab_storage_space"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -400,26 +400,29 @@
 			var app_id = document.mlab_current_app.id;
 			var page_num = document.mlab_current_app.curr_page_num;
             var url = mlab_url_save_page;
+            var page_content = "";
             url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", page_num);
     
-			var new_body = $("#" + mlab_config["app"]["content_id"]).clone(true, true).attr("id", "mlab_new_body");
-			var items = new_body.children();
-			for (var i = 0, len = items.length; i < len; i++) {
-				comp_id = $(items[i]).data("mlab-type");
+			$("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
+                comp_id = $(this).data("mlab-type");
 				if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
-					document["mlab_code_" + comp_id].onSave(items[i]);
-				}
-			}
+					document["mlab_code_" + comp_id].onSave(this);
+                    page_content = page_content + $(this)[0].outerHTML + "\n";
+                    document["mlab_code_" + comp_id].onLoad(this);
+                } else {
+                    page_content = page_content + $(this)[0].outerHTML + "\n";
+                }
+			});
             
 //if this is the index page we add the full HTML page, if not we only require a very simple header/footer
             if (page_num == 0 || page_num == "index" ) {
                 var final_doc = document.mlab_current_app.curr_page_html;
-                final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = $(new_body).html();
+                final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = page_content;
                 final_doc.title = document.mlab_current_app.curr_pagetitle;
                 var html = (new XMLSerializer()).serializeToString(final_doc);
             } else {
-                var html = "<!DOCTYPE html>\n<html><head><title>" + document.mlab_current_app.curr_pagetitle + "</title></head><body>" + $(new_body).html() + "</body></html>";
+                var html = "<!DOCTYPE html>\n<html><head><title>" + document.mlab_current_app.curr_pagetitle + "</title></head><body>" + page_content + "</body></html>";
             }
 			
 			$.post( url, {html: html}, function( data ) {
