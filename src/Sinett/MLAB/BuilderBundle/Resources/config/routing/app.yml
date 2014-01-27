@@ -66,6 +66,16 @@ app_builder_page_copy:
     path:   /builder/{app_id}/{page_num}/page_copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }
 
+app_builder_page_delete:
+    path:   /builder/{app_id}/{page_num}/{uid}/page_delete
+    defaults: { _controller: "SinettMLABBuilderBundle:App:deletePage" }
+    
+app_builder_app_unlock:
+    path:   /builder/app_removelocks
+    defaults: { _controller: "SinettMLABBuilderBundle:App:removeLocks" }
+    
+
+
 app_builder_copy_app:
     path:   /builder/{id}/copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyApp" }

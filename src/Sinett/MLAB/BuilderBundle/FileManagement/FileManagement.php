@@ -260,14 +260,6 @@ class FileManagement {
 	}
 	
 	/**
-	 * Function called to create a new app, first calls cordova to generate structure, then copiues across relevant template files
-	 * Default platform is usually android, but could be iOS if run on mac for instance...
-	 */
-	public function lockPage ($app, $page_num) {
-		
-	}
-	
-	/**
 	 * simple function to copy an app folder to a new one
 	 * @param string $sourceApp
 	 * @param string $targetApp
@@ -360,6 +352,52 @@ class FileManagement {
         }
     }
     
+    /**
+     * copies a page
+     * @param type $app
+     * @param type $page_num
+     * @return name of file to open OR false
+     */
+    public function deletePage($app, $page_num, $uid) {
+//get path of file to delete
+        $app_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'];
+        $page_to_delete = $this->getPageFileName($app_path, $page_num);
+        
+//check if it is locked, we get a list of all locks, if one of them is "higher" then the one we want to delete, then we bail as we need to rename files to have 
+//single list of filenames, i.e. if we have 001, 002, 003, 004; and we try to delete 003, then 004 will be renamed to 003
+        $locked_pages = $this->getAppLockStatus($app_path, $uid);
+        foreach ($locked_pages as $page) {
+            if ($page > $page_to_delete) {
+                return false;
+            }
+        }
+        
+        if (unlink("$app_path/$page_to_delete")) {
+            $pages = glob ( $app_path . "/???.html" );
+            foreach ($pages as $page) {
+                $page = basename($page);
+                if ($page > $page_to_delete) {
+                    $newname = substr("000" . (intval($page) - 1), -3) . ".html";
+                    rename("$app_path/$page", "$app_path/$newname");
+                } 
+                
+            }
+            
+            if (file_exists("$app_path/$page_to_delete")) {
+                return $this->getPageContent("$app_path/$page_to_delete", $uid);
+            } else {
+                $page_to_open = substr("000" . (intval($page_to_delete) - 1), -3) . ".html";
+                if (file_exists("$app_path/$page_to_open")) {
+                    return $this->getPageContent("$app_path/$page_to_open", $uid);
+                } else {
+                    return $this->getPageContent("$app_path/index.html", $uid);
+                }
+            }
+        } else {
+            return false;
+        } //end try to unlink
+    }    
+    
 /**
  * returns an associative array of file names and titles of the pages for an app
  * @param type $app
@@ -409,13 +447,25 @@ class FileManagement {
     }
     
     /**
-     * 
-     * @param type $uidRemove all potential locks on all other apps
+     * Remove all potential locks on all other apps for specified unique ID
+     * @param type $uid
      */
     public function clearLocks($uid) {
         $apps_location = $this->config['paths']['app'];
         `find $apps_location -type f -name "*.$uid.lock" -exec rm {} \;`;
     }
+    
+    
+    /**
+     * Remove all potential locks on all apps for all IDs
+     * @param type $uid
+     */
+    public function clearAllLocks() {
+        $apps_location = $this->config['paths']['app'];
+        `find $apps_location -type f -name "*.lock" -exec rm {} \;`;
+    }
+    
+    
     /**
      * Simple file loader which will check if file is locked and add lock of own if not found
      * Any other locks with the same UID will be removed as UID is unique to a tab/window, so can only have one open
@@ -426,24 +476,55 @@ class FileManagement {
      * @return string|boolean
      */
     public function getPageContent($filename, $uid) {
-        $result = array("html" => file_get_contents($filename));
         
+//we always read file contents, the lock status is used to disable editing in front end
+        $result = array("html" => file_get_contents($filename),
+                        "lock_status" => $this->getPageLockStatus($filename, $uid));
+        
+        return $result;
+    }
+
+/**
+ * Checks lock status for a specified file
+ * @param type $filename
+ * @param type $uid
+ */
+    public function getPageLockStatus($filename, $uid) {
 //already open
         if (file_exists(("$filename.$uid.lock"))) {
-            $result["lock_status"] = "unlocked";
+            return "unlocked";
             
 //opened by someone else
         } else if (!empty(glob("$filename.*.lock"))) {
-            $result["lock_status"] = "locked";
+            $this->clearLocks($uid);
+            return "locked";
 
 //open it first time and clear all other locks
         } else {
             $this->clearLocks($uid);
             touch("$filename.$uid.lock");
-            $result["lock_status"] = "unlocked";
+            return "unlocked";
+            
         }
-        
-        return $result;
+    }
+
+/**
+ * Check which pages are locked for a whole app, and returns an array of filenames that were locked by others.
+ * @param type $filename
+ * @param type $uid
+ * @return array
+ */
+    public function getAppLockStatus($app_path, $uid) {
+        $res = array();
+        $lock_files = glob("$app_path/???.*.lock");
+        foreach ($lock_files as $key => $value) {
+            if (basename($value) != "$uid.lock") {
+                $res[] = substr(basename($value), 0, 8);
+            }
+        }
+        sort($res);
+        return $res;
     }
     
+
 }

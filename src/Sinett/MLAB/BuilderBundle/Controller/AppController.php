@@ -378,7 +378,7 @@ class AppController extends Controller
      */
     public function builderAction()
     {
-    	$em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
     	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
     	return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
@@ -429,7 +429,6 @@ class AppController extends Controller
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
      */
     public function getPageAction ($app_id, $page_num, $uid) {
-    	
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -577,6 +576,47 @@ class AppController extends Controller
         }	 
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num)));
         
+    }
+    
+    /**
+     * Delete a page. Will fail if someone has a page open that has a number higher than page to delete
+     * @param type $app_id
+     * @param type $page_num
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deletePageAction ($app_id, $page_num, $uid) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+    	
+//get the name of the file to delete
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        
+//delete file
+        $res = $file_mgmt->deletePage($app, $page_num, $uid);
+        if (!$res) {
+            return new JsonResponse(array(
+                    'result' => 'error',
+                    'msg' => "Unable to delete page"));
+        } else {
+            return new JsonResponse(array(
+                    'result' => 'success',
+                    'html' => $res["html"],
+                    'lock_status' => $res["lock_status"]));
+        }
+    }    
+    
+    function removeLocksAction() {
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $res = $file_mgmt->clearAllLocks();
+        return new JsonResponse(array());
     }
     
     /**
