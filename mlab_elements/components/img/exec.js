@@ -4,16 +4,14 @@ document.mlab_code_img = new function() {
     
 //el = element this is initialising, config = global config from conf.txt
 	this.onLoad = function (el, config, designer) {
-        for (var attrname in config) { this.config[attrname] = config[attrname]; }
-        if ($(el).find('img').attr("src") == "") {
-        	$(el).find('img').attr("src", "/img/mlab_placeholder.png").resizable({"containment": designer});
-        } else {
-        	$(el).find('img').resizable({"containment": designer});
+        if (typeof config != "undefined") {
+            for (var attrname in config) { this.config[attrname] = config[attrname]; }
         }
+        $(el).find('img').resizable({"containment": designer});
     };
 
 	this.onSave = function (el) {
-		$(el).find('img').resizable( "destroy" );
+        $(el).find('img').resizable( "destroy" );
     };
             
     this.getProperties = function (comp) {

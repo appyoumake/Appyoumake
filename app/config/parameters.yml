@@ -10,8 +10,9 @@ parameters:
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
-    locale: no_NB
+    locale: nb_NO
     secret: flurkysnarkish
+    security.authentication.success_handler.class: Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
     
     mlab: 
         uploads_allowed:
@@ -35,26 +36,37 @@ parameters:
         
 # paths etc for cordova
         cordova:
+          offline: true
+          offline_archive: /home/utvikler/workspace/mlab.local.dev/mlab_elements/offline_app.zip
+          offline_placeholder_name: XXAPPXX
+          offline_placeholder_identifier: no.ffi.sinett
           default_platform: android
+          cmds:
+            create: cordova create _FOLDER_ _DOMAIN_ _TITLE_
+            chdir: cd _FOLDER_ 
+            platform: cordova platform add _PLATFORM_
+          android: 
+            include_paths: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
           bin_path: 
-              android: /opt/cordova-3.2.0/cordova-android/bin
+            android: /opt/cordova-3.2.0/cordova-android/bin
           platform_paths:
-              android: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
-          app_creator_identifier: no.ffi.sinett
-          asset_path: /assets/www/
-          icon_path: /assets/www/res/icon/android/icon-72-hdpi.png
+            android: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
+          app_creator_identifier: se.ffi.sinett
+          asset_path: /www/
+          icon_path: /platforms/android/res/drawable-xhdpi/icon.png
             
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
             template: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
             component: [ html.txt, icon.png, exec.js, conf.txt ]
-            app: [ asset/www ]
+            app: [ www ]
             
         component_files: { ICON: icon.png, HTML: html.txt, CONFIG: conf.txt, SCRIPTS: exec.js, PHP: exec.php, RIGHTS: rights.xml }
         
         app:
-            copy_files: { frontpage.html: index.html, page.html: 001.html, js: js, css: css, img: img }
+            copy_files: { frontpage.html: index.html, page.html: 001.html, js/: js, css/: css, img/: img }
             new_page: page.html
             content_id: mlab_editable_area
             
         replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    
+

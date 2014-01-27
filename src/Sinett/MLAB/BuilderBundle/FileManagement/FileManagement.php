@@ -211,30 +211,52 @@ class FileManagement {
 		$output = array();
 		$exit_code = 0;
 		
-		//TODO
-		return true;
-		
-		exec($cordova_create_command . " 2>&1", $output, $exit_code);
+//if they are offline we just extract a ZIP file that has to be present, 
+        //and then we need to update a few files with new data
+        if ($this->config["cordova"]["offline"]) {
+            if (!file_exists($this->config["cordova"]["offline_archive"])) {
+                return array("You are working offine, but the ZIP archive to use for a new app was not found:" . $this->config["cordova"]["offline_archive"]);
+            }
+            $zip = new ZipArchive();
+			$res = $zip->open($this->config["cordova"]["offline_archive"]);
+	
+//loop through and see if all required files are present
+			if ($res === TRUE) {
+            if (!mkdir($app_path, 0777, true)) { return array("Unable to create directory: $app_path");}
+//try to unzip it
+				if (!$zip->extractTo($app_path)) {
+// clean up the file property, not persisted to DB
+					$entity->setZipFile(null);
+					return array("Unable to unzip : " . $zip->getStatusString());
+				}
+				$zip->close();
+                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_name"] . "/" . $app->getPath() . "/'");
+                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_identifier"] . "/" . $app_domain . "/'");
+                foreach ($template_items_to_copy as $from => $to) {
+                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
+                    $ret = shell_exec($cmd);
+                }
+                return true;
+            } else {
+                return array("Unable to unzip : " . $res);
+            }
+            
+                
+        } else {
+            exec($cordova_create_command . " 2>&1", $output, $exit_code);
 		
 //check exit code, anything except 0 = fail
-		if ($exit_code != 0) {
-			return $output + array("Exit code: " . $exit_code);
-		} else {
-			shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
-			foreach ($template_items_to_copy as $from => $to) {
-				$cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-				$ret = shell_exec($cmd);
-			}
-			return true;
-		}
-	}
-	
-	/**
-	 * Function called to create a new app, first calls cordova to generate structure, then copiues across relevant template files
-	 * Default platform is usually android, but could be iOS if run on mac for instance...
-	 */
-	public function lockPage ($app, $page_num) {
-		
+            if ($exit_code != 0) {
+                return $output + array("Exit code: " . $exit_code);
+            } else {
+                shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
+                foreach ($template_items_to_copy as $from => $to) {
+                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
+                    $ret = shell_exec($cmd);
+                }
+                return true;
+            }
+        }
 	}
 	
 	/**
@@ -283,9 +305,7 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function newPage($app, $title) {
-//get path of template file to copy
-        $template_path = $app->getTemplate()->calculateFullPath($this->config['paths']['template']) . $this->config['app']['new_page'];
+    public function newPage($app) {
         
 //create the name of the file to create
 	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
@@ -293,9 +313,7 @@ class FileManagement {
             return false;
         }
 
-        $temp = file_get_contents($template_path);
-        $temp = preg_replace('/<title>(.+)<\/title>/', "<title>$title</title>", $temp);
-        if (file_put_contents ($new_page_path, $temp)) {
+        if (touch ($new_page_path)) {
             return $new_page_num;
         } else {
             return false;
@@ -334,7 +352,57 @@ class FileManagement {
         }
     }
     
+    /**
+     * copies a page
+     * @param type $app
+     * @param type $page_num
+     * @return name of file to open OR false
+     */
+    public function deletePage($app, $page_num, $uid) {
+//get path of file to delete
+        $app_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'];
+        $page_to_delete = $this->getPageFileName($app_path, $page_num);
+        
+//check if it is locked, we get a list of all locks, if one of them is "higher" then the one we want to delete, then we bail as we need to rename files to have 
+//single list of filenames, i.e. if we have 001, 002, 003, 004; and we try to delete 003, then 004 will be renamed to 003
+        $locked_pages = $this->getAppLockStatus($app_path, $uid);
+        foreach ($locked_pages as $page) {
+            if ($page > $page_to_delete) {
+                return false;
+            }
+        }
+        
+        if (unlink("$app_path/$page_to_delete")) {
+            $pages = glob ( $app_path . "/???.html" );
+            foreach ($pages as $page) {
+                $page = basename($page);
+                if ($page > $page_to_delete) {
+                    $newname = substr("000" . (intval($page) - 1), -3) . ".html";
+                    rename("$app_path/$page", "$app_path/$newname");
+                } 
+                
+            }
+            
+            if (file_exists("$app_path/$page_to_delete")) {
+                return $this->getPageContent("$app_path/$page_to_delete", $uid);
+            } else {
+                $page_to_open = substr("000" . (intval($page_to_delete) - 1), -3) . ".html";
+                if (file_exists("$app_path/$page_to_open")) {
+                    return $this->getPageContent("$app_path/$page_to_open", $uid);
+                } else {
+                    return $this->getPageContent("$app_path/index.html", $uid);
+                }
+            }
+        } else {
+            return false;
+        } //end try to unlink
+    }    
     
+/**
+ * returns an associative array of file names and titles of the pages for an app
+ * @param type $app
+ * @return type
+ */
     public function getPageIdAndTitles($app) {
         $pages = array("index.html" => "Front page");
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
@@ -350,4 +418,113 @@ class FileManagement {
         return $pages;
     }
 		
+    
+/**
+ * Converts a page number/name to file name, allows for first, last, index, number
+ * @param type $app_path
+ * @param type $page_num
+ * @return boolean or string
+ */
+    public function getPageFileName($app_path, $page_num) {
+        if ($page_num == 'last') {
+//pick up last page, get the whole array, pop off last element and get filename
+    		$pages = glob ( $app_path . "/???.html" );
+    		return basename(array_pop($pages));
+    		
+    	} else if ($page_num == 'first') {
+    		return '001.html';
+    		
+    	} else if ($page_num == '0' || $page_num == 'index') {
+    		return 'index.html';
+    		
+    	} else {
+    		if ($page_num > 0 ) {
+    			return substr("000" . $page_num, -3) . ".html";
+    		} else {
+    			return false;    		
+    		}
+    	}
+    }
+    
+    /**
+     * Remove all potential locks on all other apps for specified unique ID
+     * @param type $uid
+     */
+    public function clearLocks($uid) {
+        $apps_location = $this->config['paths']['app'];
+        `find $apps_location -type f -name "*.$uid.lock" -exec rm {} \;`;
+    }
+    
+    
+    /**
+     * Remove all potential locks on all apps for all IDs
+     * @param type $uid
+     */
+    public function clearAllLocks() {
+        $apps_location = $this->config['paths']['app'];
+        `find $apps_location -type f -name "*.lock" -exec rm {} \;`;
+    }
+    
+    
+    /**
+     * Simple file loader which will check if file is locked and add lock of own if not found
+     * Any other locks with the same UID will be removed as UID is unique to a tab/window, so can only have one open
+     * A file lock = filename.UID.lock
+     * TODO: Improve with flock
+     * @param type $filename
+     * @param type $uid
+     * @return string|boolean
+     */
+    public function getPageContent($filename, $uid) {
+        
+//we always read file contents, the lock status is used to disable editing in front end
+        $result = array("html" => file_get_contents($filename),
+                        "lock_status" => $this->getPageLockStatus($filename, $uid));
+        
+        return $result;
+    }
+
+/**
+ * Checks lock status for a specified file
+ * @param type $filename
+ * @param type $uid
+ */
+    public function getPageLockStatus($filename, $uid) {
+//already open
+        if (file_exists(("$filename.$uid.lock"))) {
+            return "unlocked";
+            
+//opened by someone else
+        } else if (!empty(glob("$filename.*.lock"))) {
+            $this->clearLocks($uid);
+            return "locked";
+
+//open it first time and clear all other locks
+        } else {
+            $this->clearLocks($uid);
+            touch("$filename.$uid.lock");
+            return "unlocked";
+            
+        }
+    }
+
+/**
+ * Check which pages are locked for a whole app, and returns an array of filenames that were locked by others.
+ * @param type $filename
+ * @param type $uid
+ * @return array
+ */
+    public function getAppLockStatus($app_path, $uid) {
+        $res = array();
+        $lock_files = glob("$app_path/???.*.lock");
+        foreach ($lock_files as $key => $value) {
+            if (basename($value) != "$uid.lock") {
+                $res[] = substr(basename($value), 0, 8);
+            }
+        }
+        sort($res);
+        return $res;
+    }
+    
+
 }

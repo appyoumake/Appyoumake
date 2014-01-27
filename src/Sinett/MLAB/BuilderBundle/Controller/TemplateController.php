@@ -192,10 +192,15 @@ class TemplateController extends Controller
 
         if ($editForm->isValid()) {
         	
-        	$file_mgmt = $this->get('file_management');
-        	$file_mgmt->setConfig('template');
-        	$res = $file_mgmt->handleUpload($entity);
-
+//check if they have uploaded a file
+            if (null === $entity->getZipFile()) {
+                $res = array("result" => true);
+            } else {
+                $file_mgmt = $this->get('file_management');
+                $file_mgmt->setConfig('template');
+                $res = $file_mgmt->handleUpload($entity);
+            }
+            
         	if ($res["result"]) {
         	 
             	$em->flush();

@@ -1,0 +1,46 @@
+[data-role="page"] {
+    margin: 5px 50px;
+}
+
+#panel_left, #panel_right {
+    width: 40px;
+    height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    z-index: 999;
+}
+
+#panel_left {
+    background-image: url('/img/1920x1080_contentpage_white_backpage.png');
+    left: 0;
+}
+
+#panel_right {
+    background-image: url('/img/1920x1080_contentpage_white_nextpage.png');    
+    right: 0;
+}
+
+#header {
+    background-image: url('/img/1920x1080_indexpage_header_backgr.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: bottom;
+    height: 54px;
+    padding: 0;
+    margin: 0;
+}
+
+div#header a.btn-nav {
+    background: none;
+    border: none;
+    padding: 4px;
+    background-image: url('/img/grad_top.png');
+    background-repeat: repeat-x;
+}
+
+a.btn-nav img {
+    width: 36px;
+    height: 36px;
+}

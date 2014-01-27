@@ -131,7 +131,9 @@ class AppController extends Controller
         			'mlab_app_page_num' => 1,
         			'mlab_app_id' => $entity->getId(),
         			'mlab_app_version' => $entity->getVersion(),
-        			'mlab_app' => $entity->getArrayFlat()));
+        			'mlab_app' => $entity->getArrayFlat(),
+                    'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity)))
+            );
         	 
         }
         
@@ -197,14 +199,14 @@ class AppController extends Controller
         $form = $this->createAppForm($entity);
         
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
-        	'entity' => $entity,
-        	'apps' => $apps,
-        	'templates' => $templates,
+            'entity' => $entity,
+            'apps' => $apps,
+            'templates' => $templates,
             'form' => $form->createView(),
-        	'mode' => 'add',
-        	'url_templates' => $url_templates,
-        	'url_apps' => $url_apps,
-        	'cordova_icon_path' => $cordova_icon_path,
+            'mode' => 'add',
+            'url_templates' => $url_templates,
+            'url_apps' => $url_apps,
+            'cordova_icon_path' => $cordova_icon_path,
         ));
         
     }
@@ -376,10 +378,8 @@ class AppController extends Controller
      */
     public function builderAction()
     {
-    	$em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
     	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	$this->getLockStatus($apps);
-    	$apps[1]["locked_pages"] = array(1);
     	return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
     	));
@@ -428,8 +428,7 @@ class AppController extends Controller
      * @param unknown $page_num
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
      */
-    public function getPageAction ($app_id, $page_num) {
-    	
+    public function getPageAction ($app_id, $page_num, $uid) {
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -444,31 +443,25 @@ class AppController extends Controller
 //create the path to the file to open
         $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
     	
-    	if ($page_num == 'last') {
-//pick up last page, get the whole array, pop off last element and get filename
-    		$pages = glob ( $app_path . "/???.html" );
-    		$doc = basename(array_pop($pages));
-    		
-    	} else if ($page_num == 'first' || $page_num == 'index') {
-    		$doc = 'index.html';
-    		
-    	} else {
-    		if ($page_num > 0 ) {
-    			$doc = substr("000" . $page_num, -3) . ".html";
-    		} else {
-    			return new JsonResponse(array(
+//calculate page number
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $doc = $file_mgmt->getPageFileName($app_path, $page_num);
+        if (!$doc) {
+            return new JsonResponse(array(
     					'result' => 'error',
     					'msg' => sprintf("Page not specified: %d", $page_num)));
-    		
-    		}
-    	}
+        }
 
     	if (file_exists("$app_path$doc")) {
-    		$html = file_get_contents("$app_path$doc");
+            $page = $file_mgmt->getPageContent("$app_path$doc", $uid);
+            
     		return new JsonResponse(array(
     				'result' => 'success',
-    				'html' => $html,
-                    'page_num' => $page_num));
+    				'html' => $page["html"],
+    				'lock_status' => $page["lock_status"],
+                    'page_num' => $page_num,
+                    'app_id' => $app_id));
     		 
     	} else {
     		return new JsonResponse(array(
@@ -493,16 +486,20 @@ class AppController extends Controller
     			'msg' => sprintf("Application ID not specified: %d", $app_id)));
     	}
         
-        if ($page_num > 0 ) {
-            $page_name = substr("000" . $page_num, -3) . ".html";
-        } else {
-            return new JsonResponse(array(
-                    'result' => 'error',
-                    'msg' => sprintf("Page not specified: %d", $page_num)));
-        }
+//create the path to the file to open
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
         
+//calculate page number
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $doc = $file_mgmt->getPageFileName($app_path, $page_num);
+        if (!$doc) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf("Page not specified: %d", $page_num)));
+        }
+
         $html = $request->request->all()["html"];
-        $file_mgmt = $this->get('file_management');
         $res = $file_mgmt->savePage($app, $page_num, $html);
         if ($res === false) {
             return new JsonResponse(array(
@@ -516,7 +513,17 @@ class AppController extends Controller
     }
     
     /**
-     * New page is created by copying the standard page.html from the template
+     * Removes all locks by the specified uid
+     * @param type $uid
+     */
+    public function closeEditorAction($uid) {
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->clearLocks($uid);
+    }
+    
+    /**
+     * New page is created by just making an empty file with the right name, this makes sure that if more than one person works on 
+     * the app it will not create two with the same name
      * @param type $app_id
      */
     public function newPageAction (Request $request, $app_id) {
@@ -528,13 +535,12 @@ class AppController extends Controller
     		return new JsonResponse(array(
     			'result' => 'error',
     			'msg' => sprintf("Application ID not specified: %d", $app_id)));
-    		
     	}
         
 //copy the template file to the app
-        $title = $request->request->all()["title"];
+// not required anymore        $title = $request->request->all()["title"];
         $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app, $title);
+        $new_page_num = $file_mgmt->newPage($app);
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
@@ -573,12 +579,44 @@ class AppController extends Controller
     }
     
     /**
-     * Will look through all folders nad see if page is locked, will update the locked_pages array for each app, 
-     * see Sinett\MLAB\BuilderBundle\Entity\App->getArray()
-     * @param unknown $apps
+     * Delete a page. Will fail if someone has a page open that has a number higher than page to delete
+     * @param type $app_id
+     * @param type $page_num
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function getLockStatus(&$apps) {
+    public function deletePageAction ($app_id, $page_num, $uid) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
     	
+//get the name of the file to delete
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        
+//delete file
+        $res = $file_mgmt->deletePage($app, $page_num, $uid);
+        if (!$res) {
+            return new JsonResponse(array(
+                    'result' => 'error',
+                    'msg' => "Unable to delete page"));
+        } else {
+            return new JsonResponse(array(
+                    'result' => 'success',
+                    'html' => $res["html"],
+                    'lock_status' => $res["lock_status"]));
+        }
+    }    
+    
+    function removeLocksAction() {
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $res = $file_mgmt->clearAllLocks();
+        return new JsonResponse(array());
     }
     
     /**
@@ -632,8 +670,8 @@ class AppController extends Controller
                 //list($width, $height, $type, $attr) = getimagesize($uploadedFile["tmp_name"]);
             }
             
-//url of file to return
-            $url = $app->calculateFullPath($this->container->parameters['mlab']['urls']['app']) .  $this->container->parameters['mlab']['cordova']['asset_path'] . $sub_folder . "/" . $file_name;
+//url of file to return, this is always a relative path, it comes from the uploads_allowed section in parameters.yml 
+            $url = $sub_folder . "/" . $file_name;
         
             $uploadedFile->move($path_app . $sub_folder, $file_name);
             /*{

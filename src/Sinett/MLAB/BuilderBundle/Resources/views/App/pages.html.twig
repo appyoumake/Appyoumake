@@ -1,7 +1,7 @@
 <div id="mlab_existing_pages">
     <ul>
         {% for fil, title in pages  %}
-        <li><a onclick="mlab_page_prepare_open({{ fil }});">{{ title }}</a>&nbsp;<a class="mlab_copy_file" onclick="mlab_page_copy({{ fil }});">&nbsp;</a></li>
+        <li><a href="javascript:mlab_page_open({{ app_id }}, {{ fil }});">{{ title }}</a>&nbsp;<a class="mlab_copy_file" href="javascript:mlab_page_copy({{ app_id }}, {{ fil }});">&nbsp;</a></li>
         {% endfor %}
     </ul>
 </div>

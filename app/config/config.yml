@@ -27,6 +27,9 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+#    form:
+#        resources:
+#            - 'SinettMLABBuilderBundle:Form:selectElement.html.twig'
 
 # Assetic Configuration
 assetic:
@@ -74,3 +77,10 @@ fos_user:
     user_class: Sinett\MLAB\BuilderBundle\Entity\User
     group:
         group_class: Sinett\MLAB\BuilderBundle\Entity\Group
+
+# additional services
+services:
+    security.authentication.customized_success_handler:
+        class: %security.authentication.success_handler.class%
+        public: false
+        arguments:  [@router, @security.context, @service_container]

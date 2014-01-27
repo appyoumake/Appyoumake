@@ -43,7 +43,7 @@ class MenuController extends Controller
             $file_mgmt = $this->get('file_management');
 		    $file_mgmt->setConfig('app');
     		$pages = $file_mgmt->getPageIdAndTitles($app);
-            return $this->renderView('SinettMLABBuilderBundle:App:pages.html.twig', array('pages' => $pages));
+            return $this->renderView('SinettMLABBuilderBundle:App:pages.html.twig', array('app_id' => $elements[3], 'pages' => $pages));
         }
     }
 
@@ -56,20 +56,34 @@ class MenuController extends Controller
     {
 //TODO: Argh, terrible hack to fix path issue, the path here (as it is called from a Template) is always _fragment, 
 //so we pass the path from base template.. but that includes the app.php stuff
-    	$path = str_replace(array("/app_dev.php", "/app.php"), "", $path);
+    	$filter_path = str_replace(array("/app_dev.php", "/app.php"), "", $path);
+        preg_match("/^\/app_.*?\.php/", $path, $url_prefix);
+        if (!empty($url_prefix)) {
+            $url_prefix = $url_prefix[0];
+        } else {
+            $url_prefix = "";
+        }
+        
     	$em = $this->getDoctrine()->getManager();
-		
-		$menus = $em->getRepository('SinettMLABBuilderBundle:Menu')->findMenuItems($this->getUser(), $path, $this->container->getParameter('security.role_hierarchy.roles'));
+		$menus = $em->getRepository('SinettMLABBuilderBundle:Menu')->findMenuItems($this->getUser(), $filter_path, $this->container->getParameter('security.role_hierarchy.roles'));
 
+//loop through and proces menus, we prepend environment part of URL if required and update the content
         foreach ($menus as $key => $menu) {
+    		if (isset($menu["url"]) && !empty($menu["url"]) && substr($menu["url"], 0, 10) != "javascript") {
+                $menu["url"] = $url_prefix . $menu["url"];
+            }
     		if (isset($menu["contentPhp"]) && !empty($menu["contentPhp"])) {
-				$menus[$key]["contentHtml"] = eval("return " . $menu["contentPhp"]);
+				$menus[$key]["contentHtml"] = $this->{$menu["contentPhp"]}($filter_path);
 			}
             
             if (isset($menu["children"])) {
                 foreach ($menu["children"] as $sub_key => $sub_menu) {
+                    if (isset($sub_menu["url"]) && !empty($sub_menu["url"]) && substr($sub_menu["url"], 0, 10) != "javascript") {
+                        $menus[$key]["children"][$sub_key]["url"] = $url_prefix . $menus[$key]["children"][$sub_key]["url"];
+                    }
+                    
                     if (isset($sub_menu["contentPhp"]) && !empty($sub_menu["contentPhp"])) {
-                        $menus[$key]["children"][$sub_key]["contentHtml"] = eval("return " . $sub_menu["contentPhp"]);
+                        $menus[$key]["children"][$sub_key]["contentHtml"] = $this->{$sub_menu["contentPhp"]}($filter_path);
                     }
                 }
             }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/css/jquery.mobile-1.4.0.css">
+<link rel="stylesheet" href="/css/mlab.css">
+<script src="/js/jquery-1.10.2.js"></script>
+<script src="/js/jquery.mobile-1.4.0.js"></script>
+</head>
+<body>
+
+<div id="panel_left"></div>
+<div data-role="page">
+    
+    <div id="header" data-role="header" data-position="fixed" data-fullscreen="true" data-id="main-header">
+        <a href="#" class="btn-nav"><img src="/img/forsvlogo_heraldisk.svg" /></a>
+    </div>
+
+    <div data-role="content">
+        <br><br>
+        <div id="content">
+            <p>Welcome to master page <a onclick="$('#content').load('002.html');return false;">Open page 2</a></p>
+        </div>
+    </div>
+
+    <div id="footer" data-role="footer" data-position="fixed" data-fullscreen="true" data-id="main-footer">
+        <input type="range" name="page_slider" id="page_slider" min="1" max="10" value="1" data-popup-enabled="true">
+    </div>
+
+</div>
+    
+<div id="panel_right" ></div>
+
+    <script type="text/javascript">
+        $( document ).ready(function() {
+            $('body').on('click', function (event) {
+                $( "#panel_left" ).toggle();
+                $( "#panel_right" ).toggle();
+            });
+    });
+    </script>
+
+</body>
+</html>

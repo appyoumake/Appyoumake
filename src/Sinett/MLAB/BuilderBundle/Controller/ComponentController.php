@@ -189,10 +189,14 @@ class ComponentController extends Controller
 
         if ($editForm->isValid()) {
             
-        	$file_mgmt = $this->get('file_management');
-            $file_mgmt->setConfig('component');
-            $res = $file_mgmt->handleUpload($entity, true);
-        	
+//check if they have uploaded a file
+            if (null === $entity->getZipFile()) {
+                $res = array("result" => true);
+            } else {
+                $file_mgmt = $this->get('file_management');
+                $file_mgmt->setConfig('component');
+                $res = $file_mgmt->handleUpload($entity, true);
+            }
             if ($res["result"]) {
             	$em->flush();
 
