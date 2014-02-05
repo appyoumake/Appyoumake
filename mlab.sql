@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   KEY `filter_url` (`filter_url`),
   KEY `order_by_index` (`order_by`),
   KEY `filter_role_index` (`filter_role`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=31 ;
 
 --
 -- Dumping data for table `menu`
@@ -279,7 +279,9 @@ INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_b
 (25, 'Slette side', NULL, 'Her kan du slette gjeldende side', 6, 50, 'javascript: mlab_page_delete();', 'app-build', NULL, NULL),
 (26, 'Kopier side', NULL, 'Her kan du kopiere gjeldende side', 6, 36, 'javascript: mlab_page_copy();', 'app-build', NULL, NULL),
 (27, 'Ny side', NULL, 'Her kan du lage en side', 6, 33, 'javascript: mlab_page_new();', 'app-build', NULL, NULL),
-(28, '<hr>', NULL, '', 6, 40, '', 'app-build', NULL, NULL);
+(28, '<hr>', NULL, '', 6, 40, '', 'app-build', NULL, NULL),
+(29, '<hr>', NULL, '', 6, 60, '', 'app-build', NULL, NULL),
+(30, 'Fjern låser', NULL, 'Her kan du fjerne gamle låser.', 6, 70, 'javascript: mlab_app_remove_locks();', 'app-build', NULL, NULL);
 
 -- --------------------------------------------------------
 

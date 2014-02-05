@@ -17,14 +17,14 @@ OK
 11 #mlab_button_rotate
 12 #mlab_status
 
-HVORDAN GJØR VI DETTE?
+HVORDAN GJï¿½R VI DETTE?
 13 #mlab_dialog_new_app 
 14 #mlab_megamenu
 
 ok
 15 #mlab_menu_logo
 
-HVORDAN GJØR VI DETTE?
+HVORDAN GJï¿½R VI DETTE?
 16 #mlab_megamenu .mlab_menu_top_children
 17 #mlab_megamenu .header
 18 #mlab_megamenu .mlab_menu_content
@@ -43,7 +43,7 @@ html#mlab_editor_html {
 }
 
 /* reset 00 #mlab_editor_body  */
-body#mlab_editor_body {
+body#mlab_editor {
     margin:0;
     padding:0;
     border:0;
