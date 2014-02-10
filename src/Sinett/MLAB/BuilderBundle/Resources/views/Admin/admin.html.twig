@@ -52,7 +52,11 @@
   			        },
   			        success: function( data ) {
   	  			    	if (data.result == 'FAILURE') {
-  	  			    		alert("{% trans %}Unable to update record{% endtrans %}");
+                            if (typeof data.message != "undefined") {
+                                alert(data.message);
+                            } else {
+                                alert("{% trans %}Unable to update record{% endtrans %}");
+                            }
   	  			    	} else {
   	  			    		if (data.action == 'ADD') {
   	  			    			$("#table_" + data.db_table + " tr:last").after(data.record);

@@ -786,4 +786,31 @@ class AppController extends Controller
                                 'msg' => $error));
             }
     }
+    
+/**
+ * Wrapper for Cordova build function
+ * @param type $app_id
+ */
+    public function downloadAppAction($app_id) {
+    	if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    		
+    	}
+        
+//prepare file management service
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        $res = $file_mgmt->buildApp($app);
+
+        return new JsonResponse(array(
+    			'result' => $res["result"],
+    			'msg' => $res["message"],
+                'url' => $res["url"]));
+    		
+    }
 }

@@ -25,6 +25,7 @@
 	<div id="mlab_status"></div>
 	<div id="mlab_dialog_new_app" class="hide"></div>
     <div id="mlab_storage_space"></div>
+    <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -262,6 +263,14 @@
             var temp_stylesheets = "";
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
             
+//parse doc into a variable 
+			var doc = (new DOMParser()).parseFromString(page,"text/html");
+            
+//check if it has editable area, if not we cannot continue
+            if (doc.getElementById(mlab_config["app"]["content_id"]) == null) {
+                alert("This app does not have an editable area called " + mlab_config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
+            }
+
 //set the base href to the folder of the app
             document.getElementsByTagName("base")[0].href = start_dir;
             
@@ -269,8 +278,7 @@
 			$("#mlab_editor_chrome").empty();
 			$("link[rel=stylesheet][href^='css']").remove();
 
-//parse doc into variables 
-			var doc = (new DOMParser()).parseFromString(page,"text/html");
+//store different parts of doc for easy access/manipulation
 			var head = doc.getElementsByTagName("head")[0];
 			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
 		    var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
@@ -615,8 +623,23 @@
             alert('Not implemented yet');
         }
 
+/*
+ * Calls a function on the backend that returns a URL to the file to download. 
+ * If it is not compiled we will compile it first. 
+ * @returns void
+ */
         function mlab_app_download () {
-            alert('Not implemented yet');
+            var url = "{{ path('app_builder_app_download', { 'app_id': '_ID_' }) }}";
+			url = url.replace("_ID_", document.mlab_current_app.id);
+            $.get( url, function( data ) {
+				if (data.result == "success") {
+                    $("#mlab_download_qr").empty().qrcode({text: data.url}).slideDown('slow').append("<br><a href='" + data.url + "'>Download</a>");
+				} else {
+					alert(data.msg);
+                    $("#mlab_download_qr").empty().qrcode({text: data.url}).slideDown('slow').append("<br><a href='" + data.url + "'>Download</a>");
+				}
+				
+			});
         }
 
         function mlab_app_submit_to_market () {

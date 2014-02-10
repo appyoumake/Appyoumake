@@ -44,8 +44,10 @@ parameters:
             create: cordova create _FOLDER_ _DOMAIN_ _TITLE_
             chdir: cd _FOLDER_ 
             platform: cordova platform add _PLATFORM_
+            compile: cordova build
           android: 
             include_paths: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
+            compiled_app_location: /bin/
           bin_path: 
             android: /opt/cordova-3.2.0/cordova-android/bin
           platform_paths:
