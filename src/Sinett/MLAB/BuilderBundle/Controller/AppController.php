@@ -526,7 +526,7 @@ class AppController extends Controller
      * the app it will not create two with the same name
      * @param type $app_id
      */
-    public function newPageAction (Request $request, $app_id) {
+    public function newPageAction (Request $request, $app_id, $uid) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -547,7 +547,7 @@ class AppController extends Controller
                 'msg' => "Unable to create a new file, maximum app size of 999 pages reached!"));
         }
         
-    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num)));
+    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
     }
 
     /**
@@ -556,7 +556,7 @@ class AppController extends Controller
      * @param type $page_num
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function copyPageAction ($app_id, $page_num) {
+    public function copyPageAction ($app_id, $page_num, $uid) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -574,7 +574,7 @@ class AppController extends Controller
                 'result' => 'failure',
                 'msg' => "Unable to copy the page, please try again"));
         }	 
-    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num)));
+    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
         
     }
     
