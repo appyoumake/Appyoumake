@@ -58,12 +58,12 @@ app_builder_page_save:
     requirements: { _method: post }
 
 app_builder_page_new:
-    path:   /builder/{app_id}/page_new
+    path:   /builder/{app_id}/{uid}/page_new
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage" }
     requirements: { _method: post }
 
 app_builder_page_copy:
-    path:   /builder/{app_id}/{page_num}/page_copy
+    path:   /builder/{app_id}/{page_num}/{uid}/page_copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }
 
 app_builder_page_delete:

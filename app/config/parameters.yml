@@ -59,14 +59,14 @@ parameters:
             
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
-            template: [ frontpage.html, page.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
+            template: [ frontpage.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
             component: [ html.txt, icon.png, exec.js, conf.txt ]
             app: [ www ]
             
         component_files: { ICON: icon.png, HTML: html.txt, CONFIG: conf.txt, SCRIPTS: exec.js, PHP: exec.php, RIGHTS: rights.xml }
         
         app:
-            copy_files: { frontpage.html: index.html, page.html: 001.html, js/: js, css/: css, img/: img }
+            copy_files: { frontpage.html: index.html, js/: js, css/: css, img/: img }
             new_page: page.html
             content_id: mlab_editable_area
             

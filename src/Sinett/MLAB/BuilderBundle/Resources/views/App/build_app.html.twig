@@ -455,9 +455,9 @@
             var title = prompt("Please enter the title of the new page");
             if (title != null) {
                 $("#" + mlab_config["app"]["content_id"]).empty();
-                var url = "{{ path('app_builder_page_new', { 'app_id': '_ID_' }) }}";
+                var url = "{{ path('app_builder_page_new', { 'app_id': '_ID_', 'uid': '_UID_' }) }}";
                 url = url.replace("_ID_", document.mlab_current_app.id);
-
+                url = url.replace("_UID_", mlab_uid);
 
                 $.post( url, {}, function( data ) {
                     if (data.result == "success") {
@@ -479,9 +479,10 @@
  * Creates a new file on the server and opens it
  */
        function mlab_page_copy(app_id, page_num) {
-			var url = "{{ path('app_builder_page_copy', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_' }) }}";
+			var url = "{{ path('app_builder_page_copy', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
 			url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", page_num);
+            url = url.replace("_UID_", mlab_uid);
 			
 			$.get( url, function( data ) {
 				if (data.result == "success") {

@@ -311,7 +311,7 @@ class FileManagement {
     }
     
     /**
-     * Copies a template page
+     * Creates an empty file which will be locked when we redirect to page_get in calling function
      * @param type $app
      * @return bool
      */
