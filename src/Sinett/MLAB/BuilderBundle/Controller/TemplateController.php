@@ -64,7 +64,8 @@ class TemplateController extends Controller
             	return new JsonResponse(array('db_table' => 'template',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to upload template'));
+        			'message' => $res["message"],
+                    'data_in' => $entity));
             }
             
         }
@@ -72,7 +73,8 @@ class TemplateController extends Controller
     	return new JsonResponse(array('db_table' => 'template',
 			'db_id' => 0,
 			'result' => 'FAILURE',
-			'message' => 'Unable to upload template'));
+			'message' => 'Invalid data',
+            'data_in' => $entity));
     }
 
     /**

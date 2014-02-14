@@ -69,11 +69,21 @@ class FileManagement {
 				if (!empty($this->required_files)) {
 // clean up the file property, not persisted to DB
 					$entity->setZipFile(null);
-					return array("result" => false, "message" => "Missing files: " . implode(",", $this->required_files));
+					return array("result" => false, "message" => "Missing files: " . implode(",", $this->required_files) . " \n(Remember that templates and components must NOT include the top level folder in the zipped file)");
 				}
 				 
-//if overwrite, just use existing folder
-				
+//we also need to make sure that the frontpage.html file has a DIV with the ID specified in params.yml
+                $path = "zip://" . $temp_name . '#' . "frontpage.html";
+                $indexpage_html = file_get_contents($path);
+                $pattern = "/\<div .*id\=.{$this->config["app"]["content_id"]}.*?\>/";
+                $valid = preg_match($pattern, $indexpage_html);
+                if ($valid != 1) {
+                    $entity->setZipFile(null);
+					return array("result" => false, "message" => "Invalid template, frontpage.html does not have a DIV with ID =  " . $this->config["app"]["content_id"] . ". See template specifications for how to create a proper MLAB template");
+                }
+                
+//if update of existing template, just use existing folder
+                
 //unable to make dir, return error
 				if (!$overwrite && !file_exists($full_path)) {
 					if (!mkdir($full_path, 0777, true)) {
@@ -203,9 +213,9 @@ class FileManagement {
 		
 		$cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
 		
-		/*if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
+		if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
 			return array("Could not set path for Cordova");
-		}*/
+		}
 		
 		
 		$output = array();
@@ -243,13 +253,28 @@ class FileManagement {
             
                 
         } else {
-            exec($cordova_create_command . " 2>&1", $output, $exit_code);
+          // Create new app using cordova command  
+	  exec($cordova_create_command . " 2>&1", $output, $exit_code);
 		
 //check exit code, anything except 0 = fail
             if ($exit_code != 0) {
                 return $output + array("Exit code: " . $exit_code);
+		error_log("Failed creating new app using cordova, {$exit_code}, {$output}", 0);
             } else {
-                shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
+	      // Add platform
+	        
+	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
+	      exec("whoami", $output, $exit_code);	      
+	      exec("echo $PATH", $output, $exit_code);	      
+	      exec("android 2>&1 && echo $?", $output, $exit_code);
+	      exec("java -version 2>&1 && echo $?", $output, $exit_code);
+
+	      $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
+	      
+	      // Creates app-specific log file.
+	      file_put_contents("{$app_path}cordova.log",print_r($output,true));	      
+
+
                 foreach ($template_items_to_copy as $from => $to) {
                     $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
                     $ret = shell_exec($cmd);
@@ -301,7 +326,7 @@ class FileManagement {
     }
     
     /**
-     * Copies a template page
+     * Creates an empty file which will be locked when we redirect to page_get in calling function
      * @param type $app
      * @return bool
      */
@@ -525,6 +550,41 @@ class FileManagement {
         sort($res);
         return $res;
     }
-    
+ 
+/**
+ * Calls on cordova to build the app and then returns the URL of the app
+ * @param type $app
+ * @return boolean
+ */
+	public function buildApp ($app) {
+		
+//prepare all the paths to use
+		$default_platform = $this->config["cordova"]["default_platform"];
+		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
+        $compiled_app_location = $this->config["cordova"][$default_platform]["compiled_app_location"];
+		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+		
+//prepare the command
+        $cordova_build_command = $this->config["cordova"]["cmds"]["compile"];
+		
+		$output = array();
+		$exit_code = 0;
+		
+		if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
+			return array("Could not set path for Cordova");
+		}
+		
+        chdir($app_path);
+        exec($cordova_build_command . " 2>&1", $output, $exit_code);
+		
+//check exit code, anything except 0 = fail
+        $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
+        $url = $this->config["urls"]["app"] . $app->calculateFullPath("") . $compiled_app_location . $app->getPath() . "-debug.apk";
+        if ($exit_code != 0) {
+            return array("result" => "error", "url" => $url, "message" => "Exit code: " . $exit_code . " (" . implode(", ", $output));
+        } else {
+            return array("result" => "success", "url" => $url);
+        }
+	}
 
 }
