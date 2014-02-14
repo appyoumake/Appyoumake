@@ -117,13 +117,13 @@ border-top-color: rgb(254, 254, 254);
 border-top-style: solid;
 border-top-width: 0px;
 color: rgb(254, 254, 254);
-cursor: default;
+cursor: pointer;
 display: block;
 float: right;
 font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-font-size: 14px;
-height: 28px;
-line-height: 28px;
+font-size: 17px;
+height: 30px;
+line-height: 30px;
 list-style-image: none;
 list-style-position: outside;
 list-style-type: none;
@@ -138,7 +138,6 @@ text-decoration: none solid rgb(254, 254, 254);
 text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
 vertical-align: middle;
 width: 81px;
-font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 
@@ -180,7 +179,7 @@ border-top-width: 0px;
 color: rgb(0, 0, 0);
 display: none;
 font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-font-size: 14px;
+font-size: 15px;
 font-weight: normal;
 height: auto;
 line-height: normal;
@@ -191,17 +190,17 @@ margin-bottom: 0px;
 margin-left: 0px;
 margin-right: 0px;
 margin-top: 0px;
-padding-bottom: 0px;
-padding-left: 0px;
-padding-right: 0px;
-padding-top: 0px;
+padding-bottom: 5px;
+padding-left: 15px;
+padding-right: 15px;
+padding-top: 10px;
 position: absolute;
 text-align: left;
 text-shadow: rgba(204, 204, 204, 0.34902) 0px -1px 0px;
 white-space: nowrap;
 width: auto;
-z-index: 9;
-
+z-index: 200;
+overflow: visible;
 
 }
 
@@ -430,8 +429,8 @@ margin-bottom: 10px;
 margin-left: 10px;
 margin-right: 10px;
 margin-top: 20px;
-overflow-x: hidden;
-overflow-y: hidden;
+overflow-x: visible;
+overflow-y: visible;
 width: 644px;
 
 
@@ -639,7 +638,7 @@ div#mlab_editor_chrome {
 	width: 644px;
 	height: 844px;
 	overflow: hidden;
-    position: relative;
+        position: relative;
 }
 
 
@@ -1056,6 +1055,6 @@ color: rgb(204, 0, 0);
     padding-bottom: 100px;
 }
 
-/* [data-mlab-typex] {
-    width: 100%;
-} */
+.hide_in_app_builder {
+    display: none !important;
+}

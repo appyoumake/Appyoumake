@@ -2,6 +2,15 @@
 /* ==========================================================================
    Typography
    ========================================================================== */
+#mlab_editable_area{
+    font-size: 100%;
+    line-height: 100%;
+}
+
+#mlab_editable_area.large_text{
+    font-size: 120%;
+    line-height: 120%;
+}
 
 .ui-page-theme-a {
     font-size: 1em;
@@ -13,50 +22,98 @@
     text-shadow: none;
 }
 
-h1 {
-    font-size: 1.8em;
-    margin: 0.83em 0;
-}
-
-
-h2 {
-    font-size: 1.15em;
-    margin: 0.83em 0;
-}
-
-h3 {
-    font-size: 1.17em;
-    margin: 1em 0;
-}
-
-h4 {
+[data-role="content"] {
     font-size: 1em;
-    margin: 0.5em 0 1.5em 0;
+    font-family: Arial,sans-serif;
+    font-style: normal;
+    color: #CCCCCC;
+    line-height: 1em;
+    text-shadow: none;
+}
+
+#page.white [data-role="content"] {
+    color: #000000;
+}
+
+/* ==========================================================================
+   Component styling
+   ========================================================================== */
+
+#mlab_editable_area h1 {
+    font-size: 1.3em;
+    line-height: 1.1em;
+    margin: 1em 0;
+    color: #CCCCCC;
 }
 
 
-h5 {
-    font-size: 0.83em;
-    margin: 1.67em 0;
+#mlab_editable_area h2 {
+    font-size: 1.2em;
+    line-height: 1.1em;
+    margin: 1em 0;
+    color: #CCCCCC;
 }
 
-h6 {
-    font-size: 0.67em;
-    margin: 2.33em 0;
+#mlab_editable_area h3 {
+    font-size: 1.1em;
+    line-height: 1.1em;
+    margin: 1em 0;
+    color: #CCCCCC;
 }
 
+#mlab_editable_area h4 {
+    font-size: 1em;
+    line-height: 1.1em;
+    margin: 1em 0;
+    color: #CCCCCC;
+}
+
+#mlab_editable_area img {
+    margin: 0;
+    padding: 5px;
+}
+
+#mlab_editable_area map {
+    margin: 0;
+    padding: 5px;
+}
+
+#mlab_editable_area ol {
+    margin: 0;
+    padding: 0;
+    color: #CCCCCC;
+}
+
+#mlab_editable_area p {
+    font-size: 1em;
+    line-height: 1.1em;
+    color: #CCCCCC;
+}
+
+#mlab_editable_area ul {
+    margin: 0;
+    padding: 0;
+    color: #CCCCCC;
+}
+
+#mlab_editable_area video {
+    margin: 0;
+    padding: 5px;
+    color: #CCCCCC;
+}
 
 /* ==========================================================================
    Page
    ========================================================================== */
 
-#page.dark{
-    margin: 0 0;
+#page {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
     background-color: #1e1e1e;
 }
 
-#page.white{
-    margin: 0 0;
+#page.white {
     background-color: #ffffff;
 }
 
@@ -76,7 +133,10 @@ h6 {
     overflow: hidden;
     opacity: 1;
     z-index: 120 !important;
-}   
+    border-width: 0 0 0.15em 0;
+    border-style: solid;
+    border-color: #666666;
+}
 
 #menu_box{
     padding: 0;
@@ -98,13 +158,13 @@ h6 {
     float: left; 
 }
 
-#btn_heraldisk, #btn_menu, #btn_toggle, #btn_txsize, #btn_end{
+#btn_heraldisk, #btn_menu, #btn_color_toggle, #btn_txsize, #btn_end{
     padding: 0;
     margin: 0;
     background-image: url('./img/btn_heraldisk.svg');
     background-repeat: no-repeat;
     background-size: 100%;
-    padding-bottom: 10.8%;
+    padding-bottom: 10.75%;
     width: 10.8%;
     float: left;  
     margin-right: -0.1%;
@@ -113,10 +173,11 @@ h6 {
 
 #btn_menu {
     background-image: url('./img/btn_menu.svg');
+    margin-left: -0.01%;
 }
 
-#btn_toggle {
-    background-image: url('./img/btn_toggle.svg');
+#btn_color_toggle {
+    background-image: url('./img/btn_color_toggle.svg');
 }
 
 #btn_txsize {
@@ -125,95 +186,89 @@ h6 {
 
 #btn_end {
     background-image: url('./img/btn_end.svg');
-    fill: rgba(256,256,256,0.5);
+    margin-left: -0.001%;
+    
+}
+
+btn_secondary.hide_it {
+    display: none;
 }
 
 
 /* ==========================================================================
    Left and right navigation panel
    ========================================================================== */
- 
-
-#panel_left.dark, #panel_right.dark, #panel_left.white, #panel_right.white {
+#panel_left, #panel_right {
     padding: 0;
     margin: 0;
     width: 7.2%;
-    height: 100%;
+    height: 60%;
     background-size: 100%;
     background-repeat: no-repeat;
-    position: absolute;
+    position: fixed;
     display: block;
-    top: 30%;
-    z-index: 99;
-    
+    top: 39.5%;
+    z-index: 99; 
 }
 
-#panel_left.dark {
-    background-image: url('./img/contentpage_dark_backpage.svg');
+#panel_left {
+    background-image: url('./img/contentpage_dark_backpage.svg') !important;
     left: 0;
+    margin-left: 2%;
 }
 
 
-#panel_right.dark {
-    background-image: url('./img/contentpage_dark_nextpage.png');    
+#panel_right {
+    background-image: url('./img/contentpage_dark_nextpage.svg') !important;    
     right: 0;
+    margin-right: 2%;
 }
 
-#panel_left.white {
-    background-image: url('./img/contentpage_white_backpage.png');
-    left: 0;
+#page.white #panel_left {
+    background-image: url('./img/contentpage_white_backpage.svg') !important;
 }
 
 
-#panel_right.white {
-    background-image: url('./img/contentpage_white_nextpage.png');    
-    right: 0;
+#page.white #panel_right {
+    background-image: url('./img/contentpage_white_nextpage.svg') !important;    
 }
 
 /* ==========================================================================
-   Gradient top and bottom (not footer)
+   Gradient top and bottom
    ========================================================================== */
-#gradient_top.dark, #gradient_bottom.dark, 
-#gradient_top.white, #gradient_bottom.white, 
-#gradient_footer.dark, #gradient_footer.white {
+#gradient_top, #gradient_bottom{
     width: 100%;
     padding-bottom: 10.8%;
 }
 
-#gradient_top.dark, #gradient_bottom.dark, 
-#gradient_top.white, #gradient_bottom.white {
-    position: absolute;
+#gradient_top, #gradient_bottom {
+    position: fixed;
     display: block;
 }
 
-#gradient_top.dark{
+#gradient_top {
     top: 0;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 5%,  rgba(0, 0, 0, 0) 100%);
 }
 
-#gradient_footer.dark, #gradient_bottom.dark{
+#gradient_bottom{
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%,  rgba(0, 0, 0, 1) 95%);
 }
 
-#gradient_bottom.dark {
+#gradient_bottom {
     bottom: 0;
 }
 
-#gradient_top.white{
-    top: 0;
+#page.white #gradient_top{
     background: linear-gradient(to bottom, rgba(256, 256, 256, 1) 5%,  rgba(0, 0, 0, 0) 90%);
 }
 
-#gradient_footer.white, #gradient_bottom.white{
+#page.white #gradient_bottom{
     background: linear-gradient(to bottom, rgba(256, 256, 256, 0) 0%,  rgba(256, 256, 256, 1) 95%);
 }
 
-#gradient_bottom.white {
-    bottom: 0;
-}
-
 /* ==========================================================================
-   Content panel
+   Content
    ========================================================================== */
 div.ui-content {
    margin-top: 15%;
@@ -236,7 +291,14 @@ div.ui-content {
     background-color: rgba(0,0,0,0);
     opacity: 1;
     border-width: 0;
+    position: fixed;
+    display: block;
+    bottom: 0px !important;
     border-style: none;
+}
+
+#footer.hide_it {
+    display: none;
 }
 
 
@@ -324,3 +386,13 @@ div.ui-slider-bg, div.ui-btn-active{
    font-size: 0.8em;
    margin: -12px 0px 0px -12px 
 }
+
+
+/* ==========================================================================
+  To hide an element from the app builder - add the class "hide_in_app_builder"
+  to the element - the App Builder will have a stylesheet with the syntax:
+
+.hide_in_app_builder {
+    display: none !important;
+}
+========================================================================== */

@@ -6924,18 +6924,24 @@ jQuery.fn.extend({
 		return showHide( this, true );
 	},
 	hide: function() {
+            console.log("hide()" + $(this).attr("id"));
 		return showHide( this );
 	},
 	toggle: function( state ) {
+           
 		if ( typeof state === "boolean" ) {
+                     console.log("bool" + $(this).attr("id"));
 			return state ? this.show() : this.hide();
+                        
 		}
 
 		return this.each(function() {
 			if ( isHidden( this ) ) {
 				jQuery( this ).show();
+                                 console.log("show" + $(this).attr("id"));
 			} else {
 				jQuery( this ).hide();
+                                 console.log("hide" + $(this).attr("id"));
 			}
 		});
 	}
