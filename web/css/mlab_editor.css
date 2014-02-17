@@ -1055,6 +1055,14 @@ color: rgb(204, 0, 0);
     padding-bottom: 100px;
 }
 
-.hide_in_app_builder {
+.mlab_hide_in_app_builder {
     display: none !important;
+}
+
+#mlab_existing_pages .mlab_copy_file {
+	background-image: url("/img/copy_page.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 0 15px;
+    
 }
