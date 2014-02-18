@@ -269,6 +269,7 @@
 //check if it has editable area, if not we cannot continue
             if (doc.getElementById(mlab_config["app"]["content_id"]) == null) {
                 alert("This app does not have an editable area called " + mlab_config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
+                exit;
             }
 
 //set the base href to the folder of the app
