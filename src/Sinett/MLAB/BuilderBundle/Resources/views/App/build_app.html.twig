@@ -264,7 +264,7 @@
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
             
 //parse doc into a variable 
-			var doc = doc(new DOMParser()).parseFromString(page,"text/html");
+			var doc = (new DOMParser()).parseFromString(page,"text/html");
             
 //check if it has editable area, if not we cannot continue
             if (doc.getElementById(mlab_config["app"]["content_id"]) == null) {
