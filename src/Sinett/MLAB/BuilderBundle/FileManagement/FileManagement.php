@@ -212,11 +212,9 @@ class FileManagement {
 		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
 		
 		$cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
-		
-		if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
-			return array("Could not set path for Cordova");
+        if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
+			return array("Could not set path for Cordovava");
 		}
-		
 		
 		$output = array();
 		$exit_code = 0;
@@ -244,7 +242,7 @@ class FileManagement {
                 shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_identifier"] . "/" . $app_domain . "/'");
                 foreach ($template_items_to_copy as $from => $to) {
                     $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                    $ret = shell_exec($cmd);
+                    $shell_return = exec("{$cmd} 2>&1 && echo $?" , $output, $exit_code);
                 }
                 return true;
             } else {
@@ -442,7 +440,7 @@ class FileManagement {
         }
         return $pages;
     }
-		
+
     
 /**
  * Converts a page number/name to file name, allows for first, last, index, number
@@ -454,10 +452,18 @@ class FileManagement {
         if ($page_num == 'last') {
 //pick up last page, get the whole array, pop off last element and get filename
     		$pages = glob ( $app_path . "/???.html" );
-    		return basename(array_pop($pages));
+            if (sizeof($pages) == 0) {
+                return "index.html";
+            } else {
+                return basename(array_pop($pages));
+            }
     		
     	} else if ($page_num == 'first') {
-    		return '001.html';
+            if (file_exists( $app_path . "/001.html" )) {
+                return '001.html';
+            } else {
+                return "index.html";
+            }
     		
     	} else if ($page_num == '0' || $page_num == 'index') {
     		return 'index.html';
@@ -570,7 +576,7 @@ class FileManagement {
 		$output = array();
 		$exit_code = 0;
 		
-		if (!putenv('PATH=' . getenv('PATH') . ":" . implode(":", $include_paths))) {
+		if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
 			return array("Could not set path for Cordova");
 		}
 		
