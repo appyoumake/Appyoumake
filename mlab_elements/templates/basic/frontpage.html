@@ -1,140 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="./css/jquery.mobile-1.4.0.css">
+<title>basic</title>
+<link rel="stylesheet" href="./css/jquery.mobile.css">
 <link rel="stylesheet" href="./css/style.css">
 <script src="./js/jquery.js"></script>
 <script src="./js/jquery.mobile.js"></script>
 <script src="./js/mlab.js"></script>
 </head>
 <body id="page_body">
-
-<div data-role="page" id="page" class="dark">
+    <div data-role="page" id="page">
     
-    <div id="header" data-role="header" data-position="fixed" data-fullscreen="true" data-id="main-header">  
-        <div id="menu_box" class="menu_box">
-            <div id="marg_top_menu"></div>
-            <div id="marg_left_menu"></div>
-            <div id="btn_heraldisk"  class="btn-toggle" onclick="$('.btn-secondary').toggle();$('#footer').toggle();" ></div> 
-            <div id="btn_menu" class="btn-secondary"></div> 
-            <div id="btn_toggle" class="btn-secondary"></div>
-            <div id="btn_txsize" class="btn-secondary" onclick="$('.mlab_editable_area').;"></div>
-            <div id="btn_end" class="btn-secondary"></div>
-        </div>
-    </div>
-      
-    <div id="panel_left" class="dark" onclick="mlabrt_move_wrapper('previous');"></div>
-    <div id="gradient_top" class="dark"></div>  
-
-    <div data-role="content" class="dark">
-        <div id="content">
-            
-            <div class="mlab_editable_area" id="mlab_editable_area">
-                <h1>sdfsdf</h1>
-                <p>Welcome to master page Welcome to master page Welcome to master page
-                Welcome to master page Welcome to master page Welcome to master page
-                Welcome to master page Welcome to master page Welcome to master page
-                Welcome to master page Welcome to master page Welcome to master page
-                Welcome to master page Welcome to master page Welcome to master page
-                Welcome to master page Welcome to master page Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
-                <p>Welcome to master page</p>
+        <div id="header" class="mlab_hide_in_app_builder" data-role="header" data-position="fixed" data-fullscreen="true" data-id="main-header">  
+            <div id="menu_box">
+                <div id="marg_top_menu"></div>
+                <div id="marg_left_menu"></div>
+                <div id="btn_heraldisk"></div> 
+                <div id="btn_menu" class="btn_secondary"></div> 
+                <div id="btn_color_toggle" class="btn_secondary"></div>
+                <div id="btn_txsize" class="btn_secondary"></div>
+                <div id="btn_end" class="btn_secondary"></div>
             </div>
         </div>
-    </div>
-
-    <div id="gradient_bottom" class="dark"></div>
-    <div id="panel_right" class="dark" onclick="mlabrt_move_wrapper('next');"></div>
-    
-    <div id="footer" data-role="footer" data-position="fixed" data-fullscreen="true" data-id="main-footer">
-        <div id="gradient_footer" class="dark"></div>
-        <div id="slider_box" class="slider_box">
-            <div id="marg_left_slider"></div>
-            <div id="mid_with_slider">
-                <input type="range" class="ui-hidden-accessible" name="page_slider" id="page_slider" min="0" max="3" value="0" data-show-value="true" data-highlight="true">
-            </div>
-            <div id="marg_right_slider"></div>
-        </div>  
-    </div>
-</div>
-    
-    <script type="text/javascript">
-        mlabrt_current = 0;
-        mlabrt_max = 3;
-
-        function mlabrt_move_wrapper(move_to) {
-            var tmp = mlabrt_load_page(mlabrt_current, move_to, mlabrt_max); 
-            if (tmp >= 0) { 
-                mlabrt_current = tmp; 
-                $("#page_slider").slider().val(mlabrt_current);
-                $("#page_slider").slider("refresh")
-            }
-        }
-
-        $( document ).ready(function() {
-     
       
-        $('[data-role="page"]').on('click', function (event) {
-                $( "#panel_left" ).toggle();
-                $( "#panel_right" ).toggle();
+        <div id="panel_left" class="mlab_hide_in_app_builder"></div>
+        <div id="gradient_top" class="mlab_hide_in_app_builder"></div>  
 
-            });
-            
-            $('#gradient_footer').on('click', function (event) {
-                $( "#header" ).toggle();
-                $( "#footer" ).toggle();
-            });
+        <div data-role="content">
+            <div id="content">
 
-            $("#panel_left, #panel_right, #header, #slider_box").click(function(event){
-                event.stopPropagation();
-            });
-            
-            $("#page_slider").slider( "option", "max", mlabrt_max );
-            $("#page_slider").slider("refresh");
-            $("#page_slider").on( "slidestop", function( event, ui ) { mlabrt_move_wrapper( $("#page_slider").slider().val() ); } );
-        });
-    </script>
+                <div id="mlab_editable_area" class="mlab_editable_area">
+
+                </div>
+            </div>
+        </div>
+
+        <div id="gradient_bottom" class="mlab_hide_in_app_builder"></div>
+        <div id="panel_right" class="mlab_hide_in_app_builder"></div>
+
+        <div id="footer" class="mlab_hide_in_app_builder" data-role="footer" data-position="fixed" data-fullscreen="true" data-id="main-footer">
+            <div id="slider_box" class="slider_box">
+                <div id="marg_left_slider"></div>
+                <div id="mid_with_slider">
+                    <input type="range" class="ui-hidden-accessible" name="page_slider" id="page_slider" min="0" max="3" value="0" data-show-value="true" data-highlight="true">
+                </div>
+                <div id="marg_right_slider"></div>
+            </div>  
+        </div>
+        
+    </div>
 
 </body>
 </html>
