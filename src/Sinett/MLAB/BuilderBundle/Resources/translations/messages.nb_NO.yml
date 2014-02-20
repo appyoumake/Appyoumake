@@ -141,3 +141,17 @@ builder.new.app.submit.heading: App detaljer
 app.wizard.button.previous: < Forrige
 app.wizard.button.next: Neste >
 app.wizard.button.finished: Ferdig
+
+
+
+#-----------------------------------------------------
+# List of apps 
+#-----------------------------------------------------
+
+app.builder.list.main.heading: App'er
+app.builder.list.welcome.info: Velkommen til MLAB app-bygger. Her har du en liste over app'er du har tilgang til og kan lage nye apper.
+app.builder.list.new.app.button: Ny App
+app.builder.list.heading.app: App navn
+app.builder.list.heading.published: Publisert
+app.builder.list.heading.version: Versjon
+app.builder.list.heading.last.updated: Sist oppdatert

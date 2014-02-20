@@ -143,6 +143,12 @@ td {
     padding-right:2em;
 }
 
+td {
+    font-size: 0.67em;
+    padding-bottom: 0.5em;
+    padding-right:2em;
+}
+
 /* overwriting jQuery */
 .ui-tabs .ui-tabs-panel {
     padding-bottom: 1em;
@@ -154,37 +160,41 @@ td {
 table {
     border-collapse: collapse;
     margin-bottom: 1.5em;
+    font-size: 1.1em
 }
 
 tr {
     border-collapse: collapse;
-    border: 5px;
     margin-bottom: 1.5em;
-    color: #222222;
+    color: #222222 !important;
+}
+
+tr a {
+    color: #222222 !important;
 }
 
 tr.row_activ_1 {
-    color: #222222;
+    color: #222222 !important;
 }
 
 tr.row_activ_1 a {
-    color: #222222;
+    color: #222222 !important;
 }
 
 tr.row_activ_0 {
-    color: #888888;
+    color: #888888 !important;
 }
 
 tr.row_activ_0 a {
-    color: #888888;
+    color: #888888 !important;
 }
 
 tr.row_activ_ {
-    color: #888888;
+    color: #888888 !important;
 }
 
 tr.row_activ_ a {
-    color: #888888;
+    color: #888888 !important;
 }
 
 /* ==========================================================================
@@ -295,7 +305,28 @@ a.mlab_button_new_component:hover {
     background-image: url("/img/new_group.png"), linear-gradient(transparent, rgba(0,0,0, 0.05) 70%, rgba(0,0,0, 0.10));
 }
 
+/* ==========================================================================
+   Buttons without icon
+   ========================================================================== */
 
+a.mlab_button_new_app {
+    color: #212121;
+    border: 1px solid #aaaaaa; 
+    background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%,  rgba(180, 180, 180, 1) 100%);
+    text-decoration: none;
+    border-radius: 2px;
+    transition: 0.1s linear box-shadow;
+    vertical-align: top;
+    height: 32px;
+	width: 32px;
+	background-position: center;
+	padding-right: 1.6em;
+	padding-left: 1.6em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	margin-right: 1.4em;
+    line-height: 4.5em;
+	}
 
 /* ==========================================================================
    Progressbar

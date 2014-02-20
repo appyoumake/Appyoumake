@@ -2,18 +2,17 @@
 
 {% block body -%}
 
-    <h1>Apps</h1>
-	<p>{% trans %}builder.welcome.info{% endtrans %}</p>
-	<p><a onclick="newApp(); return false;">{% trans %}New app{% endtrans %}</a></p>
-
+    <h1>{% trans %}app.builder.list.main.heading{% endtrans %}</h1>
+	<p>{% trans %}app.builder.list.welcome.info{% endtrans %}</p>
+	<p><a class="mlab_button_new_app" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a></p>
     <table class="records_list" id="table_app">
         <thead>
             <tr>
-                <th>{% trans %}App{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.app{% endtrans %}</th>
                 <th></th>
-                <th>{% trans %}Published{% endtrans %}</th>
-                <th>{% trans %}Version{% endtrans %}</th>
-                <th>{% trans %}Last updated{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.published{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.version{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
             </tr>
         </thead>
         <tbody>
