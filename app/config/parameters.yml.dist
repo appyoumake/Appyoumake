@@ -62,6 +62,7 @@ parameters:
             template: [ frontpage.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
             component: [ html.txt, icon.png, exec.js, conf.txt ]
             app: [ www ]
+            template_strings: {frontpage.html: /\<div .*id\=.mlab_editable_area.*?\>/}
             
         component_files: { ICON: icon.png, HTML: html.txt, CONFIG: conf.txt, SCRIPTS: exec.js, PHP: exec.php, RIGHTS: rights.xml }
         

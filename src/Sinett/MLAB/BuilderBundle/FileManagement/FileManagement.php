@@ -24,6 +24,11 @@ class FileManagement {
     public function setConfig($entity_type) {
     	$this->entity_type = $entity_type;
     	$this->required_files = $this->config['verify_uploads'][$entity_type];
+        if (isset($this->config['verify_uploads'][$entity_type . "_strings"])) {
+            $this->required_strings = $this->config['verify_uploads'][$entity_type . "_strings"];
+        } else {
+            $this->required_strings = array();
+        }
     	$this->replace_chars = $this->config['replace_in_filenames'];
     	$this->destination = $this->config['paths'][$entity_type];
     }
@@ -72,14 +77,18 @@ class FileManagement {
 					return array("result" => false, "message" => "Missing files: " . implode(",", $this->required_files) . " \n(Remember that templates and components must NOT include the top level folder in the zipped file)");
 				}
 				 
-//we also need to make sure that the frontpage.html file has a DIV with the ID specified in params.yml
-                $path = "zip://" . $temp_name . '#' . "frontpage.html";
-                $indexpage_html = file_get_contents($path);
-                $pattern = "/\<div .*id\=.{$this->config["app"]["content_id"]}.*?\>/";
-                $valid = preg_match($pattern, $indexpage_html);
-                if ($valid != 1) {
-                    $entity->setZipFile(null);
-					return array("result" => false, "message" => "Invalid template, frontpage.html does not have a DIV with ID =  " . $this->config["app"]["content_id"] . ". See template specifications for how to create a proper MLAB template");
+//we also need to make sure that the frontpage.html file has a DIV with the ID specified in params.yml, we have a generic function that looks inside files
+//can also be used to, for instance, check if a conf.txt file has a new required property
+                if (!empty($this->required_strings)) {
+                    foreach ($this->required_strings as $file => $pattern) {
+                        $path = "zip://" . $temp_name . '#' . $file;
+                        $text = file_get_contents($path);
+                        $valid = preg_match($pattern, $text);
+                        if ($valid != 1) {
+                            $entity->setZipFile(null);
+                            return array("result" => false, "message" => "Invalid upload, $file does not have $pattern");
+                        }
+                    }
                 }
                 
 //if update of existing template, just use existing folder

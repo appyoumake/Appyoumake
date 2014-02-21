@@ -1,3 +1,4 @@
 ; Configuration file
 ; Comments start with ';'
 active = true
+tooltip = This is a sub sub headline, use sparingly per page to indicate change of sub-topic
