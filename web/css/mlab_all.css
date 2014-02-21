@@ -128,25 +128,15 @@ form button {
    Tables
    ========================================================================== */
 
-th {
-    font-size: 0.67em;
-    display: table-cell;
-    font-weight: bold;
-	padding-bottom: 0.9em;
-	padding-right:2em;
-	text-align: left;
+table {
+    border-collapse: collapse;
+    margin-bottom: 1.5em;
+    font-size: 1.1em
 }
 
-td {
-    font-size: 0.67em;
-    padding-bottom: 0.5em;
-    padding-right:2em;
-}
-
-td {
-    font-size: 0.67em;
-    padding-bottom: 0.5em;
-    padding-right:2em;
+table.app_list{
+  font-size: 1.23em  
+    
 }
 
 /* overwriting jQuery */
@@ -157,11 +147,16 @@ td {
     padding-right: 0.5em;
 }
 
-table {
-    border-collapse: collapse;
-    margin-bottom: 1.5em;
-    font-size: 1.1em
+th {
+    font-size: 0.67em;
+    display: table-cell;
+    font-weight: bold;
+	padding-bottom: 0.9em;
+	padding-right:2em;
+	text-align: left;
 }
+
+
 
 tr {
     border-collapse: collapse;
@@ -195,6 +190,43 @@ tr.row_activ_ {
 
 tr.row_activ_ a {
     color: #888888 !important;
+}
+
+td {
+    font-size: 0.67em;
+    padding-bottom: 0.5em;
+    padding-right:2em;
+}
+
+td {
+    font-size: 0.67em;
+    padding-bottom: 0.5em;
+    padding-right:2em;
+}
+
+.mlab_align_center{
+    text-align: center;
+    vertical-align: middle;
+}
+
+td.mlab_td_max_size {
+	max-width: 250px;
+    word-wrap: break-word;
+}
+
+td.builder_app_name{
+    
+}
+
+td.builder_app_publish {
+	
+}
+td.builder_app_list_properties {
+    vertical-align: text-top;
+}
+
+td.builder_app_list_name {
+	padding-right: 5px;
 }
 
 /* ==========================================================================
@@ -322,8 +354,8 @@ a.mlab_button_new_app {
 	background-position: center;
 	padding-right: 1.6em;
 	padding-left: 1.6em;
-	padding-top: 1em;
-	padding-bottom: 1em;
+	padding-top: 0.9em;
+	padding-bottom: 0.9em;
 	margin-right: 1.4em;
     line-height: 4.5em;
 	}
@@ -343,6 +375,10 @@ progress {
 
    ========================================================================== */
    
+.builder_welcome{
+   max-width: 500px;
+   word-wrap: break-word; 
+}
 
 .container {
     padding-left: 5.5em;
@@ -404,23 +440,13 @@ body.mlab_base div.mlab_align_menu_elements {
 	font-weight: bold;
 }
 
-td.builder_appname {
-	
-}
-
-td.builder_app_actions {
-	padding-left: 20px;
-}
-
 .builder_app_properties {
 	background-image: url("/img/properties.png");
+    opacity: 0.8;
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding: 8px;
-}
-
-td.builder_app_publish {
-	
+	padding: 5px 0 5px 20px;
+    
 }
 
 .builder_app_current_version_published {
@@ -440,8 +466,8 @@ td.builder_app_publish {
 .builder_app_not_published {
 	background-image: url("/img/notPublished.png");
 	background-position: left center;
+    background-position: 25px;
 	background-repeat: no-repeat;
-	padding-left: 20px;
 }
 
 .builder_app_locked {
@@ -462,6 +488,7 @@ td.builder_app_publish {
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding: 8px;
+    text-decoration: none;
 	
 }
 

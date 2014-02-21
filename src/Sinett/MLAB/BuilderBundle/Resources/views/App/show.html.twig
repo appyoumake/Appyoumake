@@ -6,12 +6,13 @@
    		</a>
     </td>
     
-    <td>{{ entity.version }}</td>
+    <td class="mlab_td_align">{{ entity.version }}</td>
     
     <td>{{ entity.description }}</td>
     
-    <td>{% if entity.updated %}
-    		{{ entity.updated|date('Y-m-d H:i:s') }}
+    <td title="{% if entity.updated %}{{ entity.updated|date('Y-m-d H:i:s') }}{% endif %}">
+    {% if entity.updated %}
+    		{{ entity.updated|date('d.m.y H:i') }}
     	{% endif %}
     </td>
     
