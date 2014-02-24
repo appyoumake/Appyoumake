@@ -1,4 +1,6 @@
 ; Configuration file
 ; Comments start with ';'
+;
+;key = values
 active = true
-tooltip=This is a regular unordered list
+tooltip=This component is for youtube videos
