@@ -260,8 +260,11 @@ class FileManagement {
             
                 
         } else {
-          // Create new app using cordova command  
-	  exec($cordova_create_command . " 2>&1", $output, $exit_code);
+          
+          
+          // Create new app using cordova command
+          exec("mkdir -p {$app_path}");  
+	      exec($cordova_create_command . " 2>&1", $output, $exit_code);	  
 		
 //check exit code, anything except 0 = fail
             if ($exit_code != 0) {
