@@ -225,6 +225,10 @@ class FileManagement {
 			return array("Could not set path for Cordovava");
 		}
 		
+		$cordova_build_properties = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["android"]["ant_properties"]);
+		
+		
+		
 		$output = array();
 		$exit_code = 0;
 		
@@ -283,8 +287,12 @@ class FileManagement {
 
 	      $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
 	      
+	      // makes available custom build settings, e.g. for signing
+	      exec("{$cordova_build_properties} 2>&1 && echo $?", $output, $exit_code);
+	      
 	      // Creates app-specific log file.
-	      file_put_contents("{$app_path}cordova.log",print_r($output,true));	      
+	      file_put_contents("{$app_path}cordov.log",print_r($output,true));
+	      	      
 
 
                 foreach ($template_items_to_copy as $from => $to) {
@@ -594,14 +602,14 @@ class FileManagement {
 			return array("Could not set path for Cordova");
 		}
 		
-		// May need to download and run for a while, so set time limit
-		set_time_limit(240);
+		// May need to download and then run for a while, so set time limit
+		set_time_limit(300);
         chdir($app_path);
         exec($cordova_build_command . " 2>&1", $output, $exit_code);
 		
 //check exit code, anything except 0 = fail
         $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
-        $url = $this->config["urls"]["app"] . $app->calculateFullPath("") . $compiled_app_location . $app->getPath() . "-debug.apk";
+        $url = $this->config["urls"]["app"] . $app->calculateFullPath("") . $compiled_app_location . $app->getPath() . "-release.apk";
         if ($exit_code != 0) {
             return array("result" => "error", "url" => $url, "message" => "Exit code: " . $exit_code . " (" . implode(", ", $output));
         } else {

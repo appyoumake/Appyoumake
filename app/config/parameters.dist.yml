@@ -42,13 +42,14 @@ parameters:
           offline_placeholder_identifier: no.ffi.sinett
           default_platform: android
           cmds:
-            create: cordova create _FOLDER_ _DOMAIN_ _TITLE_
+            create: cordova -d create _FOLDER_ _DOMAIN_ _TITLE_
             chdir: cd _FOLDER_ 
-            platform: cordova platform add _PLATFORM_
-            compile: cordova build
+            platform: cordova -d platform add _PLATFORM_
+            compile: cordova -d build --release
           android: 
             include_paths: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
-            compiled_app_location: /bin/
+            compiled_app_location: /platforms/android/ant-build/
+            ant_properties: 'cp /home/www-data/ant.properties _FOLDER_/platforms/android/ant.properties'
           bin_path: 
             android: /opt/cordova-3.2.0/cordova-android/bin
           platform_paths:
