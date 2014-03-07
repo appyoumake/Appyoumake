@@ -263,6 +263,8 @@ class FileManagement {
           
           
           // Create new app using cordova command
+          // May need to download, so change script time limit
+          set_time_limit(240);
           exec("mkdir -p {$app_path}");  
 	      exec($cordova_create_command . " 2>&1", $output, $exit_code);	  
 		
@@ -592,6 +594,8 @@ class FileManagement {
 			return array("Could not set path for Cordova");
 		}
 		
+		// May need to download and run for a while, so set time limit
+		set_time_limit(240);
         chdir($app_path);
         exec($cordova_build_command . " 2>&1", $output, $exit_code);
 		
