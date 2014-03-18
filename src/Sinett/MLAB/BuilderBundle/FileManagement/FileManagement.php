@@ -209,7 +209,7 @@ class FileManagement {
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
 		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
-		$app_domain = $this->config["cordova"]["app_creator_identifier"];
+		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
 		
 		$cordova_create_command = $this->config["cordova"]["cmds"]["create"];
 		$cordova_create_command = str_replace(
@@ -322,7 +322,7 @@ class FileManagement {
 
     /**
      * generate new name, get a list of pages in folder, select last one, turn into an int, 
-     * then keep increasing it until it is not found (in vcase someone else creates a file inthe mean time)
+     * then keep increasing it until it is not found (in case someone else creates a file in the mean time)
      * @param type $app_path
      * @return array(int $new_page_num, string $new_page_path (complete path to file))
      */
@@ -367,7 +367,11 @@ class FileManagement {
     
     public function savePage($app, $page_num, $html) {
 //get path of file to save
-        $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+        if ($page_num == "index") {
+            $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . "index.html";
+        } else {
+            $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+        }
         
         return file_put_contents ($file_path, $html) ;
     }
@@ -446,10 +450,10 @@ class FileManagement {
 /**
  * returns an associative array of file names and titles of the pages for an app
  * @param type $app
- * @return type
+ * @return types
  */
     public function getPageIdAndTitles($app) {
-        $pages = array("index.html" => "Front page");
+        $pages = array("'index'" => "Front page");
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
    		$files = glob ( $app_path . "/???.html" );
         
@@ -543,7 +547,7 @@ class FileManagement {
  * @param type $uid
  */
     public function getPageLockStatus($filename, $uid) {
-//already open
+//already open and locked by us
         if (file_exists(("$filename.$uid.lock"))) {
             return "unlocked";
             
@@ -569,7 +573,7 @@ class FileManagement {
  */
     public function getAppLockStatus($app_path, $uid) {
         $res = array();
-        $lock_files = glob("$app_path/???.*.lock");
+        $lock_files = glob("$app_path/*.lock");
         foreach ($lock_files as $key => $value) {
             if (basename($value) != "$uid.lock") {
                 $res[] = substr(basename($value), 0, 8);

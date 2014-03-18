@@ -37,6 +37,7 @@
         mlab_html_footer = "\n</body></html>";
     
 // set a few variables that are carried over from the server side 
+        mlab_current_user_email = "{{ mlab_current_user_email }}";
 
 //unique ID for this tab/window, used to lock pages
         mlab_uid = "{{ mlab_uid }}";
@@ -234,6 +235,7 @@
 //we set the current variable to the data coming back in, then if this is an added record we open the page to edit 
 			    		document.mlab_current_app = data.mlab_app;
 			    		if (data.action == 'ADD') {
+                            alert("This should be index or a number, no .html " + data.mlab_app_page_num);
 			    			mlab_app_open(data.mlab_app_id, data.mlab_app_page_num) ;
 			    		}
 			    	}
@@ -258,7 +260,7 @@
 		Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-		function mlab_index_page_process (page, page_num, real_page_num) {
+		function mlab_index_page_process (page, page_num) {
             var comp_id, temp_comp, temp_link;
             var temp_stylesheets = "";
             var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
@@ -370,14 +372,14 @@
 
             $.get( url, function( data ) {
 				if (data.result == "success") {
-                    if (page_num == 0 || page_num == "index" ) {
-                        mlab_index_page_process ( data.html, data.page_num, data.page_num );
+                    if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
+                        mlab_index_page_process ( data.html, "index" );
                     } else {
-                        mlab_regular_page_process ( data.html, data.page_num );
+                        mlab_regular_page_process ( data.html, data.page_num_real );
                         var path = window.location.pathname.split("/");
                         path[path.length - 3] = data.app_id;
-                        path[path.length - 2] = data.page_num;
-                        history.pushState({id: data.app_id, page: data.page_num }, document.mlab_current_app.curr_pagetitle, path.join("/"));
+                        path[path.length - 2] = data.page_num_real;
+                        history.pushState({id: data.app_id, page: data.page_num_real }, document.mlab_current_app.curr_pagetitle, path.join("/"));
                     }
                     if (data.lock_status == "locked") {
                         $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',.6);
@@ -408,13 +410,17 @@
 //finally convert to text to send back
 		
         function mlab_page_save() {
+//cannot save if locked
+            if ($("#mlab_editor_disabled").length > 0) {
+                return false;
+            }
 			var app_id = document.mlab_current_app.id;
 			var page_num = document.mlab_current_app.curr_page_num;
             var url = mlab_url_save_page;
             var page_content = "";
             url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", page_num);
-    
+            
 			$("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
                 comp_id = $(this).data("mlab-type");
 				if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
@@ -428,7 +434,7 @@
             
 //if this is the index page we add the full HTML page, if not we only require a very simple header/footer
             if (page_num == 0 || page_num == "index" ) {
-                var final_doc = document.mlab_current_app.curr_page_html;
+                var final_doc = document.mlab_current_app.curr_indexpage_html;
                 final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = page_content;
                 final_doc.title = document.mlab_current_app.curr_pagetitle;
                 var html = (new XMLSerializer()).serializeToString(final_doc);
@@ -462,7 +468,6 @@
 
                 $.post( url, {}, function( data ) {
                     if (data.result == "success") {
-                        document.mlab_current_app.curr_page_html = "";
                         document.mlab_current_app.curr_pagetitle = title;
                         document.mlab_current_app.curr_page_num = data.page_num;
                         $("#mlab_curr_pagetitle").val(title);
@@ -480,6 +485,11 @@
  * Creates a new file on the server and opens it
  */
        function mlab_page_copy() {
+            if (document.mlab_current_app.curr_page_num == "0" || document.mlab_current_app.curr_page_num == "index") {
+                alert("You can not copy the index page");
+                return;
+            }
+            
 			var url = "{{ path('app_builder_page_copy', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
 			url = url.replace("_ID_", document.mlab_current_app.id);
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
@@ -518,6 +528,28 @@
 				}
 				
 			});
+        }
+        
+        /**
+         * Simple function to open a new window with current page in it
+         * Given that we use an jquery mobile framework with an index file and loading pages into the index file, 
+         * we need to pass the relevant file name and have matching code in the mlab.js file to deal with this
+         * @param {type} index
+         * @returns {undefined}
+         */
+        function mlab_page_preview() {
+            mlab_page_save();
+            if (document.mlab_current_app.curr_page_num == 0 || document.mlab_current_app.curr_page_num == "index" ) {
+                page_name = ""
+            } else {
+                page_name = ("000" + document.mlab_current_app.curr_page_num).slice(-3) + ".html";
+            }
+            var w = $(window).width() * 0.25;
+            var h = $(window).height() * 0.75;
+            var res = window.open(mlab_config["urls"]["app"] + document.mlab_current_app.path + "/" + document.mlab_current_app.version + "/" + mlab_config["cordova"]["asset_path"] + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+            if (res == undefined) {
+                alert("Cannot open new window, change your settings to allow popup windows");
+            }
         }
 
 		
@@ -610,7 +642,7 @@
 
             $.get( url, function( data ) {
 				if (data.result == "success") {
-                    mlab_index_page_process ( data.html, data.page_num, local_page_num);
+                    mlab_index_page_process ( data.html, "index");
                     if (local_page_num != "0" && local_page_num != "index") {
                         mlab_page_open(data.app_id, local_page_num);
                     }
@@ -635,10 +667,14 @@
 			url = url.replace("_ID_", document.mlab_current_app.id);
             $.get( url, function( data ) {
 				if (data.result == "success") {
-                    $("#mlab_download_qr").empty().qrcode({text: data.url}).slideDown('slow').append("<br><a href='" + data.url + "'>Download</a>");
+                    full_url = window.location.origin + data.url;
+                    $("#mlab_download_qr").empty().qrcode({text: full_url}).slideDown('slow')
+                            .append("<br>")
+                            .append("<a href='" + full_url + "'>Download: " + full_url +"</a>")
+                            .append("<br>")
+                            .append("<a href='mailto:" + mlab_current_user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
 				} else {
-					alert(data.msg);
-                    $("#mlab_download_qr").empty().qrcode({text: data.url}).slideDown('slow').append("<br><a href='" + data.url + "'>Download</a>");
+					$("#mlab_download_qr").empty().append("Error:" + data.msg).slideDown('slow');
 				}
 				
 			});
@@ -782,7 +818,10 @@
                 }
                 var url = "{{ path('app_builder_editor_closed', { 'uid': '_UID_' }) }}";
                 url = url.replace("_UID_", mlab_uid);
-                $.get( url );  
+                $.ajax({
+                    url: url,
+                    async: false
+                });
             };
                 
 //when finally quit we tell the back end to delete all locks for this instance
