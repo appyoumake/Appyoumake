@@ -1066,3 +1066,34 @@ color: rgb(204, 0, 0);
 	padding: 0 15px;
     
 }
+
+/*Status bar styling*/
+ul#mlab_megamenu li#mlab_statusbar {
+    float: right;
+    color: #e3f2ff;
+    font-weight: bold;
+    padding: 0 10px;
+    margin: 5px;
+    height: auto;
+    width: auto;
+}
+
+ul#mlab_megamenu li#mlab_statusbar div {
+    float: left;
+    border: 2px solid white;
+    border-style: inset;
+    height: 100%;
+    display: none;
+}
+
+ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_permanent {
+    display: block;
+}
+
+ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
+    background-image: url('/img/progress.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 50px;
+    border: 0;
+}

@@ -22,16 +22,26 @@
 	</div>
 
 	<div title="Use this to rotate the device" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
-	<div id="mlab_status"></div>
-	<div id="mlab_dialog_new_app" class="hide"></div>
+	<div id="mlab_dialog_new_app"></div>
     <div id="mlab_storage_space"></div>
     <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
+    <script src="{{ asset('/js/bowser.js') }}"></script>
 
 	<script type="text/javascript">	 
+        
+        $(document).ready(function() {
+            if (bowser.gecko || bowser.chrome) {
+
+            } else {
+                alert("This web app will only work in Chrome/Chromium or Firefox");
+                $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
+            }
+        });
+        
 // define what the header and footer for a HTML page is, this is used when we save files
         mlab_html_header = "<!DOCTYPE html>\n<html>\n<head><title>%TITLE%</title></head>\n<body>\n";
         mlab_html_footer = "\n</body></html>";
@@ -214,7 +224,8 @@
 		}
 
 //remove locks, TODO: do automatically
-        function mlab_app_remove_locks(){
+        function mlab_app_remove_locks() {
+            mlab_update_status("temporary", "Unlocking all pages...", true);
             $.get( "{{ path('app_builder_app_unlock') }}" );
 
         }
@@ -225,22 +236,25 @@
 			var frm = document.getElementById(form.attr('id'));
 			formData = new FormData(frm);
 			$("#mlab_dialog_new_app").dialog("close");
+            mlab_update_status("callback", "Creating new app", true);
+            
 			$.ajax({
 		        url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
 		        type: 'POST',
 		        success: function( data ) {
 			    	if (data.result == 'FAILURE') {
-			    		alert(data.message);
+                        mlab_update_status("temporary", data.message, false);
 			    	} else {
 //we set the current variable to the data coming back in, then if this is an added record we open the page to edit 
 			    		document.mlab_current_app = data.mlab_app;
 			    		if (data.action == 'ADD') {
-                            alert("This should be index or a number, no .html " + data.mlab_app_page_num);
 			    			mlab_app_open(data.mlab_app_id, data.mlab_app_page_num) ;
 			    		}
 			    	}
 			  	},
-		        error: function(e) {alert('error'); console.log(e)},
+		        error: function(e) {
+                    mlab_update_status("temporary", 'error', false);
+                },
 		        // Form data 
 		        data: form.serialize(),
 		        dataType: "json",
@@ -365,6 +379,8 @@
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
  */
 		function mlab_page_open(app_id, page_num) {
+            mlab_update_status("callback", 'Opening page', true);
+            
 			var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
 			url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", page_num);
@@ -372,6 +388,7 @@
 
             $.get( url, function( data ) {
 				if (data.result == "success") {
+                    mlab_update_status("completed");
                     if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                         mlab_index_page_process ( data.html, "index" );
                     } else {
@@ -381,14 +398,18 @@
                         path[path.length - 2] = data.page_num_real;
                         history.pushState({id: data.app_id, page: data.page_num_real }, document.mlab_current_app.curr_pagetitle, path.join("/"));
                     }
+                    mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
+                    
                     if (data.lock_status == "locked") {
                         $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',.6);
                         $("#" + mlab_config["app"]["content_id"]).append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
                     } else {
                         $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',1);
                     }
+                    
 				} else {
-					alert(data.msg);
+                    mlab_update_status("temporary", data.msg, false);
+                    
 				}
 				
 			});
@@ -400,6 +421,7 @@
         function mlab_update_page_title() {
             mlab_flag_dirty = true;
             document.mlab_current_app.curr_pagetitle = $("#mlab_curr_pagetitle").val();
+            mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
         }
         
         
@@ -409,11 +431,24 @@
 //then pick up doc variable which has empty body, then insert the cleaned elements
 //finally convert to text to send back
 		
-        function mlab_page_save() {
+        function mlab_page_save() {            
 //cannot save if locked
             if ($("#mlab_editor_disabled").length > 0) {
                 return false;
             }
+            
+//this is called from a timer, so we also need to check if an app has been created, etc
+//also if any changes have occurred
+            if (document.mlab_current_app.curr_page_num == undefined || document.mlab_current_app.id == undefined) {
+                return false;
+            }
+            
+            if (!mlab_flag_dirty) {
+                return false;
+            }
+            
+            mlab_update_status("callback", "Storing page", true);
+            
 			var app_id = document.mlab_current_app.id;
 			var page_num = document.mlab_current_app.curr_page_num;
             var url = mlab_url_save_page;
@@ -443,12 +478,12 @@
             }
 			
 			$.post( url, {html: html}, function( data ) {
-				if (data.result == "success") {
-					$("#mlab_status").text("Saved page");
+                if (data.result == "success") {
+                    mlab_update_status("temporary", "Saved page", false);
 					mlab_flag_dirty = false;
 					
 				} else {
-					$("#mlab_status").text("Unable to save page: " + data.msg);
+                    mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
 				}
 				
 			});
@@ -461,6 +496,7 @@
         function mlab_page_new() {
             var title = prompt("Please enter the title of the new page");
             if (title != null) {
+                mlab_update_status("callback", "Storing page", true);
                 $("#" + mlab_config["app"]["content_id"]).empty();
                 var url = "{{ path('app_builder_page_new', { 'app_id': '_ID_', 'uid': '_UID_' }) }}";
                 url = url.replace("_ID_", document.mlab_current_app.id);
@@ -468,12 +504,14 @@
 
                 $.post( url, {}, function( data ) {
                     if (data.result == "success") {
+                        mlab_update_status("completed");
                         document.mlab_current_app.curr_pagetitle = title;
                         document.mlab_current_app.curr_page_num = data.page_num;
                         $("#mlab_curr_pagetitle").val(title);
+                        mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
                                                 
                     } else {
-                        alert(data.msg);
+                        mlab_update_status("temporary", data.msg, false);
                     }
 
                 });
@@ -515,6 +553,8 @@
                 return;
             }
             
+            mlab_update_status("callback", "Deleting page", true);
+            
             var url = "{{ path('app_builder_page_delete', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
 			url = url.replace("_ID_", document.mlab_current_app.id);
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
@@ -522,9 +562,10 @@
 			
 			$.get( url, function( data ) {
 				if (data.result == "success") {
+                    mlab_update_status("completed");
                     mlab_regular_page_process ( data.html, data.page_num );
 				} else {
-					alert(data.msg);
+                    mlab_update_status("temporary", data.msg, false);
 				}
 				
 			});
@@ -639,7 +680,8 @@
 			url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", 'index');
 			url = url.replace("_UID_", mlab_uid);
-
+            mlab_update_status("callback", 'Opening app', true);
+            
             $.get( url, function( data ) {
 				if (data.result == "success") {
                     mlab_index_page_process ( data.html, "index");
@@ -647,7 +689,7 @@
                         mlab_page_open(data.app_id, local_page_num);
                     }
 				} else {
-					alert(data.msg);
+                    mlab_update_status("temporary", data.msg, false);
 				}
 				
 			});
@@ -663,9 +705,11 @@
  * @returns void
  */
         function mlab_app_download () {
+            mlab_update_status("callback", 'Retrieving app', true);
             var url = "{{ path('app_builder_app_download', { 'app_id': '_ID_' }) }}";
 			url = url.replace("_ID_", document.mlab_current_app.id);
             $.get( url, function( data ) {
+                mlab_update_status("completed");
 				if (data.result == "success") {
                     full_url = window.location.origin + data.url;
                     $("#mlab_download_qr").empty().qrcode({text: full_url}).slideDown('slow')
@@ -789,6 +833,43 @@
 				$("#mlab_button_rotate").removeClass("portret");
 			}
 		}
+        
+/**
+ * This function is used to display status information, this can be permanent, temporary, or until callback is called, and may have a progress bar
+ * If state is completed we get rid of temporary info and any gauges
+ * 
+ * @param {type} state
+ * @param {type} content
+ * @returns {undefined} 
+*/
+        function mlab_update_status(state, content, display_progress) {
+            if (state == "permanent") {
+                $("#mlab_statusbar_permanent").text(content);
+                return;
+            } else if (state == "temporary") {
+                $("#mlab_statusbar_temporary").text(content).show();
+                window.setInterval(mlab_clear_status, 3000);
+            } else if (state == "callback") {
+                $("#mlab_statusbar_temporary").text(content).show();
+            } else if (state == "completed") {
+                $("#mlab_statusbar_temporary").hide();
+                $("#mlab_statusbar_progressbar").hide();
+                return;
+            }
+            
+            if (typeof display_progress != "undefined" && display_progress == true) {
+                $("#mlab_statusbar_progressbar").show();
+            } else if (typeof display_progress != "undefined" && display_progress == false) {
+                $("#mlab_statusbar_progressbar").hide();
+            }                
+        }
+        
+/**
+ * Simple wrapper function to clear a temporary status
+ * @returns {undefined} */
+        function mlab_clear_status() {
+            mlab_update_status("completed");
+        }
 
 //turn off automatic initialisation of mobile pages
         $.mobile.autoInitializePage = false;
@@ -840,7 +921,8 @@
             
 //we always load pages using AJAX, this takes the parameters passed from the controller 
 			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );
-			 
+			window.setInterval(mlab_page_save, parseInt(mlab_config["save_interval"]) * 1000);
+
 		});
 		
         
