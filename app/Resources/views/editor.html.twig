@@ -39,8 +39,22 @@
 		        <script type="text/javascript">	 
 			        $(document).ready(function() {
 			        	jQuery("#mlab_megamenu").megamenu();
-                        $("#mlab_megamenu li:last").before('<li id="mlab_statusbar"><div id="mlab_statusbar_progressbar">&nbsp;</div><div id="mlab_statusbar_temporary">&nbsp;</div><div id="mlab_statusbar_permanent">Ready</div></li>');
-			        });
+                        $("#mlab_megamenu li:last").before(
+                                "<li class='mlab_menu_top_children  mm-item' style='float: left;'>"+
+                                "    <div id='mlab_buttons_item_manipulation' class='mlab_buttons_item_manipulation'>"+
+                                "        <img id='mlab_button_up' src='/img/tools/up.png' class='mlab_tools' onclick='mlab_component_moveup();'>"+
+                                "        <img id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' onclick='mlab_component_movedown();'>"+
+                                "        <img id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' onclick='document.execCommand(\"undo\");'>"+
+                                "        <img id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' onclick='document.execCommand(\"redo\");'>"+
+                                "        <img id='mlab_button_edit' src='/img/tools/edit.png' class='mlab_tools' onclick='mlab_content_edit();'>"+
+                                "        <img id='mlab_button_link' src='/img/tools/link.png' class='mlab_tools mlab_tools_space' onclick='mlab_content_link();'>"+
+                                "        <img id='mlab_button_maximize' src='/img/tools/maximize.png' class='mlab_tools' onclick='mlab_content_maximize();'>"+
+                                "        <img id='mlab_button_restore' src='/img/tools/restore.png' class='mlab_tools' onclick='mlab_content_restore();'>"+
+                                "        <img id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' onclick='mlab_component_delete();'>"+
+                                "    </div>"+
+                                "</li>"+
+                                "<li id='mlab_statusbar'><div id='mlab_statusbar_progressbar'>&nbsp;</div><div id='mlab_statusbar_temporary'>&nbsp;</div><div id='mlab_statusbar_permanent'>Ready</div></li>");
+                        });
 			    </script>
 	        {% endblock %}
 	        </div>
