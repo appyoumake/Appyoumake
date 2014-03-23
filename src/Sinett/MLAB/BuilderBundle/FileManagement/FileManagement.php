@@ -169,10 +169,12 @@ class FileManagement {
 								"exec_server" => file_exists($comp_dir . $config["PHP"]),
 								"rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
 								"conf" => @file_get_contents($comp_dir . $config["CONFIG"]),
-								"accessible" => in_array($entry, $access)); //we hide 
+                                "nogui" => false,
+								"accessible" => in_array($entry, $access)); //we hide the ones they are not allowed to see, but still load it for reference may exist in app...
 	
 //convert the conf.text to an associative array, this way can use it a a lookup
-						if ($components[$entry]["conf"] !== false) {
+
+                        if ($components[$entry]["conf"] !== false) {
 							$tmp = explode("\n", $components[$entry]["conf"]);
 							$components[$entry]["conf"] = array();
 							foreach ($tmp as $line) {
@@ -180,6 +182,9 @@ class FileManagement {
 								if (strlen($line) > 0 && substr($line, 0, 1) != ";") {
 									list($key, $val) = explode("=", $line);
 									$components[$entry]["conf"][$key] = $val;
+                                    if ($key == "nogui") {
+                                        $components[$entry]["nogui"] = $val;
+                                    }
 								}
 							}
 						}
@@ -275,31 +280,29 @@ class FileManagement {
 //check exit code, anything except 0 = fail
             if ($exit_code != 0) {
                 return $output + array("Exit code: " . $exit_code);
-		error_log("Failed creating new app using cordova, {$exit_code}, {$output}", 0);
+                error_log("Failed creating new app using cordova, {$exit_code}, {$output}", 0);
             } else {
 	      // Add platform
 	        
 	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
-	      exec("whoami", $output, $exit_code);	      
-	      exec("echo $PATH", $output, $exit_code);	      
-	      exec("android 2>&1 && echo $?", $output, $exit_code);
-	      exec("java -version 2>&1 && echo $?", $output, $exit_code);
+            exec("whoami", $output, $exit_code);	      
+            exec("echo $PATH", $output, $exit_code);	      
+            exec("android 2>&1 && echo $?", $output, $exit_code);
+            exec("java -version 2>&1 && echo $?", $output, $exit_code);
 
-	      $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
+            $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
 	      
-	      // makes available custom build settings, e.g. for signing
-	      exec("{$cordova_build_properties} 2>&1 && echo $?", $output, $exit_code);
+// makes available custom build settings, e.g. for signing
+            exec("{$cordova_build_properties} 2>&1 && echo $?", $output, $exit_code);
 	      
-	      // Creates app-specific log file.
-	      file_put_contents("{$app_path}cordov.log",print_r($output,true));
-	      	      
+// Creates app-specific log file.
+            file_put_contents("{$app_path}cordov.log",print_r($output,true));
 
-
-                foreach ($template_items_to_copy as $from => $to) {
-                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                    $ret = shell_exec($cmd);
-                }
-                return true;
+            foreach ($template_items_to_copy as $from => $to) {
+                $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
+                $ret = shell_exec($cmd);
+            }
+            return true;
             }
         }
 	}

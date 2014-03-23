@@ -393,7 +393,11 @@ width: 64px;
 
 }
 
-
+#mlab_editable_area div[data-mlab-type].mlab_current_component:hover {
+    background-image: url("/img/drag_white.png");
+    background-position: right top;
+    background-repeat: no-repeat;
+}
 
 #mlab_editor_chrome {
 
@@ -577,6 +581,9 @@ position: relative;
     border: 2px dotted red;
 }
 
+.mlab_hidden {
+    display: none;
+}
 
 /* --- END TOOLS --- */
 

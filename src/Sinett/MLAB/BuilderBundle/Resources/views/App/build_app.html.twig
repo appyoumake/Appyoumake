@@ -6,7 +6,7 @@
 	<div id="mlab_template_warning"></div>	                     
 	
 	<div id="mlab_toolbar_components">
-		{% for type, component in mlab_components if component.accessible %}
+		{% for type, component in mlab_components if (component.accessible and not component.nogui) %}
 			<div data-mlab-type='{{ type }}' title='{{ component.tooltip }}' class='mlab_button_components' style='background-image: url("{{ mlab_config.urls.component ~ type ~ '/' ~ mlab_config.component_files.ICON }}");'></div>
 		{% endfor %}
 	</div>
@@ -15,9 +15,10 @@
 		<p />
 	</div>
 
-	<div title="Use this to rotate the device" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
+	<div title="Use this to rotate the editor" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
 	<div id="mlab_dialog_new_app"></div>
     <div id="mlab_storage_space"></div>
+    <div id="mlab_menu_popup"></div>
     <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
 {% endblock %}
 
@@ -27,6 +28,7 @@
 
 	<script type="text/javascript">	 
         
+/***************** common variables **********************/
 // define what the header and footer for a HTML page is, this is used when we save files
         mlab_html_header = "<!DOCTYPE html>\n<html>\n<head><title>%TITLE%</title></head>\n<body>\n";
         mlab_html_footer = "\n</body></html>";
@@ -63,7 +65,9 @@
 			    	var id = $(ui.draggable[0]).data("mlab-type");
                     ui.draggable.empty().append(mlab_components[id].html);
 		    		ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
-		    		ui.draggable.on("click", function(){mlab_highlight_selected(this);})
+//DEL                    ui.draggable.css("position", "relative"); //need this to make handle positioning work
+//DEL                    ui.draggable.prepend("<div class='mlab_drag_handle' />");
+		    		ui.draggable.on("click", function(){mlab_highlight_selected(this);});
                     ui.draggable.on("input", function(){mlab_flag_dirty = true;});
 
 		    		mlab_run_component_code(ui.draggable, id);
@@ -102,7 +106,7 @@
 		};
 	
 		var sortable_options = {
-			placeholder: "mlab_component_placeholder", 
+            placeholder: "mlab_component_placeholder", 
 			revert: false, 
 			helper: "clone",
 			cancel: "[contenteditable]",
@@ -610,32 +614,113 @@
 //wrapper to call the getProperties function for a control if it exists 
 //this in turn will call the mlab_propterties_dialoge to display the dialoge 
 //when OK is clicked the setProperties function is called 
-		function mlab_content_edit(el) {
-			var comp = $(el).parent().parent();
+		function mlab_content_edit() {
+            var comp = $(".mlab_current_component");
 			if (typeof (document["mlab_code_" + comp.data("mlab-type")]) !== "undefined") {
 				document["mlab_code_" + comp.data("mlab-type")].getProperties(comp);
 			}
             mlab_flag_dirty = true;
 		}
         
-        function mlab_content_maximize() {
-            $(".mlab_current_component").css( { "width": "100%", "height": "100%" } );
-            mlab_flag_dirty = true;
-        }
-
-        function mlab_content_restore() {
-            $(".mlab_current_component").css( { "width": "", "height": "" } );
-            mlab_flag_dirty = true;
-        }
-
         function mlab_highlight_selected(el) {
              $( "#" + mlab_config["app"]["content_id"] + " div" ).removeClass("mlab_current_component");
-             $( el ).addClass("mlab_current_component");            
+             $( el ).addClass("mlab_current_component");
+             mlab_menu_prepare();
+        }
+        
+        function mlab_menu_prepare() {
+            var comp = $(".mlab_current_component");
+            if (comp.length < 1) {
+                return;
+            }
+            var comp_name = comp.data("mlab-type");
+            var items = new Object();
+            var title = "";
+            for(var index in document["mlab_code_" + comp_name]) {
+                if (index.substr(0, 7) == "custom_") {
+                    title = index.slice(7);
+                    items[index] =  { name: title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
+                                      callback: function(key, options) {
+                                          document["mlab_code_" + $('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
+                                      }
+                                    };
+                }
+            }
+            if (typeof mlab_components[comp_name].conf.compatible != "undefined") {
+                items["sep1"] = "---------";
+                items["replace"] = {"name": "Replace control with"};
+                var sub_items = new Object;
+                mlab_components[$(".mlab_current_component").data("mlab-type")].conf.compatible.split(",").forEach(function(replace_with) {
+                    title = replace_with.trim();
+                    sub_items[title] = { name: " -> " + title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
+                                                      callback: function(key, options) {
+                                                        document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].onReplace($('.mlab_current_component'), key, mlab_components[key].html);
+                                                      }
+                                                    };
+                } );
+                items["replace"]["items"] = sub_items; 
+           }
+            
+            $.contextMenu( 'destroy', '#mlab_button_menu' );
+            $.contextMenu( 'destroy', '.mlab_current_component' );
+            
+            if (Object.keys(items).length < 1) {
+                return;
+            }
+            
+            $.contextMenu({
+                selector: '#mlab_button_menu', 
+                className: 'mlab_menu_title',
+                trigger: 'left',
+                items: items
+            });
+            
+            $.contextMenu({
+                selector: '.mlab_current_component', 
+                className: 'mlab_menu_title',
+                trigger: 'right',
+                items: items
+            });
+
+            $('.mlab_menu_title').attr('data-menutitle', "Modify component");
+        }
+        
+        function mlab_menu_properties_prepare() {
+            var items = new Object();
+            var title = "";
+            for(var index in mlab_components) {
+                if (mlab_components[index].conf["nogui"]) {
+                    items[index] =  { name: index.charAt(0).toUpperCase() + index.slice(1),
+                                      callback: function(key, options) {
+                                          mlab_property_add(key);
+                                      }
+                                    };
+                }
+            }            
+            $.contextMenu( 'destroy', '#mlab_button_properties' );
+            
+            if (Object.keys(items).length < 1) {
+                return;
+            }
+            
+            $.contextMenu({
+                selector: '#mlab_button_properties', 
+                className: 'mlab_menu_properties_title',
+                trigger: 'left',
+                items: items
+            });
+
+            $('.mlab_menu_properties_title').attr('data-menutitle', "Add property");
         }
         
         function mlab_component_delete() {
             $(".mlab_current_component").remove();
             mlab_flag_dirty = true;
+        }
+        
+//properties are simply components that are not displayed with a GUI.
+        function mlab_property_add(index){
+            alert("Will add: " + index);
         }
 /*
  * 
@@ -649,9 +734,10 @@
 		    			 .sortable(sortable_options)
                          .on("click", function(){mlab_highlight_selected(this);})
                          .on("input", function(){mlab_flag_dirty = true;});
-
+//DEL                         .css("position", "relative")
+//DEL                         .prepend("<div class='mlab_drag_handle' />")
+                         
     		    comp_id = $( this ).data("mlab-type");
-			    //temp_comp.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc;
 			    mlab_run_component_code($( this ), comp_id);
 //TODO major hack, find out why these events are added here, when not added when drag'n'drop 
 			    // $( this ).off("click mousedown remove");
@@ -659,14 +745,14 @@
 		    
 //set draggable/sortable options for the editable area 
 	        $( "#" + mlab_config["app"]["content_id"] ).droppable(droppable_options).sortable(sortable_options);
-	    	
-			$( "#mlab_button_drag" ).draggable({
+            $( ".mlab_button_components" ).draggable({
 				      connectToSortable: "#" + mlab_config["app"]["content_id"],
 				      helper: "clone",
 				      revert: "invalid",
 				      opacity: 0.5,
 				      start: function () { mlab_drag_origin = 'draggable'; }
 			});
+            
         }
         
 
@@ -731,99 +817,6 @@
         function mlab_app_submit_to_market () {
             alert('Not implemented yet');
         }
-
-//uses qtip to display a dialog getting input, this is positioned next to the properties button 
-//when the click on OK we will call the specified callback function 
-//The content is an object, certain predefined actions can be configured: 
-//upload: fileformats 
-//title: prompt 
-//url: string that is used as a URL 
-//latlong: position 
-		function mlab_properties_dialogue(title, explanation, fields, component_id, component) {
-			content = $('<form />', {id: "mlab_form_properties" });
-			content.append($('<p />', { text: explanation }));
-			
-			for (item in fields) {
-				if (item == "mlab_property_title") {
-					content.append( $('<label />', { 'text': 'Tittel:', 'for': item }) );
-					content.append( $('<input />', { id: item, name: item }) );
-					
-				} else if (item == "mlab_property_uploadfiles") {
-					content.append( $('<p /><br />') );
-					content.append( $('<div />', { id: item, name: item, text: 'Velg filer', data: fields[item] }) );
-
-					content.append( $('<p /><br />') );
-					content.append( $('<div />', { id: item + '_start', name: item + '_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
-					
-				} else if (item == "mlab_property_url") {
-					content.append( $('<label />', { 'text': 'URL:', 'for': item }) );
-					content.append( $('<input />', { id: item, name: item }) );
-					
-				} else if (item == "mlab_property_coordinates") {
-					content.append( $('<label />', { 'text': 'Latitude:', 'for': 'mlab_property_coordinates_lat' }) );
-					content.append( $('<input />', { id: 'mlab_property_coordinates_lat', name: 'mlab_property_coordinates_lat' }) );
-					content.append( $('<label />', { 'text': 'Longitude:', 'for': 'mlab_property_coordinates_long' }) );
-					content.append( $('<input />', { id: 'mlab_property_coordinates_long', name: 'mlab_property_coordinates_long' }) );
-					
-				}
-			}
-			content.append( $('<p />') );
-			content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall" }) );
-			content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right" }) );
-
-			this.component_id = component_id;
-			this.component = component;
-		    $(component).qtip({
-		        content: {text: content, title: title },
-		        position: { my: 'leftMiddle', at: 'rightMiddle' },
-		        show: { ready: true, modal: { on: true, blur: false } },
-		        hide: false,
-		        style: { classes: 'qtip-tipped' },
-		        events: { render: function(event, api) {
-			        			this.component = component;
-			        			this.component_id = component_id;
-
-//upload files 
-			        			if ($("#mlab_property_button_ok").length > 0) {
-                                    var url = "{{ path('app_builder_component_upload', {'comp_id': '_COMPID_', 'app_id': '_APPID_'} ) }}";
-                                    url = url.replace("_APPID_", document.mlab_current_app.id);
-                                    url = url.replace("_COMPID_", component_id);
-                                    
-									var uploadObj = $("#mlab_property_uploadfiles").uploadFile({
-										url: url,
-										formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
-										multiple: $("#mlab_property_uploadfiles").data()["multiple"],
-										autoSubmit: false,
-										fileName: "mlab_files",
-										showStatusAfterSuccess: true,
-										allowedTypes: $("#mlab_property_uploadfiles").data()["allowedTypes"],
-										onSuccess: function(files, data, xhr) {
-													document["mlab_code_" + component_id].filesUploaded( files, data, this );
-													api.hide(); 
-											}.bind(component),
-										onError: function(files, status, errMsg) { 
-											alert(errMsg); 
-										}
-									});
-	
-									$("#mlab_property_uploadfiles_start").click(function() {
-										uploadObj.startUpload();
-									});
-			        			}
-		                		$('#mlab_property_button_ok', api.elements.content).click(	
-				                		function(e) {
-											api.hide(e); 
-											if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
-												document["mlab_code_" + component_id].setProperties( $("#mlab_form_properties").serializeArray(), this );
-											}
-			                			}.bind(component));
-		                		$('#mlab_property_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
-		            		},
-		            		hide: function(event, api) { api.destroy(); }
-		        }
-		    });
-		}
-
 
 /*********** Utility functions ***********/  
 		function mlabRotateEditor() {
@@ -913,6 +906,7 @@
 			    modal: true,
 				});
 			
+            mlab_menu_properties_prepare();
             
 //we always load pages using AJAX, this takes the parameters passed from the controller 
 			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );

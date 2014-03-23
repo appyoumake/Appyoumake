@@ -2,3 +2,5 @@
 ; Comments start with ';'
 active = true
 tooltip=This is a regular headline, use only once per page
+compatible=h2, h3, h4, ol, ul, p
+dependencies=dummy
