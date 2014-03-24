@@ -1,4 +1,4 @@
-document.mlab_code_h1 = new function() {
+document.mlab_code_h5 = new function() {
 	
 	this.config = new Array();
     
