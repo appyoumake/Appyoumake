@@ -2,27 +2,32 @@
 
 {% block body -%}
 
-<h1 onclick='$("li").css("color", "red")'>{% trans %}MLAB{% endtrans %}</h1> 
-<p>
-	Midlertidig forside
-</p>
-<ul>
-	<li><a href="{{ path('admin_users')}}">Admin Users</a></li>
-	<li><a href="{{ path('admin_apps')}}">Admin Apps</a></li>
-	<li><a href="{{ path('system')}}">System</a></li>
-	<li><a href="{{ path('app_builder_index')}}">App builder front page</a></li>
-	<li><a href="{{ path('app_builder_editor', {'id': 1, 'page_num': 1} ) }}">App builder editor</a></li>
-</ul>
-<ul>
-	<li><a href="{{ url('app')}}">Apps</a></li>
-	<li><a href="{{ url('category')}}">Categories</a></li>
-	<li><a href="{{ url('component')}}">Components</a></li>
-	<li><a href="{{ url('group')}}">Groups</a></li>
-	<li><a href="{{ url('help')}}">Help</a></li>
-	<li><a href="{{ url('menu')}}">Menus</a></li>
-	<li><a href="{{ url('template')}}">Templates</a></li>
-	<li><a href="{{ url('tracking')}}">Tracking</a></li>
-	<li><a href="{{ url('user')}}">Users</a></li>
-</ul>
+    <h1 onclick='$("li").css("color", "red")'>{% trans %}MLAB{% endtrans %}</h1> 
+    <p>
+        Velkommen til MLAB
+    </p>
+    <ul>
+        <li><a href="{{ path('app_builder_index')}}">MLAB App builder</a></li>
+    </ul>
+
+    <ul>
+        <li><a href="{{ path('admin_users')}}">Admin Users</a></li>
+        <li><a href="{{ path('admin_apps')}}">Admin Apps</a></li>
+        <li><a href="{{ path('system')}}">System</a></li>
+    {#	<li><a href="{{ path('app_builder_editor', {'id': 1, 'page_num': 1} ) }}">App builder editor</a></li> #}
+    </ul>
+
+    {# <ul>
+        <li><a href="{{ ('app')}}">Apps</a></li>
+        <li><a href="{{ url('category')}}">Categories</a></li>
+        <li><a href="{{ url('component')}}">Components</a></li>
+        <li><a href="{{ url('group')}}">Groups</a></li>
+        <li><a href="{{ url('help')}}">Help</a></li>
+        <li><a href="{{ url('menu')}}">Menus</a></li>
+        <li><a href="{{ url('template')}}">Templates</a></li>
+        <li><a href="{{ url('tracking')}}">Tracking</a></li>
+        <li><a href="{{ url('user')}}">Users</a></li>
+    </ul>
+    #}
 
 {% endblock %}

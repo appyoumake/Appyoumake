@@ -418,7 +418,8 @@ class AppController extends Controller
     			"mlab_components" => $components,
     			"mlab_app" => $app->getArrayFlat(),
     			"mlab_config" => $config,
-                "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999)
+                "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999),
+                "mlab_current_user_email" => $this->getUser()->getEmail()
     	));
     }
     
@@ -460,7 +461,8 @@ class AppController extends Controller
     				'result' => 'success',
     				'html' => $page["html"],
     				'lock_status' => $page["lock_status"],
-                    'page_num' => $page_num,
+                    'page_num_sent' => $page_num,
+                    'page_num_real' => intval($doc),
                     'app_id' => $app_id));
     		 
     	} else {
@@ -485,19 +487,19 @@ class AppController extends Controller
     			'result' => 'error',
     			'msg' => sprintf("Application ID not specified: %d", $app_id)));
     	}
-        
+
+        if (!$page_num) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf("Page not specified: %d", $page_num)));
+        }
+
 //create the path to the file to open
         $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
         
 //calculate page number
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
-        $doc = $file_mgmt->getPageFileName($app_path, $page_num);
-        if (!$doc) {
-            return new JsonResponse(array(
-    					'result' => 'error',
-    					'msg' => sprintf("Page not specified: %d", $page_num)));
-        }
 
         $html = $request->request->all()["html"];
         $res = $file_mgmt->savePage($app, $page_num, $html);
@@ -519,6 +521,7 @@ class AppController extends Controller
     public function closeEditorAction($uid) {
         $file_mgmt = $this->get('file_management');
         $file_mgmt->clearLocks($uid);
+        return new JsonResponse( array( 'result' => 'success' ) );
     }
     
     /**

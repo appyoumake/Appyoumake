@@ -3,4 +3,4 @@
 ;
 ;key = values
 active = true
-
+tooltip=This component is for video

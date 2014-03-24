@@ -28,8 +28,8 @@
 	 		</div>
 	        {% block javascripts %}
 	        	<script src="{{ asset('/js/jquery-1.10.2.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery-ui.js') }}"></script>
                 <script src="{{ asset('/js/jquery.mobile-1.4.0.js') }}"></script>
+	        	<script src="{{ asset('/js/jquery-ui.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.uploadfile.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.qtip.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.megamenu.js') }}"></script>  
@@ -39,6 +39,7 @@
 		        <script type="text/javascript">	 
 			        $(document).ready(function() {
 			        	jQuery("#mlab_megamenu").megamenu();
+                        $("#mlab_megamenu li:last").before('<li id="mlab_statusbar"><div id="mlab_statusbar_progressbar">&nbsp;</div><div id="mlab_statusbar_temporary">&nbsp;</div><div id="mlab_statusbar_permanent">Ready</div></li>');
 			        });
 			    </script>
 	        {% endblock %}

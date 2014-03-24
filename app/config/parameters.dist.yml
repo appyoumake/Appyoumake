@@ -15,6 +15,7 @@ parameters:
     security.authentication.success_handler.class: Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
     
     mlab: 
+        save_interval: 60
         os_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
         uploads_allowed:
           img: [image/gif, image/jpeg, image/png]
@@ -42,13 +43,14 @@ parameters:
           offline_placeholder_identifier: no.ffi.sinett
           default_platform: android
           cmds:
-            create: cordova create _FOLDER_ _DOMAIN_ _TITLE_
+            create: cordova -d create _FOLDER_ _DOMAIN_ _TITLE_
             chdir: cd _FOLDER_ 
-            platform: cordova platform add _PLATFORM_
-            compile: cordova build
+            platform: cordova -d platform add _PLATFORM_
+            compile: cordova -d build --release
           android: 
             include_paths: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
-            compiled_app_location: /bin/
+            compiled_app_location: /platforms/android/ant-build/
+            ant_properties: 'cp /home/www-data/ant.properties _FOLDER_/platforms/android/ant.properties'
           bin_path: 
             android: /opt/cordova-3.2.0/cordova-android/bin
           platform_paths:
@@ -59,7 +61,7 @@ parameters:
             
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
-            template: [ frontpage.html, thumbnail.jpg, js/jquery.js, js/jquery_ui.js, js/jquery_mobile.js, css/style.css, conf.txt ]
+            template: [ frontpage.html, thumbnail.jpg, conf.txt, js/jquery.js, js/jquery-ui.js, js/jquery-mobile.js, css/mlab.css, css/jquery-mobile.css ]
             component: [ html.txt, icon.png, exec.js, conf.txt ]
             app: [ www ]
             template_strings: {frontpage.html: /\<div .*id\=.mlab_editable_area.*?\>/}

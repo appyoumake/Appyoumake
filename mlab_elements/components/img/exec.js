@@ -11,7 +11,12 @@ document.mlab_code_img = new function() {
     };
 
 	this.onSave = function (el) {
-        $(el).find('img').resizable( "destroy" );
+        var img = $(el).find('img');
+        var w = img.width();
+        var h = img.height();
+
+        img.resizable( "destroy" );
+        img.css({ width: w, height: h });
     };
             
     this.getProperties = function (comp) {

@@ -1,0 +1,9 @@
+#-----------------------------------------------------
+# Login, security
+#-----------------------------------------------------
+
+layout.login: MLAB
+security.login.username: Brukernavn:
+security.login.password: Passord:
+security.login.remember_me: Husk meg på denne maskinen
+security.login.submit: Logg inn
