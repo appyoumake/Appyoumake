@@ -1,4 +1,7 @@
-; Configuration file
-; Comments start with ';'
-active = true
-tooltip=This is a regular unordered list
+# Configuration file for unordered list (UL) component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: text
+name: ul
+tooltip: Unordered list
+compatible: (h1, h2, h3, ol, p)

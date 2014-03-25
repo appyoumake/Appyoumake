@@ -1,4 +1,7 @@
-; Configuration file
-; Comments start with ';'
-active = true
-tooltip=This is a sub headline, use sparingly per page to indicate change of topic
+# Configuration file for simple header (H2) component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: headline
+name: h2
+tooltip: This is a sub headline, use sparingly per page to indicate change of topic 
+compatible: (h1, h3, ol, ul, p)

@@ -1,6 +1,7 @@
 document.mlab_code_map = new function() {
 	
 	this.config = {component_name: "map"};
+    this.map_class_identifier = "mc_map";
     
 //el = element this is initialising, config = global config from conf.txt
 //maps are a bit tricky, 
@@ -23,12 +24,17 @@ document.mlab_code_map = new function() {
     	};
     	map = new google.maps.Map(el.get(0), myOptions);
     	$(el).css("height", "300px");
-    	$(el).resizable({"containment": designer}).find('#mlab_temp_map').attr("id", "");
+    	$(el).resizable({"containment": designer}).find('#mlab_temp_map').attr("id", "").addClass(this.map_class_identifier);
         
     };
 
 	this.onSave = function (el) {
 		$(el).find('div').resizable( "destroy" );
+    };
+    
+    this.getContentSize = function (el) {
+        var ctrl = $(el).find("." + this.map_class_identifier);
+        return { "width": ctrl.width(), "height": ctrl.height() }
     };
             
     this.getProperties = function (comp) {

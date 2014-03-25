@@ -1,6 +1,7 @@
-; Configuration file
-; Comments start with ';'
-;
-;key = values
-active = true
-tooltip=This component is for youtube videos
+# Configuration file for a streaming video component using Youtube
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: video
+name: video
+tooltip: This component is for Youtube videos (requires internet access)
+

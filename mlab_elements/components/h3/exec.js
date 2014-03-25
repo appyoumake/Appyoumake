@@ -13,6 +13,9 @@ document.mlab_code_h3 = new function() {
 		$(el).find("h3").removeAttr("contenteditable");
     };
             
+    this.getContentSize = function (el) {
+        return $(el).find("h3").text().length;
+    };
 
 
 };

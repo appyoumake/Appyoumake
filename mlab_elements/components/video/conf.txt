@@ -1,6 +1,7 @@
-; Configuration file
-; Comments start with ';'
-;
-;key = values
-active = true
-tooltip=This component is for video
+# Configuration file for basic, local (as opposed to streaming) video component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: video
+name: video
+tooltip: This component is for local videos that you add to the app
+

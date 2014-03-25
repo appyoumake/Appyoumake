@@ -16,7 +16,7 @@ use Symfony\Component\Process\Exception\LogicException;
 use Symfony\Component\Process\Exception\RuntimeException;
 
 /**
- * Process is a thin wrapper around proc_* functions to ease
+ * Process is a thin wrapper around proc_* functions to easily
  * start independent PHP processes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
@@ -246,6 +246,13 @@ class Process
         $this->status = self::STATUS_STARTED;
 
         $this->processPipes->unblock();
+
+        if ($this->tty) {
+            $this->status = self::STATUS_TERMINATED;
+
+            return;
+        }
+
         $this->processPipes->write(false, $this->stdin);
         $this->updateStatus(false);
         $this->checkTimeout();
@@ -740,7 +747,7 @@ class Process
     }
 
     /**
-     * Checks if  the TTY mode is enabled.
+     * Checks if the TTY mode is enabled.
      *
      * @return Boolean true if the TTY mode is enabled, false otherwise
      */
@@ -805,7 +812,9 @@ class Process
     public function setEnv(array $env)
     {
         // Process can not handle env values that are arrays
-        $env = array_filter($env, function ($value) { if (!is_array($value)) { return true; } });
+        $env = array_filter($env, function ($value) {
+            return !is_array($value);
+        });
 
         $this->env = array();
         foreach ($env as $key => $value) {
@@ -941,7 +950,7 @@ class Process
      */
     private function getDescriptors()
     {
-        $this->processPipes = new ProcessPipes($this->useFileHandles);
+        $this->processPipes = new ProcessPipes($this->useFileHandles, $this->tty);
         $descriptors = $this->processPipes->getDescriptors();
 
         if (!$this->useFileHandles && $this->enhanceSigchildCompatibility && $this->isSigchildEnabled()) {
@@ -1017,6 +1026,10 @@ class Process
             return self::$sigchild;
         }
 
+        if (!function_exists('phpinfo')) {
+            return self::$sigchild = false;
+        }
+
         ob_start();
         phpinfo(INFO_GENERAL);
 
@@ -1027,6 +1040,7 @@ class Process
      * Reads pipes, executes callback.
      *
      * @param Boolean $blocking Whether to use blocking calls or not.
+     * @param Boolean $close    Whether to close file handles or not.
      */
     private function readPipes($blocking, $close)
     {

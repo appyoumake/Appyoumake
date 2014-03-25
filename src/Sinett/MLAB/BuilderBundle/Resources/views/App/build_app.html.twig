@@ -3,10 +3,10 @@
 {% block body -%}
 
 <!-- This is the actual content of the page, very little is required as it is loaded from external files -->	
-	<div id="mlab_template_warning"></div>	                     
+	<div id="mlab_template_warning"></div>
 	
 	<div id="mlab_toolbar_components">
-		{% for type, component in mlab_components if (component.accessible and not component.nogui) %}
+		{% for type, component in mlab_components if (component.accessible and not component.is_property) %}
 			<div data-mlab-type='{{ type }}' title='{{ component.tooltip }}' class='mlab_button_components' style='background-image: url("{{ mlab_config.urls.component ~ type ~ '/' ~ mlab_config.component_files.ICON }}");'></div>
 		{% endfor %}
 	</div>
@@ -17,7 +17,6 @@
 
 	<div title="Use this to rotate the editor" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
 	<div id="mlab_dialog_new_app"></div>
-    <div id="mlab_storage_space"></div>
     <div id="mlab_menu_popup"></div>
     <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
 {% endblock %}
@@ -216,7 +215,7 @@
         function mlab_app_remove_locks() {
             mlab_update_status("temporary", "Unlocking all pages...", true);
             $.get( "{{ path('app_builder_app_unlock') }}" );
-
+            $("#mlab_editor_disabled").remove();
         }
 		/**
 		 * submits data for new app from the dialog box where we collect details of the new app  
@@ -420,7 +419,7 @@
 //then pick up doc variable which has empty body, then insert the cleaned elements
 //finally convert to text to send back
 		
-        function mlab_page_save() {            
+        function mlab_page_save() {
 //cannot save if locked
             if ($("#mlab_editor_disabled").length > 0) {
                 return false;
@@ -446,8 +445,15 @@
             url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", page_num);
             
+//this loop is a: picking up the cleaned HTML for each component, 
+//(this is done by calling the onSave unction which strips away anything we are not interested in)
+// and b: checking if the component transgresses any of the rules for the template
+            var rules = document.mlab_current_app.template_config.components;
+            var component_categories = new Object();
+            var template_best_practice_msg = new Array();
+            
 			$("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
-                comp_id = $(this).data("mlab-type");
+                var comp_id = $(this).data("mlab-type");
 				if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
 					document["mlab_code_" + comp_id].onSave(this);
                     page_content = page_content + $(this)[0].outerHTML + "\n";
@@ -455,7 +461,59 @@
                 } else {
                     page_content = page_content + $(this)[0].outerHTML + "\n";
                 }
+                
+//run the template check
+                if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("type")) {
+                    var comp_category = mlab_components[comp_id].conf.type;  
+
+                    if (!component_categories.hasOwnProperty(comp_category)) {
+                        component_categories[comp_category] = 1;
+                    } else {
+                        component_categories[comp_category]++;
+                    }
+
+                    if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
+//can only do this if component supprts the getContentSize function
+                        if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
+                            var size = document["mlab_code_" + comp_id].getContentSize(this);
+                            if (rules.hasOwnProperty(comp_category)) {
+                                if (rules[comp_category].hasOwnProperty("max")) {
+                                    if (size > rules[comp_category].max.size) {
+                                        if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
+                                            template_best_practice_msg.push(rules[comp_category].max.message);
+                                        }
+                                    }
+                                }
+                                if (rules[comp_category].hasOwnProperty("min")) {
+                                    if (size < rules[comp_category].min.size) {
+                                        if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
+                                            template_best_practice_msg.push(rules[comp_category].min.message);
+                                        }
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                }
 			});
+            
+// final template "best practices", we see if there are too many or too few of certain categories of components on a page
+            for (category in rules) {
+                if (rules[category].hasOwnProperty("max")) {
+                    if (component_categories[category] > rules[category].max.count) {
+                        if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
+                            template_best_practice_msg.push(rules[comp_category].max.message);
+                        }
+                    }
+                }
+                if (rules[category].hasOwnProperty("min")) {
+                    if (component_categories[category] > rules[category].min.count) {
+                        if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
+                            template_best_practice_msg.push(rules[comp_category].min.message);
+                        }
+                    }
+                }
+            };
             
 //if this is the index page we add the full HTML page, if not we only require a very simple header/footer
             if (page_num == 0 || page_num == "index" ) {
@@ -468,7 +526,8 @@
             }
 			
             curr_el.addClass("mlab_current_component");
-            
+
+//finlly we submit the data to the server
 			$.post( url, {html: html}, function( data ) {
                 if (data.result == "success") {
                     mlab_update_status("temporary", "Saved page", false);
@@ -477,9 +536,12 @@
 				} else {
                     mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
 				}
-				
 			});
 			
+//above we have counted the number of issues relating to the template "best practices" configuration, time to display the error message, if any
+            if (template_best_practice_msg.length > 0) {
+                alert(template_best_practice_msg.join("<br>"));
+            }
 		}
         
         /**
@@ -802,14 +864,20 @@
                 mlab_update_status("completed");
 				if (data.result == "success") {
                     full_url = window.location.origin + data.url;
-                    $("#mlab_download_qr").empty().qrcode({text: full_url}).slideDown('slow')
+                    $("#mlab_download_qr").empty().qrcode({text: full_url, render : "table"}).hide()
                             .append("<br>")
                             .append("<a href='" + full_url + "'>Download: " + full_url +"</a>")
                             .append("<br>")
                             .append("<a href='mailto:" + mlab_current_user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
 				} else {
-					$("#mlab_download_qr").empty().append("Error:" + data.msg).slideDown('slow');
+					$("#mlab_download_qr").empty().append("Error:" + data.msg).hide();
 				}
+                $("#mlab_statusbar_permanent").qtip({
+                    content: {text: $("#mlab_download_qr").html() },
+                    position: { my: 'topMiddle', at: 'bottomMiddle' },
+                    show: { ready: true, modal: { on: false, blur: false } },
+                    hide: 'unfocus',
+                    style: { classes: 'qtip-tipped' }})
 				
 			});
         }

@@ -17,6 +17,10 @@ document.mlab_code_h1 = new function() {
 		var content = $(el).find("h1").html();
         $(el).empty().html(replacement_html).data("mlab-type", replacement_id).children(0).html(content);
     };
+    
+    this.getContentSize = function (el) {
+        return $(el).find("h1").text().length;
+    };
 
     this.custom_add_link = function (el) {
         var link = prompt("Please enter a valid URL or a page number to link to.");

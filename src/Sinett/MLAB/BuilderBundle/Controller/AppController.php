@@ -131,10 +131,9 @@ class AppController extends Controller
         			'mlab_app_page_num' => 1,
         			'mlab_app_id' => $entity->getId(),
         			'mlab_app_version' => $entity->getVersion(),
-        			'mlab_app' => $entity->getArrayFlat(),
+        			'mlab_app' => $entity->getArrayFlat($config["paths"]["template"]),
                     'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity)))
             );
-        	 
         }
         
         return new JsonResponse(array(
@@ -384,39 +383,35 @@ class AppController extends Controller
     			'apps' => $apps,
     	));
     }
-    
-    /**
-     * Opens an app on the front page:
-     * 1: Check page is not locked
-     * 2: Lock it
-     * 3: Unlock all other pages!
-     * 4: Render page
-     * 5: In page use getPageHtml() call in this controller
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
+
+/**
+ * Opens the app page editor, loads initial app and various config details
+ * @param type $id
+ * @param type $page_num
+ */
     public function buildAppAction($id, $page_num)
     {
     	$em = $this->getDoctrine()->getManager();
-    	$config = $this->container->parameters['mlab'];
     	
-    	$file_mgmt = $this->get('file_management');
-    	$file_mgmt->setConfig('component');
-    	
+// pick up config from parameters.yml, we use this mainly for paths
+        $config = $this->container->parameters['mlab'];
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
-    	 
+
+//load all the components        
+    	$file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('component');
     	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
     	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"]);
-    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
     	
-        
+    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
         
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
     			"mlab_app_id" => $id, 
     			"mlab_app_version" => $app->getVersion(), 
     			"mlab_components" => $components,
-    			"mlab_app" => $app->getArrayFlat(),
+    			"mlab_app" => $app->getArrayFlat($config["paths"]["template"]),
     			"mlab_config" => $config,
                 "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999),
                 "mlab_current_user_email" => $this->getUser()->getEmail()
@@ -425,6 +420,12 @@ class AppController extends Controller
     
     /**
      * Always called by AJAX to get the HTML content of the page that is to be edited
+     * Opens an app on the front page:
+     * 1: Check page is not locked
+     * 2: Lock it
+     * 3: Unlock all other pages!
+     * 4: Render page
+     * 5: In page use getPageHtml() call in this controller
      * @param unknown $app_id
      * @param unknown $page_num
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel

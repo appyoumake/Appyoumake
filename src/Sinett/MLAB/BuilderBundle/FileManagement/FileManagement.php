@@ -2,6 +2,8 @@
 
 namespace Sinett\MLAB\BuilderBundle\FileManagement;
 use ZipArchive;
+use Symfony\Component\Yaml\Parser;
+
 
 class FileManagement {
 	
@@ -115,17 +117,17 @@ class FileManagement {
 		   
 // finally set the path, name and description properties, description = tooltip in the conf.txt. stored as "tooltip=This is a regular headline, use only once per page"
 				if (file_exists($full_path . "/conf.txt")) {
-					$temp = file($full_path . "/conf.txt");
-					foreach ($temp as $line) {
-						if (substr(trim($line), 0, 8) == "tooltip=") {
-							$entity->setDescription(substr(trim($line), 8));
-						} else if (substr(trim($line), 0, 16) == "compatible_with=") {
-							$entity->setCompatibleWith(substr(trim($line), 16));
-						} else if (substr(trim($line), 0, 8) == "version=") {
-							$entity->setVersion(substr(trim($line), 8));
-						}
-						
-					}
+                    $yaml = new Parser();
+					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.txt"));
+                    if (isset($temp["tooltip"])) {
+                        $entity->setDescription($temp["tooltip"]);
+                    } 
+                    if (isset($temp["compatible_with"])) {
+                        $entity->setCompatibleWith(substr(trim($line), 16));
+                    } 
+                    if (isset($temp["version"])) {
+                        $entity->setVersion(substr(trim($line), 8));
+                    }
 				}
 				
 				$entity->setPath($dir_name);
@@ -155,7 +157,8 @@ class FileManagement {
 	 * @return array
 	 */
 	function loadComponents($access, $path, $config) {
-		
+		$yaml = new Parser();
+
 		$components = array();
 		if ($handle = opendir($path)) {
 			while (false !== ($entry = readdir($handle))) {
@@ -168,27 +171,12 @@ class FileManagement {
 								"exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
 								"exec_server" => file_exists($comp_dir . $config["PHP"]),
 								"rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
-								"conf" => @file_get_contents($comp_dir . $config["CONFIG"]),
-                                "nogui" => false,
+								"conf" => $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"])),
+                                "isproperty" => false,
 								"accessible" => in_array($entry, $access)); //we hide the ones they are not allowed to see, but still load it for reference may exist in app...
 	
-//convert the conf.text to an associative array, this way can use it a a lookup
-
-                        if ($components[$entry]["conf"] !== false) {
-							$tmp = explode("\n", $components[$entry]["conf"]);
-							$components[$entry]["conf"] = array();
-							foreach ($tmp as $line) {
-								$line = trim($line);
-								if (strlen($line) > 0 && substr($line, 0, 1) != ";") {
-									list($key, $val) = explode("=", $line);
-									$components[$entry]["conf"][$key] = $val;
-                                    if ($key == "nogui") {
-                                        $components[$entry]["nogui"] = $val;
-                                    }
-								}
-							}
-						}
-						
+                        if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"]))
+                            $components[$entry]["is_property"] = ($components[$entry]["conf"]["category"] == "property");
 //tooltips are in the conf file (or not!), so add it here, or blank if none
 						$components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
 				}

@@ -40,6 +40,11 @@ document.mlab_code_img = new function() {
 		console.log('delete');
     };
     
+    this.getContentSize = function (el) {
+        var ctrl = $(el).find("img");
+        return { "width": ctrl.width(), "height": ctrl.height() }
+    };
+    
     this.custom_maximize = function (el) {
         if ($(el).siblings().length > 0) {
             alert("Unable to maximise the component, there can be no other components on the page to do this");

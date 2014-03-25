@@ -1,4 +1,7 @@
-; Configuration file
-; Comments start with ';'
-active = true
-tooltip=This is a map component
+# Configuration file for basic Google maps component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: map
+name: map
+tooltip: This is a basic map component which will display a Google map centred on a specified location
+
