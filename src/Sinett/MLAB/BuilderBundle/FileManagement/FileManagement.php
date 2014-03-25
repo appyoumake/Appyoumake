@@ -167,16 +167,15 @@ class FileManagement {
 				if ( is_dir($comp_dir) && substr($entry, 0, 1) != "." ) {
 //always add html, rest we add content or set bool values that will let us know what to do later
 						$components[$entry] = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
-								"js" => file_exists("$comp_dir$entry.js"),
 								"exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
 								"exec_server" => file_exists($comp_dir . $config["PHP"]),
 								"rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
 								"conf" => $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"])),
-                                "isproperty" => false,
+                                "is_feature" => false,
 								"accessible" => in_array($entry, $access)); //we hide the ones they are not allowed to see, but still load it for reference may exist in app...
 	
                         if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"]))
-                            $components[$entry]["is_property"] = ($components[$entry]["conf"]["category"] == "property");
+                            $components[$entry]["is_feature"] = ($components[$entry]["conf"]["category"] == "feature");
 //tooltips are in the conf file (or not!), so add it here, or blank if none
 						$components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
 				}
@@ -187,6 +186,28 @@ class FileManagement {
 		}
 		ksort($components);
 		return $components;
+	}
+    
+	function loadSingleComponent($path, $comp_id, $config) {
+		$yaml = new Parser();
+        $comp_dir = $path . $comp_id . "/";
+
+        if ( is_dir($comp_dir) ) {
+//always add html, rest we add content or set bool values that will let us know what to do later
+                $component = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
+                        "exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
+                        "exec_server" => file_exists($comp_dir . $config["PHP"]),
+                        "rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
+                        "conf" => $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"])),
+                        "is_feature" => false);
+
+                if (isset($component["conf"]) && isset($component["conf"]["category"]))
+                    $component["is_feature"] = ($component["conf"]["category"] == "feature");
+//tooltips are in the conf file, so add it here, or blank if none
+                $component["tooltip"] = isset($component["conf"]["tooltip"]) ? $component["conf"]["tooltip"] : "";
+        }
+   
+		return $component;
 	}
 	
 	/**
@@ -611,5 +632,43 @@ class FileManagement {
             return array("result" => "success", "url" => $url);
         }
 	}
+    
+    /**
+     * Adds a "feature", that is, a hidden component that adds features to an app that are not a visual component
+     **/
+    public function addFeature($filename, $comp_id, $component) {
+        $doc = new \DOMDocument("1.0", "utf-8");
+        $doc->validateOnParse = true;
+        $doc->loadHTMLFile($filename);
+
+        $xpath = new \DOMXPath($doc);
+        $div_for_features = $xpath->query("//*[@id='mlab_features_content']")->item(0);
+
+        if (empty($div_for_features)) {
+            $div = $doc->createDocumentFragment();
+            $div->appendXML("<div id='mlab_features_content' style='display: none;'></div>");
+            
+            foreach($doc->getElementsByTagName('body') as $node) {
+                $node->appendChild($div);
+            }
+            $div_for_features = $xpath->query("//*[@id='mlab_features_content']")->item(0);
+        }
+        
+        $feature_component = $doc->createDocumentFragment();
+        $feature_component->appendXML("<div data-mlab-type='$comp_id' >" . $component["html"] . "</div>");
+        $div_for_features->appendChild($feature_component);
+        return $doc->saveHTMLFile($filename);
+    }
+    
+    /**
+     * This function 
+     * @param type $filename
+     * @param type $tag
+     * @param type $attribute
+     * @param type $value
+     */
+    public function updateCordovaConfiguration($filename, $tag, $attribute, $value) {
+        
+    }
 
 }

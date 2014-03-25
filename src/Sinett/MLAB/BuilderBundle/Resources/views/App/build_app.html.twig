@@ -6,7 +6,7 @@
 	<div id="mlab_template_warning"></div>
 	
 	<div id="mlab_toolbar_components">
-		{% for type, component in mlab_components if (component.accessible and not component.is_property) %}
+		{% for type, component in mlab_components if (component.accessible and not component.is_feature) %}
 			<div data-mlab-type='{{ type }}' title='{{ component.tooltip }}' class='mlab_button_components' style='background-image: url("{{ mlab_config.urls.component ~ type ~ '/' ~ mlab_config.component_files.ICON }}");'></div>
 		{% endfor %}
 	</div>
@@ -18,6 +18,7 @@
 	<div title="Use this to rotate the editor" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
 	<div id="mlab_dialog_new_app"></div>
     <div id="mlab_menu_popup"></div>
+    <div id="mlab_app_info"></div>
     <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
 {% endblock %}
 
@@ -64,8 +65,6 @@
 			    	var id = $(ui.draggable[0]).data("mlab-type");
                     ui.draggable.empty().append(mlab_components[id].html);
 		    		ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
-//DEL                    ui.draggable.css("position", "relative"); //need this to make handle positioning work
-//DEL                    ui.draggable.prepend("<div class='mlab_drag_handle' />");
 		    		ui.draggable.on("click", function(){mlab_highlight_selected(this);});
                     ui.draggable.on("input", function(){mlab_flag_dirty = true;});
 
@@ -463,8 +462,8 @@
                 }
                 
 //run the template check
-                if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("type")) {
-                    var comp_category = mlab_components[comp_id].conf.type;  
+                if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("category")) {
+                    var comp_category = mlab_components[comp_id].conf.category;  
 
                     if (!component_categories.hasOwnProperty(comp_category)) {
                         component_categories[comp_category] = 1;
@@ -501,15 +500,15 @@
             for (category in rules) {
                 if (rules[category].hasOwnProperty("max")) {
                     if (component_categories[category] > rules[category].max.count) {
-                        if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
-                            template_best_practice_msg.push(rules[comp_category].max.message);
+                        if ($.inArray(rules[category].max.message, template_best_practice_msg) < 0) {
+                            template_best_practice_msg.push(rules[category].max.message);
                         }
                     }
                 }
                 if (rules[category].hasOwnProperty("min")) {
-                    if (component_categories[category] > rules[category].min.count) {
-                        if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
-                            template_best_practice_msg.push(rules[comp_category].min.message);
+                    if (component_categories[category] < rules[category].min.count) {
+                        if ($.inArray(rules[category].min.message, template_best_practice_msg) < 0) {
+                            template_best_practice_msg.push(rules[category].min.message);
                         }
                     }
                 }
@@ -540,8 +539,15 @@
 			
 //above we have counted the number of issues relating to the template "best practices" configuration, time to display the error message, if any
             if (template_best_practice_msg.length > 0) {
-                alert(template_best_practice_msg.join("<br>"));
-            }
+                $("#mlab_statusbar_permanent").qtip( {
+                    content: {text: "<ul><li>" + template_best_practice_msg.join("</li><li>") + "</li></ul>" },
+                    position: { my: 'topMiddle', at: 'bottomMiddle' },
+                    show: { ready: true, modal: { on: false, blur: false } },
+                    hide: 'unfocus',
+                    style: { "background-color": "white", color: "blue", classes: "mlab_qtip_info" } } ) ;
+            } else {
+                 $(".mlab_qtip_info").remove();
+             }
 		}
         
         /**
@@ -673,17 +679,6 @@
             mlab_flag_dirty = true;
         }
         
-//wrapper to call the getProperties function for a control if it exists 
-//this in turn will call the mlab_propterties_dialoge to display the dialoge 
-//when OK is clicked the setProperties function is called 
-		function mlab_content_edit() {
-            var comp = $(".mlab_current_component");
-			if (typeof (document["mlab_code_" + comp.data("mlab-type")]) !== "undefined") {
-				document["mlab_code_" + comp.data("mlab-type")].getProperties(comp);
-			}
-            mlab_flag_dirty = true;
-		}
-        
         function mlab_highlight_selected(el) {
              $( "#" + mlab_config["app"]["content_id"] + " div" ).removeClass("mlab_current_component");
              $( el ).addClass("mlab_current_component");
@@ -708,17 +703,17 @@
                                     };
                 }
             }
-            if (typeof mlab_components[comp_name].conf.compatible != "undefined") {
+            if ((typeof mlab_components[comp_name].conf.compatible != "undefined") && (document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].hasOwnProperty("onReplace"))) {
                 items["sep1"] = "---------";
                 items["replace"] = {"name": "Replace control with"};
                 var sub_items = new Object;
-                mlab_components[$(".mlab_current_component").data("mlab-type")].conf.compatible.split(",").forEach(function(replace_with) {
+                mlab_components[$(".mlab_current_component").data("mlab-type")].conf.compatible.forEach(function(replace_with) {
                     title = replace_with.trim();
-                    sub_items[title] = { name: " -> " + title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
-                                                      callback: function(key, options) {
-                                                        document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].onReplace($('.mlab_current_component'), key, mlab_components[key].html);
-                                                      }
-                                                    };
+                    sub_items[title] = { name: " -> " + title.replace("_", " "),
+                                         callback: function(key, options) {
+                                            document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].onReplace($('.mlab_current_component'), key, mlab_components[key].html);
+                                         }
+                                       };
                 } );
                 items["replace"]["items"] = sub_items; 
            }
@@ -727,7 +722,7 @@
             $.contextMenu( 'destroy', '.mlab_current_component' );
             
             if (Object.keys(items).length < 1) {
-                return;
+                items["empty"] = "No actions available for this component";
             }
             
             $.contextMenu({
@@ -747,32 +742,32 @@
             $('.mlab_menu_title').attr('data-menutitle', "Modify component");
         }
         
-        function mlab_menu_properties_prepare() {
+        function mlab_menu_features_prepare() {
             var items = new Object();
             var title = "";
             for(var index in mlab_components) {
-                if (mlab_components[index].conf["nogui"]) {
+                if (mlab_components[index].conf["category"] == "feature") {
                     items[index] =  { name: index.charAt(0).toUpperCase() + index.slice(1),
                                       callback: function(key, options) {
-                                          mlab_property_add(key);
+                                          mlab_feature_add(key);
                                       }
                                     };
                 }
             }            
-            $.contextMenu( 'destroy', '#mlab_button_properties' );
+            $.contextMenu( 'destroy', '#mlab_button_features' );
             
             if (Object.keys(items).length < 1) {
                 return;
             }
             
             $.contextMenu({
-                selector: '#mlab_button_properties', 
-                className: 'mlab_menu_properties_title',
+                selector: '#mlab_button_features', 
+                className: 'mlab_menu_features_title',
                 trigger: 'left',
                 items: items
             });
 
-            $('.mlab_menu_properties_title').attr('data-menutitle', "Add property");
+            $('.mlab_menu_features_title').attr('data-menutitle', "Add property");
         }
         
         function mlab_component_delete() {
@@ -780,9 +775,38 @@
             mlab_flag_dirty = true;
         }
         
-//properties are simply components that are not displayed with a GUI.
-        function mlab_property_add(index){
-            alert("Will add: " + index);
+//features are simply components that are not displayed with a GUI.
+//they are added to a hidden div, if we are NOT working on the index page we call a backend function to add this code
+        function mlab_feature_add(comp_id){
+            if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
+                $(document.mlab_current_app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
+            } else {
+//make sure not duplicate it
+                if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
+                    mlab_update_status("temporary", "Feature already added", false);
+                    return;
+                }
+            }
+            
+            $(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + mlab_components[comp_id].html + "</div>");
+            
+        
+            if (document.mlab_current_app.curr_page_num != "0" && document.mlab_current_app.curr_page_num != "index") {
+                var url = "{{ path('app_builder_feature_add', { 'app_id': '_APPID_', 'comp_id': '_COMPID_' }) }}";
+                url = url.replace("_APPID_", document.mlab_current_app.id);
+                url = url.replace("_COMPID_", comp_id);
+                mlab_update_status("callback", 'Adding feature...', true);
+
+                $.get( url, function( data ) {
+                    if (data.result == "success") {
+                        mlab_update_status("temporary", "Feature added", false);
+                        $("#mlab_app_info").append("<br>" + mlab_components[data.component_id].conf.tooltip);
+                    } else {
+                        mlab_update_status("temporary", data.msg, false);
+                    }
+
+                });
+            } 
         }
 /*
  * 
@@ -837,6 +861,13 @@
             $.get( url, function( data ) {
 				if (data.result == "success") {
                     mlab_index_page_process ( data.html, "index");
+                    $("#mlab_app_info").empty();
+                    $(document.mlab_current_app.curr_indexpage_html)
+                        .find("#mlab_features_content [data-mlab-type]>")
+                        .each(function() { 
+                            $("#mlab_app_info").append("<br>" + mlab_components[$(this).parent().data("mlab-type")].conf.tooltip);
+                         });
+
                     if (local_page_num != "0" && local_page_num != "index") {
                         mlab_page_open(data.app_id, local_page_num);
                     }
@@ -877,7 +908,7 @@
                     position: { my: 'topMiddle', at: 'bottomMiddle' },
                     show: { ready: true, modal: { on: false, blur: false } },
                     hide: 'unfocus',
-                    style: { classes: 'qtip-tipped' }})
+                    style: { classes: 'qtip-tipped' }});
 				
 			});
         }
@@ -974,7 +1005,7 @@
 			    modal: true,
 				});
 			
-            mlab_menu_properties_prepare();
+            mlab_menu_features_prepare();
             
 //we always load pages using AJAX, this takes the parameters passed from the controller 
 			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );

@@ -12,11 +12,11 @@ components:
     min: 
       count: 1
       message: You should have at least one headline per page, with minimum 3 characters
-      size: 3
+      size: 4
     max: 
-      size: 10
+      size: 40
       count: 3
-      message: Recommend max 3 text boxes with max 300 characters per page
+      message: Recommend max 3 headlines with max 300 characters per page
 
   text:
     max: 

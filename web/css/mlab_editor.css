@@ -1004,36 +1004,6 @@ ul.megamenu li a {
 }
 
 
-
-
-
-.megamenu{
-/* test */
-background-color: rgb(204, 0, 0);
-}
-
-ul{
-/* test */
-background-color: rgb(204, 0, 0);
-}
-
-
-li{
-/* test */
-color: rgb(204, 0, 0);
-}
-
-
-a{
-/* test */
-color: rgb(204, 0, 0);
-}
-
-h2{
-/* test */
-color: rgb(204, 0, 0);
-}
-
 #mlab_property_uploadfiles, #mlab_property_uploadfiles_start {
     float: left;
     clear: both;

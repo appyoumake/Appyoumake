@@ -1,7 +1,7 @@
 # Configuration file for dummy "invisible" component
 version: 1.0
 developer: Arild Bergh @ Sinett/FFI.no
-category: property
+category: feature
 name: dummy
 tooltip: This is an invisible component
 

@@ -25,7 +25,7 @@ document.mlab_code_h1 = new function() {
     this.custom_add_link = function (el) {
         var link = prompt("Please enter a valid URL or a page number to link to.");
         if (link != null && link != "") {
-            document.execCommand("CreateLink", false, link);
+            document.execCommand("createlink", false, link);
         }
     };
 

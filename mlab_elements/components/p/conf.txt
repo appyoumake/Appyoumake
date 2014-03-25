@@ -4,4 +4,4 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: text
 name: p
 tooltip: Regular body text
-compatible: (h1, h2, h3, ol, ul)
+compatible: ["h1", "h2", "h3", "ul", "ol"]

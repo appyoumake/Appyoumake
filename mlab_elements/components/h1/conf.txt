@@ -4,5 +4,5 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: headline
 name: h1
 tooltip: This is a main headline, use only once per page
-compatible: (h2, h3, ol, ul, p)
-dependencies: (dummy)
+compatible: ["h2", "h3", "ol", "ul", "p"]
+dependencies: ["dummy"]

@@ -4,4 +4,4 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: text
 name: ol
 tooltip: Ordered list
-compatible: (h1, h2, h3, ul, p)
+compatible: ["h1", "h2", "h3", "ul", "p"]

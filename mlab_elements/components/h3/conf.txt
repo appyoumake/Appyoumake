@@ -4,4 +4,4 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: headline
 name: h3
 tooltip: This is a sub, sub headline, use sparingly per page to indicate change of topic 
-compatible: (h1, h2, ol, ul, p)
+compatible: ["h1", "h2", "ol", "ul", "p"]

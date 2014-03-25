@@ -791,6 +791,35 @@ class AppController extends Controller
             }
     }
     
+    public function featureAddAction($app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+
+//get config etc
+        $config = $this->container->parameters['mlab'];
+        $doc = "index.html";
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+
+//load the component they want to add
+	    $file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('component');
+    	$component = $file_mgmt->loadSingleComponent($config["paths"]["component"], $comp_id, $config["component_files"]);        
+
+    	if (file_exists("$app_path$doc") && $file_mgmt->addFeature("$app_path$doc", $comp_id, $component)) {
+    		return new JsonResponse(array('result' => 'success', 'component_id' => $comp_id));
+    	} else {
+    		return new JsonResponse(array(
+    				'result' => 'error',
+    				'msg' => sprintf("Unable to update app with feature " . $comp_id . ", please try again")));
+    	}
+    }
+    
 /**
  * Wrapper for Cordova build function
  * @param type $app_id
