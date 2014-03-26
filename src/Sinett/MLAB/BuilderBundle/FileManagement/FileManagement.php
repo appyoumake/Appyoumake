@@ -661,14 +661,54 @@ class FileManagement {
     }
     
     /**
-     * This function 
+     * This function will update an XML file (typically /www/config.xml or /platforms/android/AndroidManifest.xml)
+     * with values that either replace existing ones or add to new ones 
      * @param type $filename
-     * @param type $tag
-     * @param type $attribute
-     * @param type $value
+     * @param type string update: can be attribute or content, this is what will be added or replaced in the XML code
+     * @param type string $tag
+     * @param type string $attribute
+     * @param type string $value
+     * http://stackoverflow.com/questions/1193528/how-to-modify-xml-file-using-php
+     * http://stackoverflow.com/questions/15156464/i-want-to-modify-the-existing-data-in-xml-file-using-php
+     * http://stackoverflow.com/questions/10909372/checking-if-an-object-attribute-is-set-simplexml
+     * http://stackoverflow.com/questions/17661167/how-to-replace-xml-node-with-simplexmlelement-php
+     * http://www.php.net/manual/en/book.simplexml.php
      */
-    public function updateCordovaConfiguration($filename, $tag, $attribute, $value) {
+    public function updateCordovaConfiguration($filename, $update, $tag, $attribute, $existing_attribute_value, $update_value) {
+        if (!file_exists($filename)) {
+            return "File not found: $filename";
+        }
+        if (empty($tag)) {
+            return "No tag specified";
+        }
+
+        if (empty($attribute) || empty($existing_attribute_value)) {
+            $query = "//*[local-name() = '$tag']";
+        } else {
+            $query = "//*[local-name() = '$tag'][@$attribute = '$existing_attribute_value']";
+        }
+        $xml = simplexml_load_file($filename);
+
         
+        $res = $xml->xpath($query);
+        if (sizeof($res) > 1) {
+            return "Found more than one configuration setting matching criteria, cannot continue";
+        }
+           
+        if (sizeof($res) == 0) {
+            $res[0] = $xml->addChild($update_value);
+        }
+        if ($update == "attribute") {
+            $res[0][$attribute] = $update_value;
+        } elseif ($update == "content") {
+            $xml->{$tag} = $update_value;
+        }
+ 
+        if (!$xml->asXML($filename)) {
+            return "Unable to update the configuration for this application";
+        }
+        
+        return true;
     }
 
 }

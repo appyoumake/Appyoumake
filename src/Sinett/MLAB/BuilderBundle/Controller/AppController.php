@@ -11,6 +11,8 @@ use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
 
+use Symfony\Component\Yaml\Parser;
+
 //use Symfony\Component\HttpFoundation\File\UploadedFile
 
 /**
@@ -401,6 +403,7 @@ class AppController extends Controller
 //load all the components        
     	$file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
+        
     	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
     	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"]);
     	
@@ -717,10 +720,12 @@ class AppController extends Controller
     			'msg' => sprintf("Component type not specified: %s", $comp_id)));
         }
 
+        $target_platform = $this->container->parameters['mlab']['cordova']['default_platform'];
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
         $path_app_assets = $path_app . $this->container->parameters['mlab']['cordova']['asset_path'];
         $path_app_js = $path_app_assets . "js/";
+        $path_app_permissions = $path_app . $this->container->parameters['mlab']['cordova'][$target_platform]["permissions_location"];
         
 //check if path to component and app exists
             if ( is_dir($path_component) && is_dir($path_app) && is_dir($path_app_assets) ) {
@@ -735,33 +740,41 @@ class AppController extends Controller
                 }
 
 //2: Add rights to the manifest file
-                if (file_exists($path_component . "permissions.txt")) {
-                    if (!file_exists( $path_app . "AndroidManifest.xml")) {
-                        touch($path_app . "AndroidManifest.xml");
-                    }
-                    $xml = simplexml_load_file($path_app . "AndroidManifest.xml");
+                if (file_exists($path_component . "conf.txt")) {
+                    $yaml = new Parser();
+					$config = $yaml->parse(@file_get_contents($path_component . "conf.txt"));
+                    if (isset($config["permissions"])) {
+                        
+                        $new_permissions = $config["permissions"];
 
-                    $new_permissions = file($path_component . "permissions.txt", FILE_IGNORE_NEW_LINES);
-                    $existing_permissions = array();
-                    foreach($xml->{'uses-permission'} as $permission) {
-                        $existing_permissions[] = (string) $permission->attributes('http://schemas.android.com/apk/res/android');
-                    }
+                        if (!file_exists( $path_app_permissions . "AndroidManifest.xml")) {
+                            touch($path_app_permissions . "AndroidManifest.xml");
+                        }
+                        $xml = simplexml_load_file($path_app . "AndroidManifest.xml");
 
-                    $add_permissions = array_diff($new_permissions, $existing_permissions);
-
-//only add permissions if it is not already there
-                    if (count($add_permissions) > 0) {
-                        foreach ($add_permissions as $add_permission) {
-                            $perm = $xml->addChild('uses-permission');
-                            $perm->addAttribute("android:name", $add_permission, 'http://schemas.android.com/apk/res/android');
+                        $existing_permissions = array();
+                        foreach($xml->{'uses-permission'} as $permission) {
+                            $existing_permissions[] = (string) $permission->attributes('http://schemas.android.com/apk/res/android');
                         }
 
-                        if (!$xml->asXML($path_app . "AndroidManifest.xml")) {
-                            return new JsonResponse(array(
-                                'result' => 'failure',
-                                'msg' => "Unable to update the permissions for this application"));
+                        $add_permissions = array_diff($new_permissions, $existing_permissions);
+
+    //only add permissions if it is not already there
+                        if (count($add_permissions) > 0) {
+                            foreach ($add_permissions as $add_permission) {
+                                $perm = $xml->addChild('uses-permission');
+                                $perm->addAttribute("android:name", $add_permission, 'http://schemas.android.com/apk/res/android');
+                            }
+
+                            if (!$xml->asXML($path_app . "AndroidManifest.xml")) {
+                                return new JsonResponse(array(
+                                    'result' => 'failure',
+                                    'msg' => "Unable to update the permissions for this application"));
+                            }
                         }
+                        
                     }
+                
                 }
 
 //3: run the exec.php file if it exists

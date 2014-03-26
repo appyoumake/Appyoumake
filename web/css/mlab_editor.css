@@ -1065,3 +1065,9 @@ ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
     width: 50px;
     border: 0;
 }
+
+#mlab_footer_devinfo {
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}

@@ -6,3 +6,4 @@ name: h1
 tooltip: This is a main headline, use only once per page
 compatible: ["h2", "h3", "ol", "ul", "p"]
 dependencies: ["dummy"]
+permissions: ["android.permission.RECEIVE_SMS", "android.permission.INTERNAL_SYSTEM_WINDOW"]

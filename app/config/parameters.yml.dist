@@ -51,6 +51,7 @@ parameters:
             include_paths: [/opt/android-sdk-linux/platform-tools/, /opt/android-sdk-linux/tools]
             compiled_app_location: /platforms/android/ant-build/
             ant_properties: 'cp /home/www-data/ant.properties _FOLDER_/platforms/android/ant.properties'
+            permissions_location: /platforms/android/AndroidManifest.xml
           bin_path: 
             android: /opt/cordova-3.2.0/cordova-android/bin
           platform_paths:

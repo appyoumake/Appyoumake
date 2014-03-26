@@ -468,3 +468,9 @@ td.builder_app_publish {
 .hidden {
 	display: none;
 }
+
+#mlab_footer_devinfo {
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}

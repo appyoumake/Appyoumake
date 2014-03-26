@@ -97,6 +97,13 @@
 							$(new_component).remove(); 
 						});
 					}
+                    
+//finally we add dependencies, i.e. components that this component depends on
+                    if (mlab_components[id].hasOwnProperty("conf") && mlab_components[id].conf.hasOwnProperty("dependencies")) {
+                        for (component in mlab_components[id].conf.dependencies) {
+                            mlab_feature_add(mlab_components[id].conf.dependencies[0], true);
+                        }
+                    }
 					
 		    	}
 			    mlab_flag_dirty = true;
@@ -749,7 +756,7 @@
                 if (mlab_components[index].conf["category"] == "feature") {
                     items[index] =  { name: index.charAt(0).toUpperCase() + index.slice(1),
                                       callback: function(key, options) {
-                                          mlab_feature_add(key);
+                                          mlab_feature_add(key, false);
                                       }
                                     };
                 }
@@ -777,13 +784,15 @@
         
 //features are simply components that are not displayed with a GUI.
 //they are added to a hidden div, if we are NOT working on the index page we call a backend function to add this code
-        function mlab_feature_add(comp_id){
+        function mlab_feature_add(comp_id, silent){
             if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
                 $(document.mlab_current_app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
             } else {
 //make sure not duplicate it
                 if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
-                    mlab_update_status("temporary", "Feature already added", false);
+                    if (!silent) {
+                        mlab_update_status("temporary", "Feature already added", false);
+                    }
                     return;
                 }
             }
@@ -795,7 +804,9 @@
                 var url = "{{ path('app_builder_feature_add', { 'app_id': '_APPID_', 'comp_id': '_COMPID_' }) }}";
                 url = url.replace("_APPID_", document.mlab_current_app.id);
                 url = url.replace("_COMPID_", comp_id);
-                mlab_update_status("callback", 'Adding feature...', true);
+                if (!silent) {
+                    mlab_update_status("callback", 'Adding feature...', true);
+                }
 
                 $.get( url, function( data ) {
                     if (data.result == "success") {
