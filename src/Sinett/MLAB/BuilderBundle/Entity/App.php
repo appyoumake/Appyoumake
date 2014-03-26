@@ -5,6 +5,7 @@ namespace Sinett\MLAB\BuilderBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * App
@@ -548,9 +549,18 @@ class App
     }
     
     /**
-     * Returns all properties as an array, it also has a placeholder for the pages that are locked
+     * Returns all properties as an array, including the configuration details of the template used for this app
+     * 
      */
-    public function getArray() {
+    public function getArray($template_path = "") {
+        if ($template_path != "") {
+            $yaml = new Parser();
+            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.txt";
+            $config = $yaml->parse(file_get_contents($fname));
+        } else {
+            $config = array();
+        }
+
     	return array(
     		'id' => $this->id,
     		'name' => $this->name,
@@ -564,19 +574,27 @@ class App
     		'categoryTwo' => $this->categoryTwo,
     		'categoryThree' => $this->categoryThree,
     		'template' => $this->template,
+            "template_config" => $config,
     		'user' => $this->user,
     		'updatedBy' => $this->updatedBy,
     		'groups' => $this->groups,
     		'published' => $this->published,
-    		'enabled' => $this->enabled,
-    		'locked_pages' => array() //this is an array that will have the pages that are locked as an array
+    		'enabled' => $this->enabled
     		);
     }
     
     /**
      * Returns all properties as simple array, i.e. templates are the name and not an object
      */
-    public function getArrayFlat() {
+    public function getArrayFlat($template_path = "") {
+        if ($template_path != "") {
+            $yaml = new Parser();
+            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.txt";
+            $config = $yaml->parse(file_get_contents($fname));
+        } else {
+            $config = array();
+        }
+        
     	$groups = array();
     	foreach ($this->groups as $group) {
     		$groups[] = $group->getName();
@@ -594,12 +612,12 @@ class App
     			'categoryTwo' => !empty($this->categoryTwo) ? $this->categoryTwo->getName() : "",
     			'categoryThree' => !empty($this->categoryThree) ? $this->categoryThree->getName() : "",
     			'template' => $this->template->getName(),
+                "template_config" => $config,
     			'user' => $this->user->getUserName(),
     			'updatedBy' => $this->updatedBy->getUserName(),
     			'groups' => $groups,
     			'published' => $this->published,
-    			'enabled' => $this->enabled,
-    			'locked_pages' => array() //this is an array that will have the pages that are locked as an array
+    			'enabled' => $this->enabled
     	);
     }    
 /**** FILES RELATED TO AN APP ****/

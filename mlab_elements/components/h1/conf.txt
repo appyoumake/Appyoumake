@@ -1,6 +1,9 @@
-; Configuration file
-; Comments start with ';'
-active = true
-tooltip=This is a regular headline, use only once per page
-compatible=h2, h3, h4, ol, ul, p
-dependencies=dummy
+# Configuration file for simple header (H1) component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: headline
+name: h1
+tooltip: This is a main headline, use only once per page
+compatible: ["h2", "h3", "ol", "ul", "p"]
+dependencies: ["dummy"]
+permissions: ["android.permission.RECEIVE_SMS", "android.permission.INTERNAL_SYSTEM_WINDOW"]

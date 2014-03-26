@@ -13,6 +13,12 @@ document.mlab_code_h2 = new function() {
 		$(el).find("h2").removeAttr("contenteditable");
     };
             
-
+    this.getContentSize = function (el) {
+        return $(el).find("h2").text().length;
+    };
+    
+    this.custom_generate_QR_code = function () {
+        $(el).qrcode({text: $(el).find("h2").text(), background: "#ffffff", foreground: "#000000", render : "table"});
+    }
 
 };

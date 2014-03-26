@@ -495,3 +495,9 @@ body.mlab_base div.mlab_align_menu_elements {
 .hidden {
 	display: none;
 }
+
+#mlab_footer_devinfo {
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}

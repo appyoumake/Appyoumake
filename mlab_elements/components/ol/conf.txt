@@ -1,4 +1,7 @@
-; Configuration file
-; Comments start with ';'
-active = true
-tooltip=Ordered list
+# Configuration file for ordered list (OL) component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: text
+name: ol
+tooltip: Ordered list
+compatible: ["h1", "h2", "h3", "ul", "p"]

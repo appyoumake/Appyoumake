@@ -43,4 +43,9 @@ document.mlab_code_video = new function() {
 		console.log('delete');
     };
     
+    this.getContentSize = function (el) {
+        return $(el).find("video").duration;
+    };
+
+    
 };
