@@ -23,13 +23,11 @@ document.mlab_code_img = new function() {
         img.css({ width: w, height: h });
     };
             
-	this.setProperties = function (form_data, comp) {
-		for (key in form_data) {
-			if (form_data[key]["name"] == "mlab_property_title") {
-				$(comp).find("img").attr("title", form_data[key]["value"]);
-				break;
-			}
-		}
+	this.custom_set_title = function (el) {
+        var title = prompt(this.config.custom.msg_requestlink);
+        if (title != null && title != "") {
+    		$(comp).find("img").attr("title", title);
+        }
 	};
 	
 	this.filesUploaded = function ( files, data, comp ) {

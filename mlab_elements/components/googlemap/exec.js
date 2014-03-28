@@ -1,4 +1,4 @@
-document.mlab_code_map = new function() {
+document.mlab_code_googlemap = new function() {
 	
 	this.config = {component_name: "map"};
     this.map_class_identifier = "mc_map";
@@ -8,9 +8,6 @@ document.mlab_code_map = new function() {
 	this.onLoad = function (el, config, designer) {
         for (var attrname in config) { this.config[attrname] = config[attrname]; }
         
-    	var START_LAT = 59.948104;
-        var START_LONG = 10.84608;
-        var START_ZOOM = 8;
         var startLatlng = new google.maps.LatLng(START_LAT, START_LONG);
 
     	var myOptions = {

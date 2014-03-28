@@ -3,5 +3,5 @@ version: 1.0
 developer: Arild Bergh @ Sinett/FFI.no
 category: video
 name: video
-tooltip: This component is for Youtube videos (requires internet access)
-
+tooltip: This component is for Youtube videos (requires Internet access)
+permissions: ["android.permission.INTERNET"]

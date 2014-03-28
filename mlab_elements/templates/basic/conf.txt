@@ -20,6 +20,6 @@ components:
 
   text:
     max: 
-      size: 3000
+      size: 300
       count: 3
       message: Recommend max 3 text boxes with max 300 characters per page
