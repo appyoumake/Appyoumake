@@ -187,7 +187,7 @@
 			}
 			
 			if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
-				document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, $( "#" + mlab_config["app"]["content_id"] ));
+				document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf);
 //if there is a getproperties registered, it means we should display a 3rd button here. Store info in data tag for quick decision making...
 	    		$(el).attr("data-properties", typeof(document["mlab_code_" + comp_id].getProperties) !== "undefined");
 			} else {
@@ -463,7 +463,7 @@
 				if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
 					document["mlab_code_" + comp_id].onSave(this);
                     page_content = page_content + $(this)[0].outerHTML + "\n";
-                    document["mlab_code_" + comp_id].onLoad(this);
+                    document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf);
                 } else {
                     page_content = page_content + $(this)[0].outerHTML + "\n";
                 }
@@ -478,26 +478,28 @@
                         component_categories[comp_category]++;
                     }
 
-                    if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
-//can only do this if component supprts the getContentSize function
+                    if (document.hasOwnProperty("mlab_code_" + comp_id)) {
                         if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
-                            var size = document["mlab_code_" + comp_id].getContentSize(this);
-                            if (rules.hasOwnProperty(comp_category)) {
-                                if (rules[comp_category].hasOwnProperty("max")) {
-                                    if (size > rules[comp_category].max.size) {
-                                        if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
-                                            template_best_practice_msg.push(rules[comp_category].max.message);
+    //can only do this if component supprts the getContentSize function
+                            if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
+                                var size = document["mlab_code_" + comp_id].getContentSize(this);
+                                if (rules.hasOwnProperty(comp_category)) {
+                                    if (rules[comp_category].hasOwnProperty("max")) {
+                                        if (size > rules[comp_category].max.size) {
+                                            if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
+                                                template_best_practice_msg.push(rules[comp_category].max.message);
+                                            }
                                         }
                                     }
-                                }
-                                if (rules[comp_category].hasOwnProperty("min")) {
-                                    if (size < rules[comp_category].min.size) {
-                                        if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
-                                            template_best_practice_msg.push(rules[comp_category].min.message);
+                                    if (rules[comp_category].hasOwnProperty("min")) {
+                                        if (size < rules[comp_category].min.size) {
+                                            if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
+                                                template_best_practice_msg.push(rules[comp_category].min.message);
+                                            }
                                         }
                                     }
-                                }
-                            } 
+                                } 
+                            }
                         }
                     }
                 }
