@@ -385,6 +385,8 @@
                     mlab_update_status("completed");
                     if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                         mlab_index_page_process ( data.html, "index" );
+                    } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
+                        return;
                     } else {
                         mlab_regular_page_process ( data.html, data.page_num_real );
                         var path = window.location.pathname.split("/");

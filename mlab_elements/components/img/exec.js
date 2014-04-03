@@ -1,7 +1,20 @@
 document.mlab_code_img = new function() {
 	
 	this.config = {component_name: "img"};
-    
+
+    this.onCreate = function () {
+        this.onLoad (el, config, designer);
+        if ("required_scripts" in this.config) {
+            for (i in this.config.required_scripts) {
+                if ($("script[src*='" + this.config.required_scripts[i] + "']").length < 1) {
+                    if (this.config.required_scripts[i].substr(0, -3) == ".js") {
+                        $.getScript();
+                    }
+                }
+            }
+        }
+        this.custom_upload_image(el);
+    }
 //el = element this is initialising, config = global config from conf.txt
 	this.onLoad = function (el, config, designer) {
         if (typeof config != "undefined") {
@@ -63,18 +76,16 @@ document.mlab_code_img = new function() {
         content = $('<form />', {id: "mlab_form_properties" });
         content.append($('<p />', { text: "Velg et bilde som skal lastes opp her" }));
 
-        content.append( $('<label />', { 'text': 'Tittel:', 'for': "mlab_property_title" }) );
-        content.append( $('<input />', { id: "mlab_property_title", name: "mlab_property_title" }) );
-        content.append( $('<p /><br />') );
         content.append( $('<div />', { id: "mlab_property_uploadfiles", name: "mlab_property_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<p /><br />') );
         content.append( $('<div />', { id: 'mlab_property_uploadfiles_start', name: 'mlab_property_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
         content.append( $('<p />') );
-        content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall" }) );
+        content.append( $('<div />', { text: 'Cancel', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall" }) );
         content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right" }) );
 
         var component = el;
         var component_id = this.config.component_name;
+        var component_config = this.config;
         $(el).qtip({
             content: {text: content, title: "Last opp bilde" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
@@ -84,15 +95,12 @@ document.mlab_code_img = new function() {
             events: { render: function(event, api) {
                             this.component = component;
                             this.component_id = component_id;
+                            this.config = component_config;
 
 //upload files 
                             if ($("#mlab_property_button_ok").length > 0) {
-                                var url = "{{ path('app_builder_component_upload', {'comp_id': '_COMPID_', 'app_id': '_APPID_'} ) }}";
-                                url = url.replace("_APPID_", document.mlab_current_app.id);
-                                url = url.replace("_COMPID_", component_id);
-
                                 var uploadObj = $("#mlab_property_uploadfiles").uploadFile({
-                                    url: url,
+                                    url: this.config.urls["upload"],
                                     formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
                                     multiple: false,
                                     autoSubmit: false,
@@ -112,6 +120,7 @@ document.mlab_code_img = new function() {
                                     uploadObj.startUpload();
                                 });
                             }
+                            
                             $('#mlab_property_button_ok', api.elements.content).click(	
                                     function(e) {
                                         api.hide(e); 

@@ -8,14 +8,16 @@ use Symfony\Component\Yaml\Parser;
 class FileManagement {
 	
 	private $config;
+    private $router;
 	private $required_files;
 	private $replace_chars;
 	private $paths;
 	private $entity_type;
 	
-    public function __construct($mlab)
+    public function __construct($mlab, $router)
     {
         $this->config = $mlab;
+        $this->router = $router;
     }
 	
     /**
@@ -156,7 +158,7 @@ class FileManagement {
 	 * @throws \Exception
 	 * @return array
 	 */
-	function loadComponents($access, $path, $config) {
+	function loadComponents($access, $path, $config, $app_id) {
 		$yaml = new Parser();
 
 		$components = array();
@@ -174,8 +176,15 @@ class FileManagement {
                                 "is_feature" => false,
 								"accessible" => in_array($entry, $access)); //we hide the ones they are not allowed to see, but still load it for reference may exist in app...
 	
-                        if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"]))
+                        if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"])) {
                             $components[$entry]["is_feature"] = ($components[$entry]["conf"]["category"] == "feature");
+                        }
+                        if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["urls"])) {
+                            foreach ($components[$entry]["conf"]["urls"] as $url_key => $url_name) {
+                                $components[$entry]["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $entry));
+                            }
+                        }
+                        
 //tooltips are in the conf file (or not!), so add it here, or blank if none
 						$components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
 				}

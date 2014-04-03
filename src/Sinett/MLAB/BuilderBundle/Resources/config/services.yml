@@ -4,7 +4,8 @@ parameters:
 services:
     file_management:
         class:        "%sinett_mlab_builder.file_management.class%"
-        arguments:    ["%mlab%"]
+        arguments:    ["%mlab%", @router]
+        scope: request
 
     update_default:
         class: Sinett\MLAB\BuilderBundle\Listener\EventListener
