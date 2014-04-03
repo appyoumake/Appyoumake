@@ -2,28 +2,38 @@ document.mlab_code_img = new function() {
 	
 	this.config = {component_name: "img"};
 
-    this.onCreate = function () {
-        this.onLoad (el, config, designer);
-        if ("required_scripts" in this.config) {
-            for (i in this.config.required_scripts) {
-                if ($("script[src*='" + this.config.required_scripts[i] + "']").length < 1) {
-                    if (this.config.required_scripts[i].substr(0, -3) == ".js") {
-                        $.getScript();
+    this.onCreate = function (el, config, designer, url) {
+        this.onLoad (el, config, designer, url);
+        var comp = $(el).find('img');
+        if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
+            comp.attr("src", this.config.placeholder);
+        }
+
+        if ("required_libs" in this.config) {
+            debugger;
+            for (i in this.config.required_libs) {
+                if (this.config.required_libs[i].substr(-3) == ".js") {
+                    if ($("script[src*='" + this.config.required_libs[i] + "']").length < 1) {
+                        $("head").append($("<script src='" + this.config.component_url + this.config.name + "/js/" + this.config.required_libs[i] +"'>")); 
+                        //$.getScript(this.config.component_path + "/js/" + this.config.required_libs[i] + "']");
+                    }
+                } else if (this.config.required_libs[i].substr(-4) == ".css") {
+                    if ($("link[href*='" + this.config.required_libs[i] + "']").length < 1) {
+                        $("head").append($("<link rel='stylesheet' type='text/css' href='" + this.config.component_url + this.config.name + "/css/" + this.config.required_libs[i] +"'>")); 
                     }
                 }
             }
         }
         this.custom_upload_image(el);
     }
+    
 //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer) {
+	this.onLoad = function (el, config, designer, url) {
         if (typeof config != "undefined") {
             for (var attrname in config) { this.config[attrname] = config[attrname]; }
         }
+        this.config["component_url"] = url;
         var comp = $(el).find('img');
-        if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
-            comp.attr("src", this.config.placeholder);
-        }
         comp.resizable({"containment": designer});
     };
 
