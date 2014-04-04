@@ -577,7 +577,7 @@
                     if (data.result == "success") {
                         mlab_update_status("completed");
                         document.mlab_current_app.curr_pagetitle = title;
-                        document.mlab_current_app.curr_page_num = data.page_num;
+                        document.mlab_current_app.curr_page_num = data.page_num_real;
                         $("#mlab_curr_pagetitle").val(title);
                         mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
                                                 

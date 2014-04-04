@@ -55,10 +55,6 @@ document.mlab_code_img = new function() {
         }
 	};
 	
-	this.filesUploaded = function ( files, data, comp ) {
-		$(comp).find("img").attr("src", data.url );
-	};
-	
 	this.onDelete = function () {
 		console.log('delete');
     };
@@ -121,7 +117,7 @@ document.mlab_code_img = new function() {
                                     showStatusAfterSuccess: true,
                                     allowedTypes: "jpg,jpeg,png,gif",
                                     onSuccess: function(files, data, xhr) {
-                                                document["mlab_code_" + component_id].filesUploaded( files, data, this );
+                                                $(this).find("img").attr("src", data.url );
                                                 api.hide(); 
                                         }.bind(component),
                                     onError: function(files, status, errMsg) { 
