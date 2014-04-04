@@ -4,3 +4,5 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: video
 name: video
 tooltip: This component is for local videos that you add to the app
+urls: {upload: app_builder_component_upload}
+required_libs: ["jquery-qtip.js", "jquery-qtip.css"]

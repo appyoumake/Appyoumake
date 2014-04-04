@@ -1,11 +1,15 @@
 document.mlab_code_googlemap = new function() {
 	
-	this.config = {component_name: "map"};
+	this.config = {};
     this.map_class_identifier = "mc_map";
+    
+    this.onCreate = function (el, config, designer, url) {
+        this.onLoad (el, config, designer, url);
+    };
     
 //el = element this is initialising, config = global config from conf.txt
 //maps are a bit tricky, 
-	this.onLoad = function (el, config, designer) {
+	this.onLoad = function (el, config, designer, url) {
         for (var attrname in config) { this.config[attrname] = config[attrname]; }
         
         var startLatlng = new google.maps.LatLng(START_LAT, START_LONG);

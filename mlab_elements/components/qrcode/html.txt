@@ -1,1 +1,1 @@
-<h2>Enter headline level 2 here</h2>
+<div></div>

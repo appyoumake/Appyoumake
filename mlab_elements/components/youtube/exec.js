@@ -1,6 +1,6 @@
-document.mlab_code_video = new function() {
+document.mlab_code_youtube = new function() {
 	
-	this.config = {};
+    this.config = {};
     
     this.onCreate = function (el, config, designer, url) {
         this.onLoad (el, config, designer, url);

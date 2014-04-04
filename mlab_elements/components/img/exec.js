@@ -1,6 +1,6 @@
 document.mlab_code_img = new function() {
 	
-	this.config = {component_name: "img"};
+	this.config = {};
 
     this.onCreate = function (el, config, designer, url) {
         this.onLoad (el, config, designer, url);
@@ -9,21 +9,6 @@ document.mlab_code_img = new function() {
             comp.attr("src", this.config.placeholder);
         }
 
-        if ("required_libs" in this.config) {
-            debugger;
-            for (i in this.config.required_libs) {
-                if (this.config.required_libs[i].substr(-3) == ".js") {
-                    if ($("script[src*='" + this.config.required_libs[i] + "']").length < 1) {
-                        $("head").append($("<script src='" + this.config.component_url + this.config.name + "/js/" + this.config.required_libs[i] +"'>")); 
-                        //$.getScript(this.config.component_path + "/js/" + this.config.required_libs[i] + "']");
-                    }
-                } else if (this.config.required_libs[i].substr(-4) == ".css") {
-                    if ($("link[href*='" + this.config.required_libs[i] + "']").length < 1) {
-                        $("head").append($("<link rel='stylesheet' type='text/css' href='" + this.config.component_url + this.config.name + "/css/" + this.config.required_libs[i] +"'>")); 
-                    }
-                }
-            }
-        }
         this.custom_upload_image(el);
     }
     
@@ -45,6 +30,23 @@ document.mlab_code_img = new function() {
         img.resizable( "destroy" );
         img.css({ width: w, height: h });
     };
+    
+    this.loadLibraries = function () {
+        if ("required_libs" in this.config) {
+            for (i in this.config.required_libs) {
+                if (this.config.required_libs[i].substr(-3) == ".js") {
+                    if ($("script[src*='" + this.config.required_libs[i] + "']").length < 1) {
+                        $("head").append($("<script src='" + this.config.component_url + this.config.name + "/js/" + this.config.required_libs[i] +"'>")); 
+                    }
+                } else if (this.config.required_libs[i].substr(-4) == ".css") {
+                    if ($("link[href*='" + this.config.required_libs[i] + "']").length < 1) {
+                        $("head").append($("<link rel='stylesheet' type='text/css' href='" + this.config.component_url + this.config.name + "/css/" + this.config.required_libs[i] +"'>")); 
+                    }
+                }
+            }
+        }
+        
+    }
             
 	this.custom_set_title = function (el) {
         var title = prompt(this.config.custom.msg_requestlink);
@@ -83,8 +85,9 @@ document.mlab_code_img = new function() {
     };
     
     this.custom_upload_image = function (el) {
+        this.loadLibraries();
         content = $('<form />', {id: "mlab_form_properties" });
-        content.append($('<p />', { text: "Velg et bilde som skal lastes opp her" }));
+        content.append($('<p />', { text: "Choose picture to load" }));
 
         content.append( $('<div />', { id: "mlab_property_uploadfiles", name: "mlab_property_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<p /><br />') );

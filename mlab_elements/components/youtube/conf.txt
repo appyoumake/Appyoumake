@@ -2,6 +2,6 @@
 version: 1.0
 developer: Arild Bergh @ Sinett/FFI.no
 category: video
-name: video
+name: youtube
 tooltip: This component is for Youtube videos (requires Internet access)
 permissions: ["android.permission.INTERNET"]
