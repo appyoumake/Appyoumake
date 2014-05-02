@@ -332,6 +332,15 @@
             $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
             $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
 
+//set a scroll bar http://rocha.la/jQuery-slimScroll
+//should be flexible: $("#mlab_editor_chrome").innerHeight()
+            $('#mlab_editable_area').slimScroll({
+                color: '#fff',
+                size: '10px',
+                height: '700px'
+            });
+
+
 		}
         
         
@@ -1024,10 +1033,13 @@
             
 //we always load pages using AJAX, this takes the parameters passed from the controller 
 			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );
-			window.setInterval(mlab_page_save, parseInt(mlab_config["save_interval"]) * 1000);
+            var tm = parseInt(mlab_config["save_interval"]);
+            if (tm === 0) {
+                tm = 60;
+            }
+			window.setInterval(mlab_page_save, tm * 1000);
 
 		});
-		
         
 	</script>
 {% endblock %}
