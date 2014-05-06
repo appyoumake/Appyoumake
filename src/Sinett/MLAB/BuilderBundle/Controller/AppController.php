@@ -553,6 +553,8 @@ class AppController extends Controller
                 'result' => 'failure',
                 'msg' => "Unable to create a new file, maximum app size of 999 pages reached!"));
         }
+        
+//update file counter variable in JS
         $total_pages = $file_mgmt->getTotalPageNum($app);
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
 
@@ -582,7 +584,12 @@ class AppController extends Controller
             return new JsonResponse(array(
                 'result' => 'failure',
                 'msg' => "Unable to copy the page, please try again"));
-        }	 
+        }
+        
+//update file counter variable in JS
+        $total_pages = $file_mgmt->getTotalPageNum($app);
+        $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
+
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
         
     }
@@ -614,6 +621,8 @@ class AppController extends Controller
                     'result' => 'error',
                     'msg' => "Unable to delete page"));
         } else {
+            
+//update file counter variable in JS
             $total_pages = $file_mgmt->getTotalPageNum($app);
             $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
             return new JsonResponse(array(

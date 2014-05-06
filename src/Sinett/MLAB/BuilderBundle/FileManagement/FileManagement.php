@@ -744,7 +744,7 @@ class FileManagement {
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
         $file = $app_path . "/js/mlab_parameters.js";
 
-        $lines = file_get_contents($file);
+        $lines = file($file);
         $found = false;
         foreach ($lines as $index => $line) {
             if ($param == substr($line, 0, strlen($param))) {
@@ -753,7 +753,7 @@ class FileManagement {
             }
         }
         if (!$found) {
-            $lines[] = "$param = $value;";
+            $lines[] = "$param = $value;\n";
         }
 
         file_put_contents($file, $lines);
