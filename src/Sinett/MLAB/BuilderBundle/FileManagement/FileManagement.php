@@ -344,7 +344,7 @@ class FileManagement {
     /**
      * generate new name, get a list of pages in folder, select last one, turn into an int, 
      * then keep increasing it until it is not found (in case someone else creates a file in the mean time)
-     * @param type $app_path
+     * @param type $app
      * @return array(int $new_page_num, string $new_page_path (complete path to file))
      */
     public function getNewPageNum($app) {
@@ -718,6 +718,45 @@ class FileManagement {
         }
         
         return true;
+    }
+    
+    /**
+     * get number of pages in app, this is typically used to update javascript variables in mlab_parameters.js
+     * @param type $app
+     * @return array(int $new_page_num, string $new_page_path (complete path to file))
+     */
+    public function getTotalPageNum($app) {
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+
+   		$pages = glob ( $app_path . "/???.html" );
+        
+//if no pages we have one page, index.html
+        if (empty($pages)) {
+            $total_page_num = 1;
+        } else {
+            $total_page_num = intval(basename(array_pop($pages)));
+        }
+        return $total_page_num;
+    }
+    
+//this scans through a javascript file and if it finds a parameter match it will replace the value, it not add it to the end of the file 
+    public function updateAppParameter($app, $param, $value) {
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $file = $app_path . "/js/mlab_parameters.js";
+
+        $lines = file_get_contents($file);
+        $found = false;
+        foreach ($lines as $index => $line) {
+            if ($param == substr($line, 0, strlen($param))) {
+                $lines[$index] = "$param = $value;";
+                $found = true;
+            }
+        }
+        if (!$found) {
+            $lines[] = "$param = $value;";
+        }
+
+        file_put_contents($file, $lines);
     }
 
 }
