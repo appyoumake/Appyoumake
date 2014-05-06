@@ -747,7 +747,7 @@ class FileManagement {
         $lines = file($file);
         $found = false;
         foreach ($lines as $index => $line) {
-            if ($param == substr($line, 0, strlen($param))) {
+            if ($param == substr(trim($line), 0, strlen($param))) {
                 $lines[$index] = "$param = $value;";
                 $found = true;
             }
