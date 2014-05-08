@@ -1,2 +1,198 @@
-MLAB: MobLærAppBygs
-security.login.username: Brukernavn
+app.admin.welcome: Velkommen til MLAB App Admin sidene
+%Users%: brukere
+
+
+#-----------------------------------------------------
+# Users tab
+#-----------------------------------------------------
+app.admin.users.username: Brukernavn
+app.admin.users.email: E-post
+app.admin.users.groups: Grupper
+app.admin.users.last.login: Siste innlogging
+
+app.admin.users.tooltip.username: Rediger bruker
+app.admin.users.tooltip.delete: Slett bruker
+app.admin.users.tooltip.new: Opprett ny bruker
+
+
+
+#-----------------------------------------------------
+# Edit and new user
+#-----------------------------------------------------
+app.admin.users.new.heading: Opprett ny bruker
+app.admin.users.edit.heading: Rediger bruker
+
+#???????For the new user form???????
+email: E-post
+username: Brukernavn
+plainPassword: Passord
+passwor: Passord
+categoryOne: Kategori en
+categoryTwo: Kategori to
+categoryThree: Kategori tre
+groups: Grupper
+roles: Roller
+enabled: Aktiv
+create: Opprett
+
+
+
+#-----------------------------------------------------
+# Groups tab
+#-----------------------------------------------------
+app.admin.groups.name: Navn
+app.admin.groups.description: Beskrivelse
+app.admin.groups.isdefault: gruppen er satt som default
+
+app.admin.groups.tooltip.name: Rediger gruppe
+app.admin.groups.tooltip.delete: Slett gruppe
+app.admin.groups.tooltip.new: Opprett ny gruppe
+
+
+
+#-----------------------------------------------------
+# Edit and new group
+#-----------------------------------------------------
+app.admin.groups.new.heading: Opprett ny gruppe
+app.admin.groups.edit.heading: Rediger gruppe
+
+
+
+#-----------------------------------------------------
+# App tab
+#-----------------------------------------------------
+app.admin.apps.name: Navn
+app.admin.apps.version: Versjon
+app.admin.apps.description: Beskrivelse
+app.admin.apps.Updated: Oppdatert
+app.admin.apps.groups: Grupper
+
+app.admin.apps.tooltip.name: Rediger app
+app.admin.apps.tooltip.delete: Slett app
+
+
+#-----------------------------------------------------
+# Edit app
+#-----------------------------------------------------
+app.admin.apps.edit.heading: Rediger app
+
+
+
+#-----------------------------------------------------
+# Template tab
+#-----------------------------------------------------
+app.admin.templates.name: Navn
+app.admin.templates.version: Versjon
+app.admin.templates.description: Beskrivelse
+app.admin.templates.compatiblewith: Kompatibel med
+app.admin.templates.groups: Grupper
+
+app.admin.templates.tooltip.name: Rediger template
+app.admin.templates.tooltip.delete: Slett tempalte
+app.admin.templates.tooltip.new: Opprett ny template
+
+
+#-----------------------------------------------------
+# Edit and new template
+#-----------------------------------------------------
+app.admin.templates.new.heading: Opprett ny template
+app.admin.templates.edit.heading: Rediger template
+
+
+
+#-----------------------------------------------------
+# Components tab
+#-----------------------------------------------------
+app.admin.components.name: Navn
+app.admin.components.version: Versjon
+app.admin.components.description: Beskrivelse
+app.admin.components.groups: Grupper
+
+app.admin.components.tooltip.name: Rediger komponent
+app.admin.components.tooltip.delete: Slett komponent
+app.admin.components.tooltip.new: Opprett ny komponent
+
+
+#-----------------------------------------------------
+# Edit and new component
+#-----------------------------------------------------
+app.admin.components.new.heading: Opprett ny komponent
+app.admin.components.edit.heading: Rediger komponent
+
+
+
+#-----------------------------------------------------
+# New app form 
+#-----------------------------------------------------
+builder.new.app.basedon.tab: Baser på
+builder.new.app.name.tab: Navn
+builder.new.app.classification.tab: Klassifiser
+builder.new.app.submit.tab: Lag
+
+
+builder.new.app.basedon.description: En app kan baseres på en mal eller en eksisterende app
+
+
+builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
+builder.new.app.name.name: Navn
+builder.new.app.name.descriptionLab: Beskrivelse
+builder.new.app.name.iconFile: Ikon-fil
+builder.new.app.name.splashFile: Splash-fil
+
+builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
+builder.new.app.classification.keywords: Nøkkelord
+builder.new.app.classification.categoryOne: 1. Kategori
+builder.new.app.classification.categoryTwo: 2. Kategori
+builder.new.app.classification.categoryThree: 3. Kategori
+
+builder.new.app.submit.description: Se over detaljer før du ferdigstiller appen. Det vil være mulighet for å endre detaljene senere.
+builder.new.app.submit.basedon: Basert på
+builder.new.app.submit.name: Navn
+builder.new.app.submit.descriptionLab: Beskrivelse
+builder.new.app.submit.keywords: Nøkkelord
+builder.new.app.submit.category: Kategorier
+
+app.wizard.button.previous: < Forrige
+app.wizard.button.next: Neste >
+app.wizard.button.finished: Ferdig
+
+
+
+#-----------------------------------------------------
+# List of apps 
+#-----------------------------------------------------
+
+app.builder.list.main.heading: App'er
+app.builder.list.welcome.info: Velkommen til MLAB app-bygger! <br><br> Her har du en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. Bruk knappen for å lage en ny app.
+app.builder.list.new.app.button: Ny App
+app.builder.list.heading.app: App navn
+app.builder.list.heading.published: Publisert
+app.builder.list.heading.version: Versjon
+app.builder.list.heading.last.updated: Sist oppdatert
+
+app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
+
+
+
+#-----------------------------------------------------
+# App builder (edit app) Menu
+#-----------------------------------------------------
+
+app.builder.edit.menu.main.heading: Meny
+app.builder.edit.menu.welcome.info: Litt generelt - Hva menyen hjelper til med. feks forklare hva er en side...
+
+app.builder.edit.menu.heading.app: App
+app.builder.edit.menu.app.name.info: Rediger app-navnet ved å klikke på blyanten
+app.builder.edit.menu.app.edit.info: Her kan du endre beskrivelse, legge til nøkkelord eller opdatere kategoriene. Alle feltene må ha innhold
+
+app.builder.edit.menu.heading.page: Side
+app.builder.edit.menu.page.name.info: For å rediger sidenavnet klikke på blyanten. For å slette siden klikk på krysset under eller klikk på lagreknappen for å lagre
+app.builder.edit.menu.page.edit.info: Velg siden du ønsker å hoppe til, legg til en ny side eller kopier siden som er valgt
+
+app.builder.edit.menu.heading.test.app: Prøv app
+app.builder.edit.menu.test.app.info: Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. For å få en korekt test klikk på mobil-knappen som vil gi deg en QR-kode du kan bruke til å laste ned appen til din mobil
+
+app.builder.edit.menu.heading.exit: Avslutt
+app.builder.edit.menu.exit.info: Er du ferdig å redigere appen din så klikk på avslutt knappen under
+
+app.builder.edit.menu.tooltip.something: Something

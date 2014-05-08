@@ -1,16 +1,16 @@
                 <tr id="row_app_{{ app.id }}">
 				  
                     <td class="builder_app_list_name mlab_td_max_size" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
-				    	<a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
+                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img class="builder_app_list_name_edit_img" alt="" src="/img/editGreyFlip.png"></img>{{ app.name }}</a>
 				    </td>
                     
-                    <td class="builder_app_list_properties" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
-				    	<a class="builder_app_properties" onclick="editAppProperties({{ app.id }}); return false;"></a>
+                    <td class="builder_app_list_properties hidden" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
+				    	<a class="builder_app_properties hidden" onclick="editAppProperties({{ app.id }}); return false;"></a>
 				    </td>
                     
 				    <td class="mlab_align_center">
 				    	<span class="builder_app_version">{{ app.version }}</span>
-				    	<a class="builder_app_newversion" href="{{ path('app_builder_copy_app', { 'id': app.id, 'version': app.version }) }}">&nbsp;</a>
+				    	<a class="builder_app_newversion hidden" href="{{ path('app_builder_copy_app', { 'id': app.id, 'version': app.version }) }}">&nbsp;</a>
 				    </td>
                     
                     <td class="mlab_align_center" title="{% if app.updated %}{{ app.updated|date('Y-m-d H:i:s') }}{% endif %}">
@@ -23,7 +23,7 @@
 				    <td class="mlab_align_center {% if app.published == 0 %}builder_app_not_published{% elseif app.published == 1 %}builder_app_old_version_published{% else %}builder_app_current_version_published{% endif %}">
 				    </td>
                     
-                    <td class="mlab_align_center">
+                    <td class="mlab_align_center hidden">
                         {% if app.published == 0 %}
                             <a class="builder_app_publish" onclick="publishApp({{ app.id }}); return false;">&nbsp;</a>
                         {% elseif app.published == 1 %}

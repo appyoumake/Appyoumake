@@ -1069,5 +1069,16 @@ ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
 #mlab_footer_devinfo {
     font-weight: bold;
     width: 100%;
-    text-align: center;
+    text-align: left;
+    padding-left: 32px;
+}
+
+#mlab_page_control{
+   padding: 104px 20px 1px 32px; 
+   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   font-size: 10px;
+}
+
+#mlab_editor_chrome div.ui-loader{
+   display: none !important; 
 }

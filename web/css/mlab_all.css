@@ -142,7 +142,7 @@ table.app_list{
 /* overwriting jQuery */
 .ui-tabs .ui-tabs-panel {
     padding-bottom: 1em;
-    padding-top: 2em;
+    padding-top: 1.5em;
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
@@ -227,6 +227,9 @@ td.builder_app_list_properties {
 
 td.builder_app_list_name {
 	padding-right: 5px;
+}
+img.builder_app_list_name_edit_img {
+     padding-right: 3px;
 }
 
 /* ==========================================================================
@@ -357,7 +360,7 @@ a.mlab_button_new_app {
 	padding-top: 0.9em;
 	padding-bottom: 0.9em;
 	margin-right: 1.4em;
-    line-height: 4.5em;
+    line-height: 6.5em;
 	}
 
 /* ==========================================================================
@@ -383,7 +386,7 @@ progress {
 .container {
     padding-left: 5.5em;
     padding-right: 5.5em;
-    padding-top: 2.5em;
+    padding-top: 2em;
 } 
 
 /* added so that the elements of the container don't wrap if the screen is made smaler than the min width */
@@ -500,4 +503,31 @@ body.mlab_base div.mlab_align_menu_elements {
     font-weight: bold;
     width: 100%;
     text-align: center;
+}
+
+.mlab_disabled{
+    color: gray;
+}
+
+
+#builder_dialog_new_app p {
+font-size: 0.85em !important;
+margin-bottom: 1.1em;
+width: 90%;
+cursor: default;
+}
+
+#mlab_app_new_summary {
+font-size: 0.85em !important;
+margin-bottom: 0.6em;
+cursor: default;
+}
+
+#mlab_app_new_summary div {
+
+}
+
+#mlab_app_new_summary span {
+
+width: 45%;
 }

@@ -5,16 +5,17 @@
 <!-- This is the actual content of the page, very little is required as it is loaded from external files -->	
 	<div id="mlab_template_warning"></div>
 	
-	<div id="mlab_toolbar_components">
-		{% for type, component in mlab_components if (component.accessible and not component.is_feature) %}
-			<div data-mlab-type='{{ type }}' title='{{ component.tooltip }}' class='mlab_button_components' style='background-image: url("{{ mlab_config.urls.component ~ type ~ '/' ~ mlab_config.component_files.ICON }}");'></div>
-		{% endfor %}
-	</div>
 	<div id="mlab_editor_chrome">
 		<div id="mlab_editable_area_placeholder"></div>
 		<p />
 	</div>
 
+    <div id="mlab_toolbar_components">
+		{% for type, component in mlab_components if (component.accessible and not component.is_feature) %}
+			<div data-mlab-type='{{ type }}' title='{{ component.tooltip }}' class='mlab_button_components' style='background-image: url("{{ mlab_config.urls.component ~ type ~ '/' ~ mlab_config.component_files.ICON }}");'></div>
+		{% endfor %}
+	</div>
+    
 	<div title="Use this to rotate the editor" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
 	<div id="mlab_dialog_new_app"></div>
     <div id="mlab_menu_popup"></div>
