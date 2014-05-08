@@ -3,7 +3,9 @@
 #-----------------------------------------------------
 
 layout.login: MLAB
-security.login.username: Brukernavn:
-security.login.password: Passord:
+layout.logout.info: Du må logge ut forrige bruker før du kan logge deg inn
+layout.logout: Logg ut
+security.login.username: Brukernavn
+security.login.password: Passord
 security.login.remember_me: Husk meg på denne maskinen
 security.login.submit: Logg inn

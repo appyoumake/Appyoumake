@@ -8,7 +8,7 @@
 	    	<li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
 	    {% endif %}
 	    <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
-	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.more.details.tab{% endtrans %}</a></li>
+	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.classification.tab{% endtrans %}</a></li>
 	    <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
 	  </ul>
 	  
@@ -19,11 +19,10 @@
 <!-- output list of templates and apps -->
 		{% if mode == 'add' %}
 			<div class="mlab_form_tab" id="builder_app_property_tabs-1">
-			
-                            <h3>{% trans %}builder.new.app.basedon.heading{% endtrans %}</h3>			
-                            <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
-                            {{ form_widget(form.copy_app) }}
-                            {{ form_widget(form.version) }}
+					
+                <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
+                {{ form_widget(form.copy_app) }}
+                {{ form_widget(form.version) }}
 
 			    <div>
 			        {{ form_row(form.template, {'url_templates': url_templates}) }}
@@ -40,44 +39,44 @@
                                     {% endfor %}
 				</select>
 			    </div>
-			    <div>   
-                                 <label>eller</label>
+ 			    <div>   
+                                <label class="mlab_disabled">eller</label>
                             </div>
-			    <div>   
+			    <div class="mlab_disabled">   
 			    	<label for="mlab_builder_app_copy_from">Import PPT or DOC file</label>
-			    	<input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from">
+			    	<input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from" disabled="disabled">
                             </div>
-
+                            
 			</div>
 		{% endif %}
 		
 <!-- name etc -->
 		<div class="mlab_form_tab" id="builder_app_property_tabs-2">
-		
-			<h3>{% trans %}builder.new.app.name.heading{% endtrans %}</h3>
 			
+            <p>{% trans %}builder.new.app.name.description{% endtrans %}</p>
+            
 		    <div>
-		        {{ form_label(form.name) }}
+		        {{ form_label(form.name, null, {'label': 'builder.new.app.name.name'|trans}) }}
 		        {{ form_errors(form.name) }}
 		        {{ form_widget(form.name) }}
 		    </div>
 			
 		    <div>
-		        {{ form_label(form.description) }}
+		        {{ form_label(form.description, null, {'label': 'builder.new.app.name.descriptionLab'|trans}) }}
 		        {{ form_errors(form.description) }}
 		        {{ form_widget(form.description) }}
 		    </div>
 			
-		    <div>
-		        {{ form_label(form.iconFile) }}
+		    <div class="mlab_disabled">
+                {{ form_label(form.iconFile, null, {'label': 'builder.new.app.name.iconFile'|trans}) }}
 		        {{ form_errors(form.iconFile) }}
-		        {{ form_widget(form.iconFile) }}
+		        {{ form_widget(form.iconFile, { 'attr': {'disabled': 'disabled'} }) }}
 		    </div>
 
-		    <div>
-		        {{ form_label(form.splashFile) }}
+		    <div class="mlab_disabled">
+		        {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
 		        {{ form_errors(form.splashFile) }}
-		        {{ form_widget(form.splashFile) }}
+		        {{ form_widget(form.splashFile, { 'attr': {'disabled': 'disabled'} }) }}
 		    </div>
 		    
 		</div>
@@ -85,37 +84,37 @@
 <!-- classification etc -->
 		<div class="mlab_form_tab" id="builder_app_property_tabs-3">
 
-			<h3>{% trans %}builder.new.app.more.details.heading{% endtrans %}</h3>
-			
+            <p>{% trans %}builder.new.app.classification.description{% endtrans %}</p>
+            
 			<div>
-		        {{ form_label(form.keywords) }}
+		        {{ form_label(form.keywords, null, {'label': 'builder.new.app.classification.keywords'|trans}) }}
 		        {{ form_errors(form.keywords) }}
 		        {{ form_widget(form.keywords) }}
 		    </div>
 			
-			<div>
-		        {{ form_label(form.categoryOne) }}
+			<div class="mlab_disabled">
+		        {{ form_label(form.categoryOne, null, {'label': 'builder.new.app.classification.categoryOne'|trans}) }}
 		        {{ form_errors(form.categoryOne) }}
-		        {{ form_widget(form.categoryOne) }}
+		        {{ form_widget(form.categoryOne, { 'attr': {'disabled': 'disabled'} }) }}
 		    </div>
 
-			<div>
-		        {{ form_label(form.categoryTwo) }}
+			<div class="mlab_disabled">
+		        {{ form_label(form.categoryTwo, null, {'label': 'builder.new.app.classification.categoryTwo'|trans}) }}
 		        {{ form_errors(form.categoryTwo) }}
-		        {{ form_widget(form.categoryTwo) }}
+		        {{ form_widget(form.categoryTwo, { 'attr': {'disabled': 'disabled'} }) }}
 		    </div>
 
-			<div>
-		        {{ form_label(form.categoryThree) }}
+			<div class="mlab_disabled">
+		        {{ form_label(form.categoryThree, null, {'label': 'builder.new.app.classification.categoryThree'|trans}) }}
 		        {{ form_errors(form.categoryThree) }}
-		        {{ form_widget(form.categoryThree) }}
+		        {{ form_widget(form.categoryThree, { 'attr': {'disabled': 'disabled'} }) }}
 		    </div>
 		    			
 		</div>
 		
 <!-- summary -->
 		<div class="mlab_form_tab" id="builder_app_property_tabs-4">
-			<h3>{% trans %}builder.new.app.submit.heading{% endtrans %}</h3>
+			<p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>
 			{{ form_errors(form) }}
 			<div id="mlab_app_new_summary"></div>
 		</div>
@@ -130,6 +129,11 @@
 
 //add onclick/onchange functions for the two dropdown menus here 
 	$(document).ready(function (){
+        
+        //temp fill categories - TODO
+        $(function() { $("#form_categoryOne").val('2'); });
+        $(function() { $("#form_categoryTwo").val('3'); });
+        $(function() { $("#form_categoryThree").val('8'); });
 		
 		$('#mlab_builder_app_copy_from').ddslick({
 		    width: 300,
@@ -202,13 +206,16 @@
 				if (msg == '') {
 					$("#form_copy_app").val($('#mlab_builder_app_copy_from').data('ddslick').selectedData.value);
 					$("#mlab_app_new_summary").html(
-							"<span class='mlab_app_new_summary'>{% trans %}app.new.base{% endtrans %}:</span> " + $('#form_template').data('ddslick').selectedData.text + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
-							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.name{% endtrans %}:</span> " + $('#form_name').val() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.description{% endtrans %}:</span> " + $('#form_description').val() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.keywords{% endtrans %}:</span> " + $('#form_keywords').val() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryOne{% endtrans %}:</span> " + $('#form_categoryOne option:selected').html() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryTwo{% endtrans %}:</span> " + $('#form_categoryTwo option:selected').html() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryThree{% endtrans %}:</span> " + $('#form_categoryThree option:selected').html() 
+							"<span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.basedon{% endtrans %}:</span> " + $('#form_template').data('ddslick').selectedData.text + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
+							"<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
+							"<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.keywords{% endtrans %}:</span> " + $('#form_keywords').val() 
+							+ "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.category{% endtrans %}:</span> " + 
+                            $('#form_categoryOne option:selected').html() + " - " +
+                            $('#form_categoryTwo option:selected').html() + " - " +
+                            $('#form_categoryThree option:selected').html() 
+							//"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryTwo{% endtrans %}:</span> " + $('#form_categoryTwo option:selected').html() +
+							//"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryThree{% endtrans %}:</span> " + $('#form_categoryThree option:selected').html() 
 					);
 				}
 			} else if (curr_tab == (tot_tabs - 1)) { 

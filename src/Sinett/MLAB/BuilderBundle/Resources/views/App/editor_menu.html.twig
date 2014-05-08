@@ -1,0 +1,109 @@
+{#    
+ * This outputs the editors megamenu.
+#}
+
+<ul id="mlab_editor_menu">
+    
+    <li class="single">
+        <img src="/img/logo_menu.png" alt="logo" /><!-- Begin Home Item -->
+    </li><!-- End Logo Item -->
+    
+     <li class="single">
+    </li><!-- End Empty Item -->
+
+    <li id="mlab_menu_dropdown"><a href="#" class="drop">{% trans %}app.builder.edit.menu.main.heading{% endtrans %}</a><!-- Begin 4 columns Item -->
+
+        <div class="dropdown_4columns"><!-- Begin 4 columns container -->
+
+            <div class="col_4">
+                
+                <p>{% trans %}app.builder.edit.menu.welcome.info{% endtrans %}</p>
+            </div>
+
+            <div class="col_1">
+                <h3>{% trans %}app.builder.edit.menu.heading.app{% endtrans %}</h3>
+                <input type="text" id="mlab_curr_apptitle" value="Appens navn"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_update_app_title();"></button>
+                <p>{% trans %}app.builder.edit.menu.app.name.info{% endtrans %}</p>
+                <h3></h3>
+                <p>{% trans %}app.builder.edit.menu.app.edit.info{% endtrans %}</p>
+                <input type="text" id="mlab_app_description" value="Beskrivelse" disabled="disabled"> <button class="mlab_menu_field_update_button"title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_kewords" value="Nøkkelord" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_CategoryOne" value="1. Kategori" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_CategoryTwo" value="2. Kategori" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_CategoryThree" value="3. Kategori" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
+                <h3></h3>
+                <a href="javascript: mlab_app_remove_locks();">Fjern låser</a>
+            </div>
+
+            <div class="col_1">
+
+                <h3>{% trans %}app.builder.edit.menu.heading.page{% endtrans %}</h3>
+                <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_update_page_title();"></button>
+                <p>{% trans %}app.builder.edit.menu.page.name.info{% endtrans %}</p>
+                
+                <div class="mlab_two_icons_container">
+                         <a href="javascript: mlab_page_save();">
+                            <div title="Lagre side" id="mlab_save_icon"></div>
+                        </a> 
+                        <a href="javascript: mlab_page_delete();">
+                            <div title="Slette side" id="mlab_delete_icon"></div> 
+                        </a>
+                </div>
+                
+                <h3></h3>
+                <p>{% trans %}app.builder.edit.menu.page.edit.info{% endtrans %}</p>
+                
+                
+					                                                    
+                
+                    <div id="mlab_existing_pages">
+                    <ul>
+                        <li><a href="javascript:mlab_page_open(31, &#039;index&#039;);">Front page</a></a></li>
+                        <li><a href="javascript:mlab_page_open(31, 1);">ooooott</a></li>
+                        <li><a href="javascript:mlab_page_open(31, 2);">tttt</a></li>
+                    </ul>
+                    </div>
+
+                     <div class="mlab_two_icons_container">
+                        <a href="javascript: mlab_page_new();">
+                            <div title="Ny side" id="mlab_new_icon"></div>
+                        </a> 
+                        <a href="javascript: mlab_page_copy();">
+                            <div title="Kopier side" id="mlab_copy_icon"></div> 
+                        </a>
+                    </div>
+
+                </div>
+
+            <div class="col_1">
+                <div class="mlab_end_appbuilder">
+                <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
+                <p>{% trans %}app.builder.edit.menu.test.app.info{% endtrans %}</p>
+               
+                    <div class="mlab_two_icons_container">
+                        <a href="javascript: mlab_page_preview();">
+                            <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                        </a> 
+                        <a href="javascript: mlab_app_download();">
+                        <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
+                        </a>
+                    </div>
+               
+                
+                <div class="mlab_end_appbuilder">
+                <h3>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h3>
+                <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
+                <a href="/app_dev.php/app/builder/" target="_top">
+                    <div title="Avslutt" id="mlab_exit_icon"></div>   
+                </a>
+            </div>
+                </div>
+                </div>
+
+        </div><!-- End 4 columns container -->
+
+    </li><!-- End 4 columns Item -->
+
+    
+
+</ul>

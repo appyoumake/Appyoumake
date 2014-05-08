@@ -1,3 +1,7 @@
+/* Style Sheet for the Basic template
+   Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
+*/
+
 
 /* ==========================================================================
    Typography
@@ -38,60 +42,74 @@
 /* ==========================================================================
    Component styling
    ========================================================================== */
-
 #mlab_editable_area h1 {
-    font-size: 1.3em;
+    font-size: 1.45em;
     line-height: 1.1em;
     margin: 1em 0;
 }
 
-
 #mlab_editable_area h2 {
-    font-size: 1.2em;
+    font-size: 1.27em;
     line-height: 1.1em;
     margin: 1em 0;
 }
 
 #mlab_editable_area h3 {
-    font-size: 1.1em;
+    font-size: 1.12em;
     line-height: 1.1em;
     margin: 1em 0;
-}
-
-#mlab_editable_area h4 {
-    font-size: 1em;
-    line-height: 1.1em;
-    margin: 1em 0;
-}
-
-#mlab_editable_area img {
-    margin: 0;
-    padding: 5px;
-}
-
-#mlab_editable_area map {
-    margin: 0;
-    padding: 5px;
-}
-
-#mlab_editable_area ol {
-    margin: 0;
-    padding: 0;
 }
 
 #mlab_editable_area p {
     font-size: 1em;
     line-height: 1.1em;
+    margin: 1em 0;
+}
+
+#mlab_editable_area ol {
+    margin: 0;
+    list-style-type: decimal;
+    list-style-position:outside;
+    padding:0 2em 0 1.25em;
 }
 
 #mlab_editable_area ul {
     margin: 0;
-    padding: 0;
+    list-style-type: square;
+    list-style-position:outside;
+    padding:0 2em 0 1.25em;
+}
+
+#mlab_editable_area img {
+    margin: 0;
+    padding: 10px;
+    border: none;
+}
+
+#mlab_editable_area map {
+    margin: 0;
+    padding: 10px;
+    border: none;
 }
 
 #mlab_editable_area video {
     margin: 0;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#mlab_editable_area iframe {
+    margin: 0;
     padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+#mlab_editable_area div {
+    margin: 0;
+    padding: 10px;
+    border: none;
 }
 
 /* ==========================================================================
