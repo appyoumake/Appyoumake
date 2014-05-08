@@ -384,7 +384,7 @@
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
  */
 		function mlab_page_open(app_id, page_num) {
-            mlab_flag_transactional = true;
+            
             mlab_update_status("callback", 'Opening page', true);
             
 			var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
@@ -392,9 +392,10 @@
 			url = url.replace("_PAGE_NUM_", page_num);
             url = url.replace("_UID_", mlab_uid);
 
+			mlab_flag_transactional = true;
             $.get( url, function( data ) {
+				mlab_flag_transactional = false;
 				if (data.result == "success") {
-					mlab_flag_transactional = false;
                     mlab_update_status("completed");
                     if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                         mlab_index_page_process ( data.html, "index" );
@@ -636,7 +637,9 @@
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
             url = url.replace("_UID_", mlab_uid);
 			
+			mlab_flag_transactional = true;
 			$.get( url, function( data ) {
+				mlab_flag_transactional = false;
 				if (data.result == "success") {
                     mlab_regular_page_process ( data.html, data.page_num );
 				} else {
@@ -905,7 +908,9 @@
 			url = url.replace("_UID_", mlab_uid);
             mlab_update_status("callback", 'Opening app', true);
             
+            mlab_flag_transactional = true;
             $.get( url, function( data ) {
+            	mlab_flag_transactional = false;
 				if (data.result == "success") {
                     mlab_index_page_process ( data.html, "index");
                     $("#mlab_app_info").empty();
@@ -918,6 +923,7 @@
                     if (local_page_num != "0" && local_page_num != "index") {
                         mlab_page_open(data.app_id, local_page_num);
                     }
+                    
 				} else {
                     mlab_update_status("temporary", data.msg, false);
                     mlab_flag_transactional = false;
