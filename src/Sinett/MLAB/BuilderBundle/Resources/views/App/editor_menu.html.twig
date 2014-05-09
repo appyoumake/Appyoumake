@@ -26,11 +26,11 @@
                 <p>{% trans %}app.builder.edit.menu.app.name.info{% endtrans %}</p>
                 <h3></h3>
                 <p>{% trans %}app.builder.edit.menu.app.edit.info{% endtrans %}</p>
-                <input type="text" id="mlab_app_description" value="Beskrivelse" disabled="disabled"> <button class="mlab_menu_field_update_button"title="Oppdater" onclick=""></button>
-                <input type="text" id="mlab_app_kewords" value="Nøkkelord" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
-                <input type="text" id="mlab_app_CategoryOne" value="1. Kategori" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
-                <input type="text" id="mlab_app_CategoryTwo" value="2. Kategori" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
-                <input type="text" id="mlab_app_CategoryThree" value="3. Kategori" disabled="disabled"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_description" value="Beskrivelse"> <button class="mlab_menu_field_update_button"title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_keywords" value="Nøkkelord"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
+                <input type="text" id="mlab_app_CategoryOne" value="1. Kategori" disabled="disabled">
+                <input type="text" id="mlab_app_CategoryTwo" value="2. Kategori" disabled="disabled"> 
+                <input type="text" id="mlab_app_CategoryThree" value="3. Kategori" disabled="disabled"> 
                 <h3></h3>
                 <a href="javascript: mlab_app_remove_locks();">Fjern låser</a>
             </div>
@@ -93,7 +93,7 @@
                 <div class="mlab_end_appbuilder">
                 <h3>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h3>
                 <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
-                <a href="/app_dev.php/app/builder/" target="_top">
+                <a href="/app/builder/" target="_top">
                     <div title="Avslutt" id="mlab_exit_icon"></div>   
                 </a>
             </div>

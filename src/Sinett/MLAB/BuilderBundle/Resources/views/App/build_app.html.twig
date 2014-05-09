@@ -315,10 +315,27 @@
  			while (content.firstChild) {
  				content.removeChild(content.firstChild);
  			}
+            //Page name (hentes nå fra "head" sin tittel på siden ser det ut som)
 	        document.mlab_current_app.curr_indexpage_html = doc;
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+            
+            //List of all pages
+             //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
+            
+            //App name
+            $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
+            //App description
+            $("#mlab_app_description").val(document.mlab_current_app.description);
+            //App keywords
+            $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
+            //App 1. category
+            $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
+            //App 2. category
+            $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
+            //App 3. category
+            $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
             $.mobile.initializePage();
@@ -366,12 +383,29 @@
 			var head = doc.getElementsByTagName("head")[0];
 			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
 		    
-			
+			//Page name (hentes nå fra "head" sin tittel på siden ser det ut som)
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+            //List of all pages
+            //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
+            
+            //App name
+            $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
+            //App description
+            $("#mlab_app_description").val(document.mlab_current_app.description);
+            //App keywords
+            $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
+            //App 1. category
+            $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
+            //App 2. category
+            $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
+            //App 3. category
+            $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
+           
+            
 
-//add body content 
+            //add body content 
 			$("#" + mlab_config["app"]["content_id"]).html(body.innerHTML);
 
             mlab_prepare_editable_area();
