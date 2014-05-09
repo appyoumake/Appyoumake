@@ -51,7 +51,7 @@
 //constants/paths which are defined in parameteres.yml, a single object called mlab_config with everything in parameters.yml as sub objects
 // so to get path of cordova executables we use mlab_config.cordova.bin_path, etc 
 		mlab_flag_dirty = false;
-		mlab_flag_transactional = false; // True if the app is in an inconsistent state and should not save
+		var window.mlab_flag_transactional = false; // True if the app is in an inconsistent state and should not save
 		mlab_drag_origin = 'sortable';
 		mlab_url_new = "{{ path('app_new') }}";
 		mlab_url_edit = "{{ path('app_edit', {id: '_ID_'} ) }}";
@@ -392,9 +392,9 @@
 			url = url.replace("_PAGE_NUM_", page_num);
             url = url.replace("_UID_", mlab_uid);
 
-			mlab_flag_transactional = true;
+			window.mlab_flag_transactional = true;
             $.get( url, function( data ) {
-				mlab_flag_transactional = false;
+				window.mlab_flag_transactional = false;
 				if (data.result == "success") {
                     mlab_update_status("completed");
                     if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
@@ -442,8 +442,12 @@
 //finally convert to text to send back
 		
         function mlab_page_save() {
-//cannot save if locked
+        
+        console.log('Trying to save page');
+		
+		//cannot save if locked
             if ($("#mlab_editor_disabled").length > 0) {
+            	console.log('Page locked, did not save');
                 return false;
             }
             
@@ -457,11 +461,9 @@
                 return false;
             }
             
-            if (mlab_flag_transactional) {
+            if (window.mlab_flag_transactional) {
             	console.log('Transactional, did not save');
                 return false;
-            } else {
-            	mlab_flag_transactional = true;
             }
             
             
@@ -561,9 +563,9 @@
             curr_el.addClass("mlab_current_component");
 
 //finlly we submit the data to the server
-			mlab_flag_transactional = true;
+			window.mlab_flag_transactional = true;
 			$.post( url, {html: html}, function( data ) {
-				mlab_flag_transactional = false;
+				window.mlab_flag_transactional = false;
                             
                 if (data.result == "success") {
                     mlab_update_status("temporary", "Saved page", false);
@@ -603,9 +605,9 @@
                 var url = "{{ path('app_builder_page_new', { 'app_id': '_ID_', 'uid': '_UID_' }) }}";
                 url = url.replace("_ID_", document.mlab_current_app.id);
                 url = url.replace("_UID_", mlab_uid);
-				mlab_flag_transactional = true;
+				window.mlab_flag_transactional = true;
                 $.post( url, {}, function( data ) {
-                    mlab_flag_transactional = false;
+                    window.mlab_flag_transactional = false;
                     if (data.result == "success") {
                         mlab_update_status("completed");
                         $("#" + mlab_config["app"]["content_id"]).empty();
@@ -637,9 +639,9 @@
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
             url = url.replace("_UID_", mlab_uid);
 			
-			mlab_flag_transactional = true;
+			window.mlab_flag_transactional = true;
 			$.get( url, function( data ) {
-				mlab_flag_transactional = false;
+				window.mlab_flag_transactional = false;
 				if (data.result == "success") {
                     mlab_regular_page_process ( data.html, data.page_num );
 				} else {
@@ -665,6 +667,7 @@
 			url = url.replace("_ID_", document.mlab_current_app.id);
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
             url = url.replace("_UID_", mlab_uid);
+			
 			
 			$.get( url, function( data ) {
 				if (data.result == "success") {
@@ -908,9 +911,9 @@
 			url = url.replace("_UID_", mlab_uid);
             mlab_update_status("callback", 'Opening app', true);
             
-            mlab_flag_transactional = true;
+            window.mlab_flag_transactional = true;
             $.get( url, function( data ) {
-            	mlab_flag_transactional = false;
+            	window.mlab_flag_transactional = false;
 				if (data.result == "success") {
                     mlab_index_page_process ( data.html, "index");
                     $("#mlab_app_info").empty();
@@ -926,7 +929,8 @@
                     
 				} else {
                     mlab_update_status("temporary", data.msg, false);
-                    mlab_flag_transactional = false;
+                
+               
 				}
 				
 			});
@@ -942,6 +946,7 @@
  * @returns void
  */
         function mlab_app_download () {
+            mlab_page_save();
             mlab_update_status("callback", 'Retrieving app', true);
             var url = "{{ path('app_builder_app_download', { 'app_id': '_ID_' }) }}";
 			url = url.replace("_ID_", document.mlab_current_app.id);
@@ -1063,7 +1068,6 @@
             mlab_menu_features_prepare();
             
 //we always load pages using AJAX, this takes the parameters passed from the controller
-			mlab_flag_transactional = true; 
 			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );
  
             var tm = parseInt(mlab_config["save_interval"]);
