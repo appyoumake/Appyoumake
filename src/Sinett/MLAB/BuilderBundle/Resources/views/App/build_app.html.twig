@@ -938,9 +938,15 @@
  * @param {type} page_num
  */
 		function mlab_app_open(app_id, page_num) {
+            
+            if (app_id < 0) {
+               app_id = document.mlab_current_app.id;
+            }
+            
 			var local_page_num = page_num;
             var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
-			url = url.replace("_ID_", app_id);
+			
+            url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", 'index');
 			url = url.replace("_UID_", mlab_uid);
             mlab_update_status("callback", 'Opening app', true);
