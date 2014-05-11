@@ -370,6 +370,13 @@ border: none;
      margin-right: 450px;
     }
     
+#mlab_download_qr2{
+ color: #912323;       
+}    
+
+.qr_wait_text{
+    color: black;
+}
 
 #mlab_exit_icon, #mlab_preview_icon, #mlab_download_icon, #mlab_new_icon, #mlab_copy_icon, #mlab_save_icon, #mlab_delete_icon
 {
@@ -384,13 +391,11 @@ cursor: pointer;
 #mlab_preview_icon
 {
 background-image: url("/img/menu_preview_icon.png");
-float: left;
 }
 
 #mlab_download_icon
 {
 background-image: url("/img/menu_download_icon.png");
-float: right;
 }
 
 #mlab_new_icon

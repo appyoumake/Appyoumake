@@ -77,19 +77,26 @@
 
             <div class="col_1">
                 <div class="mlab_end_appbuilder">
-                <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
-                <p>{% trans %}app.builder.edit.menu.test.app.info{% endtrans %}</p>
+                <h3>Prøv App på web</h3>
+                <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
                
-                    <div class="mlab_two_icons_container">
+                  
                         <a href="javascript: mlab_page_preview();">
                             <div title="Test app i nettleser" id="mlab_preview_icon"></div>
                         </a> 
+                        
+                   
+               
+                
+                
+                <h3>Prøv App på mobil</h3>
+                <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
+                <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Venligst vent.</p>
+                </div>
                         <a href="javascript: mlab_app_download();">
                         <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
                         </a>
-                    </div>
-               
-                
+       
                 <div class="mlab_end_appbuilder">
                 <h3>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h3>
                 <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
@@ -99,9 +106,9 @@
             </div>
                 </div>
                 </div>
-
+            
         </div><!-- End 4 columns container -->
-
+        
     </li><!-- End 4 columns Item -->
 
     

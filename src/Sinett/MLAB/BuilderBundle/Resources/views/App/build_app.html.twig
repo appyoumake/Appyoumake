@@ -17,7 +17,7 @@
 	</div>
     
 	<div title="Use this to rotate the editor" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
-	<div id="mlab_dialog_new_app"></div>
+    <div id="mlab_dialog_new_app"></div>
     <div id="mlab_menu_popup"></div>
     <div id="mlab_app_info"></div>
     <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
@@ -994,23 +994,25 @@
                 mlab_update_status("completed");
 				if (data.result == "success") {
                     full_url = window.location.origin + data.url;
-                    $("#mlab_download_qr").empty().qrcode({text: full_url, render : "table"}).hide()
+                    $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "table"}).show()
                             .append("<br>")
                             .append("<a href='" + full_url + "'>Download: " + full_url +"</a>")
                             .append("<br>")
                             .append("<a href='mailto:" + mlab_current_user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
-				} else {
-					$("#mlab_download_qr").empty().append("Error:" + data.msg).hide();
+				
+        } else {
+					$("#mlab_download_qr2").empty().append("<p>Error: " + data.msg + "</p>").show();
+                
 				}
-                $("#mlab_statusbar_permanent").qtip({
-                    content: {text: $("#mlab_download_qr").html() },
-                    position: { my: 'topMiddle', at: 'bottomMiddle' },
+         /*       $("#mlab_download_qr_field").qtip({
+                    content: {text: $("#mlab_download_qr2").html() },
+                    position: { my: 'top right', at: 'bottom right', target: $("#mlab_download_qr_field") },
                     show: { ready: true, modal: { on: false, blur: false } },
                     hide: 'unfocus',
                     style: { classes: 'qtip-tipped' }});
-				
+			*/	
 			});
-			alert('This could take 30 seconds. Please wait');
+			//alert('This could take 30 seconds. Please wait.');
         }
 
         function mlab_app_submit_to_market () {
