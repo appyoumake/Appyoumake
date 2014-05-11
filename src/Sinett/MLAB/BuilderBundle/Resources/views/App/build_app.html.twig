@@ -53,7 +53,7 @@
 								'uid': "{{mlab_uid}}", 
 								'user_email': "{{mlab_current_user_email }}",
 								'version': {{mlab_app_version}},
-								'page_names': ["index"],
+								'page_names': [],
 								'categories': ["ADL", "Konferanse", "Eksperiment"]
 								};
 // State variables
@@ -337,17 +337,19 @@
              //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
             
             //App name
-            $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
+            //$("#mlab_curr_apptitle").val(document.mlab_current_app.name);
             //App description
-            $("#mlab_app_description").val(document.mlab_current_app.description);
+            //$("#mlab_app_description").val(document.mlab_current_app.description);
             //App keywords
-            $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
+            //$("#mlab_app_keywords").val(document.mlab_current_app.keywords);
             //App 1. category
-            $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
+            //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
             //App 2. category
-            $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
+            //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
             //App 3. category
-            $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
+            //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
+            
+            mlab_update_gui_elements_app_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
             $.mobile.initializePage();
@@ -405,19 +407,19 @@
             //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
             
             //App name
-            $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
+            //$("#mlab_curr_apptitle").val(document.mlab_current_app.name);
             //App description
-            $("#mlab_app_description").val(document.mlab_current_app.description);
+            //$("#mlab_app_description").val(document.mlab_current_app.description);
             //App keywords
-            $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
-            //App 1. category
-            $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
+            //$("#mlab_app_keywords").val(document.mlab_current_app.keywords);
+            ////App 1. category
+            //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
             //App 2. category
-            $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
+            //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
             //App 3. category
-            $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
+            //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
            
-            
+            mlab_update_gui_elements_app_metadata();
 
             //add body content 
 			$("#" + mlab_config["app"]["content_id"]).html(body.innerHTML);
@@ -425,6 +427,49 @@
             mlab_prepare_editable_area();
             $.mobile.initializePage();
 		}
+		
+		
+/**
+* Function to update content of GUI elements with the current apps metadata 
+*
+*/
+	function mlab_update_gui_elements_app_metadata() {
+            
+            //List of all pages
+            //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
+            var page_names = window.mlab_app_data.page_names;
+            var list = $('<ul></ul>')
+            for (var index = 0; index < page_names.length; ++index) {
+            	var page_name = page_names[index];
+            	if (page_name == "undefined" || typeof page_name === 'undefined' ) {
+            			if(index == 0 ) {
+            				page_name = "Forsiden";
+            			} else {
+            			page_name = "Side " + (index + 1);
+            			}
+            		} 
+    			list.append("<li><a href='javascript:mlab_page_open(" + window.mlab_app_data.id + "," + index + ");'>" + page_name + " </a></li>");    			
+				}
+				
+    		$("#mlab_existing_pages").html(list);
+            
+            //App name
+            $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
+            //App description
+            $("#mlab_app_description").val(document.mlab_current_app.description);
+            //App keywords
+            $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
+            //App 1. category
+            //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
+            $("#mlab_app_CategoryOne").val(window.mlab_app_data.categories[0]);
+            //App 2. category
+            //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
+            $("#mlab_app_CategoryOne").val(window.mlab_app_data.categories[1]);
+            //App 3. category
+            //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
+            $("#mlab_app_CategoryOne").val(window.mlab_app_data.categories[2]);
+}		
+		
 		
 /**
  * Retrieve content of a page from server and insert it
@@ -617,6 +662,8 @@
                 if (data.result == "success") {
                     mlab_update_status("temporary", "Saved page", false);
 					mlab_flag_dirty = false;
+					
+					mlab_update_gui_elements_app_metadata();
 					
 				} else {
                     mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
@@ -1092,6 +1139,7 @@
 		
 /*********** Startup code ***********/  
 		$(document).ready(function() {
+            //alert('Debug?');
             if (bowser.gecko || bowser.chrome) {
 
             } else {
