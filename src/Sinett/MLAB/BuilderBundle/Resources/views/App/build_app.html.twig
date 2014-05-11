@@ -48,10 +48,20 @@
 //list of components 
 		mlab_components = {{ mlab_components|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 
-//constants/paths which are defined in parameteres.yml, a single object called mlab_config with everything in parameters.yml as sub objects
-// so to get path of cordova executables we use mlab_config.cordova.bin_path, etc 
+// TODO Temporary datastructure object to keep app metadata. NB Some values are hardcoded. 
+		window.mlab_app_data = {'id':  {{mlab_app_id}},
+								'uid': "{{mlab_uid}}", 
+								'user_email': "{{mlab_current_user_email }}",
+								'version': {{mlab_app_version}},
+								'page_names': ["index"],
+								'categories': ["ADL", "Konferanse", "Eksperiment"]
+								};
+// State variables
 		mlab_flag_dirty = false;
 		window.mlab_flag_transactional = false; // True if the app is in an inconsistent state and should not save
+
+//constants/paths which are defined in parameteres.yml, a single object called mlab_config with everything in parameters.yml as sub objects
+// so to get path of cordova executables we use mlab_config.cordova.bin_path, etc 
 		mlab_drag_origin = 'sortable';
 		mlab_url_new = "{{ path('app_new') }}";
 		mlab_url_edit = "{{ path('app_edit', {id: '_ID_'} ) }}";
@@ -321,6 +331,7 @@
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+	        window.mlab_app_data.page_names[0] = document.mlab_current_app.curr_pagetitle;
             
             //List of all pages
              //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
@@ -388,6 +399,8 @@
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+	        window.mlab_app_data.page_names[page_num] = document.mlab_current_app.curr_pagetitle;
+	        
             //List of all pages
             //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
             
@@ -649,6 +662,11 @@
                         document.mlab_current_app.curr_page_num = data.page_num_real;
                         $("#mlab_curr_pagetitle").val(title);
                         mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
+
+                        // Saving the new page to keep the title
+                        window.mlab_app_data.page_names[data.page_num_real] = title;
+                        mlab_flag_dirty = true;
+                        mlab_page_save();
                                                 
                     } else {
                         mlab_update_status("temporary", data.msg, false);
