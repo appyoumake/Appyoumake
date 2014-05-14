@@ -25,13 +25,13 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/app/, role: ROLE_USER }
-        - { path: ^/category/, role: ROLE_USER }
-        - { path: ^/component/, role: ROLE_USER }
-        - { path: ^/group/, role: ROLE_USER }
-        - { path: ^/menu/, role: ROLE_USER }
-        - { path: ^/template/, role: ROLE_USER }
-        - { path: ^/tracking/, role: ROLE_USER }
-        - { path: ^/user/, role: ROLE_USER }
+        - { path: ^/category/, role: ROLE_ADMIN }
+        - { path: ^/component/, role: ROLE_ADMIN }
+        - { path: ^/group/, role: ROLE_ADMIN }
+        - { path: ^/menu/, role: ROLE_ADMIN }
+        - { path: ^/template/, role: ROLE_ADMIN }
+        - { path: ^/tracking/, role: ROLE_ADMIN }
+        - { path: ^/user/, role: ROLE_ADMIN }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/system, role: ROLE_SUPER_ADMIN }
         - { path: ^/system/, role: ROLE_SUPER_ADMIN }
