@@ -1,7 +1,7 @@
                 <tr id="row_app_{{ app.id }}">
 				  
                     <td class="builder_app_list_name mlab_td_max_size" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
-                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img class="builder_app_list_name_edit_img" alt="" src="/img/editGreyFlip.png"></img>{{ app.name }}</a>
+                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img class="builder_app_list_name_edit_img" alt="" src="/img/editGreyFlip.png" />{{ app.name }}</a>
 				    </td>
                     
                     <td class="builder_app_list_properties hidden" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
