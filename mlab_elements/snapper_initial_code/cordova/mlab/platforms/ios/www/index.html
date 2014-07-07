@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.10.3.custom.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/quiz_moodle.css" />
+        <title>Mlab test app</title>
+    </head>
+    <body>
+        <div class="app">
+        
+
+
+<div class="quiz-moodle" id="quiz-1" data-controlmode="local">
+
+    <div class="designmode nav hide">
+        <ul role="tablist" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+            <li aria-selected="false" aria-labelledby="ui-id-1" aria-controls="quiz-moodle-page-1" tabindex="-1" role="tab" class="ui-state-default ui-corner-top"><a id="ui-id-1" tabindex="-1" role="presentation" class="ui-tabs-anchor" href="#quiz-moodle-page-1">Page 1</a></li>
+            <li aria-selected="true" aria-labelledby="ui-id-3" aria-controls="quiz-moodle-page-2" tabindex="0" role="tab" class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a id="ui-id-3" tabindex="-1" role="presentation" class="ui-tabs-anchor" href="#quiz-moodle-page-2">Page 2</a><span class="remove-page button">X</span></li><li aria-selected="false" aria-disabled="true" aria-labelledby="ui-id-2" aria-controls="new-page" tabindex="-1" role="tab" class="add-page ui-state-default ui-corner-top ui-state-disabled" title="Add new page"><a id="ui-id-2" tabindex="-1" role="presentation" class="ui-tabs-anchor" href="#new-page">+</a></li>
+        </ul>
+        <span class="add-question button" title="Add new question">Add question</span>
+        <ul class="add-question-dropdown hide">
+            <li><a href="#" data-type="checkbox">Yes/No</a></li>
+            <li><a href="#" data-type="select">Select</a></li>
+            <li><a href="#" data-type="multi">Multi</a></li>
+            <li><a href="#" data-type="text">Text</a></li>
+        </ul>
+        <ul class="quiz-options">
+            <li><input type="radio" name="control_mode" value="1" id="control_mode_1"/><label for="control_mode_1">Check answers locally only</label></li>
+            <li><input type="radio" name="control_mode" value="2" id="control_mode_2"/><label for="control_mode_2">Upload answers to remote LRS (no local check)</label></li>
+            <li><input type="radio" name="control_mode" value="3" id="control_mode_3"/><label for="control_mode_3">Check answers locally, and upload to remote LRS</label></li>
+            
+        </ul>
+    </div>
+    
+    <div class="quiz-page hide" id="quiz-moodle-page-1">
+        <li data-response="{&quot;type&quot;:&quot;checkbox&quot;,&quot;answer&quot;:&quot;&quot;,&quot;checkme&quot;:true}" id="question-box-1" class="type-checkbox question">
+            <div class="line">
+                <input name="question-1" id="question-1" type="checkbox">
+                <div class="qlabel">
+                    Hva tror du?
+                </div>
+            </div>
+            <div class="controls designmode"><span class="button edit">e</span><span class="button remove">X</span></div>
+        </li>
+        <li data-response="{&quot;type&quot;:&quot;select&quot;,&quot;answer&quot;:&quot;2&quot;,&quot;checkme&quot;:true}" id="question-box-2" class="type-select question">
+            <div class="line">
+                <div class="qlabel">
+                    <label for="question-2">Your question here</label>
+                </div>
+                <select id="question-2" name="question-2"><option value="1">Dette</option><option value="2">Eller dette?</option><option value="3">Kanskje dette?</option></select>
+            </div>
+            <div class="controls designmode"><span class="button edit">e</span><span class="button remove">X</span></div>
+        </li>
+    </div>
+    <div class="quiz-page hide" id="quiz-moodle-page-2">
+        <li data-response="{&quot;type&quot;:&quot;multi&quot;,&quot;answer&quot;:[&quot;1&quot;, &quot;2&quot;],&quot;checkme&quot;:true}" id="question-box-3" class="type-multi question">
+            <div class="line">
+                <div class="qlabel">
+                    <label for="multi-dummy">Your question here</label>
+                </div>
+                <div class="multi-options"><div class="line"><input name="multi-3" id="multi-3-0" value="1" type="checkbox"><label for="multi-3-0">Denne</label></div><div class="line"><input name="multi-3" id="multi-3-1" value="2" type="checkbox"><label for="multi-3-1">Eller denne</label></div><div class="line"><input name="multi-3" id="multi-3-2" value="3" type="checkbox"><label for="multi-3-2">Eller kanskje ingen?</label></div></div>
+            </div>
+            <div class="controls designmode"><span class="button edit">e</span><span class="button remove">X</span></div>
+        </li>
+        <li data-response="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:&quot;nei&quot;,&quot;checkme&quot;:true}" id="question-box-4" class="type-text question">
+            <div class="line">
+                <div class="qlabel">
+                    Si din mening
+                </div>
+                <input name="question-4" id="question-4" type="text">
+            </div>
+            <div class="controls designmode"><span class="button edit">e</span><span class="button remove">X</span></div>
+        </li>
+    </div>
+    
+    <div class="runtimemode page-nav hide">
+        <span class="prev-page button disabled">&lt; Prev</span>
+        <span class="check-answers button">Check answers</span>
+        <span class="next-page button">Next &gt;</span>
+    </div>
+
+    <!-- Below are templates for questions to be added -->
+    <div class="question-templates hide">
+        <div class="type-checkbox hide">
+            <div class="line designmode">
+                <input name="dummy" id="checkbox-dummy" type="checkbox">
+                <div class="qlabel">
+                    <label for="checkbox-dummy">Your question here</label>
+                </div>
+            </div>
+        </div>
+        <div class="type-select hide">
+            <div class="line designmode">
+                <div class="qlabel">
+                    <label for="select-dummy">Your question here</label>
+                </div>
+                <select id="select-dummy" name="dummy">
+                    <option value="">Answer option here</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="type-multi hide">
+            <div class="line designmode">
+                <div class="qlabel">
+                    <label for="multi-dummy">Your question here</label>
+                </div>
+                <div class="multi-options">
+                    <div class="line">
+                        <input name="dummy" id="multi-dummy" value="" type="checkbox">
+                        <label for="multi-dummy">Answer option here</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="type-text hide">
+            <div class="line designmode">
+                <div class="qlabel">
+                    <label for="text-dummy">Your question here</label>
+                </div>
+                <input name="dummy" id="text-dummy" type="text">
+            </div>
+        </div>
+        
+    </div>
+    <!-- Unified edit form for all question types. Fields are populated and hidden/shown on demand. -->
+    <div class="edit-question hide">
+        <span class="close-questionform button">X</span>
+        <h3>Edit question options</h3>
+        <form action="#update-question" method="post">
+            <input name="questionId" id="questionform-questionid" value="4" type="hidden">
+            <input name="questionType" id="questionform-type" value="text" type="hidden">
+            <div class="line">
+                <input id="questionform-checkme" name="checkme" checked="checked" value="1" type="checkbox">
+                <label for="questionform-checkme">Is there a correct answer?</label>
+            </div>
+            <div class="line checkbox text visible-by-type">
+                <label for="questionform-answer">Correct answer:</label>
+                <input id="questionform-answer" name="answer" value="" type="text">
+                <div class="help-text checkbox visible-by-type">Leave empty if unchecked is the correct answer, enter "1" if checked is the correct answer.</div>
+            </div>
+            <div class="line multi select visible-by-type">
+                <input name="maxoptionid" id="maxoptionid" value="2" type="hidden">
+                <div class="manage-options hide">
+                    <div class="line header">
+                        <span class="cell option-remove">&nbsp;</span>
+                        <span class="cell option-value">Value</span>
+                        <span class="cell option-label">Label</span>
+                        <span class="cell option-iscorrect">Correct answer</span>
+                    </div>
+                    <div class="options-box line"></div>
+                    <span class="add-question-option button">+ Add question option</span>
+                </div>
+            </div>
+            <div class="line">
+                <input value="Save" type="submit">
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+
+
+
+<!--
+<style type="text/css">
+    .tracking-moodle .hide { display: none; }
+    .tracking-moodle .tracking-buttons, .tracking-moodle .component-marker { position: absolute; right: 1%; top: 1%; }
+    .tracking-moodle .tracking-button { float: right; padding: .5; border: 1px solid grey; background-color: white; }
+</style>
+<div class="tracking-moodle">
+    <div class="tracking-buttons runtimemode">
+        <span class="tracking-button hide" id="tracking-bookmarked">B</span>
+        <span class="tracking-button hide" id="tracking-not-bookmarked">!B</span>
+        <span class="tracking-button hide" id="tracking-pageread">R</span>
+    </div>
+    <div class="component-marker designmode"></div>
+</div>
+            <h1>INDEX</h1>
+            <ul>
+                <li><a href="page1.html">Page 1</a></li>
+                <li><a href="page2.html">Page 2</a></li>
+            </ul>
+        </div>
+-->
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/mlab.js"></script>
+<!--         <script type="text/javascript" src="js/plugin_moodle.js"></script> -->
+<!--         <script type="text/javascript" src="js/getfiles_moodle.js"></script> -->
+<!--         <script type="text/javascript" src="js/tracking_moodle.js"></script> -->
+        <script type="text/javascript" src="js/quiz_moodle.js"></script>
+    </body>
+</html>

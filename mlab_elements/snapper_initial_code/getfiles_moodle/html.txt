@@ -1,0 +1,12 @@
+<div class="getfiles-moodle">
+    <ul class="file-list runtimemode">
+        <li class="placeholder">Waiting to fetch files</li>
+    </ul>
+    
+    <ul class="file-list designmode">
+        <li class="dummy-file">File 1</li>
+        <li class="dummy-file">File 2</li>
+        <li class="dummy-file">File 3</li>
+        <li class="dummy-file">Etc</li>
+    </ul>
+</div>

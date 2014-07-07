@@ -1,0 +1,1 @@
+common/plugin_moodle.js
