@@ -73,6 +73,9 @@ parameters:
             copy_files: { frontpage.html: index.html, js/: js, css/: css, img/: img }
             new_page: page.html
             content_id: mlab_editable_area
+            html_header: <!DOCTYPE html>\n<html>\n<head><title>%TITLE%</title></head>\n<body>\n
+            html_footer: \n</body></html>
+
             
         replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    
 

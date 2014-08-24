@@ -94,3 +94,15 @@ app_builder_component_upload:
 app_builder_feature_add:
     path:   /builder/{app_id}/{comp_id}/feature_add
     defaults: { _controller: "SinettMLABBuilderBundle:App:featureAdd" }
+
+app_builder_load_variables:
+    path:   /builder/{app_id}/{page_num}/load_variables
+    defaults: { _controller: "SinettMLABBuilderBundle:App:loadBuilderVariables" }
+
+app_builder_load_metadata:
+    path:   /builder/{app_id}/load_metadata
+    defaults: { _controller: "SinettMLABBuilderBundle:App:loadAppMetadata" }
+
+app_builder_load_components:
+    path:   /builder/{app_id}/load_components
+    defaults: { _controller: "SinettMLABBuilderBundle:App:loadBuilderComponents" }

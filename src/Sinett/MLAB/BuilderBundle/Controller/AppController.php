@@ -391,8 +391,7 @@ class AppController extends Controller
  * @param type $id
  * @param type $page_num
  */
-    public function buildAppAction($id, $page_num)
-    {
+    public function buildAppAction($id, $page_num) {
     	$em = $this->getDoctrine()->getManager();
     	
 // pick up config from parameters.yml, we use this mainly for paths
@@ -412,14 +411,73 @@ class AppController extends Controller
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
     			"mlab_app_id" => $id, 
-    			"mlab_app_version" => $app->getVersion(), 
-    			"mlab_components" => $components,
+                "mlab_appbuilder_root_url" => $this->generateUrl('app_builder_index')
+    	));
+    }
+    
+    
+/* LOADING DIFFERENT INFO FOR BUILDER, ALL CALLED FROM AJAX, RETURNING JSON */
+    
+/**
+ * Returns basic variables from config file and app
+ * @param type $app_id
+ * @param type $page_num
+ */
+    public function loadBuilderVariablesAction($app_id, $page_num) {
+    	$em = $this->getDoctrine()->getManager();
+    	
+// pick up config from parameters.yml, we use this mainly for paths
+        $config = $this->container->parameters['mlab'];
+    	unset($config["replace_in_filenames"]);
+    	unset($config["verify_uploads"]);
+
+    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        
+        return new JsonResponse(array(
+                "result" => "success",
+    			"mlab_app_page_num" => $page_num,
     			"mlab_app" => $app->getArrayFlat($config["paths"]["template"]),
     			"mlab_config" => $config,
                 "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999),
-                "mlab_current_user_email" => $this->getUser()->getEmail()
+                "mlab_current_user_email" => $this->getUser()->getEmail(),
+                
+                "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
+                                        "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
+                                        "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_')),
+                                        "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+                                        "editor_closed" => $this->generateUrl('app_builder_editor_closed',  array('uid' => '_UID_')),
+                                        "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
+                                        "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
+                                        "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
+                                        "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
+                                        "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
+                                        "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
+                                        "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_'))
+                                    )
     	));
     }
+    
+/**
+ * Returns list of components
+ * @param type $app_id
+ * @param type $page_num
+ */
+    public function loadBuilderComponentsAction($app_id) {
+    	$em = $this->getDoctrine()->getManager();
+    	
+//load all the components        
+        $config = $this->container->parameters['mlab'];
+    	$file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('component');
+        
+    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
+    	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"], $app_id);
+    	
+    	return new JsonResponse(array("result" => "success", "mlab_components" => $components));
+    }
+    
+    
+/* END LOADING DIFFERENT INFO FOR BUILDER */
     
     /**
      * Always called by AJAX to get the HTML content of the page that is to be edited
