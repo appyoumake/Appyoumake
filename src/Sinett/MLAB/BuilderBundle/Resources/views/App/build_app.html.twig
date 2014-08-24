@@ -48,17 +48,9 @@
 //list of components 
 		mlab_components = {{ mlab_components|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
 
-// TODO Temporary datastructure object to keep app metadata. NB Some values are hardcoded. 
-		window.mlab_app_data = {'id':  {{mlab_app_id}},
-								'uid': "{{mlab_uid}}", 
-								'user_email': "{{mlab_current_user_email }}",
-								'version': {{mlab_app_version}},
-								'page_names': [],
-								'categories': ["ADL", "Konferanse", "Eksperiment"]
-								};
 // State variables
 		mlab_flag_dirty = false;
-		window.mlab_flag_transactional = false; // True if the app is in an inconsistent state and should not save
+		mlab_flag_server_update = false; // True if the app is in an inconsistent state and should not save
 
 //constants/paths which are defined in parameteres.yml, a single object called mlab_config with everything in parameters.yml as sub objects
 // so to get path of cordova executables we use mlab_config.cordova.bin_path, etc 
@@ -326,30 +318,14 @@
  			while (content.firstChild) {
  				content.removeChild(content.firstChild);
  			}
-            //Page name (hentes nå fra "head" sin tittel på siden ser det ut som)
 	        document.mlab_current_app.curr_indexpage_html = doc;
+//Page name is picked up from title tag in head
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
-	        window.mlab_app_data.page_names[0] = document.mlab_current_app.curr_pagetitle;
+	        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = document.mlab_current_app.curr_pagetitle;
             
-            //List of all pages
-             //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
-            
-            //App name
-            //$("#mlab_curr_apptitle").val(document.mlab_current_app.name);
-            //App description
-            //$("#mlab_app_description").val(document.mlab_current_app.description);
-            //App keywords
-            //$("#mlab_app_keywords").val(document.mlab_current_app.keywords);
-            //App 1. category
-            //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
-            //App 2. category
-            //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
-            //App 3. category
-            //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
-            
-            mlab_update_gui_elements_app_metadata();
+            mlab_app_update_gui_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
             $.mobile.initializePage();
@@ -397,29 +373,13 @@
 			var head = doc.getElementsByTagName("head")[0];
 			var body = doc.getElementsByTagName("body")[0].cloneNode(true);
 		    
-			//Page name (hentes nå fra "head" sin tittel på siden ser det ut som)
+//Page name is picked up from title tag in head
 	        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
             document.mlab_current_app.curr_page_num = page_num;
 	        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
-	        window.mlab_app_data.page_names[page_num] = document.mlab_current_app.curr_pagetitle;
+	        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = document.mlab_current_app.curr_pagetitle;
 	        
-            //List of all pages
-            //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
-            
-            //App name
-            //$("#mlab_curr_apptitle").val(document.mlab_current_app.name);
-            //App description
-            //$("#mlab_app_description").val(document.mlab_current_app.description);
-            //App keywords
-            //$("#mlab_app_keywords").val(document.mlab_current_app.keywords);
-            ////App 1. category
-            //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
-            //App 2. category
-            //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
-            //App 3. category
-            //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
-           
-            mlab_update_gui_elements_app_metadata();
+            mlab_app_update_gui_metadata();
 
             //add body content 
 			$("#" + mlab_config["app"]["content_id"]).html(body.innerHTML);
@@ -430,14 +390,14 @@
 		
 		
 /**
-* Function to update content of GUI elements with the current apps metadata 
+* Function to update content of GUI elements with the current app's metadata 
 *
 */
-	function mlab_update_gui_elements_app_metadata() {
+	function mlab_app_update_gui_metadata() {
             
             //List of all pages
-            //... #mlab_existing_pages (er en <div> som det da må popeleres en <ul> inni med et <li> element for hver side)
-            var page_names = window.mlab_app_data.page_names;
+            //... #mlab_existing_pages (is a <div> which is populated with a <ul> inside a <li> element for each page)
+            var page_names = document.mlab_current_app.page_names;
             var list = $('<ul></ul>')
             for (var index = 0; index < page_names.length; ++index) {
             	var page_name = page_names[index];
@@ -448,7 +408,7 @@
             			page_name = "Side " + (index + 1);
             			}
             		} 
-    			list.append("<li><a href='javascript:mlab_page_open(" + window.mlab_app_data.id + "," + index + ");'>" + page_name + " </a></li>");    			
+    			list.append("<li><a href='javascript:mlab_page_open(" + document.mlab_current_app.id + "," + index + ");'>" + page_name + " </a></li>");    			
 				}
 				
     		$("#mlab_existing_pages").html(list);
@@ -461,13 +421,13 @@
             $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
             //App 1. category
             //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
-            $("#mlab_app_CategoryOne").val(window.mlab_app_data.categories[0]);
+            $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
             //App 2. category
             //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
-            $("#mlab_app_CategoryTwo").val(window.mlab_app_data.categories[1]);
+            $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryOne);
             //App 3. category
             //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
-            $("#mlab_app_CategoryThree").val(window.mlab_app_data.categories[2]);
+            $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryOne);
 }		
 		
 		
@@ -484,9 +444,9 @@
 			url = url.replace("_PAGE_NUM_", page_num);
             url = url.replace("_UID_", mlab_uid);
 
-			window.mlab_flag_transactional = true;
+			mlab_flag_server_update = true;
             $.get( url, function( data ) {
-				window.mlab_flag_transactional = false;
+				mlab_flag_server_update = false;
 				if (data.result == "success") {
                     mlab_update_status("completed");
                     if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
@@ -534,7 +494,6 @@
 //finally convert to text to send back
 		
         function mlab_page_save() {
-        
         console.log('Trying to save page');
 		
 		//cannot save if locked
@@ -553,12 +512,10 @@
                 return false;
             }
             
-            if (window.mlab_flag_transactional) {
-            	console.log('Transactional, did not save');
+            if (mlab_flag_server_update) {
+            	console.log('Previous server update not completed, did not save');
                 return false;
             }
-            
-            
             
             mlab_update_status("callback", "Storing page", true);
             var curr_el = $("#" + mlab_config["app"]["content_id"] + " .mlab_current_component");
@@ -655,15 +612,15 @@
             curr_el.addClass("mlab_current_component");
 
 //finlly we submit the data to the server
-			window.mlab_flag_transactional = true;
+			mlab_flag_server_update = true;
 			$.post( url, {html: html}, function( data ) {
-				window.mlab_flag_transactional = false;
+				mlab_flag_server_update = false;
                             
                 if (data.result == "success") {
                     mlab_update_status("temporary", "Saved page", false);
 					mlab_flag_dirty = false;
 					
-					mlab_update_gui_elements_app_metadata();
+					mlab_app_update_gui_metadata();
 					
 				} else {
                     mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
@@ -694,14 +651,12 @@
             var title = prompt("Please enter the title of the new page");
             if (title != null) {
                 mlab_update_status("callback", "Storing page", true);
-                // Moving this into callback ... $("#" + mlab_config["app"]["content_id"]).empty();
-                
                 var url = "{{ path('app_builder_page_new', { 'app_id': '_ID_', 'uid': '_UID_' }) }}";
                 url = url.replace("_ID_", document.mlab_current_app.id);
                 url = url.replace("_UID_", mlab_uid);
-				window.mlab_flag_transactional = true;
+				mlab_flag_server_update = true;
                 $.post( url, {}, function( data ) {
-                    window.mlab_flag_transactional = false;
+                    mlab_flag_server_update = false;
                     if (data.result == "success") {
                         mlab_update_status("completed");
                         $("#" + mlab_config["app"]["content_id"]).empty();
@@ -710,10 +665,11 @@
                         $("#mlab_curr_pagetitle").val(title);
                         mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
 
-                        // Saving the new page to keep the title
-                        window.mlab_app_data.page_names[data.page_num_real] = title;
+// Saving the new page to keep the title
+//TODO: Check if need this, added by Bård before Gol
+/*                        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = title;
                         mlab_flag_dirty = true;
-                        mlab_page_save();
+                        mlab_page_save(); */
                                                 
                     } else {
                         mlab_update_status("temporary", data.msg, false);
@@ -738,9 +694,9 @@
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
             url = url.replace("_UID_", mlab_uid);
 			
-			window.mlab_flag_transactional = true;
+			mlab_flag_server_update = true;
 			$.get( url, function( data ) {
-				window.mlab_flag_transactional = false;
+				mlab_flag_server_update = false;
 				if (data.result == "success") {
                     mlab_regular_page_process ( data.html, data.page_num );
 				} else {
@@ -766,7 +722,6 @@
 			url = url.replace("_ID_", document.mlab_current_app.id);
 			url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
             url = url.replace("_UID_", mlab_uid);
-			
 			
 			$.get( url, function( data ) {
 				if (data.result == "success") {
@@ -1003,22 +958,21 @@
  * @param {type} page_num
  */
 		function mlab_app_open(app_id, page_num) {
-            
+//TODO: Check if this is needed, and if it really does what we expect it to do. Added by Bård before Gol            
             if (app_id < 0) {
                app_id = document.mlab_current_app.id;
             }
             
 			var local_page_num = page_num;
             var url = "{{ path('app_builder_page_get', { 'app_id': '_ID_', 'page_num': '_PAGE_NUM_', 'uid': '_UID_' }) }}";
-			
             url = url.replace("_ID_", app_id);
 			url = url.replace("_PAGE_NUM_", 'index');
 			url = url.replace("_UID_", mlab_uid);
             mlab_update_status("callback", 'Opening app', true);
             
-            window.mlab_flag_transactional = true;
+            mlab_flag_server_update = true;
             $.get( url, function( data ) {
-            	window.mlab_flag_transactional = false;
+            	mlab_flag_server_update = false;
 				if (data.result == "success") {
                     mlab_index_page_process ( data.html, "index");
                     $("#mlab_app_info").empty();
@@ -1031,11 +985,8 @@
                     if (local_page_num != "0" && local_page_num != "index") {
                         mlab_page_open(data.app_id, local_page_num);
                     }
-                    
 				} else {
                     mlab_update_status("temporary", data.msg, false);
-                
-               
 				}
 				
 			});
@@ -1077,7 +1028,6 @@
                     style: { classes: 'qtip-tipped' }});
 			*/	
 			});
-			//alert('This could take 30 seconds. Please wait.');
         }
 
         function mlab_app_submit_to_market () {
@@ -1139,7 +1089,6 @@
 		
 /*********** Startup code ***********/  
 		$(document).ready(function() {
-            //alert('Debug?');
             if (bowser.gecko || bowser.chrome) {
 
             } else {
@@ -1177,13 +1126,11 @@
             
 //we always load pages using AJAX, this takes the parameters passed from the controller
 			mlab_app_open( '{{ mlab_app_id }}', '{{ mlab_app_page_num }}' );
- 
             var tm = parseInt(mlab_config["save_interval"]);
             if (tm === 0) {
                 tm = 60;
             }
 			window.setInterval(mlab_page_save, tm * 1000);
-			console.log('Save interval ' + tm);
 
 		});
         
