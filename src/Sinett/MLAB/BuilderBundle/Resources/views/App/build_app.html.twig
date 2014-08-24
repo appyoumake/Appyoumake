@@ -42,6 +42,7 @@
 
 //current app/page information, this will be updated when they create a new app or edit properties 
 		document.mlab_current_app = {{ mlab_app|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
+        document.mlab_current_app.page_names = {};
 
 //configuration stuff from parameter.yml
 		mlab_config = {{ mlab_config|json_encode(constant('JSON_PRETTY_PRINT'))|raw }};
@@ -245,6 +246,7 @@
 			    	} else {
 //we set the current variable to the data coming back in, then if this is an added record we open the page to edit 
 			    		document.mlab_current_app = data.mlab_app;
+                        document.mlab_current_app.page_names = {};
 			    		if (data.action == 'ADD') {
 			    			mlab_app_open(data.mlab_app_id, data.mlab_app_page_num) ;
 			    		}
@@ -368,6 +370,9 @@
 //remove old stuff 
 			$("#" + mlab_config["app"]["content_id"]).html("");
 
+//a page may have failed to save, in this case we create an empty page here, then everything works
+            page = mlab_html_header.replace("%TITLE%", "Title") + mlab_html_footer;
+//
 //parse doc into variables 
 			var doc = (new DOMParser()).parseFromString(page,"text/html");
 			var head = doc.getElementsByTagName("head")[0];
@@ -395,21 +400,12 @@
 */
 	function mlab_app_update_gui_metadata() {
             
-            //List of all pages
-            //... #mlab_existing_pages (is a <div> which is populated with a <ul> inside a <li> element for each page)
-            var page_names = document.mlab_current_app.page_names;
+//List of all pages
+//... #mlab_existing_pages is a <div> which is populated with a <ul> inside a <li> element for each page
             var list = $('<ul></ul>')
-            for (var index = 0; index < page_names.length; ++index) {
-            	var page_name = page_names[index];
-            	if (page_name == "undefined" || typeof page_name === 'undefined' ) {
-            			if(index == 0 ) {
-            				page_name = "Forsiden";
-            			} else {
-            			page_name = "Side " + (index + 1);
-            			}
-            		} 
-    			list.append("<li><a href='javascript:mlab_page_open(" + document.mlab_current_app.id + "," + index + ");'>" + page_name + " </a></li>");    			
-				}
+            for (i in document.mlab_current_app.page_names) {
+    			list.append("<li><a href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
+			}
 				
     		$("#mlab_existing_pages").html(list);
             
@@ -494,9 +490,9 @@
 //finally convert to text to send back
 		
         function mlab_page_save() {
-        console.log('Trying to save page');
+            console.log('Trying to save page');
 		
-		//cannot save if locked
+//cannot save if locked
             if ($("#mlab_editor_disabled").length > 0) {
             	console.log('Page locked, did not save');
                 return false;
@@ -599,7 +595,7 @@
                 }
             };
             
-//if this is the index page we add the full HTML page, if not we only require a very simple header/footer
+//if this is the index pmlab_existing_pagesage we add the full HTML page, if not we only require a very simple header/footer
             if (page_num == 0 || page_num == "index" ) {
                 var final_doc = document.mlab_current_app.curr_indexpage_html;
                 final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = page_content;
@@ -1016,7 +1012,7 @@
                             .append("<br>")
                             .append("<a href='mailto:" + mlab_current_user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
 				
-        } else {
+                } else {
 					$("#mlab_download_qr2").empty().append("<p>Error: " + data.msg + "</p>").show();
                 
 				}
