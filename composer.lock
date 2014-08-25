@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "3069c434001787c10c46e3245fcf0e34",
+    "hash": "2dccbb91787d8fb5ff35ff8557c45406",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1697,6 +1698,7 @@
     "stability-flags": {
         "gedmo/doctrine-extensions": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.3"
     },

@@ -474,15 +474,22 @@ class FileManagement {
  * @return types
  */
     public function getPageIdAndTitles($app) {
-        $pages = array("'index'" => "Front page");
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
-   		$files = glob ( $app_path . "/???.html" );
+
         
+        if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
+            $pages = array(0 => $matches[1] . " [Frontpage]");
+        } else {
+            $pages = array(0 => "Untitled [Frontpage]");
+        }
+        
+        $files = glob ( $app_path . "/???.html" );
         foreach ($files as $file) {
+            $pnum = intval(basename($file)); 
             if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$file"), $matches) && isset($matches[1])) {
-                $pages[intval(basename($file))] = $matches[1];
+                $pages[$pnum] = "{$matches[1]} [{$pnum}]";
             } else {
-                $pages[intval(basename($file))] = "Untitled [{$file}]";
+                $pages[$pnum] = "Untitled [{$pnum}]";
             }
         }
         return $pages;

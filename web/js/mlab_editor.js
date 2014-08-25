@@ -10,8 +10,6 @@
     mlab_flag_server_update = false; // True if the app is in an inconsistent state and should not save
     mlab_drag_origin = 'sortable';
     
-
-    
 // Calculate width of text from DOM element or string. By Phil Freo <http://philfreo.com>
     $.fn.textWidth = function(text, font) {
         if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
@@ -129,7 +127,6 @@
                 } else {
 //we set the current variable to the data coming back in, then if this is an added record we open the page to edit 
                     document.mlab_current_app = data.mlab_app;
-                    document.mlab_current_app.page_names = {};
                     if (data.action == 'ADD') {
                         mlab_app_open(data.mlab_app_id, data.mlab_app_page_num) ;
                     }
@@ -208,7 +205,6 @@
         document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
         document.mlab_current_app.curr_page_num = page_num;
         $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
-        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = document.mlab_current_app.curr_pagetitle;
 
         mlab_app_update_gui_metadata();
 
@@ -259,7 +255,6 @@
         document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
         document.mlab_current_app.curr_page_num = page_num;
         $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
-        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = document.mlab_current_app.curr_pagetitle;
 
         mlab_app_update_gui_metadata();
 
@@ -277,11 +272,11 @@
 */
     function mlab_app_update_gui_metadata() {
 
-//List ofde all pages
+//List of all pages
 //... #mlab_existing_pages is a <div> which is populated with a <ul> inside a <li> element for each page
         var list = $('<ul></ul>')
         for (i in document.mlab_current_app.page_names) {
-            list.append("<li><a href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
+            list.append("<li><a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
         }
 
         $("#mlab_existing_pages").html(list);
@@ -350,12 +345,15 @@
     } 
 
 /**
- * This will update the title of the currently open page
+ * This will update the title of the currently open page and also update relevant items other places
  */
     function mlab_update_page_title() {
         mlab_flag_dirty = true;
         document.mlab_current_app.curr_pagetitle = $("#mlab_curr_pagetitle").val();
+        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = document.mlab_current_app.curr_pagetitle;
         mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
+        $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").text(document.mlab_current_app.curr_pagetitle + " [" + document.mlab_current_app.curr_page_num + "]");
+        
     }
 
 
@@ -626,10 +624,12 @@
 
 /*********** General functions to manipulate components ***********/
     function mlab_component_add(id) {
-
-        var new_comp = $("#" + mlab_config["app"]["content_id"]).append("<div>" + mlab_components[id].html + "</div>")
-            .on("click", function(){mlab_highlight_selected(this);})
-            .on("input", function(){mlab_flag_dirty = true;});
+        
+        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + mlab_components[id].html + "</div>");
+        $("#" + mlab_config["app"]["content_id"]).append(new_comp);
+        new_comp.on("click", function(){mlab_highlight_selected(this);})
+        new_comp.on("input", function(){mlab_flag_dirty = true;});
+        new_comp.children().attr("contenteditable", "true");
 
         mlab_run_component_code(mlab_components[id], id, true);
 
@@ -667,8 +667,8 @@
                 mlab_feature_add(mlab_components[id].conf.dependencies[0], true);
             }
         }
-            
-        new_comp.focus();
+
+        mlab_highlight_selected(new_comp);
 
         mlab_flag_dirty = true;
 
@@ -1023,7 +1023,6 @@
 
 //current app/page information, this will be updated when they create a new app or edit properties 
                 document.mlab_current_app = data.mlab_app;
-                document.mlab_current_app.page_names = {};
                 document.mlab_current_app.curr_page_num = data.mlab_app_page_num;
                 
 //configuration stuff from parameter.yml

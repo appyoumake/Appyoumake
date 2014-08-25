@@ -428,15 +428,19 @@ class AppController extends Controller
     	
 // pick up config from parameters.yml, we use this mainly for paths
         $config = $this->container->parameters['mlab'];
+        $file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('app');
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
 
     	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
+        $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
         
         return new JsonResponse(array(
                 "result" => "success",
     			"mlab_app_page_num" => $page_num,
-    			"mlab_app" => $app->getArrayFlat($config["paths"]["template"]),
+    			"mlab_app" => $mlab_app_data,
     			"mlab_config" => $config,
                 "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999),
                 "mlab_current_user_email" => $this->getUser()->getEmail(),
@@ -476,6 +480,24 @@ class AppController extends Controller
     	return new JsonResponse(array("result" => "success", "mlab_components" => $components));
     }
     
+/**
+ * Returns list of components
+ * @param type $app_id
+ * @param type $page_num
+ */
+    public function loadBuilderMetadataAction($app_id) {
+    	$em = $this->getDoctrine()->getManager();
+    	
+//load all the components        
+        $config = $this->container->parameters['mlab'];
+    	$file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('component');
+        
+    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
+    	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"], $app_id);
+    	
+    	return new JsonResponse(array("result" => "success", "mlab_components" => $components));
+    }
     
 /* END LOADING DIFFERENT INFO FOR BUILDER */
     
