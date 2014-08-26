@@ -37,9 +37,8 @@ class AdminController extends Controller
     {
     	//die($this->container->parameters['mlab']['paths']['apps']);
     	$tabs = array(
-    			"app" => "Apps",
-    			"template" => "Templates",
     			"component" => "Components",
+                "template" => "Templates",
     			"category" => "Categories",
     			);
     	
@@ -69,7 +68,6 @@ class AdminController extends Controller
     public function systemAction()
     {
     	$tabs = array(
-    			"menu" => "Menus",
     			"category" => "Categories",
     			"help" => "Help"
     	);

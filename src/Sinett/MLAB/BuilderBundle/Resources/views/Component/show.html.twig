@@ -1,13 +1,13 @@
 <tr id="row_component_{{ entity.id }}">
 
-	<td>
-    	<a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.name{% endtrans %}">
-    		{{ entity.name }}
-   		</a>
-    </td>
+	<td>{{ entity.name }}</td>
     <td class="mlab_td_align">{{ entity.version }}</td>
     <td>{{ entity.description }}</td>
-    <td>{{ entity.groups|join(", ") }}</td>
+    <td>
+        <a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.name{% endtrans %}">
+            {{ entity.groups|join(", ") }}
+        </a>
+    </td>
     <td><input type="checkbox" checked="{{ entity.enabled == true }}"></td>
     
     <td>

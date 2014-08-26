@@ -90,6 +90,7 @@ app.admin.templates.groups: Grupper
 app.admin.templates.tooltip.name: Rediger template
 app.admin.templates.tooltip.delete: Slett tempalte
 app.admin.templates.tooltip.new: Opprett ny template
+app.admin.templates.enabled: Aktiv
 
 
 #-----------------------------------------------------
@@ -111,6 +112,7 @@ app.admin.components.groups: Grupper
 app.admin.components.tooltip.name: Rediger komponent
 app.admin.components.tooltip.delete: Slett komponent
 app.admin.components.tooltip.new: Opprett ny komponent
+app.admin.components.enabled: Aktiv
 
 
 #-----------------------------------------------------

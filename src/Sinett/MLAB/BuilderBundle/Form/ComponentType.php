@@ -21,8 +21,7 @@ class ComponentType extends AbstractType
 	    			->add('groups')
 	            	->add('zip_file', 'file');
 	    } else {
-	    	$builder->add('enabled')
-	    			->add('groups');
+	    	$builder->add('groups');
 	    	
 	    }
     }
