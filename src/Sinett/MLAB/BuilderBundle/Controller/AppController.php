@@ -433,9 +433,15 @@ class AppController extends Controller
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
 
-    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+//get app details + list of pages
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
         $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+
+//get checksum for app, excluding the file we just opened
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
+        $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
         
         return new JsonResponse(array(
                 "result" => "success",
@@ -444,6 +450,7 @@ class AppController extends Controller
     			"mlab_config" => $config,
                 "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999),
                 "mlab_current_user_email" => $this->getUser()->getEmail(),
+                "mlab_app_checksum" => $mlab_app_checksum,
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
@@ -464,7 +471,6 @@ class AppController extends Controller
 /**
  * Returns list of components
  * @param type $app_id
- * @param type $page_num
  */
     public function loadBuilderComponentsAction($app_id) {
     	$em = $this->getDoctrine()->getManager();
@@ -481,22 +487,48 @@ class AppController extends Controller
     }
     
 /**
- * Returns list of components
+ * Returns data about the app that may have been changed by another user working on the same app
+ * see loadBuilderVariablesAction for more on what happens here
  * @param type $app_id
  * @param type $page_num
  */
-    public function loadBuilderMetadataAction($app_id) {
-    	$em = $this->getDoctrine()->getManager();
+    public function loadAppMetadataAction($app_id, $page_num, $old_checksum) {
+        $em = $this->getDoctrine()->getManager();
     	
-//load all the components        
+// pick up config from parameters.yml, we use this mainly for paths
         $config = $this->container->parameters['mlab'];
-    	$file_mgmt = $this->get('file_management');
-    	$file_mgmt->setConfig('component');
+
+//we first get the app details, then use the file management plugin to obtain the checksum, 
+//for this checksum we exclude the current file as we are the only ones who can change it
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        $file_mgmt = $this->get('file_management');
+    	$file_mgmt->setConfig('app');
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
+
+        $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
+        $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
+
+//we do not scan for further changes if no files were changed
+        if ($mlab_app_checksum != $old_checksum) {
+            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+            return new JsonResponse(array(
+                "result" => "file_changes",
+    			"mlab_app" => $mlab_app_data,
+                "mlab_app_checksum" => $mlab_app_checksum
+            ));
+        } else {
+            return new JsonResponse(array(
+                "result" => "no_file_changes",
+    			"mlab_app" => $mlab_app_data
+            ));
+        }
+
+//get app details + list of pages
         
-    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
-    	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"], $app_id);
-    	
-    	return new JsonResponse(array("result" => "success", "mlab_components" => $components));
+
+        
+        
     }
     
 /* END LOADING DIFFERENT INFO FOR BUILDER */

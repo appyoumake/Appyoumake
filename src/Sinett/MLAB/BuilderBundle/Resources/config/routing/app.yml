@@ -100,7 +100,7 @@ app_builder_load_variables:
     defaults: { _controller: "SinettMLABBuilderBundle:App:loadBuilderVariables" }
 
 app_builder_load_metadata:
-    path:   /builder/{app_id}/load_metadata
+    path:   /builder/{app_id}/{page_num}/{old_checksum}/load_metadata
     defaults: { _controller: "SinettMLABBuilderBundle:App:loadAppMetadata" }
 
 app_builder_load_components:

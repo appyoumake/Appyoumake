@@ -9,6 +9,9 @@
     mlab_flag_dirty = false;
     mlab_flag_server_update = false; // True if the app is in an inconsistent state and should not save
     mlab_drag_origin = 'sortable';
+
+//PERHAPS USE THIS TOGETHER WITH ARRAY OF FIELDNAMES MATCHING APP TABLE AND RENAME TEXT FIELDS...
+    mlab_flag_meta_dirty = new Array();
     
 // Calculate width of text from DOM element or string. By Phil Freo <http://philfreo.com>
     $.fn.textWidth = function(text, font) {
@@ -278,24 +281,15 @@
         for (i in document.mlab_current_app.page_names) {
             list.append("<li><a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
         }
-
         $("#mlab_existing_pages").html(list);
 
-        //App name
+//Various app meta data
         $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
-        //App description
         $("#mlab_app_description").val(document.mlab_current_app.description);
-        //App keywords
         $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
-        //App 1. category
-        //$("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
         $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
-        //App 2. category
-        //$("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
-        $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryOne);
-        //App 3. category
-        //$("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
-        $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryOne);
+        $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
+        $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
 }		
 
 
@@ -364,7 +358,6 @@
 //finally convert to text to send back
 
     function mlab_page_save() {
-        console.log('Trying to save page');
 
 //cannot save if locked
         if ($("#mlab_editor_disabled").length > 0) {
@@ -489,7 +482,34 @@
                 mlab_update_status("temporary", "Saved page", false);
                 mlab_flag_dirty = false;
 
-                mlab_app_update_gui_metadata();
+//after a page is saved we retrieve the metadata for this 
+//TODO: Fix url
+//TODO: move to WebSOCKET listener for compiler jobs when this is done
+                $.get( "/app_dev.php/app/builder/" + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/" + document.mlab_current_app.app_checksum + "/load_metadata" , function( data ) {
+                    
+//we may have a result saying nochange
+                    if (data.result === "file_changes") {
+//load in metadata and (possibly new) checksum of app into variables, then upate display
+                        console.log("App files were changed");
+                        document.mlab_current_app.app_checksum = data.mlab_app_checksum;
+                        document.mlab_current_app.page_names = data.mlab_app.page_names;
+                        
+                    } else if (data.result === "no_file_changes") {
+                        console.log("No change to app files");
+
+                    } else {
+                        return;
+                    }
+                    
+                    document.mlab_current_app.name = data.mlab_app.name;
+                    document.mlab_current_app.description = data.mlab_app.description;
+                    document.mlab_current_app.keywords = data.mlab_app.keywords;
+                    document.mlab_current_app.categoryOne = data.mlab_app.categoryOne;
+                    document.mlab_current_app.categoryTwo = data.mlab_app.categoryTwo;
+                    document.mlab_current_app.categoryThree = data.mlab_app.categoryThree;
+                    mlab_app_update_gui_metadata();
+
+                });
 
             } else {
                 mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
@@ -855,13 +875,6 @@
 
 //set draggable/sortable options for the editable area 
         $( "#" + mlab_config["app"]["content_id"] ).droppable(droppable_options).sortable(sortable_options);
-/*        $( ".mlab_button_components" ).draggable({
-                  connectToSortable: "#" + mlab_config["app"]["content_id"],
-                  helper: "clone",
-                  revert: "invalid",
-                  opacity: 0.5,
-                  start: function () { mlab_drag_origin = 'draggable'; }
-        }); */
 
     }
 
@@ -1017,6 +1030,7 @@
             if (data.result === "success") {
 //unique ID for this tab/window, used to lock pages
                 mlab_uid = data.mlab_uid;
+                
 
 //we use the email of the user to send them links to apps
                 mlab_current_user_email = data.mlab_current_user_email;
@@ -1024,6 +1038,8 @@
 //current app/page information, this will be updated when they create a new app or edit properties 
                 document.mlab_current_app = data.mlab_app;
                 document.mlab_current_app.curr_page_num = data.mlab_app_page_num;
+//checksum of current file 
+                document.mlab_current_app.app_checksum = data.mlab_app_checksum;
                 
 //configuration stuff from parameter.yml
                 mlab_config = data.mlab_config;

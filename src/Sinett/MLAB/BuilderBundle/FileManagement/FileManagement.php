@@ -250,8 +250,6 @@ class FileManagement {
 		
 		$cordova_build_properties = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["android"]["ant_properties"]);
 		
-		
-		
 		$output = array();
 		$exit_code = 0;
 		
@@ -764,6 +762,22 @@ class FileManagement {
         }
 
         file_put_contents($file, $lines);
+    }
+ 
+/**
+ * Using Linux commands to generate an MD5 sum for an app, looks in the /www folder, excluding lock files
+ * @param type $app
+ * @param type $exclude_file: Usually used to 
+ * @return type
+ */
+    public function getAppMD5($app, $exclude_file = "") {
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        if ($exclude_file != "") {
+            $exclude_file = " ! -iname '$exclude_file' ";
+        }
+        $cmd = "find $app_path -type f \( -iname '*' ! -iname '*.lock' $exclude_file\) -exec md5sum {} \; | sort -k2 | md5sum";
+        $result = explode("  ", exec($cmd));
+        return $result[0];
     }
 
 }
