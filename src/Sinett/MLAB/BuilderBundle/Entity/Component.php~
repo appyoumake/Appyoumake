@@ -248,4 +248,18 @@ class Component
     {
         return $this->version;
     }
+    
+    /**
+     * Returns all properties as an array, it also has a placeholder for the pages that are locked
+     */
+    public function getArray() {
+    	return array(
+    			'id' => $this->id,
+    			'name' => $this->name,
+    			'path' => $this->path,
+    			'description' => $this->description,
+    			'version' => $this->version,
+    			'enabled' => $this->enabled,
+    	);
+    }    
 }

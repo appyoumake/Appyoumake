@@ -8,11 +8,12 @@
     
     <td>{{ entity.version }}</td>
     <td>{{ entity.description }}</td>
-    <td>{{ entity.compatibleWith }}</td>
     <td>{{ entity.groups|join(", ") }}</td>
-    
+    <td><input type="checkbox" checked="{{ entity.enabled == true }}"></td>
     <td>
-		<a href="{{ path('template_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.templates.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+		{% if entity.canDelete %}
+            <a href="{{ path('template_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.templates.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+        {% endif %}
 	</td>
 
 </tr>

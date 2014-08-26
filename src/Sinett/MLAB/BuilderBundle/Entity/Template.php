@@ -61,6 +61,8 @@ class Template
      */
     private $enabled;
     
+//flag used to see if it can be deleted or not
+    private $canDelete;
     
     /**
      * Constructor
@@ -368,4 +370,27 @@ class Template
     			'enabled' => $this->enabled
     	);
     }    
+    
+    /**
+     * Set can_delete
+     *
+     * @param string $name
+     * @return Template
+     */
+    public function setCanDelete($canDelete)
+    {
+        $this->canDelete = $canDelete;
+    
+        return $this;
+    }
+
+    /**
+     * Get can_delete
+     *
+     * @return string 
+     */
+    public function getCanDelete()
+    {
+        return $this->canDelete;
+    }
 }

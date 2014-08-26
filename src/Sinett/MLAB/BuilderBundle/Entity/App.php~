@@ -5,6 +5,7 @@ namespace Sinett\MLAB\BuilderBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * App
@@ -86,6 +87,30 @@ class App
      */
     private $groups;
 
+    const MARKET_NOT_PUBLISHED = 0;
+    const MARKET_OLD_VERSION = 1;
+    const MARKET_CURRENT_VERSION = 2;
+    
+    /**
+     * @var boolean
+     */
+    private $published = self::MARKET_NOT_PUBLISHED;
+    
+    /**
+     * zip file that is uploaded
+     */
+    private $zip_file;
+    
+    /**
+     * icon that is uploaded
+     */
+    private $icon_file;
+    
+    /**
+     * splah image that is uploaded
+     */
+    private $splash_file;
+    
     /**
      * Constructor
      */
@@ -139,7 +164,32 @@ class App
     
         return $this;
     }
-
+    
+    /**
+     * generate a sanitised pathname from name of app
+     *
+     * @param array $replace: search / replace array
+     * @return App
+     */
+    public function generatePath($replace)
+    {
+        $this->path = strtolower(preg_replace(array_values($replace), array_keys($replace), trim($this->name)));
+    
+        return $this;
+    }
+    
+    /**
+     * calculate the path of this app, using the starting path from the parameter which = mlab:paths:app parameter setting 
+     *
+     * @param string $start_path
+     * @return App
+     */
+    public function calculateFullPath($start_path)
+    {
+        return $start_path . $this->getPath() . "/" . $this->getVersion() . "/" ;
+    }
+    
+        
     /**
      * Get path
      *
@@ -476,9 +526,41 @@ class App
     }
     
     /**
-     * Returns all properties as an array, it also has a placeholder for the pages that are locked
+     * Set published
+     *
+     * @param boolean $published
+     * @return App
      */
-    public function getArray() {
+    public function setPublished($published)
+    {
+    	$this->published = $published;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get published
+     *
+     * @return boolean
+     */
+    public function getPublished()
+    {
+    	return $this->published;
+    }
+    
+    /**
+     * Returns all properties as an array, including the configuration details of the template used for this app
+     * 
+     */
+    public function getArray($template_path = "") {
+        if ($template_path != "") {
+            $yaml = new Parser();
+            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.txt";
+            $config = $yaml->parse(file_get_contents($fname));
+        } else {
+            $config = array();
+        }
+
     	return array(
     		'id' => $this->id,
     		'name' => $this->name,
@@ -492,11 +574,113 @@ class App
     		'categoryTwo' => $this->categoryTwo,
     		'categoryThree' => $this->categoryThree,
     		'template' => $this->template,
+            "template_config" => $config,
     		'user' => $this->user,
     		'updatedBy' => $this->updatedBy,
     		'groups' => $this->groups,
     		'published' => $this->published,
-    		'locked_pages' => array() //this is an array that will have the pages that are locked as an array
+    		'enabled' => $this->enabled
     		);
     }
+    
+    /**
+     * Returns all properties as simple array, i.e. templates are the name and not an object
+     */
+    public function getArrayFlat($template_path = "") {
+        if ($template_path != "") {
+            $yaml = new Parser();
+            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.txt";
+            $config = $yaml->parse(file_get_contents($fname));
+        } else {
+            $config = array();
+        }
+        
+    	$groups = array();
+    	foreach ($this->groups as $group) {
+    		$groups[] = $group->getName();
+    	}
+    	return array(
+    			'id' => $this->id,
+    			'name' => $this->name,
+    			'path' => $this->path,
+    			'description' => $this->description,
+    			'keywords' => $this->keywords,
+    			'version' => $this->version,
+    			'created' => $this->created->format('Y-m-d H:i:s'),
+    			'updated' => $this->updated->format('Y-m-d H:i:s'),
+    			'categoryOne' => !empty($this->categoryOne) ? $this->categoryOne->getName() : "",
+    			'categoryTwo' => !empty($this->categoryTwo) ? $this->categoryTwo->getName() : "",
+    			'categoryThree' => !empty($this->categoryThree) ? $this->categoryThree->getName() : "",
+    			'template' => $this->template->getName(),
+                "template_config" => $config,
+    			'user' => $this->user->getUserName(),
+    			'updatedBy' => $this->updatedBy->getUserName(),
+    			'groups' => $groups,
+    			'published' => $this->published,
+    			'enabled' => $this->enabled
+    	);
+    }    
+/**** FILES RELATED TO AN APP ****/
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setZipFile(UploadedFile $zip_file = null)
+    {
+    	$this->zip_file = $zip_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getZipFile()
+    {
+    	return $this->zip_file;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setIconFile(UploadedFile $icon_file = null)
+    {
+    	$this->icon_file = $icon_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getIconFile()
+    {
+    	return $this->icon_file;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setSplashFile(UploadedFile $splash_file = null)
+    {
+    	$this->splash_file = $splash_file;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getSplashFile()
+    {
+    	return $this->splash_file;
+    }
+    
+    
+
 }

@@ -24,7 +24,7 @@ class TemplateController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAll();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllCheckDeleteable();
 
         return $this->render('SinettMLABBuilderBundle:Template:index.html.twig', array(
             'entities' => $entities,

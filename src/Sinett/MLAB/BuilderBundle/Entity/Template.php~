@@ -61,6 +61,8 @@ class Template
      */
     private $enabled;
     
+//flag used to see if it can be deleted or not
+    private $canDelete;
     
     /**
      * Constructor
@@ -257,6 +259,18 @@ class Template
     {
         return $this->path;
     }
+    
+    /**
+     * calculate the path of this app, using the starting path from the parameter which = mlab:paths:app parameter setting
+     *
+     * @param string $start_path
+     * @return App
+     */
+    public function calculateFullPath($start_path)
+    {
+    	return $start_path . $this->getPath() . "/" ;
+    }
+    
 
     /**
      * Set enabled
@@ -340,5 +354,43 @@ class Template
     public function getApps()
     {
         return $this->apps;
+    }
+    
+    /**
+     * Returns all properties as an array
+     */
+    public function getArray() {
+    	return array(
+    			'id' => $this->id,
+    			'name' => $this->name,
+    			'path' => $this->path,
+    			'description' => $this->description,
+    			'version' => $this->version,
+    			'groups' => $this->groups,
+    			'enabled' => $this->enabled
+    	);
+    }    
+    
+    /**
+     * Set can_delete
+     *
+     * @param string $name
+     * @return Template
+     */
+    public function setCanDelete($canDelete)
+    {
+        $this->canDelete = $canDelete;
+    
+        return $this;
+    }
+
+    /**
+     * Get can_delete
+     *
+     * @return string 
+     */
+    public function getCanDelete()
+    {
+        return $this->canDelete;
     }
 }

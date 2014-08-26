@@ -43,6 +43,10 @@ class GroupController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            foreach($entity->getUsers() as $user){
+                $user->addGroup($entity);
+            }
+
             $em->persist($entity);
             $em->flush();
 

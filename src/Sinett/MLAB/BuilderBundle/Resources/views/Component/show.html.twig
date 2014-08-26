@@ -5,13 +5,11 @@
     		{{ entity.name }}
    		</a>
     </td>
-    
     <td class="mlab_td_align">{{ entity.version }}</td>
-    
     <td>{{ entity.description }}</td>
-    
     <td>{{ entity.groups|join(", ") }}</td>
-
+    <td><input type="checkbox" checked="{{ entity.enabled == true }}"></td>
+    
     <td>
 		<a href="{{ path('component_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.components.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
 	</td>
