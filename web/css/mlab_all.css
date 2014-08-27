@@ -525,3 +525,8 @@ cursor: default;
 
 width: 45%;
 }
+
+.mlab_category_system{
+    color: #999;
+    font-family: Arial;
+}

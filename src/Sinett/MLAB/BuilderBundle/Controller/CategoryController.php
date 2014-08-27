@@ -33,7 +33,10 @@ class CategoryController extends Controller
         
         //$arrayTree = $repo->childrenHierarchy();
         
-        $options = array(
+//this is called from two different locations, /system and /admin/apps. 
+//if called from system the user can edit all elements
+        if (basename($this->getRequest()->headers->get('referer')) == "system") {
+            $options = array(
         		'decorate' => true,
         		'rootOpen' => '<ul>',
         		'rootClose' => '</ul>',
@@ -44,7 +47,23 @@ class CategoryController extends Controller
           			"<a class='tree_add' href='" . $this->generateUrl('category_new', array('id' => $node['id'])) . "'>Add sub-category</a>" . 
           			"<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "'>Delete</a></div>";
         		}
-        );
+            );
+        } else {
+            $options = array(
+                    'decorate' => true,
+                    'rootOpen' => '<ul>',
+                    'rootClose' => '</ul>',
+                    'childOpen' => '<li>',
+                    'childClose' => '</li>',
+                    'nodeDecorator' => function($node) {
+                        return "<div class='treeview " . ($node['system'] ? " mlab_category_system " : "") . "' id='row_category_{$node['id']}'>" . 
+                                    ($node['system'] ? $node['name'] : "<a href='" . $this->generateUrl('category_edit', array('id' => $node['id'])) . "'>" . $node['name'] . "</a>") . 
+                                    "<a class='tree_add' href='" . $this->generateUrl('category_new', array('id' => $node['id'])) . "'>Add sub-category</a>" . 
+                                    ($node['system'] ? "" : "<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "'>Delete</a>") .
+                               "</div>";
+                    }
+            );
+        }
         
         $htmlTree = $repo->childrenHierarchy(
         		null, /* starting from root nodes */
