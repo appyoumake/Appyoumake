@@ -545,14 +545,14 @@ width: 45%;
     font-family: Arial;
 }
 
-.mlab_icon_enabled_0 {
+.mlab_icon_disabled {
     width: 16px;
     height: 16px;
     background-color: red;
     display: block;
 }
 
-.mlab_icon_enabled_1 {
+.mlab_icon_enabled {
     width: 16px;
     height: 16px;
     background-color: green;
