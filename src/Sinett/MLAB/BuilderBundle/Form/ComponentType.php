@@ -17,11 +17,11 @@ class ComponentType extends AbstractType
         $action = explode("/", $options["action"]);
     	$action = array_pop($action);
     	if ($action == "create") {
-	    	$builder->add('enabled')
-	    			->add('groups')
-	            	->add('zip_file', 'file');
+	    	$builder->add('enabled', null, array('label' => 'app.admin.components.new.enabled'))
+	    			->add('groups', null, array('label' => 'app.admin.components.new.groups'))
+                    ->add('zip_file', 'file', array('label' => 'app.admin.components.new.file'));
 	    } else {
-	    	$builder->add('groups');
+	    	$builder->add('groups', null, array('label' => 'app.admin.components.edit.groups.groups'));
 	    	
 	    }
     }

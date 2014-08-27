@@ -8,12 +8,19 @@
             {{ entity.groups|join(", ") }}
         </a>
     </td>
-    <td class="mlab_align_center"><input type="checkbox" checked="{{ entity.enabled == true }}" title="{% if entity.enabled %}{% trans %}app.admin.templates.tooltip.disabled{% endtrans %} {% else %}{% trans %}app.admin.templates.tooltip.enabled{% endtrans %}{% endif %} '{{ entity.name }}'"></td>
-    <td class="mlab_td_min_width">
+<<<<<<< HEAD
+    
+    <td>{{ entity.version }}</td>
+    <td>{{ entity.description }}</td>
+    <td>{{ entity.groups|join(", ") }}</td>
     <td>
         <a href="{{ path('template_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_enabled_{{ entity.enabled == true }}" title="{% trans %}app.admin.templates.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
     </td>
     <td>
+=======
+    <td class="mlab_align_center"><input type="checkbox" checked="{{ entity.enabled == true }}" title="{% if entity.enabled %}{% trans %}app.admin.templates.tooltip.disabled{% endtrans %} {% else %}{% trans %}app.admin.templates.tooltip.enabled{% endtrans %}{% endif %} '{{ entity.name }}'"></td>
+    <td class="mlab_td_min_width">
+>>>>>>> dd385740cb03ca41b58a02d33c65b9fbd9eb6b3a
 		{% if entity.canDelete %}
             <a href="{{ path('template_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.templates.tooltip.delete{% endtrans %} '{{ entity.name }}'"></a>
         {% endif %}

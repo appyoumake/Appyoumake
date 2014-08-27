@@ -5,6 +5,7 @@ app.admin.welcome: Velkommen til MLAB App Admin sidene
 #-----------------------------------------------------
 # Users tab
 #-----------------------------------------------------
+app.admin.users: Brukere
 app.admin.users.username: Brukernavn
 app.admin.users.email: E-post
 app.admin.users.groups: Grupper
@@ -40,6 +41,7 @@ create: Opprett
 #-----------------------------------------------------
 # Groups tab
 #-----------------------------------------------------
+app.admin.groups: Grupper
 app.admin.groups.name: Navn
 app.admin.groups.description: Beskrivelse
 app.admin.groups.isdefault: gruppen er satt som default
@@ -59,57 +61,71 @@ app.admin.groups.edit.heading: Rediger gruppe
 
 
 #-----------------------------------------------------
-# App tab
+# OLD App tab
 #-----------------------------------------------------
-app.admin.apps.name: Navn
-app.admin.apps.version: Versjon
-app.admin.apps.description: Beskrivelse
-app.admin.apps.Updated: Oppdatert
-app.admin.apps.groups: Grupper
+#app.admin.apps: Apper
+#app.admin.apps.name: Navn
+#app.admin.apps.version: Versjon
+#app.admin.apps.description: Beskrivelse
+#app.admin.apps.Updated: Oppdatert
+#app.admin.apps.groups: Grupper
 
-app.admin.apps.tooltip.name: Rediger app
-app.admin.apps.tooltip.delete: Slett app
+#app.admin.apps.tooltip.name: Rediger app
+#app.admin.apps.tooltip.delete: Slett app
 
 
 #-----------------------------------------------------
-# Edit app
+# OLD Edit app
 #-----------------------------------------------------
-app.admin.apps.edit.heading: Rediger app
+#app.admin.apps.edit.heading: Rediger app
 
 
 
 #-----------------------------------------------------
 # Template tab
 #-----------------------------------------------------
+app.admin.templates: Maler
 app.admin.templates.name: Navn
 app.admin.templates.version: Versjon
 app.admin.templates.description: Beskrivelse
 app.admin.templates.compatiblewith: Kompatibel med
 app.admin.templates.groups: Grupper
 
-app.admin.templates.tooltip.name: Rediger template
-app.admin.templates.tooltip.delete: Slett tempalte
-app.admin.templates.tooltip.new: Opprett ny template
+app.admin.templates.tooltip.group: Rediger grupper til mal
+app.admin.templates.tooltip.enabled: Aktiver mal
+app.admin.templates.tooltip.disabled: Deaktiver mal
+app.admin.templates.tooltip.delete: Slett mal
+app.admin.templates.tooltip.new: Opprett ny mal
 app.admin.templates.enabled: Aktiv
 
 
 #-----------------------------------------------------
 # Edit and new template
 #-----------------------------------------------------
-app.admin.templates.new.heading: Opprett ny template
-app.admin.templates.edit.heading: Rediger template
+app.admin.templates.new.heading: Opprett ny mal
+app.admin.templates.new.enabled: Aktiv
+app.admin.templates.new.groups: Grupper
+app.admin.templates.new.file: Zip-fil
+app.admin.templates.new.create.button: Lagre
+
+app.admin.templates.edit.groups.heading: Rediger grupper
+app.admin.templates.edit.groups.groups: Grupper
+app.admin.templates.edit.groups.update.button: Oppdater
 
 
 
 #-----------------------------------------------------
 # Components tab
 #-----------------------------------------------------
+app.admin.components: Komponenter
 app.admin.components.name: Navn
 app.admin.components.version: Versjon
 app.admin.components.description: Beskrivelse
 app.admin.components.groups: Grupper
 
-app.admin.components.tooltip.name: Rediger komponent
+app.admin.components.tooltip.group: Rediger grupper til komponent
+app.admin.components.tooltip.enabled: Aktiver template
+app.admin.components.tooltip.disabled: Deaktiver template
 app.admin.components.tooltip.delete: Slett komponent
 app.admin.components.tooltip.new: Opprett ny komponent
 app.admin.components.enabled: Aktiv
@@ -119,8 +135,59 @@ app.admin.components.enabled: Aktiv
 # Edit and new component
 #-----------------------------------------------------
 app.admin.components.new.heading: Opprett ny komponent
-app.admin.components.edit.heading: Rediger komponent
+app.admin.components.new.enabled: Aktiv
+app.admin.components.new.groups: Grupper
+app.admin.components.new.file: Zip-fil
+app.admin.components.new.create.button: Lagre
 
+app.admin.components.edit.groups.heading: Rediger grupper
+app.admin.components.edit.groups.groups: Grupper
+app.admin.components.edit.groups.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# Categories tab
+#-----------------------------------------------------
+app.admin.categories: Kategorier
+
+app.admin.categories.tooltip.new: Opprett ny kategori
+
+
+#-----------------------------------------------------
+# Edit and new categories
+#-----------------------------------------------------
+#app.admin.categories.new.heading: Opprett ny kategori
+#app.admin.categories.edit.heading: Rediger kategori
+
+
+#-----------------------------------------------------
+# System Categories tab
+#-----------------------------------------------------
+app.system.admin.categories: System-kategorier
+
+app.system.admin.categories.tooltip.new: Opprett ny system-kategorier
+
+
+#-----------------------------------------------------
+# Edit and new system categories
+#-----------------------------------------------------
+#app.system.admin.categories.new.heading: Opprett ny system-kategori
+#app.system.admin.categories.edit.heading: Rediger system-kategori
+
+
+#-----------------------------------------------------
+# System Help tab
+#-----------------------------------------------------
+app.system.admin.help: Hjelpetekst
+
+app.system.admin.help.tooltip.new: Opprett ny hjelpetekst
+
+
+#-----------------------------------------------------
+# Edit and new system categories
+#-----------------------------------------------------
+#app.system.admin.help.new.heading: Opprett ny hjelpetekst
+#app.system.admin.help.edit.heading: Rediger hjelpetekst
 
 
 #-----------------------------------------------------

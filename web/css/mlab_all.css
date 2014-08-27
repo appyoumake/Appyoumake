@@ -214,6 +214,20 @@ td.mlab_td_max_size {
     word-wrap: break-word;
 }
 
+td.mlab_td_max_size_2 {
+	max-width: 350px;
+    word-wrap: break-word;
+}
+
+td.mlab_td_max_size_3 {
+	max-width: 50px;
+    word-wrap: break-word;
+}
+
+td.mlab_td_min_width {
+	min-width: 50px;
+}
+
 td.builder_app_name{
     
 }

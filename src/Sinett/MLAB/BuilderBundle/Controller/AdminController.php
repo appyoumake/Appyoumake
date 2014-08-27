@@ -37,9 +37,9 @@ class AdminController extends Controller
     {
     	//die($this->container->parameters['mlab']['paths']['apps']);
     	$tabs = array(
-    			"component" => "Components",
-                "template" => "Templates",
-    			"category" => "Categories",
+    			"component" => $this->get('translator')->trans('app.admin.components'),
+                "template" => $this->get('translator')->trans('app.admin.templates'),
+    			"category" => $this->get('translator')->trans('app.admin.categories'),
     			);
     	
     	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));
@@ -53,8 +53,8 @@ class AdminController extends Controller
     public function usersAction()
     {
     	$tabs = array(
-    			"user" => "Users",
-    			"group" => "Groups"
+    			"user" => $this->get('translator')->trans('app.admin.users'),
+    			"group" => $this->get('translator')->trans('app.admin.groups')
     			);
     	
     	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));
@@ -68,8 +68,8 @@ class AdminController extends Controller
     public function systemAction()
     {
     	$tabs = array(
-    			"category" => "Categories",
-    			"help" => "Help"
+    			"category" => $this->get('translator')->trans('app.system.admin.categories'),
+    			"help" => $this->get('translator')->trans('app.system.admin.help')
     	);
     	 
     	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));

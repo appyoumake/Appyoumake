@@ -17,12 +17,11 @@ class TemplateType extends AbstractType
     	$action = explode("/", $options["action"]);
     	$action = array_pop($action);
     	if ($action == "create") {
-	    	$builder->add('enabled')
-	    			->add('groups')
-	            	->add('zip_file', 'file');
+	    	$builder->add('enabled', null, array('label' => 'app.admin.templates.new.enabled'))
+	    			->add('groups', null, array('label' => 'app.admin.templates.new.groups'))
+                    ->add('zip_file', 'file', array('label' => 'app.admin.templates.new.file'));
 	    } else {
-	    	$builder->add('enabled')
-	    			->add('groups');
+	    	$builder->add('groups', null, array('label' => 'app.admin.templates.edit.groups.groups'));
 	    	
 	    }
 	    	
