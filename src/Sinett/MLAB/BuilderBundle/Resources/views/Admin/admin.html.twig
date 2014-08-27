@@ -152,6 +152,18 @@
                                     } else if ( event.data.link == "edit" ) {  
                                         $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
 
+        // we have special case for toggle enabled
+                                    } else if ( event.data.link == "toggle_state" ) {  
+                                        $.getJSON("{{ path('sinett_mlab_builder_homepage') }}" + event.data.entity + "/" + event.data.id + "/toggle_state", function( data ) {
+                                            if (data.result == "SUCCESS" && parseInt(data.db_id) > 0) {
+                                                $("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
+                                                $("#row_" + data.db_table + "_" + data.db_id).find("a").each(function () {
+                                                    prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
+                                                    } // end function to run for each link  
+                                                ); // end each function 
+                                            }
+                                        });
+
         // in all other cases just re-display dialog box, usually for new record
                                     } else { 
                                         if ($("#" + event.data.dialog_id + ' form').length > 0) {

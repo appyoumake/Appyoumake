@@ -27,4 +27,7 @@ template_update:
 template_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Template:delete" }
-#    requirements: { _method: post|delete }
+
+template_toggle_state:
+    pattern:  /{id}/toggle_state
+    defaults: { _controller: "SinettMLABBuilderBundle:Template:toggleState" }

@@ -403,9 +403,6 @@ class AppController extends Controller
     	$file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
         
-    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
-    	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"], $id);
-    	
     	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
         
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(

@@ -244,6 +244,11 @@ class TemplateController extends Controller
         			'message' => ''));
         }
         
+//here we remove the directory for the component files
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('template');
+        $res = $file_mgmt->removeTempCompFiles($entity, 'template');
+        
         $em->remove($entity);
         $em->flush();
         return new JsonResponse(array('db_table' => 'template',
@@ -254,4 +259,33 @@ class TemplateController extends Controller
     }
 
 
+    /**
+     * Toggle the enabled flag for a record
+     * @param type $id
+     */
+    public function toggleStateAction($id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);
+
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'template',
+                    'db_id' => 0,
+                    'result' => 'FAILURE',
+                    'message' => 'Unable to locate template record'));
+            
+        }
+
+        $entity->setEnabled(!$entity->getEnabled());
+            
+        $em->flush();
+        return new JsonResponse(array('db_table' => 'template',
+                'action' => 'UPDATE',
+                'db_id' => $entity->getId(),
+                'result' => 'SUCCESS',
+                'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $entity))));
+	        	
+    }
+    
+    
 }

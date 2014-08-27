@@ -11,7 +11,9 @@
     <td><input type="checkbox" checked="{{ entity.enabled == true }}"></td>
     
     <td>
-		<a href="{{ path('component_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.components.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+		{% if entity.canDelete %}
+            <a href="{{ path('component_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.components.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+        {% endif %}
 	</td>
 
 </tr>

@@ -779,5 +779,12 @@ class FileManagement {
         $result = explode("  ", exec($cmd));
         return $result[0];
     }
+    
+    public function removeTempCompFiles($entity, $type) {
+        $path = $this->config["paths"][$type] . $entity->getPath();
+        $cmd = "rm -rf $path";
+        return shell_exec($cmd);
+    }
+
 
 }

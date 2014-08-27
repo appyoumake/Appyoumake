@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Sinett\MLAB\BuilderBundle\Form\ComponentType;
 
+//also get list of apps, see indexAction
+use Sinett\MLAB\BuilderBundle\Entity\App;
+
 /**
  * Component controller.
  *
@@ -17,19 +20,51 @@ class ComponentController extends Controller
 {
 
     /**
-     * Lists all Component entities.
+     * Lists all Component entities, in addition find out which have been used and do NOT allow them to be deleted
      *
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAll();
+        $em = $this->getDoctrine()->getManager();
+        
+//First we get all paths of all apps and check to see what components they use, 
+//we do this by looping through the path of all of them and use the xidel command which extracts attributes
+//we look at the data-mlab-type attribute. 
+//These are returned as a json array, so we mainly merge them all and then send the array through to the render
+        $cmd = "xidel %PATH%* -e //div/@data-mlab-type -q --output-format=json-wrapped"; 
+        $app_root = $this->container->parameters['mlab']["paths"]["app"];
+        $asset_path = $this->container->parameters['mlab']["cordova"]["asset_path"];
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
+        $all_comps_used = array();
+
+        foreach ($apps as $app) {
+            $app_path = $app->calculateFullPath($app_root) . $asset_path . "/";
+            foreach (glob("$app_path*.html") as $filename) {
+                if (filesize($filename) > 0) {
+                    $temp_cmd = str_replace("%PATH%", $filename, $cmd);
+                    $extracted_data = shell_exec($temp_cmd);
+                    $temp_comp = json_decode($extracted_data);
+                    if (!is_null($temp_comp[0])) {
+                        if (!is_array($temp_comp[0])) {
+                            $all_comps_used[] = $temp_comp[0];
+                        } else {
+                            $all_comps_used = array_merge($all_comps_used, $temp_comp[0]);
+                        }
+                    }
+                }
+            }
+        }
+        $all_comps_used = array_unique($all_comps_used);
+        
+//now pick up the components, and set canDelete for those who have not been used
+        $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
 
         return $this->render('SinettMLABBuilderBundle:Component:index.html.twig', array(
-            'entities' => $entities,
+            'entities' => $entities
         ));
     }
+    
     /**
      * Creates a new Component entity.
      *
@@ -223,7 +258,8 @@ class ComponentController extends Controller
         	 
     }
     /**
-     * Deletes a Component entity.
+     * Deletes a Component entity + the directory where the files are stored.
+     * The UI is not showing the delete icon for components that are used, so this is safe.
      *
      */
     public function deleteAction(Request $request, $id)
@@ -236,6 +272,11 @@ class ComponentController extends Controller
         			'result' => 'FAILURE',
         			'message' => ''));
         }
+
+//here we remove the directory for the component files
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('component');
+        $res = $file_mgmt->removeTempCompFiles($entity, 'component');
         
         $em->remove($entity);
         $em->flush();
@@ -246,5 +287,32 @@ class ComponentController extends Controller
         
     }
 
+    /**
+     * Toggle the enabled flag for a record
+     * @param type $id
+     */
+    public function toggleStateAction($id) {
+        $em = $this->getDoctrine()->getManager();
 
+        $entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($id);
+
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'component',
+                    'db_id' => 0,
+                    'result' => 'FAILURE',
+                    'message' => 'Unable to locate component record'));
+            
+        }
+
+        $entity->setEnabled(!$entity->getEnabled());
+            
+        $em->flush();
+        return new JsonResponse(array('db_table' => 'component',
+                'action' => 'UPDATE',
+                'db_id' => $entity->getId(),
+                'result' => 'SUCCESS',
+                'record' => $this->renderView('SinettMLABBuilderBundle:Component:show.html.twig', array('entity' => $entity))));
+	        	
+    }
+    
 }
