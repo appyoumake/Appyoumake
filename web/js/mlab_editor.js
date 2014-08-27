@@ -357,7 +357,7 @@
 //then pick up doc variable which has empty body, then insert the cleaned elements
 //finally convert to text to send back
 
-    function mlab_page_save() {
+    function mlab_page_save(fnc) {
 
 //cannot save if locked
         if ($("#mlab_editor_disabled").length > 0) {
@@ -481,7 +481,12 @@
             if (data.result == "success") {
                 mlab_update_status("temporary", "Saved page", false);
                 mlab_flag_dirty = false;
-
+                
+//if a function was specified we now execute it
+                if (typeof fnc != 'undefined') {
+                    var res = fnc;
+                }
+                
 //after a page is saved we retrieve the metadata for this 
 //TODO: Fix url
 //TODO: move to WebSOCKET listener for compiler jobs when this is done
@@ -511,9 +516,14 @@
 
                 });
 
-            } else {
+            } else { //failed
                 mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
             }
+            
+            var tm = parseInt(mlab_config["save_interval"]);
+            if (tm === 0) { tm = 60; }
+            window.setTimeout(mlab_page_save, tm * 1000);
+            
         });
 
 //above we have counted the number of issues relating to the template "best practices" configuration, time to display the error message, if any
@@ -533,12 +543,13 @@
     * Creates a new file on the server and opens it
     */
     function mlab_page_new() {
-
-        //TODO fix concurrency issues
-        mlab_page_save();
-
         var title = prompt("Please enter the title of the new page");
         if (title != null) {
+            mlab_page_save(mlab_page_new_process(title));
+        }
+    }
+    
+    function mlab_page_new_process(title) {
             mlab_update_status("callback", "Storing page", true);
             var url = mlab_urls.page_new.replace("_ID_", document.mlab_current_app.id);
             url = url.replace("_UID_", mlab_uid);
@@ -553,18 +564,17 @@
                     $("#mlab_curr_pagetitle").val(title);
                     mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
 
-// Saving the new page to keep the title
-//TODO: Check if need this, added by Bård before Gol
-/*                        document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = title;
+                    document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = title;
+                    mlab_app_update_gui_metadata();
+
                     mlab_flag_dirty = true;
-                    mlab_page_save(); */
 
                 } else {
                     mlab_update_status("temporary", data.msg, false);
                 }
 
             });
-        }
+        
 
        }
 
@@ -572,10 +582,15 @@
  * Creates a new file on the server and opens it
  */
        function mlab_page_copy() {
-        if (document.mlab_current_app.curr_page_num == "0" || document.mlab_current_app.curr_page_num == "index") {
-            alert("You can not copy the index page");
-            return;
-        }
+            if (document.mlab_current_app.curr_page_num == "0" || document.mlab_current_app.curr_page_num == "index") {
+                alert("You can not copy the index page");
+                return;
+            }
+           
+           mlab_page_save(mlab_page_copy_process);
+       }
+       
+       function mlab_page_copy_process() {
 
         var url = mlab_urls.page_copy.replace("_ID_", document.mlab_current_app.id);
         url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
@@ -602,6 +617,11 @@
         if (!confirm("Are you sure you want to delete this page? This cannot be undone!")) {
             return;
         }
+        
+        mlab_page_save(mlab_page_delete_process);
+    }
+    
+    function mlab_page_delete_process () {
 
         mlab_update_status("callback", "Deleting page", true);
 
@@ -628,7 +648,12 @@
      * @returns {undefined}
      */
     function mlab_page_preview() {
-        mlab_page_save();
+        
+        mlab_page_save(mlab_page_preview_process);
+        
+    }
+    
+    function mlab_page_preview_process() {
         if (document.mlab_current_app.curr_page_num == 0 || document.mlab_current_app.curr_page_num == "index" ) {
             page_name = ""
         } else {
@@ -931,7 +956,10 @@
  * @returns void
  */
     function mlab_app_download () {
-        mlab_page_save();
+        mlab_page_save(mlab_app_download_process);
+    }
+    
+    function mlab_app_download_process () {
         mlab_update_status("callback", 'Retrieving app', true);
         var url = mlab_urls.app_download.replace("_ID_", document.mlab_current_app.id);
         $.get( url, function( data ) {
@@ -1174,7 +1202,7 @@
                         mlab_app_open( document.mlab_temp_app_id, document.mlab_temp_page_num );
                         var tm = parseInt(mlab_config["save_interval"]);
                         if (tm === 0) { tm = 60; }
-                        window.setInterval(mlab_page_save, tm * 1000);
+                        window.setTimeout(mlab_page_save, tm * 1000);
                     } else {
                         alert("Unable to load components from the server, cannot continue, will return to front page");
                         document.location.href = document.mlab_appbuilder_root_url;
