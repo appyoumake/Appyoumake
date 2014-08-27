@@ -1,7 +1,7 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-	<h4>{% trans %}app.admin.templates.edit.heading{% endtrans %}</h4>
+	<h4>{% trans %}app.admin.templates.edit.groups.heading{% endtrans %}</h4>
 
     {{ form(edit_form) }}
 

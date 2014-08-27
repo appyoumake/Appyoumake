@@ -86,7 +86,7 @@ class ComponentController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.components.new.create.button'));
 
         return $form;
     }
@@ -165,7 +165,7 @@ class ComponentController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.components.edit.groups.update.button'));
 
         return $form;
     }

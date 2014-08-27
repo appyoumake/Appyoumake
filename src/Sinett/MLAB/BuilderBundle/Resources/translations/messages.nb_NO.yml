@@ -102,8 +102,15 @@ app.admin.templates.enabled: Aktiv
 #-----------------------------------------------------
 # Edit and new template
 #-----------------------------------------------------
-app.admin.templates.new.heading: Opprett ny template
-app.admin.templates.edit.heading: Rediger template
+app.admin.templates.new.heading: Opprett ny mal
+app.admin.templates.new.enabled: Aktiv
+app.admin.templates.new.groups: Grupper
+app.admin.templates.new.file: Zip-fil
+app.admin.templates.new.create.button: Lagre
+
+app.admin.templates.edit.groups.heading: Rediger grupper
+app.admin.templates.edit.groups.groups: Grupper
+app.admin.templates.edit.groups.update.button: Oppdater
 
 
 
@@ -128,7 +135,14 @@ app.admin.components.enabled: Aktiv
 # Edit and new component
 #-----------------------------------------------------
 app.admin.components.new.heading: Opprett ny komponent
-app.admin.components.edit.heading: Rediger komponent
+app.admin.components.new.enabled: Aktiv
+app.admin.components.new.groups: Grupper
+app.admin.components.new.file: Zip-fil
+app.admin.components.new.create.button: Lagre
+
+app.admin.components.edit.groups.heading: Rediger grupper
+app.admin.components.edit.groups.groups: Grupper
+app.admin.components.edit.groups.update.button: Oppdater
 
 
 #-----------------------------------------------------

@@ -91,7 +91,7 @@ class TemplateController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.templates.new.create.button'));
 
         return $form;
     }
@@ -170,7 +170,7 @@ class TemplateController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.templates.edit.groups.update.button'));
 
         return $form;
     }
