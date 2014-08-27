@@ -87,7 +87,9 @@ app.admin.templates.description: Beskrivelse
 app.admin.templates.compatiblewith: Kompatibel med
 app.admin.templates.groups: Grupper
 
-app.admin.templates.tooltip.name: Rediger template
+app.admin.templates.tooltip.group: Rediger grupper til template
+app.admin.templates.tooltip.enabled: Aktiver template
+app.admin.templates.tooltip.disabled: Deaktiver template
 app.admin.templates.tooltip.delete: Slett tempalte
 app.admin.templates.tooltip.new: Opprett ny template
 app.admin.templates.enabled: Aktiv
@@ -109,7 +111,9 @@ app.admin.components.version: Versjon
 app.admin.components.description: Beskrivelse
 app.admin.components.groups: Grupper
 
-app.admin.components.tooltip.name: Rediger komponent
+app.admin.components.tooltip.group: Rediger grupper til komponent
+app.admin.components.tooltip.enabled: Aktiver template
+app.admin.components.tooltip.disabled: Deaktiver template
 app.admin.components.tooltip.delete: Slett komponent
 app.admin.components.tooltip.new: Opprett ny komponent
 app.admin.components.enabled: Aktiv

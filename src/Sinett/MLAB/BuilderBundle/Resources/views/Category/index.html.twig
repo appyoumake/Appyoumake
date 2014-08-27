@@ -1,13 +1,11 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Category list</h1>
+
 	<div id="table_category">
     	{% autoescape false %}{{ category_tree }}{% endautoescape %}
 	</div>
     <p>
-        <a href="{{ path('category_new', { 'id': 0 }) }}">
-            Create a new top level category
-        </a>
+        <a class="mlab_button_new_component" href="{{ path('category_new', { 'id': 0 }) }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
     </p>
     {% endblock %}
