@@ -544,3 +544,17 @@ width: 45%;
     color: #999;
     font-family: Arial;
 }
+
+.mlab_icon_enabled_0 {
+    width: 16px;
+    height: 16px;
+    background-color: red;
+    display: block;
+}
+
+.mlab_icon_enabled_1 {
+    width: 16px;
+    height: 16px;
+    background-color: green;
+    display: block;
+}

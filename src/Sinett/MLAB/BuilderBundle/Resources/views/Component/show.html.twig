@@ -8,11 +8,11 @@
             {{ entity.groups|join(", ") }}
         </a>
     </td>
-    <td class="mlab_align_center"><input type="checkbox" checked="{{ entity.enabled == true }}" title="{% if entity.enabled %}{% trans %}app.admin.templates.tooltip.disabled{% endtrans %} {% else %}{% trans %}app.admin.templates.tooltip.enabled{% endtrans %}{% endif %} '{{ entity.name }}'"></td>
-    <td><input type="checkbox" checked="{{ entity.enabled == true }}"></td>
-    
+    <td class="mlab_align_center">
+        <a href="{{ path('component_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_enabled_{{ entity.enabled == true }}" ></a>
+    </td>
     <td>
-		{% if entity.canDelete %}
+        {% if entity.canDelete %}
             <a href="{{ path('component_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.components.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
         {% endif %}
 	</td>
