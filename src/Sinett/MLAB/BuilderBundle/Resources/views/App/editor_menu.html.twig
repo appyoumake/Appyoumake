@@ -1,4 +1,4 @@
-{#    
+mlab_page_update_title{#    
  * This outputs the editors megamenu.
 #}
 
@@ -22,7 +22,7 @@
 
             <div class="col_1">
                 <h3>{% trans %}app.builder.edit.menu.heading.app{% endtrans %}</h3>
-                <input type="text" id="mlab_curr_apptitle" value="Appens navn"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_update_app_title();"></button>
+                <input type="text" id="mlab_curr_apptitle" value="Appens navn"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_title();"></button>
                 <p>{% trans %}app.builder.edit.menu.app.name.info{% endtrans %}</p>
                 <h3></h3>
                 <p>{% trans %}app.builder.edit.menu.app.edit.info{% endtrans %}</p>
@@ -38,7 +38,7 @@
             <div class="col_1">
 
                 <h3>{% trans %}app.builder.edit.menu.heading.page{% endtrans %}</h3>
-                <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_update_page_title();"></button>
+                <input type="text" id="mlab_curr_pagetitle" value="Sidens navn"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_page_update_title();"></button>
                 <p>{% trans %}app.builder.edit.menu.page.name.info{% endtrans %}</p>
                 
                 <div class="mlab_two_icons_container">
