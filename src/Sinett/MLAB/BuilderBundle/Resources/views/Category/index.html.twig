@@ -1,11 +1,20 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
+    
+    <table class="records_list">
+        <tr>
+            <th></th>
+            <th><a class="mlab_button_new_category" href="{{ path('category_new', { 'id': 0 }) }}" title="{% trans %}app.admin.categories.tooltip.new{% endtrans %}"></a></th>
+        </tr>
+        <tr>
+            <td class="mlab_td_min_width_2">
+                <div id="table_category">
+                    {% autoescape false %}{{ category_tree }}{% endautoescape %}
+                </div>
+            </td>
+            <td class="mlab_td_min_width"></td>
+        </tr>
+     </table>
 
-	<div id="table_category">
-    	{% autoescape false %}{{ category_tree }}{% endautoescape %}
-	</div>
-    <p>
-        <a class="mlab_button_new_component" href="{{ path('category_new', { 'id': 0 }) }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
-    </p>
-    {% endblock %}
+{% endblock %}
