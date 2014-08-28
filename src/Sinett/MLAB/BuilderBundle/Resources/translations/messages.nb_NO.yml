@@ -151,6 +151,10 @@ app.admin.components.edit.groups.update.button: Oppdater
 app.admin.categories: Kategorier
 
 app.admin.categories.tooltip.new: Opprett ny kategori
+app.admin.categories.tooltip.edit: Rediger kategori
+app.admin.categories.tooltip.delete: Slett kategori
+app.admin.categories.tooltip.new.sub: Opprett ny underkategori til
+
 
 
 #-----------------------------------------------------
