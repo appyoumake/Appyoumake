@@ -523,7 +523,7 @@
  * @returns {undefined}
  */
     function mlab_page_save(fnc) {
-
+        window.clearTimeout(mlab_timer_save);
         var require_save = true;
         mlab_counter_saving_page++;
         

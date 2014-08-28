@@ -91,11 +91,8 @@ class CategoryController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return new JsonResponse(array('db_table' => 'category',
-            		'action' => 'ADD',
-            		'db_id' => $entity->getId(),
-            		'result' => 'SUCCESS',
-            		'record' => $this->renderView('SinettMLABBuilderBundle:Category:show.html.twig', array('entity' => $entity))));
+            return $this->redirect($this->generateUrl('category'));
+            
         }
 
         return new JsonResponse(array('db_table' => 'category',
@@ -131,8 +128,9 @@ class CategoryController extends Controller
      */
     public function newAction($id)
     {
+        $em = $this->getDoctrine()->getManager();
         $entity = new Category();
-        $form   = $this->createCreateForm($entity, $id);
+        $form = $this->createCreateForm($entity, $em->getRepository('SinettMLABBuilderBundle:Category')->find($id));
 
         return $this->render('SinettMLABBuilderBundle:Category:new.html.twig', array(
             'entity' => $entity,

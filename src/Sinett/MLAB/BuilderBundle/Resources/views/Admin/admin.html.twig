@@ -59,7 +59,7 @@
                             }
   	  			    	} else {
   	  			    		if (data.action == 'ADD') {
-  	  			    			$("#table_" + data.db_table + " tr:last").after(data.record);
+                                $("#table_" + data.db_table + " tr:last").after(data.record);
                                 $("#table_" + data.db_table + " tr:last").find("a").each(function () {
                                     prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
                                     } // end function to run for each link  
@@ -71,7 +71,10 @@
                                     prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
                                     } // end function to run for each link  
                                 ); // end each function 
-  	  			    		}
+//hack to display updated category list which always return the whole list when added
+  	  			    		} else if ($('#tabs_admin_apps').tabs('option','active') == 2) {
+                                $('#ui-tabs-3').html(data);
+                            }                           
                             
   	  			    	}
   	  			  	},
@@ -169,7 +172,11 @@
                                         if ($("#" + event.data.dialog_id + ' form').length > 0) {
                                             $("#" + event.data.dialog_id + ' form')[0].reset();
                                         }
+                                        if (event.data.entity = "category") {
+                                            $("#sinett_mlab_builderbundle_category_parent").val(event.data.id);
+                                        }
                                         $("#" + event.data.dialog_id).dialog().show();
+                                        
                                     } // end check if loaded 
                                 } // end function to run when click 
                     ) // end bind call         
