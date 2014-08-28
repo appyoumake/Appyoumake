@@ -451,7 +451,7 @@ class AppController extends Controller
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
-                                        "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_')),
+                                        "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "editor_closed" => $this->generateUrl('app_builder_editor_closed',  array('uid' => '_UID_')),
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
@@ -481,51 +481,6 @@ class AppController extends Controller
     	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"], $app_id);
     	
     	return new JsonResponse(array("result" => "success", "mlab_components" => $components));
-    }
-    
-/**
- * Returns data about the app that may have been changed by another user working on the same app
- * see loadBuilderVariablesAction for more on what happens here
- * @param type $app_id
- * @param type $page_num
- */
-    public function loadAppMetadataAction($app_id, $page_num, $old_checksum) {
-        $em = $this->getDoctrine()->getManager();
-    	
-// pick up config from parameters.yml, we use this mainly for paths
-        $config = $this->container->parameters['mlab'];
-
-//we first get the app details, then use the file management plugin to obtain the checksum, 
-//for this checksum we exclude the current file as we are the only ones who can change it
-        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-        $file_mgmt = $this->get('file_management');
-    	$file_mgmt->setConfig('app');
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
-        $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
-
-        $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
-        $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
-
-//we do not scan for further changes if no files were changed
-        if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
-            return new JsonResponse(array(
-                "result" => "file_changes",
-    			"mlab_app" => $mlab_app_data,
-                "mlab_app_checksum" => $mlab_app_checksum
-            ));
-        } else {
-            return new JsonResponse(array(
-                "result" => "no_file_changes",
-    			"mlab_app" => $mlab_app_data
-            ));
-        }
-
-//get app details + list of pages
-        
-
-        
-        
     }
     
 /* END LOADING DIFFERENT INFO FOR BUILDER */
@@ -586,12 +541,12 @@ class AppController extends Controller
     	}
     }
     
-    /**
-     * This is the function that stores a page in the app
-     * @param type $app_id
-     * @param type $page_num
-     */
-    public function putPageAction (Request $request, $app_id, $page_num) {
+/**
+ * This is the function that stores a page in the app
+ * @param type $app_id
+ * @param type $page_num
+ */
+    public function putPageAction (Request $request, $app_id, $page_num, $old_checksum) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -610,7 +565,7 @@ class AppController extends Controller
 //create the path to the file to open
         $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
         
-//calculate page number
+//create file management object
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
 
@@ -621,9 +576,34 @@ class AppController extends Controller
                 'result' => 'failure',
                 'msg' => "Unable to save file, please try again"));
         }
+        
+/* Returns data about the app that may have been changed by another user working on the same app
+   see loadBuilderVariablesAction for more on what happens here */
+
+//we now use the file management plugin to obtain the checksum, 
+//for this checksum we exclude the current file as we are the only ones who can change it
+        $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
+        $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
+        $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
+
+//we do not scan for further changes if no files were changed
+        if ($mlab_app_checksum != $old_checksum) {
+            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+            $app_info = array(
+                "result" => "file_changes",
+    			"mlab_app" => $mlab_app_data,
+                "mlab_app_checksum" => $mlab_app_checksum
+            );
+        } else {
+            $app_info = array(
+                "result" => "no_file_changes",
+    			"mlab_app" => $mlab_app_data
+            );
+        }
 
         return new JsonResponse(array(
-            'result' => 'success'));
+            'result' => 'success',
+            'app_info' => $app_info));
 
     }
     

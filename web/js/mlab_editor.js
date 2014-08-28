@@ -8,8 +8,9 @@
 
 // State variables
     mlab_flag_dirty = false;
-    mlab_flag_server_update = false; // True if the app is in an inconsistent state and should not save
+    mlab_counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for 
     mlab_drag_origin = 'sortable';
+    mlab_timer_save = null;
 
 //PERHAPS USE THIS TOGETHER WITH ARRAY OF FIELDNAMES MATCHING APP TABLE AND RENAME TEXT FIELDS...
     mlab_flag_meta_dirty = new Array();
@@ -64,7 +65,7 @@
                             ui.draggable.on("click", function(){mlab_component_highlight_selected(this);});
                             ui.draggable.on("input", function(){mlab_flag_dirty = true;});
 
-                            mlab_run_component_code(ui.draggable, id, true);
+                            mlab_component_run_code(ui.draggable, id, true);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
 //this is ONLY done if exec_server = true 
@@ -173,9 +174,7 @@
                         
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab_app_open( document.mlab_temp_app_id, document.mlab_temp_page_num );
-                        var tm = parseInt(mlab_config["save_interval"]);
-                        if (tm === 0) { tm = 60; }
-                        window.setTimeout(mlab_page_save, tm * 1000);
+                        
                     } else {
                         alert("Unable to load components from the server, cannot continue, will return to front page");
                         document.location.href = document.mlab_appbuilder_root_url;
@@ -204,10 +203,6 @@
  * @param {type} page_num
  */
     function mlab_app_open(app_id, page_num) {
-//TODO: Check if this is needed, and if it really does what we expect it to do. Added by Bård before Gol            
-        if (app_id < 0) {
-           app_id = document.mlab_current_app.id;
-        }
 
         var local_page_num = page_num;
         var url = mlab_urls.page_get.replace("_ID_", app_id);
@@ -215,9 +210,7 @@
         url = url.replace("_UID_", mlab_uid);
         mlab_update_status("callback", 'Opening app', true);
 
-        mlab_flag_server_update = true;
         $.get( url, function( data ) {
-            mlab_flag_server_update = false;
             if (data.result == "success") {
                 mlab_index_page_process ( data.html, "index");
                 $("#mlab_app_info").empty();
@@ -228,7 +221,9 @@
                      });
 
                 if (local_page_num != "0" && local_page_num != "index") {
-                    mlab_page_open(data.app_id, local_page_num);
+                    mlab_page_open_process(data.app_id, local_page_num, true);
+                } else {
+                    mlab_timer_start();
                 }
             } else {
                 mlab_update_status("temporary", data.msg, false);
@@ -447,10 +442,10 @@
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
  */
     function mlab_page_open(app_id, page_num) {
-        mlab_page_save(mlab_page_open_process(app_id, page_num));
+        mlab_page_save(mlab_page_open_process(app_id, page_num, false));
     } 
     
-    function mlab_page_open_process(app_id, page_num) {
+    function mlab_page_open_process(app_id, page_num, first_time) {
 
         mlab_page_save(mlab_page_open(app_id, page_num));
         mlab_update_status("callback", 'Opening page', true);
@@ -483,7 +478,12 @@
                 } else {
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',1);
                 }
-
+                
+//if this is the first page that is opened (from mlab_app_open) we need to start the saving timer here
+//in all other instance the timer is started from the callling function
+                if (first_time) {
+                    mlab_timer_start();
+                }
             } else {
                 mlab_update_status("temporary", data.msg, false);
 
@@ -505,51 +505,69 @@
     }
 
 
-//to save a page we need to reassemble it, 
-//first clone current body from the editor (and give it a new ID!)
-//clean it up using the onSave function for each component
-//then pick up doc variable which has empty body, then insert the cleaned elements
-//finally convert to text to send back
-
+/**
+ * This is the save function, it is called in three possible ways:
+ * 1: When a user clicks the save button
+ * 2: When the save timer (mlab_timer_save) kicks in
+ * 3: When a function that has to save the page first is executed.
+ * 
+ * In case 3 th fnc argument is specified and when the save is completed and the AJAX callback function is called this function will be executed.
+ * This way we are sure that page related variables are not outdated if the save function takes a long time to complete on the server.
+ * 
+ * to save a page we need to reassemble it, 
+ * first clone current body from the editor (and give it a new ID!)
+ * clean it up using the onSave function for each component
+ * then pick up doc variable which has empty body, then insert the cleaned elements
+ * finally convert to text to send back
+ * @param {type} fnc
+ * @returns {undefined}
+ */
     function mlab_page_save(fnc) {
 
+        var require_save = true;
+        mlab_counter_saving_page++;
+        
 //cannot save if locked
         if ($("#mlab_editor_disabled").length > 0) {
             console.log('Page locked, did not save');
-            return false;
+            require_save = false;
         }
 
 //this is called from a timer, so we also need to check if an app has been created, etc
 //also if any changes have occurred
         if (document.mlab_current_app.curr_page_num == undefined || document.mlab_current_app.id == undefined) {
-            return false;
+            require_save = false;
         }
 
         if (!mlab_flag_dirty) {
-            return false;
+            require_save = false;
         }
 
         if (mlab_flag_server_update) {
             console.log('Previous server update not completed, did not save');
-            return false;
+            require_save = false;
+        }
+        
+        if ((!require_save) && (typeof fnc != 'undefined')) { 
+            return fnc;
         }
 
+//prepare various variables
         mlab_update_status("callback", "Storing page", true);
         var curr_el = $("#" + mlab_config["app"]["content_id"] + " .mlab_current_component");
         curr_el.removeClass("mlab_current_component");
         var app_id = document.mlab_current_app.id;
         var page_num = document.mlab_current_app.curr_page_num;
         var page_content = "";
+        var component_categories = new Object();
+        var template_best_practice_msg = new Array();
         var url = mlab_urls.page_save.replace("_ID_", app_id);
         url = url.replace("_PAGE_NUM_", page_num);
+        url = url.replace("_CHECKSUM_", document.mlab_current_app.app_checksum);
 
 //this loop is a: picking up the cleaned HTML for each component, 
 //(this is done by calling the onSave unction which strips away anything we are not interested in)
 // and b: checking if the component transgresses any of the rules for the template
-        var rules = document.mlab_current_app.template_config.components;
-        var component_categories = new Object();
-        var template_best_practice_msg = new Array();
-
         $("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
             var comp_id = $(this).data("mlab-type");
             if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
@@ -560,62 +578,13 @@
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }
 
-//run the template check
-            if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("category")) {
-                var comp_category = mlab_components[comp_id].conf.category;  
-
-                if (!component_categories.hasOwnProperty(comp_category)) {
-                    component_categories[comp_category] = 1;
-                } else {
-                    component_categories[comp_category]++;
-                }
-
-                if (document.hasOwnProperty("mlab_code_" + comp_id)) {
-                    if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
-    //can only do this if component supprts the getContentSize function
-                        if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
-                            var size = document["mlab_code_" + comp_id].getContentSize(this);
-                            if (rules.hasOwnProperty(comp_category)) {
-                                if (rules[comp_category].hasOwnProperty("max")) {
-                                    if (size > rules[comp_category].max.size) {
-                                        if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
-                                            template_best_practice_msg.push(rules[comp_category].max.message);
-                                        }
-                                    }
-                                }
-                                if (rules[comp_category].hasOwnProperty("min")) {
-                                    if (size < rules[comp_category].min.size) {
-                                        if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
-                                            template_best_practice_msg.push(rules[comp_category].min.message);
-                                        }
-                                    }
-                                }
-                            } 
-                        }
-                    }
-                }
-            }
+//run the template checks
+            mlab_component_check_content(this, comp_id, component_categories, template_best_practice_msg);
         });
 
-// final template "best practices", we see if there are too many or too few of certain categories of components on a page
-        for (category in rules) {
-            if (rules[category].hasOwnProperty("max")) {
-                if (component_categories[category] > rules[category].max.count) {
-                    if ($.inArray(rules[category].max.message, template_best_practice_msg) < 0) {
-                        template_best_practice_msg.push(rules[category].max.message);
-                    }
-                }
-            }
-            if (rules[category].hasOwnProperty("min")) {
-                if (component_categories[category] < rules[category].min.count) {
-                    if ($.inArray(rules[category].min.message, template_best_practice_msg) < 0) {
-                        template_best_practice_msg.push(rules[category].min.message);
-                    }
-                }
-            }
-        };
+        mlab_page_check_content(comp_id, component_categories, template_best_practice_msg);
 
-//if this is the index pmlab_existing_pagesage we add the full HTML page, if not we only require a very simple header/footer
+//if this is the index page we add the full HTML page, if not we only require a very simple header/footer
         if (page_num == 0 || page_num == "index" ) {
             var final_doc = document.mlab_current_app.curr_indexpage_html;
             final_doc.getElementById(mlab_config["app"]["content_id"]).innerHTML = page_content;
@@ -627,18 +596,22 @@
 
         curr_el.addClass("mlab_current_component");
 
-//finlly we submit the data to the server
-        mlab_flag_server_update = true;
+//finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
         $.post( url, {html: html}, function( data ) {
-            mlab_flag_server_update = false;
-
+            
+//if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
+            mlab_counter_saving_page--;
+            
             if (data.result == "success") {
                 mlab_update_status("temporary", "Saved page", false);
                 mlab_flag_dirty = false;
                 
-//if a function was specified we now execute it
+//if a function was specified we now execute it, inisde this function the mlab_timer_save timer will be restarted
+//if no function was specified AND no-one else has initiated the save function, then OK to restart timer
                 if (typeof fnc != 'undefined') {
                     var res = fnc;
+                } else if (mlab_counter_saving_page == 0) {
+                    mlab_timer_start();
                 }
                 
 //after a page is saved we retrieve the metadata for this 
@@ -674,9 +647,7 @@
                 mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
             }
             
-            var tm = parseInt(mlab_config["save_interval"]);
-            if (tm === 0) { tm = 60; }
-            window.setTimeout(mlab_page_save, tm * 1000);
+            mlab_timer_start();
             
         });
 
@@ -692,10 +663,30 @@
              $(".mlab_qtip_info").remove();
          }
     }
+    
+    function mlab_page_check_content(comp_id, component_categories, template_best_practice_msg) {
+        // final template "best practices", we see if there are too many or too few of certain categories of components on a page
+        for (category in rules) {
+            if (rules[category].hasOwnProperty("max")) {
+                if (component_categories[category] > rules[category].max.count) {
+                    if ($.inArray(rules[category].max.message, template_best_practice_msg) < 0) {
+                        template_best_practice_msg.push(rules[category].max.message);
+                    }
+                }
+            }
+            if (rules[category].hasOwnProperty("min")) {
+                if (component_categories[category] < rules[category].min.count) {
+                    if ($.inArray(rules[category].min.message, template_best_practice_msg) < 0) {
+                        template_best_practice_msg.push(rules[category].min.message);
+                    }
+                }
+            }
+        };
+    }
 
-    /**
-    * Creates a new file on the server and opens it
-    */
+/**
+* Creates a new file on the server and opens it
+*/
     function mlab_page_new() {
         var title = prompt("Please enter the title of the new page");
         if (title != null) {
@@ -830,7 +821,7 @@
         new_comp.on("input", function(){mlab_flag_dirty = true;});
         new_comp.children().attr("contenteditable", "true");
 
-        mlab_run_component_code(mlab_components[id], id, true);
+        mlab_component_run_code(mlab_components[id], id, true);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
 //this is ONLY done if exec_server = true 
@@ -880,7 +871,7 @@
  * @param {type} created
  * @returns {undefined}
  */
-    function mlab_run_component_code(el, comp_id, created) {
+    function mlab_component_run_code(el, comp_id, created) {
         if (typeof mlab_components[comp_id] == "undefined") {
             return;
         }
@@ -932,9 +923,60 @@
         $(".mlab_current_component").remove();
         mlab_flag_dirty = true;
     }
+    
+/**
+ * Runs the "best practices" check for a single component, can check if video is too long, if there is too much text, etc, etc
+ * @param {type} comp
+ * @param {type} comp_id
+ * @param {type} component_categories
+ * @param {type} template_best_practice_msg
+ * @returns {undefined}
+ */
+    function mlab_component_check_content(comp, comp_id, component_categories, template_best_practice_msg) {
+        var rules = document.mlab_current_app.template_config.components;
+        if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("category")) {
+            var comp_category = mlab_components[comp_id].conf.category;  
 
-//features are simply components that are not displayed with a GUI.
-//they are added to a hidden div, if we are NOT working on the index page we call a backend function to add this code
+            if (!component_categories.hasOwnProperty(comp_category)) {
+                component_categories[comp_category] = 1;
+            } else {
+                component_categories[comp_category]++;
+            }
+
+            if (document.hasOwnProperty("mlab_code_" + comp_id)) {
+                if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
+//can only do this if component supprts the getContentSize function
+                    if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
+                        var size = document["mlab_code_" + comp_id].getContentSize(comp);
+                        if (rules.hasOwnProperty(comp_category)) {
+                            if (rules[comp_category].hasOwnProperty("max")) {
+                                if (size > rules[comp_category].max.size) {
+                                    if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
+                                        template_best_practice_msg.push(rules[comp_category].max.message);
+                                    }
+                                }
+                            }
+                            if (rules[comp_category].hasOwnProperty("min")) {
+                                if (size < rules[comp_category].min.size) {
+                                    if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
+                                        template_best_practice_msg.push(rules[comp_category].min.message);
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                }
+            }
+        }
+    }
+
+/**
+ * features are simply components that are not displayed with a GUI
+ * they are added to a hidden div, if we are NOT working on the index page we call a backend function to add this code
+ * 
+ * @returns {undefined}
+ */
+
     function mlab_feature_add(comp_id, silent){
         if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
             $(document.mlab_current_app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
@@ -1063,7 +1105,9 @@
     }
 
 
-/*********** Utility functions ***********/  
+/***********************************************************
+ ******************* Utility functions *********************
+************************************************************/
 
 /*
  * DOMParser HTML extension
@@ -1123,7 +1167,7 @@
                      .on("input", function(){mlab_flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");
-            mlab_run_component_code($( this ), comp_id);
+            mlab_component_run_code($( this ), comp_id);
         });
 
 //set draggable/sortable options for the editable area 
@@ -1183,3 +1227,15 @@
     function mlab_clear_status() {
         mlab_update_status("completed");
     }
+
+/**
+ * Create a timer to save the current page and stores it in a global variable
+ * we call window.clearTimeout(mlab_timer_save) to stop it should it be required
+ * @returns {undefined}
+ */
+function mlab_timer_start() {
+    var tm = parseInt(mlab_config["save_interval"]);
+    if (tm === 0) { tm = 60; }
+    mlab_timer_save = window.setTimeout(mlab_page_save, tm * 1000);
+    
+}

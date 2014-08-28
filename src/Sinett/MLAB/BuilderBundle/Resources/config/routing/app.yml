@@ -53,7 +53,7 @@ app_builder_editor_closed:
     defaults: { _controller: "SinettMLABBuilderBundle:App:closeEditor" }
 
 app_builder_page_save:
-    path:   /builder/{app_id}/{page_num}/page_put
+    path:   /builder/{app_id}/{page_num}/{old_checksum}/page_put
     defaults: { _controller: "SinettMLABBuilderBundle:App:putPage" }
     requirements: { _method: post }
 
