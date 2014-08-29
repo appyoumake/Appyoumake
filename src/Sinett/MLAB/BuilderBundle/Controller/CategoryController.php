@@ -44,8 +44,9 @@ class CategoryController extends Controller
         		'childClose' => '</li>',
         		'nodeDecorator' => function($node) {
         			return "<div class='treeview " . ($node['system'] ? " system " : "") . "' id='row_category_{$node['id']}'><a href='" . $this->generateUrl('category_edit', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.edit') . "'>" . $node['name'] . "</a>" .
-          			"<a class='tree_add' href='" . $this->generateUrl('category_new', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.new.sub') . " - " . $node['name'] . "'>Add sub-category</a>" . 
-          			"<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.delete') . " - " . $node['name'] . "'>Delete</a></div>";
+          			"<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.delete') . " - " . $node['name'] . "'>Delete</a>" .
+                    "<a class='tree_add' href='" . $this->generateUrl('category_new', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.new.sub') . " - " . $node['name'] . "'>Add sub-category</a>" . 
+                    "</div>";
         		}
             );
         } else {
@@ -57,10 +58,10 @@ class CategoryController extends Controller
                     'childClose' => '</li>',
                     'nodeDecorator' => function($node) {
                         return "<div class='treeview " . ($node['system'] ? " mlab_category_system " : "") . "' id='row_category_{$node['id']}'>" . 
-                                    ($node['system'] ? $node['name'] : "<a href='" . $this->generateUrl('category_edit', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.edit') . "'>" . $node['name'] . "</a>") . 
+                                    ($node['system'] ? $node['name'] : "<a href='" . $this->generateUrl('category_edit', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.edit') . "'>" . $node['name'] . "</a>") .
+                                    ($node['system'] ? "<span class='tree_not_delete'> &nbsp;a</span>" : "<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.delete') . " - " . $node['name'] . "'>Delete</a>") .
                                     "<a class='tree_add' href='" . $this->generateUrl('category_new', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.new.sub') . " - " . $node['name'] . "'>Add sub-category</a>" . 
-                                    ($node['system'] ? "" : "<a class='tree_delete' href='" . $this->generateUrl('category_delete', array('id' => $node['id'])) . "' title='" . $this->get('translator')->trans('app.admin.categories.tooltip.delete') . " - " . $node['name'] . "'>Delete</a>") .
-                               "</div>";
+                                "</div>";
                     }
             );
         }
