@@ -1,11 +1,13 @@
 %Users%: brukere
 
+
 #-----------------------------------------------------
-# Admin + System
+# Admin + System welcome
 #-----------------------------------------------------
 app.admin.users.welcome: Velkommen til MLAB Bruker Admin sidene
 app.admin.apps.welcome: Velkommen til MLAB App Admin sidene
 app.system.admin.welcome: Velkommen til MLAB System Admin sidene
+
 
 #-----------------------------------------------------
 # Admin + System alert
@@ -31,25 +33,24 @@ app.admin.users.tooltip.delete: Slett bruker
 app.admin.users.tooltip.new: Opprett ny bruker
 
 
-
 #-----------------------------------------------------
 # Edit and new user
 #-----------------------------------------------------
 app.admin.users.new.heading: Opprett ny bruker
 app.admin.users.edit.heading: Rediger bruker
 
-#???????For the new user form???????
-email: E-post
-username: Brukernavn
-plainPassword: Passord
-passwor: Passord
-categoryOne: Kategori en
-categoryTwo: Kategori to
-categoryThree: Kategori tre
-groups: Grupper
-roles: Roller
-enabled: Aktiv
-create: Opprett
+app.admin.users.new.or.edit.email: E-post
+app.admin.users.new.or.edit.username: Brukernavn
+app.admin.users.new.or.edit.plain.password: Passord
+app.admin.users.new.or.edit.categoryOne: Kategori en
+app.admin.users.new.or.edit.categoryTwo: Kategori to
+app.admin.users.new.or.edit.categoryThree: Kategori tre
+app.admin.users.new.or.edit.groups: Grupper
+app.admin.users.new.or.edit.roles: Roller
+app.admin.users.new.or.edit.enabled: Aktiv
+
+app.admin.users.new.create.button: Lagre
+app.admin.users.edit.update.button: Oppdater
 
 
 
@@ -59,8 +60,8 @@ create: Opprett
 app.admin.groups: Grupper
 app.admin.groups.name: Navn
 app.admin.groups.description: Beskrivelse
-app.admin.groups.isdefault: gruppen er satt som default
 
+app.admin.groups.tooltip.isdefault: Gruppen er satt som default
 app.admin.groups.tooltip.name: Rediger gruppe
 app.admin.groups.tooltip.delete: Slett gruppe
 app.admin.groups.tooltip.new: Opprett ny gruppe
@@ -72,6 +73,15 @@ app.admin.groups.tooltip.new: Opprett ny gruppe
 #-----------------------------------------------------
 app.admin.groups.new.heading: Opprett ny gruppe
 app.admin.groups.edit.heading: Rediger gruppe
+
+app.admin.groups.new.or.edit.name: Navn
+app.admin.groups.new.or.edit.description: Beskrivelse
+app.admin.groups.new.or.edit.isDefault: Default
+app.admin.groups.new.or.edit.enabled: Aktiv
+app.admin.groups.new.or.edit.users: Brukere
+
+app.admin.groups.new.create.button: Lagre
+app.admin.groups.edit.update.button: Oppdater
 
 
 

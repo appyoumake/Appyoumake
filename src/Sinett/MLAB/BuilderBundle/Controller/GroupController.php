@@ -77,7 +77,7 @@ class GroupController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.groups.new.create.button'));
 
         return $form;
     }
@@ -156,7 +156,7 @@ class GroupController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.groups.edit.update.button'));
 
         return $form;
     }

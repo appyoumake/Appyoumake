@@ -20,15 +20,15 @@ class UserType extends AbstractType
 		}
 		
     	$builder
-            ->add('email')
-            ->add('username')
-            ->add('plainPassword', 'password')
-            ->add('categoryOne')
-            ->add('categoryTwo')
-            ->add('categoryThree')
-            ->add('groups')
-            ->add('roles', 'choice', array('choices' => $role_choices, 'multiple' => true))
-            ->add('enabled')
+            ->add('email', null, array('label' => 'app.admin.users.new.or.edit.email'))
+            ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username'))
+            ->add('plainPassword', 'password', array('label' => 'app.admin.users.new.or.edit.plain.password'))
+            ->add('categoryOne', null, array('label' => 'app.admin.users.new.or.edit.categoryOne'))
+            ->add('categoryTwo', null, array('label' => 'app.admin.users.new.or.edit.categoryTwo'))
+            ->add('categoryThree', null, array('label' => 'app.admin.users.new.or.edit.categoryThree'))
+            ->add('groups', null, array('label' => 'app.admin.users.new.or.edit.groups'))
+            ->add('roles', 'choice', array('choices' => $role_choices, 'multiple' => true, 'label' => 'app.admin.users.new.or.edit.roles'))
+            ->add('enabled', null, array('label' => 'app.admin.users.new.or.edit.enabled'))
             ;
     }
     

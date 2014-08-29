@@ -15,11 +15,11 @@ class GroupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('description')
-            ->add('isDefault')
-            ->add('enabled')
-            ->add('users')
+            ->add('name', null, array('label' => 'app.admin.groups.new.or.edit.name'))
+            ->add('description', null, array('label' => 'app.admin.groups.new.or.edit.description'))
+            ->add('isDefault', null, array('label' => 'app.admin.groups.new.or.edit.isDefault'))
+            ->add('enabled', null, array('label' => 'app.admin.groups.new.or.edit.enabled'))
+            ->add('users', null, array('label' => 'app.admin.groups.new.or.edit.users'))
         ;
     }
     

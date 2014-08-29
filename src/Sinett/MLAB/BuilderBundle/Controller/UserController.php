@@ -73,7 +73,7 @@ class UserController extends Controller
         	'current_user_role' => $this->getUser()->getRoles()[0], 
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.users.new.create.button'));
 
         return $form;
     }
@@ -161,7 +161,7 @@ class UserController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.users.edit.update.button'));
 
         return $form;
     }
