@@ -1,5 +1,20 @@
-app.admin.welcome: Velkommen til MLAB App Admin sidene
 %Users%: brukere
+
+#-----------------------------------------------------
+# Admin + System
+#-----------------------------------------------------
+app.admin.users.welcome: Velkommen til MLAB Bruker Admin sidene
+app.admin.apps.welcome: Velkommen til MLAB App Admin sidene
+app.system.admin.welcome: Velkommen til MLAB System Admin sidene
+
+#-----------------------------------------------------
+# Admin + System alert
+#-----------------------------------------------------
+
+app.system.admin.alert.Unable.to.update.record: Ikke i stand til å oppdatere rad -
+app.system.admin.alert.waiting.to.load.data: Venter for å laste opp data
+app.system.admin.alert.delete.item: Ønsker du å slette?
+app.system.admin.alert.Unable.to.delete.record: Ikke i stand til å slette rad -
 
 
 #-----------------------------------------------------
