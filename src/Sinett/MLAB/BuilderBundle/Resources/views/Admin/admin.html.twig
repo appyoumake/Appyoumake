@@ -159,7 +159,9 @@
         // not delete and dialog box is not created yet, so make new one and fill it 
                                     } else if ($("#" + event.data.dialog_id).length == 0 ) {  
                                         $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
-                                            .load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id);} )
+                                            .load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); if (event.data.entity = "category") {
+                                                    $("#sinett_mlab_builderbundle_category_parent").val(event.data.id);
+                                                }} )
                                             .appendTo('body')
                                             .dialog({modal: true});
 
