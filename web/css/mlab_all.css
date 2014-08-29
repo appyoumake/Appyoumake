@@ -420,14 +420,27 @@ body.mlab_base div.mlab_align_menu_elements {
 	float: left;
 }
 
-.boolean_1, .boolean_0 { 
+/* admin section */
+.boolean_1, .boolean_0, .mlab_icon_enabled, .mlab_icon_disabled { 
 	background-image: url("/img/1.png");
 	background-position: center center;
 	background-repeat: no-repeat;
 }
 
-.boolean_0 {
+.boolean_0, .mlab_icon_disabled {
 	background-image: url("/img/0.png");
+}
+
+.mlab_icon_disabled {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.mlab_icon_enabled {
+    width: 16px;
+    height: 16px;
+    display: block;
 }
 
 .treeview {
@@ -461,6 +474,16 @@ body.mlab_base div.mlab_align_menu_elements {
 
 #table_category > ul > li > ul > li > ul > li > .treeview > .tree_add{
     display: none;
+}
+
+/* hide third level category add button */
+#table_category ul li ul li ul li .treeview .tree_add {
+    display: none;
+}
+
+/* force delete icon to come in thr right place when no add icon */
+#table_category ul li ul li ul li .treeview .tree_delete {
+    margin-right: 35px;
 }
 
 .ui-tabs-panel ul li div.system {
@@ -569,16 +592,3 @@ width: 45%;
     font-family: Arial;
 }
 
-.mlab_icon_disabled {
-    width: 16px;
-    height: 16px;
-    background-color: red;
-    display: block;
-}
-
-.mlab_icon_enabled {
-    width: 16px;
-    height: 16px;
-    background-color: green;
-    display: block;
-}

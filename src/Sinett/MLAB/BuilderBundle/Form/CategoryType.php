@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+use Doctrine\ORM\EntityRepository;
+
 class CategoryType extends AbstractType
 {
         /**
@@ -19,7 +21,13 @@ class CategoryType extends AbstractType
     	if ($action == "create") {
     		$builder
     		->add('name')
-    		->add('parent', null, array('data' => $options['parent_category_id']))
+    		->add('parent', 
+                    null, 
+                    array('class' => 'SinettMLABBuilderBundle:Category',
+                          'query_builder' => function(EntityRepository $er) {
+                              return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
+                        })
+                 )
     		->add('system');
     	} else {
     		$builder
