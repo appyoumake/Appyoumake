@@ -146,11 +146,12 @@ app.admin.components.edit.groups.update.button: Oppdater
 
 
 #-----------------------------------------------------
-# Categories tab
+# Categories tab (system + admin)
 #-----------------------------------------------------
 app.admin.categories: Kategorier
+app.system.admin.categories: Kategorier
 
-app.admin.categories.tooltip.new: Opprett ny kategori
+app.admin.categories.tooltip.new: Opprett ny hovedkategori
 app.admin.categories.tooltip.edit: Rediger kategori
 app.admin.categories.tooltip.delete: Slett kategori
 app.admin.categories.tooltip.new.sub: Opprett ny underkategori til
@@ -158,25 +159,20 @@ app.admin.categories.tooltip.new.sub: Opprett ny underkategori til
 
 
 #-----------------------------------------------------
-# Edit and new categories
+# Edit and new categories (system + admin)
 #-----------------------------------------------------
-#app.admin.categories.new.heading: Opprett ny kategori
-#app.admin.categories.edit.heading: Rediger kategori
+app.admin.categories.new.heading: Opprett ny kategori
+app.admin.categories.new.name: Navn
+app.admin.categories.new.parent: Ligger under
+app.admin.categories.new.system: System kategori
+app.admin.categories.new.create.button: Lagre
 
+app.admin.categories.edit.heading: Rediger kategori
+app.admin.categories.edit.name: Navn
+app.admin.categories.edit.parent: Ligger under
+app.admin.categories.edit.system: System kategori
+app.admin.categories.edit.update.button: Oppdater
 
-#-----------------------------------------------------
-# System Categories tab
-#-----------------------------------------------------
-app.system.admin.categories: System-kategorier
-
-app.system.admin.categories.tooltip.new: Opprett ny system-kategorier
-
-
-#-----------------------------------------------------
-# Edit and new system categories
-#-----------------------------------------------------
-#app.system.admin.categories.new.heading: Opprett ny system-kategori
-#app.system.admin.categories.edit.heading: Rediger system-kategori
 
 
 #-----------------------------------------------------
