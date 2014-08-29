@@ -1,14 +1,15 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Help list</h1>
 
     <table class="records_list" id="table_help">
         <thead>
             <tr>
-                <th>Route</th>
-                <th>Message</th>
-                <th>Actions</th>
+                <th>{% trans %}app.system.admin.help.route{% endtrans %}</th>
+                <th>{% trans %}app.system.admin.help.message{% endtrans %}</th>
+                <th> 
+                	<a class="mlab_button_new_component" href="{{ path('help_new') }}" title="{% trans %}app.system.admin.help.tooltip.new{% endtrans %}"></a>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -17,12 +18,4 @@
 	        {% endfor %}
         </tbody>
     </table>
-
-        <ul>
-        <li>
-            <a href="{{ path('help_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+{% endblock %}

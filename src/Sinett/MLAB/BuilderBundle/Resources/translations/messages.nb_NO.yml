@@ -1,5 +1,20 @@
-app.admin.welcome: Velkommen til MLAB App Admin sidene
 %Users%: brukere
+
+#-----------------------------------------------------
+# Admin + System
+#-----------------------------------------------------
+app.admin.users.welcome: Velkommen til MLAB Bruker Admin sidene
+app.admin.apps.welcome: Velkommen til MLAB App Admin sidene
+app.system.admin.welcome: Velkommen til MLAB System Admin sidene
+
+#-----------------------------------------------------
+# Admin + System alert
+#-----------------------------------------------------
+
+app.system.admin.alert.Unable.to.update.record: Ikke i stand til å oppdatere rad -
+app.system.admin.alert.waiting.to.load.data: Venter for å laste opp data
+app.system.admin.alert.delete.item: Ønsker du å slette?
+app.system.admin.alert.Unable.to.delete.record: Ikke i stand til å slette rad -
 
 
 #-----------------------------------------------------
@@ -146,11 +161,12 @@ app.admin.components.edit.groups.update.button: Oppdater
 
 
 #-----------------------------------------------------
-# Categories tab
+# Categories tab (system + admin)
 #-----------------------------------------------------
 app.admin.categories: Kategorier
+app.system.admin.categories: Kategorier
 
-app.admin.categories.tooltip.new: Opprett ny kategori
+app.admin.categories.tooltip.new: Opprett ny hovedkategori
 app.admin.categories.tooltip.edit: Rediger kategori
 app.admin.categories.tooltip.delete: Slett kategori
 app.admin.categories.tooltip.new.sub: Opprett ny underkategori til
@@ -158,40 +174,46 @@ app.admin.categories.tooltip.new.sub: Opprett ny underkategori til
 
 
 #-----------------------------------------------------
-# Edit and new categories
+# Edit and new categories (system + admin)
 #-----------------------------------------------------
-#app.admin.categories.new.heading: Opprett ny kategori
-#app.admin.categories.edit.heading: Rediger kategori
+app.admin.categories.new.heading: Opprett ny kategori
+app.admin.categories.new.name: Navn
+app.admin.categories.new.parent: Ligger under
+app.admin.categories.new.system: System kategori
+app.admin.categories.new.create.button: Lagre
 
+app.admin.categories.edit.heading: Rediger kategori
+app.admin.categories.edit.name: Navn
+app.admin.categories.edit.parent: Ligger under
+app.admin.categories.edit.system: System kategori
+app.admin.categories.edit.update.button: Oppdater
 
-#-----------------------------------------------------
-# System Categories tab
-#-----------------------------------------------------
-app.system.admin.categories: System-kategorier
-
-app.system.admin.categories.tooltip.new: Opprett ny system-kategorier
-
-
-#-----------------------------------------------------
-# Edit and new system categories
-#-----------------------------------------------------
-#app.system.admin.categories.new.heading: Opprett ny system-kategori
-#app.system.admin.categories.edit.heading: Rediger system-kategori
 
 
 #-----------------------------------------------------
 # System Help tab
 #-----------------------------------------------------
-app.system.admin.help: Hjelpetekst
+app.system.admin.help: Hjelp
+app.system.admin.help.route: Side
+app.system.admin.help.message: Hjelpetekst
 
 app.system.admin.help.tooltip.new: Opprett ny hjelpetekst
+app.system.admin.help.tooltip.route: Rediger hjelpetekst
+app.system.admin.help.tooltip.delete: Slett hjelpetekst
 
 
 #-----------------------------------------------------
 # Edit and new system categories
 #-----------------------------------------------------
-#app.system.admin.help.new.heading: Opprett ny hjelpetekst
-#app.system.admin.help.edit.heading: Rediger hjelpetekst
+app.system.admin.help.new.heading: Opprett ny hjelpetekst
+app.system.admin.help.new.route: Side
+app.system.admin.help.new.message: Hjelpetekst
+app.system.admin.help.new.create.button: Lagre
+
+app.system.admin.help.edit.heading: Rediger hjelpetekst
+app.system.admin.help.edit.route: Side
+app.system.admin.help.edit.message: Hjelpetekst
+app.system.admin.help.edit.update.button: Oppdater
 
 
 #-----------------------------------------------------

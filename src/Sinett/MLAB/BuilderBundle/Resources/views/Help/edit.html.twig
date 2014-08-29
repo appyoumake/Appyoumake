@@ -1,16 +1,8 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Help edit</h1>
+    <h4>{% trans %}app.system.admin.help.edit.heading{% endtrans %}</h4>
 
     {{ form(edit_form) }}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('help') }}">
-            Back to the list
-        </a>
-    </li>
-    
-</ul>
 {% endblock %}

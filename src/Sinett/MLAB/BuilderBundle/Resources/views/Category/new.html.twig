@@ -1,15 +1,8 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Category creation</h1>
+    <h4>{% trans %}app.admin.categories.new.heading{% endtrans %}</h4>
 
     {{ form(form) }}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('category') }}">
-            Back to the list
-        </a>
-    </li>
-</ul>
 {% endblock %}

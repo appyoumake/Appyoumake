@@ -118,7 +118,7 @@ class CategoryController extends Controller
        		'parent_category_id' => $parent_id
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.categories.new.create.button'));
 
         return $form;
     }
@@ -198,7 +198,7 @@ class CategoryController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'app.admin.categories.edit.update.button'));
 
         return $form;
     }

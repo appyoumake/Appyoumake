@@ -2,8 +2,20 @@
 
 {% block title %}SinettMLABBuilderBundle:Admin:index{% endblock %}
 
+
 {% block body %}
-	<h1>{% trans %}app.admin.welcome{% endtrans %}</h1>
+
+{% set currentPath = path(app.request.attributes.get('_route'),
+                           app.request.attributes.get('_route_params')) %}
+
+{% if  "/admin/apps" in currentPath  %}
+	<h1>{% trans %}app.admin.apps.welcome{% endtrans %}</h1>
+{% elseif  "/admin/users" in currentPath %}
+	<h1>{% trans %}app.admin.users.welcome{% endtrans %}</h1>
+{% elseif "/system" in currentPath %}
+	<h1>{% trans %}app.system.admin.welcome{% endtrans %}</h1>
+{% endif %}
+
 	<div id="tabs_admin_apps">
 	  <ul>
 	  	{% for href, tab in tabs %}
@@ -55,7 +67,7 @@
                             if (typeof data.message != "undefined") {
                                 alert(data.message);
                             } else {
-                                alert("{% trans %}Unable to update record{% endtrans %}");
+                                alert("{% trans %}app.system.admin.alert.Unable.to.update.record{% endtrans %}");
                             }
   	  			    	} else {
   	  			    		if (data.action == 'ADD') {
@@ -104,7 +116,7 @@
 		    	
 		      	beforeLoad: function( event, ui ) {
 		        	ui.jqXHR.error(function() {
-		          		ui.panel.html("{% trans %}Waiting to load data.{% endtrans %}");
+		          		ui.panel.html("{% trans %}app.system.admin.alert.waiting.to.load.data{% endtrans %}");
 		        	});
 		      	}
 		    });
@@ -129,7 +141,7 @@
         // check if want to delete, then send request back. 
         //May be denied depending on what roles they have, if record is used for somethign etc.
                                     if ( event.data.link == "delete" ) { 
-                                        if (confirm("{% trans %}Do you want to delete this item?{% endtrans %}")) {
+                                        if (confirm("{% trans %}app.system.admin.alert.delete.item{% endtrans %}")) {
                                             $.getJSON("{{ path('sinett_mlab_builder_homepage') }}" + event.data.entity + "/" + event.data.id + "/delete", function( data ) {
                                                 if (data.result == "SUCCESS" && parseInt(data.db_id) > 0) {
         //treeviews use a div inside a list item, need to delete parent 
@@ -139,7 +151,7 @@
                                                         $("#row_" + data.db_table + "_" + data.db_id).remove();
                                                     }
                                                 } else {
-                                                    alert("{% trans %}Unable to delete record: {% endtrans %}" + data.message);
+                                                    alert("{% trans %}app.system.admin.alert.Unable.to.delete.record{% endtrans %}" + data.message);
                                                 }
                                             });
                                         }
