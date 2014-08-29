@@ -76,7 +76,7 @@ class HelpController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'app.system.admin.help.new.create.button'));
 
         return $form;
     }
@@ -155,7 +155,7 @@ class HelpController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'app.system.admin.help.edit.update.button'));
 
         return $form;
     }

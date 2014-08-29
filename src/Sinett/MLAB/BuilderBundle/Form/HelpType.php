@@ -14,10 +14,18 @@ class HelpType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $action = explode("/", $options["action"]);
+    	$action = array_pop($action);
+    	if ($action == "create") {
         $builder
-            ->add('route')
-            ->add('message')
-        ;
+            ->add('route', null, array('label' => 'app.system.admin.help.new.route'))
+            ->add('message', null, array('label' => 'app.system.admin.help.new.message'));
+        } else {
+            $builder
+	    	->add('route', null, array('label' => 'app.system.admin.help.edit.route'))
+            ->add('message', null, array('label' => 'app.system.admin.help.edit.message'));
+	    	
+	    }
     }
     
     /**

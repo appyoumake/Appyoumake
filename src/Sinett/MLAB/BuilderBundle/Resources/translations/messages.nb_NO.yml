@@ -205,8 +205,15 @@ app.system.admin.help.tooltip.delete: Slett hjelpetekst
 #-----------------------------------------------------
 # Edit and new system categories
 #-----------------------------------------------------
-#app.system.admin.help.new.heading: Opprett ny hjelpetekst
-#app.system.admin.help.edit.heading: Rediger hjelpetekst
+app.system.admin.help.new.heading: Opprett ny hjelpetekst
+app.system.admin.help.new.route: Side
+app.system.admin.help.new.message: Hjelpetekst
+app.system.admin.help.new.create.button: Lagre
+
+app.system.admin.help.edit.heading: Rediger hjelpetekst
+app.system.admin.help.edit.route: Side
+app.system.admin.help.edit.message: Hjelpetekst
+app.system.admin.help.edit.update.button: Oppdater
 
 
 #-----------------------------------------------------
