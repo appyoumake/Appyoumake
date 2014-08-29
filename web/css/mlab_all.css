@@ -476,16 +476,6 @@ body.mlab_base div.mlab_align_menu_elements {
     display: none;
 }
 
-/* hide third level category add button */
-#table_category ul li ul li ul li .treeview .tree_add {
-    display: none;
-}
-
-/* force delete icon to come in thr right place when no add icon */
-#table_category ul li ul li ul li .treeview .tree_delete {
-    margin-right: 35px;
-}
-
 .ui-tabs-panel ul li div.system {
 	color: blue;
 }

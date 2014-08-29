@@ -23,8 +23,7 @@ class CategoryType extends AbstractType
     		->add('name')
     		->add('parent', 
                     null, 
-                    array('class' => 'SinettMLABBuilderBundle:Category',
-                          'query_builder' => function(EntityRepository $er) {
+                    array('disabled' => true,'query_builder' => function(EntityRepository $er) {
                               return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
                         })
                  )
@@ -32,7 +31,12 @@ class CategoryType extends AbstractType
     	} else {
     		$builder
     		->add('name')
-    		->add('parent')
+    		->add('parent', 
+                    null, 
+                    array('disabled' => true,'query_builder' => function(EntityRepository $er) {
+                              return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
+                        })
+                 )
     		->add('system');
     	}
     	
