@@ -178,9 +178,13 @@ app.admin.categories.edit.update.button: Oppdater
 #-----------------------------------------------------
 # System Help tab
 #-----------------------------------------------------
-app.system.admin.help: Hjelpetekst
+app.system.admin.help: Hjelp
+app.system.admin.help.route: Side
+app.system.admin.help.message: Hjelpetekst
 
 app.system.admin.help.tooltip.new: Opprett ny hjelpetekst
+app.system.admin.help.tooltip.route: Rediger hjelpetekst
+app.system.admin.help.tooltip.delete: Slett hjelpetekst
 
 
 #-----------------------------------------------------
