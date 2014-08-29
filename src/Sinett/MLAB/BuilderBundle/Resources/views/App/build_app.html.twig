@@ -14,7 +14,9 @@
 	</div>
     
 	<div title="Use this to rotate the editor" id="mlab_button_rotate" onclick="mlabRotateEditor();"></div>
-    <div id="mlab_dialog_new_app"></div>
+    <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>
+    </div>
     <div id="mlab_menu_popup"></div>
     <div id="mlab_app_info"></div>
     <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>

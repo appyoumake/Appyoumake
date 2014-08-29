@@ -221,7 +221,7 @@
                      });
 
                 if (local_page_num != "0" && local_page_num != "index") {
-                    mlab_page_open_process(data.app_id, local_page_num, true);
+                    mlab_page_open_process(data.app_id, local_page_num);
                 } else {
                     mlab_timer_start();
                 }
@@ -270,6 +270,8 @@
                 style: { classes: 'qtip-tipped' }});
         */	
         });
+        
+        mlab_timer_start();
     }
 
     function mlab_app_submit_to_market () {
@@ -442,12 +444,11 @@
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
  */
     function mlab_page_open(app_id, page_num) {
-        mlab_page_save(mlab_page_open_process(app_id, page_num, false));
+        mlab_page_save( function() { mlab_page_open_process(app_id, page_num); } );
     } 
     
-    function mlab_page_open_process(app_id, page_num, first_time) {
+    function mlab_page_open_process(app_id, page_num) {
 
-        mlab_page_save(mlab_page_open(app_id, page_num));
         mlab_update_status("callback", 'Opening page', true);
 
         var url = mlab_urls.page_get.replace("_ID_", app_id);
@@ -478,18 +479,16 @@
                 } else {
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',1);
                 }
+
+                mlab_timer_start();
                 
-//if this is the first page that is opened (from mlab_app_open) we need to start the saving timer here
-//in all other instance the timer is started from the callling function
-                if (first_time) {
-                    mlab_timer_start();
-                }
             } else {
                 mlab_update_status("temporary", data.msg, false);
 
             }
 
-        });
+        } );
+        
     } 
 
 /**
@@ -525,6 +524,7 @@
     function mlab_page_save(fnc) {
         window.clearTimeout(mlab_timer_save);
         var require_save = true;
+        var res = false;
         mlab_counter_saving_page++;
         
 //cannot save if locked
@@ -549,7 +549,9 @@
         }
         
         if ((!require_save) && (typeof fnc != 'undefined')) { 
-            return fnc;
+            return fnc();
+        } else if (!require_save) {
+            return false;
         }
 
 //prepare various variables
@@ -609,45 +611,67 @@
 //if a function was specified we now execute it, inisde this function the mlab_timer_save timer will be restarted
 //if no function was specified AND no-one else has initiated the save function, then OK to restart timer
                 if (typeof fnc != 'undefined') {
-                    var res = fnc;
-                } else if (mlab_counter_saving_page == 0) {
-                    mlab_timer_start();
-                }
+                    res = fnc();
+                } 
                 
-//after a page is saved we retrieve the metadata for this 
-//TODO: Fix url
-//TODO: move to WebSOCKET listener for compiler jobs when this is done
-                $.get( "/app_dev.php/app/builder/" + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/" + document.mlab_current_app.app_checksum + "/load_metadata" , function( data ) {
-                    
+//process metadata information that has come back
+                if (typeof data.app_info != "undefined") {
 //we may have a result saying nochange
-                    if (data.result === "file_changes") {
+                    if (data.app_info.result === "file_changes") {
 //load in metadata and (possibly new) checksum of app into variables, then upate display
                         console.log("App files were changed");
-                        document.mlab_current_app.app_checksum = data.mlab_app_checksum;
-                        document.mlab_current_app.page_names = data.mlab_app.page_names;
+                        document.mlab_current_app.app_checksum = data.app_info.mlab_app_checksum;
+                        document.mlab_current_app.page_names = data.app_info.mlab_app.page_names;
                         
-                    } else if (data.result === "no_file_changes") {
+                    } else if (data.app_info.result === "no_file_changes") {
                         console.log("No changes to app files");
 
                     } else {
                         return;
                     }
                     
-                    document.mlab_current_app.name = data.mlab_app.name;
-                    document.mlab_current_app.description = data.mlab_app.description;
-                    document.mlab_current_app.keywords = data.mlab_app.keywords;
-                    document.mlab_current_app.categoryOne = data.mlab_app.categoryOne;
-                    document.mlab_current_app.categoryTwo = data.mlab_app.categoryTwo;
-                    document.mlab_current_app.categoryThree = data.mlab_app.categoryThree;
+                    document.mlab_current_app.name = data.app_info.mlab_app.name;
+                    document.mlab_current_app.description = data.app_info.mlab_app.description;
+                    document.mlab_current_app.keywords = data.app_info.mlab_app.keywords;
+                    document.mlab_current_app.categoryOne = data.app_info.mlab_app.categoryOne;
+                    document.mlab_current_app.categoryTwo = data.app_info.mlab_app.categoryTwo;
+                    document.mlab_current_app.categoryThree = data.app_info.mlab_app.categoryThree;
                     mlab_app_update_gui_metadata();
 
-                });
+                };
 
             } else { //failed
                 mlab_update_status("temporary", "Unable to save page: " + data.msg, false);
+                if (typeof fnc != 'undefined') {
+//if this save attempt was a part of another operation we will ask if they want to try again, cancel or continue without saving
+//(the change may have been minimal and they want to start a new app let's say)
+                    $( "#mlab_dialog_confirm" ).dialog({
+                        resizable: false,
+                        height:140,
+                        modal: true,
+                        buttons: {
+                            "Retry": function() {
+                                $( this ).dialog( "close" );
+                                mlab_page_save(fnc);
+                                return;
+                            },
+                            "Continue": function() {
+                                $( this ).dialog( "close" );
+                                res = fnc();
+                            },
+                            Cancel: function() {
+                                $( this ).dialog( "close" );
+                            }
+                        }
+                    });
+                    return res;
+                }
             }
             
-            mlab_timer_start();
+//if this was not called from a function AND the save function has not been called by others, then we restart the save timer.
+            if (mlab_counter_saving_page == 0 && (typeof fnc == 'undefined')) {
+                mlab_timer_start();
+            }
             
         });
 
@@ -661,12 +685,16 @@
                 style: { "background-color": "white", color: "blue", classes: "mlab_qtip_info" } } ) ;
         } else {
              $(".mlab_qtip_info").remove();
-         }
+        }
+        
+        return res;
     }
     
+// final template "best practices", we see if there are too many or too few of certain categories of components on a page
     function mlab_page_check_content(comp_id, component_categories, template_best_practice_msg) {
-        // final template "best practices", we see if there are too many or too few of certain categories of components on a page
-        for (category in rules) {
+        
+        var rules = document.mlab_current_app.template_config.components;
+        for (var category in rules) {
             if (rules[category].hasOwnProperty("max")) {
                 if (component_categories[category] > rules[category].max.count) {
                     if ($.inArray(rules[category].max.message, template_best_practice_msg) < 0) {
@@ -690,7 +718,7 @@
     function mlab_page_new() {
         var title = prompt("Please enter the title of the new page");
         if (title != null) {
-            mlab_page_save(mlab_page_new_process(title));
+            mlab_page_save( function() { mlab_page_new_process( title ); } );
         }
     }
     
@@ -698,9 +726,8 @@
             mlab_update_status("callback", "Storing page", true);
             var url = mlab_urls.page_new.replace("_ID_", document.mlab_current_app.id);
             url = url.replace("_UID_", mlab_uid);
-            mlab_flag_server_update = true;
+            
             $.post( url, {}, function( data ) {
-                mlab_flag_server_update = false;
                 if (data.result == "success") {
                     mlab_update_status("completed");
                     $("#" + mlab_config["app"]["content_id"]).empty();
@@ -717,6 +744,8 @@
                 } else {
                     mlab_update_status("temporary", data.msg, false);
                 }
+                
+                mlab_timer_start();
 
             });
         
@@ -745,13 +774,13 @@
         $.get( url, function( data ) {
             mlab_flag_server_update = false;
             if (data.result == "success") {
-                mlab_regular_page_process ( data.html, data.page_num );
+                mlab_regular_page_process ( data.html, data.page_num_real );
             } else {
                 alert(data.msg);
             }
-
+            mlab_timer_start();
         });
-       }
+    }
 
     function mlab_page_delete () {
         if (document.mlab_current_app.curr_page_num == "0" || document.mlab_current_app.curr_page_num == "index") {
@@ -763,11 +792,7 @@
             return;
         }
         
-        mlab_page_save(mlab_page_delete_process);
-    }
-    
-    function mlab_page_delete_process () {
-
+        window.clearTimeout(mlab_timer_save);
         mlab_update_status("callback", "Deleting page", true);
 
         var url = mlab_urls.page_delete.replace("_ID_", document.mlab_current_app.id);
@@ -778,6 +803,7 @@
             if (data.result == "success") {
                 mlab_update_status("completed");
                 mlab_regular_page_process ( data.html, data.page_num );
+                mlab_timer_start();
             } else {
                 mlab_update_status("temporary", data.msg, false);
             }
@@ -808,6 +834,7 @@
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }
+        mlab_timer_start();
     }
 
 /***********************************************************
@@ -1235,7 +1262,7 @@
  */
 function mlab_timer_start() {
     var tm = parseInt(mlab_config["save_interval"]);
-    if (tm === 0) { tm = 60; }
+    if (tm < 60) { tm = 60; }
     mlab_timer_save = window.setTimeout(mlab_page_save, tm * 1000);
-    
+    console.log("Restartet timer");
 }

@@ -451,7 +451,7 @@ class AppController extends Controller
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
-                                        "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'checksum' => '_CHECKSUM_')),
+                                        "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "editor_closed" => $this->generateUrl('app_builder_editor_closed',  array('uid' => '_UID_')),
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
@@ -584,7 +584,7 @@ class AppController extends Controller
 //for this checksum we exclude the current file as we are the only ones who can change it
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
         $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
-        $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
+        $mlab_app_data = $app->getArrayFlat($this->container->parameters['mlab']["paths"]["template"]);
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {

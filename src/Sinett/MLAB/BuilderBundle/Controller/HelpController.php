@@ -29,9 +29,11 @@ class HelpController extends Controller
         $router = $this->container->get('router');
         $collection = $router->getRouteCollection();
         $allRoutes = $collection->all();
-
+// see http://stackoverflow.com/questions/15943780/symfony2-get-list-of-all-routes-of-a-controller
+// php app/console router:debug
         return $this->render('SinettMLABBuilderBundle:Help:index.html.twig', array(
             'entities' => $entities,
+            "allRoutes" => $allRoutes
         ));
     }
     /**
