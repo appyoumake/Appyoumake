@@ -1,13 +1,6 @@
 <tr id="row_group_{{ entity.id }}">
 
-	{% if entity.isDefault %}
-		<td class="mlab_icon_group_isdefault" title="{% trans %}app.admin.groups.tooltip.isdefault{% endtrans %}">
-    {% else %}
-    	<td>
-    {% endif %}
-    </td>
-    
-    <td>
+	<td>
     	<a href="{{ path('group_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.groups.tooltip.name{% endtrans %}">
     		{{ entity.name }}
    		</a>
@@ -18,4 +11,5 @@
 	<td>
 		<a href="{{ path('group_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.groups.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
 	</td>
+    
 </tr>
