@@ -71,6 +71,7 @@ class UserController extends Controller
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
         	'current_user_role' => $this->getUser()->getRoles()[0], 
+            'attr' => array('autocomplete' => 'off'),
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.admin.users.new.create.button'));

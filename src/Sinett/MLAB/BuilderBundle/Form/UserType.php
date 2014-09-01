@@ -20,9 +20,9 @@ class UserType extends AbstractType
 		}
 		
     	$builder
-            ->add('email', null, array('label' => 'app.admin.users.new.or.edit.email'))
-            ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username'))
-            ->add('plainPassword', 'password', array('label' => 'app.admin.users.new.or.edit.plain.password'))
+            ->add('email', null, array('label' => 'app.admin.users.new.or.edit.email', 'attr' => array('autocomplete' => 'off')))
+            ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username', 'attr' => array('autocomplete' => 'off')))
+            ->add('plainPassword', 'password', array('label' => 'app.admin.users.new.or.edit.plain.password', 'attr' => array('autocomplete' => 'off')))
             ->add('categoryOne', null, array('label' => 'app.admin.users.new.or.edit.categoryOne'))
             ->add('categoryTwo', null, array('label' => 'app.admin.users.new.or.edit.categoryTwo'))
             ->add('categoryThree', null, array('label' => 'app.admin.users.new.or.edit.categoryThree'))
