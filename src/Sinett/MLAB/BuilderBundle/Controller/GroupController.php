@@ -179,6 +179,12 @@ class GroupController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            //foreach($entity->getUsers() as $user){
+                //if ( !in_array( $user->getId(), $request->request->get('sinett_mlab_builderbundle_group')["users"] ) ) {
+                //    $user->addGroup($entity);
+                //}
+            //    $user->removeGroup($entity);
+            //}
             $em->flush();
 
             return new JsonResponse(array('db_table' => 'group',
