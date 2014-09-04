@@ -37,9 +37,9 @@ class AdminController extends Controller
     {
     	//die($this->container->parameters['mlab']['paths']['apps']);
     	$tabs = array(
+    			"category" => $this->get('translator')->trans('app.admin.categories'),
     			"component" => $this->get('translator')->trans('app.admin.components'),
                 "template" => $this->get('translator')->trans('app.admin.templates'),
-    			"category" => $this->get('translator')->trans('app.admin.categories'),
     			);
     	
     	return $this->render('SinettMLABBuilderBundle:Admin:admin.html.twig', array("tabs" => $tabs));

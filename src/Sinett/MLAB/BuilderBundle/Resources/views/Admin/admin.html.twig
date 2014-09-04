@@ -84,8 +84,12 @@
                                     } // end function to run for each link  
                                 ); // end each function 
 //hack to display updated category list which always return the whole list when added
-  	  			    		} else if ($('#tabs_admin_apps').tabs('option','active') == 2) {
-                                $('#ui-tabs-3').html(data);
+  	  			    		} else if ($('#tabs_admin_apps').tabs('option','active') == 0) {
+                                $('#ui-tabs-1').html(data);
+                                $('#ui-tabs-1 .records_list').find("a").each(function () {
+                                    prepare_links(this, "ui-tabs-1");
+                                    } // end function to run for each link  
+                                ); // end each function 
                             }                           
                             
   	  			    	}

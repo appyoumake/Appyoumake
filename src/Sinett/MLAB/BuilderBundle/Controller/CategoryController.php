@@ -115,7 +115,7 @@ class CategoryController extends Controller
         $request = $this->container->get('request');
         
 //we call the same code from two different places, regular admin and system admin, if regular admin we do not display the system option to create system categories
-        if (strpos($request->server->get('HTTP_REFERER'), 'system') > 0) {
+        if (basename($this->getRequest()->headers->get('referer')) == "system") {
             $system_class = "";
         } else {
             $system_class = "hidden";
@@ -202,9 +202,19 @@ class CategoryController extends Controller
     */
     private function createEditForm(Category $entity)
     {
+        
+//we call the same code from two different places, regular admin and system admin, if regular admin we do not display the system option to create system categories
+        if (basename($this->getRequest()->headers->get('referer')) == "system") {
+            $system_class = "";
+        } else {
+            $system_class = "hidden";
+        }
+        
+        
         $form = $this->createForm(new CategoryType(), $entity, array(
             'action' => $this->generateUrl('category_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'class' => $system_class
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.admin.categories.edit.update.button'));

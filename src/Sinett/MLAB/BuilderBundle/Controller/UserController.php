@@ -160,6 +160,7 @@ class UserController extends Controller
         $form = $this->createForm(new UserType(), $entity, array(
             'action' => $this->generateUrl('user_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'current_user_role' => $this->getUser()->getRoles()[0], 
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.admin.users.edit.update.button'));
