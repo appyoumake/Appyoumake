@@ -45,6 +45,17 @@ class ComponentRepository extends EntityRepository
 	}
 	
     /**
+	 * Returns a components with information about whether they can be deleted (not used in any apps)
+     * 
+	 * @param array of ids of all components that have been used
+	 */
+	public function findOneByIdCheckDeleteable ($id, $all_comps_used) {
+		$component = $this->findOneById($id);
+        $component->setCanDelete( ! in_array($component->getPath(), $all_comps_used) );
+		return $component;
+	}
+
+        /**
 	 * Returns a list of all components with information about whether they can be deleted (not used in any apps)
      * 
 	 * @param array of ids of all components that have been used

@@ -36,27 +36,9 @@ class ComponentController extends Controller
         $app_root = $this->container->parameters['mlab']["paths"]["app"];
         $asset_path = $this->container->parameters['mlab']["cordova"]["asset_path"];
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
-        $all_comps_used = array();
-
-        foreach ($apps as $app) {
-            $app_path = $app->calculateFullPath($app_root) . $asset_path . "/";
-            foreach (glob("$app_path*.html") as $filename) {
-                if (filesize($filename) > 0) {
-                    $temp_cmd = str_replace("%PATH%", $filename, $cmd);
-                    $extracted_data = shell_exec($temp_cmd);
-                    $temp_comp = json_decode($extracted_data);
-                    if (!is_null($temp_comp[0])) {
-                        if (!is_array($temp_comp[0])) {
-                            $all_comps_used[] = $temp_comp[0];
-                        } else {
-                            $all_comps_used = array_merge($all_comps_used, $temp_comp[0]);
-                        }
-                    }
-                }
-            }
-        }
-        $all_comps_used = array_unique($all_comps_used);
-        
+        $file_mgmt = $this->get('file_management');
+        $all_comps_used = $file_mgmt->getComponentsUsed($apps);
+        die(print_r($all_comps_used, true));
 //now pick up the components, and set canDelete for those who have not been used
         $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
 
@@ -300,13 +282,16 @@ class ComponentController extends Controller
             return new JsonResponse(array('db_table' => 'component',
                     'db_id' => 0,
                     'result' => 'FAILURE',
-                    'message' => 'Unable to locate component record'));
-            
+                    'message' => 'Unable to locate component record'));   
         }
 
         $entity->setEnabled(!$entity->getEnabled());
             
         $em->flush();
+        $file_mgmt = $this->get('file_management');
+        $all_comps_used = $file_mgmt->getComponentsUsed($apps);
+        $entity->setCanDelete( ! in_array($entity->getPath(), $all_comps_used) );
+        
         return new JsonResponse(array('db_table' => 'component',
                 'action' => 'UPDATE',
                 'db_id' => $entity->getId(),
