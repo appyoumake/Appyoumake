@@ -787,6 +787,7 @@ class FileManagement {
     }
 
     public function getComponentsUsed($apps) {
+        $cmd = "/usr/bin/xidel %PATH%* -e //div/@data-mlab-type -q --output-format=json-wrapped"; 
         $all_comps_used = array();
         $app_root = $this->config["paths"]["app"];
         foreach ($apps as $app) {
@@ -807,6 +808,7 @@ class FileManagement {
             }
         }
         $all_comps_used = array_unique($all_comps_used);
+        return $all_comps_used;
     }
-
+    
 }

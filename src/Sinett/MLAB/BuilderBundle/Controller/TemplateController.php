@@ -277,8 +277,11 @@ class TemplateController extends Controller
         }
 
         $entity->setEnabled(!$entity->getEnabled());
-            
         $em->flush();
+        
+        $temp_apps = $entity->getApps();
+		$entity->setCanDelete($temp_apps->count() == 0);
+            
         return new JsonResponse(array('db_table' => 'template',
                 'action' => 'UPDATE',
                 'db_id' => $entity->getId(),

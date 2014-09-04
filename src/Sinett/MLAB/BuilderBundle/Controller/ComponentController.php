@@ -32,16 +32,18 @@ class ComponentController extends Controller
 //we do this by looping through the path of all of them and use the xidel command which extracts attributes
 //we look at the data-mlab-type attribute. 
 //These are returned as a json array, so we mainly merge them all and then send the array through to the render
-        $cmd = "xidel %PATH%* -e //div/@data-mlab-type -q --output-format=json-wrapped"; 
+        
         $app_root = $this->container->parameters['mlab']["paths"]["app"];
-        $asset_path = $this->container->parameters['mlab']["cordova"]["asset_path"];
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
         $file_mgmt = $this->get('file_management');
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);
-        die(print_r($all_comps_used, true));
+        
 //now pick up the components, and set canDelete for those who have not been used
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
-
+        if (is_array($all_comps_used)) {
+            $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
+        } else {
+            $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAll();
+        }
         return $this->render('SinettMLABBuilderBundle:Component:index.html.twig', array(
             'entities' => $entities
         ));
@@ -288,6 +290,7 @@ class ComponentController extends Controller
         $entity->setEnabled(!$entity->getEnabled());
             
         $em->flush();
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
         $file_mgmt = $this->get('file_management');
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);
         $entity->setCanDelete( ! in_array($entity->getPath(), $all_comps_used) );
