@@ -112,10 +112,19 @@ class CategoryController extends Controller
     */
     private function createCreateForm(Category $entity, $parent_id = 0)
     {
+        $request = $this->container->get('request');
+        
+//we call the same code from two different places, regular admin and system admin, if regular admin we do not display the system option to create system categories
+        if (strpos($request->server->get('HTTP_REFERER'), 'system') > 0) {
+            $system_class = "";
+        } else {
+            $system_class = "hidden";
+        }
         $form = $this->createForm(new CategoryType(), $entity, array(
             'action' => $this->generateUrl('category_create'),
             'method' => 'POST',
-       		'parent_category_id' => $parent_id
+       		'parent_category_id' => $parent_id,
+            'class' => $system_class
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.admin.categories.new.create.button'));

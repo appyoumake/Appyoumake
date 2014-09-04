@@ -18,26 +18,27 @@ class CategoryType extends AbstractType
     {
     	$action = explode("/", $options["action"]);
     	$action = array_pop($action);
-    	if ($action == "create") {
+
+        if ($action == "create") {
     		$builder
-    		->add('name', null, array('label' => 'app.admin.categories.new.name'))
+            ->add('name', null, array('label' => 'app.admin.categories.new.name'))
     		->add('parent', 
                     null, 
-                    array('disabled' => true,'query_builder' => function(EntityRepository $er) {
+                    array('query_builder' => function(EntityRepository $er) {
                               return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
                         },'label' => 'app.admin.categories.new.parent')
                  )
-    		->add('system', null, array('label' => 'app.admin.categories.new.system'));
+    		->add('system', null, array('label' => 'app.admin.categories.new.system', 'attr'=> array('class' => $options["class"]), 'label_attr'=> array('class' => $options["class"])));
     	} else {
     		$builder
     		->add('name', null, array('label' => 'app.admin.categories.edit.name'))
     		->add('parent', 
                     null, 
-                    array('disabled' => true,'query_builder' => function(EntityRepository $er) {
+                    array('query_builder' => function(EntityRepository $er) {
                               return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
                          },'label' => 'app.admin.categories.edit.parent')
                  )
-    		->add('system', null, array('label' => 'app.admin.categories.edit.system'));
+    		->add('system', null, array('label' => 'app.admin.categories.edit.system', 'attr'=> array('class' => $options["class"]), 'label_attr'=> array('class' => $options["class"])));
     	}
     	
     }
@@ -49,7 +50,8 @@ class CategoryType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Sinett\MLAB\BuilderBundle\Entity\Category',
-        	'parent_category_id' => 0
+        	'parent_category_id' => 0,
+            'class' => ''
         ));
     }
 
