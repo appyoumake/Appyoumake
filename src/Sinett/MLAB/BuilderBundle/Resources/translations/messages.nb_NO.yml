@@ -2,7 +2,7 @@
 
 
 #-----------------------------------------------------
-# Admin + System welcome
+# Admin + System page welcome
 #-----------------------------------------------------
 app.admin.users.welcome: Velkommen til MLAB Bruker Admin sidene
 app.admin.apps.welcome: Velkommen til MLAB App Admin sidene
@@ -10,7 +10,7 @@ app.system.admin.welcome: Velkommen til MLAB System Admin sidene
 
 
 #-----------------------------------------------------
-# Admin + System alert
+# Admin + System page alert
 #-----------------------------------------------------
 
 app.system.admin.alert.Unable.to.update.record: Ikke i stand til å oppdatere rad -
@@ -277,6 +277,16 @@ app.builder.list.heading.last.updated: Sist oppdatert
 
 app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
 
+
+#-----------------------------------------------------
+# MLAB  (edit app) Menu
+#-----------------------------------------------------
+
+app.builder.menu.welcome.info: Litt generelt - Hva menyen hjelper til med...
+app.builder.menu.heading.links: Naviger
+app.builder.menu.app.links.info: Liste over sider...
+app.builder.menu.heading.login: Brukerinfo
+app.builder.menu.login.info: Du er logget inn som
 
 
 #-----------------------------------------------------

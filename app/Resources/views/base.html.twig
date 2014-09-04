@@ -14,29 +14,12 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body class="mlab_base">
-    	<div class="mlab_min_page_width">
+    	<div class="mlab_min_page_width">     
             
-            <!-- Menu - put in seperat file later -->
-            <ul id="mlab_editor_menu">
-                <li class="single">
-                    <img src="/img/logo_menu.png" alt="logo" /><!-- Begin Home Item -->
-                </li><!-- End Logo Item -->
-    
-                <li class="single">
-                </li><!-- End Empty Item -->
-
-
-                <li class="single menu_right">
-                    <a class="mlab_dev_info" href="/app_dev.php/logout" target="_top">
-                        Developed by the Sinett project at FFI.no
-                    </a>
-                </li><!-- End Empty Item -->
-
-            </ul>
-            <!-- END Menu -->
+             {{ include( 'menu.html.twig' ) }}
             
     		<div class="mlab_align_menu_elements">
-
+                
 	    	<div class="container">
 	 			{% block body %}{% endblock %}
 	 		</div>

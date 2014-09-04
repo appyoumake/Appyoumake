@@ -414,11 +414,11 @@ background-color: rgb(0,0,0);
 height: 45px;
 }
 
-/* aligns the top right menu elements to the width of the container */
+/* aligns the top right menu elements to the width of the container 
 body.mlab_base div.mlab_align_menu_elements {
 	display: table;
 	float: left;
-}
+}*/
 
 /* admin section */
 .boolean_1, .boolean_0, .mlab_icon_enabled, .mlab_icon_disabled { 

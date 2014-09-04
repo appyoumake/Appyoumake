@@ -1,33 +1,59 @@
 {#    
- * This outputs the menu, menu is stored in database table menu
- * We check if an option has sub options before we output it, then we add an extra class used to display a down arrow
+ * This outputs the editors megamenu.
 #}
 
-<ul id="mlab_megamenu" class="megamenu">
-	<li class="mlab_menu_logo"></li>
-	{% for menu_item in menus  %}
-{# top level menus *with* children have extra div under and additional class #}
-		{% if menu_item.children %}
-			<li class='mlab_menu_top_children {{ menu_item.class }}'>
-				<a class='header'>{{ menu_item.contentHtml|raw }}</a>
-				<div class='mlab_menu_content'>
-					{% for menu_child_item in menu_item.children %}
-                        {% if menu_child_item.url %}
-                            <div class='{{ menu_child_item.class}}'><a href='{{ menu_child_item.url }}'>{{ menu_child_item.contentHtml|raw }}</a></div>
-                        {% else %}
-                            <div class='{{ menu_child_item.class}}' >{{ menu_child_item.contentHtml|raw }}</div>
-                        {% endif %}
-					{% endfor %}
-				</div>
-			</li>
+<ul id="mlab_editor_menu" class="mlab_basic_menu">
+    
+    <li class="single">
+        <img src="/img/logo_menu.png" alt="logo" /><!-- Begin Home Item -->
+    </li><!-- End Logo Item -->
+    
 
-		{% else %}
-			<li class='{{ menu_item.class }}'>
-				<div><a class='{{ menu_item.class}}' href='{{ menu_item.url }}'>{{ menu_item.contentHtml|raw }}</a></div>
-			</li>
+    <li id="mlab_menu_dropdown"><a href="#" class="drop"><img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" /></a><!-- Begin 4 columns Item -->
 
-		{% endif %}
+        <div class="dropdown_2columns "><!-- Begin 4 columns container -->
 
-    {% endfor %}
-</ul>	  
-<div style="clear: both;"></div>
+            <div class="col_1">
+                <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
+                <p>{% trans %}app.builder.menu.app.links.info{% endtrans %}</p>
+                
+                
+                {% set currentPath = path(app.request.attributes.get('_route'),
+                           app.request.attributes.get('_route_params')) %}
+                
+                {% if path('app_builder_index') not in currentPath  %}
+                    <a href="{{ path('app_builder_index')}}">App liste</a>
+                {% endif %}  
+                {%  if path('admin_apps') not in currentPath  %}
+                    <a href="{{ path('admin_apps')}}">App admin</a>
+                {% endif %} 
+                {% if path('admin_users') not in currentPath %}
+                    <a href="{{ path('admin_users')}}">Bruker admin</a>
+                {% endif %} 
+                {% if path('system') not in currentPath %}
+                    <a href="{{ path('system')}}">System admin</a>
+                {% endif %}
+    
+                <br>
+            </div>
+
+            <div class="col_1">
+                <h3>{% trans %}app.builder.menu.heading.login{% endtrans %}</h3>
+                <p>{% trans %}app.builder.menu.login.info{% endtrans %}:
+                <br>{{ app.user.username }}, {{ app.user.email }}</p>
+                
+                <a href="/user/change-password">Bytt passord - virker ikke...</a>
+                <a href="/app_dev.php/logout">logg ut</a> 
+            </div>
+         
+        </div><!-- End 4 columns container -->
+        
+    </li><!-- End 4 columns Item -->
+
+    <li class="single menu_right">
+        <a class="mlab_dev_info" href="/app_dev.php/logout" target="_top">
+            Developed by the Sinett project at FFI.no
+        </a>
+    </li><!-- End Empty Item -->
+
+</ul>

@@ -43,6 +43,11 @@
     z-index: 1000000000;
 }
 
+#mlab_editor_menu.mlab_basic_menu li#mlab_menu_dropdown {
+    margin-top: 9px;
+    padding: 2px 10px 5px;
+}
+
 #mlab_editor_menu li.mlab_buttons_item_manipulation_list{
    
 border: none;
@@ -155,6 +160,10 @@ border: none;
 #mlab_editor_menu li:hover .drop {
     background:url("img/drop.png") no-repeat right 7px;
 }
+
+#mlab_editor_menu.mlab_basic_menu li .drop {
+    padding-right:2px;
+}
  
 /* Drop Down */
  
@@ -184,7 +193,7 @@ border: none;
 }
  
 .dropdown_1column {width: 140px;}
-.dropdown_2columns {width: 280px;}
+.dropdown_2columns {width: 500px;}
 .dropdown_3columns {width: 420px;}
 .dropdown_4columns {width: 690px;}
 .dropdown_5columns {width: 700px;}
@@ -454,4 +463,8 @@ border: 0;
 padding: 0;
 background-color: transparent;
 
+}
+
+.basic_menu_icon {
+padding: 5px 5px 0px 5px;
 }

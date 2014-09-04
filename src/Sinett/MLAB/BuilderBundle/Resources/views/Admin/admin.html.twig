@@ -8,11 +8,11 @@
 {% set currentPath = path(app.request.attributes.get('_route'),
                            app.request.attributes.get('_route_params')) %}
 
-{% if  "/admin/apps" in currentPath  %}
+{% if  path('admin_apps') in currentPath  %}
 	<h1>{% trans %}app.admin.apps.welcome{% endtrans %}</h1>
-{% elseif  "/admin/users" in currentPath %}
+{% elseif  path('admin_users') in currentPath %}
 	<h1>{% trans %}app.admin.users.welcome{% endtrans %}</h1>
-{% elseif "/system" in currentPath %}
+{% elseif path('system') in currentPath %}
 	<h1>{% trans %}app.system.admin.welcome{% endtrans %}</h1>
 {% endif %}
 
