@@ -284,9 +284,18 @@ app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
 
 app.builder.menu.welcome.info: Litt generelt - Hva menyen hjelper til med...
 app.builder.menu.heading.links: Naviger
-app.builder.menu.app.links.info: Liste over sider...
-app.builder.menu.heading.login: Brukerinfo
-app.builder.menu.login.info: Du er logget inn som
+app.builder.menu.links.info: Liste over sider du har tilgang til
+app.builder.menu.links.app.info: For å komme til siden hvor du lager innhold til en app - klikk på navnet til appen du ønsker å jobbe med (evnt. lag en ny app først).
+app.builder.menu.heading.user.info: Brukerinfo
+app.builder.menu.log.info: Du er logget inn som
+app.builder.menu.login.info: Du må først logge inn
+
+app.builder.menu.link.app.builder: App liste
+app.builder.menu.link.admin.app: App admin
+app.builder.menu.link.admin.users: Bruker admin
+app.builder.menu.link.system: System admin
+app.builder.menu.link.logout: Logg ut
+app.builder.menu.link.login: Logg inn
 
 
 #-----------------------------------------------------

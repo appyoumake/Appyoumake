@@ -13,37 +13,66 @@
 
         <div class="dropdown_2columns "><!-- Begin 4 columns container -->
 
-            <div class="col_1">
+            <div class="col_1"> <!-- Links col -->
                 <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
-                <p>{% trans %}app.builder.menu.app.links.info{% endtrans %}</p>
-                
-                
+                             
                 {% set currentPath = path(app.request.attributes.get('_route'),
-                           app.request.attributes.get('_route_params')) %}
-                
-                {% if path('app_builder_index') not in currentPath  %}
-                    <a href="{{ path('app_builder_index')}}">App liste</a>
-                {% endif %}  
-                {%  if path('admin_apps') not in currentPath  %}
-                    <a href="{{ path('admin_apps')}}">App admin</a>
-                {% endif %} 
-                {% if path('admin_users') not in currentPath %}
-                    <a href="{{ path('admin_users')}}">Bruker admin</a>
-                {% endif %} 
-                {% if path('system') not in currentPath %}
-                    <a href="{{ path('system')}}">System admin</a>
+                           app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
+                   
+                 {% if app.user == null %} <!-- If not loged in -->
+                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                    <a href="/app_dev.php/login">{% trans %}app.builder.menu.link.login{% endtrans %}</a> 
+                    
+                {% else %} <!-- If loged in -->
+                    {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
+                        <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
+                    {% endif %} 
+                    
+                    {% if path('app_builder_index') not in currentPath  %} <!-- If on app list page - don't show the link to this page  -->
+                        <a href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+                    {% endif %} 
+                     
+                        {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
+                            {%  if path('admin_apps') not in currentPath  %}
+                                <a href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                            {% endif %} 
+                            {% if path('admin_users') not in currentPath %}
+                                <a href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                            {% endif %} 
+                        {% endif %} 
+                                
+                        {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
+                            {% if path('system') not in currentPath %}
+                                <a href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                            {% endif %}
+                        {% endif %}
+                                
+                        {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SUPER_ADMIN") %}
+                                <br>
+                        {% endif %}
+                                
+                        {% if path('app_builder_index') in currentPath  %} <!-- If on app list page - show the info  -->
+                            <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
+                        {% endif %} 
+                    
                 {% endif %}
-    
-                <br>
+                        
             </div>
 
-            <div class="col_1">
-                <h3>{% trans %}app.builder.menu.heading.login{% endtrans %}</h3>
-                <p>{% trans %}app.builder.menu.login.info{% endtrans %}:
-                <br>{{ app.user.username }}, {{ app.user.email }}</p>
+            <div class="col_1"> <!-- User col -->
+                <h3>{% trans %}app.builder.menu.heading.user.info{% endtrans %}</h3>
                 
-                <a href="/user/change-password">Bytt passord - virker ikke...</a>
-                <a href="/app_dev.php/logout">logg ut</a> 
+                {% if app.user == null %} <!-- If not loged in -->
+                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+             
+                     <a href="/app_dev.php/login">{% trans %}app.builder.menu.link.login{% endtrans %}</a> 
+                     <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></p>
+                {% else %} <!-- If loged in -->
+                    <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
+                        <b>{{ app.user.username }}</b><br><br>
+                    
+                    <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
+                {% endif %}
             </div>
          
         </div><!-- End 4 columns container -->
