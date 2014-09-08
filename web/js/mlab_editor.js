@@ -848,7 +848,7 @@
         new_comp.on("input", function(){mlab_flag_dirty = true;});
         new_comp.children().attr("contenteditable", "true");
 
-        mlab_component_run_code(mlab_components[id], id, true);
+        mlab_component_run_code(new_comp, id, true);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
 //this is ONLY done if exec_server = true 
@@ -893,7 +893,7 @@
     
 /**
  * This executes (using eval()) any code for a component that is added to the app
- * @param {type} el
+ * @param {type} el = html element we're working on
  * @param {type} comp_id
  * @param {type} created
  * @returns {undefined}
