@@ -42,10 +42,11 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
         
 //add env. prefix if required
         if ($env != "prod") {
-            $def_url = "app_$env.php/"; 
+            $def_url = "/app_$env.php/"; 
         } else {
             $def_url = '/';
         }
+        $x = $request->getSession()->get('_security.main.target_path', $def_url);
         return new RedirectResponse($request->getSession()->get('_security.main.target_path', $def_url));
         
     } 
