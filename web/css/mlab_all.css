@@ -224,7 +224,13 @@ td.mlab_max_width_long {
     word-wrap: break-word;
 }
 
-td.mlab_min_width_short {
+td.mlab_max_width_extra_long {
+	max-width: 450px;
+    word-wrap: break-word;
+}
+
+td.mlab_min_width_short,
+th.mlab_min_width_short{
 	min-width: 50px;
 }
 
@@ -255,7 +261,7 @@ img.builder_app_list_name_edit_img {
 }
 
 /* ==========================================================================
-   Icons as background images
+   Icons as backgtd.mlab_min_width_shortround images
    ========================================================================== */
 
 .mlab_icon_role_super_admin, .mlab_icon_role_rest, 
@@ -451,6 +457,7 @@ body.mlab_base div.mlab_align_menu_elements {
 
 .treeview {
     padding: 4px;
+ 
 }
 
 .tree_delete, .tree_add {
@@ -592,3 +599,6 @@ width: 45%;
     font-family: Arial;
 }
 
+#tabs_admin_apps.ui-tabs {
+    position: absolute;
+}

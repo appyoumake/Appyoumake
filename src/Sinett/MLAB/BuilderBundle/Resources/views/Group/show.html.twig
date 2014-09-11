@@ -1,12 +1,12 @@
 <tr id="row_group_{{ entity.id }}">
 
-	<td>
+	<td class="mlab_max_width_medium">
     	<a href="{{ path('group_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.groups.tooltip.name{% endtrans %}">
     		{{ entity.name }}
    		</a>
     </td>
 
-	<td>{{ entity.description }}</td>
+	<td class="mlab_max_width_extra_long">{{ entity.description }}</td>
 	
     <td class="mlab_align_center">
         <a href="{{ path('group_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_{{ entity.enabled == true ? "enabled" : "disabled" }}" ></a>

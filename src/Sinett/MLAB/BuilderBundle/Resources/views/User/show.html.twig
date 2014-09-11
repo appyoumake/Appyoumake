@@ -18,9 +18,9 @@
     </td>
 
     
-    <td>{{ entity.email }}</td>
+    <td class="mlab_max_width_medium">{{ entity.email }}</td>
     
-    <td> {{ entity.groups|join(', ') }} </td>
+    <td class="mlab_max_width_long"> {{ entity.groups|join(', ') }} </td>
     
     {% if entity.lastLogin %}
     	<td title="{{ entity.lastLogin|date('Y-m-d H:i:s') }}">{{ entity.lastLogin|date('Y-m-d') }}</td>
