@@ -28,3 +28,7 @@ user_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:User:delete" }
 #    requirements: { _method: post|delete }
+
+user_toggle_state:
+    pattern:  /{id}/toggle_state
+    defaults: { _controller: "SinettMLABBuilderBundle:User:toggleState" }

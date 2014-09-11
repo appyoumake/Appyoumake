@@ -26,6 +26,7 @@ app.admin.users: Brukere
 app.admin.users.username: Brukernavn
 app.admin.users.email: E-post
 app.admin.users.groups: Grupper
+app.admin.users.enabled: Aktiv
 app.admin.users.last.login: Siste innlogging
 
 app.admin.users.tooltip.username: Rediger bruker
@@ -60,6 +61,7 @@ app.admin.users.edit.update.button: Oppdater
 app.admin.groups: Grupper
 app.admin.groups.name: Navn
 app.admin.groups.description: Beskrivelse
+app.admin.groups.enabled: Aktiv
 
 app.admin.groups.tooltip.isdefault: Gruppen er satt som default
 app.admin.groups.tooltip.name: Rediger gruppe

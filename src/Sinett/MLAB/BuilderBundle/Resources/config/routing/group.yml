@@ -28,3 +28,7 @@ group_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Group:delete" }
 #    requirements: { _method: post|delete }
+
+group_toggle_state:
+    pattern:  /{id}/toggle_state
+    defaults: { _controller: "SinettMLABBuilderBundle:Group:toggleState" }

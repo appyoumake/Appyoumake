@@ -155,6 +155,34 @@ class User extends BaseUser
     {
         return $this->updated;
     }
+    
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     * @return User
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean 
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+    
+    /**
+     * @var float
+     */
+    private $version;
 
     /**
      * Set categoryOne

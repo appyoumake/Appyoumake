@@ -223,5 +223,34 @@ class GroupController extends Controller
         		'message' => ''));
         
     }
+    
+    
+    /**
+     * Toggle the enabled flag for a record
+     * @param type $id
+     */
+    public function toggleStateAction($id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('SinettMLABBuilderBundle:Group')->find($id);
+
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'group',
+                    'db_id' => 0,
+                    'result' => 'FAILURE',
+                    'message' => 'Unable to locate user record'));
+            
+        }
+
+        $entity->setEnabled(!$entity->getEnabled());
+        $em->flush();
+            
+        return new JsonResponse(array('db_table' => 'group',
+                'action' => 'UPDATE',
+                'db_id' => $entity->getId(),
+                'result' => 'SUCCESS',
+                'record' => $this->renderView('SinettMLABBuilderBundle:Group:show.html.twig', array('entity' => $entity))));
+	        	
+    }
 
 }

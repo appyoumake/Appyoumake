@@ -28,6 +28,10 @@
     	<td>-</td>
     {% endif %}
     
+    <td class="mlab_align_center">
+        <a href="{{ path('user_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_{{ entity.enabled == true ? "enabled" : "disabled" }}" ></a>
+    </td>
+        
     <td>
     	<a href="{{ path('user_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.users.tooltip.delete{% endtrans %}: {{ entity.username }}"></a>
     </td>

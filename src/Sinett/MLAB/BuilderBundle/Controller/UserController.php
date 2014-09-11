@@ -224,5 +224,33 @@ class UserController extends Controller
         		'result' => 'SUCCESS',
         		'message' => ''));
     }
+    
+     /**
+     * Toggle the enabled flag for a record
+     * @param type $id
+     */
+    public function toggleStateAction($id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('SinettMLABBuilderBundle:User')->find($id);
+
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'user',
+                    'db_id' => 0,
+                    'result' => 'FAILURE',
+                    'message' => 'Unable to locate user record'));
+            
+        }
+
+        $entity->setEnabled(!$entity->getEnabled());
+        $em->flush();
+            
+        return new JsonResponse(array('db_table' => 'user',
+                'action' => 'UPDATE',
+                'db_id' => $entity->getId(),
+                'result' => 'SUCCESS',
+                'record' => $this->renderView('SinettMLABBuilderBundle:User:show.html.twig', array('entity' => $entity))));
+	        	
+    }
 
 }

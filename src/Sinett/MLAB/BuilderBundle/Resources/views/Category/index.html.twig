@@ -8,12 +8,12 @@
             <th><a class="mlab_button_new_category" href="{{ path('category_new', { 'id': 0 }) }}" title="{% trans %}app.admin.categories.tooltip.new{% endtrans %}"></a></th>
         </tr>
         <tr>
-            <td class="mlab_td_min_width_2">
+            <td class="mlab_min_width_long">
                 <div id="table_category">
                     {% autoescape false %}{{ category_tree }}{% endautoescape %}
                 </div>
             </td>
-            <td class="mlab_td_min_width"></td>
+            <td class="mlab_min_width_short"></td>
         </tr>
      </table>
 

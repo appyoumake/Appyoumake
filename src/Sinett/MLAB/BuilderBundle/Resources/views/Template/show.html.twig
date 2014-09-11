@@ -2,8 +2,8 @@
 
     <td>{{ entity.name }}</td>
     <td class="mlab_align_center">{% if entity.version == null %} 1 {% else %}{{ entity.version }}{% endif %} </td>
-    <td class="mlab_td_max_size_2">{{ entity.description }}</td>
-    <td class="mlab_td_max_size">
+    <td class="mlab_max_width_long">{{ entity.description }}</td>
+    <td class="mlab_max_width_medium">
         <a href="{{ path('template_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.templates.tooltip.group{% endtrans %} '{{ entity.name }}'">
             {{ entity.groups|join(", ") }}
         </a>

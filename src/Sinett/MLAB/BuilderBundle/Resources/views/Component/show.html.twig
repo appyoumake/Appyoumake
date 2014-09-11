@@ -2,13 +2,13 @@
 
 	<td>{{ entity.name }}</td>
     <td class="mlab_align_center">{{ entity.version }}</td>
-    <td class="mlab_td_max_size_2">{{ entity.description }}</td>
-    <td class="mlab_td_max_size">
+    <td class="mlab_max_width_long">{{ entity.description }}</td>
+    <td class="mlab_max_width_medium">
         <a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">
             {{ entity.groups|join(", ") }}
         </a>
     </td>
-    <td class="mlab_align_center">
+    <td>
         <a href="{{ path('component_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_{{ entity.enabled == true ? "enabled" : "disabled" }}" ></a>
     </td>
     <td>
