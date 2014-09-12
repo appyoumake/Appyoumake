@@ -38,10 +38,12 @@ class CategoryType extends AbstractType
     		$builder
     		->add('name', null, array('label' => 'app.admin.categories.edit.name'))
     		->add('parent', 
-                    null, 
-                    array('query_builder' => function(EntityRepository $er) {
-                              return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
-                         },'label' => 'app.admin.categories.edit.parent', 'data' => $entity->getParent())
+                  null, 
+                  array('query_builder' => function(EntityRepository $er) {
+                            return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
+                          },
+                        'label' => 'app.admin.categories.edit.parent', 
+                        'data' => $entity->getParent())
                  )
     		->add('system', null, array('label' => 'app.admin.categories.edit.system', 'attr'=> array('class' => $options["class"]), 'label_attr'=> array('class' => $options["class"])));
     	}
