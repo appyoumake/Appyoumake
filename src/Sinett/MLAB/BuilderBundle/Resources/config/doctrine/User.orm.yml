@@ -79,6 +79,6 @@ Sinett\MLAB\BuilderBundle\Entity\User:
         inverseJoinColumns:
           group_id:
             referencedColumnName: id
-      cascade: [persist]
+      cascade: [persist, remove]
       
   lifecycleCallbacks: {  }

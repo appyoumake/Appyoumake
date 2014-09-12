@@ -174,17 +174,20 @@ class GroupController extends Controller
             throw $this->createNotFoundException('Unable to find Group entity.');
         }
 
+//remove all old groups from DB record
+        foreach($entity->getUsers() as $user){
+            $user->removeGroup($entity);
+        }
         
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            //foreach($entity->getUsers() as $user){
-                //if ( !in_array( $user->getId(), $request->request->get('sinett_mlab_builderbundle_group')["users"] ) ) {
-                //    $user->addGroup($entity);
-                //}
-            //    $user->removeGroup($entity);
-            //}
+            
+//now add the new ones (may be identical of course)
+            foreach($entity->getUsers() as $user){
+                $user->addGroup($entity);
+            }
             $em->flush();
 
             return new JsonResponse(array('db_table' => 'group',
