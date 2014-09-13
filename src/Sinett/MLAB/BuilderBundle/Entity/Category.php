@@ -303,7 +303,7 @@ class Category
      */
     public function __toString()
     {
-    	return "[" . ($this->lvl + 1) . "] " . $this->name;
+    	return $this->name;
     }
     
     /**

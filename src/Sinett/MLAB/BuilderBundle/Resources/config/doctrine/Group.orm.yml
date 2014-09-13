@@ -46,7 +46,7 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
     users:
       targetEntity: User
       mappedBy: groups
-      cascade: [persist, remove]
+      cascade: [persist]
 
     apps:
       targetEntity: App

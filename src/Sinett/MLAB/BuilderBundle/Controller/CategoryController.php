@@ -281,5 +281,14 @@ class CategoryController extends Controller
         							  'message' => ''));
     }
 
+    public function loadCategoriesAction($id, $level) {
+    	$em = $this->getDoctrine()->getManager();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:Category')->findByParent($id);
+        
+        return new JsonResponse(array('level' => $level,
+        							  'result' => 'SUCCESS',
+        							  'categories' => $this->renderView('SinettMLABBuilderBundle:Category:list.html.twig', array('categories' => $entities))));
+        
+    }
  
 }

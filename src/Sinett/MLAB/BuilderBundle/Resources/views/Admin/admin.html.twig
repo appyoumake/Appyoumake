@@ -30,6 +30,39 @@
 	{{ parent() }}
 	<script>
 	
+            
+        function loadCategories(el, level) {
+            if ( parseInt($(el).val()) == 0 || isNaN(parseInt($(el).val())) )  {
+                if (level == 1 ) {
+                    $("#sinett_mlab_builderbundle_user_categoryTwo").html("");
+                    $("#sinett_mlab_builderbundle_user_categoryThree").html("");
+                } else {
+                    $("#sinett_mlab_builderbundle_user_categoryThree").html("");
+                }
+                return; 
+            }
+            if (level == 1 ) {
+                $("#sinett_mlab_builderbundle_user_categoryTwo").html("<option>...loading...</option>");
+                $("#sinett_mlab_builderbundle_user_categoryThree").html("<option>...loading...</option>");
+            } else {
+                $("#sinett_mlab_builderbundle_user_categoryThree").html("<option>...loading...</option>");
+            }
+            var url = "{{ path('category_load_categories', {id: '_ID_', level: '_LEVEL_'}) }}";
+            url = url.replace("_ID_", $(el).val());
+            url = url.replace("_LEVEL_", level);
+            $.getJSON(url, function( data ) {
+                if (data.result == "SUCCESS" ) {
+                    if (data.level == 1 ) {
+                        $("#sinett_mlab_builderbundle_user_categoryTwo").html(data.categories);
+                        $("#sinett_mlab_builderbundle_user_categoryThree").html("");
+                    } else {
+                        $("#sinett_mlab_builderbundle_user_categoryThree").html(data.categories);
+                    }
+                }
+            });
+        }
+    
+    
 		function progressHandlingFunction(e){
 		    if(e.lengthComputable){
 		        $('progress').attr({value:e.loaded,max:e.total});
@@ -196,6 +229,8 @@
                                     } // end check if loaded 
                                 } // end function to run when click 
                     ) // end bind call         
-    }
+        }
+
+    
 	</script>
 {% endblock %}

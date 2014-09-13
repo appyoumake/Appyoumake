@@ -28,3 +28,7 @@ category_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Category:delete" }
 #    requirements: { _method: post|delete }
+    
+category_load_categories:
+    pattern:  /{id}/{level}/load_categories
+    defaults: { _controller: "SinettMLABBuilderBundle:Category:loadCategories" }
