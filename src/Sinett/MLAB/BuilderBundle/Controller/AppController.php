@@ -961,4 +961,30 @@ class AppController extends Controller
                 'url' => $res["url"]));
     		
     }
+    
+    public function getUploadedFilesAction($app_id, $file_types) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+
+//get config etc
+        $config = $this->container->parameters['mlab'];
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'] . "img/";
+        $file_extensions = explode(",", $file_types);
+        $files = array();
+        
+        foreach ($file_extensions as $ext) {
+            foreach (glob($app_path . "*." . $ext) as $file) {
+                $files[$file] = basename($file);
+            }
+        }
+
+        return new JsonResponse(array('result' => 'success', 'files' => $this->renderView('SinettMLABBuilderBundle:App:options.html.twig', array('files' => $files))));
+        
+    }
 }

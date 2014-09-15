@@ -1273,3 +1273,7 @@ function mlab_timer_start() {
     mlab_timer_save = window.setTimeout(mlab_page_save, tm * 1000);
     console.log("Restartet timer");
 }
+
+function mlab_component_requst_info(type, name) {
+    
+}

@@ -85,7 +85,7 @@ document.mlab_code_img = new function() {
         this.loadLibraries();
         content = $('<form />', {id: "mlab_form_properties" } );
         content.append( $('<p />', { text: "Choose picture to load" }) );
-        content.append( $('<select />', { text: "Choose picture to load" }) );
+        content.append( $('<select id="mlab_cp_select_files"><option>...loading images...</option></select>') );
         content.append( $('<div />', { id: "mlab_property_uploadfiles", name: "mlab_property_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<p /><br />') );
         content.append( $('<div />', { id: 'mlab_property_uploadfiles_start', name: 'mlab_property_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
@@ -143,6 +143,11 @@ document.mlab_code_img = new function() {
                         hide: function(event, api) { api.destroy(); }
             }
         });
+        
+//load existing files
+        $.getJSON("/app_dev.php/app/builder/24/jpg,jpeg,png,gif/get_uploaded_files", function (data) {
+            $("#mlab_cp_select_files").html(data.files);
+        }); 
     }
     
     
