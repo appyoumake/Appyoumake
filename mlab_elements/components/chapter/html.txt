@@ -1,1 +1,1 @@
-<h1>Legg til kapittel overskrift her</h1>
+<h1 class="mlab_chapter">Legg til kapittel overskrift her</h1>
