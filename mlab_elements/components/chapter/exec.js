@@ -12,6 +12,7 @@ document.mlab_code_chapter = new function() {
 
         $(el).attr("data-mlab-chapter-id", this.generate_guid());
         this.onLoad (el, config, designer, url);
+        this.highlight($(el).find("h1"));
     };
 
     //el = element this is initialising, config = global config from conf.txt
@@ -51,4 +52,14 @@ document.mlab_code_chapter = new function() {
             return v.toString(16);
         });
     }
+    
+    this.highlight = function (el) {
+        el.focus();
+        var range = document.createRange();
+        var sel = window.getSelection();
+        range.selectNodeContents(el[0]);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    
 };

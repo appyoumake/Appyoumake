@@ -4,6 +4,7 @@ document.mlab_code_p = new function() {
 
     this.onCreate = function (el, config, designer, url) {
         this.onLoad (el, config, designer, url);
+        this.highlight($(el).find("p"));
     };
 
     
@@ -56,4 +57,13 @@ document.mlab_code_p = new function() {
 		document.execCommand('italic', null, null);
     };
 
+    this.highlight = function (el) {
+        el.focus();
+        var range = document.createRange();
+        var sel = window.getSelection();
+        range.selectNodeContents(el[0]);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    
 };

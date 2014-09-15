@@ -1,0 +1,10 @@
+# Configuration file for unordered list (UL) component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: text
+name: ul
+tooltip: Un-ordered list
+compatible: ["h1", "h2", "h3", "ul", "ol"]
+custom:
+    msg_requestlink: Please enter a valid URL (for instance 'http://my.domain.com') or a page number (for instance 5) to link to. The latter will go to page 5 in this application.
+    msg_wronglink: Invalid URL specified, please try again. You can use 'http://my.domain.com' or '5', the latter will go to page 5 in this application.
