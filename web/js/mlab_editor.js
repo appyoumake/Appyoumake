@@ -220,9 +220,11 @@
                         $("#mlab_app_info").append("<br>" + mlab_components[$(this).parent().data("mlab-type")].conf.tooltip);
                      });
 
+//if they are not opening the index page we need to call backend again to load the page they want to open
                 if (local_page_num != "0" && local_page_num != "index") {
                     mlab_page_open_process(data.app_id, local_page_num);
                 } else {
+                    document.mlab_current_app.locked = (data.lock_status == "locked");
                     mlab_timer_start();
                 }
             } else {
@@ -474,9 +476,11 @@
                 mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
 
                 if (data.lock_status == "locked") {
+                    document.mlab_current_app.locked = true;
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',.6);
                     $("#" + mlab_config["app"]["content_id"]).append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
                 } else {
+                    document.mlab_current_app.locked = false;
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',1);
                 }
 
@@ -841,6 +845,9 @@
  *********** Functions to manipulate components ***********
 ************************************************************/
     function mlab_component_add(id) {
+        if (document.mlab_current_app.locked) {
+            return;
+        }
         
         var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + mlab_components[id].html + "</div>");
         $("#" + mlab_config["app"]["content_id"]).append(new_comp);
