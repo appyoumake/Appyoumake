@@ -9,6 +9,7 @@ document.mlab_code_img = new function() {
             comp.attr("src", this.config.placeholder);
         }
 
+        $(el).attr("data-mlab-guid", this.generate_guid());
         this.custom_upload_image(el);
     }
     
@@ -66,7 +67,7 @@ document.mlab_code_img = new function() {
     
     this.custom_maximize = function (el) {
         if ($(el).siblings().length > 0) {
-            alert("Unable to maximise the component, there can be no other components on the page to do this");
+            alert("Unable to maximise the component, there can be no other components on the page when you do this");
         } else {
             var img = $(el).find('img');
             img.resizable( "destroy" );
@@ -141,6 +142,17 @@ document.mlab_code_img = new function() {
                         },
                         hide: function(event, api) { api.destroy(); }
             }
+        });
+    }
+    
+    
+/**
+ * Generic function to create a GUID that is rfc4122 version 4 compliant
+ */
+    this.generate_guid = function () {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
         });
     }
     
