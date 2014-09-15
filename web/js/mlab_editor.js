@@ -1290,7 +1290,7 @@ function mlab_timer_start() {
     console.log("Restartet timer");
 }
 
-function mlab_component_requst_info(type, param) {
+function mlab_component_request_info(type, param) {
     
     switch (type) {
         case MLAB_CB_URL_APP_ABSOLUTE :
@@ -1318,22 +1318,23 @@ function mlab_component_requst_info(type, param) {
             break;
             
         case MLAB_CB_URL_UPLOAD_ABSOLUTE :
-            return window.location.origin + mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_COMPID_", param);
+            return window.location.origin + mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param);
             break;
             
         case MLAB_CB_URL_UPLOAD_RELATIVE :
-            return mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_COMPID_", param);
+            return mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param);
             break;
             
         case MLAB_CB_GET_MEDIA :
-            //http://stackoverflow.com/questions/18742687/performing-a-synchronous-ajax-request-from-jquery
-            $.getJSON("/app_dev.php/app/builder/24/jpg,jpeg,png,gif/get_uploaded_files", function (data) {
-                $("#mlab_cp_select_files").html(data.files);
-            }); 
+            return $.ajax({
+                type: "GET",
+                url: mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param),
+                async: false,
+            }).responseText;
             break;
             
         case MLAB_CB_GET_TEMPLATE_RULES :
-            return
+            return document.mlab_current_app.template_config.components;
             break;
             
         case MLAB_CB_GET_GUID :
@@ -1344,6 +1345,19 @@ function mlab_component_requst_info(type, param) {
             break;
             
         case MLAB_CB_GET_LIBRARIES :
+            if ("required_libs" in mlab_components[param].conf) {
+                for (i in mlab_components[param].conf.required_libs) {
+                    if (mlab_components[param].conf.required_libs[i].substr(-3) == ".js") {
+                        if ($("script[src*='" + mlab_components[param].conf.required_libs[i] + "']").length < 1) {
+                            $("head").append($("<script src='" + mlab_components[param].conf.component_url + mlab_components[param].conf.name + "/js/" + mlab_components[param].conf.required_libs[i] +"'>")); 
+                        }
+                    } else if (mlab_components[param].conf.required_libs[i].substr(-4) == ".css") {
+                        if ($("link[href*='" + mlab_components[param].conf.required_libs[i] + "']").length < 1) {
+                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + mlab_components[param].conf.component_url + mlab_components[param].conf.name + "/css/" + mlab_components[param].conf.required_libs[i] +"'>")); 
+                        }
+                    }
+                }
+            }
             break;
             
     }
