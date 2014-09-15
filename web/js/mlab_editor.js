@@ -572,7 +572,7 @@
 // and b: checking if the component transgresses any of the rules for the template
         $("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
             var comp_id = $(this).data("mlab-type");
-            if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
+            if (typeof (document["mlab_code_" + comp_id]) !== "undefined" && typeof (document["mlab_code_" + comp_id].onSave) !== "undefined") {
                 document["mlab_code_" + comp_id].onSave(this);
                 page_content = page_content + $(this)[0].outerHTML + "\n";
                 document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_config.urls.component);
@@ -846,7 +846,7 @@
         $("#" + mlab_config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab_component_highlight_selected(this);})
         new_comp.on("input", function(){mlab_flag_dirty = true;});
-        new_comp.children().attr("contenteditable", "true");
+        //new_comp.children().attr("contenteditable", "true");
 
         mlab_component_run_code(new_comp, id, true);
 

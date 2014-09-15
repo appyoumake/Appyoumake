@@ -1,3 +1,6 @@
+<h1>Index</h1>
 <ul>
-    <li>Enter your list here</li>
+    <li>Page x</li>
+    <li>Page y</li>
+    <li>Page z</li>
 </ul>
