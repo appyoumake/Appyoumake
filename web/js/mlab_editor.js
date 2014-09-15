@@ -2,7 +2,23 @@
  * All functions used in /src/Sinett/MLAB/BuilderBundle/Resources/views/App/build_app.html.twig
  * but not the data that has to come from TWIG. Therefore, see top of that page for data structures.
  */
-    
+
+/* Constants used by components to obtain environment information */
+/* key issue here is that the component do not need to know anything about configuration */
+MLAB_CB_URL_APP_ABSOLUTE = 1; //various URLs that are required
+MLAB_CB_URL_APP_RELATIVE = 2;
+MLAB_CB_URL_COMPONENT_ABSOLUTE = 3;
+MLAB_CB_URL_COMPONENT_RELATIVE = 4;
+MLAB_CB_URL_TEMPLATE_ABSOLUTE = 5;
+MLAB_CB_URL_TEMPLATE_RELATIVE = 6;
+MLAB_CB_URL_UPLOAD_ABSOLUTE = 7;
+MLAB_CB_URL_UPLOAD_RELATIVE = 8;
+MLAB_CB_GET_MEDIA = 9; //get a list of uploaded media
+MLAB_CB_GET_TEMPLATE_RULES = 10; //get the object with rules, such as max charavcters, max length, etc
+MLAB_CB_GET_GUID = 11; //generates a GUID and returns it
+MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
+
+
 /* general variables used globally by different functions 
    (variables with data from backend are loaded from the backend in the document.ready event and enters this file as JSON structures */
 
@@ -579,7 +595,7 @@
             if (typeof (document["mlab_code_" + comp_id]) !== "undefined" && typeof (document["mlab_code_" + comp_id].onSave) !== "undefined") {
                 document["mlab_code_" + comp_id].onSave(this);
                 page_content = page_content + $(this)[0].outerHTML + "\n";
-                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_config.urls.component);
+                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"]);
             } else {
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }
@@ -916,9 +932,9 @@
 
         if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
             if (created) {
-                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_config.urls.component);
+                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"]);
             } else {
-                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_config.urls.component);
+                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"]);
             }
         }
     }
@@ -1274,6 +1290,62 @@ function mlab_timer_start() {
     console.log("Restartet timer");
 }
 
-function mlab_component_requst_info(type, name) {
+function mlab_component_requst_info(type, param) {
+    
+    switch (type) {
+        case MLAB_CB_URL_APP_ABSOLUTE :
+            return window.location.origin + mlab_config.urls.app;
+            break;
+            
+        case MLAB_CB_URL_APP_RELATIVE :
+            return mlab_config.urls.app;
+            break;
+            
+        case MLAB_CB_URL_COMPONENT_ABSOLUTE :
+            return window.location.origin + mlab_config.urls.component;
+            break;
+            
+        case MLAB_CB_URL_COMPONENT_RELATIVE :
+            return mlab_config.urls.component;
+            break;
+            
+        case MLAB_CB_URL_TEMPLATE_ABSOLUTE :
+            return window.location.origin + mlab_config.urls.template;
+            break;
+            
+        case MLAB_CB_URL_TEMPLATE_RELATIVE :
+            return mlab_config.urls.template;
+            break;
+            
+        case MLAB_CB_URL_UPLOAD_ABSOLUTE :
+            return window.location.origin + mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_COMPID_", param);
+            break;
+            
+        case MLAB_CB_URL_UPLOAD_RELATIVE :
+            return mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_COMPID_", param);
+            break;
+            
+        case MLAB_CB_GET_MEDIA :
+            //http://stackoverflow.com/questions/18742687/performing-a-synchronous-ajax-request-from-jquery
+            $.getJSON("/app_dev.php/app/builder/24/jpg,jpeg,png,gif/get_uploaded_files", function (data) {
+                $("#mlab_cp_select_files").html(data.files);
+            }); 
+            break;
+            
+        case MLAB_CB_GET_TEMPLATE_RULES :
+            return
+            break;
+            
+        case MLAB_CB_GET_GUID :
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
+            break;
+            
+        case MLAB_CB_GET_LIBRARIES :
+            break;
+            
+    }
     
 }
