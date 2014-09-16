@@ -5,18 +5,21 @@
 
 /* Constants used by components to obtain environment information */
 /* key issue here is that the component do not need to know anything about configuration */
-MLAB_CB_URL_APP_ABSOLUTE = 1; //various URLs that are required
-MLAB_CB_URL_APP_RELATIVE = 2;
-MLAB_CB_URL_COMPONENT_ABSOLUTE = 3;
-MLAB_CB_URL_COMPONENT_RELATIVE = 4;
-MLAB_CB_URL_TEMPLATE_ABSOLUTE = 5;
-MLAB_CB_URL_TEMPLATE_RELATIVE = 6;
-MLAB_CB_URL_UPLOAD_ABSOLUTE = 7;
-MLAB_CB_URL_UPLOAD_RELATIVE = 8;
-MLAB_CB_GET_MEDIA = 9; //get a list of uploaded media
-MLAB_CB_GET_TEMPLATE_RULES = 10; //get the object with rules, such as max charavcters, max length, etc
-MLAB_CB_GET_GUID = 11; //generates a GUID and returns it
-MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
+    MLAB_CB_URL_APP_ABSOLUTE = 1; //various URLs that are required
+    MLAB_CB_URL_APP_RELATIVE = 2;
+    MLAB_CB_URL_COMPONENT_ABSOLUTE = 3;
+    MLAB_CB_URL_COMPONENT_RELATIVE = 4;
+    MLAB_CB_URL_TEMPLATE_ABSOLUTE = 5;
+    MLAB_CB_URL_TEMPLATE_RELATIVE = 6;
+    MLAB_CB_URL_UPLOAD_ABSOLUTE = 7;
+    MLAB_CB_URL_UPLOAD_RELATIVE = 8;
+    MLAB_CB_GET_MEDIA = 9; //get a list of uploaded media
+    MLAB_CB_GET_TEMPLATE_RULES = 10; //get the object with rules, such as max charavcters, max length, etc
+    MLAB_CB_GET_GUID = 11; //generates a GUID and returns it
+    MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
+    MLAB_CB_GET_VERSION = 13; //get api version as defined below
+    MLAB_CB_GET_SELECTED_COMPONENT = 14; //get currently selected component (the DIV, not the internal HTML code)
+    MLAB_CB_SET_DIRTY = 15; //
 
 
 /* general variables used globally by different functions 
@@ -27,9 +30,11 @@ MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
     mlab_counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for 
     mlab_drag_origin = 'sortable';
     mlab_timer_save = null;
+    mlab_api_version = 0.1;
 
 //PERHAPS USE THIS TOGETHER WITH ARRAY OF FIELDNAMES MATCHING APP TABLE AND RENAME TEXT FIELDS...
     mlab_flag_meta_dirty = new Array();
+
 //turn off automatic initialisation of mobile pages
     $.mobile.autoInitializePage = false;
 
@@ -70,55 +75,6 @@ MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
 
                 droppable_options = {
                     drop: function( event, ui ) {
-
-                        if (mlab_drag_origin === 'draggable') {
-                            mlab_drag_origin = 'sortable';
-
-//replace the cloned drag item with relevant HTML code from the component 
-                            var id = $(ui.draggable[0]).data("mlab-type");
-                            ui.draggable.empty().append(mlab_components[id].html);
-                            ui.draggable.removeAttr('class style title'); //can do this because it is what is inside the div that will have classes etc 
-                            ui.draggable.on("click", function(){mlab_component_highlight_selected(this);});
-                            ui.draggable.on("input", function(){mlab_flag_dirty = true;});
-
-                            mlab_component_run_code(ui.draggable, id, true);
-
-//execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
-//this is ONLY done if exec_server = true 
-                            if (mlab_components[id].exec_server !== false) {
-                                var url = mlab_urls.component_added.replace("_APPID_", document.mlab_current_app.id);
-                                url = url.replace("_COMPID_", id);
-                                var new_component = ui.draggable;
-                                var request = $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    dataType: "json"
-                                });
-
-                                request.done(function( result ) {
-                                    if (result.result == "success") {
-                                        mlab_drag_origin = 'sortable';
-                                        console.log("success");
-                                    } else {
-                                        alert(result.msg + "'\n\nLegg til komponenten igjen.");
-                                        $(new_component).remove();
-                                    }
-                                });
-
-                                request.fail(function( jqXHR, textStatus ) {
-                                    alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
-                                    $(new_component).remove(); 
-                                });
-                            }
-
-//finally we add dependencies, i.e. components that this component depends on
-                            if (mlab_components[id].hasOwnProperty("conf") && mlab_components[id].conf.hasOwnProperty("dependencies")) {
-                                for (component in mlab_components[id].conf.dependencies) {
-                                    mlab_feature_add(mlab_components[id].conf.dependencies[0], true);
-                                }
-                            }
-
-                        }
                         mlab_flag_dirty = true;
                     }
                 };
@@ -595,7 +551,7 @@ MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
             if (typeof (document["mlab_code_" + comp_id]) !== "undefined" && typeof (document["mlab_code_" + comp_id].onSave) !== "undefined") {
                 document["mlab_code_" + comp_id].onSave(this);
                 page_content = page_content + $(this)[0].outerHTML + "\n";
-                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"]);
+                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_component_request_info);
             } else {
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }
@@ -874,32 +830,28 @@ MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
         mlab_component_run_code(new_comp, id, true);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
-//this is ONLY done if exec_server = true 
-        if (mlab_components[id].exec_server !== false) {
-            var url = mlab_urls.component_added.replace("_APPID_", document.mlab_current_app.id);
-            url = url.replace("_COMPID_", id);
-            var new_component = ui.draggable;
-            var request = $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json"
-            });
+        var url = mlab_urls.component_added.replace("_APPID_", document.mlab_current_app.id);
+        url = url.replace("_COMPID_", id);
+        var request = $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json"
+        });
 
-            request.done(function( result ) {
-                if (result.result == "success") {
-                    mlab_drag_origin = 'sortable';
-                    console.log("success");
-                } else {
-                    alert(result.msg + "'\n\nLegg til komponenten igjen.");
-                    $(new_component).remove();
-                }
-            });
+        request.done(function( result ) {
+            if (result.result == "success") {
+                mlab_drag_origin = 'sortable';
+                console.log("success");
+            } else {
+                alert(result.msg + "'\n\nLegg til komponenten igjen.");
+                $(new_comp).remove();
+            }
+        });
 
-            request.fail(function( jqXHR, textStatus ) {
-                alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
-                $(new_component).remove(); 
-            });
-        }
+        request.fail(function( jqXHR, textStatus ) {
+            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
+            $(new_component).remove(); 
+        });
 
 //finally we add dependencies, i.e. components that this component depends on
         if (mlab_components[id].hasOwnProperty("conf") && mlab_components[id].conf.hasOwnProperty("dependencies")) {
@@ -932,9 +884,9 @@ MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
 
         if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
             if (created) {
-                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"]);
+                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_component_request_info);
             } else {
-                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"]);
+                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_component_request_info);
             }
         }
     }
@@ -1043,6 +995,8 @@ MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
         $(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + mlab_components[comp_id].html + "</div>");
 
 
+//if we are not working on the index page we need to tell the back end to update the index.html file
+//otherwise this will be lost
         if (document.mlab_current_app.curr_page_num != "0" && document.mlab_current_app.curr_page_num != "index") {
             var url = mlab_urls.feature_add.replace("_APPID_", document.mlab_current_app.id);
             url = url.replace("_COMPID_", comp_id);
@@ -1291,7 +1245,6 @@ function mlab_timer_start() {
 }
 
 function mlab_component_request_info(type, param) {
-    
     switch (type) {
         case MLAB_CB_URL_APP_ABSOLUTE :
             return window.location.origin + mlab_config.urls.app;
@@ -1318,25 +1271,36 @@ function mlab_component_request_info(type, param) {
             break;
             
         case MLAB_CB_URL_UPLOAD_ABSOLUTE :
-            return window.location.origin + mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param);
+            return window.location.origin + mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_COMPID_", param);
             break;
             
         case MLAB_CB_URL_UPLOAD_RELATIVE :
             return mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param);
             break;
             
+//here we obtain a list of files already uploaded, non-async so we can return data and do not need to know whcih HTML element to put it in
         case MLAB_CB_GET_MEDIA :
-            return $.ajax({
+            var data = $.ajax({
                 type: "GET",
-                url: mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param),
+                url: mlab_urls.uploaded_files.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param),
                 async: false,
             }).responseText;
+
+            data = eval("(" + data + ")");
+            if (data.result == "success") {
+                return data.files;
+            } else {
+                return "<option>Unable to obtain files</option>";
+            }
             break;
             
+//return rules for current template, could be used to track when user has typed in too much text (for instance) 
+//to do preemptive checks (we do post-save check)
         case MLAB_CB_GET_TEMPLATE_RULES :
             return document.mlab_current_app.template_config.components;
             break;
             
+//create a GUID that is rfc4122 version 4 compliant
         case MLAB_CB_GET_GUID :
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -1344,22 +1308,37 @@ function mlab_component_request_info(type, param) {
             });
             break;
             
+//loads all js/css files required at design time for a component
         case MLAB_CB_GET_LIBRARIES :
             if ("required_libs" in mlab_components[param].conf) {
-                for (i in mlab_components[param].conf.required_libs) {
-                    if (mlab_components[param].conf.required_libs[i].substr(-3) == ".js") {
-                        if ($("script[src*='" + mlab_components[param].conf.required_libs[i] + "']").length < 1) {
-                            $("head").append($("<script src='" + mlab_components[param].conf.component_url + mlab_components[param].conf.name + "/js/" + mlab_components[param].conf.required_libs[i] +"'>")); 
-                        }
-                    } else if (mlab_components[param].conf.required_libs[i].substr(-4) == ".css") {
-                        if ($("link[href*='" + mlab_components[param].conf.required_libs[i] + "']").length < 1) {
-                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + mlab_components[param].conf.component_url + mlab_components[param].conf.name + "/css/" + mlab_components[param].conf.required_libs[i] +"'>")); 
+                if ("designtime" in mlab_components[param].conf.required_libs) {
+                    var comp_url = mlab_components[param].conf.component_url;
+                    var comp_path = mlab_components[param].conf.name;
+                    
+                    for (i in mlab_components[param].conf.required_libs.designtime) {
+                        var file = mlab_components[param].conf.required_libs.designtime[i];
+                        if (file.substr(-3) == ".js") {
+                            if ($("script[src*='" + file + "']").length < 1) {
+                                $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file +"'>")); 
+                            }
+                        } else if (file.substr(-4) == ".css") {
+                            if ($("link[href*='" + file + "']").length < 1) {
+                                $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"'>")); 
+                            }
                         }
                     }
                 }
             }
             break;
             
+        case MLAB_CB_GET_VERSION :
+            return mlab_api_version;
+            
+        case MLAB_CB_GET_SELECTED_COMPONENT :
+            return $('.mlab_current_component');
+ 
+        case MLAB_CB_SET_DIRTY :
+            mlab_flag_dirty = true;
     }
     
 }

@@ -2,7 +2,7 @@ document.mlab_code_chapter = new function() {
 	
 	this.config = {};
     
-    this.onCreate = function (el, config, designer, url) {
+    this.onCreate = function (el, config, designer, api_func) {
         
         if ($(el).siblings("[data-mlab-type='chapter']").length > 0) {
             $(el).remove();
@@ -10,14 +10,15 @@ document.mlab_code_chapter = new function() {
             return;
         } 
 
-        $(el).attr("data-mlab-chapter-id", this.generate_guid());
-        this.onLoad (el, config, designer, url);
+        this.onLoad (el, config, designer, api_func);
+        $(el).attr("data-mlab-chapter-id", this.config["api_function"](MLAB_CB_GET_GUID));
         this.highlight($(el).find("h1"));
     };
 
     //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, url) {
+	this.onLoad = function (el, config, designer, api_func) {
         this.config = config;
+        this.config["api_function"] = api_func;
         $(el).find("h1").attr("contenteditable", "true");
         $(el).find("h1").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text("Add chapter headline"); } } ) ;
     };
@@ -43,16 +44,6 @@ document.mlab_code_chapter = new function() {
 		document.execCommand('italic', null, null);
     };
   
-/**
- * we create a GUID that is rfc4122 version 4 compliant to disinguish each chapter internally
- */
-    this.generate_guid = function () {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-        });
-    }
-    
     this.highlight = function (el) {
         el.focus();
         var range = document.createRange();

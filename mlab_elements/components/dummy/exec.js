@@ -1,9 +1,9 @@
-document.mlab_code_index = new function() {
+document.mlab_code_h5 = new function() {
 	
-	this.config = {};
+	this.config = new Array();
     
     this.onCreate = function (el, config, designer, api_func) {
-        this.onLoad (el, config, designer, api_func);
+        this.onLoad(el, config, designer, api_func);
     };
     
 //el = element this is initialising, config = global config from conf.txt
@@ -12,4 +12,9 @@ document.mlab_code_index = new function() {
         this.config["api_function"] = api_func;
     };
     
+	this.onSave = function (el) {
+    };
+            
+
+
 };

@@ -29,6 +29,13 @@
                 
             
                 
+            <div id="mlab_page_control">
+                <ul>
+                    <li id="mlab_page_control_RENAME" hidden="true">
+                    </li><!-- End Empty Item -->
+                </ul> 
+            </div>
+                
             <div id="mlab_app_and_page_name">
 	 			
 	 		</div>
@@ -85,9 +92,9 @@
                                 "</li >");
                         
                         $("#mlab_page_control li:last").before(
-                                "<li id='mlab_statusbar'><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>"+
-                                "<li id='mlab_statusbar'><div id='mlab_statusbar_temporary'>&nbsp;</div></li>"+
-                                "<li id='mlab_statusbar'><div id='mlab_statusbar_permanent'>Ready</div></li>");
+                                "<li ><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>"+
+                                "<li ><div id='mlab_statusbar_temporary'>&nbsp;</div></li>"+
+                                "<li ><div id='mlab_statusbar_permanent'>Ready</div></li>");
                         
                        // $("#mlab_page_control li:last").before(
                        //       "<li id='mlab_statusbar'><div id='mlab_statusbar_permanent'>ooooooo</div></li>");
@@ -104,13 +111,6 @@
 	    </div>
         
         <div id="mlab_footer_devinfo">Developed by the Sinett project at FFI.no</div>
-        
-        <div id="mlab_page_control">
-	 		<ul>
-                <li id="mlab_page_control" hidden="true">
-                </li><!-- End Empty Item -->
-            </ul> 
-        </div>
         
     </body>
 </html>

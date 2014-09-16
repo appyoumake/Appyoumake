@@ -2,15 +2,16 @@ document.mlab_code_p = new function() {
 	
 	this.config = {};
 
-    this.onCreate = function (el, config, designer, url) {
-        this.onLoad (el, config, designer, url);
+    this.onCreate = function (el, config, designer, api_func) {
+        this.onLoad (el, config, designer, api_func);
         this.highlight($(el).find("p"));
     };
 
     
 //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, url) {
+	this.onLoad = function (el, config, designer, api_func) {
         this.config = config;
+        this.config["api_function"] = api_func;
         $(el).find("p").attr("contenteditable", "true");
         $(el).find("p").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text("Add content"); } } ) ;
     };

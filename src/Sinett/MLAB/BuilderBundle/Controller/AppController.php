@@ -453,7 +453,8 @@ class AppController extends Controller
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
-                                        "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('file_types' => '_FILETYPES_', 'app_id' => '_APPID_')),
+                                        "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+                                        "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_types' => '_FILETYPES_', 'app_id' => '_APPID_')),
                                         "editor_closed" => $this->generateUrl('app_builder_editor_closed',  array('uid' => '_UID_')),
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
                                         "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
@@ -877,8 +878,38 @@ class AppController extends Controller
                         }
                         
                     }
-                
-                }
+                    
+//2.5: copy across any runtime dependencies, can be JS or CSS
+                    if (isset($config["required_libs"])) {
+                        if (isset($config["required_libs"]["runtime"])) {
+                            foreach ($config["required_libs"]["runtime"] as $dependency) {
+                                list($dummy, $filetype) = explode(".", $dependency);
+                                if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app_assets/$filetype/$dependency" )) {
+    //if we fail we bail
+                                    if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
+                                        return new JsonResponse(array(
+                                            'result' => 'failure',
+                                            'msg' => sprintf("Unable to copy JavaScript file %s for this component: %s", $dependency , $comp_id)));
+    //if OK we need to update the include files of the app
+                                    } else {
+                                        $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                                        if ($filetype == "css") {
+                                            if (!in_array("@import url('$dependency');", $include_items)) {
+                                                $include_items[] = "@import url('$dependency');";
+                                            }
+                                        } else {
+                                            if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
+                                                $include_items[] = "$.getScript('/js/$dependency');";
+                                            }
+                                        }
+                                        file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                } //end conf file exists
 
 //3: run the exec.php file if it exists
                 if (file_exists($path_component . "exec.php")) {
@@ -907,6 +938,12 @@ class AppController extends Controller
             }
     }
     
+/**
+ * This will add the HTML code for a feature to the index.html file if this is not being edited right now
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
     public function featureAddAction($app_id, $comp_id) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
@@ -927,6 +964,7 @@ class AppController extends Controller
     	$file_mgmt->setConfig('component');
     	$component = $file_mgmt->loadSingleComponent($config["paths"]["component"], $comp_id, $config["component_files"]);        
 
+//insert into index.html
     	if (file_exists("$app_path$doc") && $file_mgmt->addFeature("$app_path$doc", $comp_id, $component)) {
     		return new JsonResponse(array('result' => 'success', 'component_id' => $comp_id));
     	} else {
@@ -976,12 +1014,13 @@ class AppController extends Controller
 //get config etc
         $config = $this->container->parameters['mlab'];
         $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'] . "img/";
+        $file_url = "img/"; //we have reset the base path in the editor, so this will work
         $file_extensions = explode(",", $file_types);
         $files = array();
         
         foreach ($file_extensions as $ext) {
             foreach (glob($app_path . "*." . $ext) as $file) {
-                $files[$file] = basename($file);
+                $files[$file_url . basename($file)] = basename($file);
             }
         }
 

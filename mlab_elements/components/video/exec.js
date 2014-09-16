@@ -2,13 +2,14 @@ document.mlab_code_video = new function() {
 	
 	this.config = {};
     
-    this.onCreate = function (el, config, designer, url) {
-        this.onLoad (el, config, designer, url);
+    this.onCreate = function (el, config, designer, api_func) {
+        this.onLoad (el, config, designer, api_func);
     };
     
 //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, url) {
-        for (var attrname in config) { this.config[attrname] = config[attrname]; }
+	this.onLoad = function (el, config, designer, api_func) {
+        this.config = config;
+        this.config["api_function"] = api_func;
         if ($(el).find('video').attr("poster") == "") {
         	$(el).find('video').attr("poster", "/img/mlab_placeholder_video.jpg").resizable({"containment": designer});
         } else {

@@ -2,23 +2,21 @@ document.mlab_code_img = new function() {
 	
 	this.config = {};
 
-    this.onCreate = function (el, config, designer, url) {
-        this.onLoad (el, config, designer, url);
+    this.onCreate = function (el, config, designer, api_func) {
+        this.onLoad (el, config, designer, api_func);
+        
         var comp = $(el).find('img');
         if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
             comp.attr("src", this.config.placeholder);
         }
 
-        $(el).attr("data-mlab-guid", this.generate_guid());
         this.custom_upload_image(el);
     }
     
 //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, url) {
-        if (typeof config != "undefined") {
-            for (var attrname in config) { this.config[attrname] = config[attrname]; }
-        }
-        this.config["component_url"] = url;
+	this.onLoad = function (el, config, designer, api_func) {
+        this.config = config;
+        this.config["api_function"] = api_func;
         var comp = $(el).find('img');
         comp.resizable({"containment": designer});
     };
@@ -32,23 +30,6 @@ document.mlab_code_img = new function() {
         img.css({ width: w, height: h });
     };
     
-    this.loadLibraries = function () {
-        if ("required_libs" in this.config) {
-            for (i in this.config.required_libs) {
-                if (this.config.required_libs[i].substr(-3) == ".js") {
-                    if ($("script[src*='" + this.config.required_libs[i] + "']").length < 1) {
-                        $("head").append($("<script src='" + this.config.component_url + this.config.name + "/js/" + this.config.required_libs[i] +"'>")); 
-                    }
-                } else if (this.config.required_libs[i].substr(-4) == ".css") {
-                    if ($("link[href*='" + this.config.required_libs[i] + "']").length < 1) {
-                        $("head").append($("<link rel='stylesheet' type='text/css' href='" + this.config.component_url + this.config.name + "/css/" + this.config.required_libs[i] +"'>")); 
-                    }
-                }
-            }
-        }
-        
-    }
-            
 	this.custom_set_title = function (el) {
         var title = prompt(this.config.custom.msg_requestlink);
         if (title != null && title != "") {
@@ -82,10 +63,11 @@ document.mlab_code_img = new function() {
     };
     
     this.custom_upload_image = function (el) {
-        this.loadLibraries();
+        this.config["api_function"](MLAB_CB_GET_LIBRARIES, this.config.name);
+        
         content = $('<form />', {id: "mlab_form_properties" } );
         content.append( $('<p />', { text: "Choose picture to load" }) );
-        content.append( $('<select id="mlab_cp_select_files"><option>...loading images...</option></select>') );
+        content.append( $('<select onchange="$(\'.mlab_current_component\').find(\'img\').attr(\'src\', $(this).val() );$(\'.mlab_current_component\').qtip(\'hide\'); mlab_flag_dirty = true;" id="mlab_cp_select_files"><option>...loading images...</option></select>') );
         content.append( $('<div />', { id: "mlab_property_uploadfiles", name: "mlab_property_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<p /><br />') );
         content.append( $('<div />', { id: 'mlab_property_uploadfiles_start', name: 'mlab_property_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
@@ -106,11 +88,14 @@ document.mlab_code_img = new function() {
                             this.component = component;
                             this.component_id = component_id;
                             this.config = component_config;
+//load existing files
+                            var existing_files = this.config["api_function"](MLAB_CB_GET_MEDIA, "jpg,jpeg,png,gif");
+                            $("#mlab_cp_select_files").html(existing_files);
 
 //upload files 
                             if ($("#mlab_property_button_ok").length > 0) {
                                 var uploadObj = $("#mlab_property_uploadfiles").uploadFile({
-                                    url: this.config.urls["upload"],
+                                    url: this.config["api_function"](MLAB_CB_URL_UPLOAD_ABSOLUTE, this.config.name),
                                     formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
                                     multiple: false,
                                     autoSubmit: false,
@@ -118,6 +103,7 @@ document.mlab_code_img = new function() {
                                     showStatusAfterSuccess: true,
                                     allowedTypes: "jpg,jpeg,png,gif",
                                     onSuccess: function(files, data, xhr) {
+                                        debugger;
                                                 $(this).find("img").attr("src", data.url );
                                                 api.hide(); 
                                         }.bind(component),
@@ -144,21 +130,6 @@ document.mlab_code_img = new function() {
             }
         });
         
-//load existing files
-        $.getJSON("/app_dev.php/app/builder/24/jpg,jpeg,png,gif/get_uploaded_files", function (data) {
-            $("#mlab_cp_select_files").html(data.files);
-        }); 
-    }
-    
-    
-/**
- * Generic function to create a GUID that is rfc4122 version 4 compliant
- */
-    this.generate_guid = function () {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-        });
     }
     
 };
