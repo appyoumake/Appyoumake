@@ -1,2 +1,1 @@
-<!-- <iframe width="560" height="315" src="//www.youtube.com/embed/OwJMK8dOX4Y" frameborder="0" allowfullscreen></iframe> -->
-<div class="mlab_cp_video"></div>
+<div class="mlab_cp_youtube_video" style="height: 200px;"></div>
