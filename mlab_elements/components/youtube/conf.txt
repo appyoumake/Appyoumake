@@ -5,3 +5,4 @@ category: video
 name: youtube
 tooltip: This component is for Youtube videos (requires Internet access)
 permissions: ["android.permission.INTERNET"]
+required_libs: {designtime: ["youtube.css"]}

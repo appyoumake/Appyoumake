@@ -1,0 +1,82 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Sep 16, 2014, 4:15:45 PM
+    Author     : http://codepen.io/tayfunerbilen/pen/rIHvD
+
+MIT License: http://blog.codepen.io/legal/licensing/
+What License Is Code I Post to CodePen?
+In short: public Pens are MIT Licensed, private Pens are owned by you with no implicit license. Read on for more detail.
+
+If your Pen is public...
+By default, Pens you save on CodePen are public. PRO accounts have the ability to save as private, so for information on that jump down to the next section. Public pens are automatically MIT licensed. We apply it by putting it into the HTML source when the pen is viewed in its "Full Page" view. But the license applies to the Pen itself, wherever it is viewed. Here is that license:
+
+<!--
+
+Copyright (c) YEAR - YOUR NAME - URL TO ORIGINAL
+
+Permission is hereby granted, free of charge, to any person 
+obtaining a copy of this software and associated documentation 
+files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, 
+merge, publish, distribute, sublicense, and/or sell copies of 
+the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall 
+be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+
+-->
+The gist of it is open source. Anyone can use the code you put on CodePen for whatever they wish - but if they do - that code also must have this same license. This is to encourage open sharing of code. Remember that any code you post on CodePen should be compatible with this license or it is subject to removal.
+
+If your Pen is private...
+
+We don't put any license at all on the code. It belongs entirely to you. You may still apply a license to it if you wish. To do that, we recommend putting an HTML comment into the HTML of your Pen stating the license. Remember that private Pens are still shareable if you wish. So you could, for example, send a client a private Pen of a mockup you have done for them, and that code is still owned by you. They couldn't just take it and use it like they could if it was MIT licensed.
+*/
+
+.youtubeOynat { display: none; background: #ddd; padding: 10px }
+.youtube {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    overflow: hidden
+}
+.youtube img {
+    float: left;
+    margin-right: 15px
+}
+.youtube a {
+    text-decoration: none;
+    color: darkred
+}
+.youtube p {
+    padding-top: 10px
+}
+
+.arama {
+    padding: 10px
+}
+.arama h2 {
+    font-weight: normal;
+    padding-bottom: 10px
+}
+
+.hata {
+    margin: 10px;
+    background-color: darkred;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px
+}

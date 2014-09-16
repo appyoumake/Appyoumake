@@ -851,10 +851,10 @@ class AppController extends Controller
                         
                         $new_permissions = $config["permissions"];
 
-                        if (!file_exists( $path_app_permissions . "AndroidManifest.xml")) {
-                            touch($path_app_permissions . "AndroidManifest.xml");
+                        if (!file_exists( $path_app_permissions)) {
+                            touch($path_app_permissions);
                         }
-                        $xml = simplexml_load_file($path_app . "AndroidManifest.xml");
+                        $xml = simplexml_load_file($path_app_permissions);
 
                         $existing_permissions = array();
                         foreach($xml->{'uses-permission'} as $permission) {
@@ -870,7 +870,7 @@ class AppController extends Controller
                                 $perm->addAttribute("android:name", $add_permission, 'http://schemas.android.com/apk/res/android');
                             }
 
-                            if (!$xml->asXML($path_app . "AndroidManifest.xml")) {
+                            if (!$xml->asXML($path_app_permissions)) {
                                 return new JsonResponse(array(
                                     'result' => 'failure',
                                     'msg' => "Unable to update the permissions for this application"));

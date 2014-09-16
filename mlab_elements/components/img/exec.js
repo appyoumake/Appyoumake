@@ -78,6 +78,7 @@ document.mlab_code_img = new function() {
         var component = el;
         var component_id = this.config.component_name;
         var component_config = this.config;
+        
         $(el).qtip({
             content: {text: content, title: "Last opp bilde" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
@@ -103,7 +104,6 @@ document.mlab_code_img = new function() {
                                     showStatusAfterSuccess: true,
                                     allowedTypes: "jpg,jpeg,png,gif",
                                     onSuccess: function(files, data, xhr) {
-                                        debugger;
                                                 $(this).find("img").attr("src", data.url );
                                                 api.hide(); 
                                         }.bind(component),
