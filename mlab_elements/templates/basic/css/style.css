@@ -97,6 +97,8 @@
     padding: 10px;
     border: none;
     cursor: pointer;
+    width: 100%    !important;
+    height: auto   !important;
 }
 
 #mlab_editable_area iframe {
