@@ -3,8 +3,8 @@ document.mlab_code_qrcode = new function() {
 	this.config = {};
     
 //el = element this is initialising, config = global config from conf.txt
-    this.onCreate = function (el, config, designer, url) {
-        this.onLoad (el, config, designer, url);
+    this.onCreate = function (el, config, url) {
+        this.onLoad (el, config, url);
         var comp = $(el).find('div');
         if (typeof comp.html() == "") {
             comp.css("background-image", this.config.placeholder);
@@ -13,7 +13,7 @@ document.mlab_code_qrcode = new function() {
         this.custom_set_QR_code(el);
     };
 
-    this.onLoad = function (el, config, designer, url) {
+    this.onLoad = function (el, config, url) {
         this.config = config;
     };
     

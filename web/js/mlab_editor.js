@@ -19,7 +19,8 @@
     MLAB_CB_GET_LIBRARIES = 12; //get required libraries as specified in conf.txts
     MLAB_CB_GET_VERSION = 13; //get api version as defined below
     MLAB_CB_GET_SELECTED_COMPONENT = 14; //get currently selected component (the DIV, not the internal HTML code)
-    MLAB_CB_SET_DIRTY = 15; //
+    MLAB_CB_SET_DIRTY = 15; //set the global dirty flag
+    MLAB_CB_GET_EDITOR_ELEMENT = 16; //get the DIV that is the ontainer for the editable area
 
 
 /* general variables used globally by different functions 
@@ -551,7 +552,7 @@
             if (typeof (document["mlab_code_" + comp_id]) !== "undefined" && typeof (document["mlab_code_" + comp_id].onSave) !== "undefined") {
                 document["mlab_code_" + comp_id].onSave(this);
                 page_content = page_content + $(this)[0].outerHTML + "\n";
-                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_component_request_info);
+                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, mlab_component_request_info);
             } else {
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }
@@ -884,11 +885,11 @@
 
         if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
             if (created) {
-                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_component_request_info);
+                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, mlab_component_request_info);
             } else {
-                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, "#" + mlab_config["app"]["content_id"], mlab_component_request_info);
+                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, mlab_component_request_info);
             }
-        }
+        } 
     }
 
     function mlab_component_moveup() {
@@ -979,7 +980,7 @@
  * @returns {undefined}
  */
 
-    function mlab_feature_add(comp_id, silent){
+    function mlab_feature_add(comp_id, silent) {
         if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
             $(document.mlab_current_app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
         } else {
@@ -1333,12 +1334,20 @@ function mlab_component_request_info(type, param) {
             
         case MLAB_CB_GET_VERSION :
             return mlab_api_version;
+            break;
             
         case MLAB_CB_GET_SELECTED_COMPONENT :
             return $('.mlab_current_component');
+            break;
  
         case MLAB_CB_SET_DIRTY :
             mlab_flag_dirty = true;
+            break;
+            
+        case MLAB_CB_GET_EDITOR_ELEMENT :
+            return mlab_config.content_id;
+            break;
+
     }
     
 }

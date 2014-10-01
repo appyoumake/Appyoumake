@@ -2,7 +2,7 @@ document.mlab_code_chapter = new function() {
 	
 	this.config = {};
     
-    this.onCreate = function (el, config, designer, api_func) {
+    this.onCreate = function (el, config, api_func) {
         
         if ($(el).siblings("[data-mlab-type='chapter']").length > 0) {
             $(el).remove();
@@ -10,13 +10,13 @@ document.mlab_code_chapter = new function() {
             return;
         } 
 
-        this.onLoad (el, config, designer, api_func);
+        this.onLoad (el, config, api_func);
         $(el).attr("data-mlab-chapter-id", this.config["api_function"](MLAB_CB_GET_GUID));
         this.highlight($(el).find("h1"));
     };
 
     //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, api_func) {
+	this.onLoad = function (el, config, api_func) {
         this.config = config;
         this.config["api_function"] = api_func;
         $(el).find("h1").attr("contenteditable", "true");

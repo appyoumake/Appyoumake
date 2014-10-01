@@ -2,13 +2,13 @@ document.mlab_code_ol = new function() {
 	
 	this.config = {};
     
-    this.onCreate = function (el, config, designer, api_func) {
-        this.onLoad (el, config, designer, api_func);
+    this.onCreate = function (el, config, api_func) {
+        this.onLoad (el, config, api_func);
         this.highlight($(el).find("li"));
     };
     
 //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, api_func) {
+	this.onLoad = function (el, config, api_func) {
         this.config = config;
         this.config["api_function"] = api_func;
         $(el).find("ol").attr("contenteditable", "true");

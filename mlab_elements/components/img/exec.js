@@ -2,8 +2,8 @@ document.mlab_code_img = new function() {
 	
 	this.config = {};
 
-    this.onCreate = function (el, config, designer, api_func) {
-        this.onLoad (el, config, designer, api_func);
+    this.onCreate = function (el, config, api_func) {
+        this.onLoad (el, config, api_func);
         
         var comp = $(el).find('img');
         if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
@@ -14,31 +14,25 @@ document.mlab_code_img = new function() {
     }
     
 //el = element this is initialising, config = global config from conf.txt
-	this.onLoad = function (el, config, designer, api_func) {
+	this.onLoad = function (el, config, api_func) {
         this.config = config;
         this.config["api_function"] = api_func;
-        var comp = $(el).find('img');
-        comp.resizable({"containment": designer});
+        $(el).find("figcaption").attr("contenteditable", "true");
     };
 
 	this.onSave = function (el) {
-        var img = $(el).find('img');
-        var w = img.width();
-        var h = img.height();
-
-        img.resizable( "destroy" );
-        img.css({ width: w, height: h });
+        $(el).find("figcaption").removeAttr("contenteditable", "true");
     };
     
-	this.custom_set_title = function (el) {
+	this.custom_set_caption = function (el) {
         var title = prompt(this.config.custom.msg_requestlink);
         if (title != null && title != "") {
-    		$(comp).find("img").attr("title", title);
+    		$(el).find("figcaption").attr("text", title);
         }
 	};
 	
 	this.onDelete = function () {
-		console.log('delete');
+
     };
     
     this.getContentSize = function (el) {
@@ -46,28 +40,55 @@ document.mlab_code_img = new function() {
         return { "width": ctrl.width(), "height": ctrl.height() }
     };
     
-    this.custom_maximize = function (el) {
-        if ($(el).siblings().length > 0) {
-            alert("Unable to maximise the component, there can be no other components on the page when you do this");
-        } else {
-            var img = $(el).find('img');
-            img.resizable( "destroy" );
-            img.css({ width: "100%", height: "100%" });
-            img.addClass("maximize");
-            img.resizable({"containment": el.parent});
-        }
+    this.selectExistingImage = function(select_box) {
+        var img = $('.mlab_current_component').find('img');
+        $('.mlab_current_component').qtip('hide'); 
+        img.attr('src', $(select_box).val());
+        this.config["api_function"](MLAB_CB_SET_DIRTY);
     };
-
-    this.custom_restore = function (el) {
-		$(el).find("img").removeClass("maximize");
+    
+    this.custom_scale_to_25_percent = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css('width', '25%');
+    };
+    
+    this.custom_scale_to_50_percent = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css('width', '50%');
+    };
+    
+    this.custom_scale_to_75_percent = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css('width', '75%');
+    };
+    
+    this.custom_scale_to_100_percent = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css('width', '100%');
+    };
+    
+    this.custom_position_left = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css('float', 'left');
+    };
+    
+    this.custom_position_right = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css('float', 'right');
+    };
+    
+    this.custom_position_centre = function (el) {
+        var fig = $('.mlab_current_component').find('figure');
+        fig.css({'float': 'none', });
     };
     
     this.custom_upload_image = function (el) {
         this.config["api_function"](MLAB_CB_GET_LIBRARIES, this.config.name);
+        var self = this;
         
         content = $('<form />', {id: "mlab_form_properties" } );
         content.append( $('<p />', { text: "Choose picture to load" }) );
-        content.append( $('<select onchange="$(\'.mlab_current_component\').find(\'img\').attr(\'src\', $(this).val() );$(\'.mlab_current_component\').qtip(\'hide\'); mlab_flag_dirty = true;" id="mlab_cp_select_files"><option>...loading images...</option></select>') );
+        content.append( $('<select onchange="document.mlab_code_img.selectExistingImage(this);" id="mlab_cp_select_files"><option>...loading images...</option></select>') );
         content.append( $('<div />', { id: "mlab_property_uploadfiles", name: "mlab_property_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<p /><br />') );
         content.append( $('<div />', { id: 'mlab_property_uploadfiles_start', name: 'mlab_property_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
@@ -99,7 +120,10 @@ document.mlab_code_img = new function() {
                                     url: this.config["api_function"](MLAB_CB_URL_UPLOAD_ABSOLUTE, this.config.name),
                                     formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
                                     multiple: false,
-                                    autoSubmit: false,
+                                    showCancel: false,
+                                    showAbort: false,
+                                    showDone: false,
+                                    autoSubmit: true,
                                     fileName: "mlab_files",
                                     showStatusAfterSuccess: true,
                                     allowedTypes: "jpg,jpeg,png,gif",

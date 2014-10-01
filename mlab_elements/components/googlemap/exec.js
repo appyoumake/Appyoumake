@@ -1,15 +1,15 @@
 document.mlab_code_googlemap = new function() {
 	
 	this.config = {};
-    this.map_class_identifier = "mc_map";
+    this.class_identifier = "mlab_cp_googlemap_map";
     
-    this.onCreate = function (el, config, designer, url) {
-        this.onLoad (el, config, designer, url);
+    this.onCreate = function (el, config, url) {
+        this.onLoad (el, config, url);
     };
     
 //el = element this is initialising, config = global config from conf.txt
 //maps are a bit tricky, 
-	this.onLoad = function (el, config, designer, url) {
+	this.onLoad = function (el, config, url) {
         for (var attrname in config) { this.config[attrname] = config[attrname]; }
         
         var startLatlng = new google.maps.LatLng(START_LAT, START_LONG);
@@ -25,7 +25,7 @@ document.mlab_code_googlemap = new function() {
     	};
     	map = new google.maps.Map(el.get(0), myOptions);
     	$(el).css("height", "300px");
-    	$(el).resizable({"containment": designer}).find('#mlab_temp_map').attr("id", "").addClass(this.map_class_identifier);
+    	$(el).resizable({"containment": designer}).find('#mlab_temp_map').attr("id", "").addClass(this.class_identifier);
         
     };
 
@@ -34,24 +34,10 @@ document.mlab_code_googlemap = new function() {
     };
     
     this.getContentSize = function (el) {
-        var ctrl = $(el).find("." + this.map_class_identifier);
+        var ctrl = $(el).find("." + this.class_identifier);
         return { "width": ctrl.width(), "height": ctrl.height() }
     };
             
-    this.getProperties = function (comp) {
-    	mlab_properties_dialogue("Velg kart plassering", "Velg hvor kartet skal starte", { mlab_property_title: true}, this.config.component_name, comp );
-	};
-
-	this.setProperties = function (form_data, comp) {
-		return;
-		for (key in form_data) {
-			if (form_data[key]["name"] == "mlab_property_title") {
-				$(comp).find("div").attr("title", form_data[key]["value"]);
-				break;
-			}
-		}
-	};
-	
 	this.onDelete = function () {
 		console.log('delete');
     };
