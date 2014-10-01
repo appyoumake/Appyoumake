@@ -49,7 +49,7 @@
         }
 
 //here we pick up variables from the backend, if successful we go on, if not we must exit            
-        $.get( "/app_dev.php/app/builder/" + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/load_variables" , function( data ) {
+        $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/load_variables" , function( data ) {
             
             if (data.result === "success") {
 //unique ID for this tab/window, used to lock pages
@@ -125,7 +125,7 @@
                 
 
 //now we load components
-                $.get( "/app_dev.php/app/builder/" + document.mlab_temp_app_id  + "/load_components" , function( data ) {
+                $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
                         mlab_components = data.mlab_components;
                    		for (type in mlab_components) {
@@ -430,9 +430,7 @@
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", mlab_uid);
 
-        mlab_flag_server_update = true;
         $.get( url, function( data ) {
-            mlab_flag_server_update = false;
             if (data.result == "success") {
                 mlab_update_status("completed");
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
@@ -520,11 +518,6 @@
             require_save = false;
         }
 
-        if (mlab_flag_server_update) {
-            console.log('Previous server update not completed, did not save');
-            require_save = false;
-        }
-        
         if ((!require_save) && (typeof fnc != 'undefined')) { 
             return fnc();
         } else if (!require_save) {
@@ -747,9 +740,7 @@
         url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
         url = url.replace("_UID_", mlab_uid);
 
-        mlab_flag_server_update = true;
         $.get( url, function( data ) {
-            mlab_flag_server_update = false;
             if (data.result == "success") {
                 mlab_regular_page_process ( data.html, data.page_num_real );
             } else {
