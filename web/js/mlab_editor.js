@@ -554,7 +554,7 @@
             mlab_component_check_content(this, comp_id, component_categories, template_best_practice_msg);
         });
 
-        mlab_page_check_content(comp_id, component_categories, template_best_practice_msg);
+        mlab_page_check_content(component_categories, template_best_practice_msg);
 
 //if this is the index page we add the full HTML page, if not we only require a very simple header/footer
         if (page_num == 0 || page_num == "index" ) {
@@ -661,7 +661,7 @@
     }
     
 // final template "best practices", we see if there are too many or too few of certain categories of components on a page
-    function mlab_page_check_content(comp_id, component_categories, template_best_practice_msg) {
+    function mlab_page_check_content(component_categories, template_best_practice_msg) {
         
         var rules = document.mlab_current_app.template_config.components;
         for (var category in rules) {

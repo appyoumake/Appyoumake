@@ -1,4 +1,4 @@
-document.mlab_code_img = new function() {
+document.mlab_code_img_text = new function() {
 	
 	this.config = {};
 
@@ -18,12 +18,14 @@ document.mlab_code_img = new function() {
         this.config = config;
         this.config["api_function"] = api_func;
         $(el).find("figcaption").attr("contenteditable", "true");
+        $(el).find("p").attr("contenteditable", "true");
     };
 
 	this.onSave = function (el) {
         $(el).find("figcaption").removeAttr("contenteditable");
+        $(el).find("p").removeAttr("contenteditable");
     };
-    
+	
 	this.onDelete = function () {
 
     };
@@ -55,26 +57,15 @@ document.mlab_code_img = new function() {
         fig.css('width', '75%');
     };
     
-    this.custom_scale_to_100_percent = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css('width', '100%');
-    };
-    
     this.custom_position_left = function (el) {
         var fig = $('.mlab_current_component').find('figure');
-        fig.css({'float': 'left', 'margin-left': '', 'margin-right': ''});
+        fig.css('float', 'left');
     };
     
     this.custom_position_right = function (el) {
         var fig = $('.mlab_current_component').find('figure');
-        fig.css({'float': 'right', 'margin-left': '', 'margin-right': ''});
+        fig.css('float', 'right');
     };
-    
-    this.custom_position_centre = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css({'float': 'none', 'margin-left': 'auto', 'margin-right': 'auto'});
-    };
-    
     
     this.custom_upload_image = function (el) {
         this.config["api_function"](MLAB_CB_GET_LIBRARIES, this.config.name);
