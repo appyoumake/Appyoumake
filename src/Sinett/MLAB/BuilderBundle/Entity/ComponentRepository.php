@@ -38,7 +38,9 @@ class ComponentRepository extends EntityRepository
 		foreach ($groups as $group) {
 			$temp_components = $group->getComponents();
 			foreach ($temp_components as $temp_component) {
-				$components[] = $temp_component->getPath();
+                if ($temp_component->getEnabled()) {
+                    $components[] = $temp_component->getPath();
+                }
 			}
 		}
 		return $components;
