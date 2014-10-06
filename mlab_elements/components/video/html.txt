@@ -1,4 +1,5 @@
 <video poster="" style="cursor: pointer;" >
+    <source src="" type="video/mp4" />
 </video>
 
 <script type="text/javascript">

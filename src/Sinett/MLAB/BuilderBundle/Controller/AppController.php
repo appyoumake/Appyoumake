@@ -918,7 +918,7 @@ class AppController extends Controller
                                 'result' => 'failure',
                                 'msg' => "Unable to load exec.php file"));
                     } else {
-                        if (!onInit($path_app, $path_app_assets, $path_component, $comp_id)) {
+                        if (!onCreate($path_app, $path_app_assets, $path_component, $comp_id)) {
                             return new JsonResponse(array(
                                 'result' => 'failure',
                                 'msg' => "Unable to run application on server"));
