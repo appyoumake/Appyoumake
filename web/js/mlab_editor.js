@@ -575,7 +575,7 @@
             if (data.result == "success") {
                 mlab_update_status("temporary", "Saved page", false);
                 mlab_flag_dirty = false;
-                dd
+                
 //if a function was specified we now execute it, inisde this function the mlab_timer_save timer will be restarted
 //if no function was specified AND no-one else has initiated the save function, then OK to restart timer
                 if (typeof fnc != 'undefined') {
