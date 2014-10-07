@@ -543,9 +543,7 @@
         $("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
             var comp_id = $(this).data("mlab-type");
             if (typeof (document["mlab_code_" + comp_id]) !== "undefined" && typeof (document["mlab_code_" + comp_id].onSave) !== "undefined") {
-                document["mlab_code_" + comp_id].onSave(this);
-                page_content = page_content + $(this)[0].outerHTML + "\n";
-                document["mlab_code_" + comp_id].onLoad(this, mlab_components[comp_id].conf, mlab_component_request_info);
+                page_content = page_content + document["mlab_code_" + comp_id].onSave(this);
             } else {
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }
@@ -577,7 +575,7 @@
             if (data.result == "success") {
                 mlab_update_status("temporary", "Saved page", false);
                 mlab_flag_dirty = false;
-                
+                dd
 //if a function was specified we now execute it, inisde this function the mlab_timer_save timer will be restarted
 //if no function was specified AND no-one else has initiated the save function, then OK to restart timer
                 if (typeof fnc != 'undefined') {
@@ -597,6 +595,9 @@
                         console.log("No changes to app files");
 
                     } else {
+                        if (mlab_counter_saving_page == 0 && (typeof fnc == 'undefined')) {
+                            mlab_timer_start();
+                        }
                         return;
                     }
                     

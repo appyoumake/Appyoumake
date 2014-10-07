@@ -15,6 +15,8 @@ document.mlab_code_youtube = new function() {
     };
 
 	this.onSave = function (el) {
+        var temp_html = el.outerHTML;
+        return temp_html;
     };
             
     this.custom_select_video = function (el) {

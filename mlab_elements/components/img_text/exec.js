@@ -24,6 +24,14 @@ document.mlab_code_img_text = new function() {
 	this.onSave = function (el) {
         $(el).find("figcaption").removeAttr("contenteditable");
         $(el).find("p").removeAttr("contenteditable");
+        
+        var temp_html = el.outerHTML;
+
+        $(el).find("figcaption").attr("contenteditable", "true");
+        $(el).find("p").attr("contenteditable", "true");
+        
+        return temp_html;
+        
     };
 	
 	this.onDelete = function () {

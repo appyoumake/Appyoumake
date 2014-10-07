@@ -18,7 +18,8 @@ document.mlab_code_qrcode = new function() {
     };
     
 	this.onSave = function (el) {
-		
+        var temp_html = el.outerHTML;
+        return temp_html;		
     };
             
     this.getContentSize = function (el) {

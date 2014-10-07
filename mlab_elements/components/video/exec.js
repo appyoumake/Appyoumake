@@ -16,7 +16,8 @@ document.mlab_code_video = new function() {
     };
 
 	this.onSave = function (el) {
-		
+        var temp_html = el.outerHTML;
+        return temp_html;
     };
             
 	this.onDelete = function () {

@@ -17,6 +17,9 @@ document.mlab_code_h1 = new function() {
     
 	this.onSave = function (el) {
 		$(el).find("h1").removeAttr("contenteditable");
+        var temp_html = el.outerHTML;
+        $(el).find("h1").attr("contenteditable", "true");
+        return temp_html;
     };
             
     this.onReplace = function (el, replacement_id, replacement_html) {
