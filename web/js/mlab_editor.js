@@ -1304,18 +1304,21 @@ function mlab_component_request_info(type, param) {
         case MLAB_CB_GET_LIBRARIES :
             if ("required_libs" in mlab_components[param].conf) {
                 if ("designtime" in mlab_components[param].conf.required_libs) {
-                    var comp_url = mlab_components[param].conf.component_url;
+                    var comp_url = window.location.origin + mlab_urls.components_root_url;
                     var comp_path = mlab_components[param].conf.name;
                     
                     for (i in mlab_components[param].conf.required_libs.designtime) {
                         var file = mlab_components[param].conf.required_libs.designtime[i];
-                        if (file.substr(-3) == ".js") {
+                        var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ ;
+                        if (regexp.test(file)) {
+                            $("head").append($("<script src='" + file + "' >")); 
+                        } else if (file.substr(-3) == ".js") {
                             if ($("script[src*='" + file + "']").length < 1) {
-                                $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file +"'>")); 
+                                $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file + "' >")); 
                             }
                         } else if (file.substr(-4) == ".css") {
                             if ($("link[href*='" + file + "']").length < 1) {
-                                $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"'>")); 
+                                $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >")); 
                             }
                         }
                     }

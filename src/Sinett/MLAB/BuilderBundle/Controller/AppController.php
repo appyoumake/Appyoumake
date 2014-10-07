@@ -462,7 +462,8 @@ class AppController extends Controller
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
-                                        "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_'))
+                                        "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_')),
+                                        "components_root_url" =>  $config["urls"]["component"]
                                     )
     	));
     }
@@ -918,10 +919,12 @@ class AppController extends Controller
                                 'result' => 'failure',
                                 'msg' => "Unable to load exec.php file"));
                     } else {
-                        if (!onInit($path_app, $path_app_assets, $path_component, $comp_id)) {
-                            return new JsonResponse(array(
-                                'result' => 'failure',
-                                'msg' => "Unable to run application on server"));
+                        if (function_exists("onInit")) {
+                            if (!onInit($path_app, $path_app_assets, $path_component, $comp_id)) {
+                                return new JsonResponse(array(
+                                    'result' => 'failure',
+                                    'msg' => "Unable to run application on server"));
+                            }
                         }
                     }
                 }

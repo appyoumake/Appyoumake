@@ -1,1 +1,1 @@
-<div id="mlab_temp_map" class="map">Retrieving map</div>
+<div class="mlab_cp_googlemap_map">Retrieving map ... </div>

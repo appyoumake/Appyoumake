@@ -167,26 +167,34 @@ class FileManagement {
 				$comp_dir = $path . $entry . "/";
 				
 				if ( is_dir($comp_dir) && substr($entry, 0, 1) != "." ) {
+                    $failed = false;
+                    try {
+                        $tmp_yaml = $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"]));
+                    } catch (\Exception $e) {
+                        $tmp_yaml = array();
+                        $failed = true;
+                    }
 //always add html, rest we add content or set bool values that will let us know what to do later
-						$components[$entry] = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
-								"exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
-								"exec_server" => file_exists($comp_dir . $config["PHP"]),
-								"rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
-								"conf" => $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"])),
-                                "is_feature" => false,
-								"accessible" => in_array($entry, $access)); //we hide the ones they are not allowed to see, but still load it for reference may exist in app...
-	
-                        if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"])) {
-                            $components[$entry]["is_feature"] = ($components[$entry]["conf"]["category"] == "feature");
+                    $components[$entry] = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
+                            "exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
+                            "exec_server" => file_exists($comp_dir . $config["PHP"]),
+                            "rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
+                            "conf" => $tmp_yaml,
+                            "is_feature" => false,
+                            "accessible" => ($failed === true ? false : in_array($entry, $access))); //we hide the ones they are not allowed to see OR with failed config, but still load it for reference may exist in app...
+
+                    
+                    if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"])) {
+                        $components[$entry]["is_feature"] = ($components[$entry]["conf"]["category"] == "feature");
+                    }
+                    if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["urls"])) {
+                        foreach ($components[$entry]["conf"]["urls"] as $url_key => $url_name) {
+                            $components[$entry]["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $entry));
                         }
-                        if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["urls"])) {
-                            foreach ($components[$entry]["conf"]["urls"] as $url_key => $url_name) {
-                                $components[$entry]["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $entry));
-                            }
-                        }
-                        
+                    }
+
 //tooltips are in the conf file (or not!), so add it here, or blank if none
-						$components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
+                    $components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
 				}
 			}
 			
