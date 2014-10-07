@@ -82,13 +82,13 @@ document.mlab_code_img = new function() {
         
         content = $('<form />', {id: "mlab_form_properties" } );
         content.append( $('<p />', { text: "Choose picture to load" }) );
-        content.append( $('<select onchange="document.mlab_code_img.selectExistingImage(this);" id="mlab_cp_select_files"><option>...loading images...</option></select>') );
-        content.append( $('<div />', { id: "mlab_property_uploadfiles", name: "mlab_property_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
+        content.append( $('<select onchange="document.mlab_code_img.selectExistingImage(this);" id="mlab_cp_img_select_image"><option>...loading images...</option></select>') );
+        content.append( $('<div />', { id: "uploadfiles", name: "mlab_cp_video_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<p /><br />') );
-        content.append( $('<div />', { id: 'mlab_property_uploadfiles_start', name: 'mlab_property_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
+        content.append( $('<div />', { id: 'mlab_cp_video_uploadfiles_start', name: 'mlab_cp_video_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
         content.append( $('<p />') );
-        content.append( $('<div />', { text: 'Cancel', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right" }) );
+        content.append( $('<div />', { text: 'Cancel', id: "mlab_cp_video_button_cancel", class: "pure-button  pure-button-xsmall" }) );
+        content.append( $('<div />', { text: 'OK', id: "mlab_cp_video_button_ok", class: "pure-button  pure-button-xsmall right" }) );
 
         var component = el;
         var component_id = this.config.component_name;
@@ -106,11 +106,11 @@ document.mlab_code_img = new function() {
                             this.config = component_config;
 //load existing files
                             var existing_files = this.config["api_function"](MLAB_CB_GET_MEDIA, "jpg,jpeg,png,gif");
-                            $("#mlab_cp_select_files").html(existing_files);
+                            $("#mlab_cp_img_select_image").html(existing_files);
 
 //upload files 
-                            if ($("#mlab_property_button_ok").length > 0) {
-                                var uploadObj = $("#mlab_property_uploadfiles").uploadFile({
+                            if ($("#mlab_cp_video_button_ok").length > 0) {
+                                var uploadObj = $("#mlab_cp_video_uploadfiles").uploadFile({
                                     url: this.config["api_function"](MLAB_CB_URL_UPLOAD_ABSOLUTE, this.config.name),
                                     formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
                                     multiple: false,
@@ -130,19 +130,19 @@ document.mlab_code_img = new function() {
                                     }
                                 });
 
-                                $("#mlab_property_uploadfiles_start").click(function() {
+                                $("#mlab_cp_video_uploadfiles_start").click(function() {
                                     uploadObj.startUpload();
                                 });
                             }
                             
-                            $('#mlab_property_button_ok', api.elements.content).click(	
+                            $('#mlab_cp_video_button_ok', api.elements.content).click(	
                                     function(e) {
                                         api.hide(e); 
                                         if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
                                             document["mlab_code_" + component_id].setProperties( $("#mlab_form_properties").serializeArray(), this );
                                         }
                                     }.bind(component));
-                            $('#mlab_property_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
+                            $('#mlab_cp_video_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
                         },
                         hide: function(event, api) { api.destroy(); }
             }
