@@ -33,7 +33,7 @@
     mlab_drag_origin = 'sortable';
     mlab_timer_save = null;
     mlab_api_version = 0.1;
-    document.mlab_storage = new Object();
+    document.mlab_cp_storage = new Object();
 
 //PERHAPS USE THIS TOGETHER WITH ARRAY OF FIELDNAMES MATCHING APP TABLE AND RENAME TEXT FIELDS...
     mlab_flag_meta_dirty = new Array();
