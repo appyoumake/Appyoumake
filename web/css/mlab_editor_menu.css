@@ -155,10 +155,10 @@ border: none;
 }
 #mlab_editor_menu li .drop {
     padding-right:21px;
-    background:url("img/drop.png") no-repeat right 8px;
+    /* background:url("/img/drop.png") no-repeat right 8px; */
 }
 #mlab_editor_menu li:hover .drop {
-    background:url("img/drop.png") no-repeat right 7px;
+     /* background:url("/img/drop.png") no-repeat right 7px; */
 }
 
 #mlab_editor_menu.mlab_basic_menu li .drop {
