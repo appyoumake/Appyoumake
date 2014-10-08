@@ -883,8 +883,10 @@ class AppController extends Controller
 //2.5: copy across any runtime dependencies, can be JS or CSS
                     if (isset($config["required_libs"])) {
                         if (isset($config["required_libs"]["runtime"])) {
+                            
                             foreach ($config["required_libs"]["runtime"] as $dependency) {
-                                list($dummy, $filetype) = explode(".", $dependency);
+                                $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
+                                $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                                 if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app_assets/$filetype/$dependency" )) {
     //if we fail we bail
                                     if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
@@ -893,7 +895,6 @@ class AppController extends Controller
                                             'msg' => sprintf("Unable to copy JavaScript file %s for this component: %s", $dependency , $comp_id)));
     //if OK we need to update the include files of the app
                                     } else {
-                                        $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                                         if ($filetype == "css") {
                                             if (!in_array("@import url('$dependency');", $include_items)) {
                                                 $include_items[] = "@import url('$dependency');";
@@ -903,12 +904,34 @@ class AppController extends Controller
                                                 $include_items[] = "$.getScript('/js/$dependency');";
                                             }
                                         }
-                                        file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
                                     }
                                 }
+                                file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
+                                
+                            } //end loop for runtime scripts to copy and add
+                            
+                        } // end if runtime libs defined
+                        
+//runtime external libs are links to (for instance) Google Maps API file, i.e. we cannot/should not
+//add them to the app at compile time, but need it for functionality when app is running
+                        if (isset($config["required_libs"]["runtime_external"])) {
+                            foreach ($config["required_libs"]["runtime_external"] as $dependency) {
+                                $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
+                                $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                                if ($filetype == "css") {
+                                    if (!in_array("@import url('$dependency');", $include_items)) {
+                                        $include_items[] = "@import url('$dependency');";
+                                    }
+                                } else {
+                                    if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
+                                        $include_items[] = "$.getScript('$dependency');";
+                                    }
+                                }
+                                file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
                             }
                         }
-                    }
+                        
+                    }// end required libs handling
                     
                 } //end conf file exists
 
