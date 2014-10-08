@@ -14,7 +14,7 @@ document.mlab_code_googlemap = new function() {
 //so we assume gmaps file is loaded in the success callback.
         $.getScript(this.config.custom.map_script, function() {
             debugger;
-            $("#" + guid).after("<script id=script_" + guid +
+            $("#" + guid).after("<script id='script_" + guid + "'>" + 
                                 "var myOptions = " + eval("(" + JSON.stringify(document.mlab_code_googlemap.config.custom.map_options) +")") + ";\n" +
                                 "myOptions.center = new google.maps.LatLng(" + self.config.custom.lat + ", " + self.config.custom.lng + ")" + 
                                 "map = new google.maps.Map(document.getElementById('" + guid + "'), myOptions);\n" + 
