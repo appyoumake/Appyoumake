@@ -60,12 +60,10 @@ document.mlab_code_youtube = new function() {
                             var self = this.component;
 //process URL selected
                             $("#mlab_property_uploadfiles_start").click(function() {
-                                alert("hi 1");
                                 api.hide(e);
                             });
 
                             $('#mlab_property_button_cancel', api.elements.content).click(function(e) { 
-                                alert("hi 2");
                                 api.hide(e); 
                             });
                             

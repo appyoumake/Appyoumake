@@ -1,4 +1,4 @@
 <!-- must have position: relative on this, otherwise the google maps HTML elements which use position: absolute will be outside the viewport -->
-<div class="mlab_cp_googlemap_canvas" style="position: relative; background-color: rgb(229, 227, 223); overflow: hidden; height: 300px" >
+<div class="mlab_cp_googlemap_canvas" style="pointer-events: none; position: relative; overflow: hidden; height: 300px" >
     Retrieving map ... 
 </div>
