@@ -917,7 +917,7 @@
     }
 
     function mlab_component_highlight_selected(el) {
-         $( "#" + mlab_config["app"]["content_id"] + " div" ).removeClass("mlab_current_component");
+         $( "#" + mlab_config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
          $( el ).addClass("mlab_current_component");
          mlab_menu_prepare();
     }
@@ -1165,7 +1165,7 @@
     function mlab_prepare_editable_area() {
 //need to loop through all divs in the editable box after they have been added 
 //and set the styles for dragging/dropping so it works OK
-        $( "#" + mlab_config["app"]["content_id"] + " div" ).each(function( index ) {
+        $( "#" + mlab_config["app"]["content_id"] + "> div" ).each(function( index ) {
             $( this ).droppable(droppable_options)
                      .sortable(sortable_options)
                      .on("click", function(){mlab_component_highlight_selected(this);})
