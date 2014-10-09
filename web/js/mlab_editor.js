@@ -816,6 +816,12 @@
             return;
         }
         
+//if this control has to be unique we check here to see if one was already added
+        if (mlab_components[id].conf.unique && $("#" + mlab_config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
+            alert("You can only have one component of this type on a page");
+            return;
+        }
+        
         var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + mlab_components[id].html + "</div>");
         $("#" + mlab_config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab_component_highlight_selected(this);})
@@ -845,7 +851,7 @@
 
         request.fail(function( jqXHR, textStatus ) {
             alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
-            $(new_component).remove(); 
+            $(new_comp).remove(); 
         });
 
 //finally we add dependencies, i.e. components that this component depends on
