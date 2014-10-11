@@ -1,9 +1,23 @@
+/*
+ * 
+0: Add add marker functionality, + ability to remove them
+1: In onSave need to generate clean code for reopening in design mode AND runtime
+	Need to read options values and save these to an options object in the code we generate
+2: DT: Add code to add it to header
+   RT: Add the google.maps.event.addDomListener(window, 'load', initialize);, but probably need it for onpage?
+	http://stackoverflow.com/questions/9896285/jquery-mobile-1-0-1-google-maps-doesnt-show-the-map-first-time-after-reload-ref
+3: Use the check to see if in mobile to check it
+
+ */
+
 document.mlab_code_googlemap = new function() {
 	
 	this.config = {};
     
     this.onCreate = function (el, config, api_func) {
-        this.onLoad (el, config, api_func);
+        this.config = config;
+        this.config["api_function"] = api_func;
+        this.config["api_function"](MLAB_CB_GET_LIBRARIES, this.config.name);
         
         var self = this;
         var guid = this.config["api_function"](MLAB_CB_GET_GUID);
@@ -57,7 +71,7 @@ document.mlab_code_googlemap = new function() {
         
     };
     
-    this.searchMap = function (id, search_term) {
+    this.setMapCenter = function (id, search_term) {
 	/*var temp_point = search_term.split(" ");
 	var new_pos = new google.maps.LatLng(parseFloat(temp_point[0]), parseFloat(temp_point[1]));
 	map.setCenter(new_pos);
@@ -72,23 +86,41 @@ document.mlab_code_googlemap = new function() {
             });
     };
 
-    this.toggleElement = function(id, control, status) {
+    this.setMapControl = function(id, control, status) {
         setting = new Object();
         setting[control] = status;
         document.mlab_cp_storage.googlemap[id].setOptions( setting );
-    }
+    };
+
+    this.setMapZoom = function(id, zoom) {
+        document.mlab_cp_storage.googlemap[id].setZoom( zoom );
+    };
     
     this.custom_edit_map = function (el) {
         var guid = $(el).find("div").attr("id");
+        var options = "";
+        var z = document.mlab_cp_storage.googlemap[guid].getZoom();
+        var s = "";
+        for (var o = 1; o <= 16; o++) {
+            if (z == o) {
+                options = options + "<option value='" + o + "' selected >" + o + "</option>";
+            } else {
+                options = options + "<option value='" + o + "'>" + o + "</option>";
+            }
+        }
         content = $('<div />');
         content.append( '<label for="mlab_cp_googlemap_zoom_control">Show zoom control</label>');
-        content.append( '<input id="mlab_cp_googlemap_zoom_control" type="checkbox" onclick="document.mlab_code_googlemap.toggleElement(\'' + guid + '\', \'zoomControl\', $(this).is(\':checked\'));">');
+        content.append( '<input id="mlab_cp_googlemap_zoom_control" type="checkbox" onclick="document.mlab_code_googlemap.setMapControl(\'' + guid + '\', \'zoomControl\', $(this).is(\':checked\'));" ' + ((document.mlab_cp_storage.googlemap[guid].zoomControl) ? "checked" : "") + '>');
         content.append( '<label for="mlab_cp_googlemap_zoom_level">Choose zoom level</label>');
-        content.append( '<select id="mlab_cp_googlemap_zoom_level"><option>1</option><option>4</option><option>8</option><option>12</option><option>16</option></select>');
+        content.append( '<select id="mlab_cp_googlemap_zoom_level" onclick="document.mlab_code_googlemap.setMapZoom(\'' + guid + '\', parseInt($(this).val()));">' + options + '</select>');
         content.append( '<label for="mlab_cp_googlemap_type_control">Show map type switcher</label>');
-        content.append( '<input id="mlab_cp_googlemap_type_control" type="checkbox" onclick="document.mlab_code_googlemap.toggleElement(\'' + guid + '\', \'mapTypeControl\', $(this).is(\':checked\'));">');
+        content.append( '<input id="mlab_cp_googlemap_type_control" type="checkbox" onclick="document.mlab_code_googlemap.setMapControl(\'' + guid + '\', \'mapTypeControl\', $(this).is(\':checked\'));" ' + ((document.mlab_cp_storage.googlemap[guid].mapTypeControl) ? "checked" : "") + '>');
+        content.append( '<label for="mlab_cp_googlemap_pan_control">Show pan control</label>');
+        content.append( '<input id="mlab_cp_googlemap_pan_control" type="checkbox" onclick="document.mlab_code_googlemap.setMapControl(\'' + guid + '\', \'panControl\', $(this).is(\':checked\'));" ' + ((document.mlab_cp_storage.googlemap[guid].panControl) ? "checked" : "") + '>');
+        content.append( '<label for="mlab_cp_googlemap_type_control">Show scale control</label>');
+        content.append( '<input id="mlab_cp_googlemap_type_control" type="checkbox" onclick="document.mlab_code_googlemap.setMapControl(\'' + guid + '\', \'scaleControl\', $(this).is(\':checked\'));" ' + ((document.mlab_cp_storage.googlemap[guid].scaleControl) ? "checked" : "") + '>');
         content.append( '<label for="mlab_cp_googlemap_center">Centre map on:</label>');
-        content.append( '<input id="mlab_cp_googlemap_center" type="text" onkeyup="document.mlab_code_googlemap.searchMap(\'' + guid + '\', $(this).val());" >');
+        content.append( '<input id="mlab_cp_googlemap_center" type="text" onkeyup="document.mlab_code_googlemap.setMapCenter(\'' + guid + '\', $(this).val());" value="' + document.mlab_cp_storage.googlemap[guid].getCenter() + '">');
         content.append( '<button class="mlab_button_ok_right" onclick="">OK</button>');
 
         var component = el;
