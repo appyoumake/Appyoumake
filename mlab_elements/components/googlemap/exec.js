@@ -96,9 +96,40 @@ document.mlab_code_googlemap = new function() {
         document.mlab_cp_storage.googlemap[id].setZoom( zoom );
     };
     
+    this.setMarker = function(id) {
+        var text = prompt("Enter a label for this map marker");
+        if (null === text) {
+            return;
+        }
+        var marker = new google.maps.Marker({
+            position: document.mlab_cp_storage.googlemap[id].getCenter(),
+            map: document.mlab_cp_storage.googlemap[id],
+            title: text
+       });
+       if (typeof (document.mlab_cp_storage.markers) == "undefined") {
+           document.mlab_cp_storage.markers = new Object();
+       }
+       if (typeof (document.mlab_cp_storage.markers[id]) == "undefined") {
+           document.mlab_cp_storage.markers[id] = new Array();
+       }
+       document.mlab_cp_storage.markers[id].push(marker);
+       
+    }
+    
+    this.removeMarker = function(id) {
+        if (null === $("#mlab_cp_googlemap_markers").val()) {
+            return;
+        }
+        var i = parseInt($("#mlab_cp_googlemap_markers").val());
+        document.mlab_cp_storage.markers[id][i].setMap(null);
+        document.mlab_cp_storage.markers[id].splice(i, 1);
+        $("#mlab_cp_googlemap_markers option[value=" + i + "]").remove();
+    }
+    
     this.custom_edit_map = function (el) {
         var guid = $(el).find("div").attr("id");
         var options = "";
+        var markers = "";
         var z = document.mlab_cp_storage.googlemap[guid].getZoom();
         var s = "";
         for (var o = 1; o <= 16; o++) {
@@ -108,6 +139,14 @@ document.mlab_code_googlemap = new function() {
                 options = options + "<option value='" + o + "'>" + o + "</option>";
             }
         }
+
+        if (typeof(document.mlab_cp_storage.markers) != "undefined") {
+            for (i in document.mlab_cp_storage.markers[guid]) {
+                var t = document.mlab_cp_storage.markers[guid][i].title;
+                markers = markers + "<option value='" + i + "'>" + t + "</option>";
+            }
+        }
+
         content = $('<div />');
         content.append( '<label for="mlab_cp_googlemap_zoom_control">Show zoom control</label>');
         content.append( '<input id="mlab_cp_googlemap_zoom_control" type="checkbox" onclick="document.mlab_code_googlemap.setMapControl(\'' + guid + '\', \'zoomControl\', $(this).is(\':checked\'));" ' + ((document.mlab_cp_storage.googlemap[guid].zoomControl) ? "checked" : "") + '>');
@@ -121,7 +160,11 @@ document.mlab_code_googlemap = new function() {
         content.append( '<input id="mlab_cp_googlemap_type_control" type="checkbox" onclick="document.mlab_code_googlemap.setMapControl(\'' + guid + '\', \'scaleControl\', $(this).is(\':checked\'));" ' + ((document.mlab_cp_storage.googlemap[guid].scaleControl) ? "checked" : "") + '>');
         content.append( '<label for="mlab_cp_googlemap_center">Centre map on:</label>');
         content.append( '<input id="mlab_cp_googlemap_center" type="text" onkeyup="document.mlab_code_googlemap.setMapCenter(\'' + guid + '\', $(this).val());" value="' + document.mlab_cp_storage.googlemap[guid].getCenter() + '">');
-        content.append( '<button class="mlab_button_ok_right" onclick="">OK</button>');
+        content.append( '<label for="mlab_cp_googlemap_markers">Centre map on:</label>');
+        content.append( '<select id="mlab_cp_googlemap_markers" size="5">' + markers + '</select>');
+        content.append( '<button class="mlab_button_left" onclick="document.mlab_code_googlemap.removeMarker(\'' + guid + '\');">Remove Marker</button>');
+        content.append( '<button class="mlab_button_left" onclick="document.mlab_code_googlemap.setMarker(\'' + guid + '\');">Add Marker</button>');
+        content.append( '<button class="mlab_button_ok_right" onclick="$(\'.mlab_current_component\').qtip(\'hide\');">OK</button>');
 
         var component = el;
         var component_id = this.config.component_name;
