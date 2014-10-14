@@ -162,6 +162,23 @@
             }            
 
         });
+        
+          //get componetnt meny to stick to the top when scrollin dwon
+          if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
+          var stickyComponentTop = $('#mlab_toolbar_components').offset().top; 
+
+                        $(document).scroll(function(){ // scroll event
+                            var windowTop = $(window).scrollTop(); // returns number
+
+                            if (stickyComponentTop < windowTop) {
+                                $('#mlab_toolbar_components').css({ position: 'fixed', top: 0 });
+                            }
+                            else {
+                                $('#mlab_toolbar_components').css('position','static');
+                            }
+                        });
+                        
+           } 
 
     });
 
@@ -1183,7 +1200,8 @@
 /**
  * Switches the editor area between landscape and portrait
  * @returns {undefined}
- */
+ * not used for the editor anymore
+ 
     function mlabRotateEditor() {
         var h = $("#mlab_editor_chrome").height();
         var w = $("#mlab_editor_chrome").width();
@@ -1195,6 +1213,7 @@
             $("#mlab_button_rotate").removeClass("portret");
         }
     }
+*/
 
 /**
  * This function is used to display status information, this can be permanent, temporary, or until callback is called, and may have a progress bar

@@ -630,21 +630,24 @@ body#mlab_editor_body p {
 }
 
 div#mlab_toolbar_components {
-	width: 128px;
-	float: left;
-	padding-top: 8px;
+width: 145px;
+float: left;
+overflow-y: auto;
+padding-top: 8px;
+height: 90%;
 }
 
 div#mlab_editor_chrome {
-	border-radius: 20px;
-	border: 22px solid black;
+	border-radius: 10px;
+    border: 3px double orange;
 	margin: 10px;
 	margin-top: 20px;
 	float: left;
 	width: 644px;
-	height: 844px;
-	overflow: hidden;
-        position: relative;
+	min-height: 844px;
+	overflow: auto;
+    position: absolute;
+    left: 160px;
 }
 
 
@@ -1074,7 +1077,7 @@ ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
 }
 
 #mlab_page_control{
-   padding: 104px 20px 1px 32px; 
+   padding: 10px 20px 1px 32px; 
    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
    font-size: 10px;
 }
