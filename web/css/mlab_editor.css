@@ -427,7 +427,7 @@ border-top-width: 22px;
 display: block;
 float: left;
 font-family: Verdana, Arial, sans-serif;
-height: 844px;
+//height: 844px;
 line-height: 0px;
 margin-bottom: 10px;
 margin-left: 10px;
@@ -644,12 +644,32 @@ div#mlab_editor_chrome {
 	margin-top: 20px;
 	float: left;
 	width: 644px;
-	min-height: 844px;
-	overflow: auto;
+    height: 80%;
+	overflow-y: auto;
     position: absolute;
     left: 160px;
+    clear: both;
 }
 
+#mlab_editor_chrome #page {
+    overflow-y: auto;
+    height: 80%;
+    min-height: 50%;
+}
+
+#mlab_toolbar_components .mlab_buttons_item_manipulation_list2 {
+    display: block;
+        
+}
+
+#mlab_toolbar_components .mlab_toolbar_for_components {
+border: orange dotted 2px;
+padding: 5px;
+margin-left: 15px;
+margin-top: 15px;
+margin-right: 12px;
+margin-bottom: 5px;
+}
 
 #mlab_button_rotate {
 	width: 32px;
