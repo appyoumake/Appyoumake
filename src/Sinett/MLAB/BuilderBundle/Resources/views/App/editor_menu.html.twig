@@ -4,14 +4,12 @@
 
 <ul id="mlab_editor_menu">
     
-    <li class="single">
-        <img src="/img/logo_menu.png" alt="logo" /><!-- Begin Home Item -->
-    </li><!-- End Logo Item -->
+    {{ include( 'menu.html.twig' ) }}
     
-     <li class="single">
-    </li><!-- End Empty Item -->
+     <li id="mlab_editor_undo_redo" class="single">
+    </li><!-- End undo and redo menu items -->
 
-    <li id="mlab_menu_dropdown"><a href="#" class="drop">{% trans %}app.builder.edit.menu.main.heading{% endtrans %}</a><!-- Begin 4 columns Item -->
+    <li id="mlab_menu_dropdown"><a href="#" class="drop"><img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" /></a><!-- Begin 4 columns Item -->
 
         <div class="dropdown_4columns"><!-- Begin 4 columns container -->
 
