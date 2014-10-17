@@ -638,23 +638,31 @@ height: 90%;
 }
 
 div#mlab_editor_chrome {
-	border-radius: 10px;
-    border: 3px double orange;
 	margin: 10px;
 	margin-top: 20px;
 	float: left;
 	width: 644px;
-    height: 80%;
-	overflow-y: auto;
+    padding-bottom: 100px;
+    display: block;
+    overflow-y: visible;
     position: absolute;
     left: 160px;
     clear: both;
 }
 
 #mlab_editor_chrome #page {
-    overflow-y: auto;
-    height: 80%;
-    min-height: 50%;
+    overflow-y: visible;
+    border: 4px solid rgb(255, 255, 255);
+    box-shadow: orange 0px 0px 0px 1px inset, 
+                white 0px 0px 0px 3px inset, 
+                orange 0px 0px 0px 4px inset;
+    clear: both;
+    height: auto !important;
+
+}
+
+#mlab_editor_chrome .ui-content {
+margin-top: 7.2%;
 }
 
 #mlab_toolbar_components .mlab_buttons_item_manipulation_list2 {
@@ -1043,7 +1051,7 @@ ul.megamenu li a {
 }
 
 #mlab_editable_area {
-    padding-bottom: 100px;
+    padding-bottom: 10px;
 }
 
 .mlab_hide_in_app_builder {
