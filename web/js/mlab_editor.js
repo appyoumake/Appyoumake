@@ -845,7 +845,7 @@
         new_comp.on("click", function(){mlab_component_highlight_selected(this);})
         new_comp.on("input", function(){mlab_flag_dirty = true;});
         //new_comp.children().attr("contenteditable", "true");
-
+        
         mlab_component_run_code(new_comp, id, true);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
