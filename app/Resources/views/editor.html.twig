@@ -7,13 +7,12 @@
 			<link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery.megamenu.css") }}" rel="stylesheet" />
 			<link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_editor_menu.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery.contextMenu.css") }}" rel="stylesheet" />
         {% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
     </head>
     
     <body id="mlab_editor">
@@ -32,6 +31,7 @@
 	 		</div>
                 
 	    	<div class="container">
+                
 	 			{% block body %}{% endblock %}
                 <div style="clear: both;">&nbsp;</div>
 	 		</div>
@@ -44,67 +44,15 @@
 	        	<script src="{{ asset('/js/jquery-ui.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery.uploadfile.js') }}"></script>
 	        	<script src="{{ asset('/js/jquery-qtip.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery.megamenu.js') }}"></script>  
 	        	<script src="{{ asset('/js/ddslick.js') }}"></script>
                 <script src="{{ asset('/js/jquery.qrcode-0.7.0.js') }}"></script>
                 <script src="{{ asset('/js/jquery.contextMenu.js') }}"></script>
                 <script src="{{ asset('/js/jquery.ui.position.js') }}"></script>
                 <script src="{{ asset('/js/jquery.slimscroll.js') }}"></script>
-                
-		        <script type="text/javascript">	 
-			        $(document).ready(function() {
-                        
-			        	jQuery("#mlab_megamenu").megamenu();
-                        $("#mlab_megamenu li:last").before(
-                                "<li class='mlab_menu_top_children  mm-item' style='float: left;'>"+
-                                "    <div id='mlab_buttons_item_manipulation' class='mlab_buttons_item_manipulation'>"+
-                                "        <img onclick='mlab_component_moveup();'        title='Move selected component up' id='mlab_button_up' src='/img/tools/up.png' class='mlab_tools' >"+
-                                "        <img onclick='mlab_component_movedown();'      title='Move selected component down' id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' >"+
-                                "        <img onclick='document.execCommand(\"undo\");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' >"+
-                                "        <img onclick='document.execCommand(\"redo\");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' >"+
-                                "        <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >"+
-                                "        <img id='mlab_button_menu'                     title='Modify selected component' src='/img/tools/menu.png' class='mlab_tools mlab_tools_space'>"+
-                                "        <img id='mlab_button_features'                 title='Add features to the app' src='/img/tools/features.png' class='mlab_tools mlab_tools_space'>"+
-                                "    </div>"+
-                                "</li>"+
-                                "<li id='mlab_statusbar2'><div id='mlab_statusbar_progressbar2'>&nbsp;</div><div id='mlab_statusbar_temporary2'>&nbsp;</div><div id='mlab_statusbar_permanent2'>Ready</div></li>");
-                        
-                        
-                        
-                        
-                         $("#mlab_editor_menu #mlab_editor_undo_redo").prepend(
-                                "<li class='mlab_buttons_item_manipulation_list single'>"+
-                                "       <img onclick='document.execCommand(\"undo\");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' >"+
-                                "        <img onclick='document.execCommand(\"redo\");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' >"+
-                                "</li >");
-                        
-                        $("#mlab_toolbar_components").prepend(
-                                "<div class='mlab_toolbar_for_components'><li class='mlab_buttons_item_manipulation_list2 single'>"+
-                                "        <img onclick='mlab_component_moveup();'        title='Move selected component up' id='mlab_button_up' src='/img/tools/up.png' class='mlab_tools' >"+
-                                "        <img onclick='mlab_component_movedown();'      title='Move selected component down' id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' >"+
-                                "        <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >"+
-                                "        <img id='mlab_button_menu'                     title='Modify selected component' src='/img/tools/menu.png' class='mlab_tools mlab_tools_space'>"+
-                                "        <img id='mlab_button_features'                 title='Add features to the app' src='/img/tools/features.png' class='mlab_tools mlab_tools_space'>"+
-                                "</li ><div>");
-                        
-                        $("#mlab_page_control li:last").before(
-                                "<li ><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>"+
-                                "<li ><div id='mlab_statusbar_temporary'>&nbsp;</div></li>"+
-                                "<li ><div id='mlab_statusbar_permanent'>Ready</div></li>");
-                        
-                       // $("#mlab_page_control li:last").before(
-                       //       "<li id='mlab_statusbar'><div id='mlab_statusbar_permanent'>ooooooo</div></li>");
-                        
-                        $('#center').click(function(){
-                             window.location = '/app/builder/';
-                        });
 
-    });
-			    </script>
 	        {% endblock %}
 	        </div>
 	        <div class="mlab_top_bar_back"></div>
 	    </div>
-        <div id="xxxx" style="height: 300px; width: 300px;"></div>
     </body>
 </html>

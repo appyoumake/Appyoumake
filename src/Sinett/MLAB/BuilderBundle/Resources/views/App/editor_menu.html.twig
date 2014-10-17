@@ -7,14 +7,19 @@
     {{ include( 'menu.html.twig' ) }}
     
      <li id="mlab_editor_undo_redo" class="single">
+        <img onclick='mlab_page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools' >
+        <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' >
+        <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' >
     </li><!-- End undo and redo menu items -->
 
-    <li id="mlab_menu_dropdown"><a href="#" class="drop"><img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" /></a><!-- Begin 4 columns Item -->
+    <li id="mlab_editor_menu_dropdown">
+        <a href="#" class="drop">
+            <img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" >
+        </a><!-- Begin 4 columns Item -->
 
-        <div class="dropdown_4columns"><!-- Begin 4 columns container -->
+        <div id="mlab_editor_menu_dropdown_content" class="dropdown_4columns"><!-- Begin 4 columns container -->
 
             <div class="col_4">
-                
                 <p>{% trans %}app.builder.edit.menu.welcome.info{% endtrans %}</p>
             </div>
 
@@ -26,9 +31,9 @@
                 <p>{% trans %}app.builder.edit.menu.app.edit.info{% endtrans %}</p>
                 <input type="text" id="mlab_app_description" value="Beskrivelse"> <button class="mlab_menu_field_update_button"title="Oppdater" onclick=""></button>
                 <input type="text" id="mlab_app_keywords" value="Nøkkelord"> <button class="mlab_menu_field_update_button" title="Oppdater" onclick=""></button>
-                <input type="text" id="mlab_app_CategoryOne" value="1. Kategori" disabled="disabled">
-                <input type="text" id="mlab_app_CategoryTwo" value="2. Kategori" disabled="disabled"> 
-                <input type="text" id="mlab_app_CategoryThree" value="3. Kategori" disabled="disabled"> 
+                <input type="text" id="mlab_app_CategoryOne" value="1. Kategori">
+                <input type="text" id="mlab_app_CategoryTwo" value="2. Kategori"> 
+                <input type="text" id="mlab_app_CategoryThree" value="3. Kategori"> 
                 <h3></h3>
                 <a href="javascript: mlab_app_remove_locks();">Fjern låser</a>
             </div>
@@ -40,9 +45,6 @@
                 <p>{% trans %}app.builder.edit.menu.page.name.info{% endtrans %}</p>
                 
                 <div class="mlab_two_icons_container">
-                         <a href="javascript: mlab_page_save();">
-                            <div title="Lagre side" id="mlab_save_icon"></div>
-                        </a> 
                         <a href="javascript: mlab_page_delete();">
                             <div title="Slette side" id="mlab_delete_icon"></div> 
                         </a>
@@ -50,10 +52,6 @@
                 
                 <h3></h3>
                 <p>{% trans %}app.builder.edit.menu.page.edit.info{% endtrans %}</p>
-                
-                
-					                                                    
-                
                     <div id="mlab_existing_pages">
                     <ul>
                         <li><a href="javascript:mlab_page_open(-1, &#039;index&#039;);">Front page</a></a></li>
@@ -75,40 +73,36 @@
 
             <div class="col_1">
                 <div class="mlab_end_appbuilder">
-                <h3>Prøv App på web</h3>
-                <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
-               
-                  
-                        <a href="javascript: mlab_page_preview();">
-                            <div title="Test app i nettleser" id="mlab_preview_icon"></div>
-                        </a> 
-                        
-                   
-               
-                
-                
-                <h3>Prøv App på mobil</h3>
-                <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
-                <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Venligst vent.</p>
-                </div>
-                        <a href="javascript: mlab_app_download();">
-                        <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
+                    <h3>Prøv App på web</h3>
+                    <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
+                            <a href="javascript: mlab_page_preview();">
+                                <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                            </a> 
+                    <h3>Prøv App på mobil</h3>
+                    <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
+                    <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Venligst vent.</p>
+                    </div>
+                            <a href="javascript: mlab_app_download();">
+                            <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
+                            </a>
+
+                    <div class="mlab_end_appbuilder">
+                        <h3>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h3>
+                        <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
+                        <a href="{{ path('app_builder_index') }}" target="_top">
+                            <div title="Avslutt" id="mlab_exit_icon"></div>   
                         </a>
-       
-                <div class="mlab_end_appbuilder">
-                <h3>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h3>
-                <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
-                <a href="{{ path('app_builder_index') }}" target="_top">
-                    <div title="Avslutt" id="mlab_exit_icon"></div>   
-                </a>
+                    </div>
+                </div>
             </div>
-                </div>
-                </div>
-            
         </div><!-- End 4 columns container -->
         
     </li><!-- End 4 columns Item -->
 
+    <li ><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
+    <li ><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
+    <li ><div id='mlab_statusbar_permanent'>Ready</div></li>
+    
     <li class="single menu_right">
         <a class="mlab_dev_info" href="/app_dev.php/logout" target="_top">
             Developed by the Sinett project at FFI.no

@@ -665,12 +665,12 @@ div#mlab_editor_chrome {
 margin-top: 7.2%;
 }
 
-#mlab_toolbar_components .mlab_buttons_item_manipulation_list2 {
+.mlab_buttons_item_manipulation_list {
     display: block;
         
 }
 
-#mlab_toolbar_components .mlab_toolbar_for_components {
+#mlab_toolbar_components div.mlab_toolbar_for_components {
 border: orange dotted 2px;
 padding: 5px;
 margin-left: 15px;
