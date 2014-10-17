@@ -438,6 +438,7 @@
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                     mlab_index_page_process ( data.html, "index" );
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
+                    mlab_timer_start();
                     return;
                 } else {
                     mlab_regular_page_process ( data.html, data.page_num_real );
@@ -842,7 +843,6 @@
         request.done(function( result ) {
             if (result.result == "success") {
                 mlab_drag_origin = 'sortable';
-                console.log("success");
             } else {
                 alert(result.msg + "'\n\nLegg til komponenten igjen.");
                 $(new_comp).remove();
