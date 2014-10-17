@@ -427,7 +427,7 @@ border-top-width: 22px;
 display: block;
 float: left;
 font-family: Verdana, Arial, sans-serif;
-height: 844px;
+//height: 844px;
 line-height: 0px;
 margin-bottom: 10px;
 margin-left: 10px;
@@ -630,23 +630,46 @@ body#mlab_editor_body p {
 }
 
 div#mlab_toolbar_components {
-	width: 128px;
-	float: left;
-	padding-top: 8px;
+width: 145px;
+float: left;
+overflow-y: auto;
+padding-top: 8px;
+height: 90%;
 }
 
 div#mlab_editor_chrome {
-	border-radius: 20px;
-	border: 22px solid black;
+	border-radius: 10px;
+    border: 3px double orange;
 	margin: 10px;
 	margin-top: 20px;
 	float: left;
 	width: 644px;
-	height: 844px;
-	overflow: hidden;
-        position: relative;
+    height: 80%;
+	overflow-y: auto;
+    position: absolute;
+    left: 160px;
+    clear: both;
 }
 
+#mlab_editor_chrome #page {
+    overflow-y: auto;
+    height: 80%;
+    min-height: 50%;
+}
+
+#mlab_toolbar_components .mlab_buttons_item_manipulation_list2 {
+    display: block;
+        
+}
+
+#mlab_toolbar_components .mlab_toolbar_for_components {
+border: orange dotted 2px;
+padding: 5px;
+margin-left: 15px;
+margin-top: 15px;
+margin-right: 12px;
+margin-bottom: 5px;
+}
 
 #mlab_button_rotate {
 	width: 32px;
@@ -1073,10 +1096,15 @@ ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
     padding-left: 32px;
 }
 
-#mlab_page_control{
-   padding: 104px 20px 1px 32px; 
-   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-   font-size: 10px;
+#mlab_editor #mlab_page_control{
+    padding: 4px 0px 0px 192px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10px;
+}
+
+#mlab_editor #mlab_page_control ul{
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 #mlab_editor_chrome div.ui-loader{

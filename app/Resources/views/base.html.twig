@@ -15,9 +15,16 @@
     </head>
     <body class="mlab_base">
     	<div class="mlab_min_page_width">     
-            
-             {{ include( 'menu.html.twig' ) }}
-            
+            <ul id="mlab_editor_menu" class="mlab_basic_menu">
+                {{ include( 'menu.html.twig' ) }}
+                
+                <li class="single menu_right">
+                    <a class="mlab_dev_info" href="/app_dev.php/logout" target="_top">
+                        Developed by the Sinett project at FFI.no
+                    </a>
+                </li>
+            </ul>
+
     		<div class="mlab_align_menu_elements">
                 
 	    	<div class="container">
