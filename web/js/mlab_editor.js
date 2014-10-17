@@ -940,7 +940,14 @@
     }
     
     function mlab_component_delete() {
+        var sel_comp = $(".mlab_current_component").prev();
+        if (sel_comp.length == 0) {
+            sel_comp = $(".mlab_current_component").next();
+        }
         $(".mlab_current_component").remove();
+        if (sel_comp.length > 0) {
+            sel_comp.addClass("mlab_current_component");
+        }
         mlab_flag_dirty = true;
     }
     
