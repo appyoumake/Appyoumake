@@ -11,6 +11,21 @@
             <link href="{{ asset("/css/mlab_editor_menu.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery.contextMenu.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_component_config.css") }}" rel="stylesheet" />
+            
+        {% endblock %}
+        {% block javascripts %}
+            <script src="{{ asset('/js/jquery-1.10.2.js') }}"></script>
+            <script src="{{ asset('/js/jquery.mobile-1.4.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery-ui.js') }}"></script>
+            <script src="{{ asset('/js/jquery.uploadfile.js') }}"></script>
+            <script src="{{ asset('/js/jquery-qtip.js') }}"></script>
+            <script src="{{ asset('/js/ddslick.js') }}"></script>
+            <script src="{{ asset('/js/jquery.qrcode-0.7.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.contextMenu.js') }}"></script>
+            <script src="{{ asset('/js/jquery.ui.position.js') }}"></script>
+            <script src="{{ asset('/js/jquery.slimscroll.js') }}"></script>
+
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
     </head>
@@ -19,40 +34,11 @@
     	<div class="mlab_min_page_width">
     		<div class="mlab_align_menu_elements">
                 {{ include( 'SinettMLABBuilderBundle:App:editor_menu.html.twig' ) }}
-            <div id="mlab_page_control">
-                <ul>
-                    <li id="mlab_page_control_RENAME" hidden="true">
-                    </li><!-- End Empty Item -->
-                </ul> 
-            </div>
-                
-            <div id="mlab_app_and_page_name">
-	 			
-	 		</div>
-                
-	    	<div class="container">
-                
-	 			{% block body %}{% endblock %}
-                <div style="clear: both;">&nbsp;</div>
-	 		</div>
-                <div style="width:100%">
-                    
+                <div class="container">
+                    {% block body %}{% endblock %}
+                    <div style="clear: both;">&nbsp;</div>
                 </div>
-	        {% block javascripts %}
-	        	<script src="{{ asset('/js/jquery-1.10.2.js') }}"></script>
-                <script src="{{ asset('/js/jquery.mobile-1.4.0.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery-ui.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery.uploadfile.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery-qtip.js') }}"></script>
-	        	<script src="{{ asset('/js/ddslick.js') }}"></script>
-                <script src="{{ asset('/js/jquery.qrcode-0.7.0.js') }}"></script>
-                <script src="{{ asset('/js/jquery.contextMenu.js') }}"></script>
-                <script src="{{ asset('/js/jquery.ui.position.js') }}"></script>
-                <script src="{{ asset('/js/jquery.slimscroll.js') }}"></script>
-
-	        {% endblock %}
 	        </div>
-	        <div class="mlab_top_bar_back"></div>
 	    </div>
     </body>
 </html>

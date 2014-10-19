@@ -44,6 +44,7 @@ document.mlab_code_youtube = new function() {
         var self = this;
         
         $(el).qtip({
+            solo: true,
             style: {
                 width: 400, // Overrides width set by CSS (but no max-width!)
                 height: 600 // Overrides height set by CSS (but no max-height!)

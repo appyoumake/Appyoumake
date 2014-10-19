@@ -1,4 +1,4 @@
-document.mlab_code_dummy = new function() {
+document.mlab_code_dumming = new function() {
 	
 	this.config = new Array();
     

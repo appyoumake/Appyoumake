@@ -429,10 +429,15 @@ class FileManagement {
     }
     
     /**
-     * copies a page
+     * deletes a page, when this is done it renames remaining pages so always sequatial.
+     * But it cannot do this if one of the remaining pages are locked
+     * So, if we have page Index+1, and 1 is deleted, we return 0 for index page
+     * If we have pages index+1+2+3 and 1 is deleted we return 1
+     * If we have pages index+1+2+3 and 3 is deleted we return 2
+     * 
      * @param type $app
      * @param type $page_num
-     * @return name of file to open OR false
+     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
      */
     public function deletePage($app, $page_num, $uid) {
 //get path of file to delete
@@ -460,13 +465,13 @@ class FileManagement {
             }
             
             if (file_exists("$app_path/$page_to_delete")) {
-                return $this->getPageContent("$app_path/$page_to_delete", $uid);
+                return intval($page_to_delete);
             } else {
                 $page_to_open = substr("000" . (intval($page_to_delete) - 1), -3) . ".html";
                 if (file_exists("$app_path/$page_to_open")) {
-                    return $this->getPageContent("$app_path/$page_to_open", $uid);
+                    return intval($page_to_open);
                 } else {
-                    return $this->getPageContent("$app_path/index.html", $uid);
+                    return 0;
                 }
             }
         } else {
@@ -484,18 +489,18 @@ class FileManagement {
 
         
         if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
-            $pages = array(0 => $matches[1] . " [Frontpage]");
+            $pages = array(0 => $matches[1]);
         } else {
-            $pages = array(0 => "Untitled [Frontpage]");
+            $pages = array(0 => "Untitled");
         }
         
         $files = glob ( $app_path . "/???.html" );
         foreach ($files as $file) {
             $pnum = intval(basename($file)); 
             if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$file"), $matches) && isset($matches[1])) {
-                $pages[$pnum] = "{$matches[1]} [{$pnum}]";
+                $pages[$pnum] = "{$matches[1]}";
             } else {
-                $pages[$pnum] = "Untitled [{$pnum}]";
+                $pages[$pnum] = "Untitled";
             }
         }
         return $pages;
@@ -660,8 +665,10 @@ class FileManagement {
      **/
     public function addFeature($filename, $comp_id, $component) {
         $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
         $doc->validateOnParse = true;
         $doc->loadHTMLFile($filename);
+        libxml_clear_errors();
 
         $xpath = new \DOMXPath($doc);
         $div_for_features = $xpath->query("//*[@id='mlab_features_content']")->item(0);

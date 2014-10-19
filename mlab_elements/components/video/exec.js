@@ -56,6 +56,7 @@ document.mlab_code_video = new function() {
         var component_config = this.config;
         
         $(el).qtip({
+            solo: true,
             content: {text: content, title: "Last opp video" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },

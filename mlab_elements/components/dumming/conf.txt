@@ -1,0 +1,6 @@
+# Configuration file for dumming "invisible" component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: feature
+name: dumming
+tooltip: This is a feature

@@ -527,14 +527,19 @@ class AppController extends Controller
 
     	if (file_exists("$app_path$doc")) {
             $page = $file_mgmt->getPageContent("$app_path$doc", $uid);
-            
+            if (preg_match('/<title>(.+)<\/title>/', $page["html"], $matches)) {
+                $title = $matches[1];
+            } else {
+                $title = "Untitled";
+            }
     		return new JsonResponse(array(
     				'result' => 'success',
     				'html' => $page["html"],
     				'lock_status' => $page["lock_status"],
                     'page_num_sent' => $page_num,
                     'page_num_real' => intval($doc),
-                    'app_id' => $app_id));
+                    'app_id' => $app_id,
+                    'page_title' => $title));
     		 
     	} else {
     		return new JsonResponse(array(
@@ -706,9 +711,9 @@ class AppController extends Controller
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
         
-//delete file
+//delete file, returns number of file to open if successful
         $res = $file_mgmt->deletePage($app, $page_num, $uid);
-        if (!$res) {
+        if ($res === false) {
             return new JsonResponse(array(
                     'result' => 'error',
                     'msg' => "Unable to delete page"));
@@ -717,10 +722,8 @@ class AppController extends Controller
 //update file counter variable in JS
             $total_pages = $file_mgmt->getTotalPageNum($app);
             $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
-            return new JsonResponse(array(
-                    'result' => 'success',
-                    'html' => $res["html"],
-                    'lock_status' => $res["lock_status"]));
+            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $res, 'uid' => $uid)));
+            
         }
     }    
     

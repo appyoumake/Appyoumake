@@ -1044,10 +1044,19 @@ ul.megamenu li a {
         content:attr(data-mlab_placeholder)
 }
 
-#mlab_existing_pages {
-    max-height: 200px;
+#mlab_page_management {
     overflow-x: hidden;
     overflow-y: scroll;
+    display: none;
+    position: absolute;
+    left: 250px;
+    top: 100px;
+    z-index: 980;
+    width: 420px;
+    background: white;
+    height: 200px;
+    border: 1px solid gray;
+    border-radius: 5px;
 }
 
 #mlab_editable_area {
@@ -1066,37 +1075,6 @@ ul.megamenu li a {
     
 }
 
-/*Status bar styling*/
-ul#mlab_megamenu li#mlab_statusbar {
-    float: right;
-    color: #e3f2ff;
-    font-weight: bold;
-    padding: 0 10px;
-    margin: 5px;
-    height: auto;
-    width: auto;
-}
-
-ul#mlab_megamenu li#mlab_statusbar div {
-    float: left;
-    border: 2px solid white;
-    border-style: inset;
-    height: 100%;
-    display: none;
-}
-
-ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_permanent {
-    display: block;
-}
-
-ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
-    background-image: url('/img/progress.gif');
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 50px;
-    border: 0;
-}
-
 #mlab_footer_devinfo {
     font-weight: bold;
     width: 100%;
@@ -1105,16 +1083,53 @@ ul#mlab_megamenu li#mlab_statusbar div#mlab_statusbar_progressbar {
 }
 
 #mlab_editor #mlab_page_control{
-    padding: 4px 0px 0px 192px;
+    padding: 20px 0px 0px 192px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 10px;
-}
-
-#mlab_editor #mlab_page_control ul{
-    padding-bottom: 0px;
-    margin-bottom: 0px;
 }
 
 #mlab_editor_chrome div.ui-loader{
    display: none !important; 
 }
+
+#mlab_page_control {
+    width: 644px;
+    height: 20px;
+    position: static;
+}
+
+#mlab_page_control * {
+    float: left;
+    margin-right: 15px;
+}
+
+#mlab_page_control h3 {
+    width: 200px;
+    border: 2px solid orange;
+    border-radius: 5px;
+    padding: 4px;
+    margin-top: 0;
+}
+
+#mlab_overlay_info{
+    pointer-events: none;
+}
+
+#mlab_overlay .mlab_modal {
+    font-size: 2em;
+    color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 200px;
+    margin-left: -150px;
+    margin-top: -100px;
+    background-color: orange;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 10px;
+    z-index: 10000; /* keep on top of other elements on the page */
+    outline: 9999px solid rgba(0,0,0,0.5);
+}
+

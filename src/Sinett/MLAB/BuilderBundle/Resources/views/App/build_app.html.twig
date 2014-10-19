@@ -11,9 +11,31 @@
             <img onclick='mlab_component_movedown();'      title='Move selected component down' id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' >
             <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >
             <img id='mlab_button_menu'                     title='Modify selected component' src='/img/tools/menu.png' class='mlab_tools mlab_tools_space'>
-            <img id='mlab_button_features'                 title='Add features to the app' src='/img/tools/features.png' class='mlab_tools mlab_tools_space'>
         </div>
 	</div>
+    
+    <div id="mlab_page_control">
+        <img id="mlab_page_control_previous" onclick="mlab_page_move_to(-1);" src="/img/tools/previous.png">
+        <img id="mlab_page_control_next" onclick="mlab_page_move_to(1);" src="/img/tools/next.png">
+        <h3 id="mlab_page_control_title" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$('#mlab_page_control_title_actions').slideDown();"></h3>
+
+        <div id="mlab_page_control_title_actions" class="mlab_hidden">
+            <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').slideUp(); mlab_page_update_title();" class="mlab_dt_button_ok_left">Save</button>
+            <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').slideUp(); $('#mlab_page_control_title').text(document.mlab_current_app.curr_pagetitle);" class="mlab_dt_button_cancel_left">Cancel</button>
+        </div>
+
+        <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png">
+    </div>
+    
+    <div id="mlab_page_management" class="mlab_hidden" onclick="$('#mlab_page_management').slideUp();">
+        <div id="mlab_existing_pages">
+        </div>
+        <div>
+            <img id="mlab_page_control_delete" onclick="mlab_page_delete();" src="/img/menu_delete_icon.png">
+            <img id="mlab_page_control_new" onclick="mlab_page_new();" src="/img/menu_new_icon.png">
+            <img id="mlab_page_control_copy" onclick="mlab_page_copy();" src="/img/menu_copy_icon.png">
+        </div>
+    </div>
     
 	<div id="mlab_editor_chrome">
 		<div id="mlab_editable_area_placeholder"></div>
@@ -23,9 +45,7 @@
     <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>
     </div>
-    <div id="mlab_menu_popup"></div>
-    <div id="mlab_app_info"></div>
-    <div id="mlab_download_qr" class="hide" onclick="$(this).hide();"></div>
+    <div id="mlab_overlay"><div class="mlab_modal">Please wait while MLAB is being prepared and app is opened...</div></div>
 {% endblock %}
 
 {% block javascripts %}

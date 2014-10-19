@@ -55,7 +55,6 @@ document.mlab_code_googlemap = new function() {
 //therefore we need to generate new Google Maps API calls based on the current map settings (zoom level, controls displayed, etc
 //we also need to delete the script inside the DIV which has a script_GUID id.
 	this.onSave = function (el) {
-debugger;        
 //prepare some local vars
         var temp_el = el.cloneNode(true);
         var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
@@ -245,6 +244,7 @@ debugger;
         var component_config = this.config;
         
         $(el).qtip({
+            solo: true,
             content: {text: content, title: "Last opp bilde" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },

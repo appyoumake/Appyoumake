@@ -22,6 +22,8 @@
     MLAB_CB_SET_DIRTY = 15; //set the global dirty flag
     MLAB_CB_GET_EDITOR_ELEMENT = 16; //get the DIV that is the ontainer for the editable area
     MLAB_CB_GET_ENV = 17;
+    MLAB_CB_CLOSE_ALL_PROPERTY_DIALOGS = 18;
+    MLAB_CB_EDIT_CONTENT = 19;
 
 
 /* general variables used globally by different functions 
@@ -129,6 +131,7 @@
 //now we load components
                 $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
+                        var feature_list = $("<ul></ul>");
                         mlab_components = data.mlab_components;
                    		for (type in mlab_components) {
                             var c = mlab_components[type];
@@ -136,16 +139,17 @@
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab_component_add(\"" + type + "\");' " +
-                                            "title='" + c.tooltip + "' " +
+                                            "title='" + c.conf.tooltip + "' " +
                                             "class='mlab_button_components' " + 
                                             "style='background-image: url(\"" + mlab_config.urls.component + type + "/" + mlab_config.component_files.ICON + "\");'>" + 
                                         "</div>"
                                 );
+                            } else if (c.accessible && c.is_feature) {
+                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab_feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");    			
                             }
                         }
-
-                        mlab_menu_features_prepare();
-
+                        
+                        $("#mlab_features_list").html(feature_list);
                         
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab_app_open( document.mlab_temp_app_id, document.mlab_temp_page_num );
@@ -205,17 +209,20 @@
         $.get( url, function( data ) {
             if (data.result == "success") {
                 mlab_index_page_process ( data.html, "index");
-                $("#mlab_app_info").empty();
+                
+//update the list of features we have added to this app
+                $("#mlab_features_list li").removeClass("mlab_features_used");
                 $(document.mlab_current_app.curr_indexpage_html)
                     .find("#mlab_features_content [data-mlab-type]>")
                     .each(function() { 
-                        $("#mlab_app_info").append("<br>" + mlab_components[$(this).parent().data("mlab-type")].conf.tooltip);
+                        $("#mlab_features_list [data-mlab-feature-type='" + $(this).parent().data("mlab-type") + "']").addClass("mlab_features_used");
                      });
 
 //if they are not opening the index page we need to call backend again to load the page they want to open
                 if (local_page_num != "0" && local_page_num != "index") {
                     mlab_page_open_process(data.app_id, local_page_num);
                 } else {
+                    $("#mlab_overlay").slideUp();
                     document.mlab_current_app.locked = (data.lock_status == "locked");
                     mlab_timer_start();
                 }
@@ -226,8 +233,29 @@
         });
     } 
     
-    function mlab_app_update_title() {
-        alert("Not implemented yet");
+    function mlab_app_update_metadata(el) {
+        $(el).next().slideUp();
+        switch ($(el).attr("id")) {
+            case "mlab_edit_app_title" :
+                break;
+
+            case "mlab_edit_app_description" :
+                break;
+            
+            case "mlab_edit_app_keywords" :
+                break;
+           
+            case "mlab_edit_app_category1" :
+                break;
+
+            case "mlab_edit_app_category2" :
+                break;
+            
+            case "mlab_edit_app_category3" :
+                break;
+                
+        }
+
     }
 
 /*
@@ -285,20 +313,32 @@
     function mlab_app_update_gui_metadata() {
 
 //List of all pages
-//#mlab_existing_pages is a <div> which is populated with a <ul> with a <li> element for each page
-        var list = $('<ul></ul>')
+//#mlab_existing_pages is a <div> which is populated with a <ol> with a <li> element for each page
+        var list = $('<ol></ol>')
+        var currpage = document.mlab_current_app.curr_page_num;
+        var span = "";
+        if (currpage == "index") {
+            currpage = 0;
+        }
         for (i in document.mlab_current_app.page_names) {
-            list.append("<li><a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
+            if (i > 0) {
+                span = "<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
+            }
+            if (i == currpage) {
+                list.append("<li data-mlab-page-open='" + i + "'>" + span + document.mlab_current_app.page_names[i] + "</li>");    			
+            } else {
+                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
+            }
         }
         $("#mlab_existing_pages").html(list);
 
 //Various app meta data
-        $("#mlab_curr_apptitle").val(document.mlab_current_app.name);
-        $("#mlab_app_description").val(document.mlab_current_app.description);
-        $("#mlab_app_keywords").val(document.mlab_current_app.keywords);
-        $("#mlab_app_CategoryOne").val(document.mlab_current_app.categoryOne);
-        $("#mlab_app_CategoryTwo").val(document.mlab_current_app.categoryTwo);
-        $("#mlab_app_CategoryThree").val(document.mlab_current_app.categoryThree);
+        $("#mlab_edit_app_title").text(document.mlab_current_app.name);
+        $("#mlab_edit_app_description").text(document.mlab_current_app.description);
+        $("#mlab_edit_app_keywords").text(document.mlab_current_app.keywords);
+        $("#mlab_edit_app_category1").text(document.mlab_current_app.categoryOne);
+        $("#mlab_edit_app_category2").text(document.mlab_current_app.categoryTwo);
+        $("#mlab_edit_app_category3").text(document.mlab_current_app.categoryThree);
     }		
 
 
@@ -367,7 +407,7 @@
 //Page name is picked up from title tag in head
         document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
         document.mlab_current_app.curr_page_num = page_num;
-        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+        $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
 
         mlab_app_update_gui_metadata();
 
@@ -417,7 +457,7 @@
 //Page name is picked up from title tag in head
         document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
         document.mlab_current_app.curr_page_num = page_num;
-        $("#mlab_curr_pagetitle").val(document.mlab_current_app.curr_pagetitle);
+        $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
 
         mlab_app_update_gui_metadata();
 
@@ -433,6 +473,25 @@
  ************** Functions to manipulate pages **************
 ************************************************************/
 
+/*
+ * Open previous or next page depending on direction. If on first or last page does nothing
+ * @param {type} direction
+ * @returns {undefined}
+ */
+    function mlab_page_move_to(direction) {
+        var curr_num = 0;
+        (document.mlab_current_app.curr_page_num == "index") ? curr_num = 0 : curr_num = parseInt(document.mlab_current_app.curr_page_num);
+        if ( direction < 0 && curr_num > 0 ) {
+            curr_num--;
+        } else if ( direction > 0 ) {
+            curr_num++;
+        } else {
+            return;
+        }
+        mlab_page_open(document.mlab_current_app.id, curr_num);
+        
+    }
+    
 /**
  * Retrieve content of a page from server and insert it into the editor area
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
@@ -452,6 +511,8 @@
         $.get( url, function( data ) {
             if (data.result == "success") {
                 mlab_update_status("completed");
+                mlab_update_status("permanent", document.mlab_current_app.name);
+                $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                     mlab_index_page_process ( data.html, "index" );
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
@@ -464,17 +525,21 @@
                     path[path.length - 2] = data.page_num_real;
                     history.pushState({id: data.app_id, page: data.page_num_real }, document.mlab_current_app.curr_pagetitle, path.join("/"));
                 }
-                mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
 
                 if (data.lock_status == "locked") {
                     document.mlab_current_app.locked = true;
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',.6);
-                    $("#" + mlab_config["app"]["content_id"]).append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
+                    $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                 } else {
                     document.mlab_current_app.locked = false;
+                    $("#mlab_editor_disabled").remove();
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',1);
                 }
-
+                
+                if ( $("#mlab_overlay").is(':visible') ) {
+                    $("#mlab_overlay").slideUp();
+                }
+                
                 mlab_timer_start();
                 
             } else {
@@ -490,11 +555,21 @@
  * This will update the title of the currently open page and also update relevant items other places
  */
     function mlab_page_update_title() {
+        if (document.mlab_current_appd) {
+            alert("Page is locked, you cannot update the title");
+            return;
+        }
+
         mlab_flag_dirty = true;
-        document.mlab_current_app.curr_pagetitle = $("#mlab_curr_pagetitle").val();
+        document.mlab_current_app.curr_pagetitle = $("#mlab_page_control_title").text();
         document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = document.mlab_current_app.curr_pagetitle;
-        mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
-        $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").text(document.mlab_current_app.curr_pagetitle + " [" + document.mlab_current_app.curr_page_num + "]");
+        $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
+        if (document.mlab_current_app.curr_page_num == "index") {
+            $("#mlab_existing_pages [data-mlab-page-open='0']").html(document.mlab_current_app.curr_pagetitle);
+        } else {
+            $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + document.mlab_current_app.curr_page_num + "\");' >&nbsp;</span>" + document.mlab_current_app.curr_pagetitle);
+        }
+        
         
     }
 
@@ -724,9 +799,7 @@
                     $("#" + mlab_config["app"]["content_id"]).empty();
                     document.mlab_current_app.curr_pagetitle = title;
                     document.mlab_current_app.curr_page_num = data.page_num_real;
-                    $("#mlab_curr_pagetitle").val(title);
-                    mlab_update_status("permanent", "Editing " + document.mlab_current_app.name + "::" + document.mlab_current_app.curr_pagetitle);
-
+                    $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
                     document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = title;
                     mlab_app_update_gui_metadata();
 
@@ -746,23 +819,28 @@
 /**
  * Creates a new file on the server and opens it
  */
-    function mlab_page_copy() {
-        if (document.mlab_current_app.curr_page_num == "0" || document.mlab_current_app.curr_page_num == "index") {
+    function mlab_page_copy(page_num) {
+        if (page_num == "0" || page_num == "index") {
             alert("You can not copy the index page");
             return;
         }
 
-        mlab_page_save(mlab_page_copy_process);
+        mlab_page_save( function() { mlab_page_copy_process(page_num); } );
     }
        
-    function mlab_page_copy_process() {
+    function mlab_page_copy_process(page_num) {
 
         var url = mlab_urls.page_copy.replace("_ID_", document.mlab_current_app.id);
-        url = url.replace("_PAGE_NUM_", document.mlab_current_app.curr_page_num);
+        url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", mlab_uid);
-
+        mlab_update_status("callback", "Copying page", true);
+        
         $.get( url, function( data ) {
+            mlab_update_status("completed");
             if (data.result == "success") {
+                document.mlab_current_app.curr_pagetitle = data.page_title;
+                $("#mlab_page_control_title").text(data.page_title);
+                document.mlab_current_app.page_names[data.page_num_real] = data.page_title;
                 mlab_regular_page_process ( data.html, data.page_num_real );
             } else {
                 alert(data.msg);
@@ -789,14 +867,23 @@
         url = url.replace("_UID_", mlab_uid);
 
         $.get( url, function( data ) {
+            mlab_update_status("completed");
             if (data.result == "success") {
-                mlab_update_status("completed");
-                mlab_regular_page_process ( data.html, data.page_num );
-                mlab_timer_start();
+                $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").remove();
+                document.mlab_current_app.page_names.splice(document.mlab_current_app.curr_page_num, 1);
+                mlab_regular_page_process ( data.html, data.page_num_real );
+                
+                if (document.mlab_current_app.curr_page_num == "index") {
+                    $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").html(document.mlab_current_app.curr_pagetitle);
+                } else {
+                    $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + document.mlab_current_app.curr_page_num + "\");' >&nbsp;</span>" + document.mlab_current_app.curr_pagetitle);
+                }
+                
             } else {
                 mlab_update_status("temporary", data.msg, false);
             }
 
+            mlab_timer_start();
         });
     }
 
@@ -844,9 +931,12 @@
         $("#" + mlab_config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab_component_highlight_selected(this);})
         new_comp.on("input", function(){mlab_flag_dirty = true;});
-        //new_comp.children().attr("contenteditable", "true");
         
+        $('.mlab_current_component').qtip('hide');
+
         mlab_component_run_code(new_comp, id, true);
+        mlab_component_highlight_selected(new_comp);
+        window.scrollTo(0,document.body.scrollHeight);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
         var url = mlab_urls.component_added.replace("_APPID_", document.mlab_current_app.id);
@@ -877,8 +967,6 @@
                 mlab_feature_add(mlab_components[id].conf.dependencies[0], true);
             }
         }
-
-        mlab_component_highlight_selected(new_comp);
 
         mlab_flag_dirty = true;
 
@@ -1032,7 +1120,7 @@
             $.get( url, function( data ) {
                 if (data.result == "success") {
                     mlab_update_status("temporary", "Feature added", false);
-                    $("#mlab_app_info").append("<br>" + mlab_components[data.component_id].conf.tooltip);
+                    $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
                 } else {
                     mlab_update_status("temporary", data.msg, false);
                 }
@@ -1102,35 +1190,6 @@
         });
 
         $('.mlab_menu_title').attr('data-menutitle', "Modify component");
-    }
-
-/* prepares the features menu for the current app */
-    function mlab_menu_features_prepare() {
-        var items = new Object();
-        var title = "";
-        for(var index in mlab_components) {
-            if (mlab_components[index].conf["category"] == "feature") {
-                items[index] =  { name: index.charAt(0).toUpperCase() + index.slice(1),
-                                  callback: function(key, options) {
-                                      mlab_feature_add(key, false);
-                                  }
-                                };
-            }
-        }            
-        $.contextMenu( 'destroy', '#mlab_button_features' );
-
-        if (Object.keys(items).length < 1) {
-            return;
-        }
-
-        $.contextMenu({
-            selector: '#mlab_button_features', 
-            className: 'mlab_menu_features_title',
-            trigger: 'left',
-            items: items
-        });
-
-        $('.mlab_menu_features_title').attr('data-menutitle', "Add property");
     }
 
 
@@ -1235,12 +1294,12 @@
             $("#mlab_statusbar_permanent").text(content);
             return;
         } else if (state == "temporary") {
-            $("#mlab_statusbar_temporary").text(content).show();
+            $("#mlab_statusbar_temporary").text(content);
             window.setInterval(mlab_clear_status, 3000);
         } else if (state == "callback") {
-            $("#mlab_statusbar_temporary").text(content).show();
+            $("#mlab_statusbar_temporary").text(content);
         } else if (state == "completed") {
-            $("#mlab_statusbar_temporary").hide();
+            $("#mlab_statusbar_temporary").text('');
             $("#mlab_statusbar_progressbar").hide();
             return;
         }
@@ -1389,7 +1448,21 @@ function mlab_component_request_info(type, param) {
             var temp_browser = (navigator.userAgent||navigator.vendor||window.opera);
             var temp_env = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(temp_browser.substr(0,4));
             return temp_env;
+            break;
+            
+        case MLAB_CB_CLOSE_ALL_PROPERTY_DIALOGS :
+            $('.mlab_current_component').qtip('hide');
+            break;
 
+        case MLAB_CB_EDIT_CONTENT :
+            $(param).attr('contenteditable', 'true').focus();
+            var range = document.createRange();
+            var sel = window.getSelection();
+            range.selectNodeContents($(param)[0]);
+            sel.removeAllRanges();
+            sel.addRange(range);
+            break;
+            
     }
     
 }

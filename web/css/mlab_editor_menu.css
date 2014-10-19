@@ -123,11 +123,24 @@ border: none;
 
 #mlab_editor_menu a.mlab_dev_info, #mlab_editor_menu #mlab_statusbar_permanent, #mlab_editor_menu #mlab_statusbar_temporary, #mlab_editor_menu #mlab_statusbar_progressbar { 
     border:none; 
-    background:transparent; 
     font-family:Arial, Helvetica, sans-serif;
     font-size:14px; 
     color: #BBBBBB;
     text-shadow: 1px 1px 1px #000;
+}
+
+/*Status bar styling*/
+
+div#mlab_statusbar_permanent {
+    display: block;
+}
+
+div#mlab_statusbar_progressbar {
+    background-image: url('/img/progress.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 50px;
+    border: 0;
 }
 
 #mlab_editor_menu a.mlab_dev_info:hover { 
@@ -459,19 +472,28 @@ padding: 0;
 background-color: transparent;
 }
 
-.mlab_menu_field_update_button{
-margin: auto;
+.mlab_menu_field_update_button {
+margin: 0;
 width: 16px;
 height: 16px;
-background-image: url("/img/menu_field_update.png");
+background-image: url("/img/save.png");
 background-repeat: no-repeat;
 cursor: pointer;
 border: 0;
 padding: 0;
-background-color: transparent;
-
+background-color: white;
+display: none;
 }
 
+.mlab_edit_meta_data * {
+    float: left;
+    display: block;
+}
+
+.mlab_edit_meta_data p {
+    clear: both;   
+    width: 80%;
+}
 .basic_menu_icon {
 padding: 5px 5px 0px 5px;
 }
@@ -486,3 +508,13 @@ padding: 5px 5px 0px 5px;
     width: 20px;
 }
 
+#mlab_features_list li {
+    list-style: none;
+    cursor: pointer;
+}
+
+#mlab_features_list li.mlab_features_used:before {
+    content: "\2713 ";   
+    margin-left: -1em; 
+    margin-right: .100em;
+}

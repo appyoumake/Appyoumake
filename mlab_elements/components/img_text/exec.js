@@ -94,6 +94,7 @@ document.mlab_code_img_text = new function() {
         var component_config = this.config;
         
         $(el).qtip({
+            solo: true,
             content: {text: content, title: "Last opp bilde" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },

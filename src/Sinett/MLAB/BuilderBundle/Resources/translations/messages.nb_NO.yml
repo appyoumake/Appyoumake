@@ -307,15 +307,18 @@ app.builder.menu.link.login: Logg inn
 app.builder.edit.menu.main.heading: Meny
 app.builder.edit.menu.welcome.info: Litt generelt - Hva menyen hjelper til med. feks forklare hva er en side...
 
-app.builder.edit.menu.heading.app: App
+app.builder.edit.menu.heading.app: App detaljer
 app.builder.edit.menu.app.name.info: Rediger app-navnet ved å klikke på blyanten
 app.builder.edit.menu.app.edit.info: Her kan du endre beskrivelse, legge til nøkkelord eller opdatere kategoriene. Alle feltene må ha innhold
+
+app.builder.edit.menu.heading.feature: App egenskaper
+app.builder.edit.menu.feature.info: Du kan legge til spesielle egenskaper til en app, det kan være oppkobling mot en database eller link til en kalender. Velg i fra listen nedenfor. De med en hake er allerede legt til i denne appen.
 
 app.builder.edit.menu.heading.page: Side
 app.builder.edit.menu.page.name.info: For å rediger sidenavnet klikke på blyanten. For å slette siden klikk på krysset under eller klikk på lagreknappen for å lagre
 app.builder.edit.menu.page.edit.info: Velg siden du ønsker å hoppe til, legg til en ny side eller kopier siden som er valgt
 
-app.builder.edit.menu.heading.test.app: Prøv app
+app.builder.edit.menu.heading.test.app: App testing
 app.builder.edit.menu.test.app.info: Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. For å få en korekt test klikk på mobil-knappen som vil gi deg en QR-kode du kan bruke til å laste ned appen til din mobil
 
 app.builder.edit.menu.heading.exit: Avslutt
