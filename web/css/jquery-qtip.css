@@ -35,6 +35,8 @@
 
 		text-align: left;
 		word-wrap: break-word;
+        max-height: 600px;
+        overflow-y: auto;
 	}
 
 	.qtip-titlebar{
