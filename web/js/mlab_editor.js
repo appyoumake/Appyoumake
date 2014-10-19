@@ -208,7 +208,7 @@
 
         $.get( url, function( data ) {
             if (data.result == "success") {
-                mlab_index_page_process ( data.html, "index");
+                mlab_index_page_process ( data.html, "index", ( local_page_num == "0" && local_page_num == "index" ) );
                 
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_features_used");
@@ -357,7 +357,7 @@
     Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    function mlab_index_page_process (page, page_num) {
+    function mlab_index_page_process (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
@@ -380,8 +380,16 @@
 
 //store different parts of doc for easy access/manipulation
         var head = doc.getElementsByTagName("head")[0];
-        var body = doc.getElementsByTagName("body")[0].cloneNode(true);
         var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
+        
+//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
+//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area 
+        var content = doc.getElementById(mlab_config["app"]["content_id"]);
+        while (content.firstChild) {
+            content.removeChild(content.firstChild);
+        }
+        var body = doc.getElementsByTagName("body")[0].cloneNode(true);
+        
         var stylesheets = head.getElementsByTagName("link");
 
 //insert stylesheets 
@@ -394,15 +402,12 @@
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
         $("#mlab_editor_chrome").append(body.innerHTML);
 
-//now we need to make the internal code editable
-        mlab_prepare_editable_area();
-
-//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
-//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area 
-        var content = doc.getElementById(mlab_config["app"]["content_id"]);
-        while (content.firstChild) {
-            content.removeChild(content.firstChild);
+//now we need to make the internal code editable, but only if they actually want to edit this page
+        if (is_final_destination) {
+            $("#" + mlab_config["app"]["content_id"]).html(divs);
+            mlab_prepare_editable_area();
         }
+        
         document.mlab_current_app.curr_indexpage_html = doc;
 //Page name is picked up from title tag in head
         document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
@@ -514,7 +519,7 @@
                 mlab_update_status("permanent", document.mlab_current_app.name);
                 $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
-                    mlab_index_page_process ( data.html, "index" );
+                    mlab_index_page_process ( data.html, "index", true );
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
                     mlab_timer_start();
                     return;

@@ -9,7 +9,7 @@
     height:43px;
     padding:0px 20px 0px 20px;
     -webkit-padding-start: 8px;
-    z-index: 1000000000;
+    z-index: 1000;
  
     /* Rounded Corners */
      
@@ -40,7 +40,7 @@
     margin-right:30px;
     margin-top:7px;
     border:none;
-    z-index: 1000000000;
+    z-index: 1000;
 }
 
 #mlab_editor_menu.mlab_basic_menu li#mlab_menu_dropdown, #mlab_editor_menu.mlab_basic_menu li#mlab_editor_menu_dropdown {

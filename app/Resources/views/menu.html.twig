@@ -3,7 +3,7 @@
 #}
 
 
-    <li id="mlab_menu_dropdown"><a href="#" class="drop"><img class="mlab_basic_menu_drop" src="/img/logo_menu.png" alt="logo" /></a><!-- Begin 4 columns Item -->
+    <li id="mlab_menu_dropdown"><a target="_top" href="#" class="drop"><img class="mlab_basic_menu_drop" src="/img/logo_menu.png" alt="logo" /></a><!-- Begin 4 columns Item -->
 
         <div class="dropdown_2columns "><!-- Begin 4 columns container -->
 
@@ -15,7 +15,7 @@
                    
                  {% if app.user == null %} <!-- If not loged in -->
                     <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
-                    <a href="/app_dev.php/login">{% trans %}app.builder.menu.link.login{% endtrans %}</a> 
+                    <a target="_top" href="/app_dev.php/login">{% trans %}app.builder.menu.link.login{% endtrans %}</a> 
                     
                 {% else %} <!-- If loged in -->
                     {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
@@ -23,21 +23,21 @@
                     {% endif %} 
                     
                     {% if path('app_builder_index') not in currentPath  %} <!-- If on app list page - don't show the link to this page  -->
-                        <a href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+                        <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
                     {% endif %} 
                      
                         {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
                             {%  if path('admin_apps') not in currentPath  %}
-                                <a href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                                <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
                             {% endif %} 
                             {% if path('admin_users') not in currentPath %}
-                                <a href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                                <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
                             {% endif %} 
                         {% endif %} 
                                 
                         {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
                             {% if path('system') not in currentPath %}
-                                <a href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                                <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
                             {% endif %}
                         {% endif %}
                                 
@@ -59,13 +59,13 @@
                 {% if app.user == null %} <!-- If not loged in -->
                     <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
              
-                     <a href="/app_dev.php/login">{% trans %}app.builder.menu.link.login{% endtrans %}</a> 
-                     <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></p>
+                     <a target="_top" href="/app_dev.php/login">{% trans %}app.builder.menu.link.login{% endtrans %}</a> 
+                     <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></p>
                 {% else %} <!-- If loged in -->
                     <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
                         <b>{{ app.user.username }}</b><br><br>
                     
-                    <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
+                    <a target="_top" href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
                 {% endif %}
             </div>
          

@@ -152,7 +152,8 @@ document.mlab_code_youtube = new function() {
 
 
                         },
-                        hide: function(event, api) { api.destroy(); }
+                        hide: function(event, api) { api.destroy(); },
+                        visible: function(event, api) { $(this).css("z-index", 99); }
             }
         });
         
