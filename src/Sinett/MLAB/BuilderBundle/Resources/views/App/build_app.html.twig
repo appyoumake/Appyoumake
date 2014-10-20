@@ -27,7 +27,8 @@
     <div id="mlab_page_management" class="mlab_hidden" onclick="$('#mlab_page_management').slideUp();">
         <div id="mlab_existing_pages">
         </div>
-        <div>
+        <div id="mlab_page_management_info">
+            Klikk på krysset for å permanent slette siden du står på:
             <img id="mlab_page_control_delete" onclick="mlab_page_delete();" src="/img/menu_delete_icon.png">
         </div>
     </div>
@@ -36,7 +37,8 @@
 		<div id="mlab_editable_area_placeholder"></div>
 		<p />
 	</div>
-    <div class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single'>
+    
+    <div id="mlab_toolbar_for_components" class='mlab_buttons_item_manipulation_list single'>
             <img onclick='mlab_component_moveup();'        title='Move selected component up' id='mlab_button_up' src='/img/tools/up.png' class='mlab_tools' >
             <img onclick='mlab_component_movedown();'      title='Move selected component down' id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' >
             <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >
