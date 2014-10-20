@@ -522,6 +522,9 @@
                     mlab_index_page_process ( data.html, "index", true );
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
                     mlab_timer_start();
+                    if ( $("#mlab_overlay").is(':visible') ) {
+                        $("#mlab_overlay").slideUp();
+                    }
                     return;
                 } else {
                     mlab_regular_page_process ( data.html, data.page_num_real );
