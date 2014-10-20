@@ -609,6 +609,9 @@ class AppController extends Controller
             );
         }
 
+        $app->setUpdated(new \DateTime());
+        $em->flush();
+                
         return new JsonResponse(array(
             'result' => 'success',
             'app_info' => $app_info));
