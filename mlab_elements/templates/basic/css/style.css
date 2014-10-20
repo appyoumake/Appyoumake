@@ -114,6 +114,20 @@
     border: none;
 }
 
+#mlab_editable_area figure {
+    margin: 7px 25px 0px 0px;
+}
+
+#mlab_editable_area figure img {
+   padding-bottom: 5px;
+}
+
+#mlab_editable_area figure figcaption {
+   text-align: center;
+   font-style: italic;
+   font-size: 14px;
+}
+
 /* ==========================================================================
    Page
    ========================================================================== */
