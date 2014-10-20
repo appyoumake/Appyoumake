@@ -22,9 +22,9 @@
                         <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
                     {% endif %} 
                     
-                    {% if path('app_builder_index') not in currentPath  %} <!-- If on app list page - don't show the link to this page  -->
+                    <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
                         <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
-                    {% endif %} 
+                   
                      
                         {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
                             {%  if path('admin_apps') not in currentPath  %}
