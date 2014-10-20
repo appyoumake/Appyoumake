@@ -347,21 +347,15 @@ div#mlab_editor_chrome {
 margin-top: 7.2%;
 }
 
-#mlab_editor .mlab_buttons_item_manipulation_list {
+#mlab_editor div#mlab_toolbar_for_components {
     display: block;
     float: left;
-    margin-top: 40px;
-    margin-left: 200px;
-        
-}
-
-#mlab_toolbar_components div.mlab_toolbar_for_components {
-border: orange dotted 2px;
-padding: 5px;
-margin-left: 15px;
-margin-top: 15px;
-margin-right: 12px;
-margin-bottom: 5px;
+    border: orange dotted 2px;
+    padding: 5px;
+    margin-top: 30px;
+    margin-left: 175px;
+    margin-right: 12px;
+    margin-bottom: 5px;
 }
 
 #mlab_button_rotate {
@@ -553,12 +547,47 @@ margin-bottom: 5px;
     display: none !important;
 }
 
-#mlab_existing_pages .mlab_copy_file {
+
+#mlab_page_management #mlab_page_management_info{
+    padding: 15px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:14px; 
+    color: #000000;
+}
+
+#mlab_page_management #mlab_existing_pages ol{
+    color: #000000;  
+}
+
+#mlab_page_management #mlab_existing_pages li {
+    padding-bottom: 5px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:14px; 
+    color: #666666;
+}
+
+#mlab_page_management #mlab_existing_pages li a{
+    color: #000000;  
+}
+
+#mlab_page_management #mlab_existing_pages .mlab_copy_file {
 	background-image: url("/img/copy_page.png");
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding: 0 15px;
-    
+    margin-right: 10px;
+    padding-bottom: 5px;
+    padding-right: 25px;
+}
+
+#mlab_page_management #mlab_existing_pages .mlab_not_copy_file {
+    margin-right: 10px;
+    padding-bottom: 5px;
+    padding-right: 25px;
+}
+
+#mlab_page_management #mlab_page_control_delete{
+    width: 16px;
+    vertical-align: text-bottom;
 }
 
 #mlab_footer_devinfo {

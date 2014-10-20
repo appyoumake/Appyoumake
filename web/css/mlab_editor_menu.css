@@ -135,10 +135,12 @@
     color: #FFFFFF;
 }
 
+
 /*Status bar styling*/
 
-div#mlab_statusbar_permanent {
+#mlab_editor_menu div#mlab_statusbar_permanent {
     display: block;
+    margin-left: 105px;
 }
 
 div#mlab_statusbar_progressbar {

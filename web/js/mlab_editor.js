@@ -174,8 +174,8 @@
                         $(document).scroll(function(){ // scroll event
                             var windowTop = $(window).scrollTop(); // returns number
 
-                            if (stickyComponentTop < windowTop) {
-                                $('#mlab_toolbar_components').css({ position: 'fixed', top: 0 });
+                            if (stickyComponentTop-40 < windowTop) {
+                                $('#mlab_toolbar_components').css({ position: 'fixed', top: -40 });
                             }
                             else {
                                 $('#mlab_toolbar_components').css('position','static');
@@ -183,6 +183,25 @@
                         });
                         
            } 
+           
+           //get componetnt meny to stick to the top when scrollin dwon
+          if (!!$('#mlab_toolbar_for_components').offset()) { // make sure ".sticky" element exists
+          var stickyComponentTop = $('#mlab_toolbar_for_components').offset().top; 
+
+                        $(document).scroll(function(){ // scroll event
+                            var windowTop = $(window).scrollTop(); // returns number
+
+                            if (stickyComponentTop-40 < windowTop) {
+                                $('#mlab_toolbar_for_components').css({ position: 'fixed', top: 0, left: 655 });
+                            }
+                            else {
+                                $('#mlab_toolbar_for_components').css('position','static');
+                            }
+                        });
+                        
+           } 
+           
+           
 
     });
 
@@ -323,11 +342,16 @@
         for (i in document.mlab_current_app.page_names) {
             if (i > 0) {
                 span = "<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
+            } 
+            
+            if (i == 0){ //index
+                span = "<span class='mlab_not_copy_file'>&nbsp;</span>";
             }
+            
             if (i == currpage) {
                 list.append("<li data-mlab-page-open='" + i + "'>" + span + document.mlab_current_app.page_names[i] + "</li>");    			
             } else {
-                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + " </a></li>");    			
+                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + "</a></li>");    			
             }
         }
         $("#mlab_existing_pages").html(list);
