@@ -473,14 +473,13 @@ background-color: transparent;
 
 .mlab_menu_field_update_button {
 margin: 0;
-width: 16px;
-height: 16px;
-background-image: url("/img/save.png");
+width: 20px;
+height: 20px;
+background-image: url("/img/save_menu.png");
 background-repeat: no-repeat;
 cursor: pointer;
 border: 0;
 padding: 0;
-background-color: white;
 display: none;
 }
 
@@ -493,6 +492,14 @@ display: none;
     clear: both;   
     width: 80%;
 }
+
+#mlab_editor_menu .mlab_edit_meta_data .mlab_edit_app_label {
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+    font-weight: bold;
+}
+
+
 .basic_menu_icon {
 padding: 5px 5px 0px 5px;
 }
