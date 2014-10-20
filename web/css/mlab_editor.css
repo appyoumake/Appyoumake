@@ -563,11 +563,13 @@ margin-top: 7.2%;
     padding-bottom: 5px;
     font-family:Arial, Helvetica, sans-serif;
     font-size:14px; 
-    color: #666666;
+    font-weight: bold;
+    color: #000000;
 }
 
 #mlab_page_management #mlab_existing_pages li a{
     color: #000000;  
+    font-weight: normal;
 }
 
 #mlab_page_management #mlab_existing_pages .mlab_copy_file {
