@@ -6,13 +6,9 @@
 	<div id="mlab_template_warning"></div>
 	
     <div id="mlab_toolbar_components">
-        <div class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single'>
-            <img onclick='mlab_component_moveup();'        title='Move selected component up' id='mlab_button_up' src='/img/tools/up.png' class='mlab_tools' >
-            <img onclick='mlab_component_movedown();'      title='Move selected component down' id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' >
-            <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >
-            <img id='mlab_button_menu'                     title='Modify selected component' src='/img/tools/menu.png' class='mlab_tools mlab_tools_space'>
-        </div>
+        
 	</div>
+    
     
     <div id="mlab_page_control">
         <img id="mlab_page_control_previous" onclick="mlab_page_move_to(-1);" src="/img/tools/previous.png">
@@ -40,6 +36,12 @@
 		<div id="mlab_editable_area_placeholder"></div>
 		<p />
 	</div>
+    <div class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single'>
+            <img onclick='mlab_component_moveup();'        title='Move selected component up' id='mlab_button_up' src='/img/tools/up.png' class='mlab_tools' >
+            <img onclick='mlab_component_movedown();'      title='Move selected component down' id='mlab_button_down' src='/img/tools/down.png' class='mlab_tools' >
+            <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >
+            <img id='mlab_button_menu'                     title='Modify selected component' src='/img/tools/menu.png' class='mlab_tools mlab_tools_space'>
+        </div>
     
     <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>

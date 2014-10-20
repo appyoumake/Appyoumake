@@ -5,12 +5,6 @@
 <ul id="mlab_editor_menu">
     
     {{ include( 'menu.html.twig' ) }}
-    
-     <li id="mlab_editor_undo_redo" class="single">
-        <img onclick='mlab_page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools' >
-        <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' >
-        <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' >
-    </li><!-- End undo and redo menu items -->
 
     <li id="mlab_editor_menu_dropdown">
         <a href="#" class="drop">
@@ -73,10 +67,17 @@
         </div><!-- End 4 columns container -->
         
     </li><!-- End 4 columns Item -->
+    
+    <li id="mlab_editor_undo_redo" class="single">
+        <img onclick='mlab_page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools' >
+        <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' >
+        <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' >
+    </li><!-- End undo and redo menu items -->
 
-    <li ><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
-    <li ><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
-    <li ><div id='mlab_statusbar_permanent'></div></li>
+
+    <li  class="single"><div id='mlab_statusbar_permanent'></div></li>
+    <li  class="single"><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
+    <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
     
     <li class="single menu_right">
         <a class="mlab_dev_info" href="/app_dev.php/logout" target="_top">

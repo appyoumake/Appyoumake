@@ -34,7 +34,7 @@ float: left;
 font-family: Verdana, Arial, sans-serif;
 height: 128px;
 line-height: 0px;
-padding-top: 8px;
+padding-top: 55px;
 width: 128px;
 
 
@@ -315,7 +315,7 @@ div#mlab_toolbar_components {
 width: 145px;
 float: left;
 overflow-y: auto;
-padding-top: 8px;
+padding-top: 55px;
 height: 90%;
 }
 
@@ -347,8 +347,11 @@ div#mlab_editor_chrome {
 margin-top: 7.2%;
 }
 
-.mlab_buttons_item_manipulation_list {
+#mlab_editor .mlab_buttons_item_manipulation_list {
     display: block;
+    float: left;
+    margin-top: 40px;
+    margin-left: 200px;
         
 }
 
@@ -566,7 +569,7 @@ margin-bottom: 5px;
 }
 
 #mlab_editor #mlab_page_control{
-    padding: 20px 0px 0px 192px;
+    padding: 20px 0px 0px 320px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 10px;
 }
@@ -592,6 +595,26 @@ margin-bottom: 5px;
     border-radius: 5px;
     padding: 4px;
     margin-top: 0;
+}
+
+#mlab_page_control #mlab_page_control_previous,
+#mlab_page_control #mlab_page_control_next {
+    width: 10px;
+    margin-top: 2px;
+}
+
+#mlab_page_control #mlab_page_control_pagelist{
+    width: 18px;
+    margin-top: 6px;
+}
+
+#mlab_page_control #mlab_page_control_title{
+    margin-right: 5px;
+}
+
+#mlab_page_control #mlab_page_control_new {
+width: 20px;
+margin-top: 1px;
 }
 
 #mlab_overlay_info{
