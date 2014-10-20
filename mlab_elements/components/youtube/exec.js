@@ -24,19 +24,18 @@ document.mlab_code_youtube = new function() {
         content = $('<form />');
         content.append( '<div class="arama">' + 
                         '    <form action="" onsubmit="return false">' + 
-                        '        <h2>Youtube API jQuery AutoComplete</h2>' + 
-                        '        <div class="ui-widget">' + 
-                        '            <label for="youtube">Youtube Arama: </label>' + 
+                        '        <p class="mlab_dt_text_info">Søk etter en youtube-video ved å skrive et søkeord i boksen og enten velg et forslag fra listen eller klikk på søk-knappen</p>' + 
+                        '        <div class="ui-widget">' +  
                         '            <input id="youtube" />' + 
-                        '            <button id="submit">ARA</button>' + 
+                        '            <button id="submit">Søk</button>' + 
                         '        </div>' + 
                         '    </form>' + 
                         '</div>' +
                         '<div id="sonuc"></div>');
                 
         content.append( $('<p />') );
-        content.append( $('<div />', { text: 'Cancel', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right" }) );
+        content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel_left" }) );
+        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok_left" }) );
 
         var component = el;
         var component_id = this.config.component_name;
@@ -53,7 +52,7 @@ document.mlab_code_youtube = new function() {
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
-            style: { classes: 'qtip-tipped' },
+            style: { classes: 'qtip-light' },
             events: { render: function(event, api) {
                             this.component = component;
                             this.component_id = component_id;
@@ -68,6 +67,17 @@ document.mlab_code_youtube = new function() {
                                 api.hide(e); 
                             });
                             
+                             //Adding mlab style 
+                            //$('#mlab_property_button_ok').addClass('mlab_dt_button_ok_left'); 
+                            //$('#mlab_property_button_cancel').addClass('mlab_dt_button_cancel_left');
+                            //$('#mlab_property_uploadfiles').addClass('mlab_dt_button_upload_files_left');
+                            $('.new_but_line').addClass('mlab_dt_button_new_line');
+                            $('.new_big_line').addClass('mlab_dt_large_new_line');
+                            $('.new_small_line').addClass('mlab_dt_small_new_line');
+                            $('.qtip-titlebar').addClass('mlab_dt_text_title_bar');
+                            $('.info').addClass('mlab_dt_text_info');
+                            $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
+                            $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
 /* 
  * The following section is Copyright (c) 2014 by Tayfun Erbilen (http://codepen.io/tayfunerbilen/pen/rIHvD)
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

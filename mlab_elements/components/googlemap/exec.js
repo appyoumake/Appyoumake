@@ -254,7 +254,7 @@ document.mlab_code_googlemap = new function() {
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
-            style: { classes: 'qtip-tipped' },
+            style: { classes: 'qtip-light' },
             events: { render: function(event, api) {
                             this.component = component;
                             this.component_id = component_id;
