@@ -341,7 +341,7 @@
         }
         for (i in document.mlab_current_app.page_names) {
             if (i > 0) {
-                span = "<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
+                span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
             } 
             
             if (i == 0){ //index
