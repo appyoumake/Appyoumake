@@ -1,4 +1,4 @@
-/* 
+/*
  * All functions used in /src/Sinett/MLAB/BuilderBundle/Resources/views/App/build_app.html.twig
  * but not the data that has to come from TWIG. Therefore, see top of that page for data structures.
  */
@@ -26,12 +26,12 @@
     MLAB_CB_EDIT_CONTENT = 19;
 
 
-/* general variables used globally by different functions 
+/* general variables used globally by different functions
    (variables with data from backend are loaded from the backend in the document.ready event and enters this file as JSON structures */
 
 // State variables
     mlab_flag_dirty = false;
-    mlab_counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for 
+    mlab_counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
     mlab_drag_origin = 'sortable';
     mlab_timer_save = null;
     mlab_api_version = 0.1;
@@ -43,7 +43,7 @@
 //turn off automatic initialisation of mobile pages
     $.mobile.autoInitializePage = false;
 
-/*********** Startup code ***********/  
+/*********** Startup code ***********/
     $(document).ready(function() {
         if (bowser.gecko || bowser.chrome) {
 
@@ -52,31 +52,31 @@
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
         }
 
-//here we pick up variables from the backend, if successful we go on, if not we must exit            
+//here we pick up variables from the backend, if successful we go on, if not we must exit
         $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/load_variables" , function( data ) {
-            
+
             if (data.result === "success") {
 //unique ID for this tab/window, used to lock pages
                 mlab_uid = data.mlab_uid;
-                
+
 
 //we use the email of the user to send them links to apps
                 mlab_current_user_email = data.mlab_current_user_email;
 
-//current app/page information, this will be updated when they create a new app or edit properties 
+//current app/page information, this will be updated when they create a new app or edit properties
                 document.mlab_current_app = data.mlab_app;
                 document.mlab_current_app.curr_page_num = data.mlab_app_page_num;
-//checksum of current file 
+//checksum of current file
                 document.mlab_current_app.app_checksum = data.mlab_app_checksum;
-                
+
 //configuration stuff from parameter.yml
                 mlab_config = data.mlab_config;
-                
+
 //URLs can be changed using routes in MLAB, make sure we always use the latest and don't have hardwired ones
                 mlab_urls = data.mlab_urls;
 
 //constants/paths which are defined in parameteres.yml, a single object called mlab_config with everything in parameters.yml as sub objects
-// so to get path of cordova executables we use mlab_config.cordova.bin_path, etc 
+// so to get path of cordova executables we use mlab_config.cordova.bin_path, etc
 
                 droppable_options = {
                     drop: function( event, ui ) {
@@ -85,13 +85,13 @@
                 };
 
                 sortable_options = {
-                    placeholder: "mlab_component_placeholder", 
-                    revert: false, 
+                    placeholder: "mlab_component_placeholder",
+                    revert: false,
                     helper: "clone",
                     cancel: "[contenteditable]",
                     stop: function(event, ui){
-//make editable after dragging to sort								
-                        if (mlab_drag_origin == 'sortable' && ui.item.data("contenteditable") == "true") { 
+//make editable after dragging to sort
+                        if (mlab_drag_origin == 'sortable' && ui.item.data("contenteditable") == "true") {
                             ui.item.attr("contenteditable", "true");
                         };
                         mlab_flag_dirty = true;
@@ -118,7 +118,7 @@
                     height: 500,
                     modal: true
                 });
-                
+
 //set a scroll bar http://rocha.la/jQuery-slimScroll
 //should be flexible: $("#mlab_editor_chrome").innerHeight()
                 $("#" + mlab_config["app"]["content_id"]).slimScroll({
@@ -126,7 +126,7 @@
                     size: '10px',
                     height: '700px'
                 });
-                
+
 
 //now we load components
                 $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/load_components" , function( data ) {
@@ -140,36 +140,36 @@
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab_component_add(\"" + type + "\");' " +
                                             "title='" + c.conf.tooltip + "' " +
-                                            "class='mlab_button_components' " + 
-                                            "style='background-image: url(\"" + mlab_config.urls.component + type + "/" + mlab_config.component_files.ICON + "\");'>" + 
+                                            "class='mlab_button_components' " +
+                                            "style='background-image: url(\"" + mlab_config.urls.component + type + "/" + mlab_config.component_files.ICON + "\");'>" +
                                         "</div>"
                                 );
                             } else if (c.accessible && c.is_feature) {
-                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab_feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");    			
+                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab_feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
-                        
+
                         $("#mlab_features_list").html(feature_list);
-                        
+
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab_app_open( document.mlab_temp_app_id, document.mlab_temp_page_num );
-                        
+
                     } else {
                         alert("Unable to load components from the server, cannot continue, will return to front page");
                         document.location.href = document.mlab_appbuilder_root_url;
                     }
                 });
-                
+
             } else {
                 alert("Unable to load variables from the server, cannot continue, will return to front page");
                 document.location.href = document.mlab_appbuilder_root_url;
-            }            
+            }
 
         });
-        
+
           //get componetnt meny to stick to the top when scrollin dwon
           if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
-          var stickyComponentTop = $('#mlab_toolbar_components').offset().top; 
+          var stickyComponentTop = $('#mlab_toolbar_components').offset().top;
 
                         $(document).scroll(function(){ // scroll event
                             var windowTop = $(window).scrollTop(); // returns number
@@ -181,12 +181,12 @@
                                 $('#mlab_toolbar_components').css('position','static');
                             }
                         });
-                        
-           } 
-           
+
+           }
+
            //get componetnt meny to stick to the top when scrollin dwon
           if (!!$('#mlab_toolbar_for_components').offset()) { // make sure ".sticky" element exists
-          var stickyComponentTop = $('#mlab_toolbar_for_components').offset().top; 
+          var stickyComponentTop = $('#mlab_toolbar_for_components').offset().top;
 
                         $(document).scroll(function(){ // scroll event
                             var windowTop = $(window).scrollTop(); // returns number
@@ -198,10 +198,10 @@
                                 $('#mlab_toolbar_for_components').css('position','static');
                             }
                         });
-                        
-           } 
-           
-           
+
+           }
+
+
 
     });
 
@@ -228,12 +228,12 @@
         $.get( url, function( data ) {
             if (data.result == "success") {
                 mlab_index_page_process ( data.html, "index", ( local_page_num == "0" && local_page_num == "index" ) );
-                
+
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_features_used");
                 $(document.mlab_current_app.curr_indexpage_html)
                     .find("#mlab_features_content [data-mlab-type]>")
-                    .each(function() { 
+                    .each(function() {
                         $("#mlab_features_list [data-mlab-feature-type='" + $(this).parent().data("mlab-type") + "']").addClass("mlab_features_used");
                      });
 
@@ -250,8 +250,8 @@
             }
 
         });
-    } 
-    
+    }
+
     function mlab_app_update_metadata(el) {
         $(el).next().slideUp();
         switch ($(el).attr("id")) {
@@ -260,32 +260,32 @@
 
             case "mlab_edit_app_description" :
                 break;
-            
+
             case "mlab_edit_app_keywords" :
                 break;
-           
+
             case "mlab_edit_app_category1" :
                 break;
 
             case "mlab_edit_app_category2" :
                 break;
-            
+
             case "mlab_edit_app_category3" :
                 break;
-                
+
         }
 
     }
 
 /*
- * Calls a function on the backend that returns a URL to the file to download. 
- * If it is not compiled we will compile it first. 
+ * Calls a function on the backend that returns a URL to the file to download.
+ * If it is not compiled we will compile it first.
  * @returns void
  */
     function mlab_app_download () {
         mlab_page_save(mlab_app_download_process);
     }
-    
+
     function mlab_app_download_process () {
         mlab_update_status("callback", 'Retrieving app', true);
         var url = mlab_urls.app_download.replace("_ID_", document.mlab_current_app.id);
@@ -309,9 +309,9 @@
                 show: { ready: true, modal: { on: false, blur: false } },
                 hide: 'unfocus',
                 style: { classes: 'qtip-tipped' }});
-        */	
+        */
         });
-        
+
         mlab_timer_start();
     }
 
@@ -325,9 +325,9 @@
         $.get( mlab_urls.app_unlock );
         $("#mlab_editor_disabled").remove();
     }
-    
+
 /**
- * Function to update content of GUI elements with the current app's metadata 
+ * Function to update content of GUI elements with the current app's metadata
  */
     function mlab_app_update_gui_metadata() {
 
@@ -342,16 +342,16 @@
         for (i in document.mlab_current_app.page_names) {
             if (i > 0) {
                 span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
-            } 
-            
+            }
+
             if (i == 0){ //index
                 span = "<span class='mlab_not_copy_file'>&nbsp;</span>";
             }
-            
+
             if (i == currpage) {
-                list.append("<li data-mlab-page-open='" + i + "'>" + span + document.mlab_current_app.page_names[i] + "</li>");    			
+                list.append("<li data-mlab-page-open='" + i + "'>" + span + document.mlab_current_app.page_names[i] + "</li>");
             } else {
-                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + "</a></li>");    			
+                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + document.mlab_current_app.id + ", \"" + i + "\");'>" + document.mlab_current_app.page_names[i] + "</a></li>");
             }
         }
         $("#mlab_existing_pages").html(list);
@@ -363,7 +363,7 @@
         $("#mlab_edit_app_category1").text(document.mlab_current_app.categoryOne);
         $("#mlab_edit_app_category2").text(document.mlab_current_app.categoryTwo);
         $("#mlab_edit_app_category3").text(document.mlab_current_app.categoryThree);
-    }		
+    }
 
 
 /*********************************************************************************************
@@ -372,7 +372,7 @@
 
 
 /* this function processes the index page that was retrieved.
- * 
+ *
  * It does the following:
     Remove old HTML from the editing div (mlab_editor_chrome)
     Remove old stylesheets from previously edited page from *this page*
@@ -386,7 +386,7 @@
         var temp_stylesheets = "";
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
 
-//parse doc into a variable 
+//parse doc into a variable
         var doc = (new DOMParser()).parseFromString(page,"text/html");
 
 //check if it has editable area, if not we cannot continue
@@ -398,30 +398,30 @@
 //set the base href to the folder of the app
         document.getElementsByTagName("base")[0].href = start_dir;
 
-//remove old stuff 
+//remove old stuff
         $("#mlab_editor_chrome").empty();
         $("link[rel=stylesheet][href^='css']").remove();
 
 //store different parts of doc for easy access/manipulation
         var head = doc.getElementsByTagName("head")[0];
         var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
-        
-//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to 
-//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area 
+
+//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to
+//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area
         var content = doc.getElementById(mlab_config["app"]["content_id"]);
         while (content.firstChild) {
             content.removeChild(content.firstChild);
         }
         var body = doc.getElementsByTagName("body")[0].cloneNode(true);
-        
+
         var stylesheets = head.getElementsByTagName("link");
 
-//insert stylesheets 
+//insert stylesheets
         for ( var i = 0; i < stylesheets.length; i++) {
             temp_link = stylesheets[i].getAttribute("href");
             temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
         }
-        $("head link[rel='stylesheet']").last().after(temp_stylesheets); 
+        $("head link[rel='stylesheet']").last().after(temp_stylesheets);
 
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
         $("#mlab_editor_chrome").append(body.innerHTML);
@@ -431,7 +431,7 @@
             $("#" + mlab_config["app"]["content_id"]).html(divs);
             mlab_prepare_editable_area();
         }
-        
+
         document.mlab_current_app.curr_indexpage_html = doc;
 //Page name is picked up from title tag in head
         document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
@@ -457,7 +457,7 @@
 
 
 /* this function processes a regular page that was retrieved.
- * 
+ *
  * It does the following:
     Remove old HTML from the internal editing div (mlab_config["app"]["content_id"])
     Extract title and save it to JS var
@@ -469,7 +469,7 @@
         var comp_id, temp_comp, temp_link;
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
 
-//remove old stuff 
+//remove old stuff
         $("#" + mlab_config["app"]["content_id"]).html("");
 
 //a page may have failed to save, in this case we create an empty page here, then everything works
@@ -478,7 +478,7 @@
             page = page.replace(/\\n/g, "\n");
         }
 //
-//parse doc into variables 
+//parse doc into variables
         var doc = (new DOMParser()).parseFromString(page,"text/html");
         var head = doc.getElementsByTagName("head")[0];
         var body = doc.getElementsByTagName("body")[0].cloneNode(true);
@@ -490,7 +490,7 @@
 
         mlab_app_update_gui_metadata();
 
-//add body content 
+//add body content
         $("#" + mlab_config["app"]["content_id"]).html(body.innerHTML);
 
         mlab_prepare_editable_area();
@@ -518,17 +518,17 @@
             return;
         }
         mlab_page_open(document.mlab_current_app.id, curr_num);
-        
+
     }
-    
+
 /**
  * Retrieve content of a page from server and insert it into the editor area
- * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file 
+ * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
     function mlab_page_open(app_id, page_num) {
         mlab_page_save( function() { mlab_page_open_process(app_id, page_num); } );
-    } 
-    
+    }
+
     function mlab_page_open_process(app_id, page_num) {
 
         mlab_update_status("callback", 'Opening page', true);
@@ -567,21 +567,21 @@
                     $("#mlab_editor_disabled").remove();
                     $("#" + mlab_config["app"]["content_id"]).fadeTo('slow',1);
                 }
-                
+
                 if ( $("#mlab_overlay").is(':visible') ) {
                     $("#mlab_overlay").slideUp();
                 }
-                
+
                 mlab_timer_start();
-                
+
             } else {
                 mlab_update_status("temporary", data.msg, false);
 
             }
 
         } );
-        
-    } 
+
+    }
 
 /**
  * This will update the title of the currently open page and also update relevant items other places
@@ -601,8 +601,8 @@
         } else {
             $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + document.mlab_current_app.curr_page_num + "\");' >&nbsp;</span>" + document.mlab_current_app.curr_pagetitle);
         }
-        
-        
+
+
     }
 
 
@@ -611,11 +611,11 @@
  * 1: When a user clicks the save button
  * 2: When the save timer (mlab_timer_save) kicks in
  * 3: When a function that has to save the page first is executed.
- * 
+ *
  * In case 3 th fnc argument is specified and when the save is completed and the AJAX callback function is called this function will be executed.
  * This way we are sure that page related variables are not outdated if the save function takes a long time to complete on the server.
- * 
- * to save a page we need to reassemble it, 
+ *
+ * to save a page we need to reassemble it,
  * first clone current body from the editor (and give it a new ID!)
  * clean it up using the onSave function for each component
  * then pick up doc variable which has empty body, then insert the cleaned elements
@@ -628,7 +628,7 @@
         var require_save = true;
         var res = false;
         mlab_counter_saving_page++;
-        
+
 //cannot save if locked
         if ($("#mlab_editor_disabled").length > 0) {
             console.log('Page locked, did not save');
@@ -645,7 +645,7 @@
             require_save = false;
         }
 
-        if ((!require_save) && (typeof fnc != 'undefined')) { 
+        if ((!require_save) && (typeof fnc != 'undefined')) {
             return fnc();
         } else if (!require_save) {
             return false;
@@ -664,7 +664,7 @@
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_CHECKSUM_", document.mlab_current_app.app_checksum);
 
-//this loop is a: picking up the cleaned HTML for each component, 
+//this loop is a: picking up the cleaned HTML for each component,
 //(this is done by calling the onSave unction which strips away anything we are not interested in)
 // and b: checking if the component transgresses any of the rules for the template
         $("#" + mlab_config["app"]["content_id"]).children("div").each(function() {
@@ -695,20 +695,20 @@
 
 //finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
         $.post( url, {html: html}, function( data ) {
-            
+
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
             mlab_counter_saving_page--;
-            
+
             if (data.result == "success") {
                 mlab_update_status("temporary", "Saved page", false);
                 mlab_flag_dirty = false;
-                
+
 //if a function was specified we now execute it, inisde this function the mlab_timer_save timer will be restarted
 //if no function was specified AND no-one else has initiated the save function, then OK to restart timer
                 if (typeof fnc != 'undefined') {
                     res = fnc();
-                } 
-                
+                }
+
 //process metadata information that has come back
                 if (typeof data.app_info != "undefined") {
 //we may have a result saying nochange
@@ -717,7 +717,7 @@
                         console.log("App files were changed");
                         document.mlab_current_app.app_checksum = data.app_info.mlab_app_checksum;
                         document.mlab_current_app.page_names = data.app_info.mlab_app.page_names;
-                        
+
                     } else if (data.app_info.result === "no_file_changes") {
                         console.log("No changes to app files");
 
@@ -727,7 +727,7 @@
                         }
                         return;
                     }
-                    
+
                     document.mlab_current_app.name = data.app_info.mlab_app.name;
                     document.mlab_current_app.description = data.app_info.mlab_app.description;
                     document.mlab_current_app.keywords = data.app_info.mlab_app.keywords;
@@ -765,12 +765,12 @@
                     return res;
                 }
             }
-            
+
 //if this was not called from a function AND the save function has not been called by others, then we restart the save timer.
             if (mlab_counter_saving_page == 0 && (typeof fnc == 'undefined')) {
                 mlab_timer_start();
             }
-            
+
         });
 
 //above we have counted the number of issues relating to the template "best practices" configuration, time to display the error message, if any
@@ -784,13 +784,13 @@
         } else {
              $(".mlab_qtip_info").remove();
         }
-        
+
         return res;
     }
-    
+
 // final template "best practices", we see if there are too many or too few of certain categories of components on a page
     function mlab_page_check_content(component_categories, template_best_practice_msg) {
-        
+
         var rules = document.mlab_current_app.template_config.components;
         for (var category in rules) {
             if (rules[category].hasOwnProperty("max")) {
@@ -819,12 +819,12 @@
             mlab_page_save( function() { mlab_page_new_process( title ); } );
         }
     }
-    
+
     function mlab_page_new_process(title) {
             mlab_update_status("callback", "Storing page", true);
             var url = mlab_urls.page_new.replace("_ID_", document.mlab_current_app.id);
             url = url.replace("_UID_", mlab_uid);
-            
+
             $.post( url, {}, function( data ) {
                 if (data.result == "success") {
                     mlab_update_status("completed");
@@ -840,11 +840,11 @@
                 } else {
                     mlab_update_status("temporary", data.msg, false);
                 }
-                
+
                 mlab_timer_start();
 
             });
-        
+
 
        }
 
@@ -859,14 +859,14 @@
 
         mlab_page_save( function() { mlab_page_copy_process(page_num); } );
     }
-       
+
     function mlab_page_copy_process(page_num) {
 
         var url = mlab_urls.page_copy.replace("_ID_", document.mlab_current_app.id);
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", mlab_uid);
         mlab_update_status("callback", "Copying page", true);
-        
+
         $.get( url, function( data ) {
             mlab_update_status("completed");
             if (data.result == "success") {
@@ -890,7 +890,7 @@
         if (!confirm("Are you sure you want to delete this page? This cannot be undone!")) {
             return;
         }
-        
+
         window.clearTimeout(mlab_timer_save);
         mlab_update_status("callback", "Deleting page", true);
 
@@ -904,13 +904,13 @@
                 $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").remove();
                 document.mlab_current_app.page_names.splice(document.mlab_current_app.curr_page_num, 1);
                 mlab_regular_page_process ( data.html, data.page_num_real );
-                
+
                 if (document.mlab_current_app.curr_page_num == "index") {
                     $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").html(document.mlab_current_app.curr_pagetitle);
                 } else {
                     $("#mlab_existing_pages [data-mlab-page-open='" + document.mlab_current_app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab_page_copy(\"" + document.mlab_current_app.curr_page_num + "\");' >&nbsp;</span>" + document.mlab_current_app.curr_pagetitle);
                 }
-                
+
             } else {
                 mlab_update_status("temporary", data.msg, false);
             }
@@ -921,7 +921,7 @@
 
     /**
      * Simple function to open a new window with current page in it
-     * Given that we use an jquery mobile framework with an index file and loading pages into the index file, 
+     * Given that we use an jquery mobile framework with an index file and loading pages into the index file,
      * we need to pass the relevant file name and have matching code in the mlab.js file to deal with this
      * @param {type} index
      * @returns {undefined}
@@ -929,7 +929,7 @@
     function mlab_page_preview() {
         mlab_page_save(mlab_page_preview_process);
     }
-    
+
     function mlab_page_preview_process() {
         if (document.mlab_current_app.curr_page_num == 0 || document.mlab_current_app.curr_page_num == "index" ) {
             page_name = ""
@@ -952,18 +952,18 @@
         if (document.mlab_current_app.locked) {
             return;
         }
-        
+
 //if this control has to be unique we check here to see if one was already added
         if (mlab_components[id].conf.unique && $("#" + mlab_config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
             alert("You can only have one component of this type on a page");
             return;
         }
-        
+
         var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + mlab_components[id].html + "</div>");
         $("#" + mlab_config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab_component_highlight_selected(this);})
         new_comp.on("input", function(){mlab_flag_dirty = true;});
-        
+
         $('.mlab_current_component').qtip('hide');
 
         mlab_component_run_code(new_comp, id, true);
@@ -989,8 +989,8 @@
         });
 
         request.fail(function( jqXHR, textStatus ) {
-            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen."); 
-            $(new_comp).remove(); 
+            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen.");
+            $(new_comp).remove();
         });
 
 //finally we add dependencies, i.e. components that this component depends on
@@ -1003,7 +1003,7 @@
         mlab_flag_dirty = true;
 
     }
-    
+
 /**
  * This executes (using eval()) any code for a component that is added to the app
  * @param {type} el = html element we're working on
@@ -1015,7 +1015,7 @@
         if (typeof mlab_components[comp_id] == "undefined") {
             return;
         }
-//execute the javascript if it exists, we first need to attach it to document so we can use it globally 
+//execute the javascript if it exists, we first need to attach it to document so we can use it globally
         if (mlab_components[comp_id].exec_browser !== false && (typeof (document["mlab_code_" + comp_id]) === "undefined")) {
             eval(mlab_components[comp_id].exec_browser);
         }
@@ -1026,7 +1026,7 @@
             } else {
                 document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, mlab_component_request_info);
             }
-        } 
+        }
     }
 
     function mlab_component_moveup() {
@@ -1058,7 +1058,7 @@
          $( el ).addClass("mlab_current_component");
          mlab_menu_prepare();
     }
-    
+
     function mlab_component_delete() {
         var sel_comp = $(".mlab_current_component").prev();
         if (sel_comp.length == 0) {
@@ -1070,7 +1070,7 @@
         }
         mlab_flag_dirty = true;
     }
-    
+
 /**
  * Runs the "best practices" check for a single component, can check if video is too long, if there is too much text, etc, etc
  * @param {type} comp
@@ -1082,7 +1082,7 @@
     function mlab_component_check_content(comp, comp_id, component_categories, template_best_practice_msg) {
         var rules = document.mlab_current_app.template_config.components;
         if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("category")) {
-            var comp_category = mlab_components[comp_id].conf.category;  
+            var comp_category = mlab_components[comp_id].conf.category;
 
             if (!component_categories.hasOwnProperty(comp_category)) {
                 component_categories[comp_category] = 1;
@@ -1110,7 +1110,7 @@
                                     }
                                 }
                             }
-                        } 
+                        }
                     }
                 }
             }
@@ -1120,7 +1120,7 @@
 /**
  * features are simply components that are not displayed with a GUI
  * they are added to a hidden div, if we are NOT working on the index page we call a backend function to add this code
- * 
+ *
  * @returns {undefined}
  */
 
@@ -1158,8 +1158,8 @@
                 }
 
             });
-        } 
-    }    
+        }
+    }
 
 
 /***********************************************************
@@ -1197,7 +1197,7 @@
                                      }
                                    };
             } );
-            items["replace"]["items"] = sub_items; 
+            items["replace"]["items"] = sub_items;
        }
 
         $.contextMenu( 'destroy', '#mlab_button_menu' );
@@ -1208,14 +1208,14 @@
         }
 
         $.contextMenu({
-            selector: '#mlab_button_menu', 
+            selector: '#mlab_button_menu',
             className: 'mlab_menu_title',
             trigger: 'left',
             items: items
         });
 
         $.contextMenu({
-            selector: '.mlab_current_component', 
+            selector: '.mlab_current_component',
             className: 'mlab_menu_title',
             trigger: 'right',
             items: items
@@ -1232,11 +1232,11 @@
 /*
  * DOMParser HTML extension
  * 2012-09-04
- * 
+ *
  * By Eli Grey, http://eligrey.com
  * Public domain.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
- *! @source https://gist.github.com/1129031 
+ *! @source https://gist.github.com/1129031
  * global document, DOMParser
  */
 
@@ -1272,13 +1272,13 @@
             }
         };
     }(DOMParser));
-    
+
 /*
- * 
+ *
  * @param divs (html/DOM) all divs to edit
  */
     function mlab_prepare_editable_area() {
-//need to loop through all divs in the editable box after they have been added 
+//need to loop through all divs in the editable box after they have been added
 //and set the styles for dragging/dropping so it works OK
         $( "#" + mlab_config["app"]["content_id"] + "> div" ).each(function( index ) {
             $( this ).droppable(droppable_options)
@@ -1290,16 +1290,16 @@
             mlab_component_run_code($( this ), comp_id);
         });
 
-//set draggable/sortable options for the editable area 
+//set draggable/sortable options for the editable area
         $( "#" + mlab_config["app"]["content_id"] ).droppable(droppable_options).sortable(sortable_options);
 
     }
-    
+
 /**
  * Switches the editor area between landscape and portrait
  * @returns {undefined}
  * not used for the editor anymore
- 
+
     function mlabRotateEditor() {
         var h = $("#mlab_editor_chrome").height();
         var w = $("#mlab_editor_chrome").width();
@@ -1316,10 +1316,10 @@
 /**
  * This function is used to display status information, this can be permanent, temporary, or until callback is called, and may have a progress bar
  * If state is completed we get rid of temporary info and any gauges
- * 
+ *
  * @param {type} state
  * @param {type} content
- * @returns {undefined} 
+ * @returns {undefined}
 */
     function mlab_update_status(state, content, display_progress) {
         if (state == "permanent") {
@@ -1340,7 +1340,7 @@
             $("#mlab_statusbar_progressbar").show();
         } else if (typeof display_progress != "undefined" && display_progress == false) {
             $("#mlab_statusbar_progressbar").hide();
-        }                
+        }
     }
 
 /**
@@ -1367,35 +1367,35 @@ function mlab_component_request_info(type, param) {
         case MLAB_CB_URL_APP_ABSOLUTE :
             return window.location.origin + mlab_config.urls.app;
             break;
-            
+
         case MLAB_CB_URL_APP_RELATIVE :
             return mlab_config.urls.app;
             break;
-            
+
         case MLAB_CB_URL_COMPONENT_ABSOLUTE :
             return window.location.origin + mlab_config.urls.component;
             break;
-            
+
         case MLAB_CB_URL_COMPONENT_RELATIVE :
             return mlab_config.urls.component;
             break;
-            
+
         case MLAB_CB_URL_TEMPLATE_ABSOLUTE :
             return window.location.origin + mlab_config.urls.template;
             break;
-            
+
         case MLAB_CB_URL_TEMPLATE_RELATIVE :
             return mlab_config.urls.template;
             break;
-            
+
         case MLAB_CB_URL_UPLOAD_ABSOLUTE :
             return window.location.origin + mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_COMPID_", param);
             break;
-            
+
         case MLAB_CB_URL_UPLOAD_RELATIVE :
             return mlab_urls.component_upload_file.replace("_APPID_", document.mlab_current_app.id).replace("_FILETYPES_", param);
             break;
-            
+
 //here we obtain a list of files already uploaded, non-async so we can return data and do not need to know whcih HTML element to put it in
         case MLAB_CB_GET_MEDIA :
             var data = $.ajax({
@@ -1411,13 +1411,13 @@ function mlab_component_request_info(type, param) {
                 return "<option>Unable to obtain files</option>";
             }
             break;
-            
-//return rules for current template, could be used to track when user has typed in too much text (for instance) 
+
+//return rules for current template, could be used to track when user has typed in too much text (for instance)
 //to do preemptive checks (we do post-save check)
         case MLAB_CB_GET_TEMPLATE_RULES :
             return document.mlab_current_app.template_config.components;
             break;
-            
+
 //create a GUID that is rfc4122 version 4 compliant
         case MLAB_CB_GET_GUID :
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -1425,51 +1425,51 @@ function mlab_component_request_info(type, param) {
                 return v.toString(16);
             });
             break;
-            
+
 //loads all js/css files required at design time for a component
         case MLAB_CB_GET_LIBRARIES :
             if ("required_libs" in mlab_components[param].conf) {
                 if ("designtime" in mlab_components[param].conf.required_libs) {
                     var comp_url = window.location.origin + mlab_urls.components_root_url;
                     var comp_path = mlab_components[param].conf.name;
-                    
+
                     for (i in mlab_components[param].conf.required_libs.designtime) {
                         var file = mlab_components[param].conf.required_libs.designtime[i];
                         var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ ;
                         if (regexp.test(file)) {
                             if ($("script[src*='" + file + "']").length < 1) {
-                                $("head").append($("<script src='" + file + "' >")); 
+                                $("head").append($("<script src='" + file + "' >"));
                             }
                         } else if (file.substr(-3) == ".js") {
                             if ($("script[src*='" + file + "']").length < 1) {
-                                $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file + "' >")); 
+                                $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file + "' >"));
                             }
                         } else if (file.substr(-4) == ".css") {
                             if ($("link[href*='" + file + "']").length < 1) {
-                                $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >")); 
+                                $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >"));
                             }
                         }
                     }
                 }
             }
             break;
-            
+
         case MLAB_CB_GET_VERSION :
             return mlab_api_version;
             break;
-            
+
         case MLAB_CB_GET_SELECTED_COMPONENT :
             return $('.mlab_current_component');
             break;
- 
+
         case MLAB_CB_SET_DIRTY :
             mlab_flag_dirty = true;
             break;
-            
+
         case MLAB_CB_GET_EDITOR_ELEMENT :
             return mlab_config.content_id;
             break;
-            
+
 /**
  * adapted from jQuery.browser.mobile (http://detectmobilebrowser.com/)
  * License for case MLAB_CB_GET_ENV :
@@ -1481,7 +1481,7 @@ function mlab_component_request_info(type, param) {
             var temp_env = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(temp_browser.substr(0,4));
             return temp_env;
             break;
-            
+
         case MLAB_CB_CLOSE_ALL_PROPERTY_DIALOGS :
             $('.mlab_current_component').qtip('hide');
             break;
@@ -1494,7 +1494,7 @@ function mlab_component_request_info(type, param) {
             sel.removeAllRanges();
             sel.addRange(range);
             break;
-            
+
     }
-    
+
 }
