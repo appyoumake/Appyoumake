@@ -1,3 +1,6 @@
+
+
+
 /* Constants used by components to obtain environment information */
 /* key issue here is that the component do not need to know anything about configuration */
     MLAB_CB_URL_APP_ABSOLUTE = 1; //various URLs that are required

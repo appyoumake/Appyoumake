@@ -1,3 +1,10 @@
+/* 
+ * API funksjoner som er tilgjengelige for runtime
+ * 
+ */
+
+
+
 /*
 Core functionality for the component API, all features here are local
 Remote functionality is provided by any plugins (see end of file for plugin code)
@@ -14,7 +21,6 @@ Storage is already app-specific, so no need to include that into the namespace.
 */
 
 function Mlab() {
-    mlab = this;
     var self = this;
     var documentOb = $(document);
     this.internal.self = this;
@@ -49,10 +55,9 @@ Mlab.prototype = {
     version: 0.1,
     /*
      * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode.
-     * Should this be renamed to "getMode"?
      * @return {String}
      */
-    getName: function() {
+    getMode: function() {
         //if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
         if (typeof window.device !== 'undefined' && window.device.cordova) {
             return "runtime";

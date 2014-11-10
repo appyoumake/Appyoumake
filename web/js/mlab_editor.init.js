@@ -3,6 +3,19 @@
  * but not the data that has to come from TWIG. Therefore, see top of that page for data structures.
  */
 
+
+/**
+ * Standard initialisation of Mlab object which is referred to in several JS files, 
+ * as these files can come down in different order, we must make sure we can use it here.
+ */
+
+if (typeof Mlab == "undefined") {
+    Mlab = function () {
+        var self = this;
+        var documentOb = $(document);
+    }
+}
+
 /* general variables used globally by different functions
    (variables with data from backend are loaded from the backend in the document.ready event and enters this file as JSON structures */
 
@@ -12,9 +25,6 @@
     mlab_drag_origin = 'sortable';
     mlab_timer_save = null;
 
-//PERHAPS USE THIS TOGETHER WITH ARRAY OF FIELDNAMES MATCHING APP TABLE AND RENAME TEXT FIELDS...
-    mlab_flag_meta_dirty = new Array();
-
 //turn off automatic initialisation of mobile pages
     $.mobile.autoInitializePage = false;
 
@@ -22,12 +32,12 @@
 /*********** Startup code ***********/
     $(document).ready(function() {
         console.log(bowser);
-		/*if (bowser.gecko || bowser.chrome) {
+		if (bowser.gecko || bowser.chrome) {
 
         } else {
             alert("This web app will only work in Chrome/Chromium or Firefox");
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
-        }*/
+        }
 
 //here we pick up variables from the backend, if successful we go on, if not we must exit
         $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/load_variables" , function( data ) {
