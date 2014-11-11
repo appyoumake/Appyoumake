@@ -13,17 +13,13 @@ if (typeof Mlab == "undefined") {
     Mlab = function () {
         var self = this;
         var documentOb = $(document);
+        var designMode = true;
     }
 }
 
 /* general variables used globally by different functions
    (variables with data from backend are loaded from the backend in the document.ready event and enters this file as JSON structures */
 
-// State variables
-    mlab_flag_dirty = false;
-    mlab_counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
-    mlab_drag_origin = 'sortable';
-    mlab_timer_save = null;
 
 //turn off automatic initialisation of mobile pages
     $.mobile.autoInitializePage = false;
@@ -31,7 +27,6 @@ if (typeof Mlab == "undefined") {
 
 /*********** Startup code ***********/
     $(document).ready(function() {
-        console.log(bowser);
 		if (bowser.gecko || bowser.chrome) {
 
         } else {

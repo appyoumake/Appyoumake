@@ -1,6 +1,51 @@
+/*
+ * Functionality that deals with the template defined best practices
+ * 
+ */
+
+/**
+ * Standard initialisation of Mlab object which is referred to in several JS files, 
+ * as these files can come down in different order, we must make sure we can use it here.
+ */
+
+if (typeof Mlab == "undefined") {
+    Mlab = function () {
+        var self = this;
+        var documentOb = $(document);
+        var designMode = true;
+    }
+}
+
+if (typeof Mlab.dt == "undefined") {
+    Mlab.dt = function () {
+        var self = this;
+        var config = new Object();
+        
+// State variables used by all .dt sub functions
+        this.flag_dirty = false;
+        this.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
+        this.drag_origin = 'sortable';
+        this.timer_save = null;
+    }
+}
+
+
+Mlab.dt.bestpractice = function () {
+    
+}
+
+Mlab.dt.bestpractice.prototype = {
+    
+//get the object with rules, such as max charavcters, max length, etc
+//return rules for current template, could be used to track when user has typed in too much text (for instance)
+//to do preemptive checks (we do post-save check)
+    getTemplateRules : function () {
+        return document.mlab_current_app.template_config.components;
+    },
+
 
 // final template "best practices", we see if there are too many or too few of certain categories of components on a page
-    function mlab_page_check_content(component_categories, template_best_practice_msg) {
+    pageCheckContent : function (component_categories, template_best_practice_msg) {
 
         var rules = document.mlab_current_app.template_config.components;
         for (var category in rules) {
@@ -18,8 +63,8 @@
                     }
                 }
             }
-        };
-    }
+        }
+    },
 
 /**
  * Runs the "best practices" check for a single component, can check if video is too long, if there is too much text, etc, etc
@@ -29,7 +74,7 @@
  * @param {type} template_best_practice_msg
  * @returns {undefined}
  */
-    function mlab_component_check_content(comp, comp_id, component_categories, template_best_practice_msg) {
+    componentCheckContent : function (comp, comp_id, component_categories, template_best_practice_msg) {
         var rules = document.mlab_current_app.template_config.components;
         if (mlab_components[comp_id].hasOwnProperty("conf") && mlab_components[comp_id].conf.hasOwnProperty("category")) {
             var comp_category = mlab_components[comp_id].conf.category;
@@ -66,4 +111,6 @@
             }
         }
     }
+    
+} // end prototype
 

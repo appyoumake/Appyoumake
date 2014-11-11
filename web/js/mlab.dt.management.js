@@ -4,13 +4,47 @@
  ******************* App level functions *******************
 ************************************************************/
 
+/**
+ * Standard initialisation of Mlab object which is referred to in several JS files, 
+ * as these files can come down in different order, we must make sure we can use it here.
+ */
+
+if (typeof Mlab == "undefined") {
+    Mlab = function () {
+        var self = this;
+        var documentOb = $(document);
+        var designMode = true;
+    }
+}
+
+if (typeof Mlab.dt == "undefined") {
+    Mlab.dt = function () {
+        var self = this;
+        var config = new Object();
+        
+// State variables used by all .dt sub functions
+        this.flag_dirty = false;
+        this.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
+        this.drag_origin = 'sortable';
+        this.timer_save = null;
+    }
+}
+
+
+Mlab.dt.design = function () {
+    
+}
+
+Mlab.dt.design.prototype = {
+    
+
 /*
  * This function will first open the index.html file in an app, this has all the css/js/formatting etc in it.
  * Then it will open the page specified (if it is not == index | 0 )
  * @param {type} app_id
  * @param {type} page_num
  */
-    function mlab_app_open(app_id, page_num) {
+    app_open : function (app_id, page_num) {
 
         var local_page_num = page_num;
         var url = mlab_urls.page_get.replace("_ID_", app_id);
@@ -43,9 +77,9 @@
             }
 
         });
-    }
+    },
 
-    function mlab_app_update_metadata(el) {
+    app_update_metadata : function (el) {
         $(el).next().slideUp();
         switch ($(el).attr("id")) {
             case "mlab_edit_app_title" :
@@ -68,18 +102,18 @@
 
         }
 
-    }
+    },
 
 /*
  * Calls a function on the backend that returns a URL to the file to download.
  * If it is not compiled we will compile it first.
  * @returns void
  */
-    function mlab_app_download () {
+    app_download  : function () {
         mlab_page_save(mlab_app_download_process);
-    }
+    },
 
-    function mlab_app_download_process () {
+    app_download_process  : function () {
         mlab_update_status("callback", 'Retrieving app', true);
         var url = mlab_urls.app_download.replace("_ID_", document.mlab_current_app.id);
         $.get( url, function( data ) {
@@ -106,23 +140,23 @@
         });
 
         mlab_timer_start();
-    }
+    },
 
-    function mlab_app_submit_to_market () {
+    app_submit_to_market  : function () {
         alert('Not implemented yet');
-    }
+    },
 
 //remove locks, just a backup if something goes wrong
-    function mlab_app_remove_locks() {
+    app_remove_locks : function () {
         mlab_update_status("temporary", "Unlocking all pages...", true);
         $.get( mlab_urls.app_unlock );
         $("#mlab_editor_disabled").remove();
-    }
+    },
 
 /**
  * Function to update content of GUI elements with the current app's metadata
  */
-    function mlab_app_update_gui_metadata() {
+    app_update_gui_metadata : function () {
 
 //List of all pages
 //#mlab_existing_pages is a <div> which is populated with a <ol> with a <li> element for each page
@@ -156,7 +190,7 @@
         $("#mlab_edit_app_category1").text(document.mlab_current_app.categoryOne);
         $("#mlab_edit_app_category2").text(document.mlab_current_app.categoryTwo);
         $("#mlab_edit_app_category3").text(document.mlab_current_app.categoryThree);
-    }
+    },
 
 
 /*********************************************************************************************
@@ -174,7 +208,7 @@
     Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    function mlab_index_page_process (page, page_num, is_final_destination) {
+    index_page_process  : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
@@ -246,7 +280,7 @@
         $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
         $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
 
-    }
+    },
 
 
 /* this function processes a regular page that was retrieved.
@@ -258,7 +292,7 @@
     Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    function mlab_regular_page_process (page, page_num) {
+    regular_page_process  : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
 
@@ -288,7 +322,7 @@
 
         mlab_prepare_editable_area();
         $.mobile.initializePage();
-    }
+    },
 
 
 /***********************************************************
@@ -300,7 +334,7 @@
  * @param {type} direction
  * @returns {undefined}
  */
-    function mlab_page_move_to(direction) {
+    page_move_to : function (direction) {
         var curr_num = 0;
         (document.mlab_current_app.curr_page_num == "index") ? curr_num = 0 : curr_num = parseInt(document.mlab_current_app.curr_page_num);
         if ( direction < 0 && curr_num > 0 ) {
@@ -312,17 +346,17 @@
         }
         mlab_page_open(document.mlab_current_app.id, curr_num);
 
-    }
+    },
 
 /**
  * Retrieve content of a page from server and insert it into the editor area
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
-    function mlab_page_open(app_id, page_num) {
+    page_open : function (app_id, page_num) {
         mlab_page_save( function() { mlab_page_open_process(app_id, page_num); } );
-    }
+    },
 
-    function mlab_page_open_process(app_id, page_num) {
+    page_open_process : function (app_id, page_num) {
 
         mlab_update_status("callback", 'Opening page', true);
 
@@ -374,12 +408,12 @@
 
         } );
 
-    }
+    },
 
 /**
  * This will update the title of the currently open page and also update relevant items other places
  */
-    function mlab_page_update_title() {
+    page_update_title : function () {
         if (document.mlab_current_appd) {
             alert("Page is locked, you cannot update the title");
             return;
@@ -396,7 +430,7 @@
         }
 
 
-    }
+    },
 
 
 /**
@@ -416,7 +450,7 @@
  * @param {type} fnc
  * @returns {undefined}
  */
-    function mlab_page_save(fnc) {
+    page_save : function (fnc) {
         window.clearTimeout(mlab_timer_save);
         var require_save = true;
         var res = false;
@@ -579,59 +613,57 @@
         }
 
         return res;
-    }
+    },
 
 /**
 * Creates a new file on the server and opens it
 */
-    function mlab_page_new() {
+    page_new : function () {
         var title = prompt("Please enter the title of the new page");
         if (title != null) {
             mlab_page_save( function() { mlab_page_new_process( title ); } );
         }
-    }
+    },
 
-    function mlab_page_new_process(title) {
-            mlab_update_status("callback", "Storing page", true);
-            var url = mlab_urls.page_new.replace("_ID_", document.mlab_current_app.id);
-            url = url.replace("_UID_", mlab_uid);
+    page_new_process : function (title) {
+        mlab_update_status("callback", "Storing page", true);
+        var url = mlab_urls.page_new.replace("_ID_", document.mlab_current_app.id);
+        url = url.replace("_UID_", mlab_uid);
 
-            $.post( url, {}, function( data ) {
-                if (data.result == "success") {
-                    mlab_update_status("completed");
-                    $("#" + mlab_config["app"]["content_id"]).empty();
-                    document.mlab_current_app.curr_pagetitle = title;
-                    document.mlab_current_app.curr_page_num = data.page_num_real;
-                    $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
-                    document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = title;
-                    mlab_app_update_gui_metadata();
+        $.post( url, {}, function( data ) {
+            if (data.result == "success") {
+                mlab_update_status("completed");
+                $("#" + mlab_config["app"]["content_id"]).empty();
+                document.mlab_current_app.curr_pagetitle = title;
+                document.mlab_current_app.curr_page_num = data.page_num_real;
+                $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
+                document.mlab_current_app.page_names[document.mlab_current_app.curr_page_num] = title;
+                mlab_app_update_gui_metadata();
 
-                    mlab_flag_dirty = true;
+                mlab_flag_dirty = true;
 
-                } else {
-                    mlab_update_status("temporary", data.msg, false);
-                }
+            } else {
+                mlab_update_status("temporary", data.msg, false);
+            }
 
-                mlab_timer_start();
+            mlab_timer_start();
 
-            });
-
-
-       }
+        });
+     },
 
 /**
  * Creates a new file on the server and opens it
  */
-    function mlab_page_copy(page_num) {
+    page_copy : function (page_num) {
         if (page_num == "0" || page_num == "index") {
             alert("You can not copy the index page");
             return;
         }
 
         mlab_page_save( function() { mlab_page_copy_process(page_num); } );
-    }
+    },
 
-    function mlab_page_copy_process(page_num) {
+    page_copy_process : function (page_num) {
 
         var url = mlab_urls.page_copy.replace("_ID_", document.mlab_current_app.id);
         url = url.replace("_PAGE_NUM_", page_num);
@@ -650,9 +682,9 @@
             }
             mlab_timer_start();
         });
-    }
+    },
 
-    function mlab_page_delete () {
+    page_delete  : function () {
         if (document.mlab_current_app.curr_page_num == "0" || document.mlab_current_app.curr_page_num == "index") {
             alert("You can not delete the index page");
             return;
@@ -688,7 +720,7 @@
 
             mlab_timer_start();
         });
-    }
+    },
 
     /**
      * Simple function to open a new window with current page in it
@@ -697,11 +729,11 @@
      * @param {type} index
      * @returns {undefined}
      */
-    function mlab_page_preview() {
+    page_preview : function () {
         mlab_page_save(mlab_page_preview_process);
-    }
+    },
 
-    function mlab_page_preview_process() {
+    page_preview_process : function () {
         if (document.mlab_current_app.curr_page_num == 0 || document.mlab_current_app.curr_page_num == "index" ) {
             page_name = ""
         } else {
@@ -716,3 +748,4 @@
         mlab_timer_start();
     }
 
+}// end management.prototype

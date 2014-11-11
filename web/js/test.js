@@ -1,9 +1,3 @@
-/* 
- * API funksjoner som er tilgjengelige for runtime
- * 
- */
-
-
 /*
 Core functionality for the component API, all features here are local
 Remote functionality is provided by any plugins (see end of file for plugin code)
@@ -16,22 +10,11 @@ Level 3: Item name
 Level 4 (optional rarely required) sub item name
 
 Storage is already app-specific, so no need to include that into the namespace.
+
 */
 
-/**
- * Standard initialisation of Mlab object which is referred to in several JS files, 
- * as these files can come down in different order, we must make sure we can use it here.
- */
-
-if (typeof Mlab == "undefined") {
-    function Mlab () {
-        var self = this;
-        var documentOb = $(document);
-        var designMode = false;
-    }
-}
-
-Mlab.prototype.api = function () {
+function Mlab() {
+    mlab = this;
     var self = this;
     var documentOb = $(document);
     this.internal.self = this;
@@ -62,13 +45,14 @@ Mlab.prototype.api = function () {
     documentOb.trigger("mlabready");
 }
 
-Mlab.api.prototype = {
+Mlab.prototype = {
     version: 0.1,
     /*
      * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode.
+     * Should this be renamed to "getMode"?
      * @return {String}
      */
-    getMode: function() {
+    getName: function() {
         //if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
         if (typeof window.device !== 'undefined' && window.device.cordova) {
             return "runtime";
@@ -298,109 +282,6 @@ Mlab.api.prototype = {
     },
     
     /*
-     * Object used for navigation functionality at runtime
-     */
-    
-    navigation: {
-        current_page: 0,
-        max_pages: 3,
-        self: this,
-/**
- * current = page that is currently displayed
- * move_to can be index, first, last, next, previous or a number
- * @param {type} page
- * @returns {undefined}
- */
-        pageLoad: function (current, move_to, max) {
-            var filename, selector = "";
-            var new_location = 0;
-            switch (move_to) {
-                case "index":
-                    filename = "index.html";
-                    new_location = 0;
-                    break;
-
-                case "first" :
-                    filename = "001.html";
-                    new_location = 1;
-                    break;
-
-                case "last" :
-                    filename = ("000" + max).slice(-3) + ".html";
-                    new_location = max;
-                    break;
-
-                case "next" :
-                    if (current == max) {
-                        return -1;
-                    }
-                    current++;
-                    filename = ("000" + current).slice(-3) + ".html";
-                    new_location = current;
-                    break;
-
-                case "previous" :
-                    if (current == "index") {
-                        return -1;
-                    }
-                    if (current == 1) {
-                        filename = "index.html";
-                        new_location = 0;
-                    } else {
-                        current--;
-                        filename = ("000" + current).slice(-3) + ".html";
-                        new_location = current;
-                    }
-                    break;
-
-        //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
-                default:
-                    var pg = parseInt(move_to);
-                    if (isNaN(pg)) {
-                        return -1;
-                    }
-                    if (move_to < 0 || move_to > max) {
-                        return -1;
-                    }
-                    if (move_to == 0) {
-                        filename = "index.html";
-                    } else {
-                        filename = ("000" + move_to).slice(-3) + ".html";
-                    }
-                    new_location = move_to;
-                    break;
-            }
-
-        //have calculated the file name, now we need to try to load it
-        //must load only content from the index.html to avoid duplicates inside each other
-            if (filename == "index.html") {
-                selector = " #content"
-            }
-
-            $('#content').load(filename + selector, function(response, status, xhr) {
-                if (status == "error") {
-                    var msg = "Sorry but there was an error: ";
-                    $("#content").html(msg + xhr.status + " " + xhr.statusText);
-
-                }
-            });
-
-            return new_location;
-        },
-
-//TODO: This is quite specific, not sure if it should be here...
-        sliderUpdate: function (slider, move_to) {
-            var tmp = self.pageLoad( self.current_page, move_to, self.max_pages );
-            if (tmp >= 0) {
-                self.current_page = tmp;
-                slider.slider().val( self.current_page );
-                slider.slider("refresh");
-            }
-        }        
-        
-    },
-    
-    /*
      * Object that keeps the functions that are not part of the main API of mlab.
      */
     internal: {
@@ -535,7 +416,7 @@ Mlab.api.prototype = {
         }
     
     }
-}; // end prototype for Mlab.api
+};
 
 
 /*  
@@ -559,7 +440,8 @@ $(document).on("deviceready", function() {
 */
 $(document).on("deviceready", function() {
 //    setTimeout(function() {
-    mlab = new Mlab();
+alert();
+//    mlab = new Mlab();
 //    }, 5000);
 });
 /*
@@ -601,10 +483,3 @@ function log(s) {
     catch(e) {;}
 }
 
-
-//runs once the page DOM is ready for JavaScript code to execute - jQuery
-$(document).ready(function() {
-
-    mlab = new Mlab();
-
-});

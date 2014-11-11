@@ -7,6 +7,38 @@
  ******************* Utility functions *********************
 ************************************************************/
 
+/**
+ * Standard initialisation of Mlab object which is referred to in several JS files, 
+ * as these files can come down in different order, we must make sure we can use it here.
+ */
+
+if (typeof Mlab == "undefined") {
+    Mlab = function () {
+        var self = this;
+        var documentOb = $(document);
+        var designMode = true;
+    }
+}
+
+if (typeof Mlab.dt == "undefined") {
+    Mlab.dt = function () {
+        var self = this;
+        var config = new Object();
+        
+// State variables used by all .dt sub functions
+        this.flag_dirty = false;
+        this.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
+        this.drag_origin = 'sortable';
+        this.timer_save = null;
+    }
+}
+
+
+Mlab.dt.design = function () {
+    
+}
+
+Mlab.dt.design.prototype = {
 /*
  * DOMParser HTML extension
  * 2012-09-04
@@ -18,13 +50,11 @@
  * global document, DOMParser
  */
 
-    (function(DOMParser) {
+    domParserWrapper : function() {
         "use strict";
 
-        var
-          DOMParser_proto = DOMParser.prototype
-        , real_parseFromString = DOMParser_proto.parseFromString
-        ;
+        var DOMParser_proto = DOMParser.prototype;
+        var real_parseFromString = DOMParser_proto.parseFromString;
 
         // Firefox/Opera/IE throw errors on unsupported types
         try {
@@ -49,7 +79,7 @@
                 return real_parseFromString.apply(this, arguments);
             }
         };
-    }(DOMParser));
+    },
 
 
 /* this function processes the index page that was retrieved.
@@ -62,7 +92,7 @@
     Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    function mlab_index_page_process (page, page_num, is_final_destination) {
+    index_page_process : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
@@ -134,7 +164,7 @@
         $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
         $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
 
-    }
+    },
 
 
 /* this function processes a regular page that was retrieved.
@@ -146,7 +176,7 @@
     Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    function mlab_regular_page_process (page, page_num) {
+    regular_page_process : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
         var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
 
@@ -176,12 +206,12 @@
 
         mlab_prepare_editable_area();
         $.mobile.initializePage();
-    }
+    }, 
 
 /***********************************************************
  *********** Functions to manipulate components ***********
 ************************************************************/
-    function mlab_component_add(id) {
+    component_add : function (id) {
         if (document.mlab_current_app.locked) {
             return;
         }
@@ -235,7 +265,7 @@
 
         mlab_flag_dirty = true;
 
-    }
+    },
 
 /**
  * This executes (using eval()) any code for a component that is added to the app
@@ -244,7 +274,7 @@
  * @param {type} created
  * @returns {undefined}
  */
-    function mlab_component_run_code(el, comp_id, created) {
+    component_run_code : function (el, comp_id, created) {
         if (typeof mlab_components[comp_id] == "undefined") {
             return;
         }
@@ -260,9 +290,9 @@
                 document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, mlab_component_request_info);
             }
         }
-    }
+    },
 
-    function mlab_component_moveup() {
+    component_moveup : function () {
         $el = $(".mlab_current_component");
         if ($el.length == 0) {
             return;
@@ -272,9 +302,9 @@
             $el.fadeIn(500);
         });
         mlab_flag_dirty = true;
-    }
+    },
 
-    function mlab_component_movedown() {
+    component_movedown : function () {
         $el = $(".mlab_current_component");
         if ($el.length == 0) {
             return;
@@ -284,15 +314,15 @@
             $el.fadeIn(500);
         });
         mlab_flag_dirty = true;
-    }
+    },
 
-    function mlab_component_highlight_selected(el) {
+    component_highlight_selected : function (el) {
          $( "#" + mlab_config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
          $( el ).addClass("mlab_current_component");
          mlab_menu_prepare();
-    }
+    },
 
-    function mlab_component_delete() {
+    component_delete : function () {
         var sel_comp = $(".mlab_current_component").prev();
         if (sel_comp.length == 0) {
             sel_comp = $(".mlab_current_component").next();
@@ -302,7 +332,7 @@
             sel_comp.addClass("mlab_current_component");
         }
         mlab_flag_dirty = true;
-    }
+    },
 
 /**
  * features are simply components that are not displayed with a GUI
@@ -311,7 +341,7 @@
  * @returns {undefined}
  */
 
-    function mlab_feature_add(comp_id, silent) {
+    feature_add : function (comp_id, silent) {
         if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
             $(document.mlab_current_app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
         } else {
@@ -347,5 +377,7 @@
             });
         }
     }
+    
+} // end design.prototype 
 
 
