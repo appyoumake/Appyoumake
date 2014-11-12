@@ -1,4 +1,3 @@
-document.mlab_code_index = new function() {
 	
 	this.config = {};
     
@@ -11,5 +10,4 @@ document.mlab_code_index = new function() {
         this.config = config;
         this.config["api_function"] = api_func;
     };
-    
-};
+  

@@ -469,8 +469,8 @@ Mlab_dt_management.prototype = {
 // and b: checking if the component transgresses any of the rules for the template
         $("#" + self.parent.config["app"]["content_id"]).children("div").each(function() {
             var comp_id = $(this).data("mlab-type");
-            if (typeof (document["mlab_code_" + comp_id]) !== "undefined" && typeof (document["mlab_code_" + comp_id].onSave) !== "undefined") {
-                page_content = page_content + document["mlab_code_" + comp_id].onSave(this);
+            if (typeof self.parent.components[comp_id].code !== "undefined" && typeof self.parent.components[comp_id].code.onSave !== "undefined") {
+                page_content = page_content + self.parent.components[comp_id].code.onSave(this);
             } else {
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }

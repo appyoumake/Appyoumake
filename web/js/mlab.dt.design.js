@@ -253,20 +253,14 @@ Mlab_dt_design.prototype = {
  * @returns {undefined}
  */
     component_run_code : function (el, comp_id, created) {
-        if (typeof self.parent.components[comp_id] == "undefined") {
+        if (typeof self.parent.components[comp_id] == "undefined" || typeof self.parent.components[comp_id].code == "undefined") {
             return;
         }
-//execute the javascript if it exists, we first need to attach it to document so we can use it globally
-        if (self.parent.components[comp_id].exec_browser !== false && (typeof (document["mlab_code_" + comp_id]) === "undefined")) {
-            eval(self.parent.components[comp_id].exec_browser);
-        }
 
-        if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
-            if (created) {
-                document["mlab_code_" + comp_id].onCreate(el, self.parent.components[comp_id].conf, self.parent.api);
-            } else {
-                document["mlab_code_" + comp_id].onLoad(el, self.parent.components[comp_id].conf, self.parent.api);
-            }
+        if (created) {
+            self.parent.components[comp_id].code.onCreate(el, self.parent.components[comp_id].conf, self.parent.api);
+        } else {
+            self.parent.components[comp_id].code.onLoad(el, self.parent.components[comp_id].conf, self.parent.api);
         }
     },
 
@@ -391,17 +385,17 @@ Mlab_dt_design.prototype = {
         var comp_name = comp.data("mlab-type");
         var items = new Object();
         var title = "";
-        for(var index in document["mlab_code_" + comp_name]) {
+        for(var index in self.parent.components[comp_name]) {
             if (index.substr(0, 7) == "custom_") {
                 title = index.slice(7);
                 items[index] =  { name: title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
                                   callback: function(key, options) {
-                                      document["mlab_code_" + $('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
+                                      self.parent.components[$('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
                                   }
                                 };
             }
         }
-        if ((typeof self.parent.components[comp_name].conf.compatible != "undefined") && (document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].hasOwnProperty("onReplace"))) {
+        if ((typeof self.parent.components[comp_name].conf.compatible != "undefined") && (self.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
             items["sep1"] = "---------";
             items["replace"] = {"name": "Replace control with"};
             var sub_items = new Object;
@@ -409,7 +403,7 @@ Mlab_dt_design.prototype = {
                 title = replace_with.trim();
                 sub_items[title] = { name: " -> " + title.replace("_", " "),
                                      callback: function(key, options) {
-                                        document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].onReplace($('.mlab_current_component'), key, self.parent.components[key].html);
+                                        self.parent.components[$('.mlab_current_component').data("mlab-type")].code.onReplace($('.mlab_current_component'), key, self.parent.components[key].html);
                                      }
                                    };
             } );

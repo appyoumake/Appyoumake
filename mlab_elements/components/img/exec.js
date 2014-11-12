@@ -1,4 +1,3 @@
-document.mlab_code_img = new function() {
 	
 	this.config = {};
 
@@ -165,5 +164,4 @@ document.mlab_code_img = new function() {
         });
         
     }
-    
-};
+  

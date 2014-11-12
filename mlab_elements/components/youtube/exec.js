@@ -1,4 +1,3 @@
-document.mlab_code_youtube = new function() {
 	
     this.config = {};
     
@@ -177,5 +176,4 @@ document.mlab_code_youtube = new function() {
         return $(el).find(".mlab_cp_youtube_video").duration;
     };
 
-    
-};
+  

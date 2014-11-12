@@ -60,33 +60,21 @@
                         };
                         mlab.dt.flag_dirty = true;
                     }
-                },
-                
-                
-//other pre-defined objects wrapping up this .dt "class"
-                this.api = new Mlab_dt_api();
-                this.api.parent = this;
+                }
 
-                this.bestpractice = new Mlab_dt_bestpractice();
-                this.bestpractice.parent = this;
-
-                this.design = new Mlab_dt_design();
-                this.design.parent = this;
-
-                this.manage = new Mlab_dt_management();
-                this.manage.parent = this;
-
-                this.utils = new Mlab_dt_utils();
-                this.utils.parent = this;
             }
             
 //runtime api is at the top level
             this.api = new Mlab_api();
             this.api.parent = this;
         }
-
+        
+//other pre-defined objects wrapping up this .dt "class"
+debugger;
+        Mlab.prototype = {
+                test: new Mlab_dt_api()
+        }
         mlab = new Mlab();
-
 //here we pick up variables from the backend, if successful we go on, if not we must exit
         $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/" + document.mlab_temp_vars.page_num + "/load_variables" , function( data ) {
 
@@ -129,12 +117,18 @@
                 });
 
 
-//now we load components
+//now we load components, the go into a mlab object called components,
+//and for each component we need to turn the text of the 
                 $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
                         var feature_list = $("<ul></ul>");
                         mlab.dt.components = data.mlab_components;
-                   		for (type in mlab.dt.components) {
+
+                        for (type in mlab.dt.components) {
+//we need to attach the code.js content to an object so we can use it as JS code
+                            if (mlab.dt.components[type].exec_browser !== false) {
+                                eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].exec_browser + "};");
+                            }                            
                             var c = mlab.dt.components[type];
                             if (c.accessible && !c.is_feature) {
                                 $("#mlab_toolbar_components").append(
@@ -153,7 +147,7 @@
                         $("#mlab_features_list").html(feature_list);
 
 //we always load pages using AJAX, this takes the parameters passed from the controller
-                        mlab.dt.app.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
+                        mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
                         
 //erase the temporary variable, this is used in inititalisation process only.
                         delete document.mlab_temp_vars;

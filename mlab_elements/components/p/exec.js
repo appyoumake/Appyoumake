@@ -1,4 +1,3 @@
-document.mlab_code_p = new function() {
 	
 	this.config = {};
 
@@ -69,5 +68,4 @@ document.mlab_code_p = new function() {
         sel.removeAllRanges();
         sel.addRange(range);
     }
-    
-};
+  

@@ -1,4 +1,3 @@
-document.mlab_code_qrcode = new function() {
 	
 	this.config = {};
     
@@ -33,5 +32,3 @@ document.mlab_code_qrcode = new function() {
             $(el).empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "table"});
         }
     }
-
-};

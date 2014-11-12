@@ -58,24 +58,22 @@ Mlab_dt_bestpractice.prototype = {
                 component_categories[comp_category]++;
             }
 
-            if (document.hasOwnProperty("mlab_code_" + comp_id)) {
-                if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
 //can only do this if component supprts the getContentSize function
-                    if (document["mlab_code_" + comp_id].hasOwnProperty("getContentSize")) {
-                        var size = document["mlab_code_" + comp_id].getContentSize(comp);
-                        if (rules.hasOwnProperty(comp_category)) {
-                            if (rules[comp_category].hasOwnProperty("max")) {
-                                if (size > rules[comp_category].max.size) {
-                                    if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
-                                        template_best_practice_msg.push(rules[comp_category].max.message);
-                                    }
+            if (typeof self.parent.components[comp_id].code != "undefined") {
+                if (typeof self.parent.components[comp_id].code.getContentSize != "undefined") {
+                    var size = self.parent.components[comp_id].code.getContentSize(comp);
+                    if (rules.hasOwnProperty(comp_category)) {
+                        if (rules[comp_category].hasOwnProperty("max")) {
+                            if (size > rules[comp_category].max.size) {
+                                if ($.inArray(rules[comp_category].max.message, template_best_practice_msg) < 0) {
+                                    template_best_practice_msg.push(rules[comp_category].max.message);
                                 }
                             }
-                            if (rules[comp_category].hasOwnProperty("min")) {
-                                if (size < rules[comp_category].min.size) {
-                                    if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
-                                        template_best_practice_msg.push(rules[comp_category].min.message);
-                                    }
+                        }
+                        if (rules[comp_category].hasOwnProperty("min")) {
+                            if (size < rules[comp_category].min.size) {
+                                if ($.inArray(rules[comp_category].min.message, template_best_practice_msg) < 0) {
+                                    template_best_practice_msg.push(rules[comp_category].min.message);
                                 }
                             }
                         }

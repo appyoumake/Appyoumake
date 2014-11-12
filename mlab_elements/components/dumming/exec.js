@@ -1,4 +1,3 @@
-document.mlab_code_dumming = new function() {
 	
 	this.config = new Array();
     
@@ -16,5 +15,3 @@ document.mlab_code_dumming = new function() {
     };
             
 
-
-};

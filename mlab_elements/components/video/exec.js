@@ -1,4 +1,3 @@
-document.mlab_code_video = new function() {
 	
 	this.config = {};
     
@@ -113,5 +112,4 @@ document.mlab_code_video = new function() {
         
     }
 
-    
-};
+  

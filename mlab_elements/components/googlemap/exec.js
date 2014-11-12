@@ -10,7 +10,6 @@
 
  */
 
-document.mlab_code_googlemap = new function() {
 	
 	this.config = {};
     
@@ -270,5 +269,4 @@ document.mlab_code_googlemap = new function() {
         });
    };
     
-    
-};
+  

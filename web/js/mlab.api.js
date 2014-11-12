@@ -380,16 +380,6 @@ Mlab_api.prototype = {
 
             return new_location;
         },
-
-//TODO: This is quite specific, not sure if it should be here...
-        sliderUpdate: function (slider, move_to) {
-            var tmp = self.pageLoad( self.current_page, move_to, self.max_pages );
-            if (tmp >= 0) {
-                self.current_page = tmp;
-                slider.slider().val( self.current_page );
-                slider.slider("refresh");
-            }
-        }        
         
     },
     
@@ -593,11 +583,3 @@ function log(s) {
     }
     catch(e) {;}
 }
-
-
-//runs once the page DOM is ready for JavaScript code to execute - jQuery
-$(document).ready(function() {
-
-    mlab = new Mlab();
-
-});
