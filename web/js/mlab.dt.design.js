@@ -12,33 +12,11 @@
  * as these files can come down in different order, we must make sure we can use it here.
  */
 
-if (typeof Mlab == "undefined") {
-    Mlab = function () {
-        var self = this;
-        var documentOb = $(document);
-        var designMode = true;
-    }
+Mlab_dt_design = function () {
+    var self = this;
 }
 
-if (typeof Mlab.dt == "undefined") {
-    Mlab.dt = function () {
-        var self = this;
-        var config = new Object();
-        
-// State variables used by all .dt sub functions
-        this.flag_dirty = false;
-        this.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
-        this.drag_origin = 'sortable';
-        this.timer_save = null;
-    }
-}
-
-
-Mlab.dt.design = function () {
-    
-}
-
-Mlab.dt.design.prototype = {
+Mlab_dt_design.prototype = {
 /*
  * DOMParser HTML extension
  * 2012-09-04
@@ -89,20 +67,20 @@ Mlab.dt.design.prototype = {
     Remove old stylesheets from previously edited page from *this page*
     Add new stylesheets from page that is opened for editing to *this page*
     Extract BODY and insert content into mlab_editor_chrome
-    Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
+    Process the top level DIVs inside DIV with ID = self.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
     index_page_process : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
-        var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
+        var start_dir = self.parent.config.urls.app + self.parent.app.path + "/" + self.parent.app.version + self.parent.config.cordova.asset_path;
 
 //parse doc into a variable
         var doc = (new DOMParser()).parseFromString(page,"text/html");
 
 //check if it has editable area, if not we cannot continue
-        if (doc.getElementById(mlab_config["app"]["content_id"]) == null) {
-            alert("This app does not have an editable area called " + mlab_config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
+        if (doc.getElementById(self.parent.config["app"]["content_id"]) == null) {
+            alert("This app does not have an editable area called " + self.parent.config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
             return;
         }
 
@@ -115,11 +93,11 @@ Mlab.dt.design.prototype = {
 
 //store different parts of doc for easy access/manipulation
         var head = doc.getElementsByTagName("head")[0];
-        var divs = doc.getElementById(mlab_config["app"]["content_id"]).cloneNode(true).childNodes;
+        var divs = doc.getElementById(self.parent.config["app"]["content_id"]).cloneNode(true).childNodes;
 
 //assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to
 //this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area
-        var content = doc.getElementById(mlab_config["app"]["content_id"]);
+        var content = doc.getElementById(self.parent.config["app"]["content_id"]);
         while (content.firstChild) {
             content.removeChild(content.firstChild);
         }
@@ -139,17 +117,17 @@ Mlab.dt.design.prototype = {
 
 //now we need to make the internal code editable, but only if they actually want to edit this page
         if (is_final_destination) {
-            $("#" + mlab_config["app"]["content_id"]).html(divs);
-            mlab_prepare_editable_area();
+            $("#" + self.parent.config["app"]["content_id"]).html(divs);
+            self.prepare_editable_area();
         }
 
-        document.mlab_current_app.curr_indexpage_html = doc;
+        self.parent.app.curr_indexpage_html = doc;
 //Page name is picked up from title tag in head
-        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        document.mlab_current_app.curr_page_num = page_num;
-        $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
+        self.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+        self.parent.app.curr_page_num = page_num;
+        $("#mlab_page_control_title").text(self.parent.app.curr_pagetitle);
 
-        mlab_app_update_gui_metadata();
+        self.parent.management.app_update_gui_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
         $.mobile.initializePage();
@@ -170,22 +148,22 @@ Mlab.dt.design.prototype = {
 /* this function processes a regular page that was retrieved.
  *
  * It does the following:
-    Remove old HTML from the internal editing div (mlab_config["app"]["content_id"])
+    Remove old HTML from the internal editing div (self.parent.config["app"]["content_id"])
     Extract title and save it to JS var
-    Extract BODY and insert content into mlab_config["app"]["content_id"]
-    Process the top level DIVs inside DIV with ID = mlab_config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
+    Extract BODY and insert content into self.parent.config["app"]["content_id"]
+    Process the top level DIVs inside DIV with ID = self.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
     regular_page_process : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
-        var start_dir = mlab_config.urls.app + document.mlab_current_app.path + "/" + document.mlab_current_app.version + mlab_config.cordova.asset_path;
+        var start_dir = self.parent.config.urls.app + self.parent.app.path + "/" + self.parent.app.version + self.parent.config.cordova.asset_path;
 
 //remove old stuff
-        $("#" + mlab_config["app"]["content_id"]).html("");
+        $("#" + self.parent.config["app"]["content_id"]).html("");
 
 //a page may have failed to save, in this case we create an empty page here, then everything works
         if (page == "") {
-            page = mlab_config["app"]["html_header"].replace("%TITLE%", "Title") + mlab_config["app"]["html_footer"];
+            page = self.parent.config["app"]["html_header"].replace("%TITLE%", "Title") + self.parent.config["app"]["html_footer"];
             page = page.replace(/\\n/g, "\n");
         }
 //
@@ -195,16 +173,16 @@ Mlab.dt.design.prototype = {
         var body = doc.getElementsByTagName("body")[0].cloneNode(true);
 
 //Page name is picked up from title tag in head
-        document.mlab_current_app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        document.mlab_current_app.curr_page_num = page_num;
-        $("#mlab_page_control_title").text(document.mlab_current_app.curr_pagetitle);
+        self.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+        self.parent.app.curr_page_num = page_num;
+        $("#mlab_page_control_title").text(self.parent.app.curr_pagetitle);
 
-        mlab_app_update_gui_metadata();
+        self.parent.management.app_update_gui_metadata();
 
 //add body content
-        $("#" + mlab_config["app"]["content_id"]).html(body.innerHTML);
+        $("#" + self.parent.config["app"]["content_id"]).html(body.innerHTML);
 
-        mlab_prepare_editable_area();
+        self.prepare_editable_area();
         $.mobile.initializePage();
     }, 
 
@@ -212,29 +190,29 @@ Mlab.dt.design.prototype = {
  *********** Functions to manipulate components ***********
 ************************************************************/
     component_add : function (id) {
-        if (document.mlab_current_app.locked) {
+        if (self.parent.app.locked) {
             return;
         }
 
 //if this control has to be unique we check here to see if one was already added
-        if (mlab_components[id].conf.unique && $("#" + mlab_config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
+        if (self.parent.components[id].conf.unique && $("#" + self.parent.config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
             alert("You can only have one component of this type on a page");
             return;
         }
 
-        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + mlab_components[id].html + "</div>");
-        $("#" + mlab_config["app"]["content_id"]).append(new_comp);
-        new_comp.on("click", function(){mlab_component_highlight_selected(this);})
-        new_comp.on("input", function(){mlab_flag_dirty = true;});
+        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + self.parent.components[id].html + "</div>");
+        $("#" + self.parent.config["app"]["content_id"]).append(new_comp);
+        new_comp.on("click", function(){self.component_highlight_selected(this);})
+        new_comp.on("input", function(){self.parent.flag_dirty = true;});
 
         $('.mlab_current_component').qtip('hide');
 
-        mlab_component_run_code(new_comp, id, true);
-        mlab_component_highlight_selected(new_comp);
+        self.component_run_code(new_comp, id, true);
+        self.component_highlight_selected(new_comp);
         window.scrollTo(0,document.body.scrollHeight);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
-        var url = mlab_urls.component_added.replace("_APPID_", document.mlab_current_app.id);
+        var url = self.parent.urls.component_added.replace("_APPID_", self.parent.app.id);
         url = url.replace("_COMPID_", id);
         var request = $.ajax({
             type: "GET",
@@ -244,7 +222,7 @@ Mlab.dt.design.prototype = {
 
         request.done(function( result ) {
             if (result.result == "success") {
-                mlab_drag_origin = 'sortable';
+                self.parent.drag_origin = 'sortable';
             } else {
                 alert(result.msg + "'\n\nLegg til komponenten igjen.");
                 $(new_comp).remove();
@@ -257,13 +235,13 @@ Mlab.dt.design.prototype = {
         });
 
 //finally we add dependencies, i.e. components that this component depends on
-        if (mlab_components[id].hasOwnProperty("conf") && mlab_components[id].conf.hasOwnProperty("dependencies")) {
-            for (component in mlab_components[id].conf.dependencies) {
-                mlab_feature_add(mlab_components[id].conf.dependencies[0], true);
+        if (self.parent.components[id].hasOwnProperty("conf") && self.parent.components[id].conf.hasOwnProperty("dependencies")) {
+            for (component in self.parent.components[id].conf.dependencies) {
+                self.feature_add(self.parent.components[id].conf.dependencies[0], true);
             }
         }
 
-        mlab_flag_dirty = true;
+        self.parent.flag_dirty = true;
 
     },
 
@@ -275,19 +253,19 @@ Mlab.dt.design.prototype = {
  * @returns {undefined}
  */
     component_run_code : function (el, comp_id, created) {
-        if (typeof mlab_components[comp_id] == "undefined") {
+        if (typeof self.parent.components[comp_id] == "undefined") {
             return;
         }
 //execute the javascript if it exists, we first need to attach it to document so we can use it globally
-        if (mlab_components[comp_id].exec_browser !== false && (typeof (document["mlab_code_" + comp_id]) === "undefined")) {
-            eval(mlab_components[comp_id].exec_browser);
+        if (self.parent.components[comp_id].exec_browser !== false && (typeof (document["mlab_code_" + comp_id]) === "undefined")) {
+            eval(self.parent.components[comp_id].exec_browser);
         }
 
         if (typeof (document["mlab_code_" + comp_id]) !== "undefined") {
             if (created) {
-                document["mlab_code_" + comp_id].onCreate(el, mlab_components[comp_id].conf, mlab_component_request_info);
+                document["mlab_code_" + comp_id].onCreate(el, self.parent.components[comp_id].conf, self.parent.api);
             } else {
-                document["mlab_code_" + comp_id].onLoad(el, mlab_components[comp_id].conf, mlab_component_request_info);
+                document["mlab_code_" + comp_id].onLoad(el, self.parent.components[comp_id].conf, self.parent.api);
             }
         }
     },
@@ -301,7 +279,7 @@ Mlab.dt.design.prototype = {
             $el.insertBefore($el.prev());
             $el.fadeIn(500);
         });
-        mlab_flag_dirty = true;
+        self.parent.flag_dirty = true;
     },
 
     component_movedown : function () {
@@ -313,13 +291,13 @@ Mlab.dt.design.prototype = {
             $el.insertAfter($el.next());
             $el.fadeIn(500);
         });
-        mlab_flag_dirty = true;
+        self.parent.flag_dirty = true;
     },
 
     component_highlight_selected : function (el) {
-         $( "#" + mlab_config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
+         $( "#" + self.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
          $( el ).addClass("mlab_current_component");
-         mlab_menu_prepare();
+         self.component_menu_prepare();
     },
 
     component_delete : function () {
@@ -331,7 +309,7 @@ Mlab.dt.design.prototype = {
         if (sel_comp.length > 0) {
             sel_comp.addClass("mlab_current_component");
         }
-        mlab_flag_dirty = true;
+        self.parent.flag_dirty = true;
     },
 
 /**
@@ -342,42 +320,127 @@ Mlab.dt.design.prototype = {
  */
 
     feature_add : function (comp_id, silent) {
-        if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
-            $(document.mlab_current_app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
+        if ($(self.parent.app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
+            $(self.parent.app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
         } else {
 //make sure not duplicate it
-            if ($(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
+            if ($(self.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
                 if (!silent) {
-                    mlab_update_status("temporary", "Feature already added", false);
+                    self.parent.utils.update_status("temporary", "Feature already added", false);
                 }
                 return;
             }
         }
 
-        $(document.mlab_current_app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + mlab_components[comp_id].html + "</div>");
+        $(self.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + self.parent.components[comp_id].html + "</div>");
 
 
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
-        if (document.mlab_current_app.curr_page_num != "0" && document.mlab_current_app.curr_page_num != "index") {
-            var url = mlab_urls.feature_add.replace("_APPID_", document.mlab_current_app.id);
+        if (self.parent.app.curr_page_num != "0" && self.parent.app.curr_page_num != "index") {
+            var url = self.parent.urls.feature_add.replace("_APPID_", self.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
-                mlab_update_status("callback", 'Adding feature...', true);
+                self.parent.utils.update_status("callback", 'Adding feature...', true);
             }
 
             $.get( url, function( data ) {
                 if (data.result == "success") {
-                    mlab_update_status("temporary", "Feature added", false);
+                    self.parent.utils.update_status("temporary", "Feature added", false);
                     $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
                 } else {
-                    mlab_update_status("temporary", data.msg, false);
+                    self.parent.utils.update_status("temporary", data.msg, false);
                 }
 
             });
         }
-    }
+    },
     
+    /*
+ *
+ * @param divs (html/DOM) all divs to edit
+ */
+    prepare_editable_area : function () {
+//need to loop through all divs in the editable box after they have been added
+//and set the styles for dragging/dropping so it works OK
+        $( "#" + self.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
+            $( this ).droppable(self.parent.droppable_options)
+                     .sortable(self.parent.sortable_options)
+                     .on("click", function(){self.component_highlight_selected(this);})
+                     .on("input", function(){self.parent.flag_dirty = true;});
+
+            comp_id = $( this ).data("mlab-type");
+            self.component_run_code($( this ), comp_id);
+        });
+
+//set draggable/sortable options for the editable area
+        $( "#" + self.parent.config["app"]["content_id"] ).droppable(self.parent.droppable_options).sortable(self.parent.sortable_options);
+
+    },
+
+    /***********************************************************
+ *********** Function to manipulate adaptive menus (those defined by component itself ********
+************************************************************/
+
+/* adds component specific menu when a component is added/selected */
+    component_menu_prepare: function () {
+        var comp = $(".mlab_current_component");
+        if (comp.length < 1) {
+            return;
+        }
+        var comp_name = comp.data("mlab-type");
+        var items = new Object();
+        var title = "";
+        for(var index in document["mlab_code_" + comp_name]) {
+            if (index.substr(0, 7) == "custom_") {
+                title = index.slice(7);
+                items[index] =  { name: title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
+                                  callback: function(key, options) {
+                                      document["mlab_code_" + $('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
+                                  }
+                                };
+            }
+        }
+        if ((typeof self.parent.components[comp_name].conf.compatible != "undefined") && (document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].hasOwnProperty("onReplace"))) {
+            items["sep1"] = "---------";
+            items["replace"] = {"name": "Replace control with"};
+            var sub_items = new Object;
+            self.parent.components[$(".mlab_current_component").data("mlab-type")].conf.compatible.forEach(function(replace_with) {
+                title = replace_with.trim();
+                sub_items[title] = { name: " -> " + title.replace("_", " "),
+                                     callback: function(key, options) {
+                                        document["mlab_code_" + $('.mlab_current_component').data("mlab-type")].onReplace($('.mlab_current_component'), key, self.parent.components[key].html);
+                                     }
+                                   };
+            } );
+            items["replace"]["items"] = sub_items;
+       }
+
+        $.contextMenu( 'destroy', '#mlab_button_menu' );
+        $.contextMenu( 'destroy', '.mlab_current_component' );
+
+        if (Object.keys(items).length < 1) {
+            items["empty"] = "No actions available for this component";
+        }
+
+        $.contextMenu({
+            selector: '#mlab_button_menu',
+            className: 'mlab_menu_title',
+            trigger: 'left',
+            items: items
+        });
+
+        $.contextMenu({
+            selector: '.mlab_current_component',
+            className: 'mlab_menu_title',
+            trigger: 'right',
+            items: items
+        });
+
+        $('.mlab_menu_title').attr('data-menutitle', "Modify component");
+    }
+
+
 } // end design.prototype 
 
 

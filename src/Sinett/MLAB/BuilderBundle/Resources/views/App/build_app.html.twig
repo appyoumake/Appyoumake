@@ -56,12 +56,29 @@
     <script src="{{ asset('/js/bowser.js') }}"></script>
 
     <script type="text/javascript">	 
-        document.mlab_temp_app_id = {{ mlab_app_id }};
-        document.mlab_temp_page_num = '{{ mlab_app_page_num }}';
-        document.mlab_appbuilder_root_url = '{{ mlab_appbuilder_root_url }}';
+        //these vars are generated from backend and are required for the initialisation of the mlab object later
+        document.mlab_temp_vars = {app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
+        
+//get the list of components & the component menu to stick to the top when scrollin down
+        $(document).ready(function() {
+            if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
+                var stickyComponentTop = $('#mlab_toolbar_components').offset().top;
+
+                $(document).scroll(function(){ // scroll event
+                    var windowTop = $(window).scrollTop(); // returns number
+
+                    if (stickyComponentTop-40 < windowTop) {
+                        $('#mlab_toolbar_components ').css({ position: 'fixed', top: -40 });
+                        $('#mlab_toolbar_for_components').css({ position: 'fixed', top: 0, left: 655 });
+                    }
+                    else {
+                        $('#mlab_toolbar_components #mlab_toolbar_for_components').css('position','static');
+                    }
+                });
+            }
+       });
     </script>
 
-    <script src="{{ asset('/js/mlab_editor.js') }}"></script>
-    <script src="{{ asset('/js/test.js') }}"></script>
+    <script src="{{ asset('/js/mlab_editor.init.js') }}"></script>
 	
 {% endblock %}

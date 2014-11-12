@@ -23,15 +23,8 @@ Storage is already app-specific, so no need to include that into the namespace.
  * as these files can come down in different order, we must make sure we can use it here.
  */
 
-if (typeof Mlab == "undefined") {
-    function Mlab () {
-        var self = this;
-        var documentOb = $(document);
-        var designMode = false;
-    }
-}
 
-Mlab.prototype.api = function () {
+function Mlab_api () {
     var self = this;
     var documentOb = $(document);
     this.internal.self = this;
@@ -62,7 +55,7 @@ Mlab.prototype.api = function () {
     documentOb.trigger("mlabready");
 }
 
-Mlab.api.prototype = {
+Mlab_api.prototype = {
     version: 0.1,
     /*
      * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode.
