@@ -4,55 +4,58 @@
  */
 
 
-Mlab_dt_api = function () {
+function Mlab_dt_api () {
     var self = this;
     this.storage = new Object();
     this.version = 0.2;
 };
 
 Mlab_dt_api.prototype = {
+  testy : function (test) {
+    alert("Mlab_dt_api" + test);
+  },
 
 /*
  * Requests for URLs, Symfony allows us to redfine these using the route functionality, so they are always stored in variables
  * picked up from the server, these are wrapper functions to obtain them from the internal variables
  */
     getUrlAppAbsolute : function (param) {
-        return window.location.origin + self.parent.config.urls.app;
+        return window.location.origin + this.parent.config.urls.app;
     },
 
     getUrlAppRelative : function (param) {
-        return self.parent.config.urls.app;
+        return this.parent.config.urls.app;
     },
 
     getUrlComponentAbsolute : function (param) {
-        return window.location.origin + self.parent.config.urls.component;
+        return window.location.origin + this.parent.config.urls.component;
     },
 
     getUrlComponentRelative : function (param) {
-        return self.parent.config.urls.component;
+        return this.parent.config.urls.component;
     },
 
     getUrlTemplateAbsolute : function (param) {
-        return window.location.origin + self.parent.config.urls.template;
+        return window.location.origin + this.parent.config.urls.template;
     },
 
     getUrlTemplateRelative : function (param) {
-        return self.parent.config.urls.template;
+        return this.parent.config.urls.template;
     },
 
     getUrlUploadAbsolute : function (param) {
-        return window.location.origin + self.parent.urls.component_upload_file.replace("_APPID_", self.parent.app.id).replace("_COMPID_", param);
+        return window.location.origin + this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_COMPID_", param);
     },
 
     getUrlUploadRelative : function (param) {
-        return self.parent.urls.component_upload_file.replace("_APPID_", self.parent.app.id).replace("_FILETYPES_", param);
+        return this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", param);
     },
 
 //get a list of files already uploaded, non-async so we can return data and do not need to know whcih HTML element to put it in
     getMedia : function (param) {
         var data = $.ajax({
             type: "GET",
-            url: self.parent.urls.uploaded_files.replace("_APPID_", self.parent.app.id).replace("_FILETYPES_", param),
+            url: this.parent.urls.uploaded_files.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", param),
             async: false,
         }).responseText;
 
@@ -74,13 +77,13 @@ Mlab_dt_api.prototype = {
 
 //loads all js/css files required at design time for a component as specified in conf.yml
     getLibraries : function (param) {
-        if ("required_libs" in self.parent.components[param].conf) {
-            if ("designtime" in self.parent.components[param].conf.required_libs) {
-                var comp_url = window.location.origin + self.parent.urls.components_root_url;
-                var comp_path = self.parent.components[param].conf.name;
+        if ("required_libs" in this.parent.components[param].conf) {
+            if ("designtime" in this.parent.components[param].conf.required_libs) {
+                var comp_url = window.location.origin + this.parent.urls.components_root_url;
+                var comp_path = this.parent.components[param].conf.name;
 
-                for (i in self.parent.components[param].conf.required_libs.designtime) {
-                    var file = self.parent.components[param].conf.required_libs.designtime[i];
+                for (i in this.parent.components[param].conf.required_libs.designtime) {
+                    var file = this.parent.components[param].conf.required_libs.designtime[i];
                     var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ ;
                     if (regexp.test(file)) {
                         if ($("script[src*='" + file + "']").length < 1) {
@@ -117,7 +120,7 @@ Mlab_dt_api.prototype = {
 
 //get the DIV that is the ontainer for the editable area
     getEditorElement : function (param) {
-        return self.parent.config.content_id;
+        return this.parent.config.content_id;
     },
 
 //get design time or runtime mode

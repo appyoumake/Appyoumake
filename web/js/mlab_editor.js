@@ -45,12 +45,12 @@
 
 /*********** Startup code ***********/
     $(document).ready(function() {
-        if (bowser.gecko || bowser.chrome) {
+        /*if (bowser.gecko || bowser.chrome) {
 
         } else {
             alert("This web app will only work in Chrome/Chromium or Firefox");
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
-        }
+        } */
 
 //here we pick up variables from the backend, if successful we go on, if not we must exit
         $.get( document.mlab_appbuilder_root_url + document.mlab_temp_app_id  + "/" + document.mlab_temp_page_num + "/load_variables" , function( data ) {

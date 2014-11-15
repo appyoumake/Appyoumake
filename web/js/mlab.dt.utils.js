@@ -2,7 +2,7 @@
  * Utility functions for design time
  */
 
-Mlab_dt_utils = function () {
+function Mlab_dt_utils () {
     this.timer_save = null;
 };
 
@@ -21,7 +21,7 @@ Mlab_dt_utils.prototype = {
             return;
         } else if (state == "temporary") {
             $("#mlab_statusbar_temporary").text(content);
-            window.setInterval(self.clear_status, 3000);
+            window.setInterval(this.clear_status, 3000);
         } else if (state == "callback") {
             $("#mlab_statusbar_temporary").text(content);
         } else if (state == "completed") {
@@ -41,25 +41,25 @@ Mlab_dt_utils.prototype = {
  * Simple wrapper function to clear a temporary status
  * @returns {undefined} */
     clear_status : function () {
-        self.update_status("completed");
+        this.update_status("completed");
     },
     
 
 
 /**
  * Create a timer to save the current page and stores it in a global variable
- * we call window.clearTimeout(self.timer_save) to stop it should it be required
+ * we call window.clearTimeout(this.timer_save) to stop it should it be required
  * @returns {undefined}
  */
     timer_start : function () {
-        var tm = parseInt(self.parent.config["save_interval"]);
+        var tm = parseInt(this.parent.config["save_interval"]);
         if (tm < 60) { tm = 60; }
-        self.timer_save = window.setTimeout(self.parent.management.page_save, tm * 1000);
+        this.timer_save = window.setTimeout(this.parent.management.page_save, tm * 1000);
         console.log("Restartet timer");
     },
 
     timer_stop : function () {
-        window.clearTimeout(self.timer_save);
+        window.clearTimeout(this.timer_save);
         console.log("Stopped timer");
     }
 

@@ -2,7 +2,7 @@
  * All functions used in /src/Sinett/MLAB/BuilderBundle/Resources/views/App/build_app.html.twig
  * but not the data that has to come from TWIG. Therefore, see top of that page for data structures.
  */
-
+//TODO: NEED TO NOT USE slf (window.slf = JS builtin variable)
 
 
 /* general variables used globally by different functions
@@ -25,30 +25,32 @@
 //initialise the Mlab object, then create an global instance of it
 //the MLAB object contains several other objects loaded in different files
         Mlab = function () {
+
+            var slf = this;
             this.designMode = true;
             this.dt = function () {
-                var self = this;
 
+                var slf = this.dt;
 //variables used for: general config, path info, app info, page details
-                this.uid = 0;
-                this.config = new Object();
-                this.paths = new Object();
-                this.app = new Object();
-                this.page = new Object();
+                slf.uid = 0;
+                slf.config = new Object();
+                slf.paths = new Object();
+                slf.app = new Object();
+                slf.page = new Object();
 
 // individual variables used by all .dt sub functions
-                this.flag_dirty = false;
-                this.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
-                this.drag_origin = 'sortable';
+                slf.flag_dirty = false;
+                slf.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
+                slf.drag_origin = 'sortable';
                 
 // drag'n'drop definitions used by jQuery
-                this.droppable_options = {
+                slf.droppable_options = {
                     drop: function( event, ui ) {
                         mlab.dt.flag_dirty = true;
                     }
                 },
 
-                this.sortable_options = {
+                slf.sortable_options = {
                     placeholder: "mlab_component_placeholder",
                     revert: false,
                     helper: "clone",
@@ -60,21 +62,34 @@
                         };
                         mlab.dt.flag_dirty = true;
                     }
-                }
+                },
 
-            }
+//other pre-defined objects wrapping up this .dt "class"
+                slf.api = new Mlab_dt_api();
+                slf.api.parent = slf;
+
+                slf.bestpractice = new Mlab_dt_bestpractice();
+                slf.bestpractice.parent = slf;
+
+                slf.design = new Mlab_dt_design();
+                slf.design.parent = slf;
+
+                slf.management = new Mlab_dt_management();
+                slf.management.parent = slf;
+
+                slf.utils = new Mlab_dt_utils();
+                slf.utils.parent = slf;
+
+            },
             
 //runtime api is at the top level
             this.api = new Mlab_api();
-            this.api.parent = this;
+            this.api.parent = slf;
         }
-        
-//other pre-defined objects wrapping up this .dt "class"
-debugger;
-        Mlab.prototype = {
-                test: new Mlab_dt_api()
-        }
+
         mlab = new Mlab();
+        mlab.dt();
+
 //here we pick up variables from the backend, if successful we go on, if not we must exit
         $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/" + document.mlab_temp_vars.page_num + "/load_variables" , function( data ) {
 

@@ -12,7 +12,7 @@
  * as these files can come down in different order, we must make sure we can use it here.
  */
 
-Mlab_dt_design = function () {
+function Mlab_dt_design () {
     var self = this;
 }
 
@@ -67,20 +67,20 @@ Mlab_dt_design.prototype = {
     Remove old stylesheets from previously edited page from *this page*
     Add new stylesheets from page that is opened for editing to *this page*
     Extract BODY and insert content into mlab_editor_chrome
-    Process the top level DIVs inside DIV with ID = self.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
+    Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
     index_page_process : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
-        var start_dir = self.parent.config.urls.app + self.parent.app.path + "/" + self.parent.app.version + self.parent.config.cordova.asset_path;
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + this.parent.config.cordova.asset_path;
 
 //parse doc into a variable
         var doc = (new DOMParser()).parseFromString(page,"text/html");
 
 //check if it has editable area, if not we cannot continue
-        if (doc.getElementById(self.parent.config["app"]["content_id"]) == null) {
-            alert("This app does not have an editable area called " + self.parent.config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
+        if (doc.getElementById(this.parent.config["app"]["content_id"]) == null) {
+            alert("This app does not have an editable area called " + this.parent.config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
             return;
         }
 
@@ -93,11 +93,11 @@ Mlab_dt_design.prototype = {
 
 //store different parts of doc for easy access/manipulation
         var head = doc.getElementsByTagName("head")[0];
-        var divs = doc.getElementById(self.parent.config["app"]["content_id"]).cloneNode(true).childNodes;
+        var divs = doc.getElementById(this.parent.config["app"]["content_id"]).cloneNode(true).childNodes;
 
 //assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to
 //this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area
-        var content = doc.getElementById(self.parent.config["app"]["content_id"]);
+        var content = doc.getElementById(this.parent.config["app"]["content_id"]);
         while (content.firstChild) {
             content.removeChild(content.firstChild);
         }
@@ -117,17 +117,17 @@ Mlab_dt_design.prototype = {
 
 //now we need to make the internal code editable, but only if they actually want to edit this page
         if (is_final_destination) {
-            $("#" + self.parent.config["app"]["content_id"]).html(divs);
-            self.prepare_editable_area();
+            $("#" + this.parent.config["app"]["content_id"]).html(divs);
+            this.prepare_editable_area();
         }
 
-        self.parent.app.curr_indexpage_html = doc;
+        this.parent.app.curr_indexpage_html = doc;
 //Page name is picked up from title tag in head
-        self.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        self.parent.app.curr_page_num = page_num;
-        $("#mlab_page_control_title").text(self.parent.app.curr_pagetitle);
+        this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+        this.parent.app.curr_page_num = page_num;
+        $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
 
-        self.parent.management.app_update_gui_metadata();
+        this.parent.management.app_update_gui_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
         $.mobile.initializePage();
@@ -148,22 +148,22 @@ Mlab_dt_design.prototype = {
 /* this function processes a regular page that was retrieved.
  *
  * It does the following:
-    Remove old HTML from the internal editing div (self.parent.config["app"]["content_id"])
+    Remove old HTML from the internal editing div (this.parent.config["app"]["content_id"])
     Extract title and save it to JS var
-    Extract BODY and insert content into self.parent.config["app"]["content_id"]
-    Process the top level DIVs inside DIV with ID = self.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
+    Extract BODY and insert content into this.parent.config["app"]["content_id"]
+    Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
     regular_page_process : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
-        var start_dir = self.parent.config.urls.app + self.parent.app.path + "/" + self.parent.app.version + self.parent.config.cordova.asset_path;
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + this.parent.config.cordova.asset_path;
 
 //remove old stuff
-        $("#" + self.parent.config["app"]["content_id"]).html("");
+        $("#" + this.parent.config["app"]["content_id"]).html("");
 
 //a page may have failed to save, in this case we create an empty page here, then everything works
         if (page == "") {
-            page = self.parent.config["app"]["html_header"].replace("%TITLE%", "Title") + self.parent.config["app"]["html_footer"];
+            page = this.parent.config["app"]["html_header"].replace("%TITLE%", "Title") + this.parent.config["app"]["html_footer"];
             page = page.replace(/\\n/g, "\n");
         }
 //
@@ -173,16 +173,16 @@ Mlab_dt_design.prototype = {
         var body = doc.getElementsByTagName("body")[0].cloneNode(true);
 
 //Page name is picked up from title tag in head
-        self.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        self.parent.app.curr_page_num = page_num;
-        $("#mlab_page_control_title").text(self.parent.app.curr_pagetitle);
+        this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+        this.parent.app.curr_page_num = page_num;
+        $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
 
-        self.parent.management.app_update_gui_metadata();
+        this.parent.management.app_update_gui_metadata();
 
 //add body content
-        $("#" + self.parent.config["app"]["content_id"]).html(body.innerHTML);
+        $("#" + this.parent.config["app"]["content_id"]).html(body.innerHTML);
 
-        self.prepare_editable_area();
+        this.prepare_editable_area();
         $.mobile.initializePage();
     }, 
 
@@ -190,29 +190,29 @@ Mlab_dt_design.prototype = {
  *********** Functions to manipulate components ***********
 ************************************************************/
     component_add : function (id) {
-        if (self.parent.app.locked) {
+        if (this.parent.app.locked) {
             return;
         }
 
 //if this control has to be unique we check here to see if one was already added
-        if (self.parent.components[id].conf.unique && $("#" + self.parent.config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
+        if (this.parent.components[id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
             alert("You can only have one component of this type on a page");
             return;
         }
 
-        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + self.parent.components[id].html + "</div>");
-        $("#" + self.parent.config["app"]["content_id"]).append(new_comp);
-        new_comp.on("click", function(){self.component_highlight_selected(this);})
-        new_comp.on("input", function(){self.parent.flag_dirty = true;});
+        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + this.parent.components[id].html + "</div>");
+        $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
+        new_comp.on("click", function(){this.component_highlight_selected(this);})
+        new_comp.on("input", function(){this.parent.flag_dirty = true;});
 
         $('.mlab_current_component').qtip('hide');
 
-        self.component_run_code(new_comp, id, true);
-        self.component_highlight_selected(new_comp);
+        this.component_run_code(new_comp, id, true);
+        this.component_highlight_selected(new_comp);
         window.scrollTo(0,document.body.scrollHeight);
 
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
-        var url = self.parent.urls.component_added.replace("_APPID_", self.parent.app.id);
+        var url = this.parent.urls.component_added.replace("_APPID_", this.parent.app.id);
         url = url.replace("_COMPID_", id);
         var request = $.ajax({
             type: "GET",
@@ -222,7 +222,7 @@ Mlab_dt_design.prototype = {
 
         request.done(function( result ) {
             if (result.result == "success") {
-                self.parent.drag_origin = 'sortable';
+                this.parent.drag_origin = 'sortable';
             } else {
                 alert(result.msg + "'\n\nLegg til komponenten igjen.");
                 $(new_comp).remove();
@@ -235,13 +235,13 @@ Mlab_dt_design.prototype = {
         });
 
 //finally we add dependencies, i.e. components that this component depends on
-        if (self.parent.components[id].hasOwnProperty("conf") && self.parent.components[id].conf.hasOwnProperty("dependencies")) {
-            for (component in self.parent.components[id].conf.dependencies) {
-                self.feature_add(self.parent.components[id].conf.dependencies[0], true);
+        if (this.parent.components[id].hasOwnProperty("conf") && this.parent.components[id].conf.hasOwnProperty("dependencies")) {
+            for (component in this.parent.components[id].conf.dependencies) {
+                this.feature_add(this.parent.components[id].conf.dependencies[0], true);
             }
         }
 
-        self.parent.flag_dirty = true;
+        this.parent.flag_dirty = true;
 
     },
 
@@ -253,14 +253,14 @@ Mlab_dt_design.prototype = {
  * @returns {undefined}
  */
     component_run_code : function (el, comp_id, created) {
-        if (typeof self.parent.components[comp_id] == "undefined" || typeof self.parent.components[comp_id].code == "undefined") {
+        if (typeof this.parent.components[comp_id] == "undefined" || typeof this.parent.components[comp_id].code == "undefined") {
             return;
         }
 
         if (created) {
-            self.parent.components[comp_id].code.onCreate(el, self.parent.components[comp_id].conf, self.parent.api);
+            this.parent.components[comp_id].code.onCreate(el, this.parent.components[comp_id].conf, this.parent.api);
         } else {
-            self.parent.components[comp_id].code.onLoad(el, self.parent.components[comp_id].conf, self.parent.api);
+            this.parent.components[comp_id].code.onLoad(el, this.parent.components[comp_id].conf, this.parent.api);
         }
     },
 
@@ -273,7 +273,7 @@ Mlab_dt_design.prototype = {
             $el.insertBefore($el.prev());
             $el.fadeIn(500);
         });
-        self.parent.flag_dirty = true;
+        this.parent.flag_dirty = true;
     },
 
     component_movedown : function () {
@@ -285,13 +285,13 @@ Mlab_dt_design.prototype = {
             $el.insertAfter($el.next());
             $el.fadeIn(500);
         });
-        self.parent.flag_dirty = true;
+        this.parent.flag_dirty = true;
     },
 
     component_highlight_selected : function (el) {
-         $( "#" + self.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
+         $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
          $( el ).addClass("mlab_current_component");
-         self.component_menu_prepare();
+         this.component_menu_prepare();
     },
 
     component_delete : function () {
@@ -303,7 +303,7 @@ Mlab_dt_design.prototype = {
         if (sel_comp.length > 0) {
             sel_comp.addClass("mlab_current_component");
         }
-        self.parent.flag_dirty = true;
+        this.parent.flag_dirty = true;
     },
 
 /**
@@ -314,36 +314,36 @@ Mlab_dt_design.prototype = {
  */
 
     feature_add : function (comp_id, silent) {
-        if ($(self.parent.app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
-            $(self.parent.app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
+        if ($(this.parent.app.curr_indexpage_html).find("#mlab_features_content").length == 0) {
+            $(this.parent.app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
         } else {
 //make sure not duplicate it
-            if ($(self.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
+            if ($(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
                 if (!silent) {
-                    self.parent.utils.update_status("temporary", "Feature already added", false);
+                    this.parent.utils.update_status("temporary", "Feature already added", false);
                 }
                 return;
             }
         }
 
-        $(self.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + self.parent.components[comp_id].html + "</div>");
+        $(this.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + this.parent.components[comp_id].html + "</div>");
 
 
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
-        if (self.parent.app.curr_page_num != "0" && self.parent.app.curr_page_num != "index") {
-            var url = self.parent.urls.feature_add.replace("_APPID_", self.parent.app.id);
+        if (this.parent.app.curr_page_num != "0" && this.parent.app.curr_page_num != "index") {
+            var url = this.parent.urls.feature_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
-                self.parent.utils.update_status("callback", 'Adding feature...', true);
+                this.parent.utils.update_status("callback", 'Adding feature...', true);
             }
 
             $.get( url, function( data ) {
                 if (data.result == "success") {
-                    self.parent.utils.update_status("temporary", "Feature added", false);
+                    this.parent.utils.update_status("temporary", "Feature added", false);
                     $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
                 } else {
-                    self.parent.utils.update_status("temporary", data.msg, false);
+                    this.parent.utils.update_status("temporary", data.msg, false);
                 }
 
             });
@@ -357,18 +357,18 @@ Mlab_dt_design.prototype = {
     prepare_editable_area : function () {
 //need to loop through all divs in the editable box after they have been added
 //and set the styles for dragging/dropping so it works OK
-        $( "#" + self.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
-            $( this ).droppable(self.parent.droppable_options)
-                     .sortable(self.parent.sortable_options)
-                     .on("click", function(){self.component_highlight_selected(this);})
-                     .on("input", function(){self.parent.flag_dirty = true;});
+        $( "#" + this.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
+            $( this ).droppable(this.parent.droppable_options)
+                     .sortable(this.parent.sortable_options)
+                     .on("click", function(){this.component_highlight_selected(this);})
+                     .on("input", function(){this.parent.flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");
-            self.component_run_code($( this ), comp_id);
+            this.component_run_code($( this ), comp_id);
         });
 
 //set draggable/sortable options for the editable area
-        $( "#" + self.parent.config["app"]["content_id"] ).droppable(self.parent.droppable_options).sortable(self.parent.sortable_options);
+        $( "#" + this.parent.config["app"]["content_id"] ).droppable(this.parent.droppable_options).sortable(this.parent.sortable_options);
 
     },
 
@@ -385,25 +385,25 @@ Mlab_dt_design.prototype = {
         var comp_name = comp.data("mlab-type");
         var items = new Object();
         var title = "";
-        for(var index in self.parent.components[comp_name]) {
+        for(var index in this.parent.components[comp_name]) {
             if (index.substr(0, 7) == "custom_") {
                 title = index.slice(7);
                 items[index] =  { name: title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
                                   callback: function(key, options) {
-                                      self.parent.components[$('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
+                                      this.parent.components[$('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
                                   }
                                 };
             }
         }
-        if ((typeof self.parent.components[comp_name].conf.compatible != "undefined") && (self.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
+        if ((typeof this.parent.components[comp_name].conf.compatible != "undefined") && (this.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
             items["sep1"] = "---------";
             items["replace"] = {"name": "Replace control with"};
             var sub_items = new Object;
-            self.parent.components[$(".mlab_current_component").data("mlab-type")].conf.compatible.forEach(function(replace_with) {
+            this.parent.components[$(".mlab_current_component").data("mlab-type")].conf.compatible.forEach(function(replace_with) {
                 title = replace_with.trim();
                 sub_items[title] = { name: " -> " + title.replace("_", " "),
                                      callback: function(key, options) {
-                                        self.parent.components[$('.mlab_current_component').data("mlab-type")].code.onReplace($('.mlab_current_component'), key, self.parent.components[key].html);
+                                        this.parent.components[$('.mlab_current_component').data("mlab-type")].code.onReplace($('.mlab_current_component'), key, this.parent.components[key].html);
                                      }
                                    };
             } );
