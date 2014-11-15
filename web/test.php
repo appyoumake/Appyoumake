@@ -1,18 +1,19 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title> - jsFiddle demo</title>
   
-  <script type='text/javascript' src='//code.jquery.com/jquery-2.1.0.js'></script>
-  
-  
-  
-  
-  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  <script type='text/javascript' src='http://code.jquery.com/jquery-2.1.0.js'></script>
+  <link href="https://mlab.sinilab.net/css/mlab_editor_menu.css" rel="stylesheet">
+  <link href="https://mlab.sinilab.net/css/mlab_all.css" rel="stylesheet">
   
   <style type='text/css'>
+    div {
+      float: left;
+      width: 45%;
+
+    }
     #skjema, #skjema_input {
     border: 1px solid red;
     min-height: 200px;
@@ -23,12 +24,14 @@
     height: 600px;
 }
 
-.question {
-    font-weight: bold;
-}
 
 .info {
     font-style: italic;
+}
+
+p {
+    padding: 0;
+    margin: 8px 0;
 }
   </style>
   
@@ -95,30 +98,19 @@ $(document).on("keypress", "#skjema_input", function(e) {
 
 </head>
 <body>
-  <div id="skjema"></div>
+  <div id="skjema_header">Her vil skjemaet ditt vises ettersom du fyller in detaljer p&aring; h&oslash;yre side</div>
+  <div id="skjema_input_header">&aring; lage et skjema er s&aring; enkelt som &aring; taste inn dine sp&oslash;rsm&aring;l og svar. Alle sp&oslash;rsm&aring;l ender i 
+
+et sp&oslash;rsm&aring;lstegn p&aring; slutten av en paragraf/linje, alle svar begynner med et pluss tegn (for riktig(e) svar) eller et minus tegn (for feil svar). En 
+
+paragraf uten noen av disse blir vist som forklarende tekst. En blank linje betyr at du starter et nytt sp&oslash;rsm&aring;l. Har du et sp&oslash;rsm&aring;l uten 
+
+noen svar s&aring; benyttes en tekst boks, sp&oslash;rsm&aring;l med svar benytter avkrysningsbokser.</div>
+  
 <br>
-Legg inn skjema her:<br>
+<div id="skjema"></div>
     <textarea id="skjema_input"></textarea>
-<div style="display: hidden">
-twst
-are u hungry?
-+yes
--no
-
-are you ugly?
-+yes
-+no
-maybe
-+maybe
-
-How was the weather?
-
-
-
-http://jsfiddle.net/kc2x6pce/1/
-</div>
 </body>
 
 
 </html>
-
