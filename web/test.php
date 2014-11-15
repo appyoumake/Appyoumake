@@ -99,13 +99,15 @@ $(document).on("keypress", "#skjema_input", function(e) {
 </head>
 <body>
   <div id="skjema_header">Her vil skjemaet ditt vises ettersom du fyller in detaljer p&aring; h&oslash;yre side</div>
-  <div id="skjema_input_header">&aring; lage et skjema er s&aring; enkelt som &aring; taste inn dine sp&oslash;rsm&aring;l og svar. Alle sp&oslash;rsm&aring;l ender i 
+  <div id="skjema_input_header">&aring; lage et skjema er s&aring; enkelt som &aring; taste inn dine sp&oslash;rsm&aring;l og svar. <ul><li>Alle sp&oslash;rsm&aring;l 
 
-et sp&oslash;rsm&aring;lstegn p&aring; slutten av en paragraf/linje, alle svar begynner med et pluss tegn (for riktig(e) svar) eller et minus tegn (for feil svar). En 
+ender i et sp&oslash;rsm&aring;lstegn p&aring; slutten av en paragraf/linje</li><li>Alle svar begynner med <ul><li>et pluss tegn (for riktig(e) svar) 
 
-paragraf uten noen av disse blir vist som forklarende tekst. En blank linje betyr at du starter et nytt sp&oslash;rsm&aring;l. Har du et sp&oslash;rsm&aring;l uten 
+<br>eller</li><li>et minus tegn (for feil svar).</li></ul></li><li>En  paragraf uten noen av disse blir vist som forklarende tekst.</li><li>En blank linje betyr at du 
 
-noen svar s&aring; benyttes en tekst boks, sp&oslash;rsm&aring;l med svar benytter avkrysningsbokser.</div>
+starter et nytt sp&oslash;rsm&aring;l.</li><li>Har du et sp&oslash;rsm&aring;l uten noen svar s&aring; benyttes en tekst boks, sp&oslash;rsm&aring;l med svar benytter 
+
+avkrysningsbokser.</li></ol></div>
   
 <br>
 <div id="skjema"></div>
