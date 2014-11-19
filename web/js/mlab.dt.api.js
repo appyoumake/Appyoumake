@@ -5,7 +5,6 @@
 
 
 function Mlab_dt_api () {
-    var self = this;
     this.storage = new Object();
     this.version = 0.2;
 };

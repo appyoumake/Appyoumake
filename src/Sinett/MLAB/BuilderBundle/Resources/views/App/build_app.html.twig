@@ -2,22 +2,22 @@
 
 {% block body -%}
 
-<!-- This is the actual content of the page, very little is required as it is loaded from external files -->	
+<!-- This is the actual content of the page, very little is required as it is loaded from external files -->
 	<div id="mlab_template_warning"></div>
-	
+
     <div id="mlab_toolbar_components">
-        
+
 	</div>
-    
-    
+
+
     <div id="mlab_page_control">
         <img id="mlab_page_control_previous" onclick="mlab_page_move_to(-1);" src="/img/tools/previous.png">
         <img id="mlab_page_control_next" onclick="mlab_page_move_to(1);" src="/img/tools/next.png">
-        <h3 id="mlab_page_control_title" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$('#mlab_page_control_title_actions').slideDown();"></h3>
+        <h3 id="mlab_page_control_title" onclick="mlab.dt.api.editContent(this);$('#mlab_page_control_title_actions').slideDown();"></h3>
 
         <div id="mlab_page_control_title_actions" class="mlab_hidden">
-            <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').slideUp(); mlab_page_update_title();" class="mlab_dt_button_ok_left">Save</button>
-            <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').slideUp(); $('#mlab_page_control_title').text(document.mlab_current_app.curr_pagetitle);" class="mlab_dt_button_cancel_left">Cancel</button>
+            <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').slideUp(); mlab.dt.management.page_update_title();" class="mlab_dt_button_ok_left">Save</button>
+            <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').slideUp(); $('#mlab_page_control_title').text(mlab.dt.app.curr_pagetitle);" class="mlab_dt_button_cancel_left">Cancel</button>
         </div>
         <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png">
         <img id="mlab_page_control_new" onclick="mlab_page_new();" src="/img/menu_new_icon.png">
@@ -32,7 +32,7 @@
             <img id="mlab_page_control_delete" onclick="mlab_page_delete();" src="/img/menu_delete_icon.png">
         </div>
     </div>
-    
+
 	<div id="mlab_editor_chrome">
 		<div id="mlab_editable_area_placeholder"></div>
 		<p />
@@ -44,7 +44,7 @@
             <img onclick='mlab_component_delete();'        title='Delete selected component' id='mlab_button_delete' src='/img/tools/delete.png' class='mlab_tools mlab_tools_space' >
             <img id='mlab_button_menu'                     title='Modify selected component' src='/img/tools/menu.png' class='mlab_tools mlab_tools_space'>
         </div>
-    
+
     <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>
     </div>
@@ -58,7 +58,7 @@
     <script type="text/javascript">	 
         //these vars are generated from backend and are required for the initialisation of the mlab object later
         document.mlab_temp_vars = {app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
-        
+
 //get the list of components & the component menu to stick to the top when scrollin down
         $(document).ready(function() {
             if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists

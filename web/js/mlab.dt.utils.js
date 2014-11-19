@@ -3,6 +3,7 @@
  */
 
 function Mlab_dt_utils () {
+    this.parent = null;
     this.timer_save = null;
 };
 
@@ -49,12 +50,16 @@ Mlab_dt_utils.prototype = {
 /**
  * Create a timer to save the current page and stores it in a global variable
  * we call window.clearTimeout(this.timer_save) to stop it should it be required
+ *
  * @returns {undefined}
  */
     timer_start : function () {
+        console.log(this);
         var tm = parseInt(this.parent.config["save_interval"]);
         if (tm < 60) { tm = 60; }
-        this.timer_save = window.setTimeout(this.parent.management.page_save, tm * 1000);
+
+//Need to provide context for timer event, otherwise the "this" inside page_save will point to Window object
+        this.timer_save = window.setTimeout(this.parent.management.page_save.bind(this.parent.management), tm * 1000);
         console.log("Restartet timer");
     },
 

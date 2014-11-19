@@ -4,32 +4,21 @@
  */
 
 function Mlab_dt_bestpractice () {
-    /*
-    var slf = this;
-    this.teststring = "hurrah";
-    console.log("init");
-    console.log(this);
-    console.log(slf);                */
+    this.parent = null;
 }
 
 Mlab_dt_bestpractice.prototype = {
 
-    testy : function (test) {
-        alert(test);
-        console.log("testy");
-        console.log(this);
-    },
-
 //get the object with rules, such as max charavcters, max length, etc
 //return rules for current template, could be used to track when user has typed in too much text (for instance)
 //to do preemptive checks (we do post-save check)
-    getTemplateRules : function () {
+    get_template_rules : function () {
         return this.parent.app.template_config.components;
     },
 
 
 // final template "best practices", we see if there are too many or too few of certain categories of components on a page
-    pageCheckContent : function (component_categories, template_best_practice_msg) {
+    page_check_content : function (component_categories, template_best_practice_msg) {
 
         var rules = this.parent.app.template_config.components;
         for (var category in rules) {
@@ -58,7 +47,7 @@ Mlab_dt_bestpractice.prototype = {
  * @param {type} template_best_practice_msg
  * @returns {undefined}
  */
-    componentCheckContent : function (comp, comp_id, component_categories, template_best_practice_msg) {
+    component_check_content : function (comp, comp_id, component_categories, template_best_practice_msg) {
         var rules = this.parent.app.template_config.components;
         if (this.parent.components[comp_id].hasOwnProperty("conf") && this.parent.components[comp_id].conf.hasOwnProperty("category")) {
             var comp_category = this.parent.components[comp_id].conf.category;

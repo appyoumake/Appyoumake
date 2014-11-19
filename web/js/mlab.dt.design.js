@@ -13,7 +13,7 @@
  */
 
 function Mlab_dt_design () {
-    var self = this;
+    this.parent = null;
 }
 
 Mlab_dt_design.prototype = {
@@ -202,8 +202,8 @@ Mlab_dt_design.prototype = {
 
         var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + this.parent.components[id].html + "</div>");
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
-        new_comp.on("click", function(){this.component_highlight_selected(this);})
-        new_comp.on("input", function(){this.parent.flag_dirty = true;});
+        new_comp.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
+        new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
 
         $('.mlab_current_component').qtip('hide');
 
@@ -214,6 +214,8 @@ Mlab_dt_design.prototype = {
 //execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
         var url = this.parent.urls.component_added.replace("_APPID_", this.parent.app.id);
         url = url.replace("_COMPID_", id);
+        var that = this;
+
         var request = $.ajax({
             type: "GET",
             url: url,
@@ -222,7 +224,7 @@ Mlab_dt_design.prototype = {
 
         request.done(function( result ) {
             if (result.result == "success") {
-                this.parent.drag_origin = 'sortable';
+                that.parent.drag_origin = 'sortable';
             } else {
                 alert(result.msg + "'\n\nLegg til komponenten igjen.");
                 $(new_comp).remove();
@@ -338,12 +340,13 @@ Mlab_dt_design.prototype = {
                 this.parent.utils.update_status("callback", 'Adding feature...', true);
             }
 
+            var that = this;
             $.get( url, function( data ) {
                 if (data.result == "success") {
-                    this.parent.utils.update_status("temporary", "Feature added", false);
+                    that.parent.utils.update_status("temporary", "Feature added", false);
                     $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
                 } else {
-                    this.parent.utils.update_status("temporary", data.msg, false);
+                    that.parent.utils.update_status("temporary", data.msg, false);
                 }
 
             });
@@ -357,18 +360,19 @@ Mlab_dt_design.prototype = {
     prepare_editable_area : function () {
 //need to loop through all divs in the editable box after they have been added
 //and set the styles for dragging/dropping so it works OK
-        $( "#" + this.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
-            $( this ).droppable(this.parent.droppable_options)
-                     .sortable(this.parent.sortable_options)
-                     .on("click", function(){this.component_highlight_selected(this);})
-                     .on("input", function(){this.parent.flag_dirty = true;});
+        var that = this;
+        $( "#" + that.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
+            $( this ).droppable(that.parent.droppable_options)
+                     .sortable(that.parent.sortable_options)
+                     .on("click", function(){that.component_highlight_selected(this);})
+                     .on("input", function(){that.parent.flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");
-            this.component_run_code($( this ), comp_id);
+            that.component_run_code($( this ), comp_id);
         });
 
 //set draggable/sortable options for the editable area
-        $( "#" + this.parent.config["app"]["content_id"] ).droppable(this.parent.droppable_options).sortable(this.parent.sortable_options);
+        $( "#" + that.parent.config["app"]["content_id"] ).droppable(that.parent.droppable_options).sortable(that.parent.sortable_options);
 
     },
 

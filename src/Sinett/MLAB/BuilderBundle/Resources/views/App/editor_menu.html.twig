@@ -1,4 +1,4 @@
-{#    
+{#
  * This outputs the editors megamenu.
 #}
 
@@ -21,18 +21,18 @@
                 <h3>{% trans %}app.builder.edit.menu.heading.app{% endtrans %}</h3>
                 <p> Klikk på teksten for å få redigert den. Lagre ved å klikke på ikonet ved siden av teksten.</p>
                 <p class="mlab_edit_app_label">App navn</p>
-                <p id="mlab_edit_app_title" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_title" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
                 <p class="mlab_edit_app_label">Description</p>
-                <p id="mlab_edit_app_description" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_description" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
                 <p class="mlab_edit_app_label">Keywords</p>
-                <p id="mlab_edit_app_keywords" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_keywords" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
                 <p class="mlab_edit_app_label">Categories 1, 2 & 3</p>
-                <p id="mlab_edit_app_category1" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
-                <p id="mlab_edit_app_category2" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
-                <p id="mlab_edit_app_category3" onclick="mlab_component_request_info(MLAB_CB_EDIT_CONTENT, this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_category1" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_category2" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_category3" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
                 <h4>Utilities</h4>
                 <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
-                    <a href="javascript: mlab_app_remove_locks();">Fjern låser</a>
+                    <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
             </div>
 
             <div class="col_1">
@@ -46,14 +46,14 @@
                     <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
                     <h4>Prøv App på web</h4>
                     <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
-                            <a href="javascript: mlab_page_preview();">
+                            <a href="javascript: mlab.dt.management.page_preview();">
                                 <div title="Test app i nettleser" id="mlab_preview_icon"></div>
                             </a> 
                     <h4>Prøv App på mobil</h4>
                     <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
                     <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
                     </div>
-                            <a href="javascript: mlab_app_download();">
+                            <a href="javascript: mlab.dt.management.app_download();">
                             <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
                             </a>
 
@@ -71,7 +71,7 @@
     </li><!-- End 4 columns Item -->
     
     <li id="mlab_editor_undo_redo" class="single">
-        <img onclick='mlab_page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools' >
+        <img onclick='mlab.dt.management.page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools' >
         <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space' >
         <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools' >
     </li><!-- End undo and redo menu items -->

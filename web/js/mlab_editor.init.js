@@ -25,32 +25,34 @@
 //initialise the Mlab object, then create an global instance of it
 //the MLAB object contains several other objects loaded in different files
         Mlab = function () {
-
-            var slf = this;
+            var self = this;
             this.designMode = true;
-            this.dt = function () {
 
-                var slf = this.dt;
+//runtime api is at the top level
+            this.api = new Mlab_api();
+            this.api.parent = self;
+
+            this.dt = {
 //variables used for: general config, path info, app info, page details
-                slf.uid = 0;
-                slf.config = new Object();
-                slf.paths = new Object();
-                slf.app = new Object();
-                slf.page = new Object();
+                uid: 0,
+                config: new Object(),
+                paths: new Object(),
+                app: new Object(),
+                page: new Object(),
 
 // individual variables used by all .dt sub functions
-                slf.flag_dirty = false;
-                slf.counter_saving_page = 0; // counter which tells us if inside the save function we should restart the timer for
-                slf.drag_origin = 'sortable';
-                
+                flag_dirty: false,
+                counter_saving_page: 0, // counter which tells us if inside the save function we should restart the timer for
+                drag_origin: 'sortable',
+
 // drag'n'drop definitions used by jQuery
-                slf.droppable_options = {
+                droppable_options: {
                     drop: function( event, ui ) {
                         mlab.dt.flag_dirty = true;
                     }
                 },
 
-                slf.sortable_options = {
+                sortable_options: {
                     placeholder: "mlab_component_placeholder",
                     revert: false,
                     helper: "clone",
@@ -65,30 +67,26 @@
                 },
 
 //other pre-defined objects wrapping up this .dt "class"
-                slf.api = new Mlab_dt_api();
-                slf.api.parent = slf;
-
-                slf.bestpractice = new Mlab_dt_bestpractice();
-                slf.bestpractice.parent = slf;
-
-                slf.design = new Mlab_dt_design();
-                slf.design.parent = slf;
-
-                slf.management = new Mlab_dt_management();
-                slf.management.parent = slf;
-
-                slf.utils = new Mlab_dt_utils();
-                slf.utils.parent = slf;
+                api: new Mlab_dt_api(),
+                bestpractice: new Mlab_dt_bestpractice(),
+                design: new Mlab_dt_design(),
+                management: new Mlab_dt_management(),
+                utils: new Mlab_dt_utils(),
 
             },
-            
-//runtime api is at the top level
-            this.api = new Mlab_api();
-            this.api.parent = slf;
-        }
 
+            this.initialise_dt_parents = function () {
+                console.log(self);
+                self.dt.api.parent = self.dt;
+                self.dt.bestpractice.parent = self.dt;
+                self.dt.design.parent = self.dt;
+                self.dt.management.parent = self.dt;
+                self.dt.utils.parent = self.dt;
+            }
+
+        };
         mlab = new Mlab();
-        mlab.dt();
+        mlab.initialise_dt_parents();
 
 //here we pick up variables from the backend, if successful we go on, if not we must exit
         $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/" + document.mlab_temp_vars.page_num + "/load_variables" , function( data ) {
@@ -148,7 +146,7 @@
                             if (c.accessible && !c.is_feature) {
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
-                                            "onclick='mlab_component_add(\"" + type + "\");' " +
+                                            "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
                                             "title='" + c.conf.tooltip + "' " +
                                             "class='mlab_button_components' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +

@@ -5,7 +5,7 @@
 ************************************************************/
 
 function Mlab_dt_management () {
-    var self = this;
+    this.parent = null;
 }
 
 Mlab_dt_management.prototype = {
@@ -24,14 +24,14 @@ Mlab_dt_management.prototype = {
         url = url.replace("_PAGE_NUM_", 'index');
         url = url.replace("_UID_", this.parent.uid);
         this.parent.utils.update_status("callback", 'Opening app', true);
-
-        $.get( url, function( data ) {
+        var that = this;
+        $.get(url, function( data ) {
             if (data.result == "success") {
-                this.index_page_process ( data.html, "index", ( local_page_num == "0" && local_page_num == "index" ) );
+                that.index_page_process ( data.html, "index", ( local_page_num == "0" && local_page_num == "index" ) );
 
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_features_used");
-                $(this.parent.app.curr_indexpage_html)
+                $(that.parent.app.curr_indexpage_html)
                     .find("#mlab_features_content [data-mlab-type]>")
                     .each(function() {
                         $("#mlab_features_list [data-mlab-feature-type='" + $(this).parent().data("mlab-type") + "']").addClass("mlab_features_used");
@@ -39,14 +39,14 @@ Mlab_dt_management.prototype = {
 
 //if they are not opening the index page we need to call backend again to load the page they want to open
                 if (local_page_num != "0" && local_page_num != "index") {
-                    this.page_open_process(data.app_id, local_page_num);
+                    that.page_open_process(data.app_id, local_page_num);
                 } else {
                     $("#mlab_overlay").slideUp();
-                    this.parent.app.locked = (data.lock_status == "locked");
-                    this.parent.utils.timer_start();
+                    that.parent.app.locked = (data.lock_status == "locked");
+                    that.parent.utils.timer_start();
                 }
             } else {
-                this.parent.utils.update_status("temporary", data.msg, false);
+                that.parent.utils.update_status("temporary", data.msg, false);
             }
 
         });
@@ -89,15 +89,16 @@ Mlab_dt_management.prototype = {
     app_download_process  : function () {
         this.parent.utils.update_status("callback", 'Retrieving app', true);
         var url = this.parent.urls.app_download.replace("_ID_", this.parent.app.id);
+        var that = this;
         $.get( url, function( data ) {
-            this.parent.utils.update_status("completed");
+            that.parent.utils.update_status("completed");
             if (data.result == "success") {
                 full_url = window.location.origin + data.url;
                 $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "table"}).show()
                         .append("<br>")
                         .append("<a href='" + full_url + "'>Download: " + full_url +"</a>")
                         .append("<br>")
-                        .append("<a href='mailto:" + this.parent.user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
+                        .append("<a href='mailto:" + that.parent.user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
 
             } else {
                 $("#mlab_download_qr2").empty().append("<p>Error: " + data.msg + "</p>").show();
@@ -112,7 +113,7 @@ Mlab_dt_management.prototype = {
         */
         });
 
-        this.parent.utils.timer_start();
+        that.parent.utils.timer_start();
     },
 
     app_submit_to_market  : function () {
@@ -336,46 +337,47 @@ Mlab_dt_management.prototype = {
         var url = this.parent.urls.page_get.replace("_ID_", app_id);
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
+        var that = this;
 
         $.get( url, function( data ) {
             if (data.result == "success") {
-                this.parent.utils.update_status("completed");
-                this.parent.utils.update_status("permanent", this.parent.app.name);
-                $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
+                that.parent.utils.update_status("completed");
+                that.parent.utils.update_status("permanent", that.parent.app.name);
+                $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
-                    this.index_page_process ( data.html, "index", true );
+                    that.index_page_process ( data.html, "index", true );
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
-                    this.parent.utils.timer_start();
+                    that.parent.utils.timer_start();
                     if ( $("#mlab_overlay").is(':visible') ) {
                         $("#mlab_overlay").slideUp();
                     }
                     return;
                 } else {
-                    this.parent.design.regular_page_process ( data.html, data.page_num_real );
+                    that.parent.design.regular_page_process ( data.html, data.page_num_real );
                     var path = window.location.pathname.split("/");
                     path[path.length - 3] = data.app_id;
                     path[path.length - 2] = data.page_num_real;
-                    history.pushState({id: data.app_id, page: data.page_num_real }, this.parent.app.curr_pagetitle, path.join("/"));
+                    history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
                 }
 
                 if (data.lock_status == "locked") {
-                    this.parent.app.locked = true;
-                    $("#" + this.parent.config["app"]["content_id"]).fadeTo('slow',.6);
+                    that.parent.app.locked = true;
+                    $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
                     $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                 } else {
-                    this.parent.app.locked = false;
+                    that.parent.app.locked = false;
                     $("#mlab_editor_disabled").remove();
-                    $("#" + this.parent.config["app"]["content_id"]).fadeTo('slow',1);
+                    $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);
                 }
 
                 if ( $("#mlab_overlay").is(':visible') ) {
                     $("#mlab_overlay").slideUp();
                 }
 
-                this.parent.utils.timer_start();
+                that.parent.utils.timer_start();
 
             } else {
-                this.parent.utils.update_status("temporary", data.msg, false);
+                that.parent.utils.update_status("temporary", data.msg, false);
 
             }
 
@@ -467,16 +469,17 @@ Mlab_dt_management.prototype = {
 //this loop is a: picking up the cleaned HTML for each component,
 //(this is done by calling the onSave unction which strips away anything we are not interested in)
 // and b: checking if the component transgresses any of the rules for the template
-        $("#" + this.parent.config["app"]["content_id"]).children("div").each(function() {
+        var that = this;
+        $("#" + that.parent.config["app"]["content_id"]).children("div").each(function() {
             var comp_id = $(this).data("mlab-type");
-            if (typeof this.parent.components[comp_id].code !== "undefined" && typeof this.parent.components[comp_id].code.onSave !== "undefined") {
-                page_content = page_content + this.parent.components[comp_id].code.onSave(this);
+            if (typeof that.parent.components[comp_id].code !== "undefined" && typeof that.parent.components[comp_id].code.onSave !== "undefined") {
+                page_content = page_content + that.parent.components[comp_id].code.onSave(this);
             } else {
                 page_content = page_content + $(this)[0].outerHTML + "\n";
             }
 
 //run the template checks
-            this.parent.bestpractice.component_check_content(this, comp_id, component_categories, template_best_practice_msg);
+            that.parent.bestpractice.component_check_content(this, comp_id, component_categories, template_best_practice_msg);
         });
 
         this.parent.bestpractice.page_check_content(component_categories, template_best_practice_msg);
@@ -494,14 +497,15 @@ Mlab_dt_management.prototype = {
         curr_el.addClass("mlab_current_component");
 
 //finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
+        var that = this;
         $.post( url, {html: html}, function( data ) {
 
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
-            this.parent.counter_saving_page--;
+            that.parent.counter_saving_page--;
 
             if (data.result == "success") {
-                this.parent.utils.update_status("temporary", "Saved page", false);
-                this.parent.flag_dirty = false;
+                that.parent.utils.update_status("temporary", "Saved page", false);
+                that.parent.flag_dirty = false;
 
 //if a function was specified we now execute it, inisde this function the this.parent.utils.timer_save timer will be restarted
 //if no function was specified AND no-one else has initiated the save function, then OK to restart timer
@@ -515,31 +519,31 @@ Mlab_dt_management.prototype = {
                     if (data.app_info.result === "file_changes") {
 //load in metadata and (possibly new) checksum of app into variables, then upate display
                         console.log("App files were changed");
-                        this.parent.app.app_checksum = data.app_info.mlab_app_checksum;
-                        this.parent.app.page_names = data.app_info.mlab_app.page_names;
+                        that.parent.app.app_checksum = data.app_info.mlab_app_checksum;
+                        that.parent.app.page_names = data.app_info.mlab_app.page_names;
 
                     } else if (data.app_info.result === "no_file_changes") {
                         console.log("No changes to app files");
 
                     } else {
-                        if (this.parent.counter_saving_page == 0 && (typeof fnc == 'undefined')) {
-                            this.parent.utils.timer_start();
+                        if (that.parent.counter_saving_page == 0 && (typeof fnc == 'undefined')) {
+                            that.parent.utils.timer_start();
                         }
                         return;
                     }
 
-                    this.parent.app.name = data.app_info.mlab_app.name;
-                    this.parent.app.description = data.app_info.mlab_app.description;
-                    this.parent.app.keywords = data.app_info.mlab_app.keywords;
-                    this.parent.app.categoryOne = data.app_info.mlab_app.categoryOne;
-                    this.parent.app.categoryTwo = data.app_info.mlab_app.categoryTwo;
-                    this.parent.app.categoryThree = data.app_info.mlab_app.categoryThree;
-                    this.app_update_gui_metadata();
+                    that.parent.app.name = data.app_info.mlab_app.name;
+                    that.parent.app.description = data.app_info.mlab_app.description;
+                    that.parent.app.keywords = data.app_info.mlab_app.keywords;
+                    that.parent.app.categoryOne = data.app_info.mlab_app.categoryOne;
+                    that.parent.app.categoryTwo = data.app_info.mlab_app.categoryTwo;
+                    that.parent.app.categoryThree = data.app_info.mlab_app.categoryThree;
+                    that.app_update_gui_metadata();
 
                 };
 
             } else { //failed
-                this.parent.utils.update_status("temporary", "Unable to save page: " + data.msg, false);
+                that.parent.utils.update_status("temporary", "Unable to save page: " + data.msg, false);
                 if (typeof fnc != 'undefined') {
 //if this save attempt was a part of another operation we will ask if they want to try again, cancel or continue without saving
 //(the change may have been minimal and they want to start a new app let's say)
@@ -550,7 +554,7 @@ Mlab_dt_management.prototype = {
                         buttons: {
                             "Retry": function() {
                                 $( this ).dialog( "close" );
-                                this.page_save(fnc);
+                                that.page_save(fnc);
                                 return;
                             },
                             "Continue": function() {
@@ -567,8 +571,8 @@ Mlab_dt_management.prototype = {
             }
 
 //if this was not called from a function AND the save function has not been called by others, then we restart the save timer.
-            if (this.parent.counter_saving_page == 0 && (typeof fnc == 'undefined')) {
-                this.parent.utils.timer_start();
+            if (that.parent.counter_saving_page == 0 && (typeof fnc == 'undefined')) {
+                that.parent.utils.timer_start();
             }
 
         });
@@ -642,18 +646,19 @@ Mlab_dt_management.prototype = {
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
         this.parent.utils.update_status("callback", "Copying page", true);
+        var that = this;
 
         $.get( url, function( data ) {
-            this.parent.utils.update_status("completed");
+            that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                this.parent.app.curr_pagetitle = data.page_title;
+                that.parent.app.curr_pagetitle = data.page_title;
                 $("#mlab_page_control_title").text(data.page_title);
-                this.parent.app.page_names[data.page_num_real] = data.page_title;
-                this.regular_page_process ( data.html, data.page_num_real );
+                that.parent.app.page_names[data.page_num_real] = data.page_title;
+                that.regular_page_process ( data.html, data.page_num_real );
             } else {
                 alert(data.msg);
             }
-            this.parent.utils.timer_start();
+            that.parent.utils.timer_start();
         });
     },
 
@@ -673,25 +678,26 @@ Mlab_dt_management.prototype = {
         var url = this.parent.urls.page_delete.replace("_ID_", this.parent.app.id);
         url = url.replace("_PAGE_NUM_", this.parent.app.curr_page_num);
         url = url.replace("_UID_", this.parent.uid);
+        var that = this;
 
         $.get( url, function( data ) {
-            this.parent.utils.update_status("completed");
+            that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                $("#mlab_existing_pages [data-mlab-page-open='" + this.parent.app.curr_page_num + "']").remove();
-                this.parent.app.page_names.splice(this.parent.app.curr_page_num, 1);
-                this.regular_page_process ( data.html, data.page_num_real );
+                $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").remove();
+                that.parent.app.page_names.splice(that.parent.app.curr_page_num, 1);
+                that.regular_page_process ( data.html, data.page_num_real );
 
-                if (this.parent.app.curr_page_num == "index") {
-                    $("#mlab_existing_pages [data-mlab-page-open='" + this.parent.app.curr_page_num + "']").html(this.parent.app.curr_pagetitle);
+                if (that.parent.app.curr_page_num == "index") {
+                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").html(that.parent.app.curr_pagetitle);
                 } else {
-                    $("#mlab_existing_pages [data-mlab-page-open='" + this.parent.app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='this.page_copy(\"" + this.parent.app.curr_page_num + "\");' >&nbsp;</span>" + this.parent.app.curr_pagetitle);
+                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab.dt.management.page_copy(\"" + that.parent.app.curr_page_num + "\");' >&nbsp;</span>" + that.parent.app.curr_pagetitle);
                 }
 
             } else {
-                this.parent.utils.update_status("temporary", data.msg, false);
+                that.parent.utils.update_status("temporary", data.msg, false);
             }
 
-            this.parent.utils.timer_start();
+            that.parent.utils.timer_start();
         });
     },
 
