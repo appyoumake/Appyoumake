@@ -44,7 +44,7 @@ Mlab_dt_utils.prototype = {
     clear_status : function () {
         this.update_status("completed");
     },
-    
+
 
 
 /**

@@ -8,7 +8,7 @@
 ************************************************************/
 
 /**
- * Standard initialisation of Mlab object which is referred to in several JS files, 
+ * Standard initialisation of Mlab object which is referred to in several JS files,
  * as these files can come down in different order, we must make sure we can use it here.
  */
 
@@ -184,7 +184,7 @@ Mlab_dt_design.prototype = {
 
         this.prepare_editable_area();
         $.mobile.initializePage();
-    }, 
+    },
 
 /***********************************************************
  *********** Functions to manipulate components ***********
@@ -352,7 +352,7 @@ Mlab_dt_design.prototype = {
             });
         }
     },
-    
+
     /*
  *
  * @param divs (html/DOM) all divs to edit
@@ -364,8 +364,8 @@ Mlab_dt_design.prototype = {
         $( "#" + that.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
             $( this ).droppable(that.parent.droppable_options)
                      .sortable(that.parent.sortable_options)
-                     .on("click", function(){that.component_highlight_selected(this);})
-                     .on("input", function(){that.parent.flag_dirty = true;});
+                     .on("click", function(){mlab.dt.design.component_highlight_selected(this);})
+                     .on("input", function(){mlab.dt.flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");
             that.component_run_code($( this ), comp_id);
@@ -439,6 +439,6 @@ Mlab_dt_design.prototype = {
     }
 
 
-} // end design.prototype 
+} // end design.prototype
 
 

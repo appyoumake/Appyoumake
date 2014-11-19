@@ -9,7 +9,7 @@ function Mlab_dt_management () {
 }
 
 Mlab_dt_management.prototype = {
-    
+
 
 /*
  * This function will first open the index.html file in an app, this has all the css/js/formatting etc in it.
@@ -606,24 +606,24 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("callback", "Storing page", true);
         var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
         url = url.replace("_UID_", this.parent.uid);
-
+        var that = this;
         $.post( url, {}, function( data ) {
             if (data.result == "success") {
-                this.parent.utils.update_status("completed");
-                $("#" + this.parent.config["app"]["content_id"]).empty();
-                this.parent.app.curr_pagetitle = title;
-                this.parent.app.curr_page_num = data.page_num_real;
-                $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
-                this.parent.app.page_names[this.parent.app.curr_page_num] = title;
-                this.app_update_gui_metadata();
+                that.parent.utils.update_status("completed");
+                $("#" + that.parent.config["app"]["content_id"]).empty();
+                that.parent.app.curr_pagetitle = title;
+                that.parent.app.curr_page_num = data.page_num_real;
+                $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
+                that.parent.app.page_names[that.parent.app.curr_page_num] = title;
+                that.app_update_gui_metadata();
 
-                this.parent.flag_dirty = true;
+                that.parent.flag_dirty = true;
 
             } else {
-                this.parent.utils.update_status("temporary", data.msg, false);
+                that.parent.utils.update_status("temporary", data.msg, false);
             }
 
-            this.parent.utils.timer_start();
+            that.parent.utils.timer_start();
 
         });
      },

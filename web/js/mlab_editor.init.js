@@ -131,7 +131,7 @@
 
 
 //now we load components, the go into a mlab object called components,
-//and for each component we need to turn the text of the 
+//and for each component we need to turn the text of the
                 $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
                         var feature_list = $("<ul></ul>");
@@ -141,7 +141,7 @@
 //we need to attach the code.js content to an object so we can use it as JS code
                             if (mlab.dt.components[type].exec_browser !== false) {
                                 eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].exec_browser + "};");
-                            }                            
+                            }
                             var c = mlab.dt.components[type];
                             if (c.accessible && !c.is_feature) {
                                 $("#mlab_toolbar_components").append(
@@ -161,7 +161,7 @@
 
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
-                        
+
 //erase the temporary variable, this is used in inititalisation process only.
                         delete document.mlab_temp_vars;
                     } else {
