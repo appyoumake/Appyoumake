@@ -4,7 +4,7 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title> - jsFiddle demo</title>
   
-  <script type='text/javascript' src='http://code.jquery.com/jquery-2.1.0.js'></script>
+  <script type='text/javascript' src='https://code.jquery.com/jquery-2.1.0.js'></script>
   <link href="https://mlab.sinilab.net/css/mlab_editor_menu.css" rel="stylesheet">
   <link href="https://mlab.sinilab.net/css/mlab_all.css" rel="stylesheet">
   
