@@ -15,6 +15,8 @@
 
 /*********** Startup code ***********/
     $(document).ready(function() {
+        
+//only support chrome and firefox to begin with
 		if (bowser.gecko || bowser.chrome) {
 
         } else {
@@ -119,15 +121,6 @@
 
                     if (mlab.dt.flag_dirty) { return 'You have unsaved changes, do you want to lose these?'; }
                 };
-
-//set a scroll bar http://rocha.la/jQuery-slimScroll
-//should be flexible: $("#mlab_editor_chrome").innerHeight()
-                $("#" + mlab.dt.config["app"]["content_id"]).slimScroll({
-                    color: '#fff',
-                    size: '10px',
-                    height: '700px'
-                });
-
 
 //now we load components, the go into a mlab object called components,
 //and for each component we need to turn the text of the

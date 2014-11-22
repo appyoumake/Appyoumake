@@ -67,5 +67,19 @@
         range.selectNodeContents(el[0]);
         sel.removeAllRanges();
         sel.addRange(range);
-    }
+    };
   
+    this.onKeyPress = function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            var sel, range, html;
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode( document.createElement("br") );
+                range.insertNode( document.createElement("br") );
+                //range.setStart(el.childNodes[2], 5);
+            }
+        }
+    };

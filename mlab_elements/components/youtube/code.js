@@ -3,7 +3,7 @@
     
     this.onCreate = function (el, config, api_func) {
         this.onLoad (el, config, api_func);
-        $(el).html('<img src="' + this.config.placholder + '" >');
+        $(el).html('<img src="' + this.config.placeholder + '" >');
         this.custom_select_video(el);
     };
     
@@ -175,5 +175,3 @@
     this.getContentSize = function (el) {
         return $(el).find(".mlab_cp_youtube_video").duration;
     };
-
-  

@@ -26,15 +26,15 @@
 
     		<div class="mlab_align_menu_elements">
                 
-	    	<div class="container">
-	 			{% block body %}{% endblock %}
-	 		</div>
-	        {% block javascripts %}
-	        	<script src="{{ asset('/js/jquery-2.0.3.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery-ui.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery.uploadfile.js') }}"></script>
-	        	<script src="{{ asset('/js/jquery-qtip.js') }}"></script>
-	        {% endblock %}
+                <div class="container">
+                    {% block body %}{% endblock %}
+                </div>
+                {% block javascripts %}
+                    <script src="{{ asset('/js/jquery-2.0.3.js') }}"></script>
+                    <script src="{{ asset('/js/jquery.ui-1.10.3.js') }}"></script>
+                    <script src="{{ asset('/js/jquery.uploadfile-1.9.0.js') }}"></script>
+                    <script src="{{ asset('/js/jquery.qtip-2.2.0.js') }}"></script>
+                {% endblock %}
 	        </div>
 	        
 	    </div>

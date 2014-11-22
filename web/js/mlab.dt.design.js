@@ -200,10 +200,16 @@ Mlab_dt_design.prototype = {
             return;
         }
 
+//add a DIV wrapper around all components, makes it easier to move it up/down later
         var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + this.parent.components[id].html + "</div>");
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
+        
+//process all keys if this component wants to manipulate them (i.e. the convert_keys setting exists)
+        if (typeof this.parent.components[id].conf.convert_keys != "undefined") {
+            $(new_comp).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
+        }
 
         $('.mlab_current_component').qtip('hide');
 

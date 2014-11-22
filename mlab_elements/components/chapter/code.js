@@ -55,3 +55,9 @@
         sel.addRange(range);
     }
   
+  
+    this.onKeyPress = function (e) {
+        if (e.keyCode == 13 || e.keyCode == 9) {
+            e.preventDefault();
+        }
+    }

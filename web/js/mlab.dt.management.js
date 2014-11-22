@@ -450,7 +450,7 @@ Mlab_dt_management.prototype = {
         if ((!require_save) && (typeof fnc != 'undefined')) {
             return fnc();
         } else if (!require_save) {
-            that.parent.utils.timer_start();
+            this.parent.utils.timer_start();
             return false;
         }
 
