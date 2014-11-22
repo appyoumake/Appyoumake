@@ -76,7 +76,6 @@
             },
 
             this.initialise_dt_parents = function () {
-                console.log(self);
                 self.dt.api.parent = self.dt;
                 self.dt.bestpractice.parent = self.dt;
                 self.dt.design.parent = self.dt;

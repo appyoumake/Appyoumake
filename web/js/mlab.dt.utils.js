@@ -22,7 +22,7 @@ Mlab_dt_utils.prototype = {
             return;
         } else if (state == "temporary") {
             $("#mlab_statusbar_temporary").text(content);
-            window.setInterval(this.clear_status, 3000);
+            window.setInterval(this.clear_status.bind(this), 3000);
         } else if (state == "callback") {
             $("#mlab_statusbar_temporary").text(content);
         } else if (state == "completed") {
@@ -54,7 +54,6 @@ Mlab_dt_utils.prototype = {
  * @returns {undefined}
  */
     timer_start : function () {
-        console.log(this);
         var tm = parseInt(this.parent.config["save_interval"]);
         if (tm < 60) { tm = 60; }
 
