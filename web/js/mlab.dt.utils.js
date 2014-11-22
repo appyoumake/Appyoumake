@@ -54,7 +54,6 @@ Mlab_dt_utils.prototype = {
  * @returns {undefined}
  */
     timer_start : function () {
-        console.log(this);
         var tm = parseInt(this.parent.config["save_interval"]);
         if (tm < 60) { tm = 60; }
 

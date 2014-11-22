@@ -27,7 +27,7 @@ Mlab_dt_management.prototype = {
         var that = this;
         $.get(url, function( data ) {
             if (data.result == "success") {
-                that.index_page_process ( data.html, "index", ( local_page_num == "0" && local_page_num == "index" ) );
+                that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
 
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_features_used");
@@ -450,6 +450,7 @@ Mlab_dt_management.prototype = {
         if ((!require_save) && (typeof fnc != 'undefined')) {
             return fnc();
         } else if (!require_save) {
+            that.parent.utils.timer_start();
             return false;
         }
 
