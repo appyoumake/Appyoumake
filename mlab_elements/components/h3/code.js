@@ -68,3 +68,9 @@
         sel.addRange(range);
     }
   
+//avoid line breaks in headlines
+    this.onKeyPress = function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    }

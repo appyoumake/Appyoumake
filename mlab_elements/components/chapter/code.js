@@ -10,7 +10,7 @@
         } 
 
         this.onLoad (el, config, api_func);
-        $(el).attr("data-mlab-chapter-id", this.config["api_function"](MLAB_CB_GET_GUID));
+        $(el).attr("data-mlab-chapter-id", this.config["api_function"].getGUID());
         this.highlight($(el).find("h1"));
     };
 
@@ -54,10 +54,10 @@
         sel.removeAllRanges();
         sel.addRange(range);
     }
-  
-  
+
+//avoid line breaks in headlines
     this.onKeyPress = function (e) {
-        if (e.keyCode == 13 || e.keyCode == 9) {
+        if (e.keyCode == 13) {
             e.preventDefault();
         }
     }

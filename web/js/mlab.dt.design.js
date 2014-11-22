@@ -206,8 +206,8 @@ Mlab_dt_design.prototype = {
         new_comp.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
         
-//process all keys if this component wants to manipulate them (i.e. the convert_keys setting exists)
-        if (typeof this.parent.components[id].conf.convert_keys != "undefined") {
+//process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
+        if (typeof this.parent.components[id].conf.process_keypress != "undefined") {
             $(new_comp).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
         }
 
@@ -375,6 +375,11 @@ Mlab_dt_design.prototype = {
 
             comp_id = $( this ).data("mlab-type");
             that.component_run_code($( this ), comp_id);
+            
+//process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
+            if (typeof that.parent.components[comp_id].conf.process_keypress != "undefined") {
+                $( this ).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
+            }
         });
 
 //set draggable/sortable options for the editable area

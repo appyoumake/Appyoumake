@@ -6,7 +6,7 @@ name: p
 tooltip: Regular body text
 compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p>Enter your body text here</p>
-convert_keys: [13, 9]
+process_keypress: true
 custom:
     msg_requestlink: Please enter a valid URL (for instance 'http://my.domain.com') or a page number (for instance 5) to link to. The latter will go to page 5 in this application.
     msg_wronglink: Invalid URL specified, please try again. You can use 'http://my.domain.com' or '5', the latter will go to page 5 in this application.

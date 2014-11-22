@@ -32,3 +32,8 @@
             $(el).empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "table"});
         }
     }
+
+//avoid any keyboard input
+    this.onKeyPress = function (e) {
+        e.preventDefault();
+    }

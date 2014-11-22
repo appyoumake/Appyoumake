@@ -11,3 +11,7 @@
         this.config["api_function"] = api_func;
     };
   
+  //avoid any keyboard input
+    this.onKeyPress = function (e) {
+        e.preventDefault();
+    }

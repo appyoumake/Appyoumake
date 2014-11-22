@@ -68,3 +68,16 @@
         sel.addRange(range);
     }
   
+//we need to use tab to create indents/outdents
+    this.onKeyPress = function (e) {
+        if (e.keyCode == 9) {
+            e.preventDefault();
+            var sel, range, html;
+            sel = window.getSelection();
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            var el = $(e.target);
+            $('<ol><li></li></ol>').appendTo(el);
+            sel.modify("move", "forward", "character");
+        }
+    };

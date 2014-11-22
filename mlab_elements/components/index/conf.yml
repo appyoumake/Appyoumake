@@ -6,6 +6,7 @@ name: index
 tooltip: Index for current app
 preprocessing: generate_index
 compatible: []
+process_keypress: true
 html: 
     designtime: |
         <h1>Your index will be displayed here</h1>

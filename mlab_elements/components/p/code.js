@@ -74,12 +74,10 @@
             e.preventDefault();
             var sel, range, html;
             sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                range = sel.getRangeAt(0);
-                range.deleteContents();
-                range.insertNode( document.createElement("br") );
-                range.insertNode( document.createElement("br") );
-                //range.setStart(el.childNodes[2], 5);
-            }
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            var linebreak = document.createElement("br") ;
+            range.insertNode(linebreak);
+            sel.modify("move", "forward", "character");
         }
     };

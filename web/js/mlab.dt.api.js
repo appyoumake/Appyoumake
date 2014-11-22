@@ -18,27 +18,27 @@ Mlab_dt_api.prototype = {
  * Requests for URLs, Symfony allows us to redfine these using the route functionality, so they are always stored in variables
  * picked up from the server, these are wrapper functions to obtain them from the internal variables
  */
-    getUrlAppAbsolute : function (param) {
+    getUrlAppAbsolute : function () {
         return window.location.origin + this.parent.config.urls.app;
     },
 
-    getUrlAppRelative : function (param) {
+    getUrlAppRelative : function () {
         return this.parent.config.urls.app;
     },
 
-    getUrlComponentAbsolute : function (param) {
+    getUrlComponentAbsolute : function () {
         return window.location.origin + this.parent.config.urls.component;
     },
 
-    getUrlComponentRelative : function (param) {
+    getUrlComponentRelative : function () {
         return this.parent.config.urls.component;
     },
 
-    getUrlTemplateAbsolute : function (param) {
+    getUrlTemplateAbsolute : function () {
         return window.location.origin + this.parent.config.urls.template;
     },
 
-    getUrlTemplateRelative : function (param) {
+    getUrlTemplateRelative : function () {
         return this.parent.config.urls.template;
     },
 
@@ -138,7 +138,18 @@ Mlab_dt_api.prototype = {
         range.selectNodeContents($(param)[0]);
         sel.removeAllRanges();
         sel.addRange(range);
-    }
+    },
+    
+//reads in the javascript values stored for the specified element, extracts the value fo the key specified
+//this only works on top level vars, furthe rprocessing must be done in component
+    getVariable: function (el, key) {
+        
+    },
+
+//writes the javascript value and stores it for the specified element
+    setVariable: function (el, key, value) {
+        var vars = $(el).child("script").eval();
+    },
 
 }
 
