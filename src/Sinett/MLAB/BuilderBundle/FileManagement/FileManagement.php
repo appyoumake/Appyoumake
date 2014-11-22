@@ -82,7 +82,7 @@ class FileManagement {
 				}
 				 
 //we also need to make sure that the frontpage.html file has a DIV with the ID specified in params.yml, we have a generic function that looks inside files
-//can also be used to, for instance, check if a conf.txt file has a new required property
+//can also be used to, for instance, check if a conf.yml file has a new required property
                 if (!empty($this->required_strings)) {
                     foreach ($this->required_strings as $file => $pattern) {
                         $path = "zip://" . $temp_name . '#' . $file;
@@ -117,10 +117,10 @@ class FileManagement {
 				}
 				$zip->close();
 		   
-// finally set the path, name and description properties, description = tooltip in the conf.txt. stored as "tooltip=This is a regular headline, use only once per page"
-				if (file_exists($full_path . "/conf.txt")) {
+// finally set the path, name and description properties, description = tooltip in the conf.yml. stored as "tooltip=This is a regular headline, use only once per page"
+				if (file_exists($full_path . "/conf.yml")) {
                     $yaml = new Parser();
-					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.txt"));
+					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.yml"));
                     if (isset($temp["tooltip"])) {
                         $entity->setDescription($temp["tooltip"]);
                     } 
@@ -159,69 +159,74 @@ class FileManagement {
 	 * @return array
 	 */
 	function loadComponents($access, $path, $config, $app_id) {
-		$yaml = new Parser();
-
 		$components = array();
+        
 		if ($handle = opendir($path)) {
-			while (false !== ($entry = readdir($handle))) {
-				$comp_dir = $path . $entry . "/";
-				
-				if ( is_dir($comp_dir) && substr($entry, 0, 1) != "." ) {
-                    $failed = false;
-                    try {
-                        $tmp_yaml = $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"]));
-                    } catch (\Exception $e) {
-                        $tmp_yaml = array();
-                        $failed = true;
-                    }
-//always add html, rest we add content or set bool values that will let us know what to do later
-                    $components[$entry] = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
-                            "exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
-                            "exec_server" => file_exists($comp_dir . $config["PHP"]),
-                            "rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
-                            "conf" => $tmp_yaml,
-                            "is_feature" => false,
-                            "accessible" => ($failed === true ? false : in_array($entry, $access))); //we hide the ones they are not allowed to see OR with failed config, but still load it for reference may exist in app...
-
-                    
-                    if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["category"])) {
-                        $components[$entry]["is_feature"] = ($components[$entry]["conf"]["category"] == "feature");
-                    }
-                    if (isset($components[$entry]["conf"]) && isset($components[$entry]["conf"]["urls"])) {
-                        foreach ($components[$entry]["conf"]["urls"] as $url_key => $url_name) {
-                            $components[$entry]["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $entry));
-                        }
-                    }
-
-//tooltips are in the conf file (or not!), so add it here, or blank if none
-                    $components[$entry]["tooltip"] = isset($components[$entry]["conf"]["tooltip"]) ? $components[$entry]["conf"]["tooltip"] : "";
+			while (false !== ($component_entry = readdir($handle))) {
+                $comp_dir = $path . $component_entry . "/";
+				if ( is_dir($comp_dir) && substr($component_entry, 0, 1) != "." ) {
+                    $components[$component_entry] = $this->loadSingleComponent($app_id, $path, $component_entry, $config, $access);
 				}
 			}
 			
 		} else {
 			throw new \Exception("Unable to load components");
 		}
+        
 		ksort($components);
 		return $components;
 	}
     
-	function loadSingleComponent($path, $comp_id, $config) {
+	function loadSingleComponent($app_id, $path, $comp_id, $config, $check_access = false) {
 		$yaml = new Parser();
         $comp_dir = $path . $comp_id . "/";
 
         if ( is_dir($comp_dir) ) {
-//always add html, rest we add content or set bool values that will let us know what to do later
-                $component = array("html" => @file_get_contents($comp_dir . $config["HTML"]),
-                        "exec_browser" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
-                        "exec_server" => file_exists($comp_dir . $config["PHP"]),
-                        "rights" => @file_get_contents($comp_dir . $config["RIGHTS"]),
-                        "conf" => $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"])),
-                        "is_feature" => false);
+            
+            $failed = false;
+            
+            try {
+                $tmp_yaml = $yaml->parse(@file_get_contents($comp_dir . $config["CONFIG"]));
+            } catch (\Exception $e) {
+                $tmp_yaml = array();
+                $failed = true;
+            }
 
-                if (isset($component["conf"]) && isset($component["conf"]["category"]))
-                    $component["is_feature"] = ($component["conf"]["category"] == "feature");
-//tooltips are in the conf file, so add it here, or blank if none
-                $component["tooltip"] = isset($component["conf"]["tooltip"]) ? $component["conf"]["tooltip"] : "";
+//Html is stored as string (if same for both runtime and designtime) or array if different
+            if (isset($tmp_yaml["html"])) {
+                if (is_array($tmp_yaml["html"])) {
+                    $html = (isset($tmp_yaml["html"]["designtime"]) ? $tmp_yaml["html"]["designtime"] :"");
+                } else {
+                    $html = $tmp_yaml["html"];
+                }
+            } else {
+                $html = "";
+            }
+
+//always add html, rest we add content or set bool values that will let us know what to do later
+            $component = array("html" => $html,
+                    "code" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
+                    "server_code" => file_exists($comp_dir . $config["PHP"]),
+                    "conf" => $tmp_yaml,
+                    "is_feature" => false);
+            if ($check_access) {
+                $component["accessible"] = ($failed === true ? false : in_array($comp_id, $check_access)); //we hide the ones they are not allowed to see OR with failed config, but still load it for reference may exist in app...
+            }
+
+
+            if (isset($component["conf"]) && isset($component["conf"]["category"])) {
+                $component["is_feature"] = ($component["conf"]["category"] == "feature");
+            }
+            if (isset($component["conf"]) && isset($component["conf"]["urls"])) {
+                foreach ($component["conf"]["urls"] as $url_key => $url_name) {
+                    $component["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $comp_id));
+                }
+            }
+
+//tooltips are in the conf file (or not!), so add it here, or blank if none
+            $component["tooltip"] = isset($component["conf"]["tooltip"]) ? $component["conf"]["tooltip"] : "";
+        } else {
+            $component = false;
         }
    
 		return $component;

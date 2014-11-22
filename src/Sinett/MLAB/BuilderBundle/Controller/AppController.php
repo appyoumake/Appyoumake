@@ -810,7 +810,7 @@ class AppController extends Controller
     }
 
     /**
-     * Whenever a component is added on the front end this function is called to copy files if required and run the exec_php code
+     * Whenever a component is added on the front end this function is called to copy files if required and run the server_code code
      * @param type $app_id
      * @param type $comp_id
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
@@ -851,9 +851,9 @@ class AppController extends Controller
                 }
 
 //2: Add rights to the manifest file
-                if (file_exists($path_component . "conf.txt")) {
+                if (file_exists($path_component . "conf.yml")) {
                     $yaml = new Parser();
-					$config = $yaml->parse(@file_get_contents($path_component . "conf.txt"));
+					$config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
                     if (isset($config["permissions"])) {
                         
                         $new_permissions = $config["permissions"];
@@ -941,12 +941,12 @@ class AppController extends Controller
                     
                 } //end conf file exists
 
-//3: run the exec.php file if it exists
-                if (file_exists($path_component . "exec.php")) {
-                    if (!@(include($path_component . "exec.php"))) {
+//3: run the server_code.php file if it exists
+                if (file_exists($path_component . "server_code.php")) {
+                    if (!@(include($path_component . "server_code.php"))) {
                         return new JsonResponse(array(
                                 'result' => 'failure',
-                                'msg' => "Unable to load exec.php file"));
+                                'msg' => "Unable to load server_code.php file"));
                     } else {
                         if (function_exists("onCreate")) {
                             if (!onCreate($path_app, $path_app_assets, $path_component, $comp_id)) {
@@ -994,7 +994,7 @@ class AppController extends Controller
 //load the component they want to add
 	    $file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
-    	$component = $file_mgmt->loadSingleComponent($config["paths"]["component"], $comp_id, $config["component_files"]);        
+    	$component = $file_mgmt->loadSingleComponent($app_id, $config["paths"]["component"], $comp_id, $config["component_files"]);        
 
 //insert into index.html
     	if (file_exists("$app_path$doc") && $file_mgmt->addFeature("$app_path$doc", $comp_id, $component)) {

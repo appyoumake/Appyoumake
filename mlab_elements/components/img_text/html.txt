@@ -1,6 +1,0 @@
-<figure style="float: left; width: 50%; display: block">
-  <img alt="sample image" style="max-height: 100%; max-width: 100%;">
-  <figcaption contenteditable="true">Caption</figcaption>
-</figure>
-<p>Your text goes here</p>
-<div style="clear: both;"></div>

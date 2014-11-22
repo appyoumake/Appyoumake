@@ -1,0 +1,8 @@
+# Configuration file for chapter component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: headline
+name: chapter
+tooltip: This is a chapter headline, used to create new chapters that are listed in the index of an app, allowing internal navigation
+compatible: ["h1", "h2", "h3", "ol", "ul", "p"]
+html: <h1 class="mlab_chapter">Legg til kapittel overskrift her</h1>

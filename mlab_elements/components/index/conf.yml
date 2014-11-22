@@ -1,0 +1,21 @@
+# Configuration file for unordered list (UL) component
+version: 1.0
+developer: Arild Bergh @ Sinett/FFI.no
+category: generated
+name: index
+tooltip: Index for current app
+preprocessing: generate_index
+compatible: []
+html: 
+    designtime: |
+        <h1>Your index will be displayed here</h1>
+        <ul>
+            <li>Page x</li>
+            <li>Page y</li>
+            <li>Page z</li>
+        </ul>
+    runtime: |
+        <h1 class="mlab_chapter">%%index_headline%%</h1>
+        %%index_list%%
+    
+        

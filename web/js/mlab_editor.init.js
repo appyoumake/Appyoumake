@@ -139,8 +139,8 @@
 
                         for (type in mlab.dt.components) {
 //we need to attach the code.js content to an object so we can use it as JS code
-                            if (mlab.dt.components[type].exec_browser !== false) {
-                                eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].exec_browser + "};");
+                            if (mlab.dt.components[type].code !== false) {
+                                eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].code + "};");
                             }
                             var c = mlab.dt.components[type];
                             if (c.accessible && !c.is_feature) {

@@ -1,6 +1,0 @@
-<h1>Index</h1>
-<ul>
-    <li>Page x</li>
-    <li>Page y</li>
-    <li>Page z</li>
-</ul>

@@ -1,8 +1,0 @@
-# Configuration file for unordered list (UL) component
-version: 1.0
-developer: Arild Bergh @ Sinett/FFI.no
-category: generated
-name: index
-tooltip: Index for current app
-preprocessing: generate_index
-compatible: []

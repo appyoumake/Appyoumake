@@ -1,3 +1,0 @@
-<ol>
-    <li>Enter your numbered list here</li>
-</ol>

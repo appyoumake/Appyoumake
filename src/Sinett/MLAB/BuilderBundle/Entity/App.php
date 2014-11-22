@@ -555,7 +555,7 @@ class App
     public function getArray($template_path = "") {
         if ($template_path != "") {
             $yaml = new Parser();
-            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.txt";
+            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.yml";
             $config = $yaml->parse(file_get_contents($fname));
         } else {
             $config = array();
@@ -589,7 +589,7 @@ class App
     public function getArrayFlat($template_path = "") {
         if ($template_path != "") {
             $yaml = new Parser();
-            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.txt";
+            $fname = $template_path . $this->getTemplate()->getPath() . "/conf.yml";
             $config = $yaml->parse(file_get_contents($fname));
         } else {
             $config = array();
