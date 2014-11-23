@@ -207,7 +207,7 @@ Mlab_dt_api.prototype = {
     setScript: function (el, code) {
         var scrpt = $(el).find("script.mlab_code");
         if (scrpt.length < 1) {
-            $(el).append("<script type='application/json' class='mlab_code' />").html(code);
+            $(el).append("<script class='mlab_code' />").html(code);
         } else {
             scrpt.html(code);
         }
