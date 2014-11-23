@@ -28,7 +28,7 @@
 //the MLAB object contains several other objects loaded in different files
         Mlab = function () {
             var self = this;
-            this.designMode = true;
+            this.locale = document.mlab_temp_vars.locale;
 
 //runtime api is at the top level
             this.api = new Mlab_api();
@@ -78,6 +78,7 @@
             },
 
             this.initialise_dt_parents = function () {
+                self.dt.parent = self;
                 self.dt.api.parent = self.dt;
                 self.dt.bestpractice.parent = self.dt;
                 self.dt.design.parent = self.dt;

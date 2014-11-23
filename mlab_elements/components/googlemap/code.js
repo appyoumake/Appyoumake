@@ -15,10 +15,10 @@
     
     this.onCreate = function (el, config, api_func) {
         this.config = config;
-        this.config["api_function"] = api_func;
-        this.config["api_function"].getLibraries(this.config.name);
+        this.api = api_func;
+        this.api.getLibraries(this.config.name);
         
-        var guid = this.config["api_function"].getGUID();
+        var guid = this.api.getGUID();
         var trimmed_guid = guid.replace(/-/g, "");
         
         $(el).find("." + this.config.custom.class_identifier).attr("id", guid);
@@ -45,8 +45,8 @@
 //the code for initialising the app is already inside the component, here we just add the 
 	this.onLoad = function (el, config, api_func) {
         this.config = config;
-        this.config["api_function"] = api_func;
-        this.config["api_function"].getLibraries(this.config.name);
+        this.api = api_func;
+        this.api.getLibraries(this.config.name);
         
     };
 
@@ -147,19 +147,19 @@
                     console.log("Not found: " + status); 
                 }
             });
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     };
 
     this.setMapControl = function(id, control, status) {
         setting = new Object();
         setting[control] = status;
         document.mlab_cp_storage.googlemap.maps[id].setOptions( setting );
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     };
 
     this.setMapZoom = function(id, zoom) {
         document.mlab_cp_storage.googlemap.maps[id].setZoom( zoom );
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     };
     
     this.setMarker = function(id, text, center) {
@@ -189,7 +189,7 @@
          
         document.mlab_cp_storage.googlemap.markers[id].push(marker);
         $("#mlab_cp_googlemap_markers").append("<option value='" + id + "'>" + text + "</option>");
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     }
     
     this.removeMarker = function(id) {
@@ -200,7 +200,7 @@
         document.mlab_cp_storage.googlemap.markers[id][i].setMap(null);
         document.mlab_cp_storage.googlemap.markers[id].splice(i, 1);
         $("#mlab_cp_googlemap_markers option[value=" + i + "]").remove();
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     }
     
     this.custom_edit_map = function (el) {

@@ -8,7 +8,7 @@
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el, config, api_func) {
         this.config = config;
-        this.config["api_function"] = api_func;
+        this.api = api_func;
         if ($(el).find('video').attr("poster") == "") {
         	$(el).find('video').attr("poster", this.config.placholder);
         } 
@@ -31,13 +31,13 @@
         var img = $('.mlab_current_component').find('img');
         $('.mlab_current_component').qtip('hide'); 
         img.attr('src', $(select_box).val());
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     };
     
 
 
     this.custom_upload_image = function (el) {
-        this.config["api_function"].getLibraries(this.config.name);
+        this.api.getLibraries(this.config.name);
         var self = this;
         
         content = $('<form />', {id: "mlab_form_properties" } );
@@ -66,13 +66,13 @@
                             this.component_id = component_id;
                             this.config = component_config;
 //load existing files
-                            var existing_files = this.config["api_function"].getMedia("mp4");
+                            var existing_files = this.api.getMedia("mp4");
                             $("#mlab_cp_video_select_video").html(existing_files);
 
 //upload files 
                             if ($("#mlab_cp_video_button_ok").length > 0) {
                                 var uploadObj = $("#mlab_cp_video_uploadfiles").uploadFile({
-                                    url: this.config["api_function"].getUrlUploadAbsolute(this.config.name),
+                                    url: this.api.getUrlUploadAbsolute(this.config.name),
                                     formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
                                     multiple: false,
                                     showCancel: false,

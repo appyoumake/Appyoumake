@@ -10,14 +10,14 @@
         } 
 
         this.onLoad (el, config, api_func);
-        $(el).attr("data-mlab-chapter-id", this.config["api_function"].getGUID());
+        $(el).attr("data-mlab-chapter-id", this.api.getGUID());
         this.highlight($(el).find("h1"));
     };
 
     //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el, config, api_func) {
         this.config = config;
-        this.config["api_function"] = api_func;
+        this.api = api_func;
         $(el).find("h1").attr("contenteditable", "true");
         $(el).find("h1").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text("Add chapter headline"); } } ) ;
     };

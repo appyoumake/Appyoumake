@@ -15,7 +15,7 @@
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el, config, api_func) {
         this.config = config;
-        this.config["api_function"] = api_func;
+        this.api = api_func;
         $(el).find("figcaption").attr("contenteditable", "true");
         $(el).find("p").attr("contenteditable", "true");
     };
@@ -46,7 +46,7 @@
         var img = $('.mlab_current_component').find('img');
         $('.mlab_current_component').qtip('hide'); 
         img.attr('src', $(select_box).val());
-        this.config["api_function"].setDirty();
+        this.api.setDirty();
     };
     
     this.custom_scale_to_25_percent = function (el) {
@@ -75,7 +75,7 @@
     };
     
       this.custom_upload_image = function (el) {
-        this.config["api_function"].getLibraries(this.config.name);
+        this.api.getLibraries(this.config.name);
         var self = this;
         
         content = $('<form />', {id: "mlab_form_properties" } );
@@ -103,13 +103,13 @@
                             this.component_id = component_id;
                             this.config = component_config;
 //load existing files
-                            var existing_files = this.config["api_function"].getMedia("jpg,jpeg,png,gif");
+                            var existing_files = this.api.getMedia("jpg,jpeg,png,gif");
                             $("#mlab_cp_img_select_image").html(existing_files);
 
 //upload files 
                             if ($("#mlab_cp_image_button_ok").length > 0) {
                                 var uploadObj = $("#mlab_cp_image_uploadfiles").uploadFile({
-                                    url: this.config["api_function"].getUrlUploadAbsolute(this.config.name),
+                                    url: this.api.getUrlUploadAbsolute(this.config.name),
                                     formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
                                     multiple: false,
                                     showCancel: false,

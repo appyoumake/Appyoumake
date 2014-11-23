@@ -62,12 +62,16 @@ Mlab_api.prototype = {
      * @return {String}
      */
     getMode: function() {
-        //if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
-        if (typeof window.device !== 'undefined' && window.device.cordova) {
-            return "runtime";
-        } else {
-            return "design";
-        }
+        return "runtime";
+    },
+    
+    /*
+     * Added by Arild to get current locale
+     * @returns string
+     */
+    
+    getLocale: function() {
+        return this.parent.locale;
     },
     
     /*
@@ -292,11 +296,12 @@ Mlab_api.prototype = {
     
     /*
      * Object used for navigation functionality at runtime
+     * (added by arild)
      */
     
     navigation: {
         current_page: 0,
-        max_pages: 3,
+        max_pages: 0,
         self: this,
 /**
  * current = page that is currently displayed
@@ -304,7 +309,7 @@ Mlab_api.prototype = {
  * @param {type} page
  * @returns {undefined}
  */
-        pageLoad: function (current, move_to, max) {
+        pageLoad: function (current, move_to) {
             var filename, selector = "";
             var new_location = 0;
             switch (move_to) {
@@ -319,12 +324,12 @@ Mlab_api.prototype = {
                     break;
 
                 case "last" :
-                    filename = ("000" + max).slice(-3) + ".html";
-                    new_location = max;
+                    filename = ("000" + this.max_pages).slice(-3) + ".html";
+                    new_location = this.max_pages;
                     break;
 
                 case "next" :
-                    if (current == max) {
+                    if (current == this.max_pages) {
                         return -1;
                     }
                     current++;
@@ -352,7 +357,7 @@ Mlab_api.prototype = {
                     if (isNaN(pg)) {
                         return -1;
                     }
-                    if (move_to < 0 || move_to > max) {
+                    if (move_to < 0 || move_to > this.max_pages) {
                         return -1;
                     }
                     if (move_to == 0) {

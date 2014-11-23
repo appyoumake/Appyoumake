@@ -9,7 +9,7 @@
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el, config, api_func) {
         this.config = config;
-        this.config["api_function"] = api_func;
+        this.api = api_func;
         $(el).find("ol").attr("contenteditable", "true");
         $(el).find("ol").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).html("<li>Add content</li>"); } } ) ;
     };

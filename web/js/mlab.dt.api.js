@@ -113,8 +113,8 @@ Mlab_dt_api.prototype = {
     },
 
 //set the global dirty flag
-    setDirty : function (param) {
-        this.flag_dirty = true;
+    setDirty : function () {
+        this.parent.flag_dirty = true;
     },
 
 //get the DIV that is the ontainer for the editable area
@@ -123,12 +123,27 @@ Mlab_dt_api.prototype = {
     },
 
 //get design time or runtime mode
-    isDesignTime : function (param) {
-        return true;
+    getMode : function () {
+        return "designtime";
     },
 
     closeAllPropertyDialogs : function (param) {
         $('.mlab_current_component').qtip('hide');
+    },
+
+    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide) {
+        $(el).qtip({
+            solo: true,
+            content:    {text: content, title: title },
+            position:   { my: 'leftMiddle', at: 'rightMiddle' },
+            show:       { ready: true, modal: { on: true, blur: false } },
+            hide:       false,
+            style:      { classes: 'qtip-light' },
+            events:     {   render: func_render,
+                            hide: function(event, api) { api.destroy(); },
+                            visible: func_visible  
+                        }
+        });
     },
 
     editContent : function (param) {
@@ -140,16 +155,84 @@ Mlab_dt_api.prototype = {
         sel.addRange(range);
     },
     
+    getLocale: function() {
+        return this.parent.parent.locale;
+    },
+
+    
 //reads in the javascript values stored for the specified element, extracts the value fo the key specified
-//this only works on top level vars, furthe rprocessing must be done in component
+//this only works on top level vars, further processing must be done in component
     getVariable: function (el, key) {
+        var json = $(el).find("script.mlab_storage").html();
+        if (typeof json == "undefined"  || json == "") {
+            return undefined;
+        }
+        try {
+            var vars = JSON.parse(json);
+        } catch(e) {
+            console.log(e);
+            return undefined;
+        }
         
+        return vars[key];
     },
 
 //writes the javascript value and stores it for the specified element
     setVariable: function (el, key, value) {
-        var vars = $(el).child("script").eval();
+        var scrpt = $(el).find("script.mlab_storage");
+        if (scrpt.length < 1) {
+            $(el).append("<script type='application/json' class='mlab_storage' />");
+            var vars = new Object();
+        } else {
+            var json = scrpt.html();
+            if (json != "") {
+                try {
+                    var vars = JSON.parse(json);
+                } catch(e) {
+                    console.log(e);
+                    var vars = new Object();
+                }
+            } else {
+                var vars = new Object();
+            }
+        }
+        
+        vars[key] = value;
+        $(el).find("script.mlab_storage").html(JSON.stringify(vars));
+        this.setDirty();
+        return true;
     },
+    
+//this updates the script for a control, this is writeonly as it should always be generated from user input and variables!
+    setScript: function (el, code) {
+        var scrpt = $(el).find("script.mlab_code");
+        if (scrpt.length < 1) {
+            $(el).append("<script type='application/json' class='mlab_code' />").html(code);
+        } else {
+            scrpt.html(code);
+        }
+        return true;
+    },
+    
+//creates a link either to a external page or to a page in the current app
+//Links to pages must use the api call pageLoad, links to external pages must use _new as the target value
+    getLink: function () {
+        var link = prompt(this.config.custom.msg_requestlink);
+        var page_name = "";
+        if (link != null && link != "") {
+            var num = parseInt(link);
+            if (parseInt(link) > 0 && num < 1000) {
+                var page_name = "onclick='mlab.api.pageLoad(" + num + "); return false;'";
+            } else if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
+                var page_name = link.trim();
+            }
+        }
+        if (page_name == "") {
+            alert(this.config.custom.msg_wronglink);
+            return false;
+        }
+        return page_name;
+    }
 
 }
 
