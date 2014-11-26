@@ -27,7 +27,7 @@
 
 {% block javascripts %}
 	{{ parent() }}
-	<script src="{{ asset('/js/ddslick.js') }}"></script>
+	<script src="{{ asset('/js/jquery.ddslick-1.0.0.js') }}"></script>
 	<script>
 		var url_new = "{{ path('app_new') }}";
 		var url_edit = "{{ path('app_edit', {id: 0} ) }}";

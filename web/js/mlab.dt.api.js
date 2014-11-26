@@ -1,60 +1,117 @@
-/*
- * API functions for use by components at design time (i.e. in editor)
- * Used to obtain info such as paths, to display user input requests or to store data
+/**
+ * 
+ * API functions for use by components at design time (i.e. in the MLAB editor).
+ * Used to obtain info such as paths, to display user input requests or to store data, etc.
+ * @returns {Mlab_dt_api}
+ * @constructor
  */
-
-
 function Mlab_dt_api () {
     this.storage = new Object();
     this.version = 0.2;
 };
 
+/*
+ * Initialise the different functions.
+ * @type type
+ */
 Mlab_dt_api.prototype = {
   testy : function (test) {
     alert("Mlab_dt_api" + test);
   },
 
 /*
- * Requests for URLs, Symfony allows us to redfine these using the route functionality, so they are always stored in variables
- * picked up from the server, these are wrapper functions to obtain them from the internal variables
+ * Symfony allows us to redfine URLs at any time using the route functionality, so we should avoid fixed URLs.
+ * They are therefor always stored in variables picked up from the server, using an AJAX call to the load_variable URL.
+ * Below are wrapper functions to obtain them from the internal variables.
+ */
+
+/**
+ * Requests for the absolute URL to where apps are stored, we work wth the /wwwork directory inside here.
+ * Used to load pages in an app, and related CSS/JS/media files.
+ * @returns {String.origin|Location.origin|Mlab_dt_api.parent.config.urls.app}
  */
     getUrlAppAbsolute : function () {
         return window.location.origin + this.parent.config.urls.app;
     },
 
+/**
+ * Requests for the relative URL to where apps are stored, we work wth the /wwwork directory inside here
+ * Used to load pages in an app, and related CSS/JS/media files
+ * @returns {Mlab_dt_api.parent.config.urls.app}
+ */
     getUrlAppRelative : function () {
         return this.parent.config.urls.app;
     },
 
+/**
+ * Requests for the absolute URL to where components are stored.
+ * Used to load components when designing an app (components consist of configuration file and JS code)
+ * and related CSS/JS/media files.
+ * @returns {Mlab_dt_api.parent.config.urls.component|String.origin|Location.origin}
+ */
     getUrlComponentAbsolute : function () {
         return window.location.origin + this.parent.config.urls.component;
     },
 
+/**
+ * Requests for the relative URL to where components are stored.
+ * Used to load components when designing an app (components consist of configuration file and JS code).
+ * and related CSS/JS/media files.
+ * @returns {Mlab_dt_api.parent.config.urls.component}
+ */
     getUrlComponentRelative : function () {
         return this.parent.config.urls.component;
     },
 
+/**
+ * Requests for the absolute URL to where templates are stored.
+ * Not really used much by the MLAB editor front end, the files are usually copied on the server.
+ * However we have it here for completeness.
+ * @returns {String.origin|Location.origin|Mlab_dt_api.parent.config.urls.template}
+ */
     getUrlTemplateAbsolute : function () {
         return window.location.origin + this.parent.config.urls.template;
     },
 
+/**
+ * Requests for the relative URL to where templates are stored.
+ * Not really used much by the MLAB editor front end, the files are usually copied on the server.
+ * However we have it here for completeness.
+ * @returns {Mlab_dt_api.parent.config.urls.template}
+ */
     getUrlTemplateRelative : function () {
         return this.parent.config.urls.template;
     },
 
-    getUrlUploadAbsolute : function (param) {
-        return window.location.origin + this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_COMPID_", param);
+/**
+ * Requests for the absolute URL used to upload files, used by components that let users use own files, 
+ * such a image component, video player, etc.
+ * @param {string} comp_id is the unique ID of the component, for instance img or video
+ * @returns {Mlab_dt_api.prototype@pro;parent@pro;urls@pro;component_upload_file@call;replace@call;replace|String.origin|Location.origin}
+ */
+    getUrlUploadAbsolute : function (comp_id) {
+        return window.location.origin + this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_COMPID_", comp_id);
     },
 
-    getUrlUploadRelative : function (param) {
-        return this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", param);
+/**
+ * Requests for the absolute URL used to upload files, used by components that let users use own files, 
+ * such a image component, video player, etc.
+ * @param {string} comp_id is the unique ID of the component, for instance img or video
+ * @returns {Mlab_dt_api.prototype@pro;parent@pro;urls@pro;component_upload_file@call;replace@call;replace}
+ */
+    getUrlUploadRelative : function (comp_id) {
+        return this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", comp_id);
     },
 
-//get a list of files already uploaded, non-async so we can return data and do not need to know whcih HTML element to put it in
-    getMedia : function (param) {
+/**
+ * Returns a list of files already uploaded, non-async so we can return data to the calling function who may do any number of things with it.
+ * @param {String} extensions
+ * @returns {Array} list of options for select element
+ */
+    getMedia : function (extensions) {
         var data = $.ajax({
             type: "GET",
-            url: this.parent.urls.uploaded_files.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", param),
+            url: this.parent.urls.uploaded_files.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", extensions),
             async: false,
         }).responseText;
 
@@ -66,7 +123,11 @@ Mlab_dt_api.prototype = {
         }
     },
 
-//create a GUID that is rfc4122 version 4 compliant
+/**
+ * Creates a GUID that is rfc4122 version 4 compliant.
+ * This is typically used to create an ID for a component that must not clash with any other IDs.
+ * @returns {String}
+ */
     getGUID : function () {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -74,15 +135,20 @@ Mlab_dt_api.prototype = {
         });
     },
 
-//loads all js/css files required at design time for a component as specified in conf.yml
-    getLibraries : function (param) {
-        if ("required_libs" in this.parent.components[param].conf) {
-            if ("designtime" in this.parent.components[param].conf.required_libs) {
+/**
+ * Loads all js/css files required by a component at design time.
+ * Files loaded are specified in the conf.yml parameter required_libs.
+ * @param {string} comp_id, the unique ID for the component that needs to load the files
+ * @returns {undefined}
+ */
+    getLibraries : function (comp_id) {
+        if ("required_libs" in this.parent.components[comp_id].conf) {
+            if ("designtime" in this.parent.components[comp_id].conf.required_libs) {
                 var comp_url = window.location.origin + this.parent.urls.components_root_url;
-                var comp_path = this.parent.components[param].conf.name;
+                var comp_path = this.parent.components[comp_id].conf.name;
 
-                for (i in this.parent.components[param].conf.required_libs.designtime) {
-                    var file = this.parent.components[param].conf.required_libs.designtime[i];
+                for (i in this.parent.components[comp_id].conf.required_libs.designtime) {
+                    var file = this.parent.components[comp_id].conf.required_libs.designtime[i];
                     var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ ;
                     if (regexp.test(file)) {
                         if ($("script[src*='" + file + "']").length < 1) {
@@ -102,36 +168,68 @@ Mlab_dt_api.prototype = {
         }
     },
 
-//get api version for designtime API, different from runtime API version
-    getVersion : function (param) {
+/**
+ * Get api version for designtime API, different from runtime API version (which is anyway a different file/object).
+ * @returns {Number}
+ */
+    getVersion : function () {
         return this.version;
     },
 
-//get currently selected component (the DIV, not the internal HTML code)
-    getSelectedComponent : function (param) {
+/**
+ * Get currently selected component (the DIV, not the internal HTML code).
+ * @returns {jQuery object that represents the DIV surrounding the component}
+ */
+    getSelectedComponent : function () {
         return $('.mlab_current_component');
     },
 
-//set the global dirty flag
+/**
+ * Set the global dirty flag, this tells the page_save function that the page needs to be updated on the server.
+ * @returns {undefined}
+ */
     setDirty : function () {
         this.parent.flag_dirty = true;
     },
 
-//get the DIV that is the ontainer for the editable area
-    getEditorElement : function (param) {
+/**
+ * Get the ID of the DIV that is the container for the editable area. 
+ * The string name is specified in the parameter.yml file and can be changed, but there really is no reason to do this.
+ * @returns {String: Mlab_dt_api.parent.config.content_id}
+ */
+    getEditorElement : function () {
         return this.parent.config.content_id;
     },
 
-//get design time or runtime mode
+/**
+ * Matches a function found in the runtime API JS file/object mlab.api, used by components to call the current API and see what mode they are in. 
+ * This can be used to execute different code based on whether the user designs the app, or runs the compiled version.
+ * @returns {String}
+ */
     getMode : function () {
         return "designtime";
     },
 
-    closeAllPropertyDialogs : function (param) {
+/**
+ * Simple wrapper function which will ensure that the jQuery plugin jqtip2 is closed.
+ * @returns {undefined}
+ */
+    closeAllPropertyDialogs : function () {
         $('.mlab_current_component').qtip('hide');
     },
 
+/**
+ * 
+ * @param {type} el
+ * @param {type} title
+ * @param {type} content
+ * @param {type} func_render
+ * @param {type} func_visible
+ * @param {type} func_hide
+ * @returns {undefined}
+ */
     displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide) {
+        this.closeAllPropertyDialogs()
         $(el).qtip({
             solo: true,
             content:    {text: content, title: title },
