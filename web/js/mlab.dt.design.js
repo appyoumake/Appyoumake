@@ -207,7 +207,7 @@ Mlab_dt_design.prototype = {
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
         
 //process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
-        if (typeof this.parent.components[id].conf.process_keypress != "undefined") {
+        if (typeof this.parent.components[id].conf.process_keypress != "undefined" && this.parent.components[id].conf.process_keypress) {
             $(new_comp).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
         }
 
@@ -377,7 +377,7 @@ Mlab_dt_design.prototype = {
             that.component_run_code($( this ), comp_id);
             
 //process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
-            if (typeof that.parent.components[comp_id].conf.process_keypress != "undefined") {
+            if (typeof that.parent.components[comp_id].conf.process_keypress != "undefined" && that.parent.components[comp_id].conf.process_keypress) {
                 $( this ).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
             }
         });

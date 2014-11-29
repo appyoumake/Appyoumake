@@ -10,7 +10,7 @@ function Mlab_dt_api () {
     this.version = 0.2;
 };
 
-/*
+/**
  * Initialise the different functions.
  * @type type
  */
@@ -211,7 +211,7 @@ Mlab_dt_api.prototype = {
     },
 
 /**
- * Simple wrapper function which will ensure that the jQuery plugin jqtip2 is closed.
+ * Simple wrapper function which will ensure that the jQuery plugin qtip2 is closed.
  * @returns {undefined}
  */
     closeAllPropertyDialogs : function () {
@@ -219,13 +219,15 @@ Mlab_dt_api.prototype = {
     },
 
 /**
- * 
- * @param {type} el
- * @param {type} title
- * @param {type} content
- * @param {type} func_render
- * @param {type} func_visible
- * @param {type} func_hide
+ * Displays the property input dialog for the specified component. 
+ * This uses the jQuery plugin qtip2 for the actual dialog, and fills it with the specified content.
+ * The component is reponsible for adding buttons such as Cancel and OK with callback to relevant functions in the component.
+ * @param {jQuery DOM element} el, the component that the dialog should be attached to
+ * @param {string} title
+ * @param {HTML string} content, valid HTML5
+ * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
+ * @param {function object} func_visible, callback function when the property dialog is 
+ * @param {function object} func_hide
  * @returns {undefined}
  */
     displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide) {
@@ -244,22 +246,41 @@ Mlab_dt_api.prototype = {
         });
     },
 
-    editContent : function (param) {
-        $(param).attr('contenteditable', 'true').focus();
+/**
+ * Makes currently the socified component editable, using the HTML5 contenteditable attribute.
+ * Only works on text elements, such as heading or paragraph
+ * @param {jQuery DOM element} el
+ * @returns {undefined}
+ */
+    editContent : function (el) {
+        $(el).attr('contenteditable', 'true').focus();
         var range = document.createRange();
         var sel = window.getSelection();
-        range.selectNodeContents($(param)[0]);
+        range.selectNodeContents($(el)[0]);
         sel.removeAllRanges();
         sel.addRange(range);
     },
     
+/**
+ * Returns the local (for instance nb_NO) as specified in the backend Symfony environment.
+ * Loaded as a temporary variable on initial MLAB editor page load as it has to be passed from the backend.
+ * @returns {Mlab_dt_api.parent.parent.locale}
+ */
     getLocale: function() {
         return this.parent.parent.locale;
     },
 
     
-//reads in the javascript values stored for the specified element, extracts the value fo the key specified
-//this only works on top level vars, further processing must be done in component
+/**
+ * Reads in the Javascript values stored for the specified element, extracts the value of the key specified.
+ * This only works on top level vars, further processing must be done inside the JS code for the component.
+ * 
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * @param {jQuery DOM element} el
+ * @param {string} key, the key name in the object
+ * @returns {Mlab_dt_api.prototype.getVariable.vars|Array|Object}
+ */
     getVariable: function (el, key) {
         var json = $(el).find("script.mlab_storage").html();
         if (typeof json == "undefined"  || json == "") {
@@ -276,6 +297,17 @@ Mlab_dt_api.prototype = {
     },
 
 //writes the javascript value and stores it for the specified element
+/**
+ * Stores a Javascript value for the specified element.
+ * This only works on top level vars, but the value can be an object which in effect gives lower level storage posibilities.
+ * 
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * @param {jQuery DOM element} el
+ * @param {string} key, the key name in the object
+ * @param {anything} value
+ * @returns {Boolean}
+ */
     setVariable: function (el, key, value) {
         var scrpt = $(el).find("script.mlab_storage");
         if (scrpt.length < 1) {
@@ -301,7 +333,13 @@ Mlab_dt_api.prototype = {
         return true;
     },
     
-//this updates the script for a control, this is writeonly as it should always be generated from user input and variables!
+/**
+ * This updates the script for a control, this is write only as it should always be generated from user input and variables!
+ * It therefore also always replaces existing content in the script element
+ * @param {jQuery DOM element} el
+ * @param {text} code, any Javascript compatible statements
+ * @returns {Boolean}
+ */
     setScript: function (el, code) {
         var scrpt = $(el).find("script.mlab_code");
         if (scrpt.length < 1) {
@@ -312,8 +350,12 @@ Mlab_dt_api.prototype = {
         return true;
     },
     
-//creates a link either to a external page or to a page in the current app
-//Links to pages must use the api call pageLoad, links to external pages must use _new as the target value
+/**
+ * Creates the HTML5 code required for a link either to a external page or to a page in the current app.
+ * Links to pages must use the api call pageLoad, links to external pages must use _new as the target value.
+ * TODO: Can be improved by listing existing pages instead of just requesting the page number.
+ * @returns {Boolean|String}
+ */
     getLink: function () {
         var link = prompt(this.config.custom.msg_requestlink);
         var page_name = "";

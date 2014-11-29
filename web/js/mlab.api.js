@@ -4,7 +4,7 @@
  */
 
 
-/*
+/**
 Core functionality for the component API, all features here are local
 Remote functionality is provided by any plugins (see end of file for plugin code)
 
@@ -21,9 +21,9 @@ Storage is already app-specific, so no need to include that into the namespace.
 /**
  * Standard initialisation of Mlab object which is referred to in several JS files, 
  * as these files can come down in different order, we must make sure we can use it here.
+ * @returns {Mlab_dt_api}
+ * @constructor
  */
-
-
 function Mlab_api () {
     var self = this;
     var documentOb = $(document);
@@ -55,9 +55,13 @@ function Mlab_api () {
     documentOb.trigger("mlabready");
 }
 
+/**
+ * Initialise the different functions.
+ * @type Mlab_api
+ */
 Mlab_api.prototype = {
     version: 0.1,
-    /*
+    /**
      * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode.
      * @return {String}
      */
@@ -65,7 +69,7 @@ Mlab_api.prototype = {
         return "runtime";
     },
     
-    /*
+    /**
      * Added by Arild to get current locale
      * @returns string
      */
@@ -74,7 +78,7 @@ Mlab_api.prototype = {
         return this.parent.locale;
     },
     
-    /*
+    /**
      * Runs when mlab object has been set up. Loops through the globally defined arrays "mlab_initialiseApp" and 
      * "mlab_initialiseComponent", and calls the functions registered in these.
      *
@@ -92,7 +96,7 @@ Mlab_api.prototype = {
         for (var i=0, ii=mlab_initialiseComponent.length; i<ii; i++) mlab_initialiseComponent[i]();
     },
     
-    /*
+    /**
      * Loads an external JS file, containing a plugin. Stores the plugin in the this.plugins object. When
      * plugin is loaded, triggers an event "pluginloaded".
      * @param {String} name The name of the plugin. The JS file that is loaded must be named "plugin_<name>.js" 
@@ -140,7 +144,7 @@ Mlab_api.prototype = {
     },
     
     
-    /*
+    /**
      * Gets state for given user an key.
      *
      * getState() implemented in a plugin has to return an array with 1) boolean (success/failure to get state), and 2)
@@ -159,7 +163,7 @@ Mlab_api.prototype = {
         return value
     },
 
-    /*
+    /**
      * Gets all stored states, or all stored states for user (if given).
      * @param {String} user User ID for the currently logged in user. Optional.
      * @return {Object} Object containing the states
@@ -175,7 +179,7 @@ Mlab_api.prototype = {
         return allStates;
     },
     
-    /*
+    /**
      * Sets config for user, also makes sure it is saved for later use.
      * @param {String} user User ID for the currently logged in user. Required.
      * @param {String} key Key name for the config to be stored. Required.
@@ -189,7 +193,7 @@ Mlab_api.prototype = {
     },
     
     
-    /*
+    /**
      * Gets config for given user an key.
      * @param {String} user User ID for the currently logged in user. Required.
      * @param {String} key Key name for the config to be stored. Required.
@@ -203,7 +207,7 @@ Mlab_api.prototype = {
         return value;
     },
     
-    /*
+    /**
      * Gets all stored configs, or all stored configs for user (if given).
      * @param {String} user: User ID for the currently logged in user. Optional.
      * @return {Object} Object containing the configs
@@ -220,7 +224,7 @@ Mlab_api.prototype = {
     },
     
     
-    /*
+    /**
      * Saves result for a question.
      * @param {String} user User ID for the currently logged in user. Required.
      * @param {String} name The name of the quiz. Must be unique within the app. Required.
@@ -235,7 +239,7 @@ Mlab_api.prototype = {
         this.internal.storeResults();
     },
     
-    /*
+    /**
      * Get saved result for specific question
      * @param {String} user User ID for the currently logged in user. Required.
      * @param {String} name The name of the quiz. Must be unique within the app. Required.
@@ -251,7 +255,7 @@ Mlab_api.prototype = {
     },
     
     /* Network-functions */
-    /*
+    /**
      * Login on remote service, through loaded plugin. If we have a loginToken stored, we assume this is valid, 
      * and simply return the token.
      * @param {String} service The short_name of the service
@@ -269,7 +273,7 @@ Mlab_api.prototype = {
         return pluginLogin;
     },
     
-    /*
+    /**
      * Log off the remote service, through plugin.
      * @param {String} service The short_name of the service
      * @return {boolean} True if plugin has logged off, false if not.
@@ -277,7 +281,7 @@ Mlab_api.prototype = {
     logoffRemotely: function(service) {
         return this.internal.dispatchToPlugin("logoffRemotely", service);
     },
-    /*
+    /**
      * Getter/setter for the login token string.
      * @param {String} service The short_name of the service
      * @param {String} token. Token to be set. Optional.
@@ -294,7 +298,7 @@ Mlab_api.prototype = {
         return false;
     },
     
-    /*
+    /**
      * Object used for navigation functionality at runtime
      * (added by arild)
      */
@@ -388,13 +392,13 @@ Mlab_api.prototype = {
         
     },
     
-    /*
+    /**
      * Object that keeps the functions that are not part of the main API of mlab.
      */
     internal: {
         /* Pointer to main mlab object */
         self: null,
-        /*
+        /**
          * Internal helper function that is a generic way of dispatching a call to plugin. In addition to
          * the named parameter "name", it is possible to pass any number of parameters, which are passed
          * on to the plugin function.
@@ -418,7 +422,7 @@ Mlab_api.prototype = {
             return opDone;
         },
         
-        /*
+        /**
          * Gets the login tokens from session storage
          * @return {Object} The login tokens for the various services
          */
@@ -429,7 +433,7 @@ Mlab_api.prototype = {
             return loginTokens;
         },
         
-        /*
+        /**
          * Saves the login tokens in session storage, under the key "loginTokens"
          * @param {Object} loginTokens
          */
@@ -509,13 +513,13 @@ Mlab_api.prototype = {
             this.self.configs = configs;
         },
         
-        /*
+        /**
          * Delete everything in localstorage. For testing/debugging purposes.
          */
         clearLocalStorage: function() {
             window.localStorage.clear();
         },
-        /*
+        /**
          * Delete everything in sessionstorage. For testing/debugging purposes.
          */
         clearSessionStorage: function() {
@@ -531,7 +535,7 @@ Mlab_api.prototype = {
  */
 var mlab_initialiseApp = [];
 
-/*
+/**
  * Components add their page init functions to this array
  */
 var mlab_initialiseComponent = [];
@@ -540,7 +544,7 @@ var mlab_initialiseComponent = [];
  * Mlab object is stored in a global variable "mlab", and is initialized automatically when device is ready.
  */
 var mlab;
-/*
+/**
 $(document).on("deviceready", function() {
     mlab = new Mlab();
 });
@@ -550,12 +554,12 @@ $(document).on("deviceready", function() {
     mlab = new Mlab();
 //    }, 5000);
 });
-/*
+/**
 $(document).on("ready", function() {
 });
 */
 
-/*
+/**
 $(document).on("mlabready", function() {
     mlab.onMlabReady();
 });
