@@ -599,7 +599,8 @@ Mlab_dt_management.prototype = {
     page_new : function () {
         var title = prompt("Please enter the title of the new page");
         if (title != null) {
-            this.page_save( function() { this.page_new_process( title ); } );
+            that = this;
+            this.page_save( function() { that.page_new_process( title ); } );
         }
     },
 
