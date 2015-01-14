@@ -1,16 +1,14 @@
 	
-    this.config = {};
     
-    this.onCreate = function (el, config, api_func) {
-        this.onLoad (el, config, api_func);
+    
+    this.onCreate = function (el) {
+        this.onLoad (el);
         $(el).html('<img src="' + this.config.placeholder + '" >');
         this.custom_select_video(el);
     };
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el, config, api_func) {
-        this.config = config;
-        this.api = api_func;
+	this.onLoad = function (el) {
     };
 
 	this.onSave = function (el) {

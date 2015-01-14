@@ -1,8 +1,8 @@
 	
-	this.config = {};
+	
 
-    this.onCreate = function (el, config, api_func) {
-        this.onLoad (el, config, api_func);
+    this.onCreate = function (el) {
+        this.onLoad (el);
         
         var comp = $(el).find('img');
         if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
@@ -13,9 +13,7 @@
     }
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el, config, api_func) {
-        this.config = config;
-        this.api = api_func;
+	this.onLoad = function (el) {
         $(el).find("figcaption").attr("contenteditable", "true");
         $(el).find("p").attr("contenteditable", "true");
     };

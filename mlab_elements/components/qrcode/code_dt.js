@@ -1,9 +1,9 @@
 	
-	this.config = {};
+	
     
 //el = element this is initialising, config = global config from conf.yml
-    this.onCreate = function (el, config, url) {
-        this.onLoad (el, config, url);
+    this.onCreate = function (el) {
+        this.onLoad (el);
         var comp = $(el).find('div');
         if (typeof comp.html() == "") {
             comp.css("background-image", this.config.placeholder);
@@ -12,8 +12,7 @@
         this.custom_set_QR_code(el);
     };
 
-    this.onLoad = function (el, config, url) {
-        this.config = config;
+    this.onLoad = function (el) {
     };
     
 	this.onSave = function (el) {

@@ -150,10 +150,18 @@ Mlab_dt_api.prototype = {
                 for (i in this.parent.components[comp_id].conf.required_libs.designtime) {
                     var file = this.parent.components[comp_id].conf.required_libs.designtime[i];
                     var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ ;
+                    
                     if (regexp.test(file)) {
-                        if ($("script[src*='" + file + "']").length < 1) {
-                            $("head").append($("<script src='" + file + "' >"));
+                        if (file.substr(-3) == ".js") {
+                            if ($("script[src*='" + file + "']").length < 1) {
+                                $("head").append($("<script src='" + file + "' >"));
+                            }
+                        } else {
+                            if ($("link[href*='" + file + "']").length < 1) {
+                                $("head").append($("<link rel='stylesheet' type='text/css' href='" + file +"' >"));
+                            }
                         }
+                        
                     } else if (file.substr(-3) == ".js") {
                         if ($("script[src*='" + file + "']").length < 1) {
                             $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file + "' >"));

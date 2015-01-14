@@ -131,9 +131,15 @@
                         mlab.dt.components = data.mlab_components;
 
                         for (type in mlab.dt.components) {
-//we need to attach the code.js content to an object so we can use it as JS code
+                            
+//we need to attach the code_dt.js content to an object so we can use it as JS code
                             if (mlab.dt.components[type].code !== false) {
                                 eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].code + "};");
+
+//here we create the api and conf objects inside the newly created object, they are used to 
+                                mlab.dt.components[type].code.config = mlab.dt.components[type].conf;
+                                mlab.dt.components[type].code.api = mlab.dt.api;
+
                             }
                             var c = mlab.dt.components[type];
                             if (c.accessible && !c.is_feature) {

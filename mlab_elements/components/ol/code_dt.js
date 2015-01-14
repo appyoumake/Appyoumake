@@ -1,15 +1,13 @@
 	
-	this.config = {};
+	
     
-    this.onCreate = function (el, config, api_func) {
-        this.onLoad (el, config, api_func);
+    this.onCreate = function (el) {
+        this.onLoad (el);
         this.highlight($(el).find("li"));
     };
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el, config, api_func) {
-        this.config = config;
-        this.api = api_func;
+	this.onLoad = function (el) {
         $(el).find("ol").attr("contenteditable", "true");
         $(el).find("ol").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).html("<li>Add content</li>"); } } ) ;
     };

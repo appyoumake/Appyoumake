@@ -132,16 +132,6 @@ Mlab_dt_design.prototype = {
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
         $.mobile.initializePage();
 
-//JS to fix the toolbars in a jQuery mobile page
-        var border_width = (parseInt($("#mlab_editor_chrome").css("margin-bottom")) * 2) + parseInt($("#mlab_editor_chrome").css("border-bottom-width"));
-        $("[data-role=header]").css( {"position": "absolute", "z-index": 0} );
-        $("[data-role=footer]").css( { "position": "absolute", "bottom": ($("[data-role=footer]").height() + border_width) + "px" } );
-        $("[data-role=page]").css( {"width": "100%", "height": "100%", "min-height": "", "position": "absolute", "margin": "0", "padding": "0", "padding-top": $("[data-role=header]").height() + "px", "padding-bottom": $("[data-role=footer]").height() + "px" } );
-
-//TODO: hack de luxe, refreshes images that for some reason can't be seen
-        $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
-        $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
-
     },
 
 
@@ -266,9 +256,9 @@ Mlab_dt_design.prototype = {
         }
 
         if (created) {
-            this.parent.components[comp_id].code.onCreate(el, this.parent.components[comp_id].conf, this.parent.api);
+            this.parent.components[comp_id].code.onCreate(el);
         } else {
-            this.parent.components[comp_id].code.onLoad(el, this.parent.components[comp_id].conf, this.parent.api);
+            this.parent.components[comp_id].code.onLoad(el);
         }
     },
 
@@ -326,7 +316,7 @@ Mlab_dt_design.prototype = {
             $(this.parent.app.curr_indexpage_html).find("body").append("<div id='mlab_features_content' style='display: none;'></div>");
         } else {
 //make sure not duplicate it
-            if ($(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']>").length > 0) {
+            if ($(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']").length > 0) {
                 if (!silent) {
                     this.parent.utils.update_status("temporary", "Feature already added", false);
                 }
@@ -336,6 +326,10 @@ Mlab_dt_design.prototype = {
 
         $(this.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + this.parent.components[comp_id].html + "</div>");
 
+        var new_feature = $(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']");
+        if (new_feature.length > 0) {
+            this.parent.components[comp_id].code.onCreate(new_feature[0]);
+        }
 
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost

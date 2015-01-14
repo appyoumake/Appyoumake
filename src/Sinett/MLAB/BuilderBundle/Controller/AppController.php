@@ -841,13 +841,20 @@ class AppController extends Controller
 //check if path to component and app exists
             if ( is_dir($path_component) && is_dir($path_app) && is_dir($path_app_assets) ) {
             
-//1: Copy JS file
-                if (file_exists( $path_component . $comp_id  . ".js") && !file_exists( $path_app_js . $comp_id . ".js")) {
-                    if (!@copy($path_component . $comp_id  . ".js", $path_app_js . $comp_id . ".js")) {
+//1: Copy JS file, it is called code_rt.js, but needs to be renamed as all JS files for components have same name to begin with
+//   We use the component name as a prefix
+                if (file_exists( $path_component . "code_rt.js") && !file_exists( $path_app_js . $comp_id . "_code_rt.js")) {
+                    if (!@copy($path_component . "code_rt.js", $path_app_js . $comp_id . "_code_rt.js")) {
                         return new JsonResponse(array(
                             'result' => 'failure',
                             'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
                     }
+                    
+                    $include_items = file("$path_app_assets/js/include.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if (!in_array("$.getScript('/js/" . $comp_id . "_code_rt.js');", $include_items)) {
+                        $include_items[] = "$.getScript('/js/" . $comp_id . "_code_rt.js');";
+                    }
+                    file_put_contents("$path_app_assets/js/include.js", implode("\n", $include_items));
                 }
 
 //2: Add rights to the manifest file
@@ -870,7 +877,7 @@ class AppController extends Controller
 
                         $add_permissions = array_diff($new_permissions, $existing_permissions);
 
-    //only add permissions if it is not already there
+//only add permissions if it is not already there
                         if (count($add_permissions) > 0) {
                             foreach ($add_permissions as $add_permission) {
                                 $perm = $xml->addChild('uses-permission');
@@ -892,37 +899,23 @@ class AppController extends Controller
                             
                             foreach ($config["required_libs"]["runtime"] as $dependency) {
                                 $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
-                                $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                                if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app_assets/$filetype/$dependency" )) {
-    //if we fail we bail
-                                    if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
-                                        return new JsonResponse(array(
-                                            'result' => 'failure',
-                                            'msg' => sprintf("Unable to copy JavaScript file %s for this component: %s", $dependency , $comp_id)));
-    //if OK we need to update the include files of the app
-                                    } else {
-                                        if ($filetype == "css") {
-                                            if (!in_array("@import url('$dependency');", $include_items)) {
-                                                $include_items[] = "@import url('$dependency');";
-                                            }
-                                        } else {
-                                            if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
-                                                $include_items[] = "$.getScript('/js/$dependency');";
-                                            }
-                                        }
+                                if ($filetype == "") {
+                                    $filetype = "js";
+                                } 
+                                
+//if this is a URL we just add it to the include file, no need to copy the file
+                                if(!filter_var($dependency, FILTER_VALIDATE_URL)) {
+                                    if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app_assets/$filetype/$dependency" )) {
+//if we fail we bail
+                                        if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
+                                            return new JsonResponse(array(
+                                                'result' => 'failure',
+                                                'msg' => sprintf("Unable to copy JavaScript file %s for this component: %s", $dependency , $comp_id)));
+                                        } 
                                     }
                                 }
-                                file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
-                                
-                            } //end loop for runtime scripts to copy and add
-                            
-                        } // end if runtime libs defined
-                        
-//runtime external libs are links to (for instance) Google Maps API file, i.e. we cannot/should not
-//add them to the app at compile time, but need it for functionality when app is running
-                        if (isset($config["required_libs"]["runtime_external"])) {
-                            foreach ($config["required_libs"]["runtime_external"] as $dependency) {
-                                $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
+
+//we need to update the include files of the app
                                 $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                                 if ($filetype == "css") {
                                     if (!in_array("@import url('$dependency');", $include_items)) {
@@ -930,13 +923,14 @@ class AppController extends Controller
                                     }
                                 } else {
                                     if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
-                                        $include_items[] = "$.getScript('$dependency');";
+                                        $include_items[] = "$.getScript('/js/$dependency');";
                                     }
                                 }
                                 file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
-                            }
-                        }
-                        
+                                
+                            } //end loop for runtime scripts to copy and add
+                            
+                        } // end if runtime libs defined
                     }// end required libs handling
                     
                 } //end conf file exists

@@ -11,11 +11,9 @@
  */
 
 	
-	this.config = {};
+	
     
-    this.onCreate = function (el, config, api_func) {
-        this.config = config;
-        this.api = api_func;
+    this.onCreate = function (el) {
         this.api.getLibraries(this.config.name);
         
         var guid = this.api.getGUID();
@@ -43,9 +41,7 @@
     
 //el = element this is initialising, config = global config from conf.yml
 //the code for initialising the app is already inside the component, here we just add the 
-	this.onLoad = function (el, config, api_func) {
-        this.config = config;
-        this.api = api_func;
+	this.onLoad = function (el) {
         this.api.getLibraries(this.config.name);
         
     };

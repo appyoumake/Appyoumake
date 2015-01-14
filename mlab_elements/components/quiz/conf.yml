@@ -1,0 +1,9 @@
+#Configuration file for quiz component
+name: quiz
+category: quiz
+version: 0.1
+developer: Morten Krane, Snapper Net Solutions
+storage_plugin: false
+custom: {}
+tooltip: Build a quiz for users to answer
+html: <div class="mlab_dt_quiz"></div>

@@ -1,8 +1,8 @@
 	
-	this.config = {};
+	
 
-    this.onCreate = function (el, config, api_func) {
-        this.onLoad (el, config, api_func);
+    this.onCreate = function (el) {
+        this.onLoad (el);
         
         var comp = $(el).find('img');
         if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
@@ -13,9 +13,7 @@
     }
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el, config, api_func) {
-        this.config = config;
-        this.api = api_func;
+	this.onLoad = function (el) {
         $(el).find("figcaption").attr("contenteditable", "true");
     };
 
@@ -94,6 +92,7 @@
         var component = el;
         var component_id = this.config.component_name;
         var component_config = this.config;
+        var that = this;
         
         $(el).qtip({
             solo: true,
@@ -107,14 +106,14 @@
                             this.component_id = component_id;
                             this.config = component_config;
 //load existing files
-                            var existing_files = this.api.getMedia("jpg,jpeg,png,gif");
+                            var existing_files = that.api.getMedia("jpg,jpeg,png,gif");
                             $("#mlab_cp_img_select_image").html(existing_files);
 
 //upload files 
                             if ($("#mlab_cp_image_button_ok").length > 0) {
                                 var uploadObj = $("#mlab_cp_image_uploadfiles").uploadFile({
-                                    url: this.api.getUrlUploadAbsolute(this.config.name),
-                                    formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
+                                    url: that.api.getUrlUploadAbsolute(this.config.name),
+                                    formData: { comp_id: component_id, app_path: mlab.dt.app.path },
                                     multiple: false,
                                     showCancel: false,
                                     showAbort: false,
