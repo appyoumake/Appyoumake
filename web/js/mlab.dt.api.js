@@ -380,6 +380,16 @@ Mlab_dt_api.prototype = {
             return false;
         }
         return page_name;
+    },
+
+/**
+ * Creates the HTML5 code required for a link either to a external page or to a page in the current app.
+ * Links to pages must use the api call pageLoad, links to external pages must use _new as the target value.
+ * TODO: Can be improved by listing existing pages instead of just requesting the page number.
+ * @returns {Boolean|String}
+ */
+    getCredentials: function (credentials_required) {
+        
     }
 
 }

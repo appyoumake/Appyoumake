@@ -385,26 +385,30 @@ Mlab_dt_design.prototype = {
  *********** Function to manipulate adaptive menus (those defined by component itself ********
 ************************************************************/
 
-/* adds component specific menu when a component is added/selected */
+/* adds component specific menu (images) when a component is added/selected */
     component_menu_prepare: function () {
-        var comp = $(".mlab_current_component");
-        if (comp.length < 1) {
+        var curr_comp = $(".mlab_current_component");
+        if (curr_comp.length < 1) {
             return;
         }
-        var comp_name = comp.data("mlab-type");
+        var conf = mlab.dt.components[curr_comp.data("mlab-type")].conf;
+        var comp_name = curr_comp.data("mlab-type");
         var items = new Object();
         var title = "";
-        for(var index in this.parent.components[comp_name]) {
+        var menu = $("#mlab_component_context_menu");
+        menu.html("");
+        for(var index in this.parent.components[comp_name].code) {
             if (index.substr(0, 7) == "custom_") {
                 title = index.slice(7);
-                items[index] =  { name: title.charAt(0).toUpperCase() + title.slice(1).replace("_", " "),
-                                  callback: function(key, options) {
-                                      this.parent.components[$('.mlab_current_component').data("mlab-type")][key]($('.mlab_current_component'));
-                                  }
-                                };
+                menu.append("<img onclick='mlab.dt.components[" + comp_name + "][" + index + "]($('.mlab_current_component'))' " + 
+                                 "title='" + conf.custom[title + "_tooltip"] + "'" + 
+                                 "src='" + conf.custom[title + "_icon"] + "'");
             }
         }
-        if ((typeof this.parent.components[comp_name].conf.compatible != "undefined") && (this.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
+        
+        menu.append("<div class='clear'>&nbsp;</div>");
+
+        /*if ((typeof this.parent.components[comp_name].conf.compatible != "undefined") && (this.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
             items["sep1"] = "---------";
             items["replace"] = {"name": "Replace control with"};
             var sub_items = new Object;
@@ -417,30 +421,8 @@ Mlab_dt_design.prototype = {
                                    };
             } );
             items["replace"]["items"] = sub_items;
-       }
+       }*/
 
-        $.contextMenu( 'destroy', '#mlab_button_menu' );
-        $.contextMenu( 'destroy', '.mlab_current_component' );
-
-        if (Object.keys(items).length < 1) {
-            items["empty"] = "No actions available for this component";
-        }
-
-        $.contextMenu({
-            selector: '#mlab_button_menu',
-            className: 'mlab_menu_title',
-            trigger: 'left',
-            items: items
-        });
-
-        $.contextMenu({
-            selector: '.mlab_current_component',
-            className: 'mlab_menu_title',
-            trigger: 'right',
-            items: items
-        });
-
-        $('.mlab_menu_title').attr('data-menutitle', "Modify component");
     }
 
 

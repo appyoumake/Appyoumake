@@ -7,7 +7,15 @@ tooltip: This is a main headline, use only once per page
 compatible: ["h2", "h3", "ol", "ul", "p"]
 html: <h1>Legg til overskrift her</h1>
 process_keypress: true
-required_libs: { designtime: ["red.css"], runtime: ["http://schnapps.google.com/maps/api/js?v=3", "black.css"] }
 custom:
     msg_requestlink: Please enter a valid URL (for instance 'http://my.domain.com') or a page number (for instance 5) to link to. The latter will go to page 5 in this application.
     msg_wronglink: Invalid URL specified, please try again. You can use 'http://my.domain.com' or '5', the latter will go to page 5 in this application.
+    add_link_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFKSURBVDiNhZKxaoJBEIS/WdGAhUUgKNgJqSwtJNgkdVIbfIG8RAp7W99BQdv4FBYJiJVg4wtIChuRTbMXjqh/DrbZvZm9uRm5O/8dSVXgBbgHtsDC3b8BcPfCAjqSNpI8qx3Qc/diAqAraZ9AZjaWtM1IakXgpqSVpKOkOVCOfimRAAO7olnAjbu/uXvd3V/d/RiST5IWcbV1aXNb0jLTezKzEVCJeVnSLl7QL9J8kLRORMAQKJnZLHoboHoRbGYToB79R0mfQMPMpgHeA51fF8KqBJ4CDUlfwFPM78xskoG72WKqyWczmwElYJj9wTrknIETQT/zNVlVMbORpFNGtATaFz6d99g+/jMw4BZ4AFqAruSFQWzYAqXMqnmEaAU0CwJHLfkqaRtx3V3TfEYQLL0MlGqTrCoqpWdIqgHPoXcDfLj74VLU8/MDuDpfRK1TjFsAAAAASUVORK5CYII=
+    remove_link_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACNwAAAjcB9wZEwgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFTSURBVDiNhdOxSlxREAbg7yy2EhFW04hFusDCYiFbW+VJEpInSBGwCtpvob6FhYKVxZZWW2hSB5Mqawik0Mqx2DnhuF7xwHA5M3f+mX/mPyUivHRKKSv4jG38wxmOIuJeRDwyFIyxmfcBrhELdoLyBCCTptjCELNM+IEvOMRt+t4/B7CHEW7yx0v0m/hh+o+XkmOJx8M4yCqr+IadiPjdxH/md7kijrPtPWw0lSZYX+iun3QCX6tzMzmP2lY7qK0lncjBvmqDw4bzpCN5HVcZn2EQEWpw0Ez7O153AEwyfoNh47fS7LkzeYH/KOlWndjP5F+Lydn2pLlv5KCnGFeA8wTY7RhY5dxvt1MVGxF65tqu6FIX/QR+iz94g0+NDrS6+ZhV7nBkLte651luZwvTZ+aih1NPH8v1/1XNdTKubbdWIkIppYcPeIdlXGA/Iv564TwA34VGyPj1+EIAAAAASUVORK5CYII=
+    bold_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAS0lEQVQ4y2NgoDLgAOL/WPBdIJ4IxGzkGgDDPZQa8IBUA0AgAIsY2QbcpdQLE8k14AE0ANkGzACyvUBxIFIcjRQnJKolZaIzE8kAAK1SYN3E0m6CAAAAAElFTkSuQmCC
+    italic_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAVCAYAAABPPm7SAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAASdAAAEnQB3mYfeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADySURBVDiNlZOxbQJREETfADIRKU4ILIeWCEiAFgicuwaaoBAacAduASyISMhISAgoAAlpndyhf3e7+N9KX3d/dnY0s9KXmZGWpCrwT/UcbFF8P4FlMLcCfgEwM/cAa8CCM3rwnggcguFzyut4/iQNgI/A/ia9uALA9EkvS2AW4ADbHIF5gN+BXQUJFnjBX+C+zm04kPQODAMHmzrgRcjOHwlE+V0HXv4tfv4roAa/NtwHboHAj7fweoQJ8JJt39lBu/wtBIzy+TY61R2c8PMfo1f7cCDpFXhrYx+gJ+mr+B9HJKBb8szsO22osJhdZqb0/gdF99yJyTkyOQAAAABJRU5ErkJggg==
+    add_link_tooltip: Add a link to the currently highlighted text
+    remove_link_tooltip: Remove the link at the current curson position
+    bold_tooltip: Add or remove bold font for current selection
+    italic_tooltip: Add or remove italics font for current selection
+    
