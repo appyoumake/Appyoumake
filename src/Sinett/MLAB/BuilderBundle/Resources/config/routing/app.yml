@@ -95,6 +95,10 @@ app_builder_feature_add:
     path:   /builder/{app_id}/{comp_id}/feature_add
     defaults: { _controller: "SinettMLABBuilderBundle:App:featureAdd" }
 
+app_builder_storage_plugin_add:
+    path:   /builder/{app_id}/{comp_id}/storage_plugin_add
+    defaults: { _controller: "SinettMLABBuilderBundle:App:storagePluginAdd" }
+
 app_builder_load_variables:
     path:   /builder/{app_id}/{page_num}/load_variables
     defaults: { _controller: "SinettMLABBuilderBundle:App:loadBuilderVariables" }

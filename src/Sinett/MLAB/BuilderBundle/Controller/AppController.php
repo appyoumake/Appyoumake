@@ -462,6 +462,7 @@ class AppController extends Controller
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
+                                        "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_')),
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )
@@ -998,6 +999,57 @@ class AppController extends Controller
     				'result' => 'error',
     				'msg' => sprintf("Unable to update app with feature " . $comp_id . ", please try again")));
     	}
+    }
+    
+/**
+ * This will add the HTML code for a feature to the index.html file if this is not being edited right now
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function storagePluginAddAction($app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+
+//get config etc
+        $config = $this->container->parameters['mlab'];
+        $doc = "/js/include.js";
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+
+//check if path to component and app exists
+        if ( is_dir($path_component) && is_dir($path_app) && is_dir($path_app_assets) ) {
+
+//1: Copy JS file, it is called code_rt.js, but needs to be renamed as all JS files for components have same name to begin with
+//   We use the component name as a prefix
+            if (file_exists( $path_component . "code_rt.js") && !file_exists( $path_app_js . $comp_id . "_code_rt.js")) {
+                if (!@copy($path_component . "code_rt.js", $path_app_js . $comp_id . "_code_rt.js")) {
+                    return new JsonResponse(array(
+                        'result' => 'failure',
+                        'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
+                }
+
+                $include_items = file("$path_app_assets/js/include.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                if (!in_array("$.getScript('/js/" . $comp_id . "_code_rt.js');", $include_items)) {
+                    $include_items[] = "$.getScript('/js/" . $comp_id . "_code_rt.js');";
+                }
+                file_put_contents("$path_app_assets/js/include.js", implode("\n", $include_items));
+            }
+
+            if (file_exists("$app_path$doc") && $file_mgmt->addFeature("$app_path$doc", $comp_id, $component)) {
+                return new JsonResponse(array('result' => 'success', 'component_id' => $comp_id));
+            } else {
+                return new JsonResponse(array(
+                        'result' => 'error',
+                        'msg' => sprintf("Unable to update app with feature " . $comp_id . ", please try again")));
+            }
+        }
+        
     }
     
 /**

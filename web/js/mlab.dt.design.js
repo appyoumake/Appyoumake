@@ -306,7 +306,7 @@ Mlab_dt_design.prototype = {
 
 /**
  * features are simply components that are not displayed with a GUI
- * they are added to a hidden div, if we are NOT working on the index page we call a backend function to add this code
+ * they are added to a hidden div on the index page, if we are NOT working on the index page we call a backend function to add this code
  *
  * @returns {undefined}
  */
@@ -352,6 +352,35 @@ Mlab_dt_design.prototype = {
             });
         }
     },
+    
+/**
+ * storage_plugins are similar to features, except they are linked to individual components and not app as whole
+ * They do nothing at design time except possibly request credentials, 
+ * so here we just call the back end to copy and add files to app and update the index.html file with any credentials
+ * 
+ */
+    storage_plugin: function(comp_id) {
+        var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
+        url = url.replace("_COMPID_", comp_id);
+        if (!silent) {
+            this.parent.utils.update_status("callback", 'Adding storage plugin...', true);
+        }
+
+        var that = this;
+        $.get( url, function( data ) {
+            if (data.result == "success") {
+                that.parent.utils.update_status("temporary", "Storage plugin added", false);
+                $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
+            } else {
+                that.parent.utils.update_status("temporary", data.msg, false);
+            }
+
+        });
+        
+    },
+
+
+
 
     /*
  *
@@ -396,17 +425,31 @@ Mlab_dt_design.prototype = {
         var items = new Object();
         var title = "";
         var menu = $("#mlab_component_context_menu");
+        
+        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(comp_name);
         menu.html("");
-        for(var index in this.parent.components[comp_name].code) {
-            if (index.substr(0, 7) == "custom_") {
-                title = index.slice(7);
-                menu.append("<img onclick='mlab.dt.components[" + comp_name + "][" + index + "]($('.mlab_current_component'))' " + 
-                                 "title='" + conf.custom[title + "_tooltip"] + "'" + 
-                                 "src='" + conf.custom[title + "_icon"] + "'");
+
+        if (typeof conf.custom != "undefined") {
+            for(var index in this.parent.components[comp_name].code) {
+                if (index.substr(0, 7) == "custom_") {
+                    title = index.slice(7);
+                    var icon = ( typeof conf.custom[title + "_icon"] != "undefined" ) ? "src='" + conf.custom[title + "_icon"] + "'" : "class='missing_icon'";
+                    var tooltip = ( typeof conf.custom[title + "_tooltip"] != "undefined" ) ? conf.custom[title + "_tooltip"] : title;
+                    menu.append("<img onclick='mlab.dt.components[" + comp_name + "][" + index + "]($('.mlab_current_component'))' " + 
+                                     "title='" + tooltip + "' " + 
+                                     icon + " >");
+                }
             }
+            
+            menu.append("<div class='clear'>&nbsp;</div>");
         }
         
-        menu.append("<div class='clear'>&nbsp;</div>");
+        
+        if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
+            $("#mlab_button_select_storage_plugin").removeClass("mlab_hidden");
+        } else {
+            $("#mlab_button_select_storage_plugin").addClass("mlab_hidden");
+        }
 
         /*if ((typeof this.parent.components[comp_name].conf.compatible != "undefined") && (this.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
             items["sep1"] = "---------";
@@ -423,9 +466,8 @@ Mlab_dt_design.prototype = {
             items["replace"]["items"] = sub_items;
        }*/
 
-    }
-
-
+    },
+    
 } // end design.prototype
 
 

@@ -128,6 +128,7 @@
                 $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
                         var feature_list = $("<ul></ul>");
+                        var storage_plugin_list = $("<ul></ul>");
                         mlab.dt.components = data.mlab_components;
 
                         for (type in mlab.dt.components) {
@@ -142,7 +143,7 @@
 
                             }
                             var c = mlab.dt.components[type];
-                            if (c.accessible && !c.is_feature) {
+                            if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
@@ -153,16 +154,30 @@
                                 );
                             } else if (c.accessible && c.is_feature) {
                                 feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+                            } else if (c.accessible && c.is_storage_plugin) {
+                                storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
 
                         $("#mlab_features_list").html(feature_list);
+                        $("#mlab_storage_plugin_list").html(storage_plugin_list);
 
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
 
 //erase the temporary variable, this is used in inititalisation process only.
                         delete document.mlab_temp_vars;
+                        
+//finally we prepare the menu popup for the storage plugin selector
+                        $("#mlab_button_select_storage_plugin").click( function(event) {
+                            
+                            var div = $("#mlab_storage_plugin_list");
+                            
+                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
+                               .fadeIn("slow")
+                               .mouseout( function() { div.fadeOut( "slow"); });
+                        } );
+
                     } else {
                         alert("Unable to load components from the server, cannot continue, will return to front page");
                         document.location.href = document.mlab_temp_vars.appbuilder_root_url;
