@@ -344,7 +344,7 @@ Mlab_dt_design.prototype = {
             $.get( url, function( data ) {
                 if (data.result == "success") {
                     that.parent.utils.update_status("temporary", "Feature added", false);
-                    $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
+                    $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_item_applied");
                 } else {
                     that.parent.utils.update_status("temporary", data.msg, false);
                 }
@@ -355,22 +355,29 @@ Mlab_dt_design.prototype = {
     
 /**
  * storage_plugins are similar to features, except they are linked to individual components and not app as whole
- * They do nothing at design time except possibly request credentials, 
- * so here we just call the back end to copy and add files to app and update the index.html file with any credentials
+ * They do nothing at design time so here we just call the back end to copy and add the code_rt.js file to the app
+ * If credentials = true, we request credentials and store them for the component that this plugin was added to
  * 
+ * @param {type} storage_plugin_id: unique ID of the storage plugin
+ * @param {type} component: the component that wants to use this storage plugin
  */
-    storage_plugin: function(comp_id) {
+    storage_plugin_add: function(storage_plugin_id, component) {
         var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
-        url = url.replace("_COMPID_", comp_id);
-        if (!silent) {
-            this.parent.utils.update_status("callback", 'Adding storage plugin...', true);
-        }
-
+        url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
+        this.parent.utils.update_status("callback", 'Adding storage plugin...', true);
+        
         var that = this;
         $.get( url, function( data ) {
             if (data.result == "success") {
                 that.parent.utils.update_status("temporary", "Storage plugin added", false);
-                $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_features_used");
+                if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
+                    var credentials = that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials);
+                    mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id, credentials: credentials});
+                } else {
+                    mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
+                }
+                
+                $("#mlab_storage_plugin_list [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }

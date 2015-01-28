@@ -4,5 +4,6 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: storage_plugin
 name: mysql_dummy
 tooltip: Store data on an MySQL server
+credentials: ["server_url", "username", "password"]
 custom:
     prefix: mlab_rt_

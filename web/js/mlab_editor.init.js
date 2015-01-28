@@ -174,8 +174,7 @@
                             var div = $("#mlab_storage_plugin_list");
                             
                             div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow")
-                               .mouseout( function() { div.fadeOut( "slow"); });
+                               .fadeIn("slow");
                         } );
 
                     } else {
