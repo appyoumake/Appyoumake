@@ -310,7 +310,7 @@ Mlab_dt_api.prototype = {
  * This only works on top level vars, but the value can be an object which in effect gives lower level storage posibilities.
  * 
  * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
- * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * These are all contained within a wrapper DIV that is the actual DOM element passed to this function.
  * @param {jQuery DOM element} el
  * @param {string} key, the key name in the object
  * @param {anything} value
@@ -383,13 +383,12 @@ Mlab_dt_api.prototype = {
     },
 
 /**
- * Creates the HTML5 code required for a link either to a external page or to a page in the current app.
- * Links to pages must use the api call pageLoad, links to external pages must use _new as the target value.
- * TODO: Can be improved by listing existing pages instead of just requesting the page number.
- * @returns {Boolean|String}
+ * Requests credentials such as login name and password (for instance, can also be URL to use, database name, etc)
+ * These are all just treated as strings and returned as an array of strings. If cancelled, returns false
+ * @returns {Boolean|Array of strings}
  */
     getCredentials: function (credentials_required) {
-        
+        return "";
     }
 
 }

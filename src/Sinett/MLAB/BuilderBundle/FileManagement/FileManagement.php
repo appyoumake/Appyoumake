@@ -209,6 +209,7 @@ class FileManagement {
                     "server_code" => file_exists($comp_dir . $config["PHP"]),
                     "conf" => $tmp_yaml,
                     "is_feature" => false);
+            
             if ($check_access) {
                 $component["accessible"] = ($failed === true ? false : in_array($comp_id, $check_access)); //we hide the ones they are not allowed to see OR with failed config, but still load it for reference may exist in app...
             }
@@ -216,6 +217,7 @@ class FileManagement {
 
             if (isset($component["conf"]) && isset($component["conf"]["category"])) {
                 $component["is_feature"] = ($component["conf"]["category"] == "feature");
+                $component["is_storage_plugin"] = ($component["conf"]["category"] == "storage_plugin");
             }
             if (isset($component["conf"]) && isset($component["conf"]["urls"])) {
                 foreach ($component["conf"]["urls"] as $url_key => $url_name) {

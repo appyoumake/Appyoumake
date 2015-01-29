@@ -64,7 +64,7 @@ parameters:
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
             template: [ frontpage.html, thumbnail.jpg, conf.yml, js/jquery.js, js/jquery-ui.js, js/jquery-mobile.js, css/mlab.css, css/jquery-mobile.css ]
-            component: [ icon.png, code_dt.js, conf.yml ]
+            component: [ code_dt.js, conf.yml ]
             app: [ www ]
             template_strings: {frontpage.html: /\<div .*id\=.mlab_editable_area.*?\>/}
             

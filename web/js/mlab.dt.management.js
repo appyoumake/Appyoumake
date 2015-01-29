@@ -30,11 +30,11 @@ Mlab_dt_management.prototype = {
                 that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
 
 //update the list of features we have added to this app
-                $("#mlab_features_list li").removeClass("mlab_features_used");
+                $("#mlab_features_list li").removeClass("mlab_item_applied");
                 $(that.parent.app.curr_indexpage_html)
                     .find("#mlab_features_content [data-mlab-type]>")
                     .each(function() {
-                        $("#mlab_features_list [data-mlab-feature-type='" + $(this).parent().data("mlab-type") + "']").addClass("mlab_features_used");
+                        $("#mlab_features_list [data-mlab-feature-type='" + $(this).parent().data("mlab-type") + "']").addClass("mlab_item_applied");
                      });
 
 //if they are not opening the index page we need to call backend again to load the page they want to open

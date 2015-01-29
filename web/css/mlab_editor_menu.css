@@ -519,13 +519,13 @@ padding: 5px 5px 0px 5px;
     padding-right: 8px;
 }
 
-#mlab_features_list li {
+#mlab_features_list li, #mlab_storage_plugin_list li {
     list-style: none;
     cursor: pointer;
 }
 
-#mlab_features_list li.mlab_features_used:before {
-    content: "\2713 ";   
-    margin-left: -1em; 
+#mlab_features_list li.mlab_item_applied:before, #mlab_storage_plugin_list li.mlab_item_applied:before {
+    content: "\2713 ";
+    margin-left: -1em;
     margin-right: .100em;
 }
