@@ -850,7 +850,11 @@ class AppController extends Controller
                             'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
                     }
                     
-                    $include_items = file("$path_app_assets/js/include.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if (file_exists("$path_app_assets/js/include.js")) {
+                        $include_items = file("$path_app_assets/js/include.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    } else {
+                        $include_items = array();
+                    }
                     if (!in_array("$.getScript('/js/" . $comp_id . "_code_rt.js');", $include_items)) {
                         $include_items[] = "$.getScript('/js/" . $comp_id . "_code_rt.js');";
                     }
@@ -916,7 +920,12 @@ class AppController extends Controller
                                 }
 
 //we need to update the include files of the app
-                                $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                                if (file_exists("$path_app_assets/js/include.js")) {
+                                    $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                                } else {
+                                    $include_items = array();
+                                }
+                                
                                 if ($filetype == "css") {
                                     if (!in_array("@import url('$dependency');", $include_items)) {
                                         $include_items[] = "@import url('$dependency');";

@@ -21,15 +21,15 @@
                 <h3>{% trans %}app.builder.edit.menu.heading.app{% endtrans %}</h3>
                 <p> Klikk på teksten for å få redigert den. Lagre ved å klikke på ikonet ved siden av teksten.</p>
                 <p class="mlab_edit_app_label">App navn</p>
-                <p id="mlab_edit_app_title" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_title" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
                 <p class="mlab_edit_app_label">Description</p>
-                <p id="mlab_edit_app_description" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_description" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
                 <p class="mlab_edit_app_label">Keywords</p>
-                <p id="mlab_edit_app_keywords" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_keywords" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
                 <p class="mlab_edit_app_label">Categories 1, 2 & 3</p>
-                <p id="mlab_edit_app_category1" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
-                <p id="mlab_edit_app_category2" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
-                <p id="mlab_edit_app_category3" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab_app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_category1" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_category2" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                <p id="mlab_edit_app_category3" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
                 <h4>Utilities</h4>
                 <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
                     <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>

@@ -13,6 +13,8 @@
 
 	this.onSave = function (el) {
         var temp_html = el.outerHTML;
+//hack to fix bug whereby http is missing from URL in iframe tag
+        temp_html = temp_html.replace('src="//', 'src="http://');
         return temp_html;
     };
             

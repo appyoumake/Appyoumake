@@ -26,14 +26,8 @@ class HelpController extends Controller
 
         $entities = $em->getRepository('SinettMLABBuilderBundle:Help')->findAll();
         
-        $router = $this->container->get('router');
-        $collection = $router->getRouteCollection();
-        $allRoutes = $collection->all();
-// see http://stackoverflow.com/questions/15943780/symfony2-get-list-of-all-routes-of-a-controller
-// php app/console router:debug
         return $this->render('SinettMLABBuilderBundle:Help:index.html.twig', array(
-            'entities' => $entities,
-            "allRoutes" => $allRoutes
+            'entities' => $entities
         ));
     }
     /**
@@ -43,7 +37,8 @@ class HelpController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Help();
-        $form = $this->createCreateForm($entity);
+        $routes = $this->getRoutes();
+        $form = $this->createCreateForm($entity, $routes);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -71,7 +66,7 @@ class HelpController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(Help $entity)
+    private function createCreateForm(Help $entity, $routes)
     {
         $form = $this->createForm(new HelpType(), $entity, array(
             'action' => $this->generateUrl('help_create'),
@@ -79,10 +74,25 @@ class HelpController extends Controller
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.system.admin.help.new.create.button'));
-
+        $form->add('route', 'choice', array(
+              'choices' => $routes
+        ));
         return $form;
     }
 
+    public function getRoutes() {
+        $availableApiRoutes = [];
+        foreach ($this->get('router')->getRouteCollection()->all() as $name => $route) {
+            $route = $route->compile();
+            $emptyVars = [];
+            foreach( $route->getVariables() as $v ){
+                $emptyVars[ $v ] = $v;
+            }
+            $url = $this->generateUrl( $name, $emptyVars );
+            $availableApiRoutes[$name] = $url;
+        }
+        return $availableApiRoutes;
+    }
     /**
      * Displays a form to create a new Help entity.
      *
@@ -90,7 +100,9 @@ class HelpController extends Controller
     public function newAction()
     {
         $entity = new Help();
-        $form   = $this->createCreateForm($entity);
+
+        $routes = $this->getRoutes();
+        $form   = $this->createCreateForm($entity, $routes);
 
         return $this->render('SinettMLABBuilderBundle:Help:new.html.twig', array(
             'entity' => $entity,
@@ -132,10 +144,10 @@ class HelpController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Help entity.');
         }
-
-        $editForm = $this->createEditForm($entity);
         
-
+        $routes = $this->getRoutes();
+        $editForm = $this->createEditForm($entity, $routes);
+        
         return $this->render('SinettMLABBuilderBundle:Help:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
@@ -150,7 +162,7 @@ class HelpController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Help $entity)
+    private function createEditForm(Help $entity, $routes)
     {
         $form = $this->createForm(new HelpType(), $entity, array(
             'action' => $this->generateUrl('help_update', array('id' => $entity->getId())),
@@ -158,6 +170,9 @@ class HelpController extends Controller
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.system.admin.help.edit.update.button'));
+        $form->add('route', 'choice', array(
+              'choices' => $routes
+        ));
 
         return $form;
     }
