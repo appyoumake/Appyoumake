@@ -292,13 +292,13 @@ Mlab_dt_api.prototype = {
     getVariable: function (el, key) {
         var json = $(el).find("script.mlab_storage").html();
         if (typeof json == "undefined"  || json == "") {
-            return undefined;
+            return ;
         }
         try {
             var vars = JSON.parse(json);
         } catch(e) {
             console.log(e);
-            return undefined;
+            return ;
         }
         
         return vars[key];
@@ -317,10 +317,12 @@ Mlab_dt_api.prototype = {
  * @returns {Boolean}
  */
     setVariable: function (el, key, value) {
+        
         var scrpt = $(el).find("script.mlab_storage");
         if (scrpt.length < 1) {
             $(el).append("<script type='application/json' class='mlab_storage' />");
             var vars = new Object();
+            
         } else {
             var json = scrpt.html();
             if (json != "") {
@@ -333,6 +335,7 @@ Mlab_dt_api.prototype = {
             } else {
                 var vars = new Object();
             }
+            
         }
         
         vars[key] = value;
@@ -383,12 +386,41 @@ Mlab_dt_api.prototype = {
     },
 
 /**
- * Requests credentials such as login name and password (for instance, can also be URL to use, database name, etc)
- * These are all just treated as strings and returned as an array of strings. If cancelled, returns false
- * @returns {Boolean|Array of strings}
+  * Requests credentials such as login name and password (for instance, can also be URL to use, database name, etc)
+  * These are all just treated as strings and returned as an array of strings. If cancelled, returns false
+  * @param {type} credentials_required
+  * @param {type} cb_function
+  * @param {type} params
+  * @returns {Boolean|Array of strings}
  */
-    getCredentials: function (credentials_required) {
-        return "";
+    getCredentials: function (credentials_required, cb_function, params) {
+        var dlg = $("<div id='mlab_dt_dialog_credentials' ></div>");
+        for (credential in credentials_required) {
+            dlg.append("<label for='mlab_dt_dialog_credentials_" + credentials_required[credential] + "' >" + credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) + "</label><input name='mlab_dt_dialog_credentials_" + credentials_required[credential] + "' id='mlab_dt_dialog_credentials_" + credentials_required[credential] + "' ><br>");
+        }
+        
+        var that_dlg = $(dlg).dialog({
+                autoOpen: true,
+                modal: true,
+                closeOnEscape: true,
+                
+                buttons: {
+                    'Save': function() {
+                        
+                        var credentials = {};
+                        for (credential in credentials_required) {
+                            credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
+                        }
+                        
+                        $(this).dialog("close");
+                        dlg.remove();
+                        cb_function(credentials, params);
+                        
+                    },
+                   
+                }
+            }).dialog("open");
+            
     }
 
 }

@@ -371,25 +371,39 @@ Mlab_dt_design.prototype = {
             if (data.result == "success") {
                 that.parent.utils.update_status("temporary", "Storage plugin added", false);
                 if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
-                    var credentials = that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials);
-                    mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id, credentials: credentials});
+                    that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
+                    
                 } else {
                     mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
+                    
                 }
                 
                 $("#mlab_storage_plugin_list [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");
+                
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
+                
             }
 
         });
         
+        
+    },
+    
+/**
+ * Callback function which stores the storage_plugin name and the credentials entered
+ * @param {type} credentials: 
+ * @param {type} params
+ * 
+ */
+    storage_plugin_store_credentials: function (credentials, params) {
+        
+        mlab.dt.api.setVariable( params.component, "storage_plugin", { name: params.storage_plugin_id, credentials: credentials } );
+
     },
 
 
-
-
-    /*
+/*
  *
  * @param divs (html/DOM) all divs to edit
  */
@@ -427,7 +441,7 @@ Mlab_dt_design.prototype = {
         if (curr_comp.length < 1) {
             return;
         }
-        var conf = mlab.dt.components[curr_comp.data("mlab-type")].conf;
+        var conf = this.parent.components[curr_comp.data("mlab-type")].conf;
         var comp_name = curr_comp.data("mlab-type");
         var items = new Object();
         var title = "";
@@ -449,29 +463,21 @@ Mlab_dt_design.prototype = {
             }
             
             menu.append("<div class='clear'>&nbsp;</div>");
+            
         }
         
         
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
             $("#mlab_button_select_storage_plugin").removeClass("mlab_hidden");
+            $("#mlab_storage_plugin_list li").removeClass("mlab_item_applied");
+//update the menu with the existing selection, if any
+            var current_storage = this.parent.api.getVariable(curr_comp[0], "storage_plugin");
+            if (typeof current_storage != "undefined" && typeof current_storage.name != "undefined") {
+                $("#mlab_storage_plugin_list [data-mlab-storage-plugin-type='" + current_storage.name + "']").addClass("mlab_item_applied");
+            }
         } else {
             $("#mlab_button_select_storage_plugin").addClass("mlab_hidden");
         }
-
-        /*if ((typeof this.parent.components[comp_name].conf.compatible != "undefined") && (this.parent.components[comp_name].code.hasOwnProperty("onReplace"))) {
-            items["sep1"] = "---------";
-            items["replace"] = {"name": "Replace control with"};
-            var sub_items = new Object;
-            this.parent.components[$(".mlab_current_component").data("mlab-type")].conf.compatible.forEach(function(replace_with) {
-                title = replace_with.trim();
-                sub_items[title] = { name: " -> " + title.replace("_", " "),
-                                     callback: function(key, options) {
-                                        this.parent.components[$('.mlab_current_component').data("mlab-type")].code.onReplace($('.mlab_current_component'), key, this.parent.components[key].html);
-                                     }
-                                   };
-            } );
-            items["replace"]["items"] = sub_items;
-       }*/
 
     },
     
