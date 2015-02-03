@@ -9,9 +9,6 @@
 3: Use the check to see if in mobile to check it
 
  */
-
-	
-	
     
     this.onCreate = function (el) {
         this.api.getLibraries(this.config.name);

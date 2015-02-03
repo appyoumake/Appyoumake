@@ -20,3 +20,6 @@ html:
                 },false);
             }
         </script>
+custom:
+    upload_video_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADdSURBVDiNtdMhSoRRFMXx35PPYFKsIogb0DQGkyswuALdgiuwGEzarRajUwwmYcZosRlcgFhsOgPX8g085bvjjOCFC5fH/5x34L5XIkJWpZRtrEdEP4UiorOxiXcEDlIuETd4aMWBN6zNY3BSiSd9h/KrAXYx7jAIHE81wDJeEnHgA1vTDM4qeJTM97Wm+bGUR9zguoWv2vML3OIQz7Ou8ai69TLjFtIHwko1r2bQvxqMq3mUQSX7C6WUJexhEcOIeO3ksIFz3yPPUp84bdDD/pziST2VNsXOHxMMvgAKo//datDybAAAAABJRU5ErkJggg==
+    upload_video_tooltip: Upload a video from your PC or select an already uploaded video to use here

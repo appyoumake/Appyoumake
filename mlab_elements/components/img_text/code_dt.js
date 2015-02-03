@@ -72,7 +72,7 @@
         fig.css('float', 'right');
     };
     
-      this.custom_upload_image = function (el) {
+    this.custom_upload_image = function (el) {
         this.api.getLibraries(this.config.name);
         var self = this;
         
@@ -157,5 +157,25 @@
             }
         });
         
-    }
+        
+    };
   
+    this.custom_add_link = function (el) {
+        link = this.api.getLink();
+        if (link) {
+            var newLink = document.execCommand('createlink', false, link);
+            newLink.target = "_new";
+        }
+    };
+
+    this.custom_remove_link = function (el) {
+		document.execCommand("unlink", false, false);
+    };
+    
+    this.custom_bold = function (el) {
+		document.execCommand('bold', null, null);
+    };
+
+    this.custom_italic = function (el) {
+		document.execCommand('italic', null, null);
+    };

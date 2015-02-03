@@ -1,5 +1,3 @@
-	
-	
     
     this.onCreate = function (el) {
         this.onLoad (el);
@@ -31,10 +29,8 @@
         img.attr('src', $(select_box).val());
         this.api.setDirty();
     };
-    
 
-
-    this.custom_upload_image = function (el) {
+    this.custom_upload_video = function (el) {
         this.api.getLibraries(this.config.name);
         var self = this;
         

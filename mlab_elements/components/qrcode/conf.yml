@@ -10,3 +10,5 @@ html: <div></div>
 process_keypress: true
 custom:
     msg_requesttext: Please enter a URL or text you want to share as a QR code
+    set_QR_code_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQAAAAA3iMLMAAAAAnRSTlMAAQGU/a4AAAA5SURBVHgBY2I6wFAdx+B1icE7iKHqHgOzA+M/RobQqwy7VjH8j2VgWsVQHcrgtYvBO5yh6hUDcygAYkwOugLoenMAAAAASUVORK5CYII=
+    set_QR_code_tooltip: Edit the text/URL that the QR code represents
