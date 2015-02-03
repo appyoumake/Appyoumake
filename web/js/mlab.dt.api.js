@@ -122,6 +122,103 @@ Mlab_dt_api.prototype = {
             return "<option>Unable to obtain files</option>";
         }
     },
+    
+/**
+ * 
+ * @param {type} el: DIV surrounding the component HTML
+ * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
+ * @returns {undefined}
+ */
+    uploadMedia : function (el, component_config, file_extensions, cb) {
+        content = $('<form />', {id: "mlab_dt_form_upload" } );
+        content.append( $('<p />', { text: "Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde", class: "mlab_dt_text_info" }) );
+        content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>...laster bilde...</option></select>') );
+        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files_left", name: "mlab_cp_image_uploadfiles", text: 'Velg fil', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
+        content.append( $('<div />', { class: "mlab_dt_large_new_line" }) );
+        content.append( $('<div />', { text: 'Avbryt', id: "mlab_cp_image_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel_left" }) );
+       // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
+        content.append( $('<div />', { text: 'OK', id: "mlab_cp_image_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok_left" }) );
+
+        var that = this;
+        
+        $(el).qtip({
+            solo: true,
+            content: {text: content, title: "Last opp bilde" },
+            position: { my: 'leftMiddle', at: 'rightMiddle' },
+            show: { ready: true, modal: { on: true, blur: false } },
+            hide: false,
+            style: { classes: 'qtip-light' },
+            events: { render: function(event, api) {
+                            this.dt_component = el;
+                            this.dt_component_id = component_config.name;
+                            this.dt_config = component_config;
+                            this.dt_cb = cb;
+//load existing files
+                            var existing_files = that.getMedia(file_extensions);
+                            $("#mlab_cp_img_select_image").html(existing_files)
+                                                          .on("change", function() {
+                                that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_img_select_image").val()); 
+                                that.setDirty();
+                                $('.mlab_current_component').qtip('hide');
+                            }); 
+
+
+//upload files 
+                            if ($("#mlab_cp_image_button_ok").length > 0) {
+                                var that_qtip = this;
+                                var uploadObj = $("#mlab_cp_image_uploadfiles").uploadFile({
+                                    url: that.getUrlUploadAbsolute(that_qtip.dt_config.name),
+                                    formData: { comp_id: that_qtip.dt_component_id, app_path: that.parent.app.path },
+                                    multiple: false,
+                                    showCancel: false,
+                                    showAbort: false,
+                                    showDone: false,
+                                    autoSubmit: true,
+                                    fileName: "mlab_files",
+                                    showStatusAfterSuccess: true,
+                                    allowedTypes: file_extensions,
+                                    onSuccess: function(files, data, xhr) {
+                                                that_qtip.dt_cb(that_qtip.dt_component, data.url);
+                                                that.setDirty();
+                                                api.hide(); 
+                                        }.bind(that_qtip.dt_component),
+                                    onError: function(files, status, errMsg) { 
+                                        alert(errMsg); 
+                                    }
+                                });
+
+                                $("#mlab_cp_image_uploadfiles_start").click(function() {
+                                    uploadObj.startUpload();
+                                });
+                            }
+                            
+                            $('#mlab_cp_image_button_ok', api.elements.content).click(	
+                                    function(e) {
+                                        api.hide(e); 
+                                        if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
+                                            document["mlab_code_" + component_id].setProperties( $("#mlab_dt_form_upload").serializeArray(), this );
+                                        }
+                                    }.bind(that_qtip.dt_component));
+                            $('#mlab_cp_image_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
+                            
+                            //Adding mlab style 
+                            //$('#mlab_property_button_ok').addClass('mlab_dt_button_ok_left'); 
+                            //$('#mlab_property_button_cancel').addClass('mlab_dt_button_cancel_left');
+                            //$('#mlab_property_uploadfiles').addClass('mlab_dt_button_upload_files_left');
+                            $('.new_but_line').addClass('mlab_dt_button_new_line');
+                            $('.new_big_line').addClass('mlab_dt_large_new_line');
+                            $('.new_small_line').addClass('mlab_dt_small_new_line');
+                            $('.qtip-titlebar').addClass('mlab_dt_text_title_bar');
+                            $('.info').addClass('mlab_dt_text_info');
+                            $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
+                            $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
+                            
+                        },
+                        hide: function(event, api) { api.destroy(); }
+            }
+        });
+                
+    },
 
 /**
  * Creates a unique ID starting with the prefix mlab_, followed by a rfc4122 version 4 compliant GUID. 

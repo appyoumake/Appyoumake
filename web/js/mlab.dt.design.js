@@ -456,7 +456,7 @@ Mlab_dt_design.prototype = {
                     title = index.slice(7);
                     var icon = ( typeof conf.custom[title + "_icon"] != "undefined" ) ? "src='" + conf.custom[title + "_icon"] + "'" : "class='missing_icon'";
                     var tooltip = ( typeof conf.custom[title + "_tooltip"] != "undefined" ) ? conf.custom[title + "_tooltip"] : title;
-                    menu.append("<img onclick='mlab.dt.components[" + comp_name + "][" + index + "]($('.mlab_current_component'))' " + 
+                    menu.append("<img onclick='mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"));' " + 
                                      "title='" + tooltip + "' " + 
                                      icon + " >");
                 }
