@@ -49,11 +49,7 @@
     };
     
     this.custom_indent = function (el) {
-		var sel, range, html;
-        sel = window.getSelection();
-        range = sel.getRangeAt(0);
-        range.deleteContents();
-        $('<ol><li></li></ol>').appendTo(el);
+		document.execCommand('indent', null, null);
     };
     
     this.custom_outdent = function (el) {
@@ -74,6 +70,5 @@
         if (e.keyCode == 9) {
             e.preventDefault();
             this.custom_indent($(e.target));
-            sel.modify("move", "forward", "character");
         }
     };
