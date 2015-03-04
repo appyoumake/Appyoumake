@@ -11,13 +11,13 @@
  */
     
     this.onCreate = function (el) {
-        this.api.getLibraries(this.config.name);
         
         var guid = this.api.getGUID();
         var trimmed_guid = guid.replace(/-/g, "");
         
         $(el).find("." + this.config.custom.class_identifier).attr("id", guid);
         
+USE API FOR THIS
         $("#" + guid).after("<script id='script_" + guid + "'>" +
                             "function mlab_cp_googlemap_" + trimmed_guid + "() { \n" +
                             "    var myOptions = " + JSON.stringify(mlab.dt.components.googlemap.conf.custom.map_options) + ";\n" +
@@ -30,6 +30,9 @@
                             "    document.mlab_cp_storage.googlemap.maps['" + guid + "'] = new google.maps.Map(document.getElementById('" + guid + "'), myOptions);\n" + 
                             "} \n" +
                             "</script>");
+                    
+ISSUE HERE: THE LOADING OF THE SCRIPT KICKSTARTS THE INITIALISATION!
+CHANGE CALLBACK TO USE MLAB.API/DT.API
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
             $("head").append($("<script src='" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
         }
@@ -46,6 +49,9 @@
 //we need to manipulate content for reopening the map either in design mode or at runtime.
 //therefore we need to generate new Google Maps API calls based on the current map settings (zoom level, controls displayed, etc
 //we also need to delete the script inside the DIV which has a script_GUID id.
+
+REDO THIS TO return DATA, NOT HTML
+ALso, move actual script to code_rt.js
 	this.onSave = function (el) {
 //prepare some local vars
         var temp_el = el.cloneNode(true);
@@ -127,6 +133,7 @@
         
     };
     
+CHANGE ALL THESE TO USE API TO STORE DATA IN CONTROL ITSELF
     this.setMapCenter = function (id, search_term) {
 	/*var temp_point = search_term.split(" ");
 	var new_pos = new google.maps.LatLng(parseFloat(temp_point[0]), parseFloat(temp_point[1]));
