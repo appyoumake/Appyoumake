@@ -715,18 +715,19 @@ Mlab_dt_management.prototype = {
     },
 
     page_preview_process : function () {
-        if (this.parent.app.curr_page_num == 0 || this.parent.app.curr_page_num == "index" ) {
+        
+        if (mlab.dt.app.curr_page_num == 0 || mlab.dt.app.curr_page_num == "index" ) {
             page_name = ""
         } else {
-            page_name = ("000" + this.parent.app.curr_page_num).slice(-3) + ".html";
+            page_name = ("000" + mlab.dt.app.curr_page_num).slice(-3) + ".html";
         }
         var w = $(window).width() * 0.25;
         var h = $(window).height() * 0.75;
-        var res = window.open(this.parent.config["urls"]["app"] + this.parent.app.path + "/" + this.parent.app.version + "/" + this.parent.config["cordova"]["asset_path"] + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.version + "/" + mlab.dt.config["cordova"]["asset_path"] + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }
-        this.parent.utils.timer_start();
+        mlab.dt.utils.timer_start();
     }
 
 }// end management.prototype

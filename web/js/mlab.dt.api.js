@@ -400,6 +400,43 @@ Mlab_dt_api.prototype = {
         
         return vars[key];
     },
+    
+/**
+ * Reads in the Javascript values stored for the specified element, and returns it as a single JS object
+ * 
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * @param {jQuery DOM element} el
+ * @returns {Mlab_dt_api.prototype.getAllVariables.vars|Array|Object}
+ */
+    getAllVariables: function (el) {
+        var json = $(el).find("script.mlab_storage").html();
+        if (typeof json == "undefined"  || json == "") {
+            return ;
+        }
+        try {
+            var vars = JSON.parse(json);
+        } catch(e) {
+            console.log(e);
+            return ;
+        }
+        
+        return vars;
+    },
+    
+    getTempVariable: function (comp, key) {
+        if (typeof document.mlab_dt_storage == "undefined") {
+            return;
+        }
+        if (typeof document.mlab_dt_storage[comp] == "undefined") {
+            return;
+        }
+        if (typeof document.mlab_dt_storage[comp][key] == "undefined") {
+            return;
+        }
+        
+        return document.mlab_dt_storage[comp][key];
+    },
 
 //writes the javascript value and stores it for the specified element
 /**
@@ -442,6 +479,48 @@ Mlab_dt_api.prototype = {
     },
     
 /**
+ * Overwrites all variables for the specified element, complementary to the setVariable function
+ * 
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element passed to this function.
+ * @param {jQuery DOM element} el
+ * @param {anything} values to be stores
+ * @returns {Boolean}
+ */
+    setAllVariables: function (el, values) {
+        
+        var scrpt = $(el).find("script.mlab_storage");
+        if (scrpt.length < 1) {
+            $(el).append("<script type='application/json' class='mlab_storage' />");
+        }         
+
+        $(el).find("script.mlab_storage").html(JSON.stringify(values));
+        this.setDirty();
+        return true;
+    },
+    
+/**
+ * This function stores things for the current session (i.e. the lifetime of this webpage) 
+ * @param {object} comp, the name of the component
+ * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
+ * @param {object} value
+ * @returns {undefined}
+ */
+    setTempVariable: function (comp, key, value) {
+        if (typeof document.mlab_dt_storage == "undefined") {
+            document.mlab_dt_storage = {};
+        }
+        if (typeof document.mlab_dt_storage[comp] == "undefined") {
+            document.mlab_dt_storage[comp] = {};
+        }
+        if (typeof document.mlab_dt_storage[comp][key] == "undefined") {
+            document.mlab_dt_storage[comp][key] = {};
+        }
+
+        document.mlab_dt_storage[comp][key] = value;
+    },
+    
+/**
  * This updates the script for a control, this is write only as it should always be generated from user input and variables!
  * It therefore also always replaces existing content in the script element
  * @param {jQuery DOM element} el
@@ -450,13 +529,18 @@ Mlab_dt_api.prototype = {
  */
     setScript: function (el, code) {
         var scrpt = $(el).find("script.mlab_code");
-        if (scrpt.length < 1) {
-            $(el).append("<script class='mlab_code' />").html(code);
-        } else {
-            scrpt.html(code);
-        }
+        if (scrpt.length > 0) {
+            scrpt.remove();
+        } 
+        
+        scrpt = document.createElement("script");
+        scrpt.type = "text/javascript";
+        scrpt.text = code;
+        $(el).append(scrpt);
+        
         return true;
     },
+    
     
 /**
  * Creates the HTML5 code required for a link either to a external page or to a page in the current app.
