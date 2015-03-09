@@ -549,7 +549,7 @@ Mlab_dt_api.prototype = {
  * @returns {Boolean|String}
  */
     getLink: function () {
-        var link = prompt(this.config.custom.msg_requestlink);
+        var link = prompt("Please enter the URL or page number (for pages in this app) to link to");
         var page_name = "";
         if (link != null && link != "") {
             var num = parseInt(link);
@@ -560,7 +560,7 @@ Mlab_dt_api.prototype = {
             }
         }
         if (page_name == "") {
-            alert(this.config.custom.msg_wronglink);
+            alert("No URL/page specified, cannot add link");
             return false;
         }
         return page_name;

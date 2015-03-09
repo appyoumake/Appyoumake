@@ -142,7 +142,7 @@ Mlab_dt_management.prototype = {
         }
         for (i in this.parent.app.page_names) {
             if (i > 0) {
-                span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
+                span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
             }
 
             if (i == 0){ //index
@@ -152,7 +152,7 @@ Mlab_dt_management.prototype = {
             if (i == currpage) {
                 list.append("<li data-mlab-page-open='" + i + "'>" + span + this.parent.app.page_names[i] + "</li>");
             } else {
-                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
+                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
             }
         }
         $("#mlab_existing_pages").html(list);
@@ -327,7 +327,8 @@ Mlab_dt_management.prototype = {
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
     page_open : function (app_id, page_num) {
-        this.page_save( function() { this.page_open_process(app_id, page_num); } );
+        that = this;
+        this.page_save( function() { that.page_open_process(app_id, page_num); } );
     },
 
     page_open_process : function (app_id, page_num) {
