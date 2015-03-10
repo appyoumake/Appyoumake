@@ -94,6 +94,21 @@ Mlab_api.prototype = {
         //window.localStorage.clear();
         for (var i=0, ii=mlab_initialiseApp.length; i<ii; i++) mlab_initialiseApp[i]();
         for (var i=0, ii=mlab_initialiseComponent.length; i<ii; i++) mlab_initialiseComponent[i]();
+        var path = window.location.href.replace('index.html', '');
+        $.get(path + "js/include_comp.js", function(data) {
+            var components = data.split("\n");
+            for (i in components) {
+                var name = components[i].replace("_code_rt.js", "");
+                $.get(path + "js/" + components[i], function(component) {
+
+//we need to attach the code_rt.js content to an object so we can use it as JS code
+                    eval("mlab.components['" + name + "'] = new function() { " + component + "};");
+//here we create the api and conf objects inside the newly created object, they are used to 
+                    mlab.components[name].config = HERE WE INSERT JSON VARS STORED
+                    mlab.components[name].api = mlab.api;
+                });
+            }
+        });
     },
     
     /**
