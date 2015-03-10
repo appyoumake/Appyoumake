@@ -94,6 +94,10 @@ Mlab_api.prototype = {
         //window.localStorage.clear();
         for (var i=0, ii=mlab_initialiseApp.length; i<ii; i++) mlab_initialiseApp[i]();
         for (var i=0, ii=mlab_initialiseComponent.length; i<ii; i++) mlab_initialiseComponent[i]();
+
+// added by arild
+// this will load the text file js/include_comp.js and load all the component runtime code that are listed there
+// these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
         var path = window.location.href.replace('index.html', '');
         $.get(path + "js/include_comp.js", function(data) {
             var components = data.split("\n");
@@ -103,12 +107,13 @@ Mlab_api.prototype = {
 
 //we need to attach the code_rt.js content to an object so we can use it as JS code
                     eval("mlab.components['" + name + "'] = new function() { " + component + "};");
-//here we create the api and conf objects inside the newly created object, they are used to 
-                    mlab.components[name].config = HERE WE INSERT JSON VARS STORED
+//here we create the api objects inside the newly created object
                     mlab.components[name].api = mlab.api;
                 });
             }
         });
+        
+        inititaliseMlabApp()
     },
     
     /**
@@ -268,6 +273,29 @@ Mlab_api.prototype = {
         }
         return value;
     },
+
+/**
+ * Reads in the Javascript values stored for the specified element, and returns it as a single JS object
+ * Copy of design time code doing the same thing
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * @param {jQuery DOM element} el
+ * @returns {Mlab_dt_api.prototype.getAllVariables.vars|Array|Object}
+ */
+    getAllVariables: function (el) {
+        var json = $(el).find("script.mlab_storage").html();
+        if (typeof json == "undefined"  || json == "") {
+            return ;
+        }
+        try {
+            var vars = JSON.parse(json);
+        } catch(e) {
+            console.log(e);
+            return ;
+        }
+        
+        return vars;
+    },    
     
     /* Network-functions */
     /**
@@ -328,7 +356,7 @@ Mlab_api.prototype = {
  * @param {type} page
  * @returns {undefined}
  */
-        pageLoad: function (current, move_to) {
+        pageDisplay: function (current, move_to) {
             var filename, selector = "";
             var new_location = 0;
             switch (move_to) {
@@ -349,7 +377,7 @@ Mlab_api.prototype = {
 
                 case "next" :
                     if (current == this.max_pages) {
-                        return -1;
+                        return current;
                     }
                     current++;
                     filename = ("000" + current).slice(-3) + ".html";
@@ -358,7 +386,7 @@ Mlab_api.prototype = {
 
                 case "previous" :
                     if (current == "index") {
-                        return -1;
+                        return current;
                     }
                     if (current == 1) {
                         filename = "index.html";
@@ -374,10 +402,10 @@ Mlab_api.prototype = {
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {
-                        return -1;
+                        return current;
                     }
                     if (move_to < 0 || move_to > this.max_pages) {
-                        return -1;
+                        return current;
                     }
                     if (move_to == 0) {
                         filename = "index.html";
@@ -391,18 +419,26 @@ Mlab_api.prototype = {
         //have calculated the file name, now we need to try to load it
         //must load only content from the index.html to avoid duplicates inside each other
             if (filename == "index.html") {
-                selector = " #content"
+                selector = " #content";
             }
-
-            $('#content').load(filename + selector, function(response, status, xhr) {
-                if (status == "error") {
-                    var msg = "Sorry but there was an error: ";
-                    $("#content").html(msg + xhr.status + " " + xhr.statusText);
-
-                }
-            });
+            
+            $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
+            //$.mobile.pageContainer.pagecontainer("load", "/Palestinian/epg47/show");
 
             return new_location;
+        },
+        
+        prepareComponents: function (e, ui) {
+            /* timestamp & ui object */
+            console.log(e.type + " " + Date(e.timeStamp));
+            console.log(ui);
+            
+            $("#content > div" ).each( function( ) {
+                comp_id = $( this ).data("mlab-type");
+                if (typeof mlab.components[comp_id] != "undefined" && typeof mlab.components[comp_id].onPageLoad != "undefined") {
+                    mlab.components[comp_id].onPageLoad($(this));
+                }
+            });    
         },
         
     },

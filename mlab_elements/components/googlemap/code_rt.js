@@ -1,5 +1,5 @@
 //el = element this is initialising
-	this.onStartup = function (el) {
+	this.onPageLoad = function (el) {
 //LOAD OPTIONS HERE        
         var myOptions = this.api.getAllVariables(el);
         var markers = JSON.stringify(markers);

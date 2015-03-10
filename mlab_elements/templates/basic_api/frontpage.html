@@ -12,8 +12,29 @@
 <script src="./js/mlab.api.js"></script>
 <script src="./js/include.js"></script>
 <script>
-    $(document).ready(function() {
+    
+//this variable tracks the current age, may be replaced with jquery mobile code
+    mlab_rt_current_page = 0;
+    /**
+     * When document is ready we initialise the load code for the jquery mobile functionality
+     * This is done by assigning the mlab.api.navigation.pageDisplay call to various page navigation elements
+     * @type type
+     */
+    function inititaliseMlabApp() {
         
+//this function will loop through the components and initialise them by calling the components' onPageLoad function (if it exists)
+// see https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/
+// http://jsfiddle.net/Palestinian/2SCbL/embedded/result/
+// http://jsfiddle.net/Palestinian/2SCbL/embedded/js/
+// https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/
+// http://api.jquerymobile.com/pagecontainer/#event-load
+// http://demos.jquerymobile.com/1.4.3/navigation/
+        $(document).on("pagecontainerload", function (e, ui) {
+            mlab.api.navigation-prepareComponents(e, ui);
+        })
+        
+        $("#panel_left").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
+        $("#panel_right").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
     });
 </script>
 </head>
