@@ -30,7 +30,7 @@
 // http://api.jquerymobile.com/pagecontainer/#event-load
 // http://demos.jquerymobile.com/1.4.3/navigation/
         $(document).on("pagecontainerload", function (e, ui) {
-            mlab.api.navigation-prepareComponents(e, ui);
+            mlab.api.navigation.prepareComponents(e, ui);
         })
         
         $("#panel_left").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
