@@ -113,7 +113,7 @@ Mlab_api.prototype = {
             }
         });
         
-        inititaliseMlabApp()
+        inititaliseMlabApp();
     },
     
     /**
