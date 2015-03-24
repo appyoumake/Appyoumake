@@ -4,11 +4,11 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-			<link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_editor_menu.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_menu.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery.contextMenu.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_component_config.css") }}" rel="stylesheet" />
@@ -32,11 +32,95 @@
     <body id="mlab_editor">
     	<div class="mlab_min_page_width">
     		<div class="mlab_align_menu_elements">
-                {{ include( 'SinettMLABBuilderBundle:App:editor_menu.html.twig' ) }}
-                <div class="container">
-                    {% block body %}{% endblock %}
-                    <div style="clear: both;">&nbsp;</div>
-                </div>
+                    <ul id="mlab_menu">
+
+                    {{ include( 'menu.html.twig' ) }}
+
+                        <li id="mlab_editor_menu_dropdown">
+                            <a href="#" class="drop">
+                                <img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" >
+                            </a><!-- Begin 4 columns Item -->
+
+                            <div id="mlab_editor_menu_dropdown_content" class="dropdown_4columns"><!-- Begin 4 columns container -->
+
+                                <div class="col_4">
+                                    <p>{% trans %}app.builder.edit.menu.welcome.info{% endtrans %}</p>
+                                </div>
+
+                                <div class="col_1 mlab_edit_meta_data">
+                                    <h3>{% trans %}app.builder.edit.menu.heading.app{% endtrans %}</h3>
+                                    <p> Klikk på teksten for å få redigert den. Lagre ved å klikke på ikonet ved siden av teksten.</p>
+                                    <p class="mlab_edit_app_label">App navn</p>
+                                    <p id="mlab_edit_app_title" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                                    <p class="mlab_edit_app_label">Description</p>
+                                    <p id="mlab_edit_app_description" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                                    <p class="mlab_edit_app_label">Keywords</p>
+                                    <p id="mlab_edit_app_keywords" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                                    <p class="mlab_edit_app_label">Categories 1, 2 & 3</p>
+                                    <p id="mlab_edit_app_category1" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                                    <p id="mlab_edit_app_category2" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                                    <p id="mlab_edit_app_category3" onclick="mlab.dt.api.editContent(this);$(this).next().slideDown();"></p><button class="mlab_menu_field_update_button" title="Oppdater" onclick="mlab.dt.management.app_update_metadata($(this).prev());"></button>
+                                    <h4>Utilities</h4>
+                                    <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
+                                        <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
+                                </div>
+
+                                <div class="col_1">
+                                    <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
+                                    <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
+                                    <div id="mlab_features_list"></div>
+                                </div>
+
+                                <div class="col_1">
+                                    <div class="mlab_end_appbuilder">
+                                        <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
+                                        <h4>Prøv App på web</h4>
+                                        <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
+                                                <a href="javascript: mlab.dt.management.page_preview();">
+                                                    <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                                                </a> 
+                                        <h4>Prøv App på mobil</h4>
+                                        <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
+                                        <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
+                                        </div>
+                                                <a href="javascript: mlab.dt.management.app_download();">
+                                                <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
+                                                </a>
+
+                                        <div class="mlab_end_appbuilder">
+                                            <h4>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h4>
+                                            <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
+                                            <a href="{{ path('app_builder_index') }}" target="_top">
+                                                <div title="Avslutt" id="mlab_exit_icon"></div>   
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- End 4 columns container -->
+
+                        </li><!-- End 4 columns Item -->
+
+                        <li id="mlab_editor_undo_redo" class="single mlab_editor_undo_redo_save">
+                            <img onclick='mlab.dt.management.page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
+                            <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
+                            <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
+                        </li><!-- End undo and redo menu items -->
+
+
+                        <li  class="single"><div id='mlab_statusbar_permanent'>Appnavn</div></li>
+                        <li  class="single"><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
+                        <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
+
+                        <li class="single menu_right">
+                            Developed by the Sinett project at FFI.no
+                        </li>
+
+                    </ul>
+                    
+                    <div class="container">
+                        {% block body %}{% endblock %}
+                        <div style="clear: both;">&nbsp;</div>
+                    </div>
 	        </div>
 	    </div>
     </body>

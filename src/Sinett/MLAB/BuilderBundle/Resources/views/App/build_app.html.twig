@@ -2,12 +2,10 @@
 
 {% block body -%}
 
-<!-- This is the actual content of the page, very little is required as it is loaded from external files -->
-	<div id="mlab_template_warning"></div>
+    <!-- This is the actual content of the page, very little is required as it is loaded from external files -->
+    <div id="mlab_template_warning"></div>
 
-    <div id="mlab_toolbar_components">
-
-	</div>
+    <div id="mlab_toolbar_components"></div>
 
 
     <div id="mlab_page_control">
@@ -33,10 +31,10 @@
         </div>
     </div>
 
-	<div id="mlab_editor_chrome">
-		<div id="mlab_editable_area_placeholder"></div>
-		<p />
-	</div>
+    <div id="mlab_editor_chrome">
+	<div id="mlab_editable_area_placeholder"></div>
+	<p />
+    </div>
 
     <div id="mlab_toolbar_for_components" class='mlab_buttons_item_manipulation_list single'>
         <div id='mlab_component_toolbar_heading'>&nbsp;</div>
@@ -64,17 +62,20 @@
         //these vars are generated from backend and are required for the initialisation of the mlab object later
         document.mlab_temp_vars = {locale: '{{ app.request.locale }}', app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
 
-//get the list of components & the component menu to stick to the top when scrollin down
+        //get the list of components & the component menu to stick to the top when scrollin down
         $(document).ready(function() {
             if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
                 var stickyComponentTop = $('#mlab_toolbar_components').offset().top;
-
+                //TODO calculate this right....
+                var stickyComponentToolsTop = $('#mlab_toolbar_for_components').offset().top - 25;
+                var stickyComponentToolsLeft = 635; //this is 345 when starting but when scrolling it shifts down and needs 290 more...
+                
                 $(document).scroll(function(){ // scroll event
                     var windowTop = $(window).scrollTop(); // returns number
 
-                    if (stickyComponentTop-40 < windowTop) {
-                        $('#mlab_toolbar_components ').css({ position: 'fixed', top: -40 });
-                        $('#mlab_toolbar_for_components').css({ position: 'fixed', top: 0, left: 655 });
+                    if (stickyComponentTop + 1 < stickyComponentTop + windowTop) {
+                        $('#mlab_toolbar_components ').css({ position: 'fixed', top: stickyComponentTop });
+                        $('#mlab_toolbar_for_components').css({ position: 'fixed', top: stickyComponentToolsTop, left: stickyComponentToolsLeft });
                     }
                     else {
                         $('#mlab_toolbar_components #mlab_toolbar_for_components').css('position','static');

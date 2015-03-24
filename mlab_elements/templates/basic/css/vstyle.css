@@ -1,35 +1,14 @@
 /* Style Sheet for the Basic template
    Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
-*/
 
-/* TODO - annet navn enn #page???????? */
+#page_body #content .mlab_rt_MYCLASS
+*/
 
 /* ==========================================================================
    Page
    ========================================================================== */
 
-#mlab_editor_chrome #page,
-#page {
-    font-size: 1em;
-    font-family: Arial,sans-serif;
-    font-style: normal;
-    margin: 0.6em 0;
-    color: #CCCCCC;
-    line-height: 1em;
-    text-shadow: none;
-}
-
-/* #page [data-role="content"] {
-    font-size: 1em;
-    font-family: Arial,sans-serif;
-    font-style: normal;
-    color: #CCCCCC;
-    line-height: 1em;
-    text-shadow: none;
-} */
-
-#mlab_editor_chrome #page,
-#page {
+#page #mlab_editable_area {
     margin: 0;
     padding: 0;
     display: block;
@@ -37,13 +16,43 @@
     background-color: #1e1e1e;
 }
 
-#page #content {
-    padding: 10px;
+#page #mlab_editable_area .white {
+    background-color: #ffffff;
 }
 
+/* ==========================================================================
+   Text
+   ========================================================================== */
+
+#page #mlab_editable_area {
+    font-size: 100%;
+    line-height: 100%;
+}
+
+/* Error messages or all text??? */
+[data-role="content"] {
+    font-size: 1em;
+    font-family: Arial,sans-serif;
+    font-style: normal;
+    color: #CCCC33;
+    line-height: 1em;
+    text-shadow: none;
+}
 
 /* ==========================================================================
-   Component styling
+   Page
+   ========================================================================== */
+
+#page #mlab_editable_area {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background-color: #1e1e1e;
+}
+
+/* ==========================================================================
+   Element styling
    ========================================================================== */
 #page h1 {
     font-size: 1.45em;
@@ -113,7 +122,7 @@
 
 #page div {
     margin: 0;
-    padding: 0;
+    padding: 10px;
     border: none;
 }
 
@@ -131,3 +140,28 @@
    font-size: 14px;
 }
 
+/* ==========================================================================
+   Content
+   ========================================================================== */
+#page div.ui-content {
+   margin-top: 15%;
+   margin-bottom: 7.2%;
+   margin-left: 7.2%;
+   margin-right: 7.2%;
+}
+
+#page #content {
+    margin-top: 0;
+    overflow-y: visible;
+    overflow-x: hidden;
+}
+
+
+/* ==========================================================================
+  To hide an element from the app builder - add the class "mlab_hide_in_app_builder"
+  to the element - the App Builder will have a stylesheet with the syntax:
+
+.mlab_hide_in_app_builder {
+    display: none !important;
+}
+========================================================================== */
