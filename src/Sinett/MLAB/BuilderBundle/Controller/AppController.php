@@ -851,15 +851,15 @@ class AppController extends Controller
                             'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
                     }
                     
-                    if (file_exists("$path_app_assets/js/include.js")) {
-                        $include_items = file("$path_app_assets/js/include.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if (file_exists("$path_app_assets/js/include_comp.js")) {
+                        $include_items = file("$path_app_assets/js/include_comp.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                     } else {
                         $include_items = array();
                     }
-                    if (!in_array("$.getScript('/js/" . $comp_id . "_code_rt.js');", $include_items)) {
-                        $include_items[] = "$.getScript('/js/" . $comp_id . "_code_rt.js');";
+                    if (!in_array("/js/" . $comp_id . "_code_rt.js", $include_items)) {
+                        $include_items[] = "/js/" . $comp_id . "_code_rt.js";
                     }
-                    file_put_contents("$path_app_assets/js/include.js", implode("\n", $include_items));
+                    file_put_contents("$path_app_assets/js/include_comp.js", implode("\n", $include_items));
                 }
 
 //2: Add rights to the manifest file
@@ -1036,7 +1036,7 @@ class AppController extends Controller
         $config = $this->container->parameters['mlab'];
         $path_app_js = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'] . "/js/";
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $storage_plugin_id . "/";
-        $path_app_include_file = $path_app_js . "include.js";
+        $path_app_include_file = $path_app_js . "include_comp.js";
 
 //check if path to component and app exists
         if ( is_dir($path_component) && is_dir($path_app_js) ) {
@@ -1051,8 +1051,8 @@ class AppController extends Controller
                 }
 
                 $include_items = file($path_app_include_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                if (!in_array("$.getScript('/js/" . $storage_plugin_id . "_code_rt.js');", $include_items)) {
-                    $include_items[] = "$.getScript('/js/" . $storage_plugin_id . "_code_rt.js');";
+                if (!in_array("/js/" . $storage_plugin_id . "_code_rt.js", $include_items)) {
+                    $include_items[] = "/js/" . $storage_plugin_id . "_code_rt.js";
                 }
                 
                 file_put_contents($path_app_include_file, implode("\n", $include_items));

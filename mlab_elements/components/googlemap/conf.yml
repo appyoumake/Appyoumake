@@ -1,5 +1,5 @@
 # Configuration file for basic Google maps component
-version: 1.1
+version: 1.2
 developer: Arild Bergh @ Sinett/FFI.no
 category: map
 name: googlemap
@@ -15,8 +15,10 @@ html:
         </div>
     runtime: |
         <!-- must have position: relative on this, otherwise the google maps HTML elements which use position: absolute will be outside the viewport -->
-        <div class="mlab_cp_googlemap_canvas" style="position: relative; overflow: hidden; height: 300px" >
-            Retrieving map ... 
+        <div data-mlab-type="googlemap" style="display: block;" >
+            <div class="mlab_cp_googlemap_canvas" style="position: relative; overflow: hidden; height: 300px" >
+                Retrieving map ... 
+            </div>
         </div>
 
 custom:

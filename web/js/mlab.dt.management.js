@@ -142,7 +142,7 @@ Mlab_dt_management.prototype = {
         }
         for (i in this.parent.app.page_names) {
             if (i > 0) {
-                span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab_page_copy(\"" + i + "\");' >&nbsp;</span>";
+                span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
             }
 
             if (i == 0){ //index
@@ -152,7 +152,7 @@ Mlab_dt_management.prototype = {
             if (i == currpage) {
                 list.append("<li data-mlab-page-open='" + i + "'>" + span + this.parent.app.page_names[i] + "</li>");
             } else {
-                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab_page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
+                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
             }
         }
         $("#mlab_existing_pages").html(list);
@@ -327,7 +327,8 @@ Mlab_dt_management.prototype = {
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
     page_open : function (app_id, page_num) {
-        this.page_save( function() { this.page_open_process(app_id, page_num); } );
+        that = this;
+        this.page_save( function() { that.page_open_process(app_id, page_num); } );
     },
 
     page_open_process : function (app_id, page_num) {
@@ -715,18 +716,19 @@ Mlab_dt_management.prototype = {
     },
 
     page_preview_process : function () {
-        if (this.parent.app.curr_page_num == 0 || this.parent.app.curr_page_num == "index" ) {
+        
+        if (mlab.dt.app.curr_page_num == 0 || mlab.dt.app.curr_page_num == "index" ) {
             page_name = ""
         } else {
-            page_name = ("000" + this.parent.app.curr_page_num).slice(-3) + ".html";
+            page_name = ("000" + mlab.dt.app.curr_page_num).slice(-3) + ".html";
         }
         var w = $(window).width() * 0.25;
         var h = $(window).height() * 0.75;
-        var res = window.open(this.parent.config["urls"]["app"] + this.parent.app.path + "/" + this.parent.app.version + "/" + this.parent.config["cordova"]["asset_path"] + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.version + "/" + mlab.dt.config["cordova"]["asset_path"] + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }
-        this.parent.utils.timer_start();
+        mlab.dt.utils.timer_start();
     }
 
 }// end management.prototype
