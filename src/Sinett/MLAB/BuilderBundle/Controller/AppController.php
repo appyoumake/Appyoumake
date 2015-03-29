@@ -56,7 +56,8 @@ class AppController extends Controller
         if ($form->isValid()) {
         	
 //store values in array for easy access
-        	$app_data = $request->request->all()["form"];
+                $temp_app_data = $request->request->all();
+        	$app_data = $temp_app_data["form"];
 //get config values
         	$config = $this->container->parameters['mlab'];
 //prepare doctrine manager
@@ -578,7 +579,8 @@ class AppController extends Controller
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
 
-        $html = $request->request->all()["html"];
+        $temp_html = $request->request->all();
+        $html = $temp_html["html"];
         $res = $file_mgmt->savePage($app, $page_num, $html);
         if ($res === false) {
             return new JsonResponse(array(

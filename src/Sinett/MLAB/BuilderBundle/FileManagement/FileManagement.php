@@ -68,7 +68,8 @@ class FileManagement {
 //loop through and see if all required files are present
 			if ($res === TRUE) {
 				for( $i = 0; $i < $zip->numFiles; $i++ ){
-					$f = $zip->statIndex( $i )['name'];
+					$temp_f = $zip->statIndex( $i );
+					$f = $temp_f['name'];
 					if (in_array($f, $this->required_files)) {
 						unset($this->required_files[array_search($f, $this->required_files)]);
 					}
@@ -598,7 +599,10 @@ class FileManagement {
             return "unlocked";
             
 //opened by someone else
-        } else if (!empty(glob("$filename.*.lock"))) {
+        } 
+        
+        $test = glob("$filename.*.lock");
+        if (!empty($test)) {
             $this->clearLocks($uid);
             return "locked";
 

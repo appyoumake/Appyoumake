@@ -23,8 +23,8 @@ class UserController extends Controller
     public function indexAction()
     {
     	$em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findByRole($this->getUser()->getRoles()[0]);
+        $temp_roles = $this->getUser()->getRoles();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findByRole($temp_roles[0]);
 
         return $this->render('SinettMLABBuilderBundle:User:index.html.twig', array(
             'entities' => $entities,
@@ -67,10 +67,11 @@ class UserController extends Controller
     */
     private function createCreateForm(User $entity)
     {
+        $temp_roles = $this->getUser()->getRoles();
         $form = $this->createForm(new UserType(), $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
-        	'current_user_role' => $this->getUser()->getRoles()[0], 
+        	'current_user_role' => $temp_roles[0], 
             'attr' => array('autocomplete' => 'off'),
         ));
 
@@ -128,10 +129,12 @@ class UserController extends Controller
             throw $this->createNotFoundException('Unable to find User entity.');
         }
         
-        if ($this->getUser()->getRoles()[0] == "ROLE_SUPER_ADMIN") {
+        $temp_roles = $this->getUser()->getRoles();
+        if ($temp_roles[0] == "ROLE_SUPER_ADMIN") {
         	$can_edit = true;
         } else {
-        	$can_edit = ($entity->getRoles()[0] != "ROLE_SUPER_ADMIN");
+                $temp_roles = $entity->getRoles();
+        	$can_edit = ($temp_roles[0] != "ROLE_SUPER_ADMIN");
         }
         
         if (!$can_edit) {
@@ -157,10 +160,11 @@ class UserController extends Controller
     */
     private function createEditForm(User $entity)
     {
+        $temp_roles = $this->getUser()->getRoles();
         $form = $this->createForm(new UserType(), $entity, array(
             'action' => $this->generateUrl('user_update', array('id' => $entity->getId())),
             'method' => 'PUT',
-            'current_user_role' => $this->getUser()->getRoles()[0], 
+            'current_user_role' => $temp_roles[0], 
         ));
 
         $form->add('submit', 'submit', array('label' => 'app.admin.users.edit.update.button'));
