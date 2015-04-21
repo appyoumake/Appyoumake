@@ -81,10 +81,10 @@ class HelpController extends Controller
     }
 
     public function getRoutes() {
-        $availableApiRoutes = [];
+        $availableApiRoutes = array();
         foreach ($this->get('router')->getRouteCollection()->all() as $name => $route) {
             $route = $route->compile();
-            $emptyVars = [];
+            $emptyVars = array();
             foreach( $route->getVariables() as $v ){
                 $emptyVars[ $v ] = $v;
             }
