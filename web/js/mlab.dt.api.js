@@ -133,11 +133,11 @@ Mlab_dt_api.prototype = {
         content = $('<form />', {id: "mlab_dt_form_upload" } );
         content.append( $('<p />', { text: "Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde", class: "mlab_dt_text_info" }) );
         content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>...laster bilde...</option></select>') );
-        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files_left", name: "mlab_cp_image_uploadfiles", text: 'Velg fil', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
+        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: 'Velg fil', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<div />', { class: "mlab_dt_large_new_line" }) );
-        content.append( $('<div />', { text: 'Avbryt', id: "mlab_cp_image_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel_left" }) );
+        content.append( $('<div />', { text: 'Avbryt', id: "mlab_cp_image_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
        // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_cp_image_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok_left" }) );
+        content.append( $('<div />', { text: 'OK', id: "mlab_cp_image_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
 
         var that = this;
         
@@ -202,13 +202,13 @@ Mlab_dt_api.prototype = {
                             $('#mlab_cp_image_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
                             
                             //Adding mlab style 
-                            //$('#mlab_property_button_ok').addClass('mlab_dt_button_ok_left'); 
-                            //$('#mlab_property_button_cancel').addClass('mlab_dt_button_cancel_left');
-                            //$('#mlab_property_uploadfiles').addClass('mlab_dt_button_upload_files_left');
+                            //$('#mlab_property_button_ok').addClass('mlab_dt_button_ok mlab_dt_left'); 
+                            //$('#mlab_property_button_cancel').addClass('mlab_dt_button_cancel  mlab_dt_left');
+                            //$('#mlab_property_uploadfiles').addClass('mlab_dt_button_upload_files  mlab_dt_left');
                             $('.new_but_line').addClass('mlab_dt_button_new_line');
                             $('.new_big_line').addClass('mlab_dt_large_new_line');
                             $('.new_small_line').addClass('mlab_dt_small_new_line');
-                            $('.qtip-titlebar').addClass('mlab_dt_text_title_bar');
+                            $('.qtip-titlebar').addClass('mlab_dt_title_bar');
                             $('.info').addClass('mlab_dt_text_info');
                             $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
                             $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
@@ -343,7 +343,7 @@ Mlab_dt_api.prototype = {
             position:   { my: 'leftMiddle', at: 'rightMiddle' },
             show:       { ready: true, modal: { on: true, blur: false } },
             hide:       false,
-            style:      { classes: 'qtip-light' },
+            style:      { classes: 'qtip-light mlab_dt_box_style' },
             events:     {   render: func_render,
                             hide: function(event, api) { api.destroy(); },
                             visible: func_visible  

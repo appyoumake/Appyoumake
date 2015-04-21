@@ -281,7 +281,7 @@ app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
 
 
 #-----------------------------------------------------
-# MLAB  (edit app) Menu
+# MLAB Menu
 #-----------------------------------------------------
 
 app.builder.menu.welcome.info: Litt generelt - Hva menyen hjelper til med...
@@ -298,6 +298,29 @@ app.builder.menu.link.admin.users: Bruker admin
 app.builder.menu.link.system: System admin
 app.builder.menu.link.logout: Logg ut
 app.builder.menu.link.login: Logg inn
+
+
+
+#-----------------------------------------------------
+# App builder - the page bar
+#-----------------------------------------------------
+
+app.builder.page.heading: Sider
+app.builder.page.save: Lagre
+app.builder.page.cancel: Avbryt
+
+app.builder.page.menu.delet.info: Klikk på krysset for å permanent slette siden du står på
+app.builder.page.menu.delete: Slett siden som er åpen 
+
+app.builder.page.tooltip.previous: Forrige side
+app.builder.page.tooltip.next: Neste side
+app.builder.page.tooltip.save: Lagre endring av sidenavn
+app.builder.page.tooltip.cancel: Avbryt endring av sidenavn
+app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
+app.builder.page.tooltip.new: Ny side
+
+app.builder.overlay.info: Vær vennlig å vent mens MLAB klargjøres og appen åpnes...
+
 
 
 #-----------------------------------------------------

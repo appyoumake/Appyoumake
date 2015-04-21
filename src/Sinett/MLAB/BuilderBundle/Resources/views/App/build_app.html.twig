@@ -9,17 +9,17 @@
 
 
     <div id="mlab_page_control">
-        <div class="right">Velg side: </div>
-        <img id="mlab_page_control_previous" onclick="mlab.dt.management.page_move_to(-1);" src="/img/tools/previous.png">
-        <img id="mlab_page_control_next" onclick="mlab.dt.management.page_move_to(1);" src="/img/tools/next.png">
+  
+        <img id="mlab_page_control_previous" onclick="mlab.dt.management.page_move_to(-1);" src="/img/tools/previous.png" title="{% trans %}app.builder.page.tooltip.previous{% endtrans %}">
+        <img id="mlab_page_control_next" onclick="mlab.dt.management.page_move_to(1);" src="/img/tools/next.png" title="{% trans %}app.builder.page.tooltip.next{% endtrans %}">
         <h3 id="mlab_page_control_title" onclick="mlab.dt.api.editContent(this);$('#mlab_page_control_title_actions').slideDown();"></h3>
 
         <div id="mlab_page_control_title_actions" class="mlab_hidden">
-            <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').slideUp(); mlab.dt.management.page_update_title();" class="mlab_dt_button_ok_left">Save</button>
-            <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').slideUp(); $('#mlab_page_control_title').text(mlab.dt.app.curr_pagetitle);" class="mlab_dt_button_cancel_left">Cancel</button>
+            <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').slideUp(); mlab.dt.management.page_update_title();" class="mlab_dt_button_ok_left" title="{% trans %}app.builder.page.tooltip.save{% endtrans %}">{% trans %}app.builder.page.save{% endtrans %}</button>
+            <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').slideUp(); $('#mlab_page_control_title').text(mlab.dt.app.curr_pagetitle);" class="mlab_dt_button_cancel_left" title="{% trans %}app.builder.page.tooltip.cancel{% endtrans %}">{% trans %}app.builder.page.cancel{% endtrans %}</button>
         </div>
-        <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png">
-        <img id="mlab_page_control_new" onclick="mlab.dt.management.page_new();" src="/img/menu_new_icon.png">
+        <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png" title="{% trans %}app.builder.page.tooltip.pagelist{% endtrans %}">
+        <img id="mlab_page_control_new" onclick="mlab.dt.management.page_new();" src="/img/menu_new_icon.png" title="{% trans %}app.builder.page.tooltip.new{% endtrans %}">
 
     </div>
 
@@ -27,8 +27,8 @@
         <div id="mlab_existing_pages">
         </div>
         <div id="mlab_page_management_info">
-            Klikk på krysset for å permanent slette siden du står på:
-            <img id="mlab_page_control_delete" onclick="mlab.dt.management.page_delete();" src="/img/menu_delete_icon.png">
+            {% trans %}app.builder.page.menu.delet.info{% endtrans %}:
+            <img id="mlab_page_control_delete" onclick="mlab.dt.management.page_delete();" src="/img/menu_delete_icon.png" title="{% trans %}app.builder.page.menu.delete{% endtrans %}">
         </div>
     </div>
 
@@ -52,7 +52,7 @@
     <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>
     </div>
-    <div id="mlab_overlay"><div class="mlab_modal">Please wait while MLAB is being prepared and app is opened...</div></div>
+    <div id="mlab_overlay"><div class="mlab_modal">{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
 {% endblock %}
 
 {% block javascripts %}

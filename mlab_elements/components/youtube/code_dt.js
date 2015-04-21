@@ -25,16 +25,16 @@
                         '    <form action="" onsubmit="return false">' + 
                         '        <p class="mlab_dt_text_info">Søk etter en youtube-video ved å skrive et søkeord i boksen og enten velg et forslag fra listen eller klikk på søk-knappen</p>' + 
                         '        <div class="ui-widget">' +  
-                        '            <input id="youtube" />' + 
-                        '            <button id="submit">Søk</button>' + 
+                        '            <input id="youtube" class="mlab_dt_input"/>' + 
+                        '            <button id="submit" class="mlab_dt_button">Søk</button>' + 
                         '        </div>' + 
                         '    </form>' + 
                         '</div>' +
                         '<div id="sonuc"></div>');
                 
-        content.append( $('<p />') );
-        content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel_left" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok_left" }) );
+        content.append( $('<p />', {class: "mlab_dt_small_new_line" }));
+        content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
+        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall mlab_dt_button_ok mlab_dt_left" }) );
 
         var component = el;
         var component_id = this.config.component_name;
@@ -51,7 +51,7 @@
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
-            style: { classes: 'qtip-light' },
+            style: { classes: 'qtip-light mlab_dt_box_style' },
             events: { render: function(event, api) {
                             this.component = component;
                             this.component_id = component_id;
@@ -73,7 +73,7 @@
                             $('.new_but_line').addClass('mlab_dt_button_new_line');
                             $('.new_big_line').addClass('mlab_dt_large_new_line');
                             $('.new_small_line').addClass('mlab_dt_small_new_line');
-                            $('.qtip-titlebar').addClass('mlab_dt_text_title_bar');
+                            $('.qtip-titlebar').addClass('mlab_dt_title_bar');
                             $('.info').addClass('mlab_dt_text_info');
                             $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
                             $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
