@@ -2,7 +2,8 @@
 # Login, security
 #-----------------------------------------------------
 
-layout.login: MLAB
+layout.login: Logg inn
+layout.login.headline: Logg inn
 layout.logout.info: Du må logge ut forrige bruker før du kan logge deg inn
 layout.logout: Logg ut
 security.login.username: Brukernavn
