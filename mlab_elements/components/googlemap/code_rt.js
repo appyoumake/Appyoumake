@@ -1,25 +1,27 @@
 //el = element this is initialising
     
-	this.onPageLoad = function (el, vars) {
+    this.onPageLoad = function (el, vars) {
         
-        var id = $(el).find("." + vars.class_identifier).attr("id");
+        var guid = $(el).find("." + vars.config.class_identifier).attr("id");
+        var trimmed_id = guid.replace(/-/g, "");
+        vars.guid = guid;
         
-        if (typeof (eval( "this.initMap" + id)) == "undefined") {
-            eval( "this.initMap" + id + " = function() { this.initMap(" + JSON.stringify(vars) + "); }" );
+        if (eval( "typeof this.initMap" + trimmed_id) == 'undefined') {
+            eval( "this.initMap" + trimmed_id + " = function() { this.initMap(" + JSON.stringify(vars) + "); }" );
         }
         
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='http://maps.google.com/maps/api/js?v=3&callback=this.initMap" + id + "'>")); 
+            $("head").append($("<script src='" + vars.config.map_script + "&callback=mlab.api.components.googlemap.initMap" + trimmed_id + "'>")); 
         } else {
-            eval("this.initMap" + id + "();");
+            eval("mlab.api.components.googlemap.initMap" + trimmed_id + "();");
         }
     };
     
     this.initMap = function(mapOptions) {
         
-        curr_map = new google.maps.Map(document.getElementById('" + guid + "'), mapOptions);
+        curr_map = new google.maps.Map(document.getElementById(mapOptions.guid), mapOptions);
         if (typeof mapOptions.markers != 'undefined') { 
-            for (i in myOptions.markers) { 
+            for (i in mapOptions.markers) { 
                 new google.maps.Marker( {
                     position: new google.maps.LatLng(mapOptions.markers[i].lat, mapOptions.markers[i].lng),  
                     map: curr_map, 
@@ -27,26 +29,4 @@
             }
         }
         
-    };
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        var markers = JSON.stringify(markers);
-        var temp_map = new google.maps.Map(document.getElementById('" + guid + "'), myOptions); 
-        for (i in markers) { 
-            new google.maps.Marker({  
-                position: new google.maps.LatLng(markers[i][1], markers[i][2]),  
-                map: temp_map,  
-                title: markers[i][0]  
-           });  
-        } 
-
     };

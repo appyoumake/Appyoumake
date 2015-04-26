@@ -43,6 +43,8 @@
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }
         
+        this.custom_edit_map(el);
+        
     };
     
 //el = element this is initialising
@@ -86,7 +88,10 @@
                             scaleControl: curr_map.scaleControl,
                             mapTypeControl: curr_map.mapTypeControl,
                             panControl: curr_map.panControl,
-                            markers : clean_markers } ;
+                            markers : clean_markers,
+                            config : {class_identifier: this.config.custom.class_identifier, map_script: this.config.custom.map_script}
+                        };
+                        
         this.api.setAllVariables(el, map_options);
         
         var local_el = $(el).clone();
@@ -170,7 +175,7 @@
         $("#mlab_cp_googlemap_markers").append($('<option></option>').val(my_markers.length - 1).html(title));
         this.api.setDirty();
         
-    }
+    };
     
     this.removeMarker = function(id) {
         if (null === $("#mlab_cp_googlemap_markers").val()) {
@@ -186,7 +191,7 @@
         this.api.setTempVariable(this.config.name, "markers" + id, my_markers);
         
         this.api.setDirty();
-    }
+    };
     
     this.custom_edit_map = function (el) {
         

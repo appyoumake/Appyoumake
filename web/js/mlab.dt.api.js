@@ -322,6 +322,13 @@ Mlab_dt_api.prototype = {
     closeAllPropertyDialogs : function () {
         $('.mlab_current_component').qtip('hide');
     },
+    
+    executeCallback : function (func, data) {
+        if (typeof func == "undefined") {
+            return;
+        }
+        func(data);
+    },
 
 /**
  * Displays the property input dialog for the specified component. 
@@ -332,11 +339,12 @@ Mlab_dt_api.prototype = {
  * @param {HTML string} content, valid HTML5
  * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
  * @param {function object} func_visible, callback function when the property dialog is 
- * @param {function object} func_hide
+ * @param {function object} func_hide currently unused
  * @returns {undefined}
  */
     displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide) {
         this.closeAllPropertyDialogs()
+        that = this;
         $(el).qtip({
             solo: true,
             content:    {text: content, title: title },
@@ -344,9 +352,9 @@ Mlab_dt_api.prototype = {
             show:       { ready: true, modal: { on: true, blur: false } },
             hide:       false,
             style:      { classes: 'qtip-light mlab_dt_box_style' },
-            events:     {   render: func_render,
+            events:     {   render: that.executeCallback (func_render, el),
                             hide: function(event, api) { api.destroy(); },
-                            visible: func_visible  
+                            visible: that.executeCallback (func_visible, el) 
                         }
         });
     },
