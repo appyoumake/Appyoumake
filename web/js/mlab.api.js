@@ -91,7 +91,7 @@ Mlab_api.prototype = {
         $.mobile.initializePage();
 
 // added by arild
-// this will load the text file js/include_comp.js and load all the component runtime code that are listed there
+// this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
 // these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
 
         /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
