@@ -443,7 +443,7 @@ Mlab_api.prototype = {
             $("#content > div > div" ).each( function() {
                 var comp_id = $( this ).data("mlab-type");
                 if (typeof mlab.api.components[comp_id] != "undefined" && typeof mlab.api.components[comp_id].onPageLoad != "undefined") {
-                    mlab.api.components[comp_id].onPageLoad($(this));
+                    mlab.api.components[comp_id].onPageLoad($(this), mlab.api.getAllVariables($(this)));
                 }
             });    
         },
@@ -582,7 +582,48 @@ Mlab_api.prototype = {
          */
         clearSessionStorage: function() {
             window.sessionStorage.clear();
-        }
+        },
+        
+    /**
+     * This function stores variables for the current app in a global variable, this matches the function titled setTempVariable in the mlab.dt.api.js file
+     * @param {object} comp, the name of the component
+     * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
+     * @param {object} value
+     * @returns {undefined}
+     */
+        setAppVariable: function (comp, key, value) {
+            if (typeof document.mlab_storage == "undefined") {
+                document.mlab_storage = {};
+            }
+            if (typeof document.mlab_storage[comp] == "undefined") {
+                document.mlab_storage[comp] = {};
+            }
+            if (typeof document.mlab_storage[comp][key] == "undefined") {
+                document.mlab_storage[comp][key] = {};
+            }
+
+            document.mlab_storage[comp][key] = value;
+        },
+        
+        /**
+            * This function retrieves variables for the current app from a global variable, this matches the function titled getTempVariable in the mlab.dt.api.js file
+            * @param {object} comp, the name of the component
+            * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
+            * @returns {Javascript variable}
+         */
+        getAppVariable: function (comp, key) {
+            if (typeof document.mlab_dt_storage == "undefined") {
+                return;
+            }
+            if (typeof document.mlab_dt_storage[comp] == "undefined") {
+                return;
+            }
+            if (typeof document.mlab_dt_storage[comp][key] == "undefined") {
+                return;
+            }
+
+            return document.mlab_dt_storage[comp][key];
+        },
     
     }
 }; // end prototype for Mlab.api

@@ -28,9 +28,11 @@ function Mlab_api () {
     var self = this;
     var documentOb = $(document);
     this.internal.self = this;
-    
     /* Name of the app. Should be unique, and configurable from Mlab.*/
     this.appName = "mlabtest";
+
+    /* Object to hold components loaded */
+    this.components = {};
     
     /* Object to hold the plugins loaded */
     this.plugins = {};
@@ -50,9 +52,13 @@ function Mlab_api () {
     
     /* Online/offline state. We assume we are starting online, and handle any change. */
     this.online = true;
+    
     documentOb.on("online", function() { self.online = true; });
     documentOb.on("offline", function() { self.online = false; });
-    documentOb.trigger("mlabready");
+    mlab.api = this;
+    
+    if (typeof inititaliseMlabApp!="undefined") documentOb.trigger("mlabready");
+    return this;
 }
 
 /**
@@ -79,40 +85,42 @@ Mlab_api.prototype = {
     },
     
     /**
-     * Runs when mlab object has been set up. Loops through the globally defined arrays "mlab_initialiseApp" and 
-     * "mlab_initialiseComponent", and calls the functions registered in these.
-     *
-     * In the spec, mlab_initialiseApp and mlab_initialiseComponent are defined as single functions. However,
-     * most apps and pages have more than one component. If they all implement functions of the same 
-     * name in the global namespace, only the latest added will be run.
-     
-     * So instead, we store the component's init methods in two global arrays, and loop through these,
-     * to make sure everything gets set up properly.
+     * Runs when mlab object has been set up.
      */
     onMlabReady: function() {
-        // Clear out localStorage, for debugging
-        //window.localStorage.clear();
-        for (var i=0, ii=mlab_initialiseApp.length; i<ii; i++) mlab_initialiseApp[i]();
-        for (var i=0, ii=mlab_initialiseComponent.length; i<ii; i++) mlab_initialiseComponent[i]();
+        $.mobile.initializePage();
 
 // added by arild
 // this will load the text file js/include_comp.js and load all the component runtime code that are listed there
 // these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
-        var path = window.location.href.replace('index.html', '');
-        $.get(path + "js/include_comp.js", function(data) {
-            var components = data.split("\n");
-            for (i in components) {
-                var name = components[i].replace("_code_rt.js", "");
-                $.get(path + "js/" + components[i], function(component) {
 
+        /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
+            Also splitting in index_html, because we do not know what parameters there are.
+         */
+        var path = ''+window.location.href.split('index.html')[0];
+        /* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
+            file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
+        */
+        $.get(path + "js/include_comp.txt", function(data) {
+            var components = data.split("\n");
+            var componentsLength = components.length;
+            var componentsAdded = 0;
+            for (i in components) {
+                // MK: js/ was already part of the component name
+                var name = components[i].replace("_code_rt.js", "").replace("/js/", "");
+                $.get(path + components[i], function(component) {
 //we need to attach the code_rt.js content to an object so we can use it as JS code
-                    eval("mlab.components['" + name + "'] = new function() { " + component + "};");
+                    eval("mlab.api.components['" + name + "'] = new function() {" + component + "}();");
 //here we create the api objects inside the newly created object
-                    mlab.components[name].api = mlab.api;
+                    mlab.api.components[name].api = mlab.api;
+                    componentsAdded += 1;
+                    /* MK: Because ajax is asynchronous, we do not know the order in which the components will be added
+                        Only when these numbers add up do we know that everything is OK 
+                    */
+                    if (componentsAdded==componentsLength) $(document).trigger("pagecontainerload"); // MK: Not sure if this is the way it should be, but "pagecontainerload" was never triggered.
                 });
             }
         });
-        
         inititaliseMlabApp();
     },
     
@@ -290,7 +298,6 @@ Mlab_api.prototype = {
         try {
             var vars = JSON.parse(json);
         } catch(e) {
-            console.log(e);
             return ;
         }
         
@@ -312,7 +319,7 @@ Mlab_api.prototype = {
         if (token) return token;
     
         var pluginLogin = this.internal.dispatchToPlugin("loginRemotely", service, username, password);
-        if (!pluginLogin) log("No plugins have defined a login method, or no connection to perform log in");
+        if (!pluginLogin) console.log("No plugins have defined a login method, or no connection to perform log in");
         return pluginLogin;
     },
     
@@ -433,10 +440,10 @@ Mlab_api.prototype = {
             console.log(e.type + " " + Date(e.timeStamp));
             console.log(ui);
             
-            $("#content > div" ).each( function( ) {
-                comp_id = $( this ).data("mlab-type");
-                if (typeof mlab.components[comp_id] != "undefined" && typeof mlab.components[comp_id].onPageLoad != "undefined") {
-                    mlab.components[comp_id].onPageLoad($(this));
+            $("#content > div > div" ).each( function() {
+                var comp_id = $( this ).data("mlab-type");
+                if (typeof mlab.api.components[comp_id] != "undefined" && typeof mlab.api.components[comp_id].onPageLoad != "undefined") {
+                    mlab.api.components[comp_id].onPageLoad($(this), mlab.api.getAllVariables($(this)));
                 }
             });    
         },
@@ -575,71 +582,72 @@ Mlab_api.prototype = {
          */
         clearSessionStorage: function() {
             window.sessionStorage.clear();
-        }
+        },
+        
+    /**
+     * This function stores variables for the current app in a global variable, this matches the function titled setTempVariable in the mlab.dt.api.js file
+     * @param {object} comp, the name of the component
+     * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
+     * @param {object} value
+     * @returns {undefined}
+     */
+        setAppVariable: function (comp, key, value) {
+            if (typeof document.mlab_storage == "undefined") {
+                document.mlab_storage = {};
+            }
+            if (typeof document.mlab_storage[comp] == "undefined") {
+                document.mlab_storage[comp] = {};
+            }
+            if (typeof document.mlab_storage[comp][key] == "undefined") {
+                document.mlab_storage[comp][key] = {};
+            }
+
+            document.mlab_storage[comp][key] = value;
+        },
+        
+        /**
+            * This function retrieves variables for the current app from a global variable, this matches the function titled getTempVariable in the mlab.dt.api.js file
+            * @param {object} comp, the name of the component
+            * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
+            * @returns {Javascript variable}
+         */
+        getAppVariable: function (comp, key) {
+            if (typeof document.mlab_dt_storage == "undefined") {
+                return;
+            }
+            if (typeof document.mlab_dt_storage[comp] == "undefined") {
+                return;
+            }
+            if (typeof document.mlab_dt_storage[comp][key] == "undefined") {
+                return;
+            }
+
+            return document.mlab_dt_storage[comp][key];
+        },
     
     }
 }; // end prototype for Mlab.api
 
 
-/*  
- * Components add their app init functions to this array
- */
-var mlab_initialiseApp = [];
-
-/**
- * Components add their page init functions to this array
- */
-var mlab_initialiseComponent = [];
 
 /* 
  * Mlab object is stored in a global variable "mlab", and is initialized automatically when device is ready.
  */
-var mlab;
-/**
+if (typeof mlab=="undefined") {
+    var mlab = {"api":null};
+}
+
 $(document).on("deviceready", function() {
-    mlab = new Mlab();
+    console.log("deviceready");
+    mlab.api = new Mlab_api();
 });
-*/
-$(document).on("deviceready", function() {
-//    setTimeout(function() {
-    mlab = new Mlab();
-//    }, 5000);
-});
-/**
 $(document).on("ready", function() {
+    console.log("ready");
+    // Problem: This must only be triggered if we are in a browser, and "deviceready" isn't triggered otherwise
+    $(this).trigger("deviceready");
 });
-*/
-
-/**
 $(document).on("mlabready", function() {
-    mlab.onMlabReady();
+    console.log("mlabready");
+    if (mlab.api) mlab.api.onMlabReady();
 });
-*/
 
-
-/******
-
-Functions defined below are helper functions
-
-*******/
-
-/* jQuery only has getJSON, so we define our own postJSON to go with it */
-$.postJSON = function(url, data, callback) { $.post(url, data, callback, "json");}
-/* Cloning an object */
-function clone(ob,deep) {
-    var objectClone = {}; 
-    for (var property in ob) {
-        if (!deep) objectClone[property] = ob[property];
-        else if (typeof ob[property] == 'object' && ob[property]) objectClone[property] = clone(ob[property], deep);
-        else objectClone[property] = ob[property];
-    }
-    return objectClone;
-}
-
-/* Simple/safe logging to console */
-function log(s) {
-    try {
-        console.log(s);
-    }
-    catch(e) {;}
-}
