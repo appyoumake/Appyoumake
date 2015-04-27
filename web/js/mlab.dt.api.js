@@ -324,7 +324,7 @@ Mlab_dt_api.prototype = {
     },
     
     executeCallback : function (func, data) {
-        if (typeof func == "undefined") {
+        if (typeof func == "undefined" || func == null) {
             return;
         }
         func(data);
@@ -352,9 +352,9 @@ Mlab_dt_api.prototype = {
             show:       { ready: true, modal: { on: true, blur: false } },
             hide:       false,
             style:      { classes: 'qtip-light mlab_dt_box_style' },
-            events:     {   render: that.executeCallback (func_render, el),
+            events:     {   render: function(event, api) { that.executeCallback (func_render, el) },
                             hide: function(event, api) { api.destroy(); },
-                            visible: that.executeCallback (func_visible, el) 
+                            show: function(event, api) { that.executeCallback (func_visible, el) } 
                         }
         });
     },

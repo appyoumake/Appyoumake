@@ -34,12 +34,10 @@
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
     this.initYoutube = function (el) {
-
 /* Set up autoComplete */
         local_el = el;
         $("#mlab_cp_youtube_search").autocomplete({
             source: function(request, response){
-                debugger;
 //TODO: Change to use input
                 var apiKey = 'AI39si7ZLU83bKtKd4MrdzqcjTVI3DK9FvwJR6a4kB_SW_Dbuskit-mEYqskkSsFLxN5DiG1OBzdHzYfW0zXWjxirQKyxJfdkg';
                 var query = request.term;
@@ -59,20 +57,17 @@
             
 /* select video */
             select: function( event, ui ) {
-                debugger;
                 $.youtubeAPI(ui.item.label);
             }
         });
 
 /* respond to search being pressed */
         $('button#mlab_cp_youtube_submit').click(function(){
-            debugger;
             $.youtubeAPI( $('input#mlab_cp_youtube_search').val() );
         });
 
 /* Youtube Arama Fonksiyonu */
         $.youtubeAPI = function(search_term){
-            debugger;
             var results = $('#mlab_cp_youtube_results');
             results.html('Searching...');
             $.ajax({
@@ -80,7 +75,6 @@
                 url: 'http://gdata.youtube.com/feeds/api/videos?q=' + search_term + '&max-results=15&v=2&alt=jsonc',
                 dataType: 'jsonp',
                 success: function( veri ){
-                    debugger;
                     if( veri.data.items ){
                         results.empty();
                         $.each( veri.data.items, function(i, data) {
@@ -101,7 +95,6 @@
 
 // Add youtube code to app, and resize it to fill whole width
         $.youtubeSelect = function(youtube_id){
-            debugger;
             var container = $(local_el);
             container.html('<iframe width="560" height="315" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen style="pointer-events: none" ></iframe>');
             var video = $(container).find("iframe");
@@ -135,6 +128,6 @@
         var component_id = this.config.component_name;
         var component_config = this.config;
         
-        this.api.displayPropertyDialog(el, "Select YouTube video", content, this.initYoutube);
+        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube);
        
     };
