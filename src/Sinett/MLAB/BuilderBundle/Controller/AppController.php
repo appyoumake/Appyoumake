@@ -917,13 +917,13 @@ class AppController extends Controller
                                         if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
                                             return new JsonResponse(array(
                                                 'result' => 'failure',
-                                                'msg' => sprintf("Unable to copy JavaScript file %s for this component: %s", $dependency , $comp_id)));
+                                                'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id)));
                                         } 
                                     }
                                 }
 
 //we need to update the include files of the app
-                                if (file_exists("$path_app_assets/js/include.js")) {
+                                if (file_exists("$path_app_assets/js/include.$filetype")) {
                                     $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                                 } else {
                                     $include_items = array();
@@ -934,8 +934,14 @@ class AppController extends Controller
                                         $include_items[] = "@import url('$dependency');";
                                     }
                                 } else {
-                                    if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
-                                        $include_items[] = "$.getScript('/js/$dependency');";
+                                    if (substr($dependency, 0, 4) == "http") {
+                                        if (!in_array("$.getScript('$dependency');", $include_items)) {
+                                            $include_items[] = "$.getScript('$dependency');";
+                                        }
+                                    } else {
+                                        if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
+                                            $include_items[] = "$.getScript('/js/$dependency');";
+                                        }
                                     }
                                 }
                                 file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));

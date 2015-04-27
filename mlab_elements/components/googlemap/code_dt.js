@@ -43,7 +43,8 @@
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }
         
-        this.custom_edit_map(el);
+//TODO: Does not work as it tries to read info before map is created, add to callback function, but only run when create
+//                this.custom_edit_map(el);
         
     };
     

@@ -438,3 +438,11 @@ google maps??????
         content:attr(data-mlab_placeholder)
 }
 */
+
+/* TEMP AV ARILD */
+
+#mlab_editor ul.ui-autocomplete {
+    z-index: 10000;
+    background-color: wheat;
+    border: 1px solid gray;
+}
