@@ -242,35 +242,18 @@ class FileManagement {
 	public function createAppFromTemplate ($template, $app) {
 		
 //prepare all the paths to use
-		$default_platform = $this->config["cordova"]["default_platform"];
-		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
 		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
 		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
-		
-		$cordova_create_command = $this->config["cordova"]["cmds"]["create"];
-		$cordova_create_command = str_replace(
-				array("_FOLDER_", "_DOMAIN_", "_TITLE_"),
-				array($app_path, $app_domain, $app->getPath()),
-				$cordova_create_command
-		);
-		
 		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
-		
-		$cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
-        if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
-			return array("Could not set path for Cordovava");
-		}
-		
-		$cordova_build_properties = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["android"]["ant_properties"]);
 		
 		$output = array();
 		$exit_code = 0;
 		
 //if they are offline we just extract a ZIP file that has to be present, 
-        //and then we need to update a few files with new data
+//and then we need to update a few files with new data
         if ($this->config["cordova"]["offline"]) {
             if (!file_exists($this->config["cordova"]["offline_archive"])) {
                 return array("You are working offine, but the ZIP archive to use for a new app was not found:" . $this->config["cordova"]["offline_archive"]);
@@ -301,7 +284,21 @@ class FileManagement {
             
                 
         } else {
+            $default_platform = $this->config["cordova"]["default_platform"];
+            $include_paths = $this->config["cordova"][$default_platform]["include_paths"];
+            $cordova_create_command = $this->config["cordova"]["cmds"]["create"];
+            $cordova_create_command = str_replace(
+                    array("_FOLDER_", "_DOMAIN_", "_TITLE_"),
+                    array($app_path, $app_domain, $app->getPath()),
+                    $cordova_create_command
+            );
           
+            $cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
+            if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
+                return array("Could not set path for Cordovava");
+            }
+
+            $cordova_build_properties = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["android"]["ant_properties"]);
           
           // Create new app using cordova command
           // May need to download, so change script time limit
@@ -836,5 +833,72 @@ class FileManagement {
         $all_comps_used = array_unique($all_comps_used);
         return $all_comps_used;
     }
+ 
+//functions that replicate linux commands
+    
+    private function func_find() {
+        
+    }
+    
+    private function func_sed() {
+        
+    }
+    
+    private function func_rmdir($dirPath) {
+        if (! is_dir($dirPath)) {
+            throw new InvalidArgumentException("$dirPath must be a directory");
+        }
+        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                self::deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
+// OR ------
+        $dir = 'samples' . DIRECTORY_SEPARATOR . 'sampledirtree';
+$it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+$files = new RecursiveIteratorIterator($it,
+             RecursiveIteratorIterator::CHILD_FIRST);
+foreach($files as $file) {
+    if ($file->isDir()){
+        rmdir($file->getRealPath());
+    } else {
+        unlink($file->getRealPath());
+    }
+}
+rmdir($dir);
+    }
+    
+    private function func_md5_filenames() {
+        
+    }
+    
+    //xidel alternative
+    private function func_extract_components() {
+        
+    }
+    
+    private function func_copy($src,$dst) {
+        $dir = opendir($src); 
+        @mkdir($dst); 
+        while(false !== ( $file = readdir($dir)) ) { 
+            if (( $file != '.' ) && ( $file != '..' )) { 
+                if ( is_dir($src . '/' . $file) ) { 
+                    recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+                } 
+                else { 
+                    copy($src . '/' . $file,$dst . '/' . $file); 
+                } 
+            } 
+        } 
+        closedir($dir);         
+    }
+ 
     
 }
