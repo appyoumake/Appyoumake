@@ -794,6 +794,8 @@ class FileManagement {
  * @return type
  */
     public function getAppMD5($app, $exclude_file = "") {
+        
+//MÅ TESTE OM TOM EXCLUDEFILES TIL func_find VIRKER FOR Å IKKE EKSKLUDERE TING, SAMME FOR 
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
         if ($exclude_file != "") {
             $exclude_file = " ! -iname '$exclude_file' ";
@@ -801,6 +803,7 @@ class FileManagement {
         $cmd = "find $app_path -type f \( -iname '*' ! -iname '*.lock' $exclude_file\) -exec md5sum {} \; | sort -k2 | md5sum";
         $result = explode("  ", exec($cmd));
         return $result[0];
+        
     }
     
     public function removeTempCompFiles($entity, $type) {
@@ -836,61 +839,75 @@ class FileManagement {
  
 //functions that replicate linux commands
     
-    private function func_find() {
-        
-    }
-    
-    private function func_sed() {
-        
-    }
-    
-    private function func_rmdir($dirPath) {
-        if (! is_dir($dirPath)) {
-            throw new InvalidArgumentException("$dirPath must be a directory");
+/**
+ * Basic find function, like Linux command can take wildcards and specify file or directory
+ * @param type $dir
+ * @param type $wildcard
+ * @param type $type = f for files, d for directories
+ */
+    private function func_find($path, $wildcard = "", $type = "", $exclude_files = "") {
+        $dir_iterator = new RecursiveDirectoryIterator($path);
+        $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+        if ($wildcard == "") {
+            $wildcard = "*";
         }
-        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-            $dirPath .= '/';
-        }
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                self::deleteDir($file);
-            } else {
-                unlink($file);
+        $result = array();
+        
+        foreach ($iterator as $file) {
+            if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
+                if ( fnmatch($wildcard, $file->getPathname()) && !fnmatch($exclude_files, $file->getPathname()) ) {
+                    $result[] = $file->getPathname();
+                }
             }
         }
-        rmdir($dirPath);
-// OR ------
-        $dir = 'samples' . DIRECTORY_SEPARATOR . 'sampledirtree';
-$it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-$files = new RecursiveIteratorIterator($it,
-             RecursiveIteratorIterator::CHILD_FIRST);
-foreach($files as $file) {
-    if ($file->isDir()){
-        rmdir($file->getRealPath());
-    } else {
-        unlink($file->getRealPath());
-    }
-}
-rmdir($dir);
+        
+        return $result;
     }
     
-    private function func_md5_filenames() {
-        
+/**
+ * Simple function to replace a string in entire file, from list of files
+ * 
+ * @param type $files
+ * @param type $search
+ * @param type $replace
+ */
+    private function func_sed($files, $search, $replace) {
+        foreach ($files as $file) {
+            $content = file_get_contents($file);
+            file_put_contents( $file, str_replace($search, $replace, $content) );
+        }
+    }
+    
+    private function func_rmdir($dir) {
+        if (! is_dir($dir)) {
+            return false;
+        }
+
+        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach($files as $file) {
+            if ($file->isDir()){
+                rmdir($file->getRealPath());
+            } else {
+                unlink($file->getRealPath());
+            }
+        }
+        rmdir($dir);
     }
     
     //xidel alternative
     private function func_extract_components() {
-        
+        // DOMDocument::loadHTMLFile
+        // echo $element->getAttribute('data-test');
     }
     
-    private function func_copy($src,$dst) {
+    private function func_copy($src, $dst) {
         $dir = opendir($src); 
         @mkdir($dst); 
         while(false !== ( $file = readdir($dir)) ) { 
             if (( $file != '.' ) && ( $file != '..' )) { 
                 if ( is_dir($src . '/' . $file) ) { 
-                    recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+                    func_copy($src . '/' . $file,$dst . '/' . $file); 
                 } 
                 else { 
                     copy($src . '/' . $file,$dst . '/' . $file); 
