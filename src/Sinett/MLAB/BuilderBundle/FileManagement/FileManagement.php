@@ -271,11 +271,12 @@ class FileManagement {
 					return array("Unable to unzip : " . $zip->getStatusString());
 				}
 				$zip->close();
-                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_name"] . "/" . $app->getPath() . "/'");
-                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_identifier"] . "/" . $app_domain . "/'");
+                $proj_files = $this->func_find($app_path, "f");
+                $s = array($this->config["cordova"]["offline_placeholder_name"], $this->config["cordova"]["offline_placeholder_identifier"]);
+                $r = array($app->getPath(), $app_domain);
+                $this->func_sed($proj_files, $s, $r);
                 foreach ($template_items_to_copy as $from => $to) {
-                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                    $shell_return = exec("{$cmd} 2>&1 && echo $?" , $output, $exit_code);
+                    $this->func_copy("$template_path$from", "$cordova_asset_path$to");
                 }
                 return true;
             } else {
@@ -285,52 +286,6 @@ class FileManagement {
                 
         } else {
             $default_platform = $this->config["cordova"]["default_platform"];
-            $include_paths = $this->config["cordova"][$default_platform]["include_paths"];
-            $cordova_create_command = $this->config["cordova"]["cmds"]["create"];
-            $cordova_create_command = str_replace(
-                    array("_FOLDER_", "_DOMAIN_", "_TITLE_"),
-                    array($app_path, $app_domain, $app->getPath()),
-                    $cordova_create_command
-            );
-          
-            $cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
-            if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
-                return array("Could not set path for Cordovava");
-            }
-
-            $cordova_build_properties = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["android"]["ant_properties"]);
-          
-          // Create new app using cordova command
-          // May need to download, so change script time limit
-          set_time_limit(240);
-          exec("mkdir -p {$app_path}");  
-	      exec($cordova_create_command . " 2>&1", $output, $exit_code);	  
-		
-//check exit code, anything except 0 = fail
-            if ($exit_code != 0) {
-                return $output + array("Exit code: " . $exit_code);
-                error_log("Failed creating new app using cordova, {$exit_code}, {$output}", 0);
-            } else {
-	      // Add platform
-	        
-	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
-            exec("whoami", $output, $exit_code);	      
-            exec("echo $PATH", $output, $exit_code);	      
-            exec("android 2>&1 && echo $?", $output, $exit_code);
-            exec("java -version 2>&1 && echo $?", $output, $exit_code);
-
-            $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
-	      
-// makes available custom build settings, e.g. for signing
-            exec("{$cordova_build_properties} 2>&1 && echo $?", $output, $exit_code);
-	      
-// Creates app-specific log file.
-            file_put_contents("{$app_path}cordov.log",print_r($output,true));
-
-            foreach ($template_items_to_copy as $from => $to) {
-                $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                $ret = shell_exec($cmd);
-            }
             return true;
             }
         }
@@ -845,7 +800,7 @@ class FileManagement {
  * @param type $wildcard
  * @param type $type = f for files, d for directories
  */
-    private function func_find($path, $wildcard = "", $type = "", $exclude_files = "") {
+    private function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
         $dir_iterator = new RecursiveDirectoryIterator($path);
         $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
         if ($wildcard == "") {
