@@ -800,8 +800,8 @@ class FileManagement {
  * @param type $type = f for files, d for directories
  */
     private function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
-        $dir_iterator = new RecursiveDirectoryIterator($path);
-        $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+        $dir_iterator = new \RecursiveDirectoryIterator($path);
+        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
         if ($wildcard == "") {
             $wildcard = "*";
         }
@@ -856,19 +856,27 @@ class FileManagement {
     }
     
     private function func_copy($src, $dst) {
-        $dir = opendir($src); 
-        @mkdir($dst); 
-        while(false !== ( $file = readdir($dir)) ) { 
-            if (( $file != '.' ) && ( $file != '..' )) { 
-                if ( is_dir($src . '/' . $file) ) { 
-                    func_copy($src . '/' . $file,$dst . '/' . $file); 
-                } 
-                else { 
-                    copy($src . '/' . $file,$dst . '/' . $file); 
+        if (!file_exists($src)) {
+            return;
+        }
+        
+        if ( is_dir($src) ) { 
+            $dir = opendir($src); 
+            @mkdir($dst); 
+            while(false !== ( $file = readdir($dir)) ) { 
+                if (( $file != '.' ) && ( $file != '..' )) { 
+                    if ( is_dir($src . '/' . $file) ) { 
+                        $this->func_copy($src . '/' . $file,$dst . '/' . $file); 
+                    } 
+                    else { 
+                        copy($src . '/' . $file,$dst . '/' . $file); 
+                    } 
                 } 
             } 
-        } 
-        closedir($dir);         
+            closedir($dir);      
+        } else {
+            copy($src, $dst); 
+        }
     }
  
     
