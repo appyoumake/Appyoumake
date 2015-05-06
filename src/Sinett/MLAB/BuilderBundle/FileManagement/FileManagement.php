@@ -287,7 +287,6 @@ class FileManagement {
         } else {
             $default_platform = $this->config["cordova"]["default_platform"];
             return true;
-            }
         }
 	}
 	
