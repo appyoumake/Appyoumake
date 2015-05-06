@@ -761,7 +761,8 @@ class FileManagement {
         foreach ($files as $file) {
             $md5sums[] = md5_file($file);
         }
-        return md5(implode("", sort($md5sums)));
+        sort($md5sums);
+        return md5(implode("", $md5sums));
         
         
         
