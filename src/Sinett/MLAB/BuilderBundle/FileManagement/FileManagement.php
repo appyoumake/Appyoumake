@@ -785,19 +785,21 @@ class FileManagement {
         $cmd = "/usr/bin/xidel %PATH%* -e //div/@data-mlab-type -q --output-format=json-wrapped"; 
         $all_comps_used = array();
         $app_root = $this->config["paths"]["app"];
+
         foreach ($apps as $app) {
             $app_path = $app->calculateFullPath($app_root) . $this->config["cordova"]["asset_path"] . "/";
-            foreach (glob("$app_path*.html") as $filename) {
+            $files = $this->func_find( $app_path, "f", "*.html" );
+        
+            foreach ($files as $filename) {
                 if (filesize($filename) > 0) {
-                    $temp_cmd = str_replace("%PATH%", $filename, $cmd);
-                    $extracted_data = shell_exec($temp_cmd);
-                    $temp_comp = json_decode($extracted_data);
-                    if (!is_null($temp_comp[0])) {
-                        if (!is_array($temp_comp[0])) {
-                            $all_comps_used[] = $temp_comp[0];
-                        } else {
-                            $all_comps_used = array_merge($all_comps_used, $temp_comp[0]);
-                        }
+                    $doc = new DOMDocument();
+                    $doc->loadHTMLFile($filename);
+                    $tags = $doc->getElementsByTagName("div");
+                    foreach ($tags as $tag) {
+                          $temp_tag = $tag->getAttribute("data-mlab-type");
+                           if ($temp_tag != "") {
+                                $all_comps_used[] = $temp_tag;
+                            }
                     }
                 }
             }
