@@ -658,9 +658,11 @@ class AppController extends Controller
         }
         
 //update file counter variable in JS
-        $total_pages = $file_mgmt->getTotalPageNum($app);
+        /* TODO: Remove and replace with precompile processing 
+         * $total_pages = $file_mgmt->getTotalPageNum($app);
+         
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
-
+*/
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
     }
 
