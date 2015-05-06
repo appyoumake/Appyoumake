@@ -751,12 +751,19 @@ class FileManagement {
         
 //MÅ TESTE OM TOM EXCLUDEFILES TIL func_find VIRKER FOR Å IKKE EKSKLUDERE TING, SAMME FOR 
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $md5sums = array();
+        
         if ($exclude_file != "") {
-            $exclude_file = " ! -iname '$exclude_file' ";
+            $files = $this->func_find( $app_path, "f", "*", array($exclude_file, " *.lock") );
+        } else {
+            $files = $this->func_find( $app_path, "f", "*", array("*.lock") );
         }
-        $cmd = "find $app_path -type f \( -iname '*' ! -iname '*.lock' $exclude_file\) -exec md5sum {} \; | sort -k2 | md5sum";
-        $result = explode("  ", exec($cmd));
-        return $result[0];
+        foreach ($files as $file) {
+            $md5sums[] = md5_file($file);
+        }
+        return md5(implode("", sort($md5sums)));
+        
+        
         
     }
     
@@ -795,9 +802,10 @@ class FileManagement {
     
 /**
  * Basic find function, like Linux command can take wildcards and specify file or directory
- * @param type $dir
- * @param type $wildcard
+ * @param type $path
  * @param type $type = f for files, d for directories
+ * @param type $wildcard
+ * @param type $exclude_files
  */
     private function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
         $dir_iterator = new \RecursiveDirectoryIterator($path);
@@ -809,8 +817,21 @@ class FileManagement {
         
         foreach ($iterator as $file) {
             if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
-                if ( fnmatch($wildcard, $file->getPathname()) && !fnmatch($exclude_files, $file->getPathname()) ) {
-                    $result[] = $file->getPathname();
+                if ( fnmatch($wildcard, $file->getPathname()) ) {
+                    if ($exclude_files != "") {
+                        $exclude = false;
+                        foreach ($exclude_files as $exclude_file) {
+                            if (fnmatch($exclude_file, $file->getPathname())) {
+                                $exclude = true;
+                                break;
+                            }
+                        }
+                        if (!$exclude) {
+                            $result[] = $file->getPathname();
+                        }
+                    } else {
+                        $result[] = $file->getPathname();
+                    }
                 }
             }
         }
