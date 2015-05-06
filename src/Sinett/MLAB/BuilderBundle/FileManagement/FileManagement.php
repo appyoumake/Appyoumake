@@ -507,7 +507,10 @@ class FileManagement {
      */
     public function clearLocks($uid) {
         $apps_location = $this->config['paths']['app'];
-        `find $apps_location -type f -name "*.$uid.lock" -exec rm {} \;`;
+        $files = $this->func_find($apps_location, "f",  "*.$uid.lock");
+        foreach ($files as $file) {
+             unlink($file);
+        }
     }
     
     
@@ -516,8 +519,13 @@ class FileManagement {
      * @param type $uid
      */
     public function clearAllLocks() {
+        
         $apps_location = $this->config['paths']['app'];
-        `find $apps_location -type f -name "*.lock" -exec rm {} \;`;
+        $files = $this->func_find($apps_location, "f",  "*.lock");
+        foreach ($files as $file) {
+             unlink($file);
+        }
+      
     }
     
     
@@ -770,8 +778,7 @@ class FileManagement {
     
     public function removeTempCompFiles($entity, $type) {
         $path = $this->config["paths"][$type] . $entity->getPath();
-        $cmd = "rm -rf $path";
-        return shell_exec($cmd);
+        $this->func_rmdir($path);
     }
 
     public function getComponentsUsed($apps) {
