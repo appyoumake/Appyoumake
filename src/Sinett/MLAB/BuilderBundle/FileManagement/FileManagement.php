@@ -782,24 +782,25 @@ class FileManagement {
     }
 
     public function getComponentsUsed($apps) {
-        $cmd = "/usr/bin/xidel %PATH%* -e //div/@data-mlab-type -q --output-format=json-wrapped"; 
-        $all_comps_used = array();
         $app_root = $this->config["paths"]["app"];
+        $all_comps_used = array();
 
         foreach ($apps as $app) {
             $app_path = $app->calculateFullPath($app_root) . $this->config["cordova"]["asset_path"] . "/";
             $files = $this->func_find( $app_path, "f", "*.html" );
-        
+            
             foreach ($files as $filename) {
                 if (filesize($filename) > 0) {
-                    $doc = new DOMDocument();
+                    $doc = new \DOMDocument("1.0", "utf-8");
+                    libxml_use_internal_errors(true);
                     $doc->loadHTMLFile($filename);
-                    $tags = $doc->getElementsByTagName("div");
-                    foreach ($tags as $tag) {
-                          $temp_tag = $tag->getAttribute("data-mlab-type");
-                           if ($temp_tag != "") {
-                                $all_comps_used[] = $temp_tag;
-                            }
+                    $container = $doc->getElementById("content");
+                    $elements = $container->getElementsByTagName("div");
+                    foreach ( $elements as $el ) {
+                        $temp_tag = $el->getAttribute("data-mlab-type");
+                        if ($temp_tag != "") {
+                            $all_comps_used[] = $temp_tag;
+                        }
                     }
                 }
             }

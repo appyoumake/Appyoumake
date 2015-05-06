@@ -402,6 +402,8 @@ class AppController extends Controller
 
 //load all the components        
     	$file_mgmt = $this->get('file_management');
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
+        die(print_r($file_mgmt->getComponentsUsed($apps), true));
     	$file_mgmt->setConfig('component');
         
     	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
