@@ -3,54 +3,40 @@
     <head>
         <meta charset="UTF-8" />
         <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_editor_menu.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
+	<link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
+	<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
+        <link href="{{ asset("/css/mlab_menu.css") }}" rel="stylesheet" />
+	<link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
     </head>
     <body>
         
-        <!-- Menu - put in seperat file later -->
-            <ul id="mlab_editor_menu">
-                <li class="single">
-                    <img src="/img/logo_menu.png" alt="logo" /><!-- Begin Home Item -->
-                </li><!-- End Logo Item -->
-    
-                <li class="single">
-                </li><!-- End Empty Item -->
-    
-                <li class="single menu_right">
-                    Developed by the Sinett project at FFI.no
-                </li><!-- End Empty Item -->
-
-            </ul>
-            <!-- END Menu -->
+        <ul id="mlab_menu" class="mlab_basic_menu">
+            {{ include( 'menu.html.twig' ) }}
+            <li class="single menu_right">
+                Developed by the Sinett project at FFI.no
+            </li>
+        </ul>
             
         <div class="mlab_align_menu_elements">
             <div class="container">
                 
-         
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                <h1>Logg ut</h1>
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <h1>{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</h1>
                 
-                    <p>{{ 'layout.logout.info'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>
+                <p>{{ 'layout.logout.info'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>
 
-                    
-                        <a class="mlab_button_new_app" href="{{ path('fos_user_security_logout') }}">
-                           {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                        </a>
-                    
-                    
-               
-                
+                <a class="mlab_button_new_app" href="{{ path('fos_user_security_logout') }}">
+                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                </a>
+              
             {% else %}
-            <h1>Logg inn</h1>
-            
-                    {% block fos_user_content %}
-                    {% endblock fos_user_content %}
+                
+                <h1>{{ 'layout.login.headline'|trans({}, 'FOSUserBundle') }}</h1>
+                
+                {% block fos_user_content %}
+                {% endblock fos_user_content %}
                 
             {% endif %}
-                
                 
             </div>   
         </div>
@@ -62,7 +48,6 @@
                 </div>
             {% endfor %}
         {% endfor %}
-
-        
+  
     </body>
 </html>

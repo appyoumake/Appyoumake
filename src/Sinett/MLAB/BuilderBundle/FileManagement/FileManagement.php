@@ -68,7 +68,8 @@ class FileManagement {
 //loop through and see if all required files are present
 			if ($res === TRUE) {
 				for( $i = 0; $i < $zip->numFiles; $i++ ){
-					$f = $zip->statIndex( $i )['name'];
+					$temp_f = $zip->statIndex( $i );
+					$f = $temp_f['name'];
 					if (in_array($f, $this->required_files)) {
 						unset($this->required_files[array_search($f, $this->required_files)]);
 					}
@@ -241,35 +242,18 @@ class FileManagement {
 	public function createAppFromTemplate ($template, $app) {
 		
 //prepare all the paths to use
-		$default_platform = $this->config["cordova"]["default_platform"];
-		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
 		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
 		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
-		
-		$cordova_create_command = $this->config["cordova"]["cmds"]["create"];
-		$cordova_create_command = str_replace(
-				array("_FOLDER_", "_DOMAIN_", "_TITLE_"),
-				array($app_path, $app_domain, $app->getPath()),
-				$cordova_create_command
-		);
-		
 		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
-		
-		$cordova_add_platform_command = str_replace("_PLATFORM_", $default_platform, $this->config["cordova"]["cmds"]["platform"]);
-        if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
-			return array("Could not set path for Cordovava");
-		}
-		
-		$cordova_build_properties = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["android"]["ant_properties"]);
 		
 		$output = array();
 		$exit_code = 0;
 		
 //if they are offline we just extract a ZIP file that has to be present, 
-        //and then we need to update a few files with new data
+//and then we need to update a few files with new data
         if ($this->config["cordova"]["offline"]) {
             if (!file_exists($this->config["cordova"]["offline_archive"])) {
                 return array("You are working offine, but the ZIP archive to use for a new app was not found:" . $this->config["cordova"]["offline_archive"]);
@@ -287,11 +271,12 @@ class FileManagement {
 					return array("Unable to unzip : " . $zip->getStatusString());
 				}
 				$zip->close();
-                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_name"] . "/" . $app->getPath() . "/'");
-                shell_exec($cordova_chdir_command . " && find . -type f -print | xargs sed -i 's/" . $this->config["cordova"]["offline_placeholder_identifier"] . "/" . $app_domain . "/'");
+                $proj_files = $this->func_find($app_path, "f");
+                $s = array($this->config["cordova"]["offline_placeholder_name"], $this->config["cordova"]["offline_placeholder_identifier"]);
+                $r = array($app->getPath(), $app_domain);
+                $this->func_sed($proj_files, $s, $r);
                 foreach ($template_items_to_copy as $from => $to) {
-                    $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                    $shell_return = exec("{$cmd} 2>&1 && echo $?" , $output, $exit_code);
+                    $this->func_copy("$template_path$from", "$cordova_asset_path$to");
                 }
                 return true;
             } else {
@@ -300,6 +285,7 @@ class FileManagement {
             
                 
         } else {
+<<<<<<< HEAD
           
           
           // Create new app using cordova command
@@ -317,7 +303,7 @@ class FileManagement {
 	        
 	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
             exec("whoami", $output, $exit_code);	      
-            //exec("echo $PATH", $output, $exit_code);	      
+            exec("echo $PATH", $output, $exit_code);	      
             exec("android 2>&1 && echo $?", $output, $exit_code);
             exec("java -version 2>&1 && echo $?", $output, $exit_code);
 
@@ -333,8 +319,10 @@ class FileManagement {
                 $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
                 $ret = shell_exec($cmd);
             }
+=======
+            $default_platform = $this->config["cordova"]["default_platform"];
+>>>>>>> 4e70d30faafc9e313cc917e1fae9e69e54e50bc8
             return true;
-            }
         }
 	}
 	
@@ -555,7 +543,10 @@ class FileManagement {
      */
     public function clearLocks($uid) {
         $apps_location = $this->config['paths']['app'];
-        `find $apps_location -type f -name "*.$uid.lock" -exec rm {} \;`;
+        $files = $this->func_find($apps_location, "f",  "*.$uid.lock");
+        foreach ($files as $file) {
+             unlink($file);
+        }
     }
     
     
@@ -564,8 +555,13 @@ class FileManagement {
      * @param type $uid
      */
     public function clearAllLocks() {
+        
         $apps_location = $this->config['paths']['app'];
-        `find $apps_location -type f -name "*.lock" -exec rm {} \;`;
+        $files = $this->func_find($apps_location, "f",  "*.lock");
+        foreach ($files as $file) {
+             unlink($file);
+        }
+      
     }
     
     
@@ -598,7 +594,10 @@ class FileManagement {
             return "unlocked";
             
 //opened by someone else
-        } else if (!empty(glob("$filename.*.lock"))) {
+        } 
+        
+        $test = glob("$filename.*.lock");
+        if (!empty($test)) {
             $this->clearLocks($uid);
             return "locked";
 
@@ -793,37 +792,50 @@ class FileManagement {
  * @return type
  */
     public function getAppMD5($app, $exclude_file = "") {
+        
+//MÅ TESTE OM TOM EXCLUDEFILES TIL func_find VIRKER FOR Å IKKE EKSKLUDERE TING, SAMME FOR 
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $md5sums = array();
+        
         if ($exclude_file != "") {
-            $exclude_file = " ! -iname '$exclude_file' ";
+            $files = $this->func_find( $app_path, "f", "*", array($exclude_file, " *.lock") );
+        } else {
+            $files = $this->func_find( $app_path, "f", "*", array("*.lock") );
         }
-        $cmd = "find $app_path -type f \( -iname '*' ! -iname '*.lock' $exclude_file\) -exec md5sum {} \; | sort -k2 | md5sum";
-        $result = explode("  ", exec($cmd));
-        return $result[0];
+        foreach ($files as $file) {
+            $md5sums[] = md5_file($file);
+        }
+        sort($md5sums);
+        return md5(implode("", $md5sums));
+        
+        
+        
     }
     
     public function removeTempCompFiles($entity, $type) {
         $path = $this->config["paths"][$type] . $entity->getPath();
-        $cmd = "rm -rf $path";
-        return shell_exec($cmd);
+        $this->func_rmdir($path);
     }
 
     public function getComponentsUsed($apps) {
-        $cmd = "/usr/bin/xidel %PATH%* -e //div/@data-mlab-type -q --output-format=json-wrapped"; 
-        $all_comps_used = array();
         $app_root = $this->config["paths"]["app"];
+        $all_comps_used = array();
+
         foreach ($apps as $app) {
             $app_path = $app->calculateFullPath($app_root) . $this->config["cordova"]["asset_path"] . "/";
-            foreach (glob("$app_path*.html") as $filename) {
+            $files = $this->func_find( $app_path, "f", "*.html" );
+            
+            foreach ($files as $filename) {
                 if (filesize($filename) > 0) {
-                    $temp_cmd = str_replace("%PATH%", $filename, $cmd);
-                    $extracted_data = shell_exec($temp_cmd);
-                    $temp_comp = json_decode($extracted_data);
-                    if (!is_null($temp_comp[0])) {
-                        if (!is_array($temp_comp[0])) {
-                            $all_comps_used[] = $temp_comp[0];
-                        } else {
-                            $all_comps_used = array_merge($all_comps_used, $temp_comp[0]);
+                    $doc = new \DOMDocument("1.0", "utf-8");
+                    libxml_use_internal_errors(true);
+                    $doc->loadHTMLFile($filename);
+                    $container = $doc->getElementById("content");
+                    $elements = $container->getElementsByTagName("div");
+                    foreach ( $elements as $el ) {
+                        $temp_tag = $el->getAttribute("data-mlab-type");
+                        if ($temp_tag != "") {
+                            $all_comps_used[] = $temp_tag;
                         }
                     }
                 }
@@ -832,5 +844,158 @@ class FileManagement {
         $all_comps_used = array_unique($all_comps_used);
         return $all_comps_used;
     }
+ 
+//functions that replicate linux commands
     
+/**
+ * Basic find function, like Linux command can take wildcards and specify file or directory
+ * @param type $path
+ * @param type $type = f for files, d for directories
+ * @param type $wildcard
+ * @param type $exclude_files
+ */
+    private function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
+        $dir_iterator = new \RecursiveDirectoryIterator($path);
+        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+        if ($wildcard == "") {
+            $wildcard = "*";
+        }
+        $result = array();
+        
+        foreach ($iterator as $file) {
+            if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
+                if ( fnmatch($wildcard, $file->getPathname()) ) {
+                    if ($exclude_files != "") {
+                        $exclude = false;
+                        foreach ($exclude_files as $exclude_file) {
+                            if (fnmatch($exclude_file, $file->getPathname())) {
+                                $exclude = true;
+                                break;
+                            }
+                        }
+                        if (!$exclude) {
+                            $result[] = $file->getPathname();
+                        }
+                    } else {
+                        $result[] = $file->getPathname();
+                    }
+                }
+            }
+        }
+        
+        return $result;
+    }
+    
+/**
+ * Simple function to replace a string in entire file, from list of files
+ * 
+ * @param type $files
+ * @param type $search
+ * @param type $replace
+ */
+    private function func_sed($files, $search, $replace) {
+        foreach ($files as $file) {
+            $content = file_get_contents($file);
+            file_put_contents( $file, str_replace($search, $replace, $content) );
+        }
+    }
+    
+    private function func_rmdir($dir) {
+        if (! is_dir($dir)) {
+            return false;
+        }
+
+        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach($files as $file) {
+            if ($file->isDir()){
+                rmdir($file->getRealPath());
+            } else {
+                unlink($file->getRealPath());
+            }
+        }
+        rmdir($dir);
+    }
+    
+    //xidel alternative
+    private function func_extract_components() {
+        // DOMDocument::loadHTMLFile
+        // echo $element->getAttribute('data-test');
+    }
+    
+    private function func_copy($src, $dst) {
+        if (!file_exists($src)) {
+            return;
+        }
+        
+        if ( is_dir($src) ) { 
+            $dir = opendir($src); 
+            @mkdir($dst); 
+            while(false !== ( $file = readdir($dir)) ) { 
+                if (( $file != '.' ) && ( $file != '..' )) { 
+                    if ( is_dir($src . '/' . $file) ) { 
+                        $this->func_copy($src . '/' . $file,$dst . '/' . $file); 
+                    } 
+                    else { 
+                        copy($src . '/' . $file,$dst . '/' . $file); 
+                    } 
+                } 
+            } 
+            closedir($dir);      
+        } else {
+            copy($src, $dst); 
+        }
+    }
+   
 }
+
+if (!function_exists('fnmatch')) { 
+    define('FNM_PATHNAME', 1); 
+    define('FNM_NOESCAPE', 2); 
+    define('FNM_PERIOD', 4); 
+    define('FNM_CASEFOLD', 16); 
+
+    function fnmatch($pattern, $string, $flags = 0) { 
+        return pcre_fnmatch($pattern, $string, $flags); 
+    } 
+} 
+
+function pcre_fnmatch($pattern, $string, $flags = 0) { 
+    $modifiers = null; 
+    $transforms = array( 
+        '\*'    => '.*', 
+        '\?'    => '.', 
+        '\[\!'    => '[^', 
+        '\['    => '[', 
+        '\]'    => ']', 
+        '\.'    => '\.', 
+        '\\'    => '\\\\' 
+    ); 
+
+    // Forward slash in string must be in pattern: 
+    if ($flags & FNM_PATHNAME) { 
+        $transforms['\*'] = '[^/]*'; 
+    } 
+
+    // Back slash should not be escaped: 
+    if ($flags & FNM_NOESCAPE) { 
+        unset($transforms['\\']); 
+    } 
+
+    // Perform case insensitive match: 
+    if ($flags & FNM_CASEFOLD) { 
+        $modifiers .= 'i'; 
+    } 
+
+    // Period at start must be the same as pattern: 
+    if ($flags & FNM_PERIOD) { 
+        if (strpos($string, '.') === 0 && strpos($pattern, '.') !== 0) return false; 
+    } 
+
+    $pattern = '#^' 
+        . strtr(preg_quote($pattern, '#'), $transforms) 
+        . '$#' 
+        . $modifiers; 
+
+    return (boolean)preg_match($pattern, $string); 
+} 

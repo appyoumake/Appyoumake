@@ -56,7 +56,8 @@ class AppController extends Controller
         if ($form->isValid()) {
         	
 //store values in array for easy access
-        	$app_data = $request->request->all()["form"];
+                $temp_app_data = $request->request->all();
+        	$app_data = $temp_app_data["form"];
 //get config values
         	$config = $this->container->parameters['mlab'];
 //prepare doctrine manager
@@ -578,7 +579,8 @@ class AppController extends Controller
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
 
-        $html = $request->request->all()["html"];
+        $temp_html = $request->request->all();
+        $html = $temp_html["html"];
         $res = $file_mgmt->savePage($app, $page_num, $html);
         if ($res === false) {
             return new JsonResponse(array(
@@ -656,9 +658,11 @@ class AppController extends Controller
         }
         
 //update file counter variable in JS
-        $total_pages = $file_mgmt->getTotalPageNum($app);
+        /* TODO: Remove and replace with precompile processing 
+         * $total_pages = $file_mgmt->getTotalPageNum($app);
+         
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
-
+*/
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
     }
 
@@ -870,15 +874,15 @@ class AppController extends Controller
                             'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
                     }
                     
-                    if (file_exists("$path_app_assets/js/include_comp.js")) {
-                        $include_items = file("$path_app_assets/js/include_comp.js", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if (file_exists("$path_app_assets/js/include_comp.txt")) {
+                        $include_items = file("$path_app_assets/js/include_comp.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                     } else {
                         $include_items = array();
                     }
                     if (!in_array("/js/" . $comp_id . "_code_rt.js", $include_items)) {
                         $include_items[] = "/js/" . $comp_id . "_code_rt.js";
                     }
-                    file_put_contents("$path_app_assets/js/include_comp.js", implode("\n", $include_items));
+                    file_put_contents("$path_app_assets/js/include_comp.txt", implode("\n", $include_items));
                 }
 
 //2: Add rights to the manifest file
@@ -934,13 +938,13 @@ class AppController extends Controller
                                         if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
                                             return new JsonResponse(array(
                                                 'result' => 'failure',
-                                                'msg' => sprintf("Unable to copy JavaScript file %s for this component: %s", $dependency , $comp_id)));
+                                                'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id)));
                                         } 
                                     }
                                 }
 
 //we need to update the include files of the app
-                                if (file_exists("$path_app_assets/js/include.js")) {
+                                if (file_exists("$path_app_assets/js/include.$filetype")) {
                                     $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                                 } else {
                                     $include_items = array();
@@ -951,8 +955,14 @@ class AppController extends Controller
                                         $include_items[] = "@import url('$dependency');";
                                     }
                                 } else {
-                                    if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
-                                        $include_items[] = "$.getScript('/js/$dependency');";
+                                    if (substr($dependency, 0, 4) == "http") {
+                                        if (!in_array("$.getScript('$dependency');", $include_items)) {
+                                            $include_items[] = "$.getScript('$dependency');";
+                                        }
+                                    } else {
+                                        if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
+                                            $include_items[] = "$.getScript('/js/$dependency');";
+                                        }
                                     }
                                 }
                                 file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
@@ -1055,7 +1065,7 @@ class AppController extends Controller
         $config = $this->container->parameters['mlab'];
         $path_app_js = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'] . "/js/";
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $storage_plugin_id . "/";
-        $path_app_include_file = $path_app_js . "include_comp.js";
+        $path_app_include_file = $path_app_js . "include_comp.txt";
 
 //check if path to component and app exists
         if ( is_dir($path_component) && is_dir($path_app_js) ) {

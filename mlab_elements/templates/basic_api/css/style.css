@@ -2,21 +2,14 @@
    Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
 */
 
+/* TODO - annet navn enn #page???????? */
 
 /* ==========================================================================
-   Typography
+   Page
    ========================================================================== */
-#mlab_editable_area{
-    font-size: 100%;
-    line-height: 100%;
-}
 
-#mlab_editable_area.large_text{
-    font-size: 120%;
-    line-height: 120%;
-}
-
-.ui-page-theme-a {
+#mlab_editor_chrome #page,
+#page {
     font-size: 1em;
     font-family: Arial,sans-serif;
     font-style: normal;
@@ -26,73 +19,83 @@
     text-shadow: none;
 }
 
-[data-role="content"] {
+/* #page [data-role="content"] {
     font-size: 1em;
     font-family: Arial,sans-serif;
     font-style: normal;
     color: #CCCCCC;
     line-height: 1em;
     text-shadow: none;
+} */
+
+#mlab_editor_chrome #page,
+#page {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background-color: #1e1e1e;
 }
 
-#page.white [data-role="content"] {
-    color: #000000;
+#page #content {
+    padding: 10px;
 }
+
 
 /* ==========================================================================
    Component styling
    ========================================================================== */
-#mlab_editable_area h1 {
+#page h1 {
     font-size: 1.45em;
     line-height: 1.1em;
     margin: 1em 0;
 }
 
-#mlab_editable_area h2 {
+#page h2 {
     font-size: 1.27em;
     line-height: 1.1em;
     margin: 1em 0;
 }
 
-#mlab_editable_area h3 {
+#page h3 {
     font-size: 1.12em;
     line-height: 1.1em;
     margin: 1em 0;
 }
 
-#mlab_editable_area p {
+#page p {
     font-size: 1em;
     line-height: 1.1em;
     margin: 1em 0;
 }
 
-#mlab_editable_area ol {
+#page ol {
     margin: 0;
     list-style-type: decimal;
     list-style-position:outside;
     padding:0 2em 0 1.25em;
 }
 
-#mlab_editable_area ul {
+#page ul {
     margin: 0;
     list-style-type: square;
     list-style-position:outside;
     padding:0 2em 0 1.25em;
 }
 
-#mlab_editable_area img {
+#page img {
     margin: 0;
     padding: 10px;
     border: none;
 }
 
-#mlab_editable_area map {
+#page map {
     margin: 0;
     padding: 10px;
     border: none;
 }
 
-#mlab_editable_area video {
+#page video {
     margin: 0;
     padding: 10px;
     border: none;
@@ -101,327 +104,30 @@
     height: auto   !important;
 }
 
-#mlab_editable_area iframe {
+#page iframe {
     margin: 0;
     padding: 5px;
     border: none;
     cursor: pointer;
 }
 
-#mlab_editable_area div {
+#page div {
     margin: 0;
-    padding: 10px;
+    padding: 0;
     border: none;
 }
 
-#mlab_editable_area figure {
+#page figure {
     margin: 7px 25px 0px 0px;
 }
 
-#mlab_editable_area figure img {
+#page figure img {
    padding-bottom: 5px;
 }
 
-#mlab_editable_area figure figcaption {
+#page figure figcaption {
    text-align: center;
    font-style: italic;
    font-size: 14px;
 }
 
-/* ==========================================================================
-   Page
-   ========================================================================== */
-
-#page {
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block;
-    overflow: hidden;
-    background-color: #1e1e1e;
-}
-
-#page.white {
-    background-color: #ffffff;
-}
-
-
-/* ==========================================================================
-   Header with menu
-   ========================================================================== */
-#header {
-    padding: 0;
-    margin: 0;
-    background-image: url('./img/contentpage_header_backgr.png');
-    background-repeat:no-repeat;
-    background-size: cover;
-    background-position-y: bottom;
-    border-width: 0;
-    border-style: hidden;
-    overflow: hidden;
-    opacity: 1;
-    z-index: 120 !important;
-    border-width: 0 0 0.15em 0;
-    border-style: solid;
-    border-color: #666666;
-}
-
-#menu_box{
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-}
-
-#marg_top_menu{
-    padding: 0;
-    margin: 0;
-    padding-bottom: 3.6%;
-}
-
-#marg_left_menu{
-    padding: 0;
-    margin: 0;
-    padding-bottom: 1%;
-    width: 3.6%;
-    float: left; 
-}
-
-#btn_heraldisk, #btn_menu, #btn_color_toggle, #btn_txsize, #btn_end{
-    padding: 0;
-    margin: 0;
-    background-image: url('./img/btn_heraldisk.svg');
-    background-repeat: no-repeat;
-    background-size: 100%;
-    padding-bottom: 10.75%;
-    width: 10.8%;
-    float: left;  
-    margin-right: -0.1%;
-    margin-left: -0.1%;
-}
-
-#btn_menu {
-    background-image: url('./img/btn_menu.svg');
-    margin-left: -0.01%;
-}
-
-#btn_color_toggle {
-    background-image: url('./img/btn_color_toggle.svg');
-}
-
-#btn_txsize {
-    background-image: url('./img/btn_txsize.svg');
-}
-
-#btn_end {
-    background-image: url('./img/btn_end.svg');
-    margin-left: -0.001%;
-    
-}
-
-btn_secondary.hide_it {
-    display: none;
-}
-
-
-/* ==========================================================================
-   Left and right navigation panel
-   ========================================================================== */
-#panel_left, #panel_right {
-    padding: 0;
-    margin: 0;
-    width: 7.2%;
-    height: 60%;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    position: fixed;
-    display: block;
-    top: 39.5%;
-    z-index: 99; 
-}
-
-#panel_left {
-    background-image: url('./img/contentpage_dark_backpage.svg') !important;
-    left: 0;
-    margin-left: 2%;
-}
-
-
-#panel_right {
-    background-image: url('./img/contentpage_dark_nextpage.svg') !important;    
-    right: 0;
-    margin-right: 2%;
-}
-
-#page.white #panel_left {
-    background-image: url('./img/contentpage_white_backpage.svg') !important;
-}
-
-
-#page.white #panel_right {
-    background-image: url('./img/contentpage_white_nextpage.svg') !important;    
-}
-
-/* ==========================================================================
-   Gradient top and bottom
-   ========================================================================== */
-#gradient_top, #gradient_bottom{
-    width: 100%;
-    padding-bottom: 10.8%;
-}
-
-#gradient_top, #gradient_bottom {
-    position: fixed;
-    display: block;
-}
-
-#gradient_top {
-    top: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 5%,  rgba(0, 0, 0, 0) 100%);
-}
-
-#gradient_bottom{
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%,  rgba(0, 0, 0, 1) 95%);
-}
-
-#gradient_bottom {
-    bottom: 0;
-}
-
-#page.white #gradient_top{
-    background: linear-gradient(to bottom, rgba(256, 256, 256, 1) 5%,  rgba(0, 0, 0, 0) 90%);
-}
-
-#page.white #gradient_bottom{
-    background: linear-gradient(to bottom, rgba(256, 256, 256, 0) 0%,  rgba(256, 256, 256, 1) 95%);
-}
-
-/* ==========================================================================
-   Content
-   ========================================================================== */
-div.ui-content {
-   margin-top: 15%;
-   margin-bottom: 7.2%;
-   margin-left: 7.2%;
-   margin-right: 7.2%;
-}
-
-#content {
-    margin-top: 0;
-    overflow-y: visible;
-    overflow-x: hidden;
-}
-
-
-/* ==========================================================================
-   Footer
-   ========================================================================== */
-#footer{
-    padding: 0;
-    margin: 0;
-    background-color: rgba(0,0,0,0);
-    opacity: 1;
-    border-width: 0;
-    position: fixed;
-    display: block;
-    bottom: 0px !important;
-    border-style: none;
-}
-
-#footer.hide_it {
-    display: none;
-}
-
-
-/* ==========================================================================
-   Slider
-   ========================================================================== */
-#slider_box{
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-    background-color: #1e1e1e;
-    border-width: 0.15em 0 0 0;
-    border-style: solid;
-    border-color: #666666;
-}
-
-#marg_left_slider{
-    padding: 0;
-    margin: 0;
-    padding-bottom: 1%;
-    width: 7.2%;
-    float: left; 
-}
-
-#mid_with_slider{
-    padding: 0;
-    margin: 0;
-    padding-top: 4.4%;
-    padding-bottom: 6.4%;
-    width: 85.6%;
-    float: left;  
-    
-}
-
-#marg_right_slider{
-    padding: 0;
-    margin: 0;
-    padding-bottom: 1%;
-    width: 7.2%;
-    float: left; 
-}
-
-div.ui-slider{
-    height: 1%;
-}
-
-div.ui-slider-track.ui-corner-all{
-    background-color: #e1e2e0;
-    border-color: #666666;
-    border: 0;
-    border-radius: 0.0em;
-    margin: 0px;
-    height: 10px;
-    box-shadow: 
-    0 1px 2px #666, /*bottom external highlight*/
-    0 -1px 1px #000, /*top external shadow*/ 
-    inset 0 -1px 1px rgba(0,0,0,0.5), /*bottom internal shadow*/ 
-    inset 0 1px 1px rgba(255,255,255,0.8); /*top internal highlight*/
-}
-
-div.ui-slider-bg, div.ui-btn-active{
-    background-color: #5b1762 !important;
-}
-.ui-page-theme-a .ui-bar-inherit {
-    background-color: #e1e2e0;
-} 
-
-.ui-page-theme-a .ui-btn{
-   background: none repeat scroll 0% 0% #666666 !important;
-   border-color: #CCCCCC !important;
-   color: #CCCCCC !important;
-   text-shadow: 0px 0px 0px #CCCCCC !important;
-}
-
-.ui-page-theme-a a{
-    font-weight: normal;
-}
-.ui-page-theme-a .ui-btn:focus{
-    box-shadow: 0 0 0 rgb(0, 0, 0)!important;
-}
-.ui-slider-track .ui-btn.ui-slider-handle{
-   width: 40px;
-   height: 20px;
-   line-height: 20px;
-   font-size: 0.8em;
-   margin: -12px 0px 0px -12px 
-}
-
-
-/* ==========================================================================
-  To hide an element from the app builder - add the class "mlab_hide_in_app_builder"
-  to the element - the App Builder will have a stylesheet with the syntax:
-
-.mlab_hide_in_app_builder {
-    display: none !important;
-}
-========================================================================== */

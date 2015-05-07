@@ -281,7 +281,7 @@ app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
 
 
 #-----------------------------------------------------
-# MLAB  (edit app) Menu
+# MLAB Menu
 #-----------------------------------------------------
 
 app.builder.menu.welcome.info: Litt generelt - Hva menyen hjelper til med...
@@ -298,6 +298,29 @@ app.builder.menu.link.admin.users: Bruker admin
 app.builder.menu.link.system: System admin
 app.builder.menu.link.logout: Logg ut
 app.builder.menu.link.login: Logg inn
+
+
+
+#-----------------------------------------------------
+# App builder - the page bar
+#-----------------------------------------------------
+
+app.builder.page.heading: Sider
+app.builder.page.save: Lagre
+app.builder.page.cancel: Avbryt
+
+app.builder.page.menu.delet.info: Klikk på krysset for å permanent slette siden du står på
+app.builder.page.menu.delete: Slett siden som er åpen 
+
+app.builder.page.tooltip.previous: Forrige side
+app.builder.page.tooltip.next: Neste side
+app.builder.page.tooltip.save: Lagre endring av sidenavn
+app.builder.page.tooltip.cancel: Avbryt endring av sidenavn
+app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
+app.builder.page.tooltip.new: Ny side
+
+app.builder.overlay.info: Vennligst vent mens MLAB åpner appen din...
+
 
 
 #-----------------------------------------------------
@@ -325,3 +348,16 @@ app.builder.edit.menu.heading.exit: Avslutt
 app.builder.edit.menu.exit.info: Er du ferdig å redigere appen din så klikk på avslutt knappen under
 
 app.builder.edit.menu.tooltip.something: Something
+
+
+
+#-----------------------------------------------------
+# Index info page
+#-----------------------------------------------------
+
+app.builder.index.page.heading: MLAB
+app.builder.index.page.text: Velkommen til MLAB, the Mobile Learning App Builder. With this tool you can create your own interactive apps.
+app.builder.index.page.link.text.before: To get started go to the
+app.builder.index.page.link.app.list: App liste
+app.builder.index.page.link.text.after: section or chose a different action from the menu above.
+

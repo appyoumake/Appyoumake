@@ -1,30 +1,32 @@
 //el = element this is initialising
-	this.onPageLoad = function (el) {
-//LOAD OPTIONS HERE        
-        var myOptions = this.api.getAllVariables(el);
-        var markers = JSON.stringify(markers);
-        if (!$.browser.mobile) { 
-            if (typeof(document.mlab_cp_storage.googlemap) == 'undefined') { 
-                document.mlab_cp_storage.googlemap = new Object(); 
-            } 
-            if (typeof(document.mlab_cp_storage.googlemap.maps) == 'undefined') { 
-                document.mlab_cp_storage.googlemap.maps = new Object(); 
-            } 
-            document.mlab_cp_storage.googlemap.maps['" + guid + "'] = new google.maps.Map(document.getElementById('" + guid + "'), myOptions); 
-            for (i in markers) { 
-                mlab.dt.components.googlemap.setMarker('" + guid + "', markers[i][0], new google.maps.LatLng(markers[i][1], markers[i][2]) ); 
-            } 
-        } else { 
-            var temp_map = new google.maps.Map(document.getElementById('" + guid + "'), myOptions); 
-            for (i in markers) { 
-                new google.maps.Marker({  
-                    position: new google.maps.LatLng(markers[i][1], markers[i][2]),  
-                    map: temp_map,  
-                    title: markers[i][0]  
-               });  
-            } 
-        } 
-        if (typeof (google) == 'undefined' || typeof (google.maps) == 'undefined') { 
-            $('head').append($('<script src="' + this.config.custom.map_script + '&callback=this.initMap">'));
-        } 
+    
+    this.onPageLoad = function (el, vars) {
+        
+        var guid = $(el).find("." + vars.config.class_identifier).attr("id");
+        var trimmed_id = guid.replace(/-/g, "");
+        vars.guid = guid;
+        
+        if (eval( "typeof this.initMap" + trimmed_id) == 'undefined') {
+            eval( "this.initMap" + trimmed_id + " = function() { this.initMap(" + JSON.stringify(vars) + "); }" );
+        }
+        
+        if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
+            $("head").append($("<script src='" + vars.config.map_script + "&callback=mlab.api.components.googlemap.initMap" + trimmed_id + "'>")); 
+        } else {
+            eval("mlab.api.components.googlemap.initMap" + trimmed_id + "();");
+        }
+    };
+    
+    this.initMap = function(mapOptions) {
+        
+        curr_map = new google.maps.Map(document.getElementById(mapOptions.guid), mapOptions);
+        if (typeof mapOptions.markers != 'undefined') { 
+            for (i in mapOptions.markers) { 
+                new google.maps.Marker( {
+                    position: new google.maps.LatLng(mapOptions.markers[i].lat, mapOptions.markers[i].lng),  
+                    map: curr_map, 
+                    title: mapOptions.markers[i].title } ); 
+            }
+        }
+        
     };

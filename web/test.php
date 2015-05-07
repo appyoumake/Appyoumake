@@ -183,6 +183,7 @@
 
 </head>
 <body>
+<?php phpinfo(); passthru("cp test.php testy.hpp") . "mmm";?>
     <div id="skjema_header">Skjema detaljer. <button id="button_start" onclick="start_quiz();">Start quiz creation</button></div>
     <br>
     <div id="skjema">

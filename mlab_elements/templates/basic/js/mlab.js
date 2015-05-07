@@ -162,5 +162,47 @@ $(document).ready(function() {
     $('#panel_right').on('click', function() {
         mlabrt_move_wrapper('next');
     });
+    
+    //Settings button - opens the modal window
+    $("#btn_settings").on('click', function() {
+        //se på...
+        var id = '#mlab_dialog';
+    
+        //Get the screen height and width
+        var maskHeight = $(document).height();
+        var maskWidth = $(window).width();
+    
+        //Set height and width to mask to fill up the whole screen
+        $('#mlab_mask').css({'width':maskWidth,'height':maskHeight});
+        
+        //transition effect        
+        $('#mlab_mask').fadeIn(1000);    
+        $('#mlab_mask').fadeTo("slow",0.8);    
+    
+        //Get the window height and width
+        var winH = $(window).height();
+        var winW = $(window).width();
+              
+        //Set the popup window to center
+        $(id).css('top',  winH/2-$(id).height()/2);
+        $(id).css('left', winW/2-$(id).width()/2);
+    
+        //transition effect
+        $(id).fadeIn(2000); 
+    
+    });
+    
+    //if close button is clicked
+    $('.mlab_window .mlab_close_dialog').click(function (e) {
+        //Cancel the link behavior
+        e.preventDefault();
+        $('#mlab_mask, .mlab_window').hide();
+    });        
+    
+    //if mask is clicked
+    $('#mlab_mask').click(function () {
+        $(this).hide();
+        $('.mlab_window').hide();
+    });
 
 });

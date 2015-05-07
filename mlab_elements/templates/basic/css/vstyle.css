@@ -1,0 +1,167 @@
+/* Style Sheet for the Basic template
+   Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
+
+#page_body #content .mlab_rt_MYCLASS
+*/
+
+/* ==========================================================================
+   Page
+   ========================================================================== */
+
+#page #mlab_editable_area {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background-color: #1e1e1e;
+}
+
+#page #mlab_editable_area .white {
+    background-color: #ffffff;
+}
+
+/* ==========================================================================
+   Text
+   ========================================================================== */
+
+#page #mlab_editable_area {
+    font-size: 100%;
+    line-height: 100%;
+}
+
+/* Error messages or all text??? */
+[data-role="content"] {
+    font-size: 1em;
+    font-family: Arial,sans-serif;
+    font-style: normal;
+    color: #CCCC33;
+    line-height: 1em;
+    text-shadow: none;
+}
+
+/* ==========================================================================
+   Page
+   ========================================================================== */
+
+#page #mlab_editable_area {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background-color: #1e1e1e;
+}
+
+/* ==========================================================================
+   Element styling
+   ========================================================================== */
+#page h1 {
+    font-size: 1.45em;
+    line-height: 1.1em;
+    margin: 1em 0;
+}
+
+#page h2 {
+    font-size: 1.27em;
+    line-height: 1.1em;
+    margin: 1em 0;
+}
+
+#page h3 {
+    font-size: 1.12em;
+    line-height: 1.1em;
+    margin: 1em 0;
+}
+
+#page p {
+    font-size: 1em;
+    line-height: 1.1em;
+    margin: 1em 0;
+}
+
+#page ol {
+    margin: 0;
+    list-style-type: decimal;
+    list-style-position:outside;
+    padding:0 2em 0 1.25em;
+}
+
+#page ul {
+    margin: 0;
+    list-style-type: square;
+    list-style-position:outside;
+    padding:0 2em 0 1.25em;
+}
+
+#page img {
+    margin: 0;
+    padding: 10px;
+    border: none;
+}
+
+#page map {
+    margin: 0;
+    padding: 10px;
+    border: none;
+}
+
+#page video {
+    margin: 0;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 100%    !important;
+    height: auto   !important;
+}
+
+#page iframe {
+    margin: 0;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+#page div {
+    margin: 0;
+    padding: 10px;
+    border: none;
+}
+
+#page figure {
+    margin: 7px 25px 0px 0px;
+}
+
+#page figure img {
+   padding-bottom: 5px;
+}
+
+#page figure figcaption {
+   text-align: center;
+   font-style: italic;
+   font-size: 14px;
+}
+
+/* ==========================================================================
+   Content
+   ========================================================================== */
+#page div.ui-content {
+   margin-top: 15%;
+   margin-bottom: 7.2%;
+   margin-left: 7.2%;
+   margin-right: 7.2%;
+}
+
+#page #content {
+    margin-top: 0;
+    overflow-y: visible;
+    overflow-x: hidden;
+}
+
+
+/* ==========================================================================
+  To hide an element from the app builder - add the class "mlab_hide_in_app_builder"
+  to the element - the App Builder will have a stylesheet with the syntax:
+
+.mlab_hide_in_app_builder {
+    display: none !important;
+}
+========================================================================== */

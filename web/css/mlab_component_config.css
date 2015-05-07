@@ -1,5 +1,16 @@
 /*
-MLAB component styling
+MLAB component styling for comunication with the app creator or the 
+app user.
+
+  The styles allways begins with:
+   dt
+   1. #mlab_editor (vil vi forsette å bruke qTip?)
+   2. #mlab_editor #mlab_editable_area
+
+   rt
+
+id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
+
 */
 
 
@@ -7,20 +18,70 @@ MLAB component styling
    Design time - dt
    ========================================================================== */
 
+/* ===  Styling of the qtip boks  === */
+
+#mlab_editor .mlab_dt_box_style{
+    background-color: white;
+    border: solid orange 2px; 
+}
+
+/* ===  Information  === */
+
+#mlab_editor .mlab_dt_text,
+#mlab_editor .mlab_dt_text_headline,
+#mlab_editor .mlab_dt_text_info,
+#mlab_editor .mlab_dt_title_bar,
+#mlab_editor .mlab_dt_text_filename {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 10.5px;
+    line-height: 12px;
+    direction: ltr;
+    margin: 0.5em;
+}
+
+#mlab_editor .mlab_dt_text_headline {
+    font-weight: bold;
+    line-height: 14px;
+    font-size: 12px;
+}
+
+#mlab_editor .mlab_dt_text_info {  
+    width: 95%;
+    margin-bottom: 1.5em;
+}
+
+#mlab_editor .mlab_dt_title_bar {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: bold;
+    margin: 0;
+    margin-left: 0.5em; 
+}
+
+#mlab_editor .mlab_dt_text_filename {
+      font-size: 12px; 
+      font-style: italic;
+}
+
+#mlab_editor .mlab_dt_progress_bar {
+    float: left;
+    width: 90%;
+}
+
+#mlab_editor .mlab_dt_status_bar {
+    //later
+}
+
 /* ===  Buttons  === */
 
-#mlab_editor .mlab_dt_button_right,
-#mlab_editor .mlab_dt_button_left,
-#mlab_editor .mlab_dt_button_ok_right,
-#mlab_editor .mlab_dt_button_ok_left,
-#mlab_editor .mlab_dt_button_cancel_right,
-#mlab_editor .mlab_dt_button_cancel_left,
-#mlab_editor .mlab_dt_button_close_right,
-#mlab_editor .mlab_dt_button_close_left,
-#mlab_editor .mlab_dt_button_retry_right,
-#mlab_editor .mlab_dt_button_retry_left,
-#mlab_editor .mlab_dt_button_upload_files_right,
-#mlab_editor .mlab_dt_button_upload_files_left {
+#mlab_editor .mlab_dt_button,
+#mlab_editor .mlab_dt_button_ok,
+#mlab_editor .mlab_dt_button_cancel,
+#mlab_editor .mlab_dt_button_close,
+#mlab_editor .mlab_dt_button_retry,
+#mlab_editor .mlab_dt_button_upload_files {
     background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, #B4B4B4 100%) repeat scroll center center rgba(0, 0, 0, 0);
     border: 1px solid #AAAAAA;
     border-radius: 2px;
@@ -44,30 +105,11 @@ MLAB component styling
 }
 
 
-#mlab_editor .mlab_dt_button_right,
-#mlab_editor .mlab_dt_button_ok_right,
-#mlab_editor .mlab_dt_button_cancel_right,
-#mlab_editor .mlab_dt_button_close_right, 
-#mlab_editor .mlab_dt_button_retry_right,
-#mlab_editor .mlab_dt_button_upload_files_right {
-    float: right;
-}
-
-
-#mlab_editor .mlab_dt_button_left,
-#mlab_editor .mlab_dt_button_ok_left,
-#mlab_editor .mlab_dt_button_cancel_left,
-#mlab_editor .mlab_dt_button_close_left, 
-#mlab_editor .mlab_dt_button_retry_left,
-#mlab_editor .mlab_dt_button_upload_files_left {
-    float: left;
-}
-
-
 /* ===  Space - new line === */
 
 #mlab_editor .mlab_dt_button_new_line {
-    padding: 17px;
+    padding: 18px;
+    padding-right: 50%;
 }
 
 #mlab_editor .mlab_dt_large_new_line {
@@ -79,6 +121,10 @@ MLAB component styling
 }
 
 #mlab_editor .mlab_dt_small_new_line {
+    padding: 7px;
+}
+
+#mlab_editor .mlab_dt_new_row {
     padding: 7px;
 }
 
@@ -98,15 +144,21 @@ MLAB component styling
 */
 
 #mlab_editor .mlab_dt_input, 
+#mlab_editor .mlab_dt_label, 
 #mlab_editor .mlab_dt_textarea, 
 #mlab_editor .mlab_dt_select {
     float: left;
-    font-size: 1em !important;
+    font-size:12px;
     font-family: Arial,Helvetica,sans-serif;
-    margin-bottom: 0.5em;
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
     margin-left: 0.5em;
     margin-right: 0.5em;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+
+#mlab_editor .mlab_dt_label{
     min-width: 55%;
 }
 
@@ -127,47 +179,23 @@ MLAB component styling
    font-size: 14px;
 }
 
-/* ===  Information  === */
+/* ===  Placement  === */
 
-#mlab_editor .mlab_dt_text_headline{
-    font-family: Arial,Helvetica,sans-serif;
+#mlab_editor .mlab_dt_right {
+    float: right;
 }
 
-#mlab_editor .mlab_dt_text_info{  
-    width: 90%;
-    font-family: Arial,Helvetica,sans-serif;
-}
 
-#mlab_editor .mlab_dt_text_title_bar{
-    font-size: 12px;
-    font-weight: bold;
-    font-family: Arial,Helvetica,sans-serif;
-    color: #454545;
-    background-color: #CCCCCC;
+#mlab_editor .mlab_dt_left {
+   float: left;
 }
-
-#mlab_editor .mlab_dt_text_filename {
-      font-size: 12px; 
-      font-family: Arial,Helvetica,sans-serif;
-      font-style: italic;
-}
-
-#mlab_editor .mlab_dt_progress_bar {
-    float: left;
-    width: 90%;
-}
-
-#mlab_editor .mlab_dt_status_bar {
-    //later
-}
-
 
 
 /* ==========================================================================
    Run time - rt
    ========================================================================== */
 
-#mlab_editable_area .mlab_rt_maximize{  
+#mlab_editable_area .mlab_rt_maximize {  
   /* Set rules to fill the screen */
   min-height: 100%;
   //min-width: 1024px;

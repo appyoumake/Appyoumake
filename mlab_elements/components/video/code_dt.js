@@ -1,109 +1,57 @@
-    
-    this.onCreate = function (el) {
-        this.onLoad (el);
-    };
-    
-//el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
-        if ($(el).find('video').attr("poster") == "") {
-        	$(el).find('video').attr("poster", this.config.placholder);
-        } 
-    };
+/* Hook called when component is created.
+ * @param {jQuery} el Main element for component. 
+ */
+this.onCreate = function (el) {
+    console.log("onCreate");
+    this.setUp(el);
+    this.custom_upload_video(el);
+};
 
-	this.onSave = function (el) {
-        var temp_html = el.outerHTML;
-        return temp_html;
-    };
-            
-	this.onDelete = function () {
-		console.log('delete');
-    };
-    
-    this.getContentSize = function (el) {
-        return $(el).find("video").duration;
-    };
-    
-    this.selectExistingVideo = function(select_box) {
-        var img = $('.mlab_current_component').find('img');
-        $('.mlab_current_component').qtip('hide'); 
-        img.attr('src', $(select_box).val());
-        this.api.setDirty();
-    };
+/* Hook called when component is loaded into app.
+ * @param {jQuery} el Main element for component. 
+ */
+this.onLoad = function (el) {
+    console.log("onLoad");
+    this.setUp(el);
+};
 
-    this.custom_upload_video = function (el) {
-        this.api.getLibraries(this.config.name);
-        var self = this;
-        
-        content = $('<form />', {id: "mlab_form_properties" } );
-        content.append( $('<p />', { text: "Choose video to load" }) );
-        content.append( $('<select onchange="document.mlab_code_video.selectExistingVideo(this);" id="mlab_cp_video_select_video"><option>...loading images...</option></select>') );
-        content.append( $('<div />', { id: "mlab_cp_video_uploadfiles", name: "mlab_cp_video_uploadfiles", text: 'Velg filer', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
-        content.append( $('<p /><br />') );
-        content.append( $('<div />', { id: 'mlab_cp_video_uploadfiles_start', name: 'mlab_cp_video_uploadfiles_start', text: 'Start opplasting', class: "ajax-file-upload-green" }) );
-        content.append( $('<p />') );
-        content.append( $('<div />', { text: 'Cancel', id: "mlab_cp_video_button_cancel", class: "pure-button  pure-button-xsmall" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_cp_video_button_ok", class: "pure-button  pure-button-xsmall right" }) );
+/* Hook called when app is saved.
+ * @param {jQuery} el Main element for component. 
+ * @return {String} HTML for component.
+*/
+this.onSave = function (el) {
+    var html = el.outerHTML;
+    return html;
+};
 
-        var component = el;
-        var component_id = this.config.component_name;
-        var component_config = this.config;
-        
-        $(el).qtip({
-            solo: true,
-            content: {text: content, title: "Last opp video" },
-            position: { my: 'leftMiddle', at: 'rightMiddle' },
-            show: { ready: true, modal: { on: true, blur: false } },
-            hide: false,
-            style: { classes: 'qtip-tipped' },
-            events: { render: function(event, api) {
-                            this.component = component;
-                            this.component_id = component_id;
-                            this.config = component_config;
-//load existing files
-                            var existing_files = this.api.getMedia("mp4");
-                            $("#mlab_cp_video_select_video").html(existing_files);
+this.getContentSize = function() {
+    return 1;
+};
 
-//upload files 
-                            if ($("#mlab_cp_video_button_ok").length > 0) {
-                                var uploadObj = $("#mlab_cp_video_uploadfiles").uploadFile({
-                                    url: this.api.getUrlUploadAbsolute(this.config.name),
-                                    formData: { comp_id: component_id, app_path: document.mlab_current_app.path },
-                                    multiple: false,
-                                    showCancel: false,
-                                    showAbort: false,
-                                    showDone: false,
-                                    autoSubmit: true,
-                                    fileName: "mlab_files",
-                                    showStatusAfterSuccess: true,
-                                    allowedTypes: "mp4",
-                                    onSuccess: function(files, data, xhr) {
-                                                $(this).find("source").attr("src", data.url );
-                                                $(this).find("video").attr("poster", data.url_placeholder );
-                                                api.hide(); 
-                                        }.bind(component),
-                                    onError: function(files, status, errMsg) { 
-                                        alert(errMsg); 
-                                    }
-                                });
+this.setUp = function(el) {
+    var self = this;
+    self.domRoot = $(el);
+    var image = self.domRoot.find("img").attr("src", self.config.placeholder);
+    var video = self.domRoot.find("video");
+    if (video.length && video.find("source").attr("src")) image.hide();
+};
 
-                                $("#mlab_cp_video_uploadfiles_start").click(function() {
-                                    uploadObj.startUpload();
-                                });
-                            }
-                            
-                            $('#mlab_cp_video_button_ok', api.elements.content).click(	
-                                    function(e) {
-                                        api.hide(e); 
-                                        if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
-                                            document["mlab_code_" + component_id].setProperties( $("#mlab_form_properties").serializeArray(), this );
-                                        }
-                                    }.bind(component));
-                            $('#mlab_cp_video_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
-                        },
-                        hide: function(event, api) { api.destroy(); }
-            }
-        });
-        
-    }
+this.custom_upload_video = function (el) {
+    var self = this;
+    self.api.uploadMedia(el, self.config, "mp4,mov,avi,wmv", function(el, url) { self.videoUploaded(el, url); });
+};
 
-  
+this.videoUploaded = function(el, url) {
+    el = $(el);
+    console.log(el);
+    console.log(url);
+    var url = url.split(".");
+    var url = url[0] + ".mp4";
+    el.find("video").remove();
+    var video = $('<video style="cursor: pointer; width: 100%; height: 400px; padding: 0;" class="ui-resizable" controls="controls"></video>');
+//    video.attr("poster", "");
+    video.attr("id", this.api.getGUID());
+    video.attr("data-src", "android_" + url.split("/")[1]);
+    video.append('<source src="./' + url + '" />');
+    el.append(video);
+};

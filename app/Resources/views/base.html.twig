@@ -4,28 +4,24 @@
         <meta charset="UTF-8" />
         <title>{% block title %}MLAB{% endblock %}</title>
         {% block stylesheets %}
-			<link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_editor_menu.css") }}" rel="stylesheet" />
-			<link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_menu.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
     </head>
+    
     <body class="mlab_base">
     	<div class="mlab_min_page_width">     
-            <ul id="mlab_editor_menu" class="mlab_basic_menu">
+            <ul id="mlab_menu" class="mlab_basic_menu">
                 {{ include( 'menu.html.twig' ) }}
-                
                 <li class="single menu_right">
-                    <a class="mlab_dev_info" href="/app_dev.php/logout" target="_top">
-                        Developed by the Sinett project at FFI.no
-                    </a>
+                    Developed by the Sinett project at FFI.no
                 </li>
             </ul>
-
-    		<div class="mlab_align_menu_elements">
-                
+            <div class="mlab_align_menu_elements">
                 <div class="container">
                     {% block body %}{% endblock %}
                 </div>
@@ -34,11 +30,8 @@
                     <script src="{{ asset('/js/jquery.ui-1.10.3.js') }}"></script>
                     <script src="{{ asset('/js/jquery.uploadfile-1.9.0.js') }}"></script>
                     <script src="{{ asset('/js/jquery.qtip-2.2.0.js') }}"></script>
-                {% endblock %}
-	        </div>
-	        
-	    </div>
-
-        
+                {% endblock %}  
+            </div>    
+        </div>
     </body>
 </html>

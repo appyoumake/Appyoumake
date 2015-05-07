@@ -1,0 +1,348 @@
+/* ==========================================================================
+   This is the styles for the top navigation bar and all its menu elements.
+
+   To be sure that the templates css not overwrites anytihng that has to do
+   with the menu the styels for the editor allways begins with:
+   
+   #mlab_editor #mlab_menu
+
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The top navigation bar
+   ========================================================================== */
+#mlab_editor ul#mlab_menu,
+ul#mlab_menu {
+    background: #000;
+    border: 0;
+    border-radius: 2px; 
+    border-top: 4px solid;  
+    height:43px;
+    list-style:none;
+    margin:2px;
+    padding:0px 20px 0px 20px;
+    //width:98%;
+    z-index: 1000;
+}
+ 
+/* All the top elements */
+#mlab_editor #mlab_menu li,
+#mlab_menu li {
+    border:none;
+    float:left;
+    margin-right:30px;
+    margin-top:7px;
+    padding: 15px 10px 0px 10px;
+    position:relative;
+    text-align:center;
+    z-index: 1000;
+}
+
+/* Mlab logo element, -placement */
+#mlab_editor #mlab_menu #mlab_menu_dropdown,
+#mlab_menu #mlab_menu_dropdown {
+    margin-right: 25px;
+    margin-top: 8px;
+    padding-top:10px;
+}
+
+/* The builder/editor element, -placement */
+#mlab_editor #mlab_menu #mlab_editor_menu_dropdown {
+    margin-right: 35px;
+    margin-top: 6px;
+    padding-top: 10px;
+}
+
+/* The tab on the elements with a dropdown when hover */
+#mlab_editor #mlab_menu li:hover,
+#mlab_menu li:hover {
+    background: #F4F4F4;
+    border-radius: 2px 0px 0px 0px;
+    padding-bottom: 4px;
+}
+
+/* The elements with no dropdown menu */
+#mlab_editor #mlab_menu li.single,
+#mlab_menu li.single,
+#mlab_editor #mlab_menu li.single:hover, 
+#mlab_menu li.single:hover { 
+    background:transparent; 
+    border:none; 
+    color: #FFFFFF;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:14px; 
+    padding: 10px 5px 0px 5px;
+}
+
+// TODO kan vi ta bort ID for .mlab_button_save osv???
+
+/* The edirots save, undo and redo buttons shown in the top bar */
+#mlab_editor #mlab_menu .mlab_editor_undo_redo_save, 
+#mlab_editor #mlab_menu .mlab_button_save {
+    margin: 8px 0px 0px 0px;
+    padding: 0px;
+}
+
+#mlab_editor #mlab_menu .mlab_button_undo,
+#mlab_editor #mlab_menu .mlab_button_redo {
+    width: 20px;
+}
+
+#mlab_editor #mlab_menu .mlab_button_save {
+    padding-right: 8px;
+    width: 18px;
+}
+
+/* The editors status shown in the top bar and the developed by text */
+#mlab_editor #mlab_menu #mlab_statusbar_permanent, 
+#mlab_editor #mlab_menu #mlab_statusbar_temporary, 
+#mlab_editor #mlab_menu #mlab_statusbar_progressbar { 
+    border:none; 
+    color: #FFFFFF;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:14px; 
+    text-decoration:none;
+}
+
+/* Mainly the app name */
+#mlab_editor #mlab_menu #mlab_statusbar_permanent {
+    display: block;
+    font-weight: bold;
+    margin-left: 105px;
+    padding: 5px 0px 0px 30px;
+}
+
+/* The progressbar ------ TODO */
+#mlab_editor #mlab_menu #mlab_statusbar_progressbar {
+    background-image: url('/img/progress.gif');
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 50px;
+    //border: 0;
+}
+
+/* Right alignment */
+#mlab_editor #mlab_menu .menu_right,
+#mlab_menu .menu_right{
+    float:right;
+    margin-right:0px;
+}
+ 
+
+/* ==========================================================================
+   Drop Down and its content
+   ========================================================================== */
+#mlab_editor #mlab_menu .dropdown_1column, 
+#mlab_editor #mlab_menu .dropdown_2columns, 
+#mlab_editor #mlab_menu .dropdown_3columns, 
+#mlab_editor #mlab_menu .dropdown_4columns,
+#mlab_editor #mlab_menu .dropdown_5columns,
+#mlab_menu .dropdown_2columns {
+    background:#F4F4F4;
+    border:1px solid #777777;
+    border-radius: 0px 2px 2px 2px;
+    border-top:none;
+    float:left;
+    left:-999em; /* Hides the drop down */
+    margin:4px auto;
+    padding:10px 5px 10px 5px;
+    position:absolute;
+    text-align:left;
+}
+ 
+#mlab_editor #mlab_menu .dropdown_1column {width: 140px;}
+#mlab_editor #mlab_menu .dropdown_2columns {width: 500px;}
+#mlab_editor #mlab_menu .dropdown_3columns {width: 420px;}
+#mlab_editor #mlab_menu .dropdown_4columns {width: 690px;}
+#mlab_editor #mlab_menu .dropdown_5columns {width: 700px;}
+#mlab_menu .dropdown_2columns {width: 500px;}
+ 
+#mlab_editor #mlab_menu li:hover .dropdown_1column, 
+#mlab_editor #mlab_menu li:hover .dropdown_2columns, 
+#mlab_editor #mlab_menu li:hover .dropdown_3columns,
+#mlab_editor #mlab_menu li:hover .dropdown_4columns,
+#mlab_editor #mlab_menu li:hover .dropdown_5columns,
+#mlab_menu li:hover .dropdown_2columns {
+    left:-1px; /* Shows the drop down */
+    top:auto;
+}
+ 
+/* Columns */
+#mlab_editor #mlab_menu .col_1,
+#mlab_editor #mlab_menu .col_2,
+#mlab_editor #mlab_menu .col_3,
+#mlab_editor #mlab_menu .col_4,
+#mlab_editor #mlab_menu .col_5,
+#mlab_menu .col_1 {
+    display:inline;
+    float: left;
+    margin-left: 15px;
+    margin-right: 15px;
+    position: relative;
+}
+#mlab_editor #mlab_menu .col_1 {width:200px;}
+#mlab_editor #mlab_menu .col_2 {width:270px;}
+#mlab_editor #mlab_menu .col_3 {width:410px;}
+#mlab_editor #mlab_menu .col_4 {width:550px;}
+#mlab_editor #mlab_menu .col_5 {width:690px;}
+#mlab_menu .col_1 {width:200px;}
+ 
+/* Drop Down Content Stylings */
+#mlab_editor #mlab_menu p, 
+#mlab_editor #mlab_menu h2, 
+#mlab_editor #mlab_menu h3, 
+#mlab_editor #mlab_menu h4, 
+#mlab_editor #mlab_menu ul li,
+#mlab_menu p, 
+#mlab_menu h2, 
+#mlab_menu h3, 
+#mlab_menu h4, 
+#mlab_menu ul li {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    line-height:21px;
+    text-align:left;
+}
+#mlab_editor #mlab_menu h2, 
+#mlab_menu h2 {
+    border-bottom:1px solid #666666;
+    font-weight:400;
+    font-size:21px;
+    letter-spacing:-1px;
+    margin:7px 0 14px 0;
+    padding-bottom:14px;
+}
+#mlab_editor #mlab_menu h3,
+#mlab_menu h3 {
+    border-bottom:1px solid #888888;
+    font-size:14px;
+    margin:7px 0 14px 0;
+    padding-bottom:7px;
+}
+
+#mlab_editor #mlab_menu h4,
+#mlab_menu h4 {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 5px 0 5px 0;
+    padding-bottom: 0;
+}
+
+#mlab_editor #mlab_menu p,
+#mlab_menu p {
+    line-height:18px;
+    margin:0 0 10px 0;
+}
+
+#mlab_editor #mlab_menu li a,
+#mlab_menu li a {
+    color: #EEEEEE;
+    display:block;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:17px; 
+    outline:0;
+    text-decoration:none;
+}
+ 
+#mlab_editor #mlab_menu li:hover div a,
+#mlab_menu li:hover div a {
+    color:#015b86;
+    font-size:12px;
+}
+
+#mlab_editor #mlab_menu li:hover div a:hover,
+#mlab_menu li:hover div a:hover {
+    color:#029feb;
+}
+
+/* QR kode styling */
+#mlab_editor #mlab_menu #mlab_download_qr2{
+    color: #912323;       
+}    
+
+#mlab_editor #mlab_menu .qr_wait_text {
+    color: black;
+}
+
+/* Icons used by the drop down menu */
+#mlab_editor #mlab_menu #mlab_exit_icon, 
+#mlab_editor #mlab_menu #mlab_preview_icon, 
+#mlab_editor #mlab_menu #mlab_download_icon,
+#mlab_editor #mlab_menu .mlab_menu_field_edit_button,
+#mlab_editor #mlab_menu .mlab_menu_field_update_button {
+background-color: transparent;
+background-image: url("/img/menu_exit_icon.png");
+background-repeat: no-repeat;
+border: 0;
+cursor: pointer;
+height: 35px;
+margin: auto;
+padding: 0;
+width: 35px;
+}
+
+#mlab_editor #mlab_menu #mlab_preview_icon {
+    background-image: url("/img/menu_preview_icon.png");
+}
+
+#mlab_editor #mlab_menu #mlab_download_icon {
+    background-image: url("/img/menu_download_icon.png");
+}
+
+/* For updating the Apps meta data ------ TODO */
+#mlab_editor #mlab_menu .mlab_menu_field_edit_button {
+    background-image: url("/img/menu_field_edit.png");
+    height: 16px;
+    width: 16px;
+}
+
+#mlab_editor #mlab_menu .mlab_menu_field_update_button {
+    background-image: url("/img/save_menu.png");
+    display: none;
+    height: 20px;
+    width: 20px;
+}
+
+#mlab_editor #mlab_menu .mlab_edit_meta_data * {
+    display: block;
+    float: left;
+}
+
+#mlab_editor #mlab_menu .mlab_edit_meta_data p {
+    clear: both;   
+    width: 80%;
+}
+
+#mlab_editor #mlab_menu .mlab_edit_meta_data .mlab_edit_app_label {
+    font-weight: bold;
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+}
+
+/* Feature and storage list */
+#mlab_editor #mlab_menu #mlab_features_list li, 
+#mlab_editor #mlab_menu #mlab_storage_plugin_list li {
+    cursor: pointer;
+    list-style: none;
+}
+
+#mlab_editor #mlab_menu #mlab_features_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_menu #mlab_storage_plugin_list li.mlab_item_applied:before {
+    content: "\2713 ";
+    margin-left: -1em;
+    margin-right: .100em;
+}
+
+/* adds a small app icon - used in App drop down menu */
+/* Not in use yet.... 
+#mlab_app_icon {
+	background-position:center; 
+	background-repeat: no-repeat;
+	background: url("/img/appicon.png") -0px -0px;
+	height: 16px;
+	position:absolute;
+	top: 15px;
+	width: 16px;
+}
+*/
