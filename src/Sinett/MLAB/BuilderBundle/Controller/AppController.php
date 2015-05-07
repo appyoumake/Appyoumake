@@ -762,6 +762,8 @@ class AppController extends Controller
         }
 
         $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+// MK Component path added
+        $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
         $replace_chars = $this->container->parameters['mlab']['replace_in_filenames'];
         
 //loop through list of files and place it in relevant folder based on mime type, move file and then return the file path
@@ -793,6 +795,23 @@ class AppController extends Controller
             $url = $sub_folder . "/" . $file_name;
         
             $uploadedFile->move($path_app . $sub_folder, $file_name);
+// MK
+            if (file_exists($path_component . "server_code.php")) {
+                if (!@(include($path_component . "server_code.php"))) {
+                    return new JsonResponse(array(
+                            'result' => 'failure',
+                            'msg' => "Unable to load server_code.php file"));
+                } else {
+                    if (function_exists("onUpload")) {
+                        if (!onUpload($path_app . $sub_folder . "/" . $file_name, $path_app, $path_component, $comp_id)) {
+                            return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => "Unable to run application on server"));
+                        }
+                    }
+                }
+            }
+// MK end
             /*{
                 return new JsonResponse(array(
                     'result' => 'failure',

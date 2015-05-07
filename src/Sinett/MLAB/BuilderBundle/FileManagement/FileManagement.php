@@ -317,7 +317,7 @@ class FileManagement {
 	        
 	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
             exec("whoami", $output, $exit_code);	      
-            exec("echo $PATH", $output, $exit_code);	      
+            //exec("echo $PATH", $output, $exit_code);	      
             exec("android 2>&1 && echo $?", $output, $exit_code);
             exec("java -version 2>&1 && echo $?", $output, $exit_code);
 
