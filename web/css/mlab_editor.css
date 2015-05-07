@@ -247,7 +247,7 @@ made smaler than the min width */
     background-color: orange;
     text-align: center;
     vertical-align: middle;
-    border-radius: 2px;
+
     z-index: 1100; /* keep on top of other elements on the page */
     outline: 9999px solid rgba(0,0,0,0.5);
     padding: 15px;
