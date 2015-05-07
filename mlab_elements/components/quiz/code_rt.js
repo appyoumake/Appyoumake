@@ -17,7 +17,8 @@ this.classes = {
     questionNotOK: "mlab_quiz_question_not_ok",
     questionLocked: "mlab_quiz_question_locked",
     errorMessage: "mlab_quiz_errors",
-    correctAnswer: "mlab_quiz_correct_answer"
+    correctAnswer: "mlab_quiz_correct_answer",
+    mandatory: "mlab_quiz_mandatory"
 };
 
 
@@ -27,6 +28,7 @@ this.classes = {
 */
 this.onPageLoad = function(el) {
     var self = this;
+    self.api.setupStoragePlugin(el);
     self.user = "LOCAL"; // TODO: Can't remember why mlab.api always requires a user. Maybe something about the Moodle api? This might be changed when the MySQL storage is implemented.
     self.domRoot = $(el).find("." + self.classes.root);
     self.variables = self.api.getAllVariables(this.domRoot);
@@ -52,11 +54,11 @@ this.checkAnswers = function(root) {
     var self = this;
     if (!root) root = self.domRoot;
     var questions = self.variables["questions"];
-    var correctAnswers = {};
+    var correctResponses = {};
     for (pageId in questions) {
         var pageQuestions = questions[pageId];
         for (var i=0, ii=pageQuestions.length; i<ii; i++) {
-            correctAnswers[pageQuestions[i].id] = pageQuestions[i].correctAnswer;
+            correctResponses[pageQuestions[i].id] = pageQuestions[i].correctResponse;
         }
     }
     var answeredWrong = [];
@@ -65,40 +67,42 @@ this.checkAnswers = function(root) {
         var id = question.data("questionid");
         var type = question.data("questiontype");
         var value = self.getQuestionValue(question);
-        var correctAnswer = null;
-        if (id in correctAnswers) correctAnswer = correctAnswers[id];
-        if (correctAnswer) {
-            if (type=="text" || type=="checkbox") {
-                if (value.toLowerCase()==correctAnswer.toLowerCase()) self.setQuestionState(question, true);
-                else {
-                    self.setQuestionState(question, false, correctAnswer);
-                    answeredWrong.push(question);
-                }
+        var correctResponse = null;
+        if (id in correctResponses) correctResponse = correctResponses[id];
+        var correct = false;
+        if (correctResponse) {
+            if (type=="text") {
+                correct = value.toLowerCase()==correctResponse.toLowerCase()
             }
-            else if (type=="select") {
-                if (value==correctAnswer) self.setQuestionState(question, true);
-                else {
-                    self.setQuestionState(question, false, correctAnswer);
-                    answeredWrong.push(question);
-                }
+            else if (type=="select" || type=="radio") {
+                correct = parseInt(value["id"])==parseInt(correctResponse);
             }
-            else if (type=="multicheck") {
-                var answerValues = [];
-                for (var i=0, ii=value.length; i<ii; i++) answerValues.push(value[i].value);
-                
-                if (self.compareArrays(correctAnswer, answerValues)) self.setQuestionState(question, true);
-                else {
-                    self.setQuestionState(question, false, correctAnswer);
-                    answeredWrong.push(question);
-                }
+            else if (type=="checkbox") {
+                //correctResponse = correctResponse.split(" ");
+                for (var i=0, ii=correctResponse.length; i<ii; i++) correctResponse[i] = parseInt(correctResponse[i]);
+                var valueIds = [];
+                for (var i=0, ii=value.length; i<ii; i++) valueIds.push(parseInt(value[i]["id"]));
+                correct = self.compareArrays(correctResponse, valueIds);
             }
+            
+            self.setQuestionState(question, correct, correctResponse);
+            if (!correct) answeredWrong.push(question);
+        }
+        else if (question.hasClass(self.classes.mandatory) && !value) {
+            self.setQuestionState(question, false, correctResponse);
+            answeredWrong.push(question);
         }
         self.lockQuestion(question);
     });
-    if (answeredWrong) {
-        var footer = self.domRoot.find("#" + self.domRoot.attr("id") + "_lastpage").find("footer");
+    var footer = self.domRoot.find("#" + self.domRoot.attr("id") + "_lastpage").find("footer");
+    if (answeredWrong.length) {
+        footer.siblings("." + self.classes.errorMessage).remove();
         footer.before('<section class="' + self.classes.errorMessage + '">Du har svart feil på ' + answeredWrong.length + ' spørsmål.</section>');
     }
+    else {
+        footer.before('<section class="' + self.classes.correctAnswer + '">Du har svart riktig på alle spørsmålene. Gratulerer!</section>');
+    }
+    self.domRoot.find("." + this.classes.checkAnswers).prop("disabled", true);
 };
 
 /*
@@ -107,7 +111,7 @@ this.checkAnswers = function(root) {
     @param {boolean} ok Whether or not the question is OK
     @param {Array/String} correctAnswer The correct answer(s) for the question.
 */
-this.setQuestionState = function(question, ok, correctAnswer) {
+this.setQuestionState = function(question, ok, correctResponse) {
     if (ok) {
         question.addClass(this.classes.questionOK);
         question.removeClass(this.classes.questionNotOK);
@@ -115,7 +119,7 @@ this.setQuestionState = function(question, ok, correctAnswer) {
     else {
         question.removeClass(this.classes.questionOK);
         question.addClass(this.classes.questionNotOK);
-        self.markCorrectAnswer(question, correctAnswer);
+        self.markCorrectAnswer(question, correctResponse);
     }
 };
 
@@ -124,23 +128,24 @@ this.setQuestionState = function(question, ok, correctAnswer) {
     @param {jQuery} question Element representing question
     @param {Array/String} correctAnswer The correct answer(s) for the question.
 */
-this.markCorrectAnswer = function(question, correctAnswer) {
+this.markCorrectAnswer = function(question, correctResponse) {
     var type = question.data("questiontype");
+    var id = question.data("questionid");
     if (type=="text") {
-        question.find("." + this.classes.textInput).after('<span class="' + this.classes.line + '">Riktig svar: ' + correctAnswer + '</span>');
+        question.find("." + this.classes.textInput).after('<span class="' + this.classes.line + '">Riktig svar: ' + correctResponse + '</span>');
     }
-    else if (type=="checkbox") {
-        var correctLine = question.find("input[value='" + correctAnswer + "']").closest("." + this.classes.line);
+    else if (type=="radio") {
+        var correctLine = question.find("input#" + id + "_" + correctResponse).closest("." + this.classes.line);
         correctLine.addClass(this.classes.correctAnswer);
     }
     else if (type=="select") {
-        var correctText = question.find("option[value='" + correctAnswer + "']").text()
+        var correctText = question.find("option#" + id + "_" + correctResponse).text();
         question.find("select").after('<span class="' + this.classes.line + '">Riktig svar: ' + correctText + '</span>');
     }
-    else if (type=="multicheck") {
-        for (var i=0, ii=correctAnswer.length; i<ii; i++) {
-            console.log(correctAnswer[i]);
-            var correctLine = question.find("input[value='" + correctAnswer[i] + "']").closest("." + this.classes.line);
+    else if (type=="checkbox") {
+        //correctResponse = correctResponse.split(" ");
+        for (var i=0, ii=correctResponse.length; i<ii; i++) {
+            var correctLine = question.find("input#" + id + "_" + correctResponse[i]).closest("." + this.classes.line);
             correctLine.addClass(this.classes.correctAnswer);
         }
     }
@@ -171,13 +176,13 @@ this.populateStoredAnswers = function() {
         if (type=="text") {
             question.find("." + self.classes.textInput).val(answer);
         }
-        else if (type=="checkbox") {
-            question.find("input[value='" + answer + "']").prop("checked", true);
-        }
         else if (type=="select") {
             question.find("option[value='" + answer.value + "']").prop("selected", true);
         }
-        else if (type=="multicheck") {
+        else if (type=="radio") {
+            question.find("input[value='" + answer.value + "']").prop("checked", true);
+        }
+        else if (type=="checkbox") {
             for (var i=0, ii=answer.length; i<ii; i++) {
                 question.find("input[value='" + answer[i].value + "']").prop("checked", true);
             }
@@ -220,19 +225,26 @@ this.storeAnswers = function(input, page) {
 */
 this.getQuestionValue = function(question) {
     var type = question.data("questiontype");
+    var id = question.data("questionid");
     var value;
     if (type=="text") value = question.find("." + this.classes.textInput).val();
-    else if (type=="checkbox") value = question.find(":checked").val();
     else if (type=="select") {
-        var selected = question.find(":selected")
-        value = {"value": selected.val(), "text": selected.text()};
+        var selected = question.find(":selected");
+        if (selected.length && selected.val()!="") value = {"value": selected.val(), "text": selected.text(), "id": selected.data("id")};
     }
-    else if (type=="multicheck") {
+    else if (type=="radio") {
+        var checked = question.find(":checked");
+        if (checked.length) {
+            var label = checked.siblings("label");
+            value = {"value": checked.val(), "text": label.text(), "id": checked.data("id")};
+        }
+    }
+    else if (type=="checkbox") {
          value = [];
          question.find(":checked").each(function() {
              var checked = $(this);
              var label = checked.siblings("label");
-             value.push({"value": checked.val(), "text": label.text()});
+             value.push({"value": checked.val(), "text": label.text(), "id": checked.data("id")});
          });
     }
     return value;
@@ -283,33 +295,26 @@ this.getQuestionTypeHtml = function(type, id, alternatives) {
             + '<input class="' + this.classes.textInput + '" name="' + id + '"/>'
             + '</span>';
     }
-    else if (type=="checkbox") {
-        html = '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + '">'
-            + '<span class="' + this.classes.line + '"><input type="radio" name="' + id + '" id="' + id + '_yes" value="yes" /><label for="' + id + '_yes">Ja</label></span>'
-            + '<span class="' + this.classes.line + '"><input type="radio" name="' + id + '" id="' + id + '_no" value="no" /><label for="' + id + '_no">Nei</label></span>'
-            + '</span>'
+    else if (type=="checkbox" || type=="radio") {
+        html = '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + '">';
+        for (var i=0, ii=alternatives.length; i<ii; i++) {
+            var altId = id + '_' + (i+1);
+            html += '<span class="' + this.classes.line + '"><input type="' + type + '" name="' + id + '" id="' + altId + '" value="' + alternatives[i] + '" data-id="' + (i+1) + '" /><label for="' + altId + '">' + alternatives[i] + '</label></span>';
+        }
+        html += '</span>';
     }
     else if (type=="select") {
         html = '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + '">'
             + '<select name="' + id + '">'
             + '<option value="">Velg et alternativ</option>';
         for (var i=0, ii=alternatives.length; i<ii; i++) {
-            html += '<option value="' + alternatives[i][0] + '">' + alternatives[i][1] + '</option>'
+            var altId = id + '_' + (i+1);
+            html += '<option value="' + alternatives[i] + '" data-id="' + (i+1) + '" id="' + altId + '">' + alternatives[i] + '</option>';
         }
         html += '</select></span>';
     }
-    else if (type=="multicheck") {
-        html = '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + '">';
-        for (var i=0, ii=alternatives.length; i<ii; i++) {
-            html += '<span class="' + this.classes.line + '">'
-                + '<input type="checkbox" name="' + id + '_' + alternatives[i][0] + '" id="' + id + '_' + alternatives[i][0] + '" value="' + alternatives[i][0] + '" />'
-                + '<label for="' + id + '_' + alternatives[i][0] + '">' + alternatives[i][1] + '</label>'
-                + '</span>'
-        }
-        html += '</select></span>';
-    }
-    return html
-}
+    return html;
+};
 
 /*
     Add a single question to page.
@@ -324,6 +329,7 @@ this.addQuestion = function(page, question) {
         + this.getQuestionTypeHtml(question.type, question.id, question.alternatives)
         + '</span>'
     + '</li>');
+    if (question.mandatory) questionOb.addClass(this.classes.mandatory);
     questionOb.data("questiontype", question.type);
     questionOb.data("questionid", question.id);
     questions.append(questionOb);
