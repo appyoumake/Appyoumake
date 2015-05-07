@@ -287,38 +287,6 @@ class FileManagement {
         } else {
           
           
-          // Create new app using cordova command
-          // May need to download, so change script time limit
-          set_time_limit(240);
-          exec("mkdir -p {$app_path}");  
-	      exec($cordova_create_command . " 2>&1", $output, $exit_code);	  
-		
-//check exit code, anything except 0 = fail
-            if ($exit_code != 0) {
-                return $output + array("Exit code: " . $exit_code);
-                error_log("Failed creating new app using cordova, {$exit_code}, {$output}", 0);
-            } else {
-	      // Add platform
-	        
-	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
-            exec("whoami", $output, $exit_code);	      
-            exec("echo $PATH", $output, $exit_code);	      
-            exec("android 2>&1 && echo $?", $output, $exit_code);
-            exec("java -version 2>&1 && echo $?", $output, $exit_code);
-
-            $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
-	      
-// makes available custom build settings, e.g. for signing
-            exec("{$cordova_build_properties} 2>&1 && echo $?", $output, $exit_code);
-	      
-// Creates app-specific log file.
-            file_put_contents("{$app_path}cordov.log",print_r($output,true));
-
-            foreach ($template_items_to_copy as $from => $to) {
-                $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                $ret = shell_exec($cmd);
-            }
-            $default_platform = $this->config["cordova"]["default_platform"];
             return true;
         }
 	}
