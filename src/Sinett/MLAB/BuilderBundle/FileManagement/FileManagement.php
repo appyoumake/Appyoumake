@@ -344,7 +344,7 @@ class FileManagement {
             return false;
         }
 
-        if (touch ($new_page_path)) {
+        if (file_put_contents ($new_page_path, "") !== false) {
             return $new_page_num;
         } else {
             return false;
@@ -568,7 +568,7 @@ class FileManagement {
 //open it first time and clear all other locks
         } else {
             $this->clearLocks($uid);
-            touch("$filename.$uid.lock");
+            file_put_contents("$filename.$uid.lock", "");
             return "unlocked";
             
         }

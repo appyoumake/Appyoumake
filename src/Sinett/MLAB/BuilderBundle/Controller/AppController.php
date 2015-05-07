@@ -875,7 +875,7 @@ class AppController extends Controller
                         $new_permissions = $config["permissions"];
 
                         if (!file_exists( $path_app_permissions)) {
-                            touch($path_app_permissions);
+                            file_put_contents($path_app_permissions, "");
                         }
                         $xml = simplexml_load_file($path_app_permissions);
 
