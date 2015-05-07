@@ -285,7 +285,6 @@ class FileManagement {
             
                 
         } else {
-<<<<<<< HEAD
           
           
           // Create new app using cordova command
@@ -319,9 +318,7 @@ class FileManagement {
                 $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
                 $ret = shell_exec($cmd);
             }
-=======
             $default_platform = $this->config["cordova"]["default_platform"];
->>>>>>> 4e70d30faafc9e313cc917e1fae9e69e54e50bc8
             return true;
         }
 	}
