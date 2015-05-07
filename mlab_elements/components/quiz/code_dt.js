@@ -9,7 +9,7 @@ this.css = '<style type="text/css">'
     + '/* Common rules */'
     + '.mlab_quiz, .mlab_quiz * { box-sizing: border-box; -moz-box-sizing: border-box; }'
     + '.mlab_quiz .mlab_quiz_page { width: 100%; border: 1px solid; padding: 0.5em; }'
-    + '.mlab_quiz .mlab_quiz_page h4 { margin-top: 0px; }'
+    + '.mlab_quiz .mlab_quiz_page h2 { margin-top: 0px; }'
     + '.mlab_quiz .mlab_quiz_page footer { display: inline-block; width: 100%; padding-top: 0.5em; }'
     + '.mlab_quiz .mlab_quiz_line { display: block; width: 100%; clear: both; padding-bottom: 0.3em; }'
     + '.mlab_quiz .mlab_quiz_line label { display: inline !important; margin-right: 0.2em; font-size: 1.2em; line-height: 1.4em; }'
@@ -26,6 +26,7 @@ this.css = '<style type="text/css">'
     + '.mlab_quiz .mlab_quiz_question_ok { border: 1px solid green; border-radius: 3px; }'
     + '.mlab_quiz .mlab_quiz_question_not_ok { border: 1px solid red; border-radius: 3px; }'
     + '.mlab_quiz .mlab_quiz_correct_answer { color: green; }'
+    + '.mlab_quiz .mlab_quiz_hide { display: none; }'
     + '</style>'
     + '<style type="text/css" class="mlab_dt_quiz_dtonly">'
     + '/* DT only */'
@@ -34,11 +35,14 @@ this.css = '<style type="text/css">'
     + '.mlab_quiz ul.mlab_dt_quiz_page_nav li a { padding: 0.2em 0.8em; margin-right: -1px; border: 1px solid; border-bottom: 0; text-decoration: none; color: inherit; border-radius: 3px 3px 0px 0px; cursor: pointer; background-color: transparent; color: white; }'
     + '.mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_page_add { padding: 0.2em; 0.2em; }'
     + '.mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_active { background-color: white; color: black; }'
-    + '.mlab_quiz .mlab_dt_quiz_question_type, .mlab_quiz .mlab_quiz_question section { font-size: 0.8em;  }'
-    + '.mlab_quiz .mlab_dt_quiz_question_add_alternatives > span:first-of-type { padding-left: 1.65em; }'
-    + '.mlab_quiz .mlab_dt_quiz_controls { margin-bottom: 10px; }'
-    + '.mlab_quiz .mlab_dt_quiz_controls label { width: auto; display: inline; }'
-    + '.mlab_quiz .mlab_dt_quiz_controls input { }'
+    + '.mlab_quiz .mlab_dt_quiz_question_type, .mlab_quiz .mlab_quiz_question section {  }'
+    + '.mlab_quiz .mlab_quiz_line > span { font-size: 0.8em; }'
+    + '.mlab_quiz .mlab_quiz_line > .mlab_dt_quiz_meta { font-size: 1em; }'
+    + '.mlab_quiz .mlab_dt_quiz_current_question { border: 1px dashed white; }'
+    
+    + '.mlab_quiz .mlab_dt_factory { float: left; clear: both; width: 100%; border: 1px solid #D19F2A; padding: 10px; background-color: white; color: #717275; margin-bottom: 10px; }'
+    + '.mlab_quiz .mlab_dt_factory section { float: left; clear: both; width: 100%; margin: 5px 0; }'
+    + '.mlab_quiz .mlab_dt_factory input { float: left; clear: both; width: 100%; font-size: 1.2em; background-color: #d1d2d5; padding: 3px; }'
 + '</style>';
 
 
@@ -53,36 +57,63 @@ this.classes = {
     questionAlternatives: "mlab_quiz_question_alternatives",
     textInput: "mlab_quiz_text_input",
     line: "mlab_quiz_line",
+    hide: "mlab_quiz_hide",
 
     dtOnly: "mlab_dt_quiz_dtonly", // All elements with this class will be removed on save
     nav: "mlab_dt_quiz_page_nav",
     disabled: "mlab_dt_quiz_disabled",
     active: "mlab_dt_quiz_active",
-//     quizControls: "mlab_dt_quiz_controls",
     editable: "mlab_dt_quiz_editable",
     addPage: "mlab_dt_quiz_page_add",
     removePage: "mlab_dt_quiz_page_remove",
-    addQuestion: "mlab_dt_quiz_question_add",
-    removeQuestion: "mlab_dt_quiz_question_remove",
+    factory: "mlab_dt_factory",
+    userPrompt: "mlab_dt_user_prompt",
+    helpText: "mlab_dt_help_text",
+    userInput: "mlab_dt_user_input",
+    correctResponse: "mlab_dt_correct_response",
+    mandatory: "mlab_dt_mandatory",
     questionType: "mlab_dt_quiz_question_type",
-    changeQuestionType: "mlab_dt_quiz_question_change_type",
-    addQuestionAlternative: "mlab_dt_quiz_question_add_alternative"
+    meta: "mlab_dt_quiz_meta",
+    dialogLink: "mlab_dt_quiz_dialog_link",
+    currentQuestion: "mlab_dt_quiz_current_question",
+    markedAlternative: "mlab_dt_quiz_alternative_marked"
 };
 
-/* Question types available. */
-this.questionTypes = {
-    "text": "Tekst/tall",
-    "checkbox": "Ja/nei-svar",
-    "select": "Flervalgsspørsmål (nedtrekksmeny)",
-    "multicheck": "Flervalgsspørsmål (avkrysning, flere svar)"
-};
+/* Question types available. Order matches user's input value. */
+this.questionTypes = [
+    {"type": "text", "name": "Tekst/tall", "order": 1},
+    {"type": "radio", "name": "Radioknapper (ett riktig svar)", "order": 2},
+    {"type": "select", "name": "Nedtrekksmeny (ett riktig svar)", "order": 3},
+    {"type": "checkbox", "name": "Avkrysning (flere riktige svar)", "order": 4}
+];
 
+
+this.editStages = [
+    "pageTitle",
+    "questionType",
+    "question",
+    "alternatives",
+    "correctResponse",
+    "mandatory"
+];
+
+this.editPrompts = {
+    "pageTitle": "Vennligst legg inn tittel på siden. Avslutt med enter-tast.",
+    "questionType": "<h4>Nytt spørsmål</h4>Velg spørsmålstype: <br/>%types%<br/> Avslutt med enter-tast.",
+    "question": "Skriv inn spørsmål, avslutt med spørsmålstegn etterfulgt av enter-tast.",
+    "alternatives": "Skriv inn alternativer. Avslutt hvert alternativ med enter-tast. Når du er ferdig, legg inn tom linje.",
+    "correctResponse": [
+        "Skriv inn riktig svar. Avslutt med enter-tast.", 
+        "Velg riktig svar. Skriv nummeret eller klikk på alternativet. Avslutt med enter-tast.", 
+        "Velg riktige svar. Skriv numrene, adskilt med mellomrom eller klikk på alternativene. Avslutt med enter-tast."
+    ], // text, single select, multi select
+    "mandatory": "Er det obligatorisk å svare på dette spørsmålet? Svar med Y/y (for ja) eller N/n for (nei). Avslutt med enter-tast."
+};
 
 /* Hook called when component is created.
  * @param {jQuery} el Main element for component. 
  */
 this.onCreate = function (el) {
-    console.log("onCreate");
     this.globalSetup(el);
     
     this.onLoad(el);
@@ -91,7 +122,6 @@ this.onCreate = function (el) {
  * @param {jQuery} el Main element for component. 
  */
 this.onLoad = function (el) {
-    console.log("onLoad");
     this.globalSetup(el);
     if (!this.domRoot.length) return; 
     if (this.initialized) return;
@@ -105,7 +135,6 @@ this.onLoad = function (el) {
  * @return {String} HTML for component.
 */
 this.onSave = function (el) {
-    console.log("onSave");
     var html = $('<div>' + el.outerHTML + '</div>');
     html.find("." + this.classes.dtOnly).remove();
     html.find("[contenteditable]").removeAttr("contenteditable");
@@ -137,9 +166,10 @@ this.setupDesign = function() {
     var self = this;
     var pages = self.domRoot.find("." + self.classes.page);
     var nav = $('<ul class="' + self.classes.nav + ' ' + self.classes.dtOnly + '"></ul>').prependTo(self.domRoot);
+    self.addStoredQuestions();
     pages.each(function () {
         var page = $(this);
-        var title = page.find("h4").text();
+        var title = page.find("h2").text();
         nav.append('<li><a href="#' + page.attr("id") + '">' + title + '</a></li>');    
         self.setUpPage(page);
     });
@@ -147,22 +177,7 @@ this.setupDesign = function() {
     // Add first page, if there is none
     if (!pages.length) self.addQuizPage();
 
-/*
-    self.domRoot.prepend('<section class="' + this.classes.dtOnly + ' ' + this.classes.quizControls + '">'
-        + '<fieldset class="' + this.classes.line + '">'
-        + '<input type="radio" name="mlab_dt_quiz_mode" value="local"/>'
-        + '<label>Sjekk svar kun lokalt</label>'
-        + '</fieldset>'
-        + '<fieldset class="' + this.classes.line + '">'
-        + '<input type="radio" name="mlab_dt_quiz_mode" value="remote" />'
-        + '<label>Sjekk svar lokalt, last opp til tjener</label>'
-        + '</fieldset>'
-        + '</section>');
-    var controlMode = self.api.getVariable(self.domRoot, "controlMode");
-    if (!controlMode) controlMode = "local";
-    self.domRoot.find("." + this.classes.quizControls + " input[value='" + controlMode + "']").prop("checked", true);
-*/
-    
+
     self.domRoot.on("click", "." + this.classes.addPage, function() {
         self.addQuizPage();
         return false;
@@ -170,42 +185,46 @@ this.setupDesign = function() {
     self.domRoot.on("click", "." + this.classes.removePage, function() {
         self.removeQuizPage($(this));
     });
-    self.domRoot.on("click", "." + this.classes.addQuestion, function() {
-        self.addQuestion($(this));
+
+    self.domRoot.on("keyup", "." + this.classes.userInput, function(e) {
+        self.handleUserInput($(this), e);
+    });
+
+    self.domRoot.on("click", "." + this.classes.editable, function() {
+        var ob = $(this);
+        self.api.editContent(ob);
+        ob.focus();
         return false;
     });
-    self.domRoot.on("click", "." + this.classes.changeQuestionType, function() {
-        self.questionTypeChange($(this));
-        return false;
+    self.domRoot.on("blur", "." + this.classes.editable, function() {
+        var ob = $(this);
+        if (ob.closest("." + self.classes.questions).length) self.saveQuestions();
+        else self.api.setDirty();
+        ob.removeAttr("contenteditable");
+        return true;
     });
-    self.domRoot.on("click", "." + this.classes.addQuestionAlternative, function() {
-        self.createQuestionAlternative($(this));
-    });
-    self.domRoot.on("click", "." + this.classes.removeQuestionAlternative, function() {
-        self.removeQuestionAlternative($(this));
-    });
-    self.domRoot.on("click", "." + this.classes.removeQuestion, function() {
-        self.removeQuestion();
+
+    self.domRoot.on("input", "." + self.classes.page + " > h2", function() {
+        var ob = $(this);
+        var page = ob.closest("." + self.classes.page);
+        self.domRoot.find("." + self.classes.nav + " li a[href='#" + page.attr("id") + "']").text(ob.text());
     });
     
-    self.domRoot.on("input", "." + this.classes.question + " ." + this.classes.editable, function() {
-        self.saveQuestions();
+    self.domRoot.on("click", "." + self.classes.question, function() {
+        self.questionClicked($(this));
     });
-    self.domRoot.on("input", "." + this.classes.page + " > h4", function() {
-        self.updateTab($(this));
+    
+    self.domRoot.on("click", "." + self.classes.questionAlternatives + " li", function() {
+        self.alternativeClicked($(this));
+        return false;
     });
-    self.domRoot.on("change", "." + this.classes.question + " input[type='radio'], ." + this.classes.question + " input[type='checkbox']", function() {
-        self.saveQuestions();
+    
+    $("body").on("click", "." + self.classes.dialogLink, function() {
+        self.dialogLinkClick($(this));
+        return false;
     });
-/*
-    self.domRoot.on("change", "." + this.classes.quizControls + " input[type='radio']", function() {
-        self.saveControls();
-    }),
-*/
 
     self.initTabs();
-    self.addStoredQuestions();
-    
     // Adding role="none", to prevent jQuery mobile from turning my inputs and buttons into jQuery UI elements
     self.domRoot.find(":input").attr("data-role", "none");
 };
@@ -215,7 +234,6 @@ this.setupDesign = function() {
  * component is reopened in DT, or started in RT.
  */
 this.saveQuestions = function() {
-    console.log("save questions");
     var self = this;
     var questions = {};
     self.domRoot.find("." + self.classes.page).each(function() {
@@ -231,36 +249,12 @@ this.saveQuestions = function() {
             questionOb["id"] = questionId;
             questionOb["question"] = question.find("." + self.classes.questionText).text();
             questionOb["type"] = questionType;
-            var correctAnswer = null;
-            var alternatives = [];
-            if (questionType=="text") {
-                correctAnswer = question.find('input[name="' + questionId + '"]').val();
-                if (!correctAnswer) correctAnswer = null;
-            }
-            else if (questionType=="checkbox")
-                correctAnswer = question.find('input[name="' + questionId + '"]:checked').val();
-            else if (questionType=="select") {
-                correctAnswer = question.find('input[name="' + questionId + '"]:checked').val();
-            }
-            else if (questionType=="multicheck") {
-                correctAnswer = [];
-                question.find('input[name^="' + questionId + '"]:checked').each(function() {
-                    correctAnswer.push($(this).val());
-                });
-            }
-            
-            if (questionType=="select" || questionType=="multicheck") {
-                question.find("." + self.classes.questionAlternatives + " ." + self.classes.line).each(function() {
-                    var line = $(this);
-                    var input = line.find('input[name^="' + questionId + '"]');
-                    var label = line.find('label');
-                    alternatives.push([input.val(), label.text()]);
-                });
-            }
-            console.log("storing correct answer");
-            console.log(correctAnswer);
-            questionOb["correctAnswer"] = correctAnswer;
-            questionOb["alternatives"] = alternatives;
+            questionOb["correctResponse"] = self.getCorrectResponse(question);
+            questionOb["alternatives"] = [];
+            question.find("." + self.classes.questionAlternatives + " li").each(function() {
+                questionOb["alternatives"].push($(this).text());
+            });
+            questionOb["mandatory"] = question.data("mandatory");
             questions[pageId].push(questionOb);
         });
     });
@@ -269,21 +263,38 @@ this.saveQuestions = function() {
     self.api.setDirty();
 };
 
-/* Saves the control mode for the quiz, that is, if the questions should only be checked locally, or also uploaded to server (via remote storage component).
- */
-/*
-this.saveControls = function() {
-    var controlMode = this.domRoot.find("." + this.classes.quizControls + " input[type='radio']:checked").val();
-    if (!controlMode) controlMode = "local";
-    this.api.setVariable(this.domRoot, "controlMode", controlMode);
-    this.api.setDirty();
+this.getCorrectResponse = function(question) {
+    var questionType = question.data("questiontype");
+    var correctResponse = question.data("correctResponse");
+    if (questionType=="checkbox") {
+        correctResponseRaw = correctResponse.split(" ");
+        correctResponse = [];
+        for (var i=0, ii=correctResponseRaw.length; i<ii; i++) {
+            var response = parseInt(correctResponseRaw[i]);
+            if (response) correctResponse.push(response);
+        }
+    }
+    else if (questionType=="radio" || questionType=="select") {
+        correctResponse = parseInt(correctResponse);
+        if (!correctResponse) correctResponse = "";
+    }
+    return correctResponse;
 };
-*/
+
+this.getQuestionType = function(type) {
+    var questionType;
+    for (var i=0, ii=this.questionTypes.length; i<ii; i++) {
+        if (this.questionTypes[i]["type"]==type) {
+            questionType = this.questionTypes[i];
+            break;
+        }
+    }
+    return questionType;
+};
 
 /* Fetches stored questions, adds them to pages and sets them up for further editing.
  */
 this.addStoredQuestions = function() {
-    console.log("add stored Qs")
     var self = this;
     var allQuestions = self.api.getVariable(self.domRoot, "questions");
     if (!allQuestions) allQuestions = {};
@@ -292,33 +303,23 @@ this.addStoredQuestions = function() {
         var pageId = page.attr("id");
         if (!(pageId in allQuestions)) return true;
         var pageQuestions = allQuestions[pageId];
+        
         for (var i=0, ii=pageQuestions.length; i<ii; i++) {
-            var question = self.addQuestion(null, page, pageQuestions[i]["question"], pageQuestions[i]["type"], pageQuestions[i]["id"]);
-            self.changeQuestionType(null, null, question, pageQuestions[i]["type"]);
-            if (pageQuestions[i]["type"]=="select" || pageQuestions[i]["type"]=="multicheck") {
-                var alternatives = pageQuestions[i]["alternatives"];
-                var button = question.find("." + self.classes.addQuestionAlternative);
-                var alternative = question.find("." + self.classes.questionAlternatives + " ." + self.classes.line);
-                var newAlternative = alternative.clone();
-                alternative.remove();
-                for (var j=0, jj=alternatives.length; j<jj; j++) {
-                    thisAlternative = newAlternative.clone()
-                    self.addQuestionAlternative(thisAlternative, pageQuestions[i]["id"], alternatives[j][0], button, alternatives[j][1], j==0);
-                }
+            var questionType = self.getQuestionType(pageQuestions[i]["type"]);
+            var question = self.addQuestion(page, questionType["order"], pageQuestions[i]["question"], pageQuestions[i]["id"]);
+            var alternatives = pageQuestions[i]["alternatives"];
+            for (var j=0, jj=alternatives.length; j<jj; j++) {
+                self.addQuestionAlternative(question, alternatives[j], questionType["type"]);
             }
-            console.log("correct answer from store");
-            console.log(pageQuestions[i]["correctAnswer"]);
-            if (pageQuestions[i]["correctAnswer"]) {
-                if (pageQuestions[i]["type"]=="text") {
-                    question.find("#" + pageQuestions[i]["id"]).val(pageQuestions[i]["correctAnswer"]);
-                }
-                if (pageQuestions[i]["type"]=="multicheck") {
-                    for (var j=0, jj=pageQuestions[i]["correctAnswer"].length; j<jj; j++) {
-                        question.find('input[value="' + pageQuestions[i]["correctAnswer"][j] + '"]').prop("checked", true);
+            if (pageQuestions[i]["correctResponse"]) {
+                if (questionType["type"]=="checkbox") {
+                    for (var j=0, jj=pageQuestions[i]["correctResponse"].length; j<jj; j++) {
+                        self.addCorrectResponse(question, pageQuestions[i]["correctResponse"][j], questionType["type"]);
                     }
                 }
-                else question.find('input[value="' + pageQuestions[i]["correctAnswer"] + '"]').prop("checked", true);
+                else self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
             }
+            self.setMandatory(question, pageQuestions[i]["mandatory"]);
         }
     });
 };
@@ -326,14 +327,14 @@ this.addStoredQuestions = function() {
 /* Adds a new page to the quiz.
  */
 this.addQuizPage = function() {
-    console.log("add quiz page");
     // tabs require the use of IDs
     var uuid = this.api.getGUID();
     var pages = this.domRoot.find("." + this.classes.page);
     var nav = this.domRoot.find("." + this.classes.nav);
     var title = 'Side ' + (pages.length+1);
-    var content = '<h4>Side ' + (pages.length+1) + '</h4>'
+    var content = '<h2 class="' + this.classes.hide + ' ' + this.classes.editable + '"></h2>'
         + '<ul class="' + this.classes.questions + '"></ul>';
+    
     nav.find("." + this.classes.addPage).closest("li").before('<li><a href="#' + uuid + '">' + title + '</a></li>');
     
     this.domRoot.append('<section class="' + this.classes.page + '" id="' + uuid + '">' + content + '</section>');
@@ -347,24 +348,447 @@ this.addQuizPage = function() {
  * @param {jQuery} page The page to be set up.
  * @param {boolean} setActive Whether or not the page should be set as the active page. 
  */
-this.setUpPage = function(page, setActive) {
+this.setUpPage = function(page, setActive, editStage) {
     if (page.data("setupComplete")) return;
+    if (!editStage) {
+        if (!page.find("h2").text()) editStage = "pageTitle";
+        else editStage = "questionType";
+    }
     var footer = $('<footer class="' + this.classes.dtOnly + '">'
-        + '<input type="button" class="mlab_dt_button_left ' + this.classes.addQuestion + '" value="Legg til spørsmål" />'
+        + '<section class="' + this.classes.hide + ' ' + this.classes.factory + '">'
+        + '    <section class="' + this.classes.userPrompt + '"></section>'
+        + '    <section class="' + this.classes.helpText + '"></section>'
+        + '    <input name="user_input" type="text" class="' + this.classes.userInput + '" />'
+        + '</section>'
         + '<input type="button" class="mlab_dt_button_right ' + this.classes.removePage + '" value="Fjern side" />'
         + '</footer>');
     page.append(footer);
-    this.api.editContent(page.find("h4"));
+    //this.api.editContent(page.find("h2"));
     var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
     if (setActive) this.switchTabs(link);
+    this.enterEditMode(page, editStage);
     page.data("setupComplete", true);
+};
+
+
+
+this.enterEditMode = function(page, editStage, question, existing) {
+    var factory = page.find("." + this.classes.factory);
+    var prompt = factory.find("." + this.classes.userPrompt);
+    var input = factory.find("." + this.classes.userInput);
+    if (!question) question = this.getCurrentQuestion(page);
+    if (!existing) existing = false;
+    var questionType = question.data("questiontype");
+    
+    // If text question, skip alternatives stage
+    if (editStage=="alternatives" && questionType=="text") editStage = this.editStages[this.editStages.indexOf(editStage) + 1];
+    input.data("editStage", this.editStages.indexOf(editStage));
+    input.data("existing", existing);
+    var promptText = "";
+    if (editStage=="questionType") {
+        promptText = this.editPrompts[editStage];
+        var typesText = [];
+        for (var i=0, ii=this.questionTypes.length; i<ii; i++) {
+            typesText.push(i+1 + ": " + this.questionTypes[i]["name"] + ".");
+        }
+        if (!existing && this.getLastQuestion(page).length) typesText.push(this.questionTypes.length + 1 + ": Ikke legg til flere spørsmål.");
+        promptText = promptText.replace("%types%", typesText.join("<br/>"));
+    }
+    else if (editStage=="correctResponse") {
+        promptText = this.editPrompts[editStage];
+        if (questionType=="text") {
+            promptText = promptText[0];
+        }
+        else if (questionType=="radio" || questionType=="select") {
+            promptText = promptText[1];
+        }
+        else if (questionType=="checkbox") {
+            promptText = promptText[2];
+        }
+        
+        question.find("." + this.classes.questionAlternatives + " li").on("click", function() {
+            if (editStage!="correctResponse") return true;
+            var item = $(this);
+            var itemNumber = item.index() + 1;
+            var inputVal = input.val().split(" ");
+            var values = [];
+            for (var i=0, ii=inputVal.length; i<ii; i++) {
+                var val = parseInt(inputVal[i]);
+                if (val) values.push(val);
+            }
+            if (values.indexOf(itemNumber)==-1) values.push(itemNumber);
+            input.val(values.join(" "));
+            return false;
+        });
+    }
+    else promptText = this.editPrompts[editStage];
+    
+    if (editStage!="correctResponse") question.find("." + this.classes.questionAlternatives + " li").off("click");
+    factory.removeClass(this.classes.hide);
+    prompt.html(promptText);
+    input.val('').focus();
+};
+
+this.handleUserInput = function(input, e) {
+    var enterKey = 13;
+    // Only proceed if we have hit enter
+    if (e.which!=enterKey) return;
+
+    var editStage = input.data("editStage");
+    var existing = input.data("existing");
+    var value = input.val();
+    var page = input.closest("." + this.classes.page);
+    var helpText = input.siblings("." + this.classes.helpText).empty();
+    var question = this.getCurrentQuestion(page);
+    var questionType = question.data("questiontype");
+    var proceed = true;
+    switch (editStage) {
+        case this.editStages.indexOf("pageTitle"):
+            page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
+            break;
+        case this.editStages.indexOf("questionType"):
+            value = parseInt(value);
+            var minValue = 1;
+            var maxValue = this.questionTypes.length;
+            if (!existing && question.length) {
+                maxValue += 1;
+                if (value==maxValue) {
+                    // We have selected to not add any more questions.
+                    this.finishAddingQuestions(page);
+                    proceed = false;
+                    break;
+                }
+            }
+            if (!value || value<minValue || value>maxValue) {
+                input.val('');
+                helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
+                proceed = false;
+            }
+            else if (existing) {
+                this.changeQuestionType(page, question, value);
+                editStage = this.editStages.length;
+            }
+            else {
+                this.addQuestion(page, value);
+            }
+            break;
+        case this.editStages.indexOf("question"):
+            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
+            if (value.slice(-1)!="?") proceed = false;
+            input.val('');
+            break;
+        case this.editStages.indexOf("alternatives"):
+            proceed = !this.addQuestionAlternative(question, value, questionType);
+            input.val('');
+            break;
+        case this.editStages.indexOf("correctResponse"):
+            proceed = this.addCorrectResponse(question, value, questionType);
+            input.val('');
+            break;
+        case this.editStages.indexOf("mandatory"):
+            if (value=="Y" || value=="y") value = true;
+            else if (value=="N" || value=="n") value = false;
+            if ((typeof value)!="boolean") proceed = false;
+            else this.setMandatory(question, value);
+            input.val('');
+            break;
+        default:
+            proceed = false;
+    }
+    editStage++;
+    if (editStage>=this.editStages.length) {
+        // We are done with this question, move on to the next one
+        if (existing) {
+            proceed = false;
+            this.finishAddingQuestions(page);
+            input.data("existing", false);
+        }
+        editStage = 1;
+        this.saveQuestions();
+    }
+
+    if (proceed) this.enterEditMode(page, this.editStages[editStage], question, existing);
+};
+
+this.setMandatory = function(question, value) {
+    question.data("mandatory", value);
+    var mandatoryOb = question.find("." + this.classes.mandatory);
+    mandatoryOb.find("label").text(value ? "Ja" : "Nei");
+    mandatoryOb.removeClass(this.classes.hide);
+};
+
+this.addQuestionAlternative = function(question, value, questionType) {
+    var added = false;
+    if (value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) {
+        var alternatives = question.find("." + this.classes.questionAlternatives)
+        var alternativesList = alternatives.find("ol");
+        alternativesList.append('<li>' + value + '</li>');
+        alternatives.removeClass(this.classes.hide);
+        added = true;
+    }
+    return added;
+};
+
+this.addCorrectResponse = function(question, value, questionType) {
+    var proceed = true;
+    var correctResponse = "";
+    if (questionType=="text" || questionType=="radio" || questionType=="select") {
+        correctResponse = value;
+    }
+    else if (questionType=="checkbox") {
+        if (value) {
+            if (typeof value!="string") value = value.toString();
+            value = value.split(" ");
+            for (var i=0, ii=value.length; i<ii; i++) {
+                var val = parseInt(value[i]);
+                if (val) value[i] = val;
+            }
+            value = value.join(" ");
+            correctResponse = value;
+        }
+    }
+    if (!value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) proceed = false;
+    question.data("correctResponse", correctResponse)
+    var responseOb = question.find("." + this.classes.correctResponse);
+    responseOb.find("label").text(correctResponse);
+    responseOb.removeClass(this.classes.hide);
+    return proceed;
+};
+
+this.finishAddingQuestions = function(page) {
+    page.find("." + this.classes.factory).addClass(this.classes.hide);
+    return true;
+};
+
+/* Makes a new question
+ * @param {jQuery} page If no button was clicked, the page we want to add the question to, must be provided.
+ * @param {string} type The type of the question. Defaults to type "text".
+ * @param {string} questionText The actual question being asked. If not provided, a text is generated.
+ * @param {string} uuid Unique ID for question, for existing questions. If not provided, one is generated.
+ * @return {jQuery} The question that was added.
+ */
+this.makeQuestion = function(page, type, questionText, uuid) {
+    if (!questionText) questionText = "";
+    if (!type) type = 1;
+    if (!uuid) uuid = this.api.getGUID();
+    var typeOb = this.questionTypes[type-1];
+    var typeType = typeOb["type"];
+    var typeName = typeOb["name"];
+    var question = $('<li class="' + this.classes.question + ' ' + this.classes.dtOnly + '"></li>');
+    question.append('<span class="' + this.classes.line + '">'
+        + '<label class="' + this.classes.questionText + ' '  + this.classes.hide + '">' + questionText + '</label>'
+        + '</span>'
+        + '<span class="' + this.classes.line + ' ' + this.classes.questionType + '">'
+        + '<span>Spørsmålstype:</span> <label>' + typeName + '</label>'
+        + '</span>'
+        + '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + ' ' + this.classes.hide + '">'
+        + '<span>Alternativer:</span> <ol class="' + this.classes.meta + '"></ol>'
+        + '</span>'
+        + '<span class="' + this.classes.line + ' ' + this.classes.correctResponse + ' ' + this.classes.hide + '">'
+        + '<span>Riktig svar:</span> <label class="' + this.classes.meta + '"></label>'
+        + '</span>'
+        + '<span class="' + this.classes.line + ' ' + this.classes.mandatory + ' ' + this.classes.hide + '">'
+        + '<span>Obligatorisk:</span> <label class="' + this.classes.meta + '"></label>'
+        + '</span>'
+        + '<section></section>');
+    question.data("questionid", uuid);
+    question.data("questiontype", typeType);
+    return question;
+};
+this.addQuestion = function(page, type, questionText, uuid) {
+    var questions = page.find("." + this.classes.questions);
+    var question = this.makeQuestion(page, type, questionText, uuid);
+    question = question.appendTo(questions);
+    this.markQuestionAsCurrent(question);
+    //this.saveQuestions();
+    return question;
+};
+
+this.changeQuestionType = function(page, question, type) {
+    var self = this;
+    var typeOb = this.questionTypes[type-1];
+    var typeType = typeOb["type"];
+    var oldQuestionType = question.data("questiontype");
+    if (typeType==oldQuestionType) return;
+    var questionText = question.find("." + self.classes.questionText).html();
+    var alternatives = question.find("." + self.classes.questionAlternatives + " li");
+    var correctResponse = self.getCorrectResponse(question);
+    if (oldQuestionType=="checkbox" || oldQuestionType=="text" || typeType=="text") correctResponse = "";
+    var mandatory = question.data("mandatory");
+    
+    var newQuestion = self.makeQuestion(page, type, questionText);
+    question.replaceWith(newQuestion);
+    if (typeType!="text") {
+        alternatives.each(function() {
+            var alternative = $(this);
+            self.addQuestionAlternative(newQuestion, alternative.text(), typeType);
+        });
+    }
+    this.addCorrectResponse(newQuestion, correctResponse, typeType);
+    this.setMandatory(newQuestion, mandatory);
+};
+
+this.alternativeClicked = function(alternative) {
+    this.closeAllPropertyDialogs();
+    this.markAlternative(alternative);
+    var changeCorrectResponseText = "";
+    if (this.alternativeIsCorrect(alternative)) changeCorrectResponseText = "Sett alternativet som <i>ikke</i> korrekt";
+    else changeCorrectResponseText = "Sett alternativet som korrekt";
+    var html = [];
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="editalternative">Endre teksten</a>');
+    html.push('</div>');
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changecorrectresponse">' + changeCorrectResponseText + '</a>');
+    html.push('</div>');
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="deletealternative">Slett svaralternativ</a>');
+    html.push('</div>');
+    this.api.displayPropertyDialog(alternative, "Redigér svaralternativ", html);
+};
+
+this.alternativeIsCorrect = function(alternative) {
+    var question = alternative.closest("." + this.classes.question);
+    var questionType = question.data("questiontype");
+    var correctResponse = this.getCorrectResponse(question);
+    var alternativeNumber = alternative.index() + 1;
+    return (questionType=="checkbox" && correctResponse.indexOf(alternativeNumber)!=-1) || correctResponse==alternativeNumber
+};
+
+this.markAlternative = function(alternative) {
+    this.domRoot.find("li." + this.classes.markedAlternative).removeClass(this.classes.markedAlternative);
+    alternative.addClass(this.classes.markedAlternative);
+};
+
+this.questionClicked = function(question) {
+    this.closeAllPropertyDialogs();
+    this.markQuestionAsCurrent(question);
+    var type = question.data("questiontype");
+    var html = [];
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="delete">Slett spørsmål</a>');
+    html.push('</div>');
+    if (question.prev("." + this.classes.question).length) {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="moveup">Flytt opp</a>');
+        html.push('</div>');
+    }
+    if (question.next("." + this.classes.question).length) {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="movedown">Flytt ned</a>');
+        html.push('</div>');
+    }
+    if (type=="radio" || type=="select" || type=="checkbox") {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="addalternative">Legg til svaralternativ</a>');
+        html.push('</div>');
+    }
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changetype">Endre spørsmåltype</a>');
+    html.push('</div>');
+    var toggleMandatoryText = "Gjør spørsmålet obligatorisk";
+    if (question.data("mandatory")) toggleMandatoryText = "Gjør spørsmålet <i>ikke</i>-obligatorisk"
+    this.api.displayPropertyDialog(question, "Endre spørsmål", html);
+};
+
+this.markQuestionAsCurrent = function(question) {
+    question.siblings("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
+    question.addClass(this.classes.currentQuestion);
+};
+
+this.getCurrentQuestion = function(page) {
+    if (!page) page = this.getActivePage();
+    var question = page.find("." + this.classes.currentQuestion).first();
+    if (!question.length) question = this.getLastQuestion(page);
+    return question; 
+};
+
+this.getLastQuestion = function(page) {
+    var question = page.find("." + this.classes.questions + " ." + this.classes.question).last();
+    return question;
+};
+
+this.dialogLinkClick = function(link) {
+    var linkFunction = link.data("function");
+    this.closeAllPropertyDialogs();
+    var question = this.getCurrentQuestion();
+    var page = question.closest("." + this.classes.page);
+    var alternative = this.domRoot.find("li." + this.classes.markedAlternative);
+    if (linkFunction=="delete") this.removeQuestion(question);
+    else if (linkFunction=="moveup") this.custom_move_question_up(question);
+    else if (linkFunction=="movedown") this.custom_move_question_down(question);
+    else if (linkFunction=="addalternative") this.enterEditMode(page, "alternatives", question, true);
+    else if (linkFunction=="changetype") this.enterEditMode(page, "questionType", question, true);
+    else if (linkFunction=="togglemandatory") this.toggleMandatory(question);
+    else if (linkFunction=="editalternative") this.editAlternativeText(alternative);
+    else if (linkFunction=="changecorrectresponse") this.toggleAlternativeCorrectness(alternative);
+    else if (linkFunction=="deletealternative") this.removeAlternative(alternative);
+};
+
+/*
+The function in API of the same name simply does not work. Creating our own.
+*/
+this.closeAllPropertyDialogs = function() {
+    $("body .qtip").qtip("destroy");
+};
+
+this.editAlternativeText = function(alternative) {
+    var self = this;
+    self.api.editContent(alternative);
+    alternative.focus();
+    alternative.on("blur", function() {
+        var alternative = $(this);
+        self.saveQuestions();
+        alternative.removeAttr("contenteditable");
+    });
+};
+
+this.toggleAlternativeCorrectness = function(alternative) {
+    var question = alternative.closest("." + this.classes.question);
+    var questionType = question.data("questiontype");
+    var alternativeNumber = alternative.index() + 1;
+    var alternativeValue = "";
+    if (this.alternativeIsCorrect(alternative)) {
+        if (questionType=="checkbox") {
+            var correctResponse = this.getCorrectResponse(question);
+            var reponseIndex = correctResponse.indexOf(alternativeNumber);
+            correctResponse.splice(responseIndex, 1);
+            alternativeValue = correctResponse.join(" ");
+        }
+    }
+    else {
+        if (questionType=="checkbox") {
+            var correctResponse = this.getCorrectResponse(question);
+            correctResponse.push(alternativeNumber);
+            alternativeValue = correctResponse.join(" ");
+        }
+        else {
+            alternativeValue = alternativeNumber;
+        }
+    }
+    this.addCorrectResponse(question, alternativeValue, questionType);
+    this.saveQuestions();
+};
+
+this.removeAlternative = function(alternative) {
+    if (this.alternativeIsCorrect(alternative)) this.toggleAlternativeCorrectness(alternative);
+    alternative.remove();
+    this.saveQuestions();
+};
+
+this.toggleMandatory = function(question) {
+    this.setMandatory(question, !question.data("mandatory"));
+};
+
+this.removeQuestion = function(question) {
+    question.remove();
+    this.saveQuestions();
 };
 
 /* Removes a page from the component. 
  * @param {jQuery} button The button that was clicked to remove the page.
  */
 this.removeQuizPage = function(button) {
-    console.log("remove quiz page");
     var page = button.closest("." + this.classes.page);
     var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
     var li = link.parent();
@@ -375,176 +799,6 @@ this.removeQuizPage = function(button) {
     this.api.setDirty();
 };
 
-/* Adds a new question to page.
- * @param {jQuery} button The button that was clicked to add question. Button is located on the page, so we can use this to look up the page.
- * @param {jQuery} page If no button was clicked, the page we want to add the question to, must be provided.
- * @param {string} questionText The actual question being asked. If not provided, a text is generated.
- * @param {string} type The type of the question. Defaults to type "text".
- * @param {string} uuid Unique ID for question, for existing questions. If not provided, one is generated.
- * @return {jQuery} The question that was added.
- */
-this.addQuestion = function(button, page, questionText, type, uuid) {
-    console.log("add question");
-    if (!page) page = button.closest("." + this.classes.page);
-    if (!questionText) questionText = "[Spørsmål]";
-    if (!type) type = "text";
-    if (!uuid) uuid = this.api.getGUID();
-    var typeName = this.questionTypes[type];
-    var questions = page.find("." + this.classes.questions);
-    var question = $('<li class="' + this.classes.question + ' ' + this.classes.dtOnly + '"></li>');
-    question.append('<span class="' + this.classes.line + '">'
-        + '<label class="' + this.classes.editable + ' ' + this.classes.questionText + '">' + questionText + '</label>'
-        + '</span>'
-        + '<span class="' + this.classes.line + ' ' + this.classes.questionType + '">'
-        + '<label>' + typeName + '</label>'
-        + '<input type="button" class="' + this.classes.changeQuestionType + '" value="Endre" />'
-        + '</span>'
-        + '<section></section>');
-    question.data("questionid", uuid);
-    question = question.appendTo(questions);
-    this.api.editContent(questions.find("." + this.classes.editable));
-    this.saveQuestions();
-    return question;
-};
-
-/* Displays dialog to change type of question. 
- * @param {jQuery} button Element that was clicked to change type.
- */
-this.questionTypeChange = function(button) {
-    var self = this;
-    var html = [];
-    html.push('<select name="questiontype">');
-    for (type in this.questionTypes) {
-        html.push('<option value="' + type + '">' + this.questionTypes[type] + '</option>');
-    }
-    html.push('</select>');
-    html.push('<input type="button" value="OK" class="mlab_dt_button_right" />');
-    html = html.join("");
-    this.api.displayPropertyDialog(button, "Endre spørsmålstype", html, function(el) { self.questionTypeSetup(el, button); }, null, function(el) { self.changeQuestionType(el); });
-};
-
-/* Sets up the dialog box for changing type.
- * @param {Object} el qTip element, sent from the qTip dialog system
- * @param {jQuery} button The element clicked to change type
- */
-this.questionTypeSetup = function(el, button) {
-    console.log("change question setup");
-    var self = this;
-    var ob = $(el.target);
-    var question =  button.closest("." + this.classes.question);
-    var type = question.data("questiontype");
-    if (type) {
-        ob.find("select[name='questiontype']").val(type);
-    }
-    ob.on("click", "input", function() { 
-        self.changeQuestionType(ob, button);
-        button.qtip('hide');
-    });
-};
-
-/* Changes the type of the question. Usually called when dialog is closed. 
- * @param {jQuery} ob Element containing the dialog content
- * @param {jQuery} button Element that was clicked to change type. Used to know which question we are changing.
- * @param {jQuery} question The question we are changing, if button not provided.
- * @param {string} type Type of the question, if ob not provided.
- */
-this.changeQuestionType = function(ob, button, question, type) {
-    console.log("change question type");
-    if (!type && ob) type = ob.find("select[name='questiontype']").val();
-    if (!question && button) question =  button.closest("." + this.classes.question);
-    var typeName = this.questionTypes[type];
-
-    if (!type || !question) return;
-    if (type==question.data("questiontype")) return;
-    question.data("questiontype", type);
-    question.find("> span." + this.classes.questionType + " label").text(typeName);
-    var typeHtml = this.getQuestionTypeHtml(type, question.data("questionid"));
-    question.find("section").empty().append(typeHtml);
-    var editable = question.find("." + this.classes.questionAlternatives + " ." + this.classes.editable);
-    if (editable.length) this.api.editContent(editable);
-    this.saveQuestions();
-};
-
-/* Gets the HTML for the question type selected.
- * @param {string} type The question type selected
- * @param {string} uuid Unique ID for question. To be inserted into HTML
- * @return {string} HTML specific for question type
- */
-this.getQuestionTypeHtml = function(type, uuid) {
-    var htmls = {
-        "": "",
-        "text": '<span class="' + this.classes.line + '">Korrekt svar:</span>'
-            + '<span class="' + this.classes.line + '"><input type="text" name="' + uuid + '" id="' + uuid + '" class="' + this.classes.textInput + '"/></span>',
-        "checkbox": '<span class="' + this.classes.line + '">Korrekt svar:'
-            + '<span class="' + this.classes.line + '"><input type="radio" name="' + uuid + '" id="' + uuid + '_yes" value="yes" /><label for="' + uuid + '_yes">Ja</label></span>'
-            + '<span class="' + this.classes.line + '"><input type="radio" name="' + uuid + '" id="' + uuid + '_no" value="no" /><label for="' + uuid + '_no">Nei</label></span>'
-            + '</span>',
-        
-        "select": '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + '">Korrekt svar:'
-            + '<span class="' + this.classes.line + '"><input type="radio" name="' + uuid + '" value="1" /><label class="' + this.classes.editable + '">[Alternativ 1]</label></span>'
-            + '<input type="button" class="' + this.classes.addQuestionAlternative + '" value="+" />'
-            + '</span>',
-        
-        "multicheck": '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + '">Korrekte svar:'
-            + '<span class="' + this.classes.line + '"><input type="checkbox" name="' + uuid + '_1" value="1" /><label class="' + this.classes.editable + '">[Alternativ 1]</label></span>'
-            + '<input type="button" class="' + this.classes.addQuestionAlternative + '" value="+" />'
-            + '</span>'
-    }
-    var html = ""
-    if (type in htmls) html = htmls[type];
-    return html;
-};
-
-/* Creates an answer alternative for question.
- * @param {button} button Button that was clicked to add alternative.
- */
-this.createQuestionAlternative = function(button) {
-    var question = button.closest("." + this.classes.question);
-    var target = button.closest("." + this.classes.questionAlternatives);
-    var alternatives = target.find("> ." + this.classes.line);
-    var maxValue = 0;
-    alternatives.each(function() {
-        maxValue = Math.max(parseInt($(this).find('input[name^="' + question.data("questionid") + '"]').val()), maxValue);
-    });
-    var newValue = maxValue + 1;
-    var newAlternative = alternatives.eq(0).clone();
-    
-    this.addQuestionAlternative(newAlternative, question.data("questionid"), newValue, button, null, false);
-};
-
-/* Adds answer alternative to question. Split off from createQuestionAlternative to make more useable for adding stored questions.
- * @param {jQuery} newAlternative Element containing the actual alternative.
- * @param {string} questionId Unique ID for the question.
- * @param {string} value Value for the question alternative input element.
- * @param {string} labelText Text for the alternative.
- * @param {boolean} first Whether or not this is first element. The first element should not have a "remove" button.
- */
-this.addQuestionAlternative = function(newAlternative, questionId, value, button, labelText, first) {
-    if (!first) newAlternative.append('<input type="button" value="Fjern" class="' + this.classes.removeQuestionAlternative + '" />');
-    
-    var input = newAlternative.find('input[name^="' + questionId + '"]');
-    input.val(value);
-    
-    if (input.attr("type")=="checkbox") {
-        var newName = input.attr("name").replace("_1", "_" + value);
-        input.attr("name", newName);
-    }
-    if (!labelText) labelText = "[Alternativ " + value + "]";
-    var label = newAlternative.find("label");
-    label.text(labelText);
-    
-    this.api.editContent(newAlternative.find("." + this.classes.editable));
-    button.before(newAlternative);
-    this.saveQuestions();
-};
-
-/* Removes question alternative from question.
- * @param {jQuery} button Button that was clicked to remove alternative.
- */
-this.removeQuestionAlternative = function(button) {
-    button.closest("." + this.classes.line).remove();
-    this.saveQuestions();
-};
 
 /* Initiates a tab system for component. Not using jQuery UI's tabs because of conflict with base href value.
  */
@@ -579,9 +833,36 @@ this.switchTabs = function(link) {
 };
 
 this.updateTab = function(el) {
-    console.log("updateTab");
-    console.log(el);
     var title = el.text();
     var pageId = el.closest("." + this.classes.page).attr("id");
     this.domRoot.find("." + this.classes.nav + " a[href='#" + pageId + "']").text(title);
 };
+
+this.getActivePage = function() {
+    var activeLink = this.domRoot.find("." + this.classes.nav + " a." + this.classes.active);
+    return this.domRoot.find(activeLink.attr("href"));
+};
+
+this.switchPositions = function(firstOb, secondOb) {
+    if (!firstOb.length || !secondOb.length) return;
+    firstObClone = firstOb.clone();
+    firstOb.remove();
+    secondOb.after(firstObClone);
+};
+
+this.custom_add_question = function(el) {
+    var page = this.getActivePage();
+    page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
+    this.enterEditMode(page,"questionType");
+};
+
+this.custom_move_question_up = function(question) {
+    var previous = question.prev("." + this.classes.question);
+    this.switchPositions(previous, question);
+};
+
+this.custom_move_question_down = function(question) {
+    var next = question.next("." + this.classes.question);
+    this.switchPositions(question, next);
+};
+
