@@ -661,6 +661,40 @@ class FileManagement {
     }
     
     /**
+     * This function will read an XML file (typically /www/config.xml or /platforms/android/AndroidManifest.xml)
+     * and return a requested value, either as a string or an array
+     * @param type $filename
+     * @param type string $tag
+     * @param type string $attribute
+     * @param type string $value
+     * http://stackoverflow.com/questions/1193528/how-to-modify-xml-file-using-php
+     * http://stackoverflow.com/questions/15156464/i-want-to-modify-the-existing-data-in-xml-file-using-php
+     * http://stackoverflow.com/questions/10909372/checking-if-an-object-attribute-is-set-simplexml
+     * http://stackoverflow.com/questions/17661167/how-to-replace-xml-node-with-simplexmlelement-php
+     * http://www.php.net/manual/en/book.simplexml.php
+     */
+    public function readCordovaConfiguration($filename, $tag, $attribute = NULL) {
+        if (!file_exists($filename)) {
+            return "File not found: $filename";
+        }
+        if (empty($tag)) {
+            return "No tag specified";
+        }
+        
+        $query = "//*[local-name() = '$tag']";
+        $xml = simplexml_load_file($filename);
+        
+        $res = $xml->xpath($query);
+
+        if ($attribute != NULL) {
+            return (string)$res[0][$attribute];
+        } else {
+            return $res;
+        }
+    }
+    
+    
+    /**
      * This function will update an XML file (typically /www/config.xml or /platforms/android/AndroidManifest.xml)
      * with values that either replace existing ones or add to new ones 
      * @param type $filename

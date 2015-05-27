@@ -36,6 +36,13 @@ parameters:
         filenames:
           component_icon: icon.png
         
+        compiler_service:
+            url: http://mlab.local.dev:8282
+            passphrase: "RLjYNDVQEh6fA*;zthtftc9m"
+            config_path: /www/config.xml
+            config_uid_tag: widget
+            config_uid_attribute: id
+
 # paths etc for cordova
         cordova:
           offline: false

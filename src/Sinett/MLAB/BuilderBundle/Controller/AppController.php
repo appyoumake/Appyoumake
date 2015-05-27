@@ -433,11 +433,15 @@ class AppController extends Controller
 
 //get app details + list of pages
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $config_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']["compiler_service"]['config_path'];
+
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
         $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+        $mlab_app_data["uid"] = $file_mgmt->readCordovaConfiguration($config_path, $this->container->parameters['mlab']["compiler_service"]["config_uid_tag"], $this->container->parameters['mlab']["compiler_service"]["config_uid_attribute"]);
+            
 
 //get checksum for app, excluding the file we just opened
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
         $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
         
@@ -465,6 +469,7 @@ class AppController extends Controller
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
                                         "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_')),
+                                        "cs_get_app_status" => $this->generateUrl('app_builder_cs_get_app_status',  array('app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )
     	));
@@ -1145,4 +1150,60 @@ class AppController extends Controller
         return new JsonResponse(array('result' => 'success', 'files' => $this->renderView('SinettMLABBuilderBundle:App:options.html.twig', array('files' => $files))));
         
     }
+    
+//compiler services calls
+    
+/**
+ * Uses the compiler services' getAppStatus API call to get info about one or more apps
+ * 
+ * @param type $app_id
+ * @param type $app_version
+ * @param type $platform
+ * @return type
+ */
+    public function csGetAppStatusAction($app_id = NULL, $app_version = NULL, $platform = NULL) {
+        $config = $this->container->parameters['mlab'];
+        $passphrase = $config["compiler_service"]["passphrase"];
+        $url = $config["compiler_service"]["url"] . "/getAppStatus?passphrase=" . urlencode($passphrase);
+
+        if ($app_id != NULL) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            $config_path = $app->calculateFullPath($config['paths']['app']) . $config["compiler_service"]['config_path'];
+        
+            $file_mgmt = $this->get('file_management');
+            $file_mgmt->setConfig('app');
+            $app_uid = $file_mgmt->readCordovaConfiguration($config_path, $config["compiler_service"]["config_uid_tag"], $config["compiler_service"]["config_uid_attribute"]);
+        } else {
+            $app_uid = NULL;
+        }
+            
+//build URL params & fetch options
+        $opts = array('http' =>
+            array(
+                'method' => 'GET',
+                'max_redirects' => '0',
+                'ignore_errors' => '1'
+            )
+        );
+
+//connect to API, if app (and potentially other attributes) are specified, then we need to generate additional params for the URL
+        $context = stream_context_create($opts);
+        if (is_null($app_uid)) {
+            $status = file_get_contents($url);
+        } else if (is_null($app_version)) {
+            $url .= "&app_uid=" . $app_uid;
+            $status = file_get_contents($url);
+        } else if (is_null($platform)) {
+            $url .= "&app_uid=" . $app_uid . "&app_version=" . $app_version;
+            $status = file_get_contents($url);
+        } else {
+            $url .= "&app_uid=" . $app_uid . "&app_version=" . $app_version . "&platform=" . $platform;
+            $status = file_get_contents($url);
+        }
+        
+        return new JsonResponse(array('result' => 'success', 'app_status' => json_decode($status)));
+    }
+    
+    
 }
