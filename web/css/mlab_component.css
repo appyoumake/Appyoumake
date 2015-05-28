@@ -1,5 +1,57 @@
 /*
-MLAB component styling for elements considering the possible actions the
-element is related to. 
+Mlab component run time styling for elements considering the possible actions 
+the element is related to. 
+
+Mlab has defined 4 main classes where most elemenst will fit in;
+.link, .interactive, .display and .entry.
 
 */
+
+
+/* For elements that are going to be a link */
+#content .link {
+    
+}
+
+/* For elements that the user is going to interact with */
+#content .interactive {
+    
+}
+
+/* For elements that are only showed/displayed to the user */
+#content .display {
+
+}
+
+/* For elements that requiers an input/entry from the user */
+#content .entry {
+    
+}
+
+
+
+
+/* For display elements that indicates a required entry element */
+#content .display.required {
+    
+}
+
+/* For display elements that is an output of an entry from the user */
+#content .display.output {
+    
+}
+
+/* */
+#content .display.list {
+    
+}
+
+/* For entry elements with requerd input */
+#content .entry.required {
+    
+}
+
+/* */
+#content .entry.list {
+    
+}

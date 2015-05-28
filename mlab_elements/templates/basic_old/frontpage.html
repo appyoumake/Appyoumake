@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>basic</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="./css/include.css">
+<link rel="stylesheet" href="./css/jquery-mobile.css">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/style_rt.css">
+<script src="./js/jquery.js"></script>
+<script src="./js/jquery-mobile.js"></script>
+<script src="./js/mlab_parameters.js"></script>
+<script src="./js/mlab.js"></script>
+<script src="./js/include.js"></script>
+</head>
+<body id="page_body">
+    <div data-role="page" id="page">
+    
+        <div id="header" class="mlab_hide_in_app_builder" data-role="header" data-position="fixed" data-fullscreen="true" data-id="main-header">  
+            <div id="menu_box">
+                <div id="marg_top_menu"></div>
+                <div id="marg_left_menu"></div>
+                <div id="btn_heraldisk"></div> 
+                <div id="btn_menu" class="btn_secondary"></div> 
+                <div id="btn_color_toggle" class="btn_secondary"></div>
+                <div id="btn_txsize" class="btn_secondary"></div>
+                <div id="btn_end" class="btn_secondary"></div>
+                <div id="btn_settings" class="btn_secondary"></div>
+            </div>
+        </div>
+      
+        <div id="gradient_top" class="mlab_hide_in_app_builder"></div>  
+
+        <div data-role="content">
+            <div id="content">
+
+                <div id="mlab_editable_area" class="mlab_editable_area">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div id="gradient_bottom" class="mlab_hide_in_app_builder"></div>
+
+        <div id="footer" class="mlab_hide_in_app_builder" data-role="footer" data-position="fixed" data-fullscreen="true" data-id="main-footer">
+           
+            <div id="slider_box" class="slider_box">
+                
+                 <div id="panel_left" class="mlab_hide_in_app_builder"></div>
+                <div id="mlab_page_num">tall 2/3</div>
+                <div id="panel_right" class="mlab_hide_in_app_builder"></div>
+            </div>  
+            
+        </div>
+        
+    </div>
+    
+    <div id="mlab_boxes">
+    
+        <!-- #customize your modal window here -->
+        <div id="mlab_dialog" class="mlab_window">
+            <b>Testing of Modal Window</b> 
+            vises ikke..
+            <!-- close button is defined as close class -->
+            <a href="#" class="mlab_close_dialog">Close it</a>
+        </div>
+    
+        <!-- Do not remove div#mask, because you'll need it to fill the whole screen -->    
+        <div id="mlab_mask"></div>
+    </div>
+</body>
+</html>
