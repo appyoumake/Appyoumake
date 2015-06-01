@@ -105,12 +105,13 @@ Mlab_api.prototype = {
             var components = data.split("\n");
             var componentsLength = components.length;
             var componentsAdded = 0;
-            for (i in components) {
+            // MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
+            $.each(components, function(i, component) {
                 // MK: js/ was already part of the component name
-                var name = components[i].replace("_code_rt.js", "").replace("/js/", "");
-                $.get(path + components[i], function(component) {
+                var name = component.replace("_code_rt.js", "").replace("/js/", "");
+                $.get(path + component, function(componentCode, status, xhr) {
 //we need to attach the code_rt.js content to an object so we can use it as JS code
-                    eval("mlab.api.components['" + name + "'] = new function() {" + component + "}();");
+                    eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
 //here we create the api objects inside the newly created object
                     mlab.api.components[name].api = mlab.api;
                     componentsAdded += 1;
@@ -119,11 +120,24 @@ Mlab_api.prototype = {
                     */
                     if (componentsAdded==componentsLength) $(document).trigger("pagecontainerload"); // MK: Not sure if this is the way it should be, but "pagecontainerload" was never triggered.
                 });
-            }
+            });
         });
         inititaliseMlabApp();
     },
     
+    
+    setupStoragePlugin: function(el) {
+        var variables = this.getAllVariables(el);
+        var plugin,component;
+        if (variables && "storage_plugin" in variables) plugin = variables["storage_plugin"];
+        if (!plugin) return false;
+        if ("name" in plugin && plugin["name"] in this.components) component = this.components[plugin["name"]];
+        if (!component) return false;
+        // onPageLoad isn't required for plugins
+        if ("onPageLoad" in component) component.onPageLoad(el);
+        this.plugins[plugin["name"]] = component;
+        return true;
+    },
     /**
      * Loads an external JS file, containing a plugin. Stores the plugin in the this.plugins object. When
      * plugin is loaded, triggers an event "pluginloaded".
@@ -649,46 +663,5 @@ $(document).on("ready", function() {
 $(document).on("mlabready", function() {
     console.log("mlabready");
     if (mlab.api) mlab.api.onMlabReady();
-    
-    //TODO riktig sted????
-    
-    //starts with hiding the menu and the footer
-    $('.btn_secondary').hide();
-    
-    //Heraldisk button - show/hide the menu and footer 
-    $('#btn_heraldisk').on('click', function() {
-        $('.btn_secondary').toggle();
-    });
-
-    //Menu button - opens the index page    
-    $("#btn_menu").on('click', function() {
-        // Hva skal denne knappen gjøre???
-        // window.location = "index.html";
-    });
-    
-    //ColorToogel button - toggles between dark and white color theme
-    $("#btn_color_toggle").on('click', function() {
-        $('#page').toggleClass('white');
-    });
-    //tooles between large and small content in the 
-    $('#btn_txsize').on('click', function() {
-        // $('#btn_txsize').css('font-size','3em');
-        $('#mlab_editable_area').toggleClass('large_text');
-    });
-        
-     //Sets the setAspectRatio for video...   
-    jQuery(function() {
-    function setAspectRatio() {
-      jQuery('img').each(function() {
-        jQuery(this).css('height', jQuery(this).width() * 9/16);
-        //jQuery(this).css('height', jQuery(this).width() * 3/4);
-      });
-    }
-
-    setAspectRatio();   
-    jQuery(window).resize(setAspectRatio);
-});
-
-    
 });
 
