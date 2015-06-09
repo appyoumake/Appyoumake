@@ -1,0 +1,29 @@
+<div class="counter">0</div>
+<button id="counter" onClick="count(1)" value = "1">Count</button>
+<button id="reset" onClick="count(0)">Reset</button>
+<script>
+
+if (localStorage.getItem("countVal")) {
+	currCount = parseInt(localStorage.getItem("countVal"));
+} 
+else {
+	currCount=parseInt($(".counter").text());
+}
+$('.counter').text(currCount);
+
+function count(number) {
+if (number == 0){
+	currCount = 0;
+        $('.counter').text(currCount);
+}
+else {
+        currCount+=parseInt($("#counter").attr("value"));
+        $('.counter').text(currCount);
+    }
+// Store
+localStorage.setItem("countVal", currCount);
+// Retrieve
+
+};
+
+</script>

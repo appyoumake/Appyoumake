@@ -1,0 +1,6 @@
+# Configuration file for basic Google maps component
+version: 1.0
+developer: Anniken S. Hofgaard @ Sinett/FFI.no
+category: counter
+name: counter
+tooltip: This is a component that counts
