@@ -110,7 +110,3 @@ app_builder_load_components:
 app_builder_get_uploaded_files:
     path:   /builder/{app_id}/{file_types}/get_uploaded_files
     defaults: { _controller: "SinettMLABBuilderBundle:App:getUploadedFiles" }
-
-app_builder_cs_get_app_status:
-    path:   /builder/cs_get_app_status/{app_id}/{app_version}/{platform}
-    defaults: { _controller: SinettMLABBuilderBundle:App:csGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL }
