@@ -1,63 +1,63 @@
 mkt_get_tagged_users:
-    pattern: /mktGetTaggedUsers/token/tag
+    pattern: /mktGetTaggedUsers/window_uid/token/tag
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktGetTaggedUsers }
 
 mkt_submit_app_details:
-    pattern: /mktSubmitAppDetails/app_details
+    pattern: /mktSubmitAppDetails/window_uid/app_details
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSubmitAppDetails }
 
 mkt_upload_app_file:
-    pattern: /mktUploadAppFile/token/app_uid/replace_existing
+    pattern: /mktUploadAppFile/window_uid/token/app_uid/replace_existing
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktUploadAppFile }
 
 mkt_publish_app:
-    pattern: /mktPublishApp/token/app_uid/version
+    pattern: /mktPublishApp/window_uid/token/app_uid/version
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktPublishApp }
 
 mkt_unpublish_app:
-    pattern: /mktUnpublishApp/token/app_uid/version/action
+    pattern: /mktUnpublishApp/window_uid/token/app_uid/version/action
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktUnpublishApp }
 
 mkt_login:
-    pattern: /mktLogin/username/password
+    pattern: /mktLogin/window_uid/username/password
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktLogin }
 
 mkt_create_user:
-    pattern: /mktCreateUser/token/user_details
+    pattern: /mktCreateUser/window_uid/token/user_details
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktCreateUser }
 
 mkt_get_new_users:
-    pattern: /mktGetNewUsers/token
+    pattern: /mktGetNewUsers/window_uid/token
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktGetNewUsers }
 
 mkt_set_user_state:
-    pattern: /mktSetUserState/token/app_uid/state
+    pattern: /mktSetUserState/window_uid/token/app_uid/state
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSetUserState }
 
 mkt_set_tagged_users_state:
-    pattern: /mktsetTaggedUsersState/token/tag/state
+    pattern: /mktsetTaggedUsersState/window_uid/token/tag/state
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSetTaggedUsersState }
 
 cmp_get_app_status:
-    pattern: /cmpGetAppStatus/{app_id}/{app_version}/{platform}
+    pattern: /cmpGetAppStatus/window_uid/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL  }
 
 cmp_create_app:
-    pattern: /cmpCreateApp/app_uid/app_version
+    pattern: /cmpCreateApp/window_uid/app_uid/app_version
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpCreateApp }
 
 cmp_upload_files:
-    pattern: /cmpUploadFiles/app_uid/app_version
+    pattern: /cmpUploadFiles/window_uid/app_uid/app_version
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpUploadFiles }
 
 cmp_verify_app:
-    pattern: /cmpVerifyApp/app_uid/app_version/checksum
+    pattern: /cmpVerifyApp/window_uid/app_uid/app_version/checksum
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpVerifyApp }
 
 cmp_compile_app:
-    pattern: /cmpCompileApp/app_uid/app_version/checksum/platform
+    pattern: /cmpCompileApp/window_uid/app_uid/app_version/checksum/platform
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpCompileApp }
 
 cmp_get_app:
-    pattern: /cmpGetApp/user_uid/app_uid/app_version/checksum/platform
+    pattern: /cmpGetApp/window_uid/user_uid/app_uid/app_version/checksum/platform
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetApp }

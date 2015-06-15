@@ -245,7 +245,6 @@ class FileManagement {
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
-		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
 		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
 		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
 		
@@ -276,7 +275,7 @@ class FileManagement {
                 $r = array($app->getPath(), $app_domain);
                 $this->func_sed($proj_files, $s, $r);
                 foreach ($template_items_to_copy as $from => $to) {
-                    $this->func_copy("$template_path$from", "$cordova_asset_path$to");
+                    $this->func_copy("$template_path$from", "$app_path$to");
                 }
                 return true;
             } else {
@@ -314,7 +313,7 @@ class FileManagement {
      * @return array(int $new_page_num, string $new_page_path (complete path to file))
      */
     public function getNewPageNum($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 
    		$pages = glob ( $app_path . "/???.html" );
    		$new_page_num = intval(basename(array_pop($pages))) + 1;
@@ -322,14 +321,14 @@ class FileManagement {
     	
     	while (file_exists("$app_path$new_page_name")) {
             if ($new_page_num == 999) {
-                return array(false, false);
+                return array("new_page_num" => false, "new_page_path" => false);
             }
             $new_page_num++;
             $new_page_name = substr("000" . $new_page_num, -3) . ".html";
         }
         
         $new_page_path = $app_path . $new_page_name;
-        return array($new_page_num, $new_page_path);
+        return array("new_page_num" => $new_page_num, "new_page_path" => $new_page_path);
     }
     
     /**
@@ -340,13 +339,13 @@ class FileManagement {
     public function newPage($app) {
         
 //create the name of the file to create
-	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
-        if ($new_page_num === false) {
+	    $new_page = $this->getNewPageNum($app);
+        if ($new_page["new_page_num"] === false) {
             return false;
         }
 
-        if (file_put_contents ($new_page_path, "") !== false) {
-            return $new_page_num;
+        if (file_put_contents ($new_page["new_page_path"], "") !== false) {
+            return $new_page["new_page_num"];
         } else {
             return false;
         }
@@ -355,9 +354,9 @@ class FileManagement {
     public function savePage($app, $page_num, $html) {
 //get path of file to save
         if ($page_num == "index") {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . "index.html";
+            $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
         } else {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+            $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";;
         }
         
         return file_put_contents ($file_path, $html) ;
@@ -371,7 +370,7 @@ class FileManagement {
      */
     public function copyPage($app, $page_num) {
 //get path of file to copy
-        $source_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+        $source_path = $app->calculateFullPath($this->config['paths']['app']) .  substr("000" . $page_num, -3) . ".html";;
         
 //create the name of the file to create
 	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
@@ -401,7 +400,7 @@ class FileManagement {
      */
     public function deletePage($app, $page_num, $uid) {
 //get path of file to delete
-        $app_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'];
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
         $page_to_delete = $this->getPageFileName($app_path, $page_num);
         
 //check if it is locked, we get a list of all locks, if one of them is "higher" then the one we want to delete, then we bail as we need to rename files to have 
@@ -445,7 +444,7 @@ class FileManagement {
  * @return types
  */
     public function getPageIdAndTitles($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 
         
         if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
@@ -751,7 +750,7 @@ class FileManagement {
      * @return array(int $new_page_num, string $new_page_path (complete path to file))
      */
     public function getTotalPageNum($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 
    		$pages = glob ( $app_path . "/???.html" );
         
@@ -766,7 +765,7 @@ class FileManagement {
     
 //this scans through a javascript file and if it finds a parameter match it will replace the value, it not add it to the end of the file 
     public function updateAppParameter($app, $param, $value) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $file = $app_path . "/js/mlab_parameters.js";
 
         $lines = file($file);
@@ -793,7 +792,7 @@ class FileManagement {
     public function getAppMD5($app, $exclude_file = "") {
         
 //MÅ TESTE OM TOM EXCLUDEFILES TIL func_find VIRKER FOR Å IKKE EKSKLUDERE TING, SAMME FOR 
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $md5sums = array();
         
         if ($exclude_file != "") {
@@ -821,7 +820,7 @@ class FileManagement {
         $all_comps_used = array();
 
         foreach ($apps as $app) {
-            $app_path = $app->calculateFullPath($app_root) . $this->config["cordova"]["asset_path"] . "/";
+            $app_path = $app->calculateFullPath($app_root);
             $files = $this->func_find( $app_path, "f", "*.html" );
             
             foreach ($files as $filename) {

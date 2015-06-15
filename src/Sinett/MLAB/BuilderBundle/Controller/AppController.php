@@ -43,9 +43,11 @@ class AppController extends Controller
      * 1: Determine if this is based on a template or an app
      * 2: If app, copy it across
      * 3: If template, 
-     * 3.1: Try to generate the new app using cordova command line options
+     * 3.1: Try to create the relevant folder
      * 3.2: If successful, copy across base files from template
-     * 4: If 2 or 3.x is successful, redirect to edit the app
+     * 4: If 2 or 3.x is successful, contact compiler service to tell it to create such an app
+     * 5: When callback receives a success it upload the files from here, using RSYNC, SFTP, or similar tools.
+     * 6: When upload done, redirects to edit the app
      */
     public function createAction(Request $request)
     {
@@ -72,7 +74,6 @@ class AppController extends Controller
         	foreach ($usr->getGroups() as $group) {
         		$entity->addGroup($group);
         	}
-        	
 
         	$app_destination = $entity->calculateFullPath($config["paths"]["app"]);
         	
@@ -196,7 +197,7 @@ class AppController extends Controller
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
     	$url_apps = $this->container->parameters['mlab']['urls']['app'];
     	$url_templates = $this->container->parameters['mlab']['urls']['template'];
-    	$cordova_icon_path = $this->container->parameters['mlab']['cordova']['icon_path'];
+    	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
     	
         $form = $this->createAppForm($entity);
         
@@ -208,7 +209,7 @@ class AppController extends Controller
             'mode' => 'add',
             'url_templates' => $url_templates,
             'url_apps' => $url_apps,
-            'cordova_icon_path' => $cordova_icon_path,
+            'app_icon_path' => $app_icon_path
         ));
         
     }
@@ -433,7 +434,7 @@ class AppController extends Controller
 
 //get app details + list of pages
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
         $config_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']["compiler_service"]['config_path'];
 
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
@@ -469,7 +470,25 @@ class AppController extends Controller
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
                                         "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_')),
-                                        "cs_get_app_status" => $this->generateUrl('app_builder_cs_get_app_status',  array('app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
+                    
+                                        "mkt_get_tagged_users" => $this->generateUrl('mkt_get_tagged_users', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'tag' => '_TAG_')), 
+                                        "mkt_submit_app_details" => $this->generateUrl('mkt_submit_app_details', array('window_uid' => '_WINDOW_UID_', 'app_details' => '_APP_DETAILS_')), 
+                                        "mkt_upload_app_file" => $this->generateUrl('mkt_upload_app_file', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'app_uid' => '_APP_UID_', 'replace_existing' => '_REPLACE_EXISTING_')), 
+                                        "mkt_publish_app" => $this->generateUrl('mkt_publish_app', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'app_uid' => '_APP_UID_', 'version' => '_VERSION_')), 
+                                        "mkt_unpublish_app" => $this->generateUrl('mkt_unpublish_app', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'app_uid' => '_APP_UID_', 'version' => '_VERSION_', 'action' => '_ACTION_')), 
+                                        "mkt_login" => $this->generateUrl('mkt_login', array('window_uid' => '_WINDOW_UID_', 'username' => '_USERNAME_', 'password' => '_PASSWORD_')), 
+                                        "mkt_create_user" => $this->generateUrl('mkt_create_user', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'user_details' => '_USER_DETAILS_')), 
+                                        "mkt_get_new_users" => $this->generateUrl('mkt_get_new_users', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_')), 
+                                        "mkt_set_user_state" => $this->generateUrl('mkt_set_user_state', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'app_uid' => '_APP_UID_', 'state' => '_STATE_')), 
+                                        "mkt_set_tagged_users_state" => $this->generateUrl('mkt_set_tagged_users_state', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'tag' => '_TAG_', 'state' => '_STATE_')), 
+                    
+                                        "cmp_create_app" => $this->generateUrl('cmp_create_app', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_')), 
+                                        "cmp_get_app_status" => $this->generateUrl('cmp_get_app_status',  array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
+                                        "cmp_upload_files" => $this->generateUrl('cmp_upload_files', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_')), 
+                                        "cmp_verify_app" => $this->generateUrl('cmp_verify_app', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_', 'checksum' => '_CHECKSUM_')), 
+                                        "cmp_compile_app" => $this->generateUrl('cmp_compile_app', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_', 'checksum' => '_CHECKSUM_', 'platform' => '_PLATFORM_')), 
+                                        "cmp_get_app" => $this->generateUrl('cmp_get_app', array('window_uid' => '_WINDOW_UID_', 'user_uid' => '_USER_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_', 'checksum' => '_CHECKSUM_', 'platform' => '_PLATFORM_')), 
+                    
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )
     	));
@@ -520,7 +539,7 @@ class AppController extends Controller
     	}
     	
 //create the path to the file to open
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
     	
 //calculate page number
 	    $file_mgmt = $this->get('file_management');
@@ -578,7 +597,7 @@ class AppController extends Controller
         }
 
 //create the path to the file to open
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
         
 //create file management object
 	    $file_mgmt = $this->get('file_management');
@@ -770,7 +789,7 @@ class AppController extends Controller
     			'msg' => sprintf("Component type not specified: %s", $comp_id)));
         }
 
-        $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
 // MK Component path added
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
         $replace_chars = $this->container->parameters['mlab']['replace_in_filenames'];
@@ -863,12 +882,11 @@ class AppController extends Controller
         $target_platform = $this->container->parameters['mlab']['cordova']['default_platform'];
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
-        $path_app_assets = $path_app . $this->container->parameters['mlab']['cordova']['asset_path'];
-        $path_app_js = $path_app_assets . "js/";
+        $path_app_js = $path_app . "js/";
         $path_app_permissions = $path_app . $this->container->parameters['mlab']['cordova'][$target_platform]["permissions_location"];
         
 //check if path to component and app exists
-            if ( is_dir($path_component) && is_dir($path_app) && is_dir($path_app_assets) ) {
+            if ( is_dir($path_component) && is_dir($path_app) ) {
             
 //1: Copy JS file, it is called code_rt.js, but needs to be renamed as all JS files for components have same name to begin with
 //   We use the component name as a prefix
@@ -879,15 +897,15 @@ class AppController extends Controller
                             'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id)));
                     }
                     
-                    if (file_exists("$path_app_assets/js/include_comp.txt")) {
-                        $include_items = file("$path_app_assets/js/include_comp.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if (file_exists("$path_app_js/include_comp.txt")) {
+                        $include_items = file("$path_app_js/include_comp.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                     } else {
                         $include_items = array();
                     }
                     if (!in_array("/js/" . $comp_id . "_code_rt.js", $include_items)) {
                         $include_items[] = "/js/" . $comp_id . "_code_rt.js";
                     }
-                    file_put_contents("$path_app_assets/js/include_comp.txt", implode("\n", $include_items));
+                    file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
                 }
 
 //2: Add rights to the manifest file
@@ -938,9 +956,9 @@ class AppController extends Controller
                                 
 //if this is a URL we just add it to the include file, no need to copy the file
                                 if(!filter_var($dependency, FILTER_VALIDATE_URL)) {
-                                    if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app_assets/$filetype/$dependency" )) {
+                                    if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app/$filetype/$dependency" )) {
 //if we fail we bail
-                                        if (!@copy( "$path_component/$filetype/$dependency", "$path_app_assets/$filetype/$dependency" )) {
+                                        if (!@copy( "$path_component/$filetype/$dependency", "$path_app/$filetype/$dependency" )) {
                                             return new JsonResponse(array(
                                                 'result' => 'failure',
                                                 'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id)));
@@ -949,8 +967,8 @@ class AppController extends Controller
                                 }
 
 //we need to update the include files of the app
-                                if (file_exists("$path_app_assets/js/include.$filetype")) {
-                                    $include_items = file("$path_app_assets/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                                if (file_exists("$path_app/$filetype/include.$filetype")) {
+                                    $include_items = file("$path_app/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                                 } else {
                                     $include_items = array();
                                 }
@@ -970,7 +988,7 @@ class AppController extends Controller
                                         }
                                     }
                                 }
-                                file_put_contents("$path_app_assets/$filetype/include.$filetype", implode("\n", $include_items));
+                                file_put_contents("$path_app/$filetype/include.$filetype", implode("\n", $include_items));
                                 
                             } //end loop for runtime scripts to copy and add
                             
@@ -987,7 +1005,7 @@ class AppController extends Controller
                                 'msg' => "Unable to load server_code.php file"));
                     } else {
                         if (function_exists("onCreate")) {
-                            if (!onCreate($path_app, $path_app_assets, $path_component, $comp_id)) {
+                            if (!onCreate($path_app, $path_component, $comp_id)) {
                                 return new JsonResponse(array(
                                     'result' => 'failure',
                                     'msg' => "Unable to run application on server"));
@@ -1027,7 +1045,7 @@ class AppController extends Controller
 //get config etc
         $config = $this->container->parameters['mlab'];
         $doc = "index.html";
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'];
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
 
 //load the component they want to add
 	    $file_mgmt = $this->get('file_management');
@@ -1068,7 +1086,7 @@ class AppController extends Controller
 
 //get config etc
         $config = $this->container->parameters['mlab'];
-        $path_app_js = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'] . "/js/";
+        $path_app_js = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . "/js/";
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $storage_plugin_id . "/";
         $path_app_include_file = $path_app_js . "include_comp.txt";
 
@@ -1136,7 +1154,7 @@ class AppController extends Controller
 
 //get config etc
         $config = $this->container->parameters['mlab'];
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']['cordova']['asset_path'] . "img/";
+        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . "img/";
         $file_url = "img/"; //we have reset the base path in the editor, so this will work
         $file_extensions = explode(",", $file_types);
         $files = array();

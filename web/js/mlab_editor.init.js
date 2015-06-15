@@ -168,7 +168,7 @@
 //erase the temporary variable, this is used in inititalisation process only.
                         delete document.mlab_temp_vars;
                         
-//finally we prepare the menu popup for the storage plugin selector
+//prepare the menu popup for the storage plugin selector
                         $("#mlab_button_select_storage_plugin").click( function(event) {
                             
                             var div = $("#mlab_storage_plugin_list");
@@ -176,6 +176,13 @@
                             div.css({ position: "absolute", top: event.pageY, left: event.pageX })
                                .fadeIn("slow");
                         } );
+                        
+// finally we connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
+                        var host = window.document.location.host.replace(/:.*/, '');
+                        mlab.dt.services_web_socket = new WebSocket('ws://' + host + ':' + mlab.dt.config.ws_socket.port + mlab.dt.config.ws_socket.url + '/' + mlab.dt.uid);
+                        mlab.dt.services_web_socket.onmessage = function (event) {
+                            console.log(event);
+                        };
 
                     } else {
                         alert("Unable to load components from the server, cannot continue, will return to front page");

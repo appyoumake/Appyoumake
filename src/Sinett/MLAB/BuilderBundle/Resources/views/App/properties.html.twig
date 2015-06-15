@@ -35,7 +35,7 @@
 			    	<select id="mlab_builder_app_copy_from" name="mlab_builder_app_copy_from" onclick='baseOn("app");'>
                                     <option value=""></option>
                                     {% for app in apps %}
-                                        <option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ cordova_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
+                                        <option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ app_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
                                     {% endfor %}
 				</select>
 			    </div>

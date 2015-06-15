@@ -1,7 +1,7 @@
 Setup
 ======================
 
-Setup of MALB includes at least...
+Setup of Mlab includes at least...
 
 * Install a web server with php, we use lighttpd with php-fmp
 * Install mysql
