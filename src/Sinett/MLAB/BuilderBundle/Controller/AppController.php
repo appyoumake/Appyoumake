@@ -191,11 +191,13 @@ class AppController extends Controller
     public function newAction()
     {
     	$em = $this->getDoctrine()->getManager();
-    	
     	$entity = new App();
-    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+        $file_mgmt = $this->get('file_management');
+    	
+        $backgrounds = $file_mgmt->getBackgrounds();
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
-    	$url_apps = $this->container->parameters['mlab']['urls']['app'];
+        $url_apps = $this->container->parameters['mlab']['urls']['app'];
     	$url_templates = $this->container->parameters['mlab']['urls']['template'];
     	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
     	
@@ -209,7 +211,8 @@ class AppController extends Controller
             'mode' => 'add',
             'url_templates' => $url_templates,
             'url_apps' => $url_apps,
-            'app_icon_path' => $app_icon_path
+            'app_icon_path' => $app_icon_path,
+            'backgrounds' => $backgrounds
         ));
         
     }

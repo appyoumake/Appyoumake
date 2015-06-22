@@ -3,123 +3,142 @@
 {% block body -%}
 
 <div id="build_app_properties">
-	<ul>
-		{% if mode == 'add' %}
-	    	<li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
-	    {% endif %}
-	    <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
-	    <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.classification.tab{% endtrans %}</a></li>
-	    <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
-	  </ul>
-	  
-	{{ form_start(form) }}
+    <ul>
+        {% if mode == 'add' %}
+            <li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
+            <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.select_base.tab{% endtrans %}</a></li>
+        {% endif %}
+        <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.classification.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-5">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
+      </ul>
+      
+    {{ form_start(form) }}
         {% if mode == 'add' %}
             {% form_theme form.template 'SinettMLABBuilderBundle:Form:fields.html.twig' %}
         {% endif %}
 <!-- output list of templates and apps -->
-		{% if mode == 'add' %}
-			<div class="mlab_form_tab" id="builder_app_property_tabs-1">
-					
-                <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
-                {{ form_widget(form.copy_app) }}
-                {{ form_widget(form.version) }}
+        {% if mode == 'add' %}
 
-			    <div>
-			        {{ form_row(form.template, {'url_templates': url_templates}) }}
-                            </div>
-			    <div>   
-                                 <label>eller</label>
-                            </div>
-                            <div>   
-			    	<label for="mlab_builder_app_copy_from">Base on </label>
-			    	<select id="mlab_builder_app_copy_from" name="mlab_builder_app_copy_from" onclick='baseOn("app");'>
-                                    <option value=""></option>
-                                    {% for app in apps %}
-                                        <option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ app_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
-                                    {% endfor %}
-				</select>
-			    </div>
- 			    <div>   
-                                <label class="mlab_disabled">eller</label>
-                            </div>
-			    <div class="mlab_disabled">   
-			    	<label for="mlab_builder_app_copy_from">Import PPT or DOC file</label>
-			    	<input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from" disabled="disabled">
-                            </div>
+            <div class="mlab_form_tab" id="builder_app_property_tabs-1">
+                <p>{% trans %}builder.new.app.select_base.description{% endtrans %}</p>
+                <label for="select_base_template">builder.new.app.select_base.template</label> 
+                <input type="radio" name="select_base" id="select_base_template" value="template">
+                <label for="select_base_existing_app">builder.new.app.select_base.existing_app</label> 
+                <input type="radio" name="select_base" id="select_base_existing_app" value="existing_app">
+                <label for="select_base_office_file">builder.new.app.select_base.office_file</label> 
+                <input type="radio" name="select_base" id="select_base_office_file" value="office_file">
+            </div>
+
+            <div class="mlab_form_tab" id="builder_app_property_tabs-2">
+                    
+                <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
+
+                <div id="div_base_template" class="mlab_div_base">
+                    {{ form_row(form.template, {'url_templates': url_templates}) }}
+                </div>
+                
+                <div id="div_base_existing_app" class="mlab_div_base">   
+                    <label for="mlab_builder_app_copy_from">Copy app</label>
+                    <select id="mlab_builder_app_copy_from" name="mlab_builder_app_copy_from" onclick='baseOn("app");'>
+                        <option value=""></option>
+                        {% for app in apps %}
+                            <option data-imagesrc="{{ url_apps ~ app.path ~ '/' ~ app.version ~ '/' ~ app_icon_path }}" data-description="{{ app.description }}" value="{{ app.id }}">{{ app.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div id="div_base_office_file" class="mlab_div_base">   
+                    <label for="mlab_builder_file_import_from">Import PPT or DOC file</label>
+                    <input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from" disabled="disabled">
+                </div>
                             
-			</div>
-		{% endif %}
-		
+            </div>
+        {% endif %}
+        
 <!-- name etc -->
-		<div class="mlab_form_tab" id="builder_app_property_tabs-2">
-			
+        <div class="mlab_form_tab" id="builder_app_property_tabs-3">
+            
             <p>{% trans %}builder.new.app.name.description{% endtrans %}</p>
             
-		    <div>
-		        {{ form_label(form.name, null, {'label': 'builder.new.app.name.name'|trans}) }}
-		        {{ form_errors(form.name) }}
-		        {{ form_widget(form.name) }}
-		    </div>
-			
-		    <div>
-		        {{ form_label(form.description, null, {'label': 'builder.new.app.name.descriptionLab'|trans}) }}
-		        {{ form_errors(form.description) }}
-		        {{ form_widget(form.description) }}
-		    </div>
-			
-		    <div class="mlab_disabled">
+            <div class="new_line">
+                {{ form_label(form.name, null, {'label': 'builder.new.app.name.name'|trans}) }}
+                {{ form_errors(form.name) }}
+                {{ form_widget(form.name) }}
+            </div>
+            
+            <div class="new_line">
+                {{ form_label(form.description, null, {'label': 'builder.new.app.name.descriptionLab'|trans}) }}
+                {{ form_errors(form.description) }}
+                {{ form_widget(form.description) }}
+            </div>
+            
+            <div class="new_line">
+                <canvas id="app_icon_designer" >
+                </canvas>
+            </div>
+            <div class="new_line">
+                <label for="mlab_select_background">Select background</label>
+                <select id="mlab_select_background" name="mlab_select_background" >
+                    <option value=""></option>
+                    {% for icon, path in backgrounds %}
+                        <option data-imagesrc="{{ path }}" data-description="{{ icon }}" value="{{ path }}">{{ icon }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="new_line">
                 {{ form_label(form.iconFile, null, {'label': 'builder.new.app.name.iconFile'|trans}) }}
-		        {{ form_errors(form.iconFile) }}
-		        {{ form_widget(form.iconFile, { 'attr': {'disabled': 'disabled'} }) }}
-		    </div>
+                {{ form_errors(form.iconFile) }}
+                {{ form_widget(form.iconFile) }}
+            </div>
 
-		    <div class="mlab_disabled">
-		        {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
-		        {{ form_errors(form.splashFile) }}
-		        {{ form_widget(form.splashFile, { 'attr': {'disabled': 'disabled'} }) }}
-		    </div>
-		    
-		</div>
-		
+            <div class="new_line">
+                {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
+                {{ form_errors(form.splashFile) }}
+                {{ form_widget(form.splashFile) }}
+            </div>
+            
+        </div>
+        
 <!-- classification etc -->
-		<div class="mlab_form_tab" id="builder_app_property_tabs-3">
+        <div class="mlab_form_tab" id="builder_app_property_tabs-4">
 
             <p>{% trans %}builder.new.app.classification.description{% endtrans %}</p>
             
-			<div>
-		        {{ form_label(form.keywords, null, {'label': 'builder.new.app.classification.keywords'|trans}) }}
-		        {{ form_errors(form.keywords) }}
-		        {{ form_widget(form.keywords) }}
-		    </div>
-			
-			<!-- <div class="mlab_disabled">
-		        {{ form_label(form.categoryOne, null, {'label': 'builder.new.app.classification.categoryOne'|trans}) }}
-		        {{ form_errors(form.categoryOne) }}
-		        {{ form_widget(form.categoryOne) }}
-		    </div>
+            <div>
+                {{ form_label(form.keywords, null, {'label': 'builder.new.app.classification.keywords'|trans}) }}
+                {{ form_errors(form.keywords) }}
+                {{ form_widget(form.keywords) }}
+            </div>
+            
+            <div class="">
+                {{ form_label(form.categoryOne, null, {'label': 'builder.new.app.classification.categoryOne'|trans}) }}
+                {{ form_errors(form.categoryOne) }}
+                {{ form_widget(form.categoryOne) }}
+            </div>
 
-			<div class="mlab_disabled">
-		        {{ form_label(form.categoryTwo, null, {'label': 'builder.new.app.classification.categoryTwo'|trans}) }}
-		        {{ form_errors(form.categoryTwo) }}
-		        {{ form_widget(form.categoryTwo) }}
-		    </div>
+            <div class="">
+                {{ form_label(form.categoryTwo, null, {'label': 'builder.new.app.classification.categoryTwo'|trans}) }}
+                {{ form_errors(form.categoryTwo) }}
+                {{ form_widget(form.categoryTwo) }}
+            </div>
 
-			<div class="mlab_disabled">
-		        {{ form_label(form.categoryThree, null, {'label': 'builder.new.app.classification.categoryThree'|trans}) }}
-		        {{ form_errors(form.categoryThree) }}
-		        {{ form_widget(form.categoryThree) }}
-		    </div> -->
-		    			
-		</div>
-		
+            <div class="">
+                {{ form_label(form.categoryThree, null, {'label': 'builder.new.app.classification.categoryThree'|trans}) }}
+                {{ form_errors(form.categoryThree) }}
+                {{ form_widget(form.categoryThree) }}
+            </div>
+                        
+        </div>
+        
 <!-- summary -->
-		<div class="mlab_form_tab" id="builder_app_property_tabs-4">
-			<p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>
-			{{ form_errors(form) }}
-			<div id="mlab_app_new_summary"></div>
-		</div>
-		{{ form_widget(form._token) }}
-	{{ form_end(form, {'render_rest': false}) }}
+        <div class="mlab_form_tab" id="builder_app_property_tabs-5">
+            <p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>
+            {{ form_errors(form) }}
+            <div id="mlab_app_new_summary"></div>
+        </div>
+        {{ form_widget(form._token) }}
+    {{ form_end(form, {'render_rest': false}) }}
 </div>
 
 <button class="hidden button_wizard" id="mlab_app_new_previous" onclick="mlab_app_new_move(-1);">{% trans %}app.wizard.button.previous{% endtrans %}</button>
@@ -128,38 +147,66 @@
 <script type="text/javascript">
 
 //add onclick/onchange functions for the two dropdown menus here 
-	$(document).ready(function (){
+    $(document).ready(function (){
         
         //temp fill categories - TODO
         $(function() { $("#form_categoryOne").val('2'); });
         $(function() { $("#form_categoryTwo").val('3'); });
         $(function() { $("#form_categoryThree").val('8'); });
-		
-		$('#mlab_builder_app_copy_from').ddslick({
-		    width: 300,
-		    height: 110,
-		    imagePosition: "left",
-		    selectText: "{% trans %}app.select.app.to.copy{% endtrans %}",
-		    onSelected: function (data) {
-		        if (data.selectedIndex > 0) {
+        
+        $('#mlab_builder_app_copy_from').ddslick({
+            width: 300,
+            height: 110,
+            imagePosition: "left",
+            selectText: "{% trans %}app.select.app.to.copy{% endtrans %}",
+            onSelected: function (data) {
+                if (data.selectedIndex > 0) {
                     $('#form_template').ddslick('select', {index: 0 });
-		        }
-		    }
-		});
+                }
+            }
+        });
+        
+        $('#mlab_select_background').ddslick({
+            width: 300,
+            height: 110,
+            imagePosition: "left",
+            selectText: "{% trans %}app.select.icon.background{% endtrans %}",
+            onSelected: function (data) {
+                if (data.selectedIndex > 0) {
+                    loadBackground();
+                }
+            }
+        });
 
         $('#form_template').ddslick({
-		    width: 300,
-		    height: 110,
-		    imagePosition: "left",
-		    selectText: "{% trans %}app.select.template{% endtrans %}",
-		    onSelected: function (data) {
-		        if (data.selectedIndex > 0) {
+            width: 300,
+            height: 110,
+            imagePosition: "left",
+            selectText: "{% trans %}app.select.template{% endtrans %}",
+            onSelected: function (data) {
+                if (data.selectedIndex > 0) {
                     $('#mlab_builder_app_copy_from').ddslick('select', {index: 0 });
-		        }
-		    }
-		});
-		
-	});
+                }
+            }
+        });
+        
+    });
+    
+//loads background icon into canvas    
+    function loadBackground() {
+        var canvas = document.getElementById("app_icon_designer");
+        canvas.width = 256;
+        canvas.height = 256;
+        
+        var ctx = canvas.getContext("2d");
+        var background = new Image();
+        background.src = $('#mlab_select_background').data('ddslick').selectedData.value;
+        ctx.drawImage(background,0,0, 256, 256);   
+        
+        var foreground = new Image();
+        foreground.src = "http://pngimg.com/upload/book_PNG2112.png";
+        ctx.drawImage(foreground,0,0, 256, 256);   
+    }
     
 //function to load sub categories when a top level category is selected
     function loadCategories(el, level) {
@@ -192,95 +239,107 @@
             }
         });
     }
-	
+    
 //function to move back and forth in new app/properties wizard 
-	function mlab_app_new_move(direction) {
-		var caption_next = "{% trans %}app.wizard.button.next{% endtrans %}";
-		var caption_finished = "{% trans %}app.wizard.button.finished{% endtrans %}";
-		var curr_tab = $('#build_app_properties').tabs('option', 'active');
-		var tot_tabs = $('#build_app_properties >ul >li').size();
+    function mlab_app_new_move(direction) {
+        var caption_next = "{% trans %}app.wizard.button.next{% endtrans %}";
+        var caption_finished = "{% trans %}app.wizard.button.finished{% endtrans %}";
+        var curr_tab = $('#build_app_properties').tabs('option', 'active');
+        var tot_tabs = $('#build_app_properties >ul >li').size();
  
 //going forward: verify data, if ok: display previous button, change title of next button if on last page 
-		if (direction > 0) {
-			var msg = '';
-			if (curr_tab == 0) {
-				if ($('#form_template').data('ddslick').selectedIndex == 0 && $('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
-					msg = msg + "{% trans %}You must select an app to copy or a template to use{% endtrans %}\n";
-				}  
+        if (direction > 0) {
+            var msg = '';
+            if (curr_tab == 0) {
+                var sel_val = "";
+                var selected = $("input[type='radio'][name='select_base']:checked");
+                
+                if (selected.length > 0) {
+                    sel_val = selected.val();
+                } else {
+                    return;
+                }
+                $('.mlab_div_base').addClass("hidden");
+                $('#div_base_' + sel_val).removeClass("hidden");
+                
+            } else if (curr_tab == 1) {
+                if ($('#form_template').data('ddslick').selectedIndex == 0 && $('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
+                    msg = msg + "{% trans %}You must select an app to copy or a template to use{% endtrans %}\n";
+                }  
 
-			} else if (curr_tab == 1) {
-				if ($('#form_name').val().trim() == "") {
-					msg = msg + "{% trans %}You must enter a name for this app{% endtrans %}\n";
-				}
-				
-				if ($('#form_description').val().trim() == "") {
-					msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
-				}  
+            } else if (curr_tab == 2) {
+                if ($('#form_name').val().trim() == "") {
+                    msg = msg + "{% trans %}You must enter a name for this app{% endtrans %}\n";
+                }
+                
+                if ($('#form_description').val().trim() == "") {
+                    msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
+                }  
 
-			} else if (curr_tab == 2) {
-				if ($('#form_keywords').val().trim() == "") {
-					msg = msg + "{% trans %}You must enter one or more keywords for this app{% endtrans %}\n";
-				}
-				/*
-				if ($('#form_categoryOne').val() == '') {
-					msg = msg + "{% trans %}You must select a main category for this app{% endtrans %}\n";
-				}  
+            } else if (curr_tab == 3) {
+                if ($('#form_keywords').val().trim() == "") {
+                    msg = msg + "{% trans %}You must enter one or more keywords for this app{% endtrans %}\n";
+                }
+                
+                if ($('#form_categoryOne').val() == '') {
+                    msg = msg + "{% trans %}You must select a main category for this app{% endtrans %}\n";
+                }  
 
-				if ($('#form_categoryTwo').val() == '') {
-					msg = msg + "{% trans %}You must select a secondary category for this app{% endtrans %}\n";
-				}  
+                if ($('#form_categoryTwo').val() == '') {
+                    msg = msg + "{% trans %}You must select a secondary category for this app{% endtrans %}\n";
+                }  
 
-				if ($('#form_categoryThree').val() == '') {
-					msg = msg + "{% trans %}You must select a final category for this app{% endtrans %}\n";
-				} */
-				
+                if ($('#form_categoryThree').val() == '') {
+                    msg = msg + "{% trans %}You must select a final category for this app{% endtrans %}\n";
+                } 
+                
 //last page, here we submit the data via AJAX 
-				if (msg == '') {
-					$("#form_copy_app").val($('#mlab_builder_app_copy_from').data('ddslick').selectedData.value);
-					$("#mlab_app_new_summary").html(
-							"<span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.basedon{% endtrans %}:</span> " + $('#form_template').data('ddslick').selectedData.text + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
-							"<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
-							"<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.keywords{% endtrans %}:</span> " + $('#form_keywords').val() 
-							+ "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.category{% endtrans %}:</span> " + 
+                if (msg == '') {
+                    $("#form_copy_app").val($('#mlab_builder_app_copy_from').data('ddslick').selectedData.value);
+                    $("#mlab_app_new_summary").html(
+                            "<span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.basedon{% endtrans %}:</span> " + $('#form_template').data('ddslick').selectedData.text + $('#mlab_builder_app_copy_from').data('ddslick').selectedData.text +
+                            "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() +
+                            "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
+                            "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.keywords{% endtrans %}:</span> " + $('#form_keywords').val() 
+                            + "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.category{% endtrans %}:</span> " + 
                             $('#form_categoryOne option:selected').html() + " - " +
                             $('#form_categoryTwo option:selected').html() + " - " +
                             $('#form_categoryThree option:selected').html() 
-							//"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryTwo{% endtrans %}:</span> " + $('#form_categoryTwo option:selected').html() +
-							//"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryThree{% endtrans %}:</span> " + $('#form_categoryThree option:selected').html() 
-					);
-				}
-			} else if (curr_tab == (tot_tabs - 1)) { 
+                            //"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryTwo{% endtrans %}:</span> " + $('#form_categoryTwo option:selected').html() +
+                            //"<br><span class='mlab_app_new_summary'>{% trans %}form.app.categoryThree{% endtrans %}:</span> " + $('#form_categoryThree option:selected').html() 
+                    );
+                }
+            } else if (curr_tab == (tot_tabs - 1)) { 
 
 //reset the template select box so it returns value properly
                 $('#form_template').ddslick('destroy');
-//call function that must be in page that this dialog is called up in!  			    
-				mlab_app_submit_properties($("#mlab_form_app"));
+//call function that must be in page that this dialog is called up in!                  
+                mlab_app_submit_properties($("#mlab_form_app"));
                 
-			} 
+            } 
 
-			if (msg != '') {
-				alert(msg);
-				return false;
-			}
-			
-			$("#mlab_app_new_previous").removeClass("hidden");
-			
+            if (msg != '') {
+                alert(msg);
+                return false;
+            }
+            
+            $("#mlab_app_new_previous").removeClass("hidden");
+            
 //operning final tab 
-			if (curr_tab == (tot_tabs - 2)) {
-				$("#mlab_app_new_next").text(caption_finished);
-			}
-			
+            if (curr_tab == (tot_tabs - 2)) {
+                $("#mlab_app_new_next").text(caption_finished);
+            }
+            
 //going backward: hide previous button if first page, rename next button 
-		} else {
-			if (curr_tab == 1) {
-				$("#mlab_app_new_previous").addClass("hidden");
-			}
-			$("#mlab_app_new_next").text(caption_next);
-		}
-		$('#build_app_properties').tabs('option', 'active', curr_tab + direction);
-		
-	}
+        } else {
+            if (curr_tab == 1) {
+                $("#mlab_app_new_previous").addClass("hidden");
+            }
+            $("#mlab_app_new_next").text(caption_next);
+        }
+        $('#build_app_properties').tabs('option', 'active', curr_tab + direction);
+        
+    }
 
 </script>
 {% endblock %}

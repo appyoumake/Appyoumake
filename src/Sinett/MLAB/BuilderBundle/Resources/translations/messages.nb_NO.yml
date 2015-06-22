@@ -232,6 +232,7 @@ app.system.admin.help.edit.update.button: Oppdater
 # New app form 
 #-----------------------------------------------------
 builder.new.app.basedon.tab: Baser på
+builder.new.app.select_base.tab: Velg base
 builder.new.app.name.tab: Navn
 builder.new.app.classification.tab: Klassifiser
 builder.new.app.submit.tab: Lag

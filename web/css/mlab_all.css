@@ -590,3 +590,17 @@ body.mlab_base div.mlab_top_bar_back {
 #tabs_admin_apps.ui-tabs {
     position: absolute;
 }
+
+#app_icon_designer {
+    width: 256px;
+    height: 256px;
+    border: 1px solid gray;
+    clear: both;
+    float: left;
+}
+
+.new_line {
+    width: 100%;
+    clear: both;
+    float: left;
+}

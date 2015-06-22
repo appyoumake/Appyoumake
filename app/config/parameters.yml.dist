@@ -33,7 +33,7 @@ parameters:
           app: /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/
           component: /home/utvikler/workspace/mlab.local.dev/mlab_elements/components/
           template: /home/utvikler/workspace/mlab.local.dev/mlab_elements/templates/
-          icons: /home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/
+          icon: /home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/
         
         urls:
           app: /mlab_elements/apps/

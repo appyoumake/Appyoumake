@@ -842,6 +842,20 @@ class FileManagement {
         $all_comps_used = array_unique($all_comps_used);
         return $all_comps_used;
     }
+    
+//loads a list of app icon backgrounds from the icon directory
+    public function getBackgrounds() {
+        $icon_root = $this->config["paths"]["icon"];
+        $icon_url = $this->config["urls"]["icon"];
+        $backgrounds = array();
+        
+        $temp_backgrounds = $this->func_find( $icon_root . "backgrounds/", "f", "*.png" ) + $this->func_find( $icon_root  . "backgrounds/", "f", "*.jpg" ) + $this->func_find( $icon_root . "backgrounds/", "f", "*.gif" );
+        foreach ($temp_backgrounds as $temp_background) {
+            $backgrounds[basename($temp_background)] = $icon_url . "backgrounds/" . basename($temp_background);
+        }
+        
+        return $backgrounds;
+    }
  
 //functions that replicate linux commands
     
