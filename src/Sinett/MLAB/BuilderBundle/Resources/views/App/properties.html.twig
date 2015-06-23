@@ -50,7 +50,7 @@
                 
                 <div id="div_base_office_file" class="mlab_div_base">   
                     <label for="mlab_builder_file_import_from">Import PPT or DOC file</label>
-                    <input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from" disabled="disabled">
+                    <input type="file" id="mlab_builder_file_import_from" name="mlab_builder_file_import_from" >
                 </div>
                             
             </div>
@@ -165,7 +165,8 @@
 <button class="button_wizard" id="mlab_app_new_next" onclick="mlab_app_new_move(1);">{% trans %}app.wizard.button.next{% endtrans %}</button>
 
 <script type="text/javascript">
-
+    var icon_created = false;
+    
 //run various jQuery plugins which enhances the user interaction when dialog box is filled in
     $(document).ready(function () {
         
@@ -174,6 +175,8 @@
         var foreground_image_src = 'server';
         
         $( "#build_app_properties" ).tabs();
+        $( "#build_app_properties ul" ).css("pointer-events", "none");
+        
 
         $('#mlab_builder_app_copy_from').ddslick({
             width: 300,
@@ -235,6 +238,7 @@
  * @returns {undefined|Boolean}
  */
         function buildIcon(source) {
+            icon_created = true;
             var canvas = document.getElementById("app_icon_designer");
             var ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -404,16 +408,40 @@
                 
                 if (selected.length > 0) {
                     sel_val = selected.val();
+                    $('.mlab_div_base').addClass("hidden");
+                    $('#div_base_' + sel_val).removeClass("hidden");
                 } else {
-                    return;
+                    msg = msg + "{% trans %}You must select what to base the new app on{% endtrans %}\n";
                 }
-                $('.mlab_div_base').addClass("hidden");
-                $('#div_base_' + sel_val).removeClass("hidden");
                 
             } else if (curr_tab == 1) {
-                if ($('#form_template').data('ddslick').selectedIndex == 0 && $('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
-                    msg = msg + "{% trans %}You must select an app to copy or a template to use{% endtrans %}\n";
-                }  
+                var action = $("input[type='radio'][name='select_base']:checked").val();
+                
+                switch(action) {
+                    case "template":
+                        if ($('#form_template').data('ddslick').selectedIndex == 0) {
+                            msg = msg + "{% trans %}You must select a template to use{% endtrans %}\n";
+                        }  
+                        break;
+                    case "existing_app":
+                        if ($('#mlab_builder_app_copy_from').data('ddslick').selectedIndex == 0) {
+                            msg = msg + "{% trans %}You must select an app to copy{% endtrans %}\n";
+                        }
+                        break;
+                    case "office_file":
+                        if ($("#mlab_builder_file_import_from").val() == "") {
+                            msg = msg + "{% trans %}You must select a document to convert{% endtrans %}\n";
+                        } else {
+                            var file_name = $("#mlab_builder_file_import_from").val();
+                            var file_type = file_name.substr(file_name.lastIndexOf('.') + 1).toLowerCase();
+                            var regex = /ppt|pptx|doc|docx/g;
+                            if (!regex.test(file_type)) {
+                                msg = msg + "{% trans %}Document to convert must be PowerPoint or Word format{% endtrans %}\n";
+                            }
+                        }
+                        break;
+                        
+                }
 
             } else if (curr_tab == 2) {
                 if ($('#form_name').val().trim() == "") {
@@ -424,7 +452,18 @@
                     msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
                 }  
                 
-                $("#form_iconFile").val();
+                if (icon_created) {
+                    $("#form_iconFile").val(document.getElementById("app_icon_designer").toDataURL());
+                } else {
+                    $("#form_iconFile").val("");
+                }
+                
+                var file_name = $("#form_splashFile").val();
+                var file_type = file_name.substr(file_name.lastIndexOf('.') + 1).toLowerCase();
+                var regex = /png|jpg|jpeg/g;
+                if (!regex.test(file_type)) {
+                    msg = msg + "{% trans %}Splash file must be in PNG or JPEG format{% endtrans %}\n";
+                }
 
             } else if (curr_tab == 3) {
                 if ($('#form_keywords').val().trim() == "") {
