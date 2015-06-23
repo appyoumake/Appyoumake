@@ -381,6 +381,7 @@ Mlab_api.prototype = {
             var filename, selector = "";
             var new_location = 0;
             switch (move_to) {
+                case 0:
                 case "index":
                     filename = "index.html";
                     new_location = 0;
@@ -397,7 +398,7 @@ Mlab_api.prototype = {
                     break;
 
                 case "next" :
-                    if (current == this.max_pages) {
+                    if (current >= this.max_pages) {
                         return current;
                     }
                     current++;
@@ -406,7 +407,7 @@ Mlab_api.prototype = {
                     break;
 
                 case "previous" :
-                    if (current == "index") {
+                    if (current == 0 || current == "index") {
                         return current;
                     }
                     if (current == 1) {
@@ -414,6 +415,9 @@ Mlab_api.prototype = {
                         new_location = 0;
                     } else {
                         current--;
+                        if (current < 0) {
+                            current = 0;
+                        }
                         filename = ("000" + current).slice(-3) + ".html";
                         new_location = current;
                     }
