@@ -74,29 +74,49 @@
             </div>
             
             <div class="new_line">
-                <canvas id="app_icon_designer" >
-                </canvas>
-            </div>
-            <div class="new_line">
-                <label for="mlab_select_background">Select background</label>
-                <select id="mlab_select_background" name="mlab_select_background" >
-                    <option value=""></option>
-                    {% for icon, path in backgrounds %}
-                        <option data-imagesrc="{{ path }}" data-description="{{ icon }}" value="{{ path }}">{{ icon }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="new_line">
-                {{ form_label(form.iconFile, null, {'label': 'builder.new.app.name.iconFile'|trans}) }}
-                {{ form_errors(form.iconFile) }}
-                {{ form_widget(form.iconFile) }}
-            </div>
-
-            <div class="new_line">
                 {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
                 {{ form_errors(form.splashFile) }}
                 {{ form_widget(form.splashFile) }}
             </div>
+
+            
+            <fieldset class="new_line">
+                {{ form_widget(form.iconFile) }}
+                <legend>Design icon:</legend>
+                <canvas id="app_icon_designer" height="256" width="256">
+                </canvas>                
+                <div class="left">
+                    <p>Select background</p>
+                    <select id="mlab_select_background" name="mlab_select_background" >
+                        <option value=""></option>
+                        {% for icon, path in backgrounds %}
+                            <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="left">
+                    <p>Select foreground</p>
+                    <select id="mlab_select_foreground" name="mlab_select_foreground" >
+                        <option value=""></option>
+                        {% for icon, path in foregrounds %}
+                            <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="left">
+                    <label for="mlab_local_iconfile">{% trans %}builder.new.app.name.iconFile{% endtrans %}</label>
+                    <input id="mlab_local_iconfile" name="mlab_local_iconfile" type="file">
+                    <div onclick="createIcon.buildIcon('server');">Add image</div>
+                </div>
+                <div class="left">
+                    <label for="mlab_icon_text">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
+                    <input id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
+                    <div onclick="createIcon.buildIcon(foreground_image_src)">Add text</div>
+                </div>
+            </fieldset>
+
             
         </div>
         
@@ -146,17 +166,17 @@
 
 <script type="text/javascript">
 
-//add onclick/onchange functions for the two dropdown menus here 
-    $(document).ready(function (){
+//run various jQuery plugins which enhances the user interaction when dialog box is filled in
+    $(document).ready(function () {
         
-        //temp fill categories - TODO
-        $(function() { $("#form_categoryOne").val('2'); });
-        $(function() { $("#form_categoryTwo").val('3'); });
-        $(function() { $("#form_categoryThree").val('8'); });
+//this variable stores the icon functionality
+        createIcon = new iconFunctions();
+        var foreground_image_src = 'server';
         
+        $( "#build_app_properties" ).tabs();
+
         $('#mlab_builder_app_copy_from').ddslick({
             width: 300,
-            height: 110,
             imagePosition: "left",
             selectText: "{% trans %}app.select.app.to.copy{% endtrans %}",
             onSelected: function (data) {
@@ -167,13 +187,25 @@
         });
         
         $('#mlab_select_background').ddslick({
-            width: 300,
-            height: 110,
+            width: 90,
+            height: 200,
             imagePosition: "left",
             selectText: "{% trans %}app.select.icon.background{% endtrans %}",
             onSelected: function (data) {
                 if (data.selectedIndex > 0) {
-                    loadBackground();
+                    createIcon.buildIcon(foreground_image_src);
+                }
+            }
+        });
+        
+        $('#mlab_select_foreground').ddslick({
+            width: 90,
+            height: 200,
+            imagePosition: "left",
+            selectText: "{% trans %}app.select.icon.foreground{% endtrans %}",
+            onSelected: function (data) {
+                if (data.selectedIndex > 0) {
+                    createIcon.buildIcon('local');
                 }
             }
         });
@@ -190,25 +222,140 @@
             }
         });
         
-    });
+    }); //end onready
     
+//functions to build an icon
+    function iconFunctions() {
+        var funcs = new Object();
+        
+/**
+ * This function is called whenever the background, foreground or text is changed
+ * 
+ * @param {type} direction
+ * @returns {undefined|Boolean}
+ */
+        function buildIcon(source) {
+            var canvas = document.getElementById("app_icon_designer");
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            foreground_image_src = source;
+
+//first we draw background, regardless of what has been changed
+            drawImage(getBackgroundFromServerFile(), false);
+            
+//next we draw foreground, if it i 
+            if (foreground_image_src == 'server' && typeof document.getElementById('mlab_local_iconfile').files != "undefined" && typeof document.getElementById('mlab_local_iconfile').files.length) {
+                getForegroundFromFile();
+
+            } else if (foreground_image_src == 'local' && $('#mlab_select_foreground').data('ddslick').selectedData.value != "") {
+                drawImage(getForegroundFromServerFile(), true);
+                if ($("#mlab_icon_text").val() != "") {
+                    outputText();
+                }
+                
+            } 
+        }
+
+        function getForegroundFromFile() {
+            var input, file, fr;
+
+            if (typeof window.FileReader !== 'function') {
+                alert("This browser does not support local images, get your technical support to upload you images");
+                return;
+            }
+
+            input = document.getElementById('mlab_local_iconfile');
+            if (!input.files) {
+                alert("This browser doesn't seem to support the `files` property of file inputs.");
+            } else if (!input.files[0]) {
+                alert("Please select a file before clicking 'Load'");
+            } else {
+                var local_img = new Image;
+                local_img.onload = function() {
+                    drawImage(local_img, true);
+                    outputText();
+                    URL.revokeObjectURL(local_img.src);
+                }
+                local_img.src = URL.createObjectURL(input.files[0]);
+            }
+        }
+        
 //loads background icon into canvas    
-    function loadBackground() {
-        var canvas = document.getElementById("app_icon_designer");
-        canvas.width = 256;
-        canvas.height = 256;
+        function drawImage(img, isForeground) {
+            var canvas = document.getElementById("app_icon_designer");
+            var ctx = canvas.getContext("2d");
+            if (isForeground) {
+                if (img.naturalWidth >= (canvas.width * .8) || img.naturalHeight >= (canvas.height * .8)) {
+                    var l = canvas.width * .25;
+                    var t = canvas.height * .25;
+                    var w = canvas.width * .5;
+                    var h = canvas.height * .5;
+                } else {
+                    var l = (canvas.width - img.naturalWidth) / 2;
+                    var t = (canvas.height - img.naturalHeight) / 2;
+//image is smaller than what we want, so no need to indicate size parameters                    
+                    ctx.drawImage(img, l, t);
+                    return;
+                }
+            } else {
+                var l = 0;
+                var t = 0;
+                var w = canvas.width;
+                var h = canvas.height;
+            }    
+
+            ctx.drawImage(img, l, t, w, h);
+        }
         
-        var ctx = canvas.getContext("2d");
-        var background = new Image();
-        background.src = $('#mlab_select_background').data('ddslick').selectedData.value;
-        ctx.drawImage(background,0,0, 256, 256);   
+        function drawText() {
+            var canvas = document.getElementById("app_icon_designer");
+            var ctx = canvas.getContext("2d");
         
-        var foreground = new Image();
-        foreground.src = "http://pngimg.com/upload/book_PNG2112.png";
-        ctx.drawImage(foreground,0,0, 256, 256);   
-    }
+            var x = canvas.width / 2;
+            var y = canvas.height;
+
+            ctx.font = '30pt MlabIconFont';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillStyle = 'black';
+            ctx.fillText($("#mlab_icon_text").val(), x, y);
+        }        
+        
+//using a trick from here to load font first time: http://stackoverflow.com/questions/2635814/javascript-capturing-load-event-on-link/5371426#5371426
+//if it is already loaded, then we skip loading it and draw text as normal
+        function outputText() {
+            if (!$("#mlab_icon_font_style").length) {
+                $('head').append("<style id='mlab_icon_font_style' type='text/css'>@font-face { font-family: 'MlabIconFont'; font-style: normal; font-weight: 700; src: url('{{ icon_font_url }}') format('truetype'); }</style>");
+
+//original trick from http://stackoverflow.com/questions/2635814/
+                var image = new Image;
+                image.src = "{{ icon_font_url }}";
+                image.onerror = function() { drawText(); };
+                
+            } else {
+                drawText();
+                
+            }
+        }
+        
+        function getBackgroundFromServerFile() {
+            var background = new Image();
+            background.src = $('#mlab_select_background').data('ddslick').selectedData.value;
+            return background;
+        }
+
+        function getForegroundFromServerFile() {
+            var foreground = new Image();
+            foreground.src = $('#mlab_select_foreground').data('ddslick').selectedData.value;
+            return foreground;
+        }
+
+        funcs.buildIcon = buildIcon;
+        
+        return funcs;
+    } //end buildIcon
     
-//function to load sub categories when a top level category is selected
+//function to load sub categories when a higher level category is selected
     function loadCategories(el, level) {
         if ( parseInt($(el).val()) == 0 || isNaN(parseInt($(el).val())) )  {
             if (level == 1 ) {
@@ -241,6 +388,7 @@
     }
     
 //function to move back and forth in new app/properties wizard 
+//this first checks if relevant selections/input is done, then displays next or previous tab
     function mlab_app_new_move(direction) {
         var caption_next = "{% trans %}app.wizard.button.next{% endtrans %}";
         var caption_finished = "{% trans %}app.wizard.button.finished{% endtrans %}";
@@ -275,6 +423,8 @@
                 if ($('#form_description').val().trim() == "") {
                     msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
                 }  
+                
+                $("#form_iconFile").val();
 
             } else if (curr_tab == 3) {
                 if ($('#form_keywords').val().trim() == "") {

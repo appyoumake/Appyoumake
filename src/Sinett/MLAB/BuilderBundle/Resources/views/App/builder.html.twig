@@ -39,8 +39,8 @@
 					autoOpen: false,
 				    show: { effect: "blind", duration: 500 },
 				    hide: { effect: "blind", duration: 500 },
-				    width: 900,
-				    height: 500,
+				    width: 800,
+				    height: 600,
 				    modal: true,
 				});
 			
@@ -50,22 +50,16 @@
 		 * Opens up the properties dialog and displays a blank form
 		*/
 		function mlab_app_new () {
-			$("#builder_dialog_new_app").load(url_new, function() {
-				$('#builder_app_copy_from').ddslick();
-	    		//$('#form_template').ddslick();
-	    		$( "#build_app_properties" ).tabs();
-	    	}).dialog("open");
+			$("#builder_dialog_new_app").load(url_new).dialog("open");
 		};
 		
 		/**
-		 * Opens up the properties dialog for a given app, uses the predefiend URL and replaces the 0 placeholder
+		 * Opens up the properties dialog for a given app, uses the predefined URL and replaces the 0 placeholder
 		*/
 		function editAppProperties (id) {
 			var url_temp = url_edit.replace(/0/ , id);
 			console.log(url_temp);
-			$("#builder_dialog_new_app").load(url_temp, function() {
-	    		$( "#build_app_properties" ).tabs();
-	    	}).dialog("open");
+			$("#builder_dialog_new_app").load(url_temp).dialog("open");
 		};
         
 		/**

@@ -172,8 +172,8 @@ class AppController extends Controller
 				    	->setMethod('POST')
 				    	->add('name')
 				    	->add('description')
-				    	->add('iconFile', 'file')
 				    	->add('splashFile', 'file')
+                        ->add('iconFile', 'hidden')
 				    	->add('keywords')
 				    	->add('categoryOne')
 				    	->add('categoryTwo')
@@ -188,13 +188,13 @@ class AppController extends Controller
      * Displays a form to create a new App entity.
      *
      */
-    public function newAction()
-    {
+    public function newAction() {
     	$em = $this->getDoctrine()->getManager();
     	$entity = new App();
         $file_mgmt = $this->get('file_management');
     	
         $backgrounds = $file_mgmt->getBackgrounds();
+        $foregrounds = $file_mgmt->getForegrounds();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
         $url_apps = $this->container->parameters['mlab']['urls']['app'];
@@ -212,7 +212,10 @@ class AppController extends Controller
             'url_templates' => $url_templates,
             'url_apps' => $url_apps,
             'app_icon_path' => $app_icon_path,
-            'backgrounds' => $backgrounds
+            'backgrounds' => $backgrounds,
+            'foregrounds' => $foregrounds,
+            'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
+            'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
         ));
         
     }
@@ -260,8 +263,8 @@ class AppController extends Controller
 								        ->setMethod('POST')
 								        ->add('name')
 								        ->add('description')
-								        ->add('iconFile', 'file')
 								        ->add('splashFile', 'file')
+                                        ->add('iconFile', 'hidden')
 								        ->add('keywords')
 								        ->add('categoryOne')
 								        ->add('categoryTwo')

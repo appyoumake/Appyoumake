@@ -843,6 +843,20 @@ class FileManagement {
         return $all_comps_used;
     }
     
+//loads a list of app icon foregrounds from the icon directory
+    public function getForegrounds() {
+        $icon_root = $this->config["paths"]["icon"];
+        $icon_url = $this->config["urls"]["icon"];
+        $foregrounds = array();
+        
+        $temp_foregrounds = $this->func_find( $icon_root . "foregrounds/", "f", "*.png" ) + $this->func_find( $icon_root  . "foregrounds/", "f", "*.jpg" ) + $this->func_find( $icon_root . "foregrounds/", "f", "*.gif" );
+        foreach ($temp_foregrounds as $temp_foreground) {
+            $foregrounds[basename($temp_foreground)] = $icon_url . "foregrounds/" . basename($temp_foreground);
+        }
+        
+        return $foregrounds;
+    }
+ 
 //loads a list of app icon backgrounds from the icon directory
     public function getBackgrounds() {
         $icon_root = $this->config["paths"]["icon"];
