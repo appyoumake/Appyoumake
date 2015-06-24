@@ -15,6 +15,7 @@
     font-style: normal;
     margin: 0.6em 0;
     color: #CCCCCC;
+    line-height: 1em;
     text-shadow: none;
 }
 
@@ -46,21 +47,25 @@
    ========================================================================== */
 #page h1 {
     font-size: 1.45em;
+    line-height: 1.1em;
     margin: 1em 0;
 }
 
 #page h2 {
     font-size: 1.27em;
+    line-height: 1.1em;
     margin: 1em 0;
 }
 
 #page h3 {
     font-size: 1.12em;
+    line-height: 1.1em;
     margin: 1em 0;
 }
 
 #page p {
     font-size: 1em;
+    line-height: 1.1em;
     margin: 1em 0;
 }
 

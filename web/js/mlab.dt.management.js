@@ -220,7 +220,9 @@ Mlab_dt_management.prototype = {
 //insert stylesheets
         for ( var i = 0; i < stylesheets.length; i++) {
             temp_link = stylesheets[i].getAttribute("href");
-            temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
+            if(temp_link.indexOf("style_rt.css") < 0){
+                temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
+            }
         }
         $("head link[rel='stylesheet']").last().after(temp_stylesheets);
 
