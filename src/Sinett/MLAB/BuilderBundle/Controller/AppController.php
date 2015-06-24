@@ -12,6 +12,7 @@ use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
 
 use Symfony\Component\Yaml\Parser;
+use Doctrine\ORM\EntityRepository;
 
 //use Symfony\Component\HttpFoundation\File\UploadedFile
 
@@ -53,13 +54,14 @@ class AppController extends Controller
     {
     	$entity = new App();
         $form = $this->createAppForm($entity);
-        $form->bind($request);
-       	
+        $form->handleRequest($request);
+die(print_r($form, true));
         if ($form->isValid()) {
         	
 //store values in array for easy access
-                $temp_app_data = $request->request->all();
+            $temp_app_data = $request->request->all();
         	$app_data = $temp_app_data["form"];
+            
 //get config values
         	$config = $this->container->parameters['mlab'];
 //prepare doctrine manager
@@ -143,6 +145,7 @@ class AppController extends Controller
         return new JsonResponse(array(
         		'action' => 'ADD',
         		'result' => 'FAILURE',
+                'temp' => $form->getErrors(),
         		'message' => 'Incorrect data submitted, may be a field missing'));
                     
     }
@@ -167,18 +170,45 @@ class AppController extends Controller
     }
 
     public function createAppForm($entity) {
+        $em = $this->getDoctrine()->getManager();
     	return $this->createFormBuilder($entity, array('attr' => array('id' => 'mlab_form_app')))
 				    	->setAction($this->generateUrl("app_create"))
 				    	->setMethod('POST')
-				    	->add('name')
-				    	->add('description')
-				    	->add('splashFile', 'file')
-                        ->add('iconFile', 'hidden')
-				    	->add('keywords')
-				    	->add('categoryOne')
-				    	->add('categoryTwo')
-				    	->add('categoryThree')
-				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => ''))
+				    	->add('name', null, array('required' => true))
+				    	->add('description', null, array('required' => true))
+				    	->add('splashFile', 'file', array("mapped" => false, 'required' => false))
+                        ->add('importFile', 'file', array("mapped" => false, 'required' => false))
+                        ->add('iconFile', 'hidden', array("mapped" => false, 'required' => false))
+                        ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
+				    	->add('keywords', null, array('required' => true))
+                        ->add('categoryOne', 
+                                null, 
+                                array('query_builder' => function(EntityRepository $er) {
+                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
+                                    },'label' => 'app.admin.users.new.or.edit.categoryOne',
+                                      'attr' => array('onchange' => 'loadCategories(this, 1);'),
+                                      'required' => true,
+                                      'empty_data'  => null,
+                                      'empty_value'  => '')
+                             )
+                        ->add('categoryTwo', 
+                                null, 
+                                array('choices' => array(),
+                                      'label' => 'app.admin.users.new.or.edit.categoryTwo',
+                                      'attr' => array('onchange' => 'loadCategories(this, 2);'),
+                                      'required' => true,
+                                      'empty_data'  => null,
+                                      'empty_value'  => '')
+                             )
+                        ->add('categoryThree', 
+                                null, 
+                                array('choices' => array(), 
+                                      'label' => 'app.admin.users.new.or.edit.categoryThree',
+                                      'required' => true,
+                                      'empty_data' => null,
+                                      'empty_value'  => '')
+                             )                
+				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
 				    	->add('version', "hidden")
 				    	->add("copy_app", "hidden", array("mapped" => false))
 				    	->add('save', 'submit')
@@ -216,6 +246,7 @@ class AppController extends Controller
             'foregrounds' => $foregrounds,
             'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
             'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
+            'icon_default' => $this->container->parameters['mlab']['compiler_service']['default_icon'],
         ));
         
     }
@@ -261,14 +292,41 @@ class AppController extends Controller
         $editForm = $this->createFormBuilder($entity)
 								        ->setAction($this->generateUrl('app_update', array('id' => $entity->getId())))
 								        ->setMethod('POST')
-								        ->add('name')
-								        ->add('description')
-								        ->add('splashFile', 'file')
-                                        ->add('iconFile', 'hidden')
-								        ->add('keywords')
-								        ->add('categoryOne')
-								        ->add('categoryTwo')
-								        ->add('categoryThree')
+                                        ->add('name', null, array('required' => true))
+                                        ->add('description', null, array('required' => true))
+                                        ->add('splashFile', 'file', array("mapped" => false, 'required' => false))
+                                        ->add('iconFile', 'hidden', array("mapped" => false, 'required' => false))
+                                        ->add('importFile', 'file', array("mapped" => false, 'required' => false))
+                                        ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
+                                        ->add('keywords', null, array('required' => true))
+                                        ->add('categoryOne', 
+                                                null, 
+                                                array('query_builder' => function(EntityRepository $er) {
+                                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
+                                                    },'label' => 'app.admin.users.new.or.edit.categoryOne',
+                                                      'attr' => array('onchange' => 'loadCategories(this, 1);'),
+                                                      'required' => true,
+                                                      'empty_data'  => null,
+                                                      'empty_value'  => '')
+                                             )
+                                        ->add('categoryTwo', 
+                                                null, 
+                                                array('choices' => array(),
+                                                      'label' => 'app.admin.users.new.or.edit.categoryTwo',
+                                                      'attr' => array('onchange' => 'loadCategories(this, 2);'),
+                                                      'required' => true,
+                                                      'empty_data'  => null,
+                                                      'empty_value'  => '')
+                                             )
+                                        ->add('categoryThree', 
+                                                null, 
+                                                array('choices' => array(), 
+                                                      'label' => 'app.admin.users.new.or.edit.categoryThree',
+                                                      'required' => true,
+                                                      'empty_data'  => null,
+                                                      'empty_value'  => '')
+                                             )                
+
 								        ->add('save', 'submit', array('label' => 'Update'))
 								        ->getForm();
         

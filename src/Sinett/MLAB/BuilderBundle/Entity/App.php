@@ -102,14 +102,26 @@ class App
     private $zip_file;
     
     /**
-     * icon that is uploaded
+     * icon that is created, stored as a data url string
      */
     private $icon_file;
     
     /**
-     * splah image that is uploaded
+     * id of app to be copied to a new app
+     */
+    private $copy_app;
+    
+    /**
+     * splash image that is uploaded
      */
     private $splash_file;
+    
+    /**
+     * splash image that is uploaded
+     */
+    private $import_file;
+    
+    
     
     /**
      * Constructor
@@ -644,9 +656,9 @@ class App
     /**
      * Sets file.
      *
-     * @param UploadedFile $file
+     * @param string icon image as data url
      */
-    public function setIconFile(UploadedFile $icon_file = null)
+    public function setIconFile($icon_file = null)
     {
     	$this->icon_file = $icon_file;
     }
@@ -659,6 +671,26 @@ class App
     public function getIconFile()
     {
     	return $this->icon_file;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param int $copy_app
+     */
+    public function setCopyApp($copy_app = null)
+    {
+    	$this->copy_app = $copy_app;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return int
+     */
+    public function getCopyApp()
+    {
+    	return $this->copy_app;
     }
     
     /**
@@ -681,6 +713,24 @@ class App
     	return $this->splash_file;
     }
     
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setImportFile(UploadedFile $import_file = null)
+    {
+    	$this->import_file = $import_file;
+    }
     
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getImportFile()
+    {
+    	return $this->import_file;
+    }
 
 }
