@@ -2,7 +2,6 @@
    Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
 */
 
-/* TODO - annet navn enn #page???????? */
 
 /* ==========================================================================
    Page
@@ -10,39 +9,25 @@
 
 #mlab_editor_chrome #page,
 #page {
-    font-size: 1em;
-    font-family: Arial,sans-serif;
-    font-style: normal;
-    margin: 0.6em 0;
-    color: #CCCCCC;
-    text-shadow: none;
-}
-
-/* #page [data-role="content"] {
-    font-size: 1em;
-    font-family: Arial,sans-serif;
-    font-style: normal;
-    color: #CCCCCC;
-    line-height: 1em;
-    text-shadow: none;
-} */
-
-#mlab_editor_chrome #page,
-#page {
     margin: 0;
     padding: 0;
     display: block;
     overflow: hidden;
-    background-color: #1e1e1e;
+    font-size: 1em;
+    font-family: Arial,sans-serif;
+    font-style: normal;
+    text-shadow: none;
+    color: #ffffff;
+    background-color: #1e1e1e;  
 }
 
 #page #content {
-    padding: 10px;
+    padding: 0.6em;
 }
 
 
 /* ==========================================================================
-   Component styling
+   Component styling - TODO
    ========================================================================== */
 #page h1 {
     font-size: 1.45em;
@@ -80,19 +65,19 @@
 
 #page img {
     margin: 0;
-    padding: 10px;
+    padding: 0.6em;
     border: none;
 }
 
 #page map {
     margin: 0;
-    padding: 10px;
+    padding: 0.6em;
     border: none;
 }
 
 #page video {
     margin: 0;
-    padding: 10px;
+    padding: 0.6em;
     border: none;
     cursor: pointer;
     width: 100%    !important;
@@ -101,7 +86,7 @@
 
 #page iframe {
     margin: 0;
-    padding: 5px;
+    padding: 0.3em;
     border: none;
     cursor: pointer;
 }
@@ -117,12 +102,12 @@
 }
 
 #page figure img {
-   padding-bottom: 5px;
+   padding-bottom: 0.1em;
 }
 
 #page figure figcaption {
    text-align: center;
    font-style: italic;
-   font-size: 14px;
+   font-size: 0.9em;
 }
 

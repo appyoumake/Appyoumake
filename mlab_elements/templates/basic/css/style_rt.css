@@ -4,36 +4,8 @@
 
 
 /* ==========================================================================
-   Typography
+   Page
    ========================================================================== */
-    #page #mlab_editable_area{
-        font-size: 100%;
-    }
-
-    #page #mlab_editable_area.large_text{
-        font-size: 140%;
-    }
-
-
-/* ==========================================================================
-   Page -- ta bort her eller i style.css??? TODO
-   ========================================================================== */
-
-#page {
-    margin: 0;
-    padding: 0;
-    display: block;
-    overflow: hidden;
-    background-color: #1e1e1e;
-}
-
-#page.white {
-    background-color: #ffffff;
-}
-
-#page.white #mlab_content {
-    color: #000000;
-}
 
 #page #mlab_content {
    margin-top: 15%;
@@ -43,7 +15,6 @@
 }
 
 #page #content {
-    margin-top: 0;
     overflow-y: visible;
     overflow-x: hidden;
 }
@@ -54,6 +25,16 @@
    ========================================================================== */
 #page #mlab_header {
     padding: 0;
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+    #page #mlab_editable_area{
+        font-size: 100%;
+    }
+
+    #page #mlab_editable_area.large_text{
+        font-size: 140%;
+    }
     margin: 0;
     background-image: url('./img/contentpage_header_backgr.png');
     background-repeat:no-repeat;
@@ -150,12 +131,30 @@
 #page #mlab_menu_heading {
     font-size: 1.4em;
     font-weight: bold;
-    margin: 0;
+    padding-top: 3em;
+}
+
+#page #mlab_settings_heading {
+    padding-top: 2em;
+}
+
+#page #mlab_hr_panel {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+#page #mlab_settings_text,
+#page #mlab_menu_text {
+    font-size: 0.9em;
+    margin-top: 0.5em;
 }
 
 #page #mlab_btn_color_toggle, 
-#page #mlab_btn_txsize,
-#page #mlab_btn_close {
+#page #mlab_btn_txsize_toggle,
+#page #mlab_btn_close,
+#page #mlab_btn_close_menu {
     padding: 0;
     margin: 0;
     background-repeat: no-repeat;
@@ -166,15 +165,24 @@
     background-image: url('./img/btn_color_toggle.svg');
 }
 
-#page #mlab_btn_txsize {
+#page #mlab_btn_txsize_toggle {
     background-image: url('./img/btn_txsize.svg');
 }
 
-#page #mlab_btn_close {
+#page #mlab_btn_close,
+#page #mlab_btn_close_menu {
     background-image: url('./img/btn_close.svg');
     float: right;
     margin-top: 0em;
     width: 1.7em;
+}
+
+#page #mlab_btn_close_menu {
+    float: left;
+}
+
+#page #mlab_creators {
+    font-size: 0.7em;
 }
 
 /* ==========================================================================
