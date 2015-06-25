@@ -97,11 +97,12 @@ class AppController extends Controller
 		    $file_mgmt->setConfig('app');
 		    
 //do they want to copy an existing app?
-		    if ($app_data["copy_app"] != '') {
-		    	$orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copy_app"]);
+	   switch ($temp_app_data["select_base"]) {
+          case "existing_app":
+		    	$orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
 		    	$result = false;
 		    	if ($orig_app) {
-		    		$result = $file_mgmt->copyDirectory($app_data["copy_app"], $app_destination);
+		    		$result = $file_mgmt->copyDirectory($app_data["copyApp"], $app_destination);
 		    	} 
 		    	
 		    	if ($result == false) {
@@ -110,9 +111,10 @@ class AppController extends Controller
 		    				'result' => 'FAILURE',
 		    				'message' => 'Unable to copy app files'));
 		    	} 
-        		
+        		break;
+        
 //otherwise we use the template they specified 
-        	} else if ($app_data["template"] != '') {
+        	case "template":
         		$result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
         		if ($result !== true) {
         			return new JsonResponse(array(
@@ -120,8 +122,12 @@ class AppController extends Controller
         					'result' => 'FAILURE',
         					'message' => 'Unable to create app, Cordova error: ' . implode("\n", $result)));
         		}
-        		
-        	} else {
+           break;
+        
+        	case "office_file":
+            break;
+            	
+        	default:
 				return new JsonResponse(array(
 						'action' => 'ADD',
 						'result' => 'FAILURE',
