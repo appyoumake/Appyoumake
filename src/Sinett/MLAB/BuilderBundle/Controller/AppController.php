@@ -125,6 +125,11 @@ class AppController extends Controller
            break;
         
         	case "office_file":
+            exec("");
+            /*
+            python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
+            I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
+            */
             break;
             	
         	default:
