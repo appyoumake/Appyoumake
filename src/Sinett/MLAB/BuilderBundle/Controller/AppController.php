@@ -120,16 +120,39 @@ class AppController extends Controller
         			return new JsonResponse(array(
         					'action' => 'ADD',
         					'result' => 'FAILURE',
-        					'message' => 'Unable to create app, Cordova error: ' . implode("\n", $result)));
+        					'message' => 'Unable to create app'));
         		}
            break;
         
         	case "office_file":
-            exec("");
+            $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+        		if ($result !== true) {
+        			return new JsonResponse(array(
+        					'action' => 'ADD',
+        					'result' => 'FAILURE',
+        					'message' => 'Unable to create app'));
+        		}
+            if (null === $entity->getZipFile() || !$entity->getZipFile()->isValid()) {
+               return new JsonResponse(array(
+        					'action' => 'ADD',
+        					'result' => 'FAILURE',
+        					'message' => 'Invalid file uploaded'));
+            }
+            
+            $py_pth = $config["convert"]["python_bin"];
+            $cv_bin = $config["convert"]["converter_bin"];
+            $cv_conf = $config["convert"]["config"];
+            $cv_pth = $config["convert"]["converter_path"];
+      	    $file_name = $entity->getZipFile()->getPathname();
+            
+            exec("$python_path $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o 	$app_destination");
             /*
             python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
             I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
             */
+            
+// after we have copied across the template and then converted the document file
+// we need to insert the content of 000.html in index.html.
             break;
             	
         	default:

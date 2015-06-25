@@ -246,7 +246,6 @@ class FileManagement {
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
 		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
-		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
 		
 		$output = array();
 		$exit_code = 0;
