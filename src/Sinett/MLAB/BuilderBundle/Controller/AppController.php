@@ -55,7 +55,7 @@ class AppController extends Controller
     	$entity = new App();
         $form = $this->createAppForm($entity);
         $form->handleRequest($request);
-die(print_r($form, true));
+
         if ($form->isValid()) {
         	
 //store values in array for easy access
@@ -185,7 +185,8 @@ die(print_r($form, true));
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
                                           return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
-                                    },'label' => 'app.admin.users.new.or.edit.categoryOne',
+                                      },
+                                      'label' => 'app.admin.users.new.or.edit.categoryOne',
                                       'attr' => array('onchange' => 'loadCategories(this, 1);'),
                                       'required' => true,
                                       'empty_data'  => null,
@@ -193,7 +194,9 @@ die(print_r($form, true));
                              )
                         ->add('categoryTwo', 
                                 null, 
-                                array('choices' => array(),
+                                array('query_builder' => function(EntityRepository $er) {
+                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 1')->addOrderBy('c.name');
+                                      },
                                       'label' => 'app.admin.users.new.or.edit.categoryTwo',
                                       'attr' => array('onchange' => 'loadCategories(this, 2);'),
                                       'required' => true,
@@ -202,7 +205,9 @@ die(print_r($form, true));
                              )
                         ->add('categoryThree', 
                                 null, 
-                                array('choices' => array(), 
+                                array('query_builder' => function(EntityRepository $er) {
+                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 2')->addOrderBy('c.name');
+                                      },
                                       'label' => 'app.admin.users.new.or.edit.categoryThree',
                                       'required' => true,
                                       'empty_data' => null,

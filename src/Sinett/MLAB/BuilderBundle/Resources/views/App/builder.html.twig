@@ -66,12 +66,18 @@
 		 * submits data for new app from the dialog box where we collect details of the new app  
 		 */
 		function mlab_app_submit_properties(form) {
-			var frm = document.getElementById(form.attr('id'));
-			formData = new FormData(frm);
-			$("#builder_dialog_new_app").dialog("close");
+			//var frm = document.getElementById(form.attr('id'));
+			//formData = new FormData(frm);
+            formData = new FormData(document.getElementById('mlab_form_app'))
+			//$("#builder_dialog_new_app").dialog("close");
 			$.ajax({
 		        url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
 		        type: 'POST',
+		        // Form data 
+		        data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
 		        success: function( data ) {
 			    	if (data.result == 'FAILURE') {
 			    		alert(data.message);
@@ -80,10 +86,7 @@
                         $(data.html).appendTo("#table_app");
 			    	}
 			  	},
-		        error: function(e) {alert('error'); console.log(e)},
-		        // Form data 
-		        data: form.serialize(),
-		        dataType: "json",
+		        error: function(e) {alert('error'); console.log(e)}
 		    });
 		}
 		
