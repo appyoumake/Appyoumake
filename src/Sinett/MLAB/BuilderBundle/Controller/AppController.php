@@ -983,11 +983,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf("Component type not specified: %s", $comp_id)));
         }
 
-        $target_platform = $this->container->parameters['mlab']['cordova']['default_platform'];
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
         $path_app_js = $path_app . "js/";
+/*TODO        $target_platform = $this->container->parameters['mlab']['cordova']['default_platform'];
         $path_app_permissions = $path_app . $this->container->parameters['mlab']['cordova'][$target_platform]["permissions_location"];
+*/
         
 //check if path to component and app exists
             if ( is_dir($path_component) && is_dir($path_app) ) {
