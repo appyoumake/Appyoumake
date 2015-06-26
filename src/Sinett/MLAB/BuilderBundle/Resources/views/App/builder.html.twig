@@ -83,6 +83,7 @@
 			    		alert(data.message);
 			    	} else {
 //here we update the list of apps with the new app details
+                        $("#builder_dialog_new_app").dialog("close");
                         $(data.html).appendTo("#table_app");
 			    	}
 			  	},
