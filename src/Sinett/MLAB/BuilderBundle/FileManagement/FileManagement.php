@@ -245,47 +245,17 @@ class FileManagement {
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
-		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
 		
 		$output = array();
 		$exit_code = 0;
 		
-//if they are offline we just extract a ZIP file that has to be present, 
-//and then we need to update a few files with new data
-        if ($this->config["cordova"]["offline"]) {
-            if (!file_exists($this->config["cordova"]["offline_archive"])) {
-                return array("You are working offine, but the ZIP archive to use for a new app was not found:" . $this->config["cordova"]["offline_archive"]);
+        if (mkdir($app_path, 0777, true)) { 
+            foreach ($template_items_to_copy as $from => $to) {
+                $this->func_copy("$template_path$from", "$app_path$to");
             }
-            $zip = new ZipArchive();
-			$res = $zip->open($this->config["cordova"]["offline_archive"]);
-	
-//loop through and see if all required files are present
-			if ($res === TRUE) {
-            if (!mkdir($app_path, 0777, true)) { return array("Unable to create directory: $app_path");}
-//try to unzip it
-				if (!$zip->extractTo($app_path)) {
-// clean up the file property, not persisted to DB
-					$entity->setZipFile(null);
-					return array("Unable to unzip : " . $zip->getStatusString());
-				}
-				$zip->close();
-                $proj_files = $this->func_find($app_path, "f");
-                $s = array($this->config["cordova"]["offline_placeholder_name"], $this->config["cordova"]["offline_placeholder_identifier"]);
-                $r = array($app->getPath(), $app_domain);
-                $this->func_sed($proj_files, $s, $r);
-                foreach ($template_items_to_copy as $from => $to) {
-                    $this->func_copy("$template_path$from", "$app_path$to");
-                }
-                return true;
-            } else {
-                return array("Unable to unzip : " . $res);
-            }
-            
-                
-        } else {
-          
-          
             return true;
+        } else {
+            return array("Unable to create directory: $app_path");
         }
 	}
 	
@@ -654,6 +624,36 @@ class FileManagement {
         
         $feature_component = $doc->createDocumentFragment();
         $feature_component->appendXML("<div data-mlab-type='$comp_id' >" . $component["html"] . "</div>");
+        $div_for_features->appendChild($feature_component);
+        return $doc->saveHTMLFile($filename);
+    }
+    
+    /**
+     * Injects some HTML fragment into a div specified by the ID
+     * 
+     **/ 
+    public function injectHtml($filename, $container_id, $html) {
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = true;
+        $doc->loadHTMLFile($filename);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($doc);
+        $div_for_features = $xpath->query("//*[@id='$container_id']")->item(0);
+
+        if (empty($div_for_features)) {
+            $div = $doc->createDocumentFragment();
+            $div->appendXML("<div id='$container_id' ></div>");
+            
+            foreach($doc->getElementsByTagName('body') as $node) {
+                $node->appendChild($div);
+            }
+            $div_for_features = $xpath->query("//*[@id='$container_id']")->item(0);
+        }
+        
+        $inject = $doc->createDocumentFragment();
+        $inject->appendXML($html);
         $div_for_features->appendChild($feature_component);
         return $doc->saveHTMLFile($filename);
     }

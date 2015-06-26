@@ -122,38 +122,39 @@ class AppController extends Controller
         					'result' => 'FAILURE',
         					'message' => 'Unable to create app'));
         		}
-           break;
+                break;
         
         	case "office_file":
-            $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-        		if ($result !== true) {
-        			return new JsonResponse(array(
-        					'action' => 'ADD',
-        					'result' => 'FAILURE',
-        					'message' => 'Unable to create app'));
-        		}
-            if (null === $entity->getZipFile() || !$entity->getZipFile()->isValid()) {
-               return new JsonResponse(array(
-        					'action' => 'ADD',
-        					'result' => 'FAILURE',
-        					'message' => 'Invalid file uploaded'));
-            }
-            
-            $py_pth = $config["convert"]["python_bin"];
-            $cv_bin = $config["convert"]["converter_bin"];
-            $cv_conf = $config["convert"]["config"];
-            $cv_pth = $config["convert"]["converter_path"];
-      	    $file_name = $entity->getZipFile()->getPathname();
-            
-            exec("$python_path $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o 	$app_destination");
-            /*
-            python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
-            I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
-            */
-            
+                $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+                    if ($result !== true) {
+                        return new JsonResponse(array(
+                                'action' => 'ADD',
+                                'result' => 'FAILURE',
+                                'message' => 'Unable to create app'));
+                    }
+                if (null === $entity->getImportFile() || !$entity->getImportFile()->isValid()) {
+                   return new JsonResponse(array(
+                                'action' => 'ADD',
+                                'result' => 'FAILURE',
+                                'message' => 'Invalid file uploaded'));
+                }
+
+                $py_pth = $config["convert"]["python_bin"];
+                $cv_bin = $config["convert"]["converter_bin"];
+                $cv_conf = $config["convert"]["config"];
+                $cv_pth = $config["convert"]["converter_path"];
+                $file_name = $entity->getImportFile()->getPathname();
+
+/*
+python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
+I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
+*/
+                exec("$python_path $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o $app_destination");
+                injectHtml("$app_destination/index.html", "mlab_editable_area", file_get_contents("$app_destination/000.html"));
+
 // after we have copied across the template and then converted the document file
 // we need to insert the content of 000.html in index.html.
-            break;
+                break;
             	
         	default:
 				return new JsonResponse(array(
@@ -210,9 +211,9 @@ class AppController extends Controller
 				    	->setMethod('POST')
 				    	->add('name', null, array('required' => true))
 				    	->add('description', null, array('required' => true))
-				    	->add('splashFile', 'file', array("mapped" => false, 'required' => false))
-                        ->add('importFile', 'file', array("mapped" => false, 'required' => false))
-                        ->add('iconFile', 'hidden', array("mapped" => false, 'required' => false))
+				    	->add('splashFile', 'file', array('required' => false))
+                        ->add('importFile', 'file', array('required' => false))
+                        ->add('iconFile', 'hidden', array('required' => false))
                         ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
 				    	->add('keywords', null, array('required' => true))
                         ->add('categoryOne', 

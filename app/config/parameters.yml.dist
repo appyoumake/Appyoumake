@@ -17,6 +17,12 @@ parameters:
     mlab: 
         app_creator_identifier: no.ffi.sinett
         
+        convert:
+            python_bin: /usr/bin/python
+            converter_bin: document2HTML.py
+            config: config.json
+            converter_path: /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
+
         ws_socket:
             url: /messages/
             port: 8080
