@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>basic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./css/include.css">
+<link rel="stylesheet" href="./css/jquery-mobile.css">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/style_rt.css">
+<script src="./js/jquery.js"></script>
+<script src="./js/jquery-ui.js"></script>
+<script src="./js/jquery-mobile.js"></script>
+<script src="./js/mlab.api.js"></script>
+<script src="./js/include.js"></script>
+<script>
+    
+//this variable tracks the current page, may be replaced with jquery mobile code
+    mlab_rt_current_page = 0;
+    /**
+     * When document is ready we initialise the load code for the jquery mobile functionality
+     * This is done by assigning the mlab.api.navigation.pageDisplay call to various page navigation elements
+     * @type type
+     */
+    function inititaliseMlabApp() {
+        
+//this function will loop through the components and initialise them by calling the components' onPageLoad function (if it exists)
+// see https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/
+// http://jsfiddle.net/Palestinian/2SCbL/embedded/result/
+// http://jsfiddle.net/Palestinian/2SCbL/embedded/js/
+// https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/
+// http://api.jquerymobile.com/pagecontainer/#event-load
+// http://demos.jquerymobile.com/1.4.3/navigation/
+        $(document).on("pagecontainerload", function (e, ui) {
+            mlab.api.navigation.prepareComponents(e, ui);
+        })
+        
+        $("#mlab_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
+        $("#mlab_next_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
+      
+    };
+  
+    //Uses on pagecreate to get the page name to display when the page is loaded the first time
+    $( document ).on( "pagecreate", function( event ) {  
+        var pageTitle = window.document.title;
+        $("#mlab_page_name").append(pageTitle);
+    } )
+    
+</script>
+</head>
+<body id="page_body">
+    <div data-role="page" id="page">
+     
+        <div id="header" class="mlab_hide_in_app_builder" data-role="header" data-position="fixed" data-fullscreen="true" data-id="main-header">  
+            <div id="menu_box">
+                <div id="marg_top_menu"></div>
+                <div id="marg_left_menu"></div>
+                <div id="btn_heraldisk"></div> 
+                <div id="btn_menu" class="btn_secondary"></div> 
+                <div id="btn_color_toggle" class="btn_secondary"></div>
+                <div id="btn_txsize" class="btn_secondary"></div>
+                <div id="btn_end" class="btn_secondary"></div>
+            </div>
+        </div>
+      
+        <div id="gradient_top" class="mlab_hide_in_app_builder"></div>  
+
+        <div data-role="content">
+            <div id="content">
+                <div id="mlab_editable_area" class="mlab_editable_area">
+                    <!-- Where the content/components is placed -->
+                </div>
+            </div>
+        </div>
+
+        <div id="gradient_bottom" class="mlab_hide_in_app_builder"></div>
+
+        <div id="footer" class="mlab_hide_in_app_builder" data-role="footer" data-position="fixed" data-fullscreen="true" data-id="main-footer"> 
+            <div id="slider_box" class="slider_box mlab_hide_in_app_builder">
+                <div id="mlab_previous_page" class="mlab_hide_in_app_builder"></div>
+                <div id="mlab_page_name" class="mlab_hide_in_app_builder">Side: </div>
+                <div id="mlab_next_page" class="mlab_hide_in_app_builder"></div>
+            </div>  
+        </div>
+        
+    </div>   
+
+</body>
+</html>

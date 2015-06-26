@@ -2,9 +2,7 @@
 <html>
 <head>
 <title>basic</title>
-<meta charset="UTF-8">
-<!-- To ausre the app shows up correctly on phones -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./css/include.css">
 <link rel="stylesheet" href="./css/jquery-mobile.css">
 <link rel="stylesheet" href="./css/style.css">
@@ -16,8 +14,10 @@
 <script src="./js/include.js"></script>
 <script>
     
-//this variable tracks the current age, may be replaced with jquery mobile code
+//this variable tracks the current page, may be replaced with jquery mobile code
     mlab_rt_current_page = 0;
+    //this variable tracks the current page, may be replaced with jquery mobile code
+    mlab_rt_current_page_text_size = 0;
     /**
      * When document is ready we initialise the load code for the jquery mobile functionality
      * This is done by assigning the mlab.api.navigation.pageDisplay call to various page navigation elements
@@ -36,53 +36,73 @@
             mlab.api.navigation.prepareComponents(e, ui);
         })
         
-        $("#panel_left").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
-        $("#panel_right").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
-  
-        var pageTitle = window.document.title;
-        $("#mlab_page_num").append(pageTitle);
-     
+       //Opens the previous page 
+        $("#mlab_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
+        //Opens the next page 
+        $("#mlab_next_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
+        //Toggles the text and background color
+        $("#mlab_btn_color_toggle").on("click", function () { mlab.api.settings.pageColorToggle("page", "#1e1e1e", "#ffffff", "#ffffff", "#000000"); });
+        //Toggles the text size between 100% and 130%
+        $("#mlab_btn_txsize_toggle").on("click", function () { mlab.api.settings.pageTextSizeToggle("mlab_editable_area"); });
+      
     };
+  
+    //Uses on pagecreate to get the page name to display when the page is loaded the first time
+    $( document ).on( "pagecreate", function( event ) {  
+        var pageTitle = window.document.title;
+        $("#mlab_page_name").append(pageTitle);
+    } )
     
 </script>
 </head>
 <body id="page_body">
     <div data-role="page" id="page">
-     
-        <div id="header" class="mlab_hide_in_app_builder" data-role="header" data-position="fixed" data-fullscreen="true" data-id="main-header">  
-            <div id="menu_box">
-                <div id="marg_top_menu"></div>
-                <div id="marg_left_menu"></div>
-                <div id="btn_heraldisk"></div> 
-                <div id="btn_menu" class="btn_secondary"></div> 
-                <div id="btn_color_toggle" class="btn_secondary"></div>
-                <div id="btn_txsize" class="btn_secondary"></div>
-                <div id="btn_end" class="btn_secondary"></div>
+        
+        <!-- MENU Panel -->
+        <div data-role="panel" id="mlab_menu_panel" data-position="left" data-display="overlay" data-theme="a" class="ui-panel ui-panel-position-left ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open">
+            <div class="ui-panel-inner">
+                <!-- Menu panel content goes here -->
+                <a href="#" data-rel="close"><div id="mlab_btn_close_menu"></div></a>
+                <div id="mlab_menu_heading">Meny</div>
+                <hr id="mlab_hr_panel">
+                <div id="mlab_menu_text"> Her kan man putte inn menyelementer om man vil.... </div>
             </div>
-        </div>
+        </div><!-- /Menu panel -->
+        
+         <!-- SETTINGS Panel -->
+        <div data-role="panel" id="mlab_settings_panel" data-position="right" data-display="overlay" data-theme="b" class="ui-panel ui-panel-position-right ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open">
+            <div class="ui-panel-inner">
+                <!-- Settings panel content goes here -->
+                <div id="mlab_creators">Made by Sinett</div> 
+                <a href="#" data-rel="close"><div id="mlab_btn_close"></div></a>
+                <div id="mlab_settings_heading">Settinger</div>
+                <hr id="mlab_hr_panel">
+                <div id="mlab_btn_color_toggle"></div>
+                <div id="mlab_btn_txsize_toggle"></div> 
+            </div>
+        </div><!-- /Settings panel -->
+        
+        <!-- The HEADER with navigation, menu and settings -->
+        <div data-role="header" id="mlab_header" class="mlab_hide_in_app_builder" data-position="fixed" data-fullscreen="true" data-id="main-header">  
+            <div id="mlab_header_box">
+                <a href="#mlab_menu_panel"><div id="mlab_btn_menu" class="btn_secondary"></div></a>
+                <div id="mlab_previous_page"></div>
+                <div id="mlab_btn_heraldisk"></div> 
+                <div id="mlab_page_name"></div> 
+                <a href="#mlab_settings_panel"><div id="mlab_btn_settings"></div></a>
+                <div id="mlab_next_page"></div>
+            </div>
+        </div><!-- /Header -->
       
-        <div id="gradient_top" class="mlab_hide_in_app_builder"></div>  
-
-        <div data-role="content">
+        <!-- The CONTENT of the page - are filled in via the App builder -->
+        <div data-role="content" id="mlab_content">
             <div id="content">
-
                 <div id="mlab_editable_area" class="mlab_editable_area">
-                   
+                    <!-- Where the content/components is placed -->
                 </div>
             </div>
-        </div>
+        </div><!-- /Content -->
 
-        <div id="gradient_bottom" class="mlab_hide_in_app_builder"></div>
-
-        <div id="footer" class="mlab_hide_in_app_builder" data-role="footer" data-position="fixed" data-fullscreen="true" data-id="main-footer"> 
-            <div id="slider_box" class="slider_box">
-                <div id="panel_left" class="mlab_hide_in_app_builder"></div>
-                <div id="mlab_page_num">Side: </div>
-                <div id="panel_right" class="mlab_hide_in_app_builder"></div>
-            </div>  
-        </div>
-        
     </div>   
-
 </body>
 </html>

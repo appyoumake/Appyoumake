@@ -381,7 +381,6 @@ Mlab_api.prototype = {
             var filename, selector = "";
             var new_location = 0;
             switch (move_to) {
-                case 0:
                 case "index":
                     filename = "index.html";
                     new_location = 0;
@@ -398,7 +397,7 @@ Mlab_api.prototype = {
                     break;
 
                 case "next" :
-                    if (current >= this.max_pages) {
+                    if (current == this.max_pages) {
                         return current;
                     }
                     current++;
@@ -407,7 +406,7 @@ Mlab_api.prototype = {
                     break;
 
                 case "previous" :
-                    if (current == 0 || current == "index") {
+                    if (current == "index") {
                         return current;
                     }
                     if (current == 1) {
@@ -415,9 +414,6 @@ Mlab_api.prototype = {
                         new_location = 0;
                     } else {
                         current--;
-                        if (current < 0) {
-                            current = 0;
-                        }
                         filename = ("000" + current).slice(-3) + ".html";
                         new_location = current;
                     }
@@ -643,51 +639,9 @@ Mlab_api.prototype = {
             return document.mlab_dt_storage[comp][key];
         },
     
-    },
-        /**
-     * Object used for changing settings at runtime
-     */
-    
-    settings: {
-
-        /**
-         * This function toggles the text size of an html element between 100% and 130%
-         * @param {string} elementId The id of the HTML element where the text size will be toggled
-         */
-        pageTextSizeToggle: function (elementId) {
-
-            if ($("#" + elementId).hasClass('mlab_large_text')) {
-                $("#" + elementId).removeClass('mlab_large_text');
-                $("#" + elementId).css("font-size", "100%");
-            } else {
-                $("#" + elementId).addClass('mlab_large_text'); 
-                $("#" + elementId).css("font-size", "130%");
-            }
-        },
-        
-        /**
-        * This function toggles the text and background color of an html element
-         * @param {string} elementId The id of the HTML element where the color of the background and the text will be toggled
-         * @param {string} defaultBackgroundColor The default background color of the HTML element
-         * @param {string} defaultTextColor The default text color of the HTML element
-         * @param {string} toggleBackgroundColor The background color used to toggle with
-         * @param {string} toggleTextColor The text color used to toggle with
-        */
-        pageColorToggle: function (elementId, defaultBackgroundColor, defaultTextColor, toggleBackgroundColor, toggleTextColor) {
-
-            if ($("#" + elementId).hasClass('mlab_color_toggle')) {
-                $("#" + elementId).removeClass('mlab_color_toggle');
-                $("#" + elementId).css("background-color", defaultBackgroundColor);
-                $("#" + elementId).css("color", defaultTextColor);
-            } else {
-                $("#" + elementId).addClass('mlab_color_toggle'); 
-                $("#" + elementId).css("background-color", toggleBackgroundColor);
-                $("#" + elementId).css("color", toggleTextColor);
-            }
-        },
-        
-    },
+    }
 }; // end prototype for Mlab.api
+
 
 
 /* 
