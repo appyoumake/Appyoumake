@@ -34,8 +34,7 @@ made smaler than the min width */
     display: none;
 }
 
-/* Used to hide elements that comes from the template
-   TODO - do we want to do it this way?? */
+/* Used to hide elements that comes from the template */
 .mlab_hide_in_app_builder {
     display: none !important;
 }

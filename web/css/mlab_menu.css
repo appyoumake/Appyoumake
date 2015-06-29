@@ -62,6 +62,14 @@ ul#mlab_menu {
     padding-bottom: 4px;
 }
 
+/* The tab on the elements with a dropdown when menu element is open */
+#mlab_editor #mlab_menu .mlab_show_dropdown_tab_selected,
+#mlab_menu .mlab_show_dropdown_tab_selected {
+    background: #F4F4F4;
+    border-radius: 2px 0px 0px 0px;
+    padding-bottom: 4px;
+}
+
 /* The elements with no dropdown menu */
 #mlab_editor #mlab_menu li.single,
 #mlab_menu li.single,
@@ -158,13 +166,19 @@ ul#mlab_menu {
 #mlab_editor #mlab_menu .dropdown_5columns {width: 700px;}
 #mlab_menu .dropdown_2columns {width: 500px;}
  
-#mlab_editor #mlab_menu li:hover .dropdown_1column, 
+/* #mlab_editor #mlab_menu li:hover .dropdown_1column, 
 #mlab_editor #mlab_menu li:hover .dropdown_2columns, 
 #mlab_editor #mlab_menu li:hover .dropdown_3columns,
 #mlab_editor #mlab_menu li:hover .dropdown_4columns,
 #mlab_editor #mlab_menu li:hover .dropdown_5columns,
 #mlab_menu li:hover .dropdown_2columns {
-    left:-1px; /* Shows the drop down */
+    left:-1px; // Shows the drop down 
+    top:auto;
+}*/
+
+#mlab_editor #mlab_menu .mlab_show_dropdown,
+#mlab_menu .mlab_show_dropdown {
+    left:-1px; // Shows the drop down 
     top:auto;
 }
  
