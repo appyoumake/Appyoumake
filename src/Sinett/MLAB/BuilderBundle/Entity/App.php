@@ -40,7 +40,7 @@ class App
     /**
      * @var float
      */
-    private $version;
+    private $active_version;
 
     /**
      * @var \DateTime
@@ -117,10 +117,14 @@ class App
     private $splash_file;
     
     /**
-     * splash image that is uploaded
+     * Office file to be imported
      */
     private $import_file;
     
+    /**
+     * Unique ID for the app, same as the Java reverse domain
+     */
+    private $uid;
     
     
     /**
@@ -165,6 +169,29 @@ class App
     }
 
     /**
+     * Set uid
+     *
+     * @param string $uid
+     * @return App
+     */
+    public function setUid($uid)
+    {
+        $this->uid = $uid;
+    
+        return $this;
+    }
+
+    /**
+     * Get uid
+     *
+     * @return string 
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
      * Set path
      *
      * @param string $path
@@ -178,6 +205,7 @@ class App
     }
     
     /**
+     * NOW REDUNDANT, BUT KEEP FOR FUTURE REFERENCE/USE
      * generate a sanitised pathname from name of app
      *
      * @param array $replace: search / replace array
@@ -198,7 +226,7 @@ class App
      */
     public function calculateFullPath($start_path)
     {
-        return $start_path . $this->getPath() . "/" . $this->getVersion() . "/" ;
+        return $start_path . $this->getPath() . "/" . $this->getActiveVersion() . "/" ;
     }
     
         
@@ -259,14 +287,14 @@ class App
     }
 
     /**
-     * Set version
+     * Set active_version
      *
      * @param integer $version
      * @return App
      */
-    public function setVersion($version)
+    public function setActiveVersion($active_version)
     {
-        $this->version = $version;
+        $this->active_version = $active_version;
     
         return $this;
     }
@@ -276,9 +304,9 @@ class App
      *
      * @return integer 
      */
-    public function getVersion()
+    public function getActiveVersion()
     {
-        return $this->version;
+        return $this->active_version;
     }
 
     /**
@@ -505,7 +533,7 @@ class App
      */
     public function __toString()
     {
-    	return $this->name . " (" . $this->version . ")";
+    	return $this->name . " (" . $this->active_version . ")";
     }
     
     /**
@@ -579,7 +607,7 @@ class App
     		'path' => $this->path,
     		'description' => $this->description,
     		'keywords' => $this->keywords,
-    		'version' => $this->version,
+    		'version' => $this->active_version,
     		'created' => $this->created,
     		'updated' => $this->updated,
     		'categoryOne' => $this->categoryOne,
@@ -591,7 +619,8 @@ class App
     		'updatedBy' => $this->updatedBy,
     		'groups' => $this->groups,
     		'published' => $this->published,
-    		'enabled' => $this->enabled
+    		'enabled' => $this->enabled,
+            'uid' => $this->uid
     		);
     }
     
@@ -617,7 +646,7 @@ class App
     			'path' => $this->path,
     			'description' => $this->description,
     			'keywords' => $this->keywords,
-    			'version' => $this->version,
+    			'version' => $this->active_version,
     			'created' => $this->created->format('Y-m-d H:i:s'),
     			'updated' => $this->updated->format('Y-m-d H:i:s'),
     			'categoryOne' => !empty($this->categoryOne) ? $this->categoryOne->getName() : "",
@@ -629,7 +658,8 @@ class App
     			'updatedBy' => $this->updatedBy->getUserName(),
     			'groups' => $groups,
     			'published' => $this->published,
-    			'enabled' => $this->enabled
+    			'enabled' => $this->enabled,
+    			'uid' => $this->uid
     	);
     }    
 /**** FILES RELATED TO AN APP ****/

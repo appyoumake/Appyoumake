@@ -39,6 +39,7 @@
 					autoOpen: false,
 				    show: { effect: "blind", duration: 500 },
 				    hide: { effect: "blind", duration: 500 },
+                    close: function(event, ui) { $("#builder_dialog_new_app").html("") },
 				    width: 800,
 				    height: 670,
 				    modal: true,
@@ -56,9 +57,8 @@
 		/**
 		 * Opens up the properties dialog for a given app, uses the predefined URL and replaces the 0 placeholder
 		*/
-		function editAppProperties (id) {
-			var url_temp = url_edit.replace(/0/ , id);
-			console.log(url_temp);
+		function mlab_app_edit (id) {
+            var url_temp = url_edit.replace(/0/ , id);
 			$("#builder_dialog_new_app").load(url_temp).dialog("open");
 		};
         
@@ -66,10 +66,8 @@
 		 * submits data for new app from the dialog box where we collect details of the new app  
 		 */
 		function mlab_app_submit_properties(form) {
-			//var frm = document.getElementById(form.attr('id'));
-			//formData = new FormData(frm);
             formData = new FormData(document.getElementById('mlab_form_app'))
-			//$("#builder_dialog_new_app").dialog("close");
+            
 			$.ajax({
 		        url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
 		        type: 'POST',
@@ -81,13 +79,43 @@
 		        success: function( data ) {
 			    	if (data.result == 'FAILURE') {
 			    		alert(data.message);
+                        $('#form_copyApp').ddslick({
+                            width: 300,
+                            imagePosition: "left",
+                            selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
+                        });
+
+                        $('#form_template').ddslick({
+                            width: 300,
+                            height: 110,
+                            imagePosition: "left",
+                            selectText: "{% trans %}app.select.template{% endtrans %}"
+                        });
+
+
 			    	} else {
 //here we update the list of apps with the new app details
                         $("#builder_dialog_new_app").dialog("close");
                         $(data.html).appendTo("#table_app");
 			    	}
 			  	},
-		        error: function(e) {alert('An error occurred, see log for more information'); console.log(e)}
+		        error: function(e) {
+                    alert('An error occurred, see console log for more information'); 
+                    console.log(e);
+                    $('#form_copyApp').ddslick({
+                        width: 300,
+                        imagePosition: "left",
+                        selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
+                    });
+
+                    $('#form_template').ddslick({
+                        width: 300,
+                        height: 110,
+                        imagePosition: "left",
+                        selectText: "{% trans %}app.select.template{% endtrans %}"
+                    });
+                    
+                }
 		    });
 		}
 		

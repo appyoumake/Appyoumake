@@ -4,7 +4,7 @@
 
 <div id="build_app_properties">
     <ul>
-        {% if mode == 'add' %}
+        {% if mode == 'create' %}
             <li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
             <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.select_base.tab{% endtrans %}</a></li>
         {% endif %}
@@ -14,12 +14,10 @@
       </ul>
       
     {{ form_start(form) }}
-        {% if mode == 'add' %}
+        {% if mode == 'create' %}
             {% form_theme form.template 'SinettMLABBuilderBundle:Form:ddslick_template.html.twig' %}
             {% form_theme form.copyApp 'SinettMLABBuilderBundle:Form:ddslick_copyApp.html.twig' %}
-        {% endif %}
 <!-- output list of templates and apps -->
-        {% if mode == 'add' %}
 
             <div class="mlab_form_tab" id="builder_app_property_tabs-1">
                 <p>{% trans %}builder.new.app.select_base.description{% endtrans %}</p>
@@ -64,10 +62,15 @@
             </div>
             
             <div class="new_line">
-                {{ form_label(form.description, null, {'label': 'builder.new.app.name.descriptionLab'|trans}) }}
-                {{ form_errors(form.description) }}
-                {{ form_widget(form.description) }}
+                {{ form_label(form.version, null, {'label': 'builder.new.app.version.number'|trans}) }}
+                {{ form_errors(form.version) }}
+                {% if mode == 'create' %}
+                    {{ form_widget(form.version, {'disabled': 'disabled'} ) }}
+                {% else %}
+                    {{ form_widget(form.version) }}
+                {% endif %}
             </div>
+            
             
             <div class="new_line">
                 {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
@@ -121,12 +124,18 @@
 
             <p>{% trans %}builder.new.app.classification.description{% endtrans %}</p>
             
+            <div class="new_line">
+                {{ form_label(form.description, null, {'label': 'builder.new.app.name.descriptionLab'|trans}) }}
+                {{ form_errors(form.description) }}
+                {{ form_widget(form.description) }}
+            </div>
+
             <div>
                 {{ form_label(form.keywords, null, {'label': 'builder.new.app.classification.keywords'|trans}) }}
                 {{ form_errors(form.keywords) }}
                 {{ form_widget(form.keywords) }}
             </div>
-            
+
             <div class="">
                 {{ form_label(form.categoryOne, null, {'label': 'builder.new.app.classification.categoryOne'|trans}) }}
                 {{ form_errors(form.categoryOne) }}
@@ -165,6 +174,10 @@
     
 //run various jQuery plugins which enhances the user interaction when dialog box is filled in
     $(document).ready(function () {
+        
+//store mode as indicated by PHP variables. if in edit mode we do not display (or check for)
+//what they want to base the app on
+        mlab_edit_mode = "{{mode}}";
         
 //this variable stores the icon functionality
         createIcon = new iconFunctions();
@@ -390,14 +403,20 @@
     function mlab_app_new_move(direction) {
         var caption_next = "{% trans %}app.wizard.button.next{% endtrans %}";
         var caption_finished = "{% trans %}app.wizard.button.finished{% endtrans %}";
-        var curr_tab = $('#build_app_properties').tabs('option', 'active');
+        var curr_tab = eval_tab = $('#build_app_properties').tabs('option', 'active');
         var tot_tabs = $('#build_app_properties >ul >li').size();
+        
+//if in update mode we hide first two tabs, hence these numbers are a bit different
+        if (mlab_edit_mode == 'update') {
+            eval_tab = eval_tab + 2;
+        } 
+            
  
 //going forward: verify data, if ok: display previous button, change title of next button if on last page 
         if (direction > 0) {
             var msg = '';
             
-            switch(curr_tab) {
+            switch(eval_tab) {
                 case 0:
                     var sel_val = "";
                     var selected = $("input[type='radio'][name='select_base']:checked");
@@ -452,10 +471,12 @@
                     if ($('#form_name').val().trim() == "") {
                         msg = msg + "{% trans %}You must enter a name for this app{% endtrans %}\n";
                     }
-
-                    if ($('#form_description').val().trim() == "") {
-                        msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
-                    }  
+                    
+                    if (mlab_edit_mode == 'update') {
+                        if ($('#form_version').val().trim() == "" || isNaN(parseFloat($('#form_version').val())) || parseFloat($('#form_version').val()) < 1 ) {
+                            msg = msg + "{% trans %}You must enter a version number that is 1 or higher.{% endtrans %}\n";
+                        }
+                    }
 
                     if (icon_created) {
                         $("#form_iconFile").val(document.getElementById("app_icon_designer").toDataURL());
@@ -474,6 +495,11 @@
                     break;
 
                 case 3:
+                    if ($('#form_description').val().trim() == "") {
+                        msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
+                    }  
+
+
                     if ($('#form_keywords').val().trim() == "") {
                         msg = msg + "{% trans %}You must enter one or more keywords for this app{% endtrans %}\n";
                     }

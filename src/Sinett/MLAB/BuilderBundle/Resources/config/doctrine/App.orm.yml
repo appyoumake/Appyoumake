@@ -9,8 +9,8 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       columns: [ name ]
     path_index:
       columns: [ path ]
-    version_index:
-      columns: [ version ]
+    active_version_index:
+      columns: [ active_version ]
     created_index:
       columns: [ created ]
     updated_index:
@@ -29,6 +29,8 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       columns: [ user_id ]
     enabled_index:
       columns: [ enabled ]
+    uid_index:
+      columns: [ uid ]
 
   id:
     id: 
@@ -57,9 +59,8 @@ Sinett\MLAB\BuilderBundle\Entity\App:
           type: text
           nullable: true
 
-      version:
-          type: float
-          unsigned: false
+      active_version:
+          type: integer
           nullable: true
           options:
             default: 1
@@ -87,6 +88,10 @@ Sinett\MLAB\BuilderBundle\Entity\App:
         gedmo:
           timestampable:
             on: update
+            
+      uid:
+          type: text
+          nullable: false
 
 #      templateId:
 #        type: integer
@@ -139,7 +144,7 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       joinColumn:
         name: updatedby_id
         referencedColumnName: id
-          
+        
   manyToMany:
     groups:
       targetEntity: Group
@@ -152,5 +157,11 @@ Sinett\MLAB\BuilderBundle\Entity\App:
         inverseJoinColumns:
           group_id:
             referencedColumnName: id
+    
+# link to versions for this app
+  oneToMany:
+    appVersion:
+      targetEntity: AppVersion
+      mappedBy: app
     
   lifecycleCallbacks: {  }

@@ -236,8 +236,7 @@ class FileManagement {
 	}
 	
 	/**
-	 * Function called to create a new app, first calls cordova to generate structure, then copiues across relevant template files
-	 * Default platform is usually android, but could be iOS if run on mac for instance...
+	 * Function called to create a new app, copies across relevant template files 
 	 */
 	public function createAppFromTemplate ($template, $app) {
 		
@@ -561,43 +560,6 @@ class FileManagement {
         return $res;
     }
  
-/**
- * Calls on cordova to build the app and then returns the URL of the app
- * @param type $app
- * @return boolean
- */
-	public function buildApp ($app) {
-		
-//prepare all the paths to use
-		$default_platform = $this->config["cordova"]["default_platform"];
-		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
-        $compiled_app_location = $this->config["cordova"][$default_platform]["compiled_app_location"];
-		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
-		
-//prepare the command
-        $cordova_build_command = $this->config["cordova"]["cmds"]["compile"];
-		
-		$output = array();
-		$exit_code = 0;
-		
-		if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
-			return array("Could not set path for Cordova");
-		}
-		
-		// May need to download and then run for a while, so set time limit
-		set_time_limit(300);
-        chdir($app_path);
-        exec($cordova_build_command . " 2>&1", $output, $exit_code);
-		
-//check exit code, anything except 0 = fail
-        $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
-        $url = $this->config["urls"]["app"] . $app->calculateFullPath("") . $compiled_app_location . $app->getPath() . "-release.apk";
-        if ($exit_code != 0) {
-            return array("result" => "error", "url" => $url, "message" => "Exit code: " . $exit_code . " (" . implode(", ", $output));
-        } else {
-            return array("result" => "success", "url" => $url);
-        }
-	}
     
     /**
      * Adds a "feature", that is, a hidden component that adds features to an app that are not a visual component
@@ -662,91 +624,7 @@ class FileManagement {
         return $doc->saveHTMLFile($filename);
     }
     
-    /**
-     * This function will read an XML file (typically /www/config.xml or /platforms/android/AndroidManifest.xml)
-     * and return a requested value, either as a string or an array
-     * @param type $filename
-     * @param type string $tag
-     * @param type string $attribute
-     * @param type string $value
-     * http://stackoverflow.com/questions/1193528/how-to-modify-xml-file-using-php
-     * http://stackoverflow.com/questions/15156464/i-want-to-modify-the-existing-data-in-xml-file-using-php
-     * http://stackoverflow.com/questions/10909372/checking-if-an-object-attribute-is-set-simplexml
-     * http://stackoverflow.com/questions/17661167/how-to-replace-xml-node-with-simplexmlelement-php
-     * http://www.php.net/manual/en/book.simplexml.php
-     */
-    public function readCordovaConfiguration($filename, $tag, $attribute = NULL) {
-        if (!file_exists($filename)) {
-            return "File not found: $filename";
-        }
-        if (empty($tag)) {
-            return "No tag specified";
-        }
-        
-        $query = "//*[local-name() = '$tag']";
-        $xml = simplexml_load_file($filename);
-        
-        $res = $xml->xpath($query);
 
-        if ($attribute != NULL) {
-            return (string)$res[0][$attribute];
-        } else {
-            return $res;
-        }
-    }
-    
-    
-    /**
-     * This function will update an XML file (typically /www/config.xml or /platforms/android/AndroidManifest.xml)
-     * with values that either replace existing ones or add to new ones 
-     * @param type $filename
-     * @param type string update: can be attribute or content, this is what will be added or replaced in the XML code
-     * @param type string $tag
-     * @param type string $attribute
-     * @param type string $value
-     * http://stackoverflow.com/questions/1193528/how-to-modify-xml-file-using-php
-     * http://stackoverflow.com/questions/15156464/i-want-to-modify-the-existing-data-in-xml-file-using-php
-     * http://stackoverflow.com/questions/10909372/checking-if-an-object-attribute-is-set-simplexml
-     * http://stackoverflow.com/questions/17661167/how-to-replace-xml-node-with-simplexmlelement-php
-     * http://www.php.net/manual/en/book.simplexml.php
-     */
-    public function updateCordovaConfiguration($filename, $update, $tag, $attribute, $existing_attribute_value, $update_value) {
-        if (!file_exists($filename)) {
-            return "File not found: $filename";
-        }
-        if (empty($tag)) {
-            return "No tag specified";
-        }
-
-        if (empty($attribute) || empty($existing_attribute_value)) {
-            $query = "//*[local-name() = '$tag']";
-        } else {
-            $query = "//*[local-name() = '$tag'][@$attribute = '$existing_attribute_value']";
-        }
-        $xml = simplexml_load_file($filename);
-
-        
-        $res = $xml->xpath($query);
-        if (sizeof($res) > 1) {
-            return "Found more than one configuration setting matching criteria, cannot continue";
-        }
-           
-        if (sizeof($res) == 0) {
-            $res[0] = $xml->addChild($update_value);
-        }
-        if ($update == "attribute") {
-            $res[0][$attribute] = $update_value;
-        } elseif ($update == "content") {
-            $xml->{$tag} = $update_value;
-        }
- 
-        if (!$xml->asXML($filename)) {
-            return "Unable to update the configuration for this application";
-        }
-        
-        return true;
-    }
-    
     /**
      * get number of pages in app, this is typically used to update javascript variables in mlab_parameters.js
      * @param type $app
@@ -813,6 +691,11 @@ class FileManagement {
         
     }
     
+/**
+ * Removes the temporay files from a template or component upload
+ * @param type $entity: the component or template doctribe entity
+ * @param type $type: template or component
+ */
     public function removeTempCompFiles($entity, $type) {
         $path = $this->config["paths"][$type] . $entity->getPath();
         $this->func_rmdir($path);
@@ -872,6 +755,29 @@ class FileManagement {
         }
         
         return $backgrounds;
+    }
+    
+    public static function GUID_v4() {
+        return sprintf('%04x%04xX%04xX%04xX%04xX%04x%04x%04x',
+
+          // 32 bits for "time_low"
+          mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+
+          // 16 bits for "time_mid"
+          mt_rand(0, 0xffff),
+
+          // 16 bits for "time_hi_and_version",
+          // four most significant bits holds version number 4
+          mt_rand(0, 0x0fff) | 0x4000,
+
+          // 16 bits, 8 bits for "clk_seq_hi_res",
+          // 8 bits for "clk_seq_low",
+          // two most significant bits holds zero and one for variant DCE1.1
+          mt_rand(0, 0x3fff) | 0x8000,
+
+          // 48 bits for "node"
+          mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
     }
  
 //functions that replicate linux commands

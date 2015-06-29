@@ -38,6 +38,46 @@ class AppController extends Controller
         ));
     }
     
+    
+    /**
+     * Displays a form to create a new App entity.
+     *
+     */
+    public function newAction() {
+    	$em = $this->getDoctrine()->getManager();
+    	$entity = new App();
+        $entity->setVersion(1); 
+    	$file_mgmt = $this->get('file_management');
+        
+        $backgrounds = $file_mgmt->getBackgrounds();
+        $foregrounds = $file_mgmt->getForegrounds();
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
+        $url_apps = $this->container->parameters['mlab']['urls']['app'];
+    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
+    	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
+    	
+        $form = $this->createAppForm($entity, 'create');
+        
+        return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
+            'entity' => $entity,
+            'apps' => $apps,
+            'templates' => $templates,
+            'form' => $form->createView(),
+            'mode' => 'create',
+            'url_templates' => $url_templates,
+            'url_apps' => $url_apps,
+            'app_icon_path' => $app_icon_path,
+            'backgrounds' => $backgrounds,
+            'foregrounds' => $foregrounds,
+            'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
+            'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
+            'icon_default' => $this->container->parameters['mlab']['compiler_service']['default_icon'],
+        ));
+        
+    }
+
+    
     /**
      * Creates a new App entity.
      * It receives relevant data from a regular SYmfony form, then it will (if data is valid):
@@ -53,49 +93,62 @@ class AppController extends Controller
     public function createAction(Request $request)
     {
     	$entity = new App();
-        $form = $this->createAppForm($entity);
+        $form = $this->createAppForm($entity, 'create');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-        	
 //store values in array for easy access
             $temp_app_data = $request->request->all();
         	$app_data = $temp_app_data["form"];
             
 //get config values
         	$config = $this->container->parameters['mlab'];
+
 //prepare doctrine manager
         	$em = $this->getDoctrine()->getManager();
         	 
-//generate the path name and get full path
-        	$entity->generatePath($config["replace_in_filenames"]);
-        	$entity->setVersion(1);
-        	$usr= $this->get('security.context')->getToken()->getUser();
-        	$entity->setUser($usr);
-        	$entity->setUpdatedBy($usr);
-        	foreach ($usr->getGroups() as $group) {
-        		$entity->addGroup($group);
-        	}
-
-        	$app_destination = $entity->calculateFullPath($config["paths"]["app"]);
-        	
-//check if this already exists, first check name in DB then file path
-			if (file_exists($app_destination)) { 
-				return new JsonResponse(array(
-	        		'action' => 'ADD',
-	        		'result' => 'FAILURE',
-	        		'message' => 'App already exists, chose a different name'));
-			} else if ($em->getRepository('SinettMLABBuilderBundle:App')->findOneByName($entity->getName())) {
+//check if they already use this name, if so, quit
+            $exists = $em
+               ->getRepository('Sinett\MLAB\BuilderBundle\Entity\App')
+               ->createQueryBuilder('a')
+               ->where('upper(a.name) = upper(:name)')
+               ->setParameter('name', $entity->getName())
+               ->getQuery()
+               ->execute();
+            
+            if ($exists) {
 				return new JsonResponse(array(
 						'action' => 'ADD',
 						'result' => 'FAILURE',
 						'message' => 'App name already exists, chose a different name'));
         	}
-
+        	
 //prepare file management service
 		    $file_mgmt = $this->get('file_management');
 		    $file_mgmt->setConfig('app');
 		    
+//generate the path name and get full path
+            $guid = $file_mgmt->GUID_v4();
+        	$entity->setPath($guid);
+            $entity->setVersion(1);
+        	$app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+            
+//check if GUID is already used for a folder, if so re-generate it
+			while (file_exists($app_destination)) { 
+                $guid = $file_mgmt->GUID_v4();
+                $entity->setPath($guid);
+                $app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+            }
+            
+            $entity->setUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+        	$usr = $this->get('security.context')->getToken()->getUser();
+        	$entity->setUser($usr);
+        	$entity->setUpdatedBy($usr);
+        	
+            foreach ($usr->getGroups() as $group) {
+        		$entity->addGroup($group);
+        	}
+
 //do they want to copy an existing app?
             switch ($temp_app_data["select_base"]) {
                case "existing_app":
@@ -198,7 +251,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             }
             
 //update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
-            $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_uid_metatag_placeholder"], $config["compiler_service"]["app_creator_identifier"] . $entity->getPath());
+            $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_uid_metatag_placeholder"], $entity->getUid());
                         
 //finally we save the database record
         	$em->persist($entity);
@@ -241,16 +294,23 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         return $form;
     }
 
-    public function createAppForm($entity) {
+    public function createAppForm($entity, $mode) {
+        if ($mode == 'create'){
+            $action = $this->generateUrl('app_create');
+        } else {
+            $action = $this->generateUrl('app_update', array('id' => $entity->getId()));
+        }
+        
         $em = $this->getDoctrine()->getManager();
     	return $this->createFormBuilder($entity, array('attr' => array('id' => 'mlab_form_app')))
-				    	->setAction($this->generateUrl("app_create"))
+				    	->setAction($action)
 				    	->setMethod('POST')
 				    	->add('name', null, array('required' => true))
 				    	->add('description', null, array('required' => true))
 				    	->add('splashFile', 'file', array('required' => false))
                         ->add('importFile', 'file', array('required' => false))
                         ->add('iconFile', 'hidden', array('required' => false))
+                        ->add('uid', 'hidden', array('required' => false))
                         ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
 				    	->add('keywords', null, array('required' => true))
                         ->add('categoryOne', 
@@ -286,46 +346,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                       'empty_value'  => '')
                              )                
 				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
-				    	->add('version', "hidden")
+				    	->add('version')
 				    	->add("copy_app", "hidden", array("mapped" => false))
 				    	->add('save', 'submit')
 				    	->getForm();
-    }
-    /**
-     * Displays a form to create a new App entity.
-     *
-     */
-    public function newAction() {
-    	$em = $this->getDoctrine()->getManager();
-    	$entity = new App();
-        $file_mgmt = $this->get('file_management');
-    	
-        $backgrounds = $file_mgmt->getBackgrounds();
-        $foregrounds = $file_mgmt->getForegrounds();
-        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
-        $url_apps = $this->container->parameters['mlab']['urls']['app'];
-    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
-    	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
-    	
-        $form = $this->createAppForm($entity);
-        
-        return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
-            'entity' => $entity,
-            'apps' => $apps,
-            'templates' => $templates,
-            'form' => $form->createView(),
-            'mode' => 'add',
-            'url_templates' => $url_templates,
-            'url_apps' => $url_apps,
-            'app_icon_path' => $app_icon_path,
-            'backgrounds' => $backgrounds,
-            'foregrounds' => $foregrounds,
-            'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
-            'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
-            'icon_default' => $this->container->parameters['mlab']['compiler_service']['default_icon'],
-        ));
-        
     }
 
     /**
@@ -356,64 +380,39 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-
+        $file_mgmt = $this->get('file_management');
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find App entity.');
         }
 
+        $backgrounds = $file_mgmt->getBackgrounds();
+        $foregrounds = $file_mgmt->getForegrounds();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-        $templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
+        $url_apps = $this->container->parameters['mlab']['urls']['app'];
+    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
+    	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
         
-        $editForm = $this->createFormBuilder($entity)
-								        ->setAction($this->generateUrl('app_update', array('id' => $entity->getId())))
-								        ->setMethod('POST')
-                                        ->add('name', null, array('required' => true))
-                                        ->add('description', null, array('required' => true))
-                                        ->add('splashFile', 'file', array("mapped" => false, 'required' => false))
-                                        ->add('iconFile', 'hidden', array("mapped" => false, 'required' => false))
-                                        ->add('importFile', 'file', array("mapped" => false, 'required' => false))
-                                        ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
-                                        ->add('keywords', null, array('required' => true))
-                                        ->add('categoryOne', 
-                                                null, 
-                                                array('query_builder' => function(EntityRepository $er) {
-                                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
-                                                    },'label' => 'app.admin.users.new.or.edit.categoryOne',
-                                                      'attr' => array('onchange' => 'loadCategories(this, 1);'),
-                                                      'required' => true,
-                                                      'empty_data'  => null,
-                                                      'empty_value'  => '')
-                                             )
-                                        ->add('categoryTwo', 
-                                                null, 
-                                                array('choices' => array(),
-                                                      'label' => 'app.admin.users.new.or.edit.categoryTwo',
-                                                      'attr' => array('onchange' => 'loadCategories(this, 2);'),
-                                                      'required' => true,
-                                                      'empty_data'  => null,
-                                                      'empty_value'  => '')
-                                             )
-                                        ->add('categoryThree', 
-                                                null, 
-                                                array('choices' => array(), 
-                                                      'label' => 'app.admin.users.new.or.edit.categoryThree',
-                                                      'required' => true,
-                                                      'empty_data'  => null,
-                                                      'empty_value'  => '')
-                                             )                
-
-								        ->add('save', 'submit', array('label' => 'Update'))
-								        ->getForm();
+        $editForm = $this->createAppForm($entity, 'update');
         
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
-        		'entity' => $entity,
-        		'apps' => $apps,
-        		'templates' => $templates,
-        		'form' => $editForm->createView(),
-        		'mode' => 'edit'
+            'entity' => $entity,
+            'apps' => $apps,
+            'templates' => $templates,
+            'form' => $editForm->createView(),
+            'mode' => 'update',
+            'url_templates' => $url_templates,
+            'url_apps' => $url_apps,
+            'app_icon_path' => $app_icon_path,
+            'backgrounds' => $backgrounds,
+            'foregrounds' => $foregrounds,
+            'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
+            'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
+            'icon_default' => $this->container->parameters['mlab']['compiler_service']['default_icon'],
         ));
+        
     }
 
     /**
@@ -439,21 +438,105 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * Edits an existing App entity.
      *
      */
-    public function updateAction(Request $request, $id)
-    {
+    public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+        $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find App entity.');
         }
-
         
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createAppForm($entity, 'update');
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+
+//get config values
+        	$config = $this->container->parameters['mlab'];
+            
+//prepare file management service
+		    $file_mgmt = $this->get('file_management');
+		    $file_mgmt->setConfig('app');
+        	 
+//store old name and version, if these are changed we will need to rename folders, etc
+            $old_version = $old_entity["version"];
+            $old_path = $old_entity["path"];
+        	$entity->generatePath($config["replace_in_filenames"]);
+            $app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+            
+            $new_path = $entity->getPath();
+            $new_version = $entity->getVersion();
+            $changed_name = $old_path != $new_path;
+            $changed_version = $old_version != $new_version;
+            
+//if name is changed we need to see if this app already exists WITH the same version number as before
+            if ($changed_name || $changed_version) { 
+                if (file_exists($app_destination)) {
+                    return new JsonResponse(array(
+                        'action' => 'ADD',
+                        'result' => 'FAILURE',
+                        'message' => 'An app with the name and version number specified already exists, chose a different name and/or version'));
+                } else if ($em->getRepository('SinettMLABBuilderBundle:App')->findOneByName($entity->getName())) {
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => 'An app with the name and version number specified already exists, chose a different name and/or version'));
+                }
+                
+//todo move app
+//
+//update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
+                $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_creator_identifier"] . $old_path, $config["compiler_service"]["app_creator_identifier"] . $new_path);
+            }
+            
+        	$usr = $this->get('security.context')->getToken()->getUser();
+        	$entity->setUpdatedBy($usr);
+            $entity->setUid($config["compiler_service"]["app_creator_identifier"] . "." . $entity->getPath());
+		    
+//now we store the splash file and the icon file (if created)
+            if (null != $entity->getSplashFile() && $entity->getSplashFile()->isValid()) {
+                $splash_filename = $config["filenames"]["app_splash_screen"] . "." . $entity->getSplashFile()->getClientOriginalExtension();
+                if (!move_uploaded_file($entity->getSplashFile()->getPathname(), "$app_destination/$splash_filename")) {
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => 'Unable to store splash screen for app'));
+                }
+            }
+            
+//store icon creatd or use default icon
+            if (null != $entity->getIconFile()) {
+                $encoded_image = str_replace(' ', '+', $entity->getIconFile());
+            } else {
+                $encoded_image = str_replace(' ', '+', $config["compiler_service"]["default_icon"]);
+            }
+            $encoded_image = str_replace("data:image/png;base64,", "", $encoded_image);
+            $png_image = base64_decode($encoded_image);
+
+//this will fail both if file = 0 bytes and if it fails to write file.
+            if (!file_put_contents("$app_destination/" . $config["filenames"]["app_icon"], $png_image)) {
+                return new JsonResponse(array(
+                        'action' => 'ADD',
+                        'result' => 'FAILURE',
+                        'message' => 'Unable to store icon for app'));
+            }
+            
+                        
+//finally we save the database record            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             $em->flush();
             
             return new JsonResponse(array('db_table' => 'app',
@@ -580,8 +663,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
         $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
-        $mlab_app_data["uid"] = $file_mgmt->readCordovaConfiguration($config_path, $this->container->parameters['mlab']["compiler_service"]["config_uid_tag"], $this->container->parameters['mlab']["compiler_service"]["config_uid_attribute"]);
-            
 
 //get checksum for app, excluding the file we just opened
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
@@ -610,7 +691,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
-                                        "app_download" => $this->generateUrl('app_builder_app_download',  array('app_id' => '_ID_')),
                     
                                         "mkt_get_tagged_users" => $this->generateUrl('mkt_get_tagged_users', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'tag' => '_TAG_')), 
                                         "mkt_submit_app_details" => $this->generateUrl('mkt_submit_app_details', array('window_uid' => '_WINDOW_UID_', 'app_details' => '_APP_DETAILS_')), 
@@ -1023,9 +1103,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
         $path_app_js = $path_app . "js/";
-/*TODO        $target_platform = $this->container->parameters['mlab']['cordova']['default_platform'];
-        $path_app_permissions = $path_app . $this->container->parameters['mlab']['cordova'][$target_platform]["permissions_location"];
-*/
+        $path_app_permissions = $path_app . $this->container->parameters['mlab']['filenames']["permissions"];
         
 //check if path to component and app exists
             if ( is_dir($path_component) && is_dir($path_app) ) {
@@ -1050,7 +1128,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
                 }
 
-//2: Add rights to the manifest file
+//2: Add permissions to the local permissions file. We store these as Android permissions, the compiler service will translate these later for iOS.
                 if (file_exists($path_component . "conf.yml")) {
                     $yaml = new Parser();
 					$config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
@@ -1059,31 +1137,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                         $new_permissions = $config["permissions"];
 
                         if (!file_exists( $path_app_permissions)) {
-                            file_put_contents($path_app_permissions, "");
+                            file_put_contents($path_app_permissions, implode("\n", $add_permissions));
+                        } else {
+                            file_put_contents($path_app_permissions, implode("\n", array_unique(array_merge($new_permissions, file($path_app_permissions)))));;
                         }
-                        $xml = simplexml_load_file($path_app_permissions);
-
-                        $existing_permissions = array();
-                        foreach($xml->{'uses-permission'} as $permission) {
-                            $existing_permissions[] = (string) $permission->attributes('http://schemas.android.com/apk/res/android');
-                        }
-
-                        $add_permissions = array_diff($new_permissions, $existing_permissions);
-
-//only add permissions if it is not already there
-                        if (count($add_permissions) > 0) {
-                            foreach ($add_permissions as $add_permission) {
-                                $perm = $xml->addChild('uses-permission');
-                                $perm->addAttribute("android:name", $add_permission, 'http://schemas.android.com/apk/res/android');
-                            }
-
-                            if (!$xml->asXML($path_app_permissions)) {
-                                return new JsonResponse(array(
-                                    'result' => 'failure',
-                                    'msg' => "Unable to update the permissions for this application"));
-                            }
-                        }
-                        
                     }
                     
 //2.5: copy across any runtime dependencies, can be JS or CSS
@@ -1256,33 +1313,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
     }
-    
-/**
- * Wrapper for Cordova build function
- * @param type $app_id
- */
-    public function downloadAppAction($app_id) {
-    	if ($app_id > 0) {
-	    	$em = $this->getDoctrine()->getManager();
-    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-    	} else {
-    		return new JsonResponse(array(
-    			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
-    		
-    	}
-        
-//prepare file management service
-        $file_mgmt = $this->get('file_management');
-        $file_mgmt->setConfig('app');
-        $res = $file_mgmt->buildApp($app);
 
-        return new JsonResponse(array(
-    			'result' => $res["result"],
-    			'msg' => $res["message"],
-                'url' => $res["url"]));
-    		
-    }
     
     public function getUploadedFilesAction($app_id, $file_types) {
         if ($app_id > 0) {
