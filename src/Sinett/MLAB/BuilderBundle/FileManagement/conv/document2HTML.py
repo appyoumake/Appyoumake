@@ -17,7 +17,8 @@ from io import StringIO
 
 # make sure bs4 version is 4.0.2
 bs4 = sys.modules['bs4'] 
-if bs4.__version__ != '4.0.2': 
+
+if bs4.__version__ < '4.0.2': 
     sys.stderr.write("This script requires bs4 version 4.0.2\n")
     exit(1)
 #------------------------------------------------------------------------------

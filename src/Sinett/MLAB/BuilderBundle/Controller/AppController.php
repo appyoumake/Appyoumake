@@ -126,12 +126,12 @@ class AppController extends Controller
         
         	case "office_file":
                 $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-                    if ($result !== true) {
-                        return new JsonResponse(array(
-                                'action' => 'ADD',
-                                'result' => 'FAILURE',
-                                'message' => 'Unable to create app'));
-                    }
+                if ($result !== true) {
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => 'Unable to create app'));
+                }
                 if (null === $entity->getImportFile() || !$entity->getImportFile()->isValid()) {
                    return new JsonResponse(array(
                                 'action' => 'ADD',
@@ -149,9 +149,11 @@ class AppController extends Controller
 python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
 I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
 */
-                exec("$python_path $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o $app_destination");
-                injectHtml("$app_destination/index.html", "mlab_editable_area", file_get_contents("$app_destination/000.html"));
-
+                //$cmd = "$py_pth $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o $app_destination";
+                $cmd = "cp /home/utvikler/tmp/converted/*.html $app_destination";
+                $cmd_res = passthru($cmd);
+                $file_mgmt->injectHtml("$app_destination/index.html", "mlab_editable_area", file_get_contents("$app_destination/000.html"));
+                
 // after we have copied across the template and then converted the document file
 // we need to insert the content of 000.html in index.html.
                 break;
@@ -170,6 +172,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         			'action' => 'ADD',
         			'result' => 'SUCCESS',
         			'mlab_app_page_num' => 1,
+                    'temmp' => $cmd_res,
         			'mlab_app_id' => $entity->getId(),
         			'mlab_app_version' => $entity->getVersion(),
         			'mlab_app' => $entity->getArrayFlat($config["paths"]["template"]),

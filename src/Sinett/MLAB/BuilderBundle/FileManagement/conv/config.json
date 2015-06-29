@@ -29,6 +29,6 @@
         "strip_image_borders" : true
     }, 
     "paths": {
-        "unoconv": "./"
+        "unoconv": "/home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv"
     }
 }
