@@ -466,7 +466,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         return new JsonResponse(array('db_table' => 'app',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => 'Unable to create new record'));
+        		'message' => 'Unable to update app'));
             
     }
     

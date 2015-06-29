@@ -52,30 +52,6 @@ Mlab_dt_management.prototype = {
         });
     },
 
-    app_update_metadata : function (el) {
-        $(el).next().slideUp();
-        switch ($(el).attr("id")) {
-            case "mlab_edit_app_title" :
-                break;
-
-            case "mlab_edit_app_description" :
-                break;
-
-            case "mlab_edit_app_keywords" :
-                break;
-
-            case "mlab_edit_app_category1" :
-                break;
-
-            case "mlab_edit_app_category2" :
-                break;
-
-            case "mlab_edit_app_category3" :
-                break;
-
-        }
-
-    },
 
 /*
  * Calls a function on the backend that returns a URL to the file to download.
