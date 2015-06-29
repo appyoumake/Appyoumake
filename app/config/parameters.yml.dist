@@ -61,7 +61,7 @@ parameters:
             config_uid_tag: widget
             config_uid_attribute: id
             app_creator_identifier: no.ffi.sinett
-            app_uid_metatag_placeholder: %%APP_UID%% 
+            app_uid_metatag_placeholder: %%%%APP_UID%%%%
 
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    
