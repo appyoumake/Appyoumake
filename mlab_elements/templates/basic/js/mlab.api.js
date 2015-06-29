@@ -378,7 +378,6 @@ Mlab_api.prototype = {
  * @returns {undefined}
  */
         pageDisplay: function (current, move_to) {
-            debugger;
             var filename, selector = "";
             var new_location = 0;
             switch (move_to) {

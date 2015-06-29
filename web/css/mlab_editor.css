@@ -56,9 +56,9 @@ made smaler than the min width */
     display: block;
     float: left;
     width: 145px;
-    line-height: 0px;
     padding-top: 55px;
     overflow-y: auto;
+    height: 75%;
 } 
 
 #mlab_editor #mlab_toolbar_components .mlab_button_components {
@@ -118,6 +118,11 @@ made smaler than the min width */
     float: left;
     width: 20px;
     margin-top: 1px;
+}
+
+#mlab_editor #mlab_page_control .mlab_dt_button_ok_left,
+#mlab_editor #mlab_page_control .mlab_dt_button_cancel_left {
+    float: left;
 }
 
 /* The page management */
