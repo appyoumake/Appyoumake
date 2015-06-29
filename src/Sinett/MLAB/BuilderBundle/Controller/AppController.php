@@ -97,82 +97,116 @@ class AppController extends Controller
 		    $file_mgmt->setConfig('app');
 		    
 //do they want to copy an existing app?
-	   switch ($temp_app_data["select_base"]) {
-          case "existing_app":
-		    	$orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
-		    	$result = false;
-		    	if ($orig_app) {
-		    		$result = $file_mgmt->copyDirectory($app_data["copyApp"], $app_destination);
-		    	} 
-		    	
-		    	if ($result == false) {
-		    		return new JsonResponse(array(
-		    				'action' => 'ADD',
-		    				'result' => 'FAILURE',
-		    				'message' => 'Unable to copy app files'));
-		    	} 
-        		break;
+            switch ($temp_app_data["select_base"]) {
+               case "existing_app":
+                     $orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
+                     $result = false;
+                     if ($orig_app) {
+                         $result = $file_mgmt->copyDirectory($app_data["copyApp"], $app_destination);
+                     } 
+
+                     if ($result == false) {
+                         return new JsonResponse(array(
+                                 'action' => 'ADD',
+                                 'result' => 'FAILURE',
+                                 'message' => 'Unable to copy app files'));
+                     } 
+                     break;
         
 //otherwise we use the template they specified 
-        	case "template":
-        		$result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-        		if ($result !== true) {
-        			return new JsonResponse(array(
-        					'action' => 'ADD',
-        					'result' => 'FAILURE',
-        					'message' => 'Unable to create app'));
-        		}
-                break;
-        
-        	case "office_file":
-                $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-                if ($result !== true) {
-                    return new JsonResponse(array(
-                            'action' => 'ADD',
-                            'result' => 'FAILURE',
-                            'message' => 'Unable to create app'));
-                }
-                if (null === $entity->getImportFile() || !$entity->getImportFile()->isValid()) {
-                   return new JsonResponse(array(
+                case "template":
+                    $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+                    if ($result !== true) {
+                        return new JsonResponse(array(
                                 'action' => 'ADD',
                                 'result' => 'FAILURE',
-                                'message' => 'Invalid file uploaded'));
-                }
+                                'message' => 'Unable to create app from template'));
+                    }
+                    break;
 
-                $py_pth = $config["convert"]["python_bin"];
-                $cv_bin = $config["convert"]["converter_bin"];
-                $cv_conf = $config["convert"]["config"];
-                $cv_pth = $config["convert"]["converter_path"];
-                $file_name = $entity->getImportFile()->getPathname();
+                case "office_file":
+                    $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+                    if ($result !== true) {
+                        return new JsonResponse(array(
+                                'action' => 'ADD',
+                                'result' => 'FAILURE',
+                                'message' => 'Unable to create app from template'));
+                    }
+                    if (null === $entity->getImportFile() || !$entity->getImportFile()->isValid()) {
+                       return new JsonResponse(array(
+                                    'action' => 'ADD',
+                                    'result' => 'FAILURE',
+                                    'message' => 'Invalid file uploaded'));
+                    }
+
+                    $py_pth = $config["convert"]["python_bin"];
+                    $cv_bin = $config["convert"]["converter_bin"];
+                    $cv_conf = $config["convert"]["config"];
+                    $cv_pth = $config["convert"]["converter_path"];
+                    $file_name = $entity->getImportFile()->getPathname();
 
 /*
 python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
 I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
-*/
-                //$cmd = "$py_pth $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o $app_destination";
-                $cmd = "cp /home/utvikler/tmp/converted/*.html $app_destination";
-                $cmd_res = passthru($cmd);
-                $file_mgmt->injectHtml("$app_destination/index.html", "mlab_editable_area", file_get_contents("$app_destination/000.html"));
+    */
+                    $cmd = "$py_pth $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o $app_destination";
+                    //$cmd = "cp /home/utvikler/workspace/mlab_elements/*.html $app_destination";
+                    $cmd_res = passthru($cmd);
+                    if (file_exists("$app_destination/000.html")) {
+                        $file_mgmt->injectHtml("$app_destination/index.html", "mlab_editable_area", "$app_destination/000.html", true);
+                    }
                 
 // after we have copied across the template and then converted the document file
 // we need to insert the content of 000.html in index.html.
-                break;
-            	
-        	default:
-				return new JsonResponse(array(
-						'action' => 'ADD',
-						'result' => 'FAILURE',
-						'message' => 'Neither app to copy nor template specified'));
+                    break;
+
+                default:
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => 'Neither app to copy nor template specified'));
         		        		
         	}
         	
+            
+//now we store the splash file and the icon file (if created)
+            if (null != $entity->getSplashFile() && $entity->getSplashFile()->isValid()) {
+                $splash_filename = $config["filenames"]["app_splash_screen"] . "." . $entity->getSplashFile()->getClientOriginalExtension();
+                if (!move_uploaded_file($entity->getSplashFile()->getPathname(), "$app_destination/$splash_filename")) {
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => 'Unable to store splash screen for app'));
+                }
+            }
+            
+//store icon creatd or use default icon
+            if (null != $entity->getIconFile()) {
+                $encoded_image = str_replace(' ', '+', $entity->getIconFile());
+            } else {
+                $encoded_image = str_replace(' ', '+', $config["compiler_service"]["default_icon"]);
+            }
+            $encoded_image = str_replace("data:image/png;base64,", "", $encoded_image);
+            $png_image = base64_decode($encoded_image);
+
+//this will fail both if file = 0 bytes and if it fails to write file.
+            if (!file_put_contents("$app_destination/" . $config["filenames"]["app_icon"], $png_image)) {
+                return new JsonResponse(array(
+                        'action' => 'ADD',
+                        'result' => 'FAILURE',
+                        'message' => 'Unable to store icon for app'));
+            }
+            
+//update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
+            $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_uid_metatag_placeholder"], $config["compiler_service"]["app_creator_identifier"] . $entity->getPath());
+                        
+//finally we save the database record
         	$em->persist($entity);
         	$em->flush();
         	return new JsonResponse(array(
         			'action' => 'ADD',
         			'result' => 'SUCCESS',
         			'mlab_app_page_num' => 1,
-                    'temmp' => $cmd_res,
         			'mlab_app_id' => $entity->getId(),
         			'mlab_app_version' => $entity->getVersion(),
         			'mlab_app' => $entity->getArrayFlat($config["paths"]["template"]),
