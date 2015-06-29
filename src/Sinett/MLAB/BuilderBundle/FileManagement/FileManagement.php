@@ -632,7 +632,17 @@ class FileManagement {
      * Injects some HTML fragment into a div specified by the ID
      * 
      **/ 
-    public function injectHtml($filename, $container_id, $html) {
+    public function injectHtml($filename, $container_id, $html_to_inject, $is_file) {
+        if ($is_file) {
+            $source = new \DOMDocument("1.0", "utf-8");
+            $source->loadHTMLFile($html_to_inject);
+            $html = $source->saveHTML($source->getElementsByTagName('body')->item(0));
+//must remove the surrounding BODY tag, a bit hacky, but works...
+            $html = substr(trim($html), 6, -7);
+        } else {
+            $html = $html_to_inject;
+        }
+        
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
         $doc->validateOnParse = true;
@@ -640,21 +650,15 @@ class FileManagement {
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($doc);
-        $div_for_features = $xpath->query("//*[@id='$container_id']")->item(0);
+        $div_content = $xpath->query("//*[@id='$container_id']")->item(0);
 
-        if (empty($div_for_features)) {
-            $div = $doc->createDocumentFragment();
-            $div->appendXML("<div id='$container_id' ></div>");
-            
-            foreach($doc->getElementsByTagName('body') as $node) {
-                $node->appendChild($div);
-            }
-            $div_for_features = $xpath->query("//*[@id='$container_id']")->item(0);
+        if (empty($div_content)) {
+            return false;
         }
         
         $inject = $doc->createDocumentFragment();
         $inject->appendXML($html);
-        $div_for_features->appendChild($feature_component);
+        $div_content->appendChild($inject);
         return $doc->saveHTMLFile($filename);
     }
     
@@ -918,7 +922,7 @@ class FileManagement {
  * @param type $search
  * @param type $replace
  */
-    private function func_sed($files, $search, $replace) {
+    public function func_sed($files, $search, $replace) {
         foreach ($files as $file) {
             $content = file_get_contents($file);
             file_put_contents( $file, str_replace($search, $replace, $content) );

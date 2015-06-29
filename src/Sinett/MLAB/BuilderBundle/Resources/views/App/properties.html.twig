@@ -104,7 +104,7 @@
                 <div class="left">
                     <label for="mlab_local_iconfile">{% trans %}builder.new.app.name.iconFile{% endtrans %}</label>
                     <input id="mlab_local_iconfile" name="mlab_local_iconfile" type="file">
-                    <div onclick="createIcon.buildIcon('server');">Add image</div>
+                    <div onclick="createIcon.buildIcon('local');">Add image</div>
                 </div>
                 <div class="left">
                     <label for="mlab_icon_text">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
@@ -207,7 +207,7 @@
             selectText: "{% trans %}app.select.icon.foreground{% endtrans %}",
             onSelected: function (data) {
                 if (data.selectedIndex > 0) {
-                    createIcon.buildIcon('local');
+                    createIcon.buildIcon('server');
                 }
             }
         });
@@ -506,7 +506,7 @@
                                 break;
                         } //end switch what they want to base app on                        
                         var summary = "<span class='mlab_app_new_summary'>" + based_on + "</span><br>" +
-                                      "<div class='left' ><p>Icon</p><img src='" + document.getElementById("app_icon_designer").toDataURL() + "' width='128' height='128'></div>" +
+                                      "<div class='left' ><p>Icon</p><img src='" + (icon_created ? document.getElementById("app_icon_designer").toDataURL() : "{{icon_default}}") + "' width='128' height='128'></div>" +
                                       "<div class='left' ><p>Splash screen</p><img id='mlab_splash_preview' width='128' height='128'></div>" +
                                       "<br class='new_line'><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() +
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
