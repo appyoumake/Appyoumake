@@ -295,7 +295,7 @@ class App
     /**
      * Set active_version
      *
-     * @param integer $version
+     * @param float $active_version
      * @return App
      */
     public function setActiveVersion($active_version)
@@ -308,7 +308,7 @@ class App
     /**
      * Get version
      *
-     * @return integer 
+     * @return float 
      */
     public function getActiveVersion()
     {
@@ -613,7 +613,8 @@ class App
     		'path' => $this->path,
     		'description' => $this->description,
     		'keywords' => $this->keywords,
-    		'version' => $this->active_version,
+            'versions' => $this->appVersions,
+    		'active_version' => $this->active_version,
     		'created' => $this->created,
     		'updated' => $this->updated,
     		'categoryOne' => $this->categoryOne,
@@ -646,13 +647,19 @@ class App
     	foreach ($this->groups as $group) {
     		$groups[] = $group->getName();
     	}
+        
+        $versions = array();
+        foreach ($this->appVersions as $version) {
+            $versions[$version->getId()] = $version->getVersion();
+        }
     	return array(
     			'id' => $this->id,
     			'name' => $this->name,
     			'path' => $this->path,
     			'description' => $this->description,
     			'keywords' => $this->keywords,
-    			'version' => $this->active_version,
+                'versions' => $versions,
+    			'active_version' => $this->active_version,
     			'created' => $this->created->format('Y-m-d H:i:s'),
     			'updated' => $this->updated->format('Y-m-d H:i:s'),
     			'categoryOne' => !empty($this->categoryOne) ? $this->categoryOne->getName() : "",
@@ -802,5 +809,4 @@ class App
         return $this->appVersions;
     }
     
-
 }

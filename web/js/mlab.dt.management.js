@@ -161,7 +161,7 @@ Mlab_dt_management.prototype = {
     index_page_process  : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + "/";
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
 //parse doc into a variable
         var doc = (new DOMParser()).parseFromString(page,"text/html");
@@ -246,7 +246,7 @@ Mlab_dt_management.prototype = {
 
     regular_page_process  : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + "/";
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
 //remove old stuff
         $("#" + this.parent.config["app"]["content_id"]).html("");
@@ -702,31 +702,11 @@ Mlab_dt_management.prototype = {
         }
         var w = $(window).width() * 0.25;
         var h = $(window).height() * 0.75;
-        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.version + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.active_version + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }
         mlab.dt.utils.timer_start();
-    },
-    
-    cs_app_get : function () {
-        var url = this.parent.urls.cs_get_app_status
-        var i = prompt("app database ID (leave blank is OK)");
-        url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
-        var v = prompt("version (leave blank is OK)");
-        url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
-        var p = prompt("platform (ios or android) (leave blank is OK)");
-        url = url.replace("/_PLATFORM_", ((p != null && p != "") ? "/" + p : ""));
-
-        $.getJSON(url, function( json ) {
-            if (json.result == "success") {
-                alert("check javascript console");
-                console.log("status of current app: ");
-                console.log(json.app_status[mlab.dt.app.uid]);
-            } else {
-                alert("Unable to get app status");
-            }
-        });
     },
     
     market: {

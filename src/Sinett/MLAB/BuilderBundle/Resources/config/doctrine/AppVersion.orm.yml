@@ -25,9 +25,8 @@ Sinett\MLAB\BuilderBundle\Entity\AppVersion:
         
     enabled:
       type: integer
-      nullable: true
       options:
-        default: true      
+        default: 1      
             
 # link to apps for a version
   manyToOne:
@@ -38,8 +37,3 @@ Sinett\MLAB\BuilderBundle\Entity\AppVersion:
         name: app_id
         referencedColumnName: id
       
-
-  
-      
-
-    lifecycleCallbacks: {  }

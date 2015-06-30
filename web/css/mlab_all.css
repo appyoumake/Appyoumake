@@ -258,6 +258,11 @@ img.builder_app_list_name_edit_img {
      padding-right: 3px;
 }
 
+td.builder_app_list_icon img {
+    width: 24px;
+    height: 24px;
+}
+
 /* ==========================================================================
    Icons as background images
    ========================================================================== */
@@ -497,11 +502,12 @@ body.mlab_base div.mlab_top_bar_back {
 }
 
 .builder_app_properties {
-    background-image: url("/img/properties.png");
+    background-image: url("/img/tools/menu.png");
     opacity: 0.8;
     background-position: left center;
     background-repeat: no-repeat;
-    padding: 5px 0 5px 20px;
+    width: 16px;
+    height: 16px;
 
 }
 

@@ -73,7 +73,7 @@ Mlab_dt_design.prototype = {
     index_page_process : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + "/";
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
 //parse doc into a variable
         var doc = (new DOMParser()).parseFromString(page,"text/html");
@@ -146,7 +146,7 @@ Mlab_dt_design.prototype = {
 
     regular_page_process : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + "/";
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
 //remove old stuff
         $("#" + this.parent.config["app"]["content_id"]).html("");

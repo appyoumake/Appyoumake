@@ -30,9 +30,7 @@ class AppController extends Controller
     public function indexAction()
     {
     	$em = $this->getDoctrine()->getManager();
-
         $entities = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
-
         return $this->render('SinettMLABBuilderBundle:App:index.html.twig', array(
             'entities' => $entities,
         ));
@@ -40,13 +38,30 @@ class AppController extends Controller
     
     
     /**
+     * Lists all App entities for management by app designer 
+     * (similar to the indexAction, but adds many other actionsr)
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function builderAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+        return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
+    			'apps' => $apps,
+                'app_url' => $config = $this->container->parameters['mlab']["urls"]["app"],
+                'app_icon' => $config = $this->container->parameters['mlab']["filenames"]["app_icon"]
+    	));
+    }
+
+    /**
      * Displays a form to create a new App entity.
      *
      */
     public function newAction() {
     	$em = $this->getDoctrine()->getManager();
     	$entity = new App();
-        $entity->setVersion(1); 
+        $entity->setActiveVersion(1); 
     	$file_mgmt = $this->get('file_management');
         
         $backgrounds = $file_mgmt->getBackgrounds();
@@ -130,7 +145,12 @@ class AppController extends Controller
 //generate the path name and get full path
             $guid = $file_mgmt->GUID_v4();
         	$entity->setPath($guid);
-            $entity->setVersion(1);
+            $entity->setActiveVersion(1);
+            $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
+            $temp_app_version->setVersion(1);
+            $temp_app_version->setEnabled(1);
+            $temp_app_version->setApp($entity);
+            $entity->addAppVersion($temp_app_version);
         	$app_destination = $entity->calculateFullPath($config["paths"]["app"]);
             
 //check if GUID is already used for a folder, if so re-generate it
@@ -256,14 +276,15 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //finally we save the database record
         	$em->persist($entity);
         	$em->flush();
+
         	return new JsonResponse(array(
         			'action' => 'ADD',
         			'result' => 'SUCCESS',
         			'mlab_app_page_num' => 1,
         			'mlab_app_id' => $entity->getId(),
-        			'mlab_app_version' => $entity->getVersion(),
+        			'mlab_app_version' => $entity->getActiveVersion(),
         			'mlab_app' => $entity->getArrayFlat($config["paths"]["template"]),
-                    'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity)))
+                    'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity->getArray(), 'app_url' => $config = $this->container->parameters['mlab']["urls"]["app"], 'app_icon' => $config = $this->container->parameters['mlab']["filenames"]["app_icon"])))
             );
         }
         
@@ -346,7 +367,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                       'empty_value'  => '')
                              )                
 				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
-				    	->add('version')
+				    	->add('active_version')
 				    	->add("copy_app", "hidden", array("mapped" => false))
 				    	->add('save', 'submit')
 				    	->getForm();
@@ -577,41 +598,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         						 	  'message' => ''));
     }
 
-    /**
-     * Sends message to app store that a particular app should be removed.
-     * @param unknown $id
-     */
-    public function removeAppStoreAction($id)
-    {
-    	
-    }
-    
-    /**
-     * Sends message to app store that a particular app should be recalled, 
-     * this will remove it AND tell all installed versions to uninstall
-     * @param unknown $id
-     */
-    public function recallAction($id)
-    {
-    	
-    }
-
 /******* EDIT FUNCTIONALITY *******/
-    /**
-     * Lists all App entities for management by app designer 
-     * (similar to the indexAction, but adds many other actionsr)
-     * 
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function builderAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
-    			'apps' => $apps,
-    	));
-    }
-
 /**
  * Opens the app page editor, loads initial app and various config details
  * @param type $id

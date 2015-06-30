@@ -276,6 +276,7 @@ app.builder.list.new.app.button: Ny App
 app.builder.list.heading.app: App navn
 app.builder.list.heading.published: Publisert
 app.builder.list.heading.version: Versjon
+app.builder.list.heading.active_version: Aktiv versjon
 app.builder.list.heading.last.updated: Sist oppdatert
 
 app.builder.list.tooltip.name: Klikk på navnet for å redigere appen

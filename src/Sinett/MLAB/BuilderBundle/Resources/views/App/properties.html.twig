@@ -62,12 +62,12 @@
             </div>
             
             <div class="new_line">
-                {{ form_label(form.version, null, {'label': 'builder.new.app.version.number'|trans}) }}
-                {{ form_errors(form.version) }}
+                {{ form_label(form.active_version, null, {'label': 'builder.new.app.active_version.number'|trans}) }}
+                {{ form_errors(form.active_version) }}
                 {% if mode == 'create' %}
-                    {{ form_widget(form.version, {'disabled': 'disabled'} ) }}
+                    {{ form_widget(form.active_version, {'disabled': 'disabled'} ) }}
                 {% else %}
-                    {{ form_widget(form.version) }}
+                    {{ form_widget(form.active_version) }}
                 {% endif %}
             </div>
             
@@ -473,7 +473,7 @@
                     }
                     
                     if (mlab_edit_mode == 'update') {
-                        if ($('#form_version').val().trim() == "" || isNaN(parseFloat($('#form_version').val())) || parseFloat($('#form_version').val()) < 1 ) {
+                        if ($('#form_active_version').val().trim() == "" || isNaN(parseFloat($('#form_active_version').val())) || parseFloat($('#form_active_version').val()) < 1 ) {
                             msg = msg + "{% trans %}You must enter a version number that is 1 or higher.{% endtrans %}\n";
                         }
                     }
@@ -594,6 +594,64 @@
 //select relevant tab
         $('#build_app_properties').tabs('option', 'active', curr_tab + direction);
         
+    }
+    
+    /**
+        * submits data for new app from the dialog box where we collect details of the new app  
+        */
+    function mlab_app_submit_properties(form) {
+        formData = new FormData(document.getElementById('mlab_form_app'))
+
+        $.ajax({
+            url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
+            type: 'POST',
+            // Form data 
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function( data ) {
+                if (data.result == 'FAILURE') {
+                    alert(data.message);
+                    $('#form_copyApp').ddslick({
+                        width: 300,
+                        imagePosition: "left",
+                        selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
+                    });
+
+                    $('#form_template').ddslick({
+                        width: 300,
+                        height: 110,
+                        imagePosition: "left",
+                        selectText: "{% trans %}app.select.template{% endtrans %}"
+                    });
+
+
+                } else {
+//here we update the list of apps with the new app details
+                    $("#builder_dialog_new_app").dialog("close");
+                    $(data.html).appendTo("#table_app");
+                }
+            },
+            
+            error: function(e) {
+                alert('An error occurred, see console log for more information'); 
+                console.log(e);
+                $('#form_copyApp').ddslick({
+                    width: 300,
+                    imagePosition: "left",
+                    selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
+                });
+
+                $('#form_template').ddslick({
+                    width: 300,
+                    height: 110,
+                    imagePosition: "left",
+                    selectText: "{% trans %}app.select.template{% endtrans %}"
+                });
+
+            }
+        });
     }
 
 </script>

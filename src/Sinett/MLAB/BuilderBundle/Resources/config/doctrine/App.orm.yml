@@ -60,7 +60,7 @@ Sinett\MLAB\BuilderBundle\Entity\App:
           nullable: true
 
       active_version:
-          type: integer
+          type: float
           nullable: true
           options:
             default: 1
@@ -158,5 +158,11 @@ Sinett\MLAB\BuilderBundle\Entity\App:
           group_id:
             referencedColumnName: id
 
+# link to versions for this app
+  oneToMany:
+    appVersions:
+      targetEntity: AppVersion
+      mappedBy: app
+      cascade: [persist]
     
   lifecycleCallbacks: {  }
