@@ -106,3 +106,15 @@ app_builder_load_components:
 app_builder_get_uploaded_files:
     path:   /builder/{app_id}/{file_types}/get_uploaded_files
     defaults: { _controller: "SinettMLABBuilderBundle:App:getUploadedFiles" }
+
+app_list_set_active_version:
+    path:   /builder/{app_id}/{version}/set_active_version
+    defaults: { _controller: "SinettMLABBuilderBundle:App:setActiveVersion" }
+
+app_list_create_new_version:
+    path:   /builder/{app_id}/{increment}/create_new_version
+    defaults: { _controller: "SinettMLABBuilderBundle:App:createNewVersion" }
+
+app_list_create_new_branch:
+    path:   /builder/{app_id}/create_new_branch
+    defaults: { _controller: "SinettMLABBuilderBundle:App:createNewBranch" }

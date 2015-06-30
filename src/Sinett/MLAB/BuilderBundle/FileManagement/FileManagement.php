@@ -275,6 +275,39 @@ class FileManagement {
 	}
 
     /**
+     * generates a new version number following these rules:
+     * 1: It gets the current highest number from the specified app
+     * 2.1: If there are no other apps with the same name, it adds the increment value (0.1 or 1.0) to the highest value
+     * 2.2: If other apps with the same name exists (i.e. another branch) it gets the hightst and lowest values from each of these
+     *      The final number generated cannot be equal to or larger than the integer value of other branches *above* the current version
+     *      number, so it may be that version 2, requesting a new version number of 3 is set to 2.1 if a version 3 exists
+     * @param type $app
+     * @return array(int $new_page_num, string $new_page_path (complete path to file))
+     */
+    public function getNewAppVersionNum($app, $branches, $increment) {
+        $current_versions = $app->getVersionRange();
+        $new_version = $current_versions["high"] + $increment;
+        if (sizeof($branches) < 2) {
+            return $new_version;
+        } else {
+            foreach ($branches as $branch) {
+                if ($branch->getId() != $app->getId()) {
+                   $check_versions = $branch->getVersionRange();
+//they are trying to move onto a version number used by a different branch, can't allow this, so we increment the original number with 0.1
+                   if ($new_version >= $check_versions["low"]) {
+                       while ($new_version >= $check_versions["low"]) {
+                           $increment = $increment / 10;
+                           $new_version = $current_versions["high"] + $increment;
+                       }
+                       return $new_version;
+                   }
+                }
+            }
+        }
+        return $new_version;
+    }    
+
+    /**
      * generate new name, get a list of pages in folder, select last one, turn into an int, 
      * then keep increasing it until it is not found (in case someone else creates a file in the mean time)
      * @param type $app

@@ -284,7 +284,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         			'mlab_app_id' => $entity->getId(),
         			'mlab_app_version' => $entity->getActiveVersion(),
         			'mlab_app' => $entity->getArrayFlat($config["paths"]["template"]),
-                    'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity->getArray(), 'app_url' => $config = $this->container->parameters['mlab']["urls"]["app"], 'app_icon' => $config = $this->container->parameters['mlab']["filenames"]["app_icon"])))
+                    'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity->getArray(), 'app_url' => $config["urls"]["app"], 'app_icon' => $config["filenames"]["app_icon"])))
             );
         }
         
@@ -1328,5 +1328,169 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         return new JsonResponse(array('result' => 'success', 'files' => $this->renderView('SinettMLABBuilderBundle:App:options.html.twig', array('files' => $files))));
         
     }
+
+/**
+ * Functions that are called from the app listing
+ */
     
+    
+/**
+ * This function is just updating the active_version field of the selected app. 
+ * The versions are selected from a dropdown list which picks up all versions from the app_version table.
+ * @param type $app_id
+ * @param type $version
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function setActiveVersionAction($app_id, $version) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+        
+        $app->setActiveVersion($version);
+        $em->flush();
+        
+        return new JsonResponse(array(
+    			'result' => 'success',
+    			'new_version' => $version));
+    }
+    
+/**
+ * This function will copy the selected version of an app and create a new version linked to the same app record
+ * but with a new app_version record
+ * @param type $app_id
+ * @param type $increment
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function createNewVersionAction($app_id, $increment) {
+        $version_increment = floatval($increment);
+        if ($version_increment != 0.1 && $version_increment != 1) {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => "Increment must be 0.1 or 1, value supplied was: " . $increment));
+            
+        }
+        
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            $branches = $em->getRepository('SinettMLABBuilderBundle:App')->findByName($app->getName());
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+
+//get config values
+        $config = $this->container->parameters['mlab'];
+
+//get new version number and copy files before adding the version record 
+        $file_mgmt = $this->get('file_management');
+        $copy_from_version_num = $app->getActiveVersion();
+        $new_version_num = $file_mgmt->getNewAppVersionNum($app, $branches, $increment);
+
+      	$app_source = $app->calculateFullPath($config["paths"]["app"]);
+        $app_destination = str_replace("/$copy_from_version_num/", "/$new_version_num/", $app_source);
+        
+        $result = false;
+        $result = $file_mgmt->copyDirectory($app_source, $app_destination);
+
+        if ($result == false) {
+            return new JsonResponse(array(
+                    'action' => 'ADD',
+                    'result' => 'FAILURE',
+                    'message' => 'Unable to copy app files'));
+        } else {
+
+            $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
+            $temp_app_version->setVersion($new_version_num);
+            $temp_app_version->setEnabled(1);
+            $temp_app_version->setApp($app);
+            $app->addAppVersion($temp_app_version);
+            $app->setActiveVersion($new_version_num);
+            $em->flush();
+            
+            return new JsonResponse(array(
+    			'result' => 'success',
+    			'new_version' => $new_version_num));
+        }
+        
+    }
+
+    public function createNewBranchAction($app_id) {
+        
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            $branches = $em->getRepository('SinettMLABBuilderBundle:App')->findByName($app->getName());
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    	}
+        
+//now we calculate the new branch number
+        $new_version_num = 0;
+        foreach ($branches as $branch) {
+            $check_versions = $branch->getVersionRange();
+            $new_version_num = max($new_version_num, $check_versions["high"]);
+        }
+        $new_version_num = floor($new_version_num + 1);
+
+//get config values
+        $config = $this->container->parameters['mlab'];
+
+//get new version number and copy files before adding the version record 
+        $file_mgmt = $this->get('file_management');
+        $copy_from_version_num = $app->getActiveVersion();
+
+        $guid = $file_mgmt->GUID_v4();
+        $check_app = $em->getRepository('SinettMLABBuilderBundle:App')->findByUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+
+        while ($check_app) { 
+            $guid = $file_mgmt->GUID_v4();
+            $check_app = $em->getRepository('SinettMLABBuilderBundle:App')->findByUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+        }
+
+        $app_source = $app->calculateFullPath($config["paths"]["app"]);
+        $app_destination = str_replace("/" . $config["compiler_service"]["app_creator_identifier"] . ".$guid/$copy_from_version_num/", "/" . $app->getPath() . "/$new_version_num/", $app_source);
+        
+        $result = false;
+        $result = $file_mgmt->copyDirectory($app_source, $app_destination);
+
+        if ($result == false) {
+            return new JsonResponse(array(
+                    'action' => 'ADD',
+                    'result' => 'FAILURE',
+                    'message' => 'Unable to copy app files'));
+        } else {
+            $new_branch = clone $app;
+            
+            
+
+            $new_branch->setActiveVersion($new_version_num);
+        	$new_branch->setPath($guid);
+            $new_branch->setUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+            
+            $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
+            $temp_app_version->setVersion($new_version_num);
+            $temp_app_version->setEnabled(1);
+            $new_branch->setSingleAppVersion($temp_app_version);
+            $temp_app_version->setApp($new_branch);
+
+            $em->persist($new_branch);
+            $em->flush();
+
+            
+            return new JsonResponse(array(
+    			'result' => 'success',
+    			'new_version' => $new_version_num,
+                'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $new_branch->getArray(), 'app_url' => $config["urls"]["app"], 'app_icon' => $config["filenames"]["app_icon"]))));
+        }
+        
+    }
 }

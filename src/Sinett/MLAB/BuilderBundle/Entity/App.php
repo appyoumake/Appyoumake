@@ -675,6 +675,24 @@ class App
     			'uid' => $this->uid
     	);
     }    
+    
+/**
+ * Retruns highest and lowest versions for a given app
+ * @return type
+ */
+    public function getVersionRange() {
+        $highest_version = 0;
+        $lowest_version = 99999999;
+        
+        foreach ($this->appVersions as $version) {
+            $highest_version = max($highest_version, $version->getVersion());
+            $lowest_version = min($lowest_version, $version->getVersion());
+        }
+        
+        return array("high" => $highest_version, "low" => $lowest_version);
+    }
+    
+    
 /**** FILES RELATED TO AN APP ****/
     /**
      * Sets file.
@@ -790,7 +808,7 @@ class App
     }
 
     /**
-     * Remove app_version
+     * Remove appVersion
      *
      * @param \Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version
      */
@@ -800,13 +818,25 @@ class App
     }
 
     /**
-     * Get apps
+     * Get appVersion
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
     public function getAppVersions()
     {
         return $this->appVersions;
+    }
+    
+    /**
+     * Sets the appversions array to a single appVersion, used when create a new branch
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function setSingleAppVersion(\Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version)
+    {
+        $this->appVersions = array($app_version);
+        
+        return $this;
     }
     
 }
