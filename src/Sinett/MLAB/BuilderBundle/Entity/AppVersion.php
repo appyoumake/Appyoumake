@@ -15,10 +15,10 @@ class AppVersion
     private $id;
 
     /**
-     * @var integer
+     * @var \Sinett\MLAB\BuilderBundle\Entity\App
      */
-    private $appId;
-
+    private $app;
+    
     /**
      * @var float
      */
@@ -41,26 +41,26 @@ class AppVersion
     }
 
     /**
-     * Set appId
+     * Set app
      *
-     * @param integer $appId
-     * @return AppVersion
+     * @param \Sinett\MLAB\BuilderBundle\Entity\App $app
+     * @return App
      */
-    public function setAppId($appId)
+    public function setApp(\Sinett\MLAB\BuilderBundle\Entity\App $app = null)
     {
-        $this->appId = $appId;
+        $this->app = $app;
     
         return $this;
     }
 
     /**
-     * Get appId
+     * Get app
      *
-     * @return integer 
+     * @return \Sinett\MLAB\BuilderBundle\Entity\App 
      */
-    public function getAppId()
+    public function getApp()
     {
-        return $this->appId;
+        return $this->app;
     }
 
     /**

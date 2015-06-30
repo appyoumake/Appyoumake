@@ -43,6 +43,12 @@ class App
     private $active_version;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $appVersions;
+    
+
+    /**
      * @var \DateTime
      */
     private $created;
@@ -762,5 +768,39 @@ class App
     {
     	return $this->import_file;
     }
+    
+    /**
+     * Add appVersion
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version
+     * @return this
+     */
+    public function addAppVersion(\Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version)
+    {
+        $this->appVersions[] = $app_version;
+    
+        return $this;
+    }
+
+    /**
+     * Remove app_version
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version
+     */
+    public function removeAppVersion(\Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version)
+    {
+        $this->appVersions->removeElement($app_version);
+    }
+
+    /**
+     * Get apps
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAppVersions()
+    {
+        return $this->appVersions;
+    }
+    
 
 }

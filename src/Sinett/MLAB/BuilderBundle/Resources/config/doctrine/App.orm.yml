@@ -157,11 +157,6 @@ Sinett\MLAB\BuilderBundle\Entity\App:
         inverseJoinColumns:
           group_id:
             referencedColumnName: id
-    
-# link to versions for this app
-  oneToMany:
-    appVersion:
-      targetEntity: AppVersion
-      mappedBy: app
+
     
   lifecycleCallbacks: {  }

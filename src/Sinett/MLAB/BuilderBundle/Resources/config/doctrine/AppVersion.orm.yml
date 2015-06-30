@@ -33,7 +33,11 @@ Sinett\MLAB\BuilderBundle\Entity\AppVersion:
   manyToOne:
     app:
       targetEntity: App
-      inversedBy: appVersion
+      inversedBy: appVersions
+      joinColumn:
+        name: app_id
+        referencedColumnName: id
+      
 
   
       
