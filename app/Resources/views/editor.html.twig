@@ -29,145 +29,17 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
     </head>
     
-<script type="text/javascript">
-
-
-      // $('.basic_menu_icon').on('click', function (e) { console.log('aaa'); });
-     /*   $('#mlab_editor_menu_dropdown').on('click', function (e) { 
-            console.log('mlab_editor_menu_dropdown');  
-            console.log(e.toElement);
-            //$('#mlab_editor_menu_dropdown_content').removeClass('mlab_hidden');
-            $('.dropdown_3columns').css("left", "-1px");
-            
-        });
-      */ 
-$(document).on('click', function (event) {
-     // er meny synlig?
-     if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_dropdown')) {
-         //menyen er synlig
-         console.log('menyen er synlig');
-        // $(document).on('click', function (event) {
-        
-       console.log('document');
-       console.log(event.toElement);
-       
-        $('#mlab_editor_menu_dropdown_content').removeClass('mlab_show_dropdown'); 
-          //   $('#mlab_editor_menu_dropdown').removeClass('mlab_show_dropdown_tab_selected'); 
-        //if($('#mlab_editor_menu_dropdown_content').is(':visible')) {
-       // if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_dropdown')) {
-            // om mlab_editor_menu_dropdown ikke er en foreldre
-            //$(e.toElement).attr('id');
-          //  console.log(event.toElement);
-       
-            // if link href and parent mlab_editor_menu_dropdown_content 
-            //mlab_menu_action
-  
-        //} 
-              
-    
-         
-     } else {
-         //menyen er skjult
-         console.log('menyen er skjult');
-         //klikker noen på menyen?
-          $(document).on("click","#mlab_editor_menu_dropdown",function(e) {
-            console.log('mlab_editor_menu_dropdown');  
-            console.log(e.toElement);
-            //$('.dropdown_3columns').css("left", "-1px");
-             $('#mlab_editor_menu_dropdown_content').addClass('mlab_show_dropdown'); 
-             e.stopPropagation();
-            // $('#mlab_editor_menu_dropdown').addClass('mlab_show_dropdown_tab_selected'); 
-              
-            //('#mlab_editor_menu_dropdown_content').removeClass('mlab_show_dropdown')
-    });
-     }
-       
-});  
-    /*
-    event.stopImmediatePropagation();
-    
-    $(element).off().on('click', function() {
-    // function body
-});
-
-$(".bet").one('click',function() {
-    //Your function
-});
-In case of multiple classes and each class needs to be clicked once,
-
-$(".bet").on('click',function() {
-    //Your function
-    $(this).off('click');   //or $(this).unbind()
-});
-  
-    */    
-        //     $('#mlab_editor_menu_dropdown_content').removeClass('mlab_hidden'); 
-       /* if ($("#mlab_editor_menu_dropdown").clicked()) {  
-          alert('2'); 
-           $('#mlab_editor_menu_dropdown_content').removeClass('mlab_hidden'); 
-        } else {
-            alert('3'); 
-             $('#mlab_editor_menu_dropdown_content').addClass('mlab_hidden');        
-        }   
-         */
-  // if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_hidden')) {
-    //  event.preventDefault();
-
-
-
-</script>
 
     <body id="mlab_editor">
     	<div class="mlab_min_page_width">
     		<div class="mlab_align_menu_elements">
                     <ul id="mlab_menu">
-
-                    {{ include( 'menu.html.twig' ) }}
-
-                        <li id="mlab_editor_menu_dropdown">
-                           
+   
+                        <li><a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" src="/img/logo_menu.png" alt="logo" /></div></a></li>  <!-- The Mlab log -->
+    
+                        <li id="mlab_editor_menu_dropdown">    
                                 <img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" >
-                         <!-- Begin 4 columns Item -->
-
-                            <div id="mlab_editor_menu_dropdown_content" class="dropdown_3columns"><!-- Begin 3 columns container -->
-
-                                <div class="col_3">
-                                    <p>{% trans %}app.builder.edit.menu.welcome.info{% endtrans %}</p>
-                                </div>
-
-                                <div class="col_1">
-                                    <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
-                                    <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
-                                    <div id="mlab_features_list"></div>
-                                    <div class='mlab_sub_menu'>
-                                        <h4>Utilities</h4>
-                                        <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
-                                        <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
-                                        <a href="javascript: mlab.dt.management.cs_app_get();">Test connection to compiler </a>
-                                    </div>
-                                </div>
-
-                                <div class="col_1">
-                                    <div class="mlab_end_appbuilder">
-                                        <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
-                                        <h4>Prøv App på web</h4>
-                                        <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
-                                                <a href="javascript: mlab.dt.management.page_preview();">
-                                                    <div title="Test app i nettleser" id="mlab_preview_icon"></div>
-                                                </a> 
-                                        <h4>Prøv App på mobil</h4>
-                                        <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
-                                        <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
-                                        </div>
-                                                <a href="javascript: mlab.dt.management.app_download();">
-                                                <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
-                                                </a>
-
-                                        
-                                    </div>
-                                </div>
-                            </div><!-- End 4 columns container -->
-
+                         
                         </li><!-- End 4 columns Item -->
 
                         <li id="mlab_editor_undo_redo" class="single mlab_editor_undo_redo_save">
@@ -186,12 +58,104 @@ $(".bet").on('click',function() {
                         </li>
 
                     </ul>
+                
+                
+                
+                
+                
                     
                     <div class="container">
                         {% block body %}{% endblock %}
                         <div style="clear: both;">&nbsp;</div>
                     </div>
+                
+                
+                
+                
+                
+                
+                
 	        </div>
 	    </div>
+        
+        <!-- Begin 4 columns Item -->
+
+                            <div id="mlab_editor_menu_dropdown_content" class="dropdown_4columns"><!-- Begin 3 columns container -->
+
+                                <div class="col_1"> <!-- Navigate col -->
+                                    <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
+
+                                    {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
+
+                                    {% if app.user == null %} <!-- If not loged in -->
+                                        <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                                            <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                                        </p>
+
+                                    {% else %} <!-- If loged in -->
+                                        {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
+                                            <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
+                                        {% endif %} 
+
+                                        <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
+                                        <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+
+
+                                        {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
+                                            {%  if path('admin_apps') not in currentPath  %}
+                                                <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                                            {% endif %} 
+                                            {% if path('admin_users') not in currentPath %}
+                                                <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                                            {% endif %} 
+                                        {% endif %} 
+
+                                        {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
+                                            {% if path('system') not in currentPath %}
+                                                    <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                                            {% endif %}
+                                        {% endif %}
+
+                                        {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SUPER_ADMIN") %}
+                                                    <br>
+                                        {% endif %}
+
+                                        {% if path('app_builder_index') in currentPath  %} <!-- If on app list page - show the info  -->
+                                                    <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
+                                        {% endif %} 
+                                    {% endif %}
+                                </div> <!-- End Navigate col -->
+                                
+                                <div class="col_1"> <!-- Feature col -->
+                                    <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
+                                    <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
+                                    <div id="mlab_features_list"></div>
+                                    <div class='mlab_sub_menu'>
+                                        <h4>Utilities</h4>
+                                        <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
+                                        <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
+                                        <a href="javascript: mlab.dt.management.cs_app_get();">Test connection to compiler </a>
+                                    </div>
+                                </div> <!-- End Feature col -->
+
+                                <div class="col_1"> <!-- Testing col -->
+                                    <div class="mlab_end_appbuilder">
+                                        <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
+                                        <h4>Prøv App på web</h4>
+                                        <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
+                                                <a href="javascript: mlab.dt.management.page_preview();">
+                                                    <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                                                </a> 
+                                        <h4>Prøv App på mobil</h4>
+                                        <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
+                                        <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
+                                        </div>
+                                                <a href="javascript: mlab.dt.management.app_download();">
+                                                <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
+                                                </a>
+                                    </div>
+                                </div> <!-- End Testing col -->
+                                
+                            </div><!-- End 4 columns container -->
     </body>
 </html>

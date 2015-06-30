@@ -83,6 +83,35 @@
                     }
                 });
             }
+            
+
+            //Checkes if the editor menu icon is cliked
+            $("#mlab_editor_menu_dropdown").on("click",function(event) {
+                 //Toggles the Editor menu on and off
+                 console.log(event.toElement);
+                  $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_dropdown'); 
+                  $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_dropdown_tab_selected'); 
+                  event.stopPropagation(); 
+             });
+
+            //Listens for any click
+             $(document).on('click', function (event) {
+                  // Checks if editor menu is open
+                  if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_dropdown')) {
+                      //Editor menu is open 
+                      console.log('menyen er synlig');
+                      console.log(event.toElement);
+
+
+
+                     //event.stopPropagation();   
+
+                    // $('#mlab_editor_menu_dropdown_content').removeClass('mlab_show_dropdown'); 
+
+
+                  } 
+
+             });  
        });
     </script>
 
