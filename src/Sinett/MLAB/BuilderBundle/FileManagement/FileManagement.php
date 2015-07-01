@@ -263,13 +263,13 @@ class FileManagement {
 	 * @param string $sourceApp
 	 * @param string $targetApp
 	 */
-	public static function copyDirectory($sourceApp, $targetApp) {
+	public static function copyAppFiles($sourceApp, $targetApp) {
 	    if (!file_exists($sourceApp)) return false;
 	    if (!is_dir($sourceApp)) return copy($sourceApp, $targetApp);
-	    if (!mkdir($targetApp)) return false;
+	    if (!mkdir($targetApp, 0777, true)) return false;
 	    foreach (scandir($sourceApp) as $item) {
-	    	if ($item == '.' || $item == '..') continue;
-	    	if (!self::copyDirectory($sourceApp.DIRECTORY_SEPARATOR.$item, $targetApp.DIRECTORY_SEPARATOR.$item)) return false;
+	    	if ($item == '.' || $item == '..' || strtolower(substr($item, -5)) == ".lock") continue;
+	    	if (!self::copyAppFiles($sourceApp.DIRECTORY_SEPARATOR.$item, $targetApp.DIRECTORY_SEPARATOR.$item)) return false;
 	    }
 	    return true;
 	}
@@ -503,7 +503,19 @@ class FileManagement {
     }
     
     /**
-     * Remove all potential locks on all other apps for specified unique ID
+     * Remove all potential locks on all apps for specified unique ID
+     * @param type $uid
+     */
+    public function clearAppLocks($app, $uid) {
+        $app_location = $app->calculateFullPath($this->config["paths"]["app"]);
+        $files = $this->func_find($app_location, "f",  "*.$uid.lock");
+        foreach ($files as $file) {
+             unlink($file);
+        }
+    }
+    
+    /**
+     * Remove all potential locks on all apps for specified unique ID
      * @param type $uid
      */
     public function clearLocks($uid) {

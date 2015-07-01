@@ -1,10 +1,10 @@
 # Configuration file for unordered list (UL) component
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: text
+category: list
 name: ul
 tooltip: Un-ordered list
-compatible: ["h1", "h2", "h3", "ul", "ol"]
+compatible: ["ol", "table", "p"]
 process_keypress: true
 html: |
     <ul>

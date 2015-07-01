@@ -8,6 +8,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ServicesController extends Controller
 {
+    
+/**
+ * Function that will go through 
+ * @param type $app_id
+ */
+    public function preCompileProcessing($app_id) {
+        
+    }
+    
     public function mktGetTaggedUsersAction($token, $tag) {
     }
 

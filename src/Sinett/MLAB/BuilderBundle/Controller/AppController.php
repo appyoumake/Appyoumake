@@ -146,6 +146,7 @@ class AppController extends Controller
             $guid = $file_mgmt->GUID_v4();
         	$entity->setPath($guid);
             $entity->setActiveVersion(1);
+            $entity->setEnabled(1);
             $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
             $temp_app_version->setVersion(1);
             $temp_app_version->setEnabled(1);
@@ -175,7 +176,7 @@ class AppController extends Controller
                      $orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
                      $result = false;
                      if ($orig_app) {
-                         $result = $file_mgmt->copyDirectory($app_data["copyApp"], $app_destination);
+                         $result = $file_mgmt->copyAppFiles($app_data["copyApp"], $app_destination);
                      } 
 
                      if ($result == false) {
@@ -1124,7 +1125,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                         $new_permissions = $config["permissions"];
 
                         if (!file_exists( $path_app_permissions)) {
-                            file_put_contents($path_app_permissions, implode("\n", $add_permissions));
+                            file_put_contents($path_app_permissions, implode("\n", $new_permissions));
                         } else {
                             file_put_contents($path_app_permissions, implode("\n", array_unique(array_merge($new_permissions, file($path_app_permissions)))));;
                         }
@@ -1397,7 +1398,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $app_destination = str_replace("/$copy_from_version_num/", "/$new_version_num/", $app_source);
         
         $result = false;
-        $result = $file_mgmt->copyDirectory($app_source, $app_destination);
+        $result = $file_mgmt->copyAppFiles($app_source, $app_destination);
 
         if ($result == false) {
             return new JsonResponse(array(
@@ -1457,10 +1458,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
         $app_source = $app->calculateFullPath($config["paths"]["app"]);
-        $app_destination = str_replace("/" . $config["compiler_service"]["app_creator_identifier"] . ".$guid/$copy_from_version_num/", "/" . $app->getPath() . "/$new_version_num/", $app_source);
+        $app_destination = str_replace("/" . $app->getPath() . "/$copy_from_version_num/", "/$guid/$new_version_num/", $app_source);
         
         $result = false;
-        $result = $file_mgmt->copyDirectory($app_source, $app_destination);
+        $result = $file_mgmt->copyAppFiles($app_source, $app_destination);
 
         if ($result == false) {
             return new JsonResponse(array(
@@ -1468,18 +1469,30 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     'result' => 'FAILURE',
                     'message' => 'Unable to copy app files'));
         } else {
-            $new_branch = clone $app;
-            
-            
-
+            $new_branch = new App;
+            $new_branch->setTemplate($app->getTemplate());
+            $new_branch->setName($app->getName());
+            $new_branch->setDescription($app->getDescription());
+            $new_branch->setKeywords($app->getKeywords());
+            $new_branch->setEnabled($app->getEnabled());
+            $new_branch->setCategoryOne($app->getCategoryOne());
+            $new_branch->setCategoryTwo($app->getCategoryTwo());
+            $new_branch->setCategoryThree($app->getCategoryThree());
+            $usr = $this->get('security.context')->getToken()->getUser();
+        	$new_branch->setUser($usr);
+        	$new_branch->setUpdatedBy($usr);
             $new_branch->setActiveVersion($new_version_num);
         	$new_branch->setPath($guid);
             $new_branch->setUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+
+            foreach ($usr->getGroups() as $group) {
+        		$new_branch->addGroup($group);
+        	}
             
             $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
             $temp_app_version->setVersion($new_version_num);
             $temp_app_version->setEnabled(1);
-            $new_branch->setSingleAppVersion($temp_app_version);
+            $new_branch->addAppVersion($temp_app_version);
             $temp_app_version->setApp($new_branch);
 
             $em->persist($new_branch);
