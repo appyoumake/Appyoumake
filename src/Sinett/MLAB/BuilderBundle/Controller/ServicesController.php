@@ -6,14 +6,56 @@ namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+//this class is used to store new functions that will process embedded variables in the index.html file
+//one example is a class to 
+class CustomPreProcessing {
+    
+    public function getNumberOfPages($app) {
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+
+   		$pages = glob ( $app_path . "/???.html" );
+   		$page_num = intval(basename(array_pop($pages)));
+        
+        return $page_num;
+    }
+    
+}
+
 class ServicesController extends Controller
 {
     
 /**
- * Function that will go through 
+ * Function that will go through each page in an app and run various processing functions
  * @param type $app_id
  */
-    public function preCompileProcessing($app_id) {
+    public function preCompileProcessing($config, $app, $file_mgmt) {
+        
+//get all components
+        $components = $file_mgmt->loadComponents(array(), $config["paths"]["component"], $config["component_files"], $app->getId());
+        
+//loop through all pages
+        $pages = glob ( $app_path . "/???.html" );
+        foreach ($pages as $page) {
+            $content = file_get_contents($page);
+
+//process placeholders, can be either functions to run, or components to install
+            preg_match_all('~%%(.+?)%%~', $str, $placeholders);
+
+            foreach ($placeholders[1] as $placeholder) {
+                $func_name = str_replace("MLAB_CT_", "", $placeholder);
+                print "<br>";
+                if (function_exists($func_name)) {
+                    print "$func_name outputs: ";
+                    $func_name("testy");
+                } else {
+                    print "$func_name is not a function";
+                }
+            }
+            
+        }
+
+        $str = '<meta name="mlab:app_uid" content="%%APP_UID%%" />\nmlab.api.navigation.initialise(0, %%MLAB_CT_GETNUMBEROFPAGES%%);';
+
         
     }
     

@@ -371,6 +371,11 @@ Mlab_api.prototype = {
         current_page: 0,
         max_pages: 0,
         self: this,
+        
+        initialise: function (app_current_page, app_max_pages) {
+            current_page = app_current_page;
+            max_pages = app_max_pages;
+        },
 /**
  * current = page that is currently displayed
  * move_to can be index, first, last, next, previous or a number
