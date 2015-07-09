@@ -702,7 +702,7 @@ Mlab_dt_management.prototype = {
         }
         var w = $(window).width() * 0.25;
         var h = $(window).height() * 0.75;
-        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.active_version + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.active_version + "_cache/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }

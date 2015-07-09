@@ -28,7 +28,7 @@ SinettMLABBuilderBundle_menu:
 
 SinettMLABBuilderBundle_services:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/services.yml"
-    prefix:   /app
+    prefix:   /services
 
 SinettMLABBuilderBundle_template:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/template.yml"

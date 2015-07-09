@@ -234,6 +234,136 @@ class FileManagement {
    
 		return $component;
 	}
+    
+    public function componentAdded($app_id, $app, $comp_id, $config) {
+        $path_component = $config['paths']['component'] . $comp_id . "/";
+        $path_app = $app->calculateFullPath($config['paths']['app']);
+        $path_app_js = $path_app . "js/";
+        $path_app_permissions = $path_app . $config['filenames']["permissions"];
+        
+//check if path to component and app exists
+        if ( is_dir($path_component) && is_dir($path_app) ) {
+
+//1: Copy JS file, it is called code_rt.js, but needs to be renamed as all JS files for components have same name to begin with
+//   We use the component name as a prefix
+            if (file_exists( $path_component . "code_rt.js") && !file_exists( $path_app_js . $comp_id . "_code_rt.js")) {
+                if (!@copy($path_component . "code_rt.js", $path_app_js . $comp_id . "_code_rt.js")) {
+                    return array(
+                        'result' => 'failure',
+                        'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id));
+                }
+
+                if (file_exists("$path_app_js/include_comp.txt")) {
+                    $include_items = file("$path_app_js/include_comp.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                } else {
+                    $include_items = array();
+                }
+                if (!in_array("/js/" . $comp_id . "_code_rt.js", $include_items)) {
+                    $include_items[] = "/js/" . $comp_id . "_code_rt.js";
+                }
+                file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
+            }
+
+//2: Add permissions to the local permissions file. We store these as Android permissions, the compiler service will translate these later for iOS.
+            if (file_exists($path_component . "conf.yml")) {
+                $yaml = new Parser();
+                $config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                if (isset($config["permissions"])) {
+
+                    $new_permissions = $config["permissions"];
+
+                    if (!file_exists( $path_app_permissions)) {
+                        file_put_contents($path_app_permissions, implode("\n", $new_permissions));
+                    } else {
+                        file_put_contents($path_app_permissions, implode("\n", array_unique(array_merge($new_permissions, file($path_app_permissions)))));;
+                    }
+                }
+
+//2.5: copy across any runtime dependencies, can be JS or CSS
+                if (isset($config["required_libs"])) {
+                    if (isset($config["required_libs"]["runtime"])) {
+
+                        foreach ($config["required_libs"]["runtime"] as $dependency) {
+                            $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
+                            if ($filetype == "") {
+                                $filetype = "js";
+                            } 
+
+//if this is a URL we just add it to the include file, no need to copy the file
+                            if(!filter_var($dependency, FILTER_VALIDATE_URL)) {
+                                if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app/$filetype/$dependency" )) {
+//if we fail we bail
+                                    if (!@copy( "$path_component/$filetype/$dependency", "$path_app/$filetype/$dependency" )) {
+                                        return array(
+                                            'result' => 'failure',
+                                            'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id));
+                                    } 
+                                }
+                            }
+
+//we need to update the include files of the app
+                            if (file_exists("$path_app/$filetype/include.$filetype")) {
+                                $include_items = file("$path_app/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                            } else {
+                                $include_items = array();
+                            }
+
+                            if ($filetype == "css") {
+                                if (!in_array("@import url('$dependency');", $include_items)) {
+                                    $include_items[] = "@import url('$dependency');";
+                                }
+                            } else {
+                                if (substr($dependency, 0, 4) == "http") {
+                                    if (!in_array("$.getScript('$dependency');", $include_items)) {
+                                        $include_items[] = "$.getScript('$dependency');";
+                                    }
+                                } else {
+                                    if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
+                                        $include_items[] = "$.getScript('/js/$dependency');";
+                                    }
+                                }
+                            }
+                            file_put_contents("$path_app/$filetype/include.$filetype", implode("\n", $include_items));
+
+                        } //end loop for runtime scripts to copy and add
+
+                    } // end if runtime libs defined
+                }// end required libs handling
+
+            } //end conf file exists
+
+//3: run the server_code.php file if it exists
+            if (file_exists($path_component . "server_code.php")) {
+                if (!@(include($path_component . "server_code.php"))) {
+                    return array(
+                            'result' => 'failure',
+                            'msg' => "Unable to load server_code.php file");
+                } else {
+                    if (class_exists("mlab_ct_" . $comp_id)) {
+                        $temp_class_name = "mlab_ct_" . $comp_id;
+                        $component_class = new $temp_class_name();
+                        if (method_exists($component_class, "onCreate")) {
+                            if (!$component_class->onCreate($path_app, $path_component, $comp_id)) {
+                                return array(
+                                    'result' => 'failure',
+                                    'msg' => "Unable to run application on server");
+                            }
+                        }
+                    }
+                }
+            }
+
+            return array('result' => 'success');
+
+        } else {
+                $error = "";
+                if (!is_dir($path_component)) { $error .= "Component not found\n"; }
+                if (!is_dir($path_app)) { $error .= "App not found\n"; }
+                return array(
+                            'result' => 'failure',
+                            'msg' => $error);
+        }        
+    }
 	
 	/**
 	 * Function called to create a new app, copies across relevant template files 
