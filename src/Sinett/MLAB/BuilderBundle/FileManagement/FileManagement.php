@@ -4,6 +4,17 @@ namespace Sinett\MLAB\BuilderBundle\FileManagement;
 use ZipArchive;
 use Symfony\Component\Yaml\Parser;
 
+//this class is used to store new functions that will process embedded variables in the index.html file
+//one example is a class to 
+class CustomPreProcessing {
+    
+    public function getnumberofpages($config, $app, $app_path) {
+   		$pages = glob ( $app_path . "/???.html" );
+   		$page_num = intval(basename(array_pop($pages))) + 1;
+        return $page_num;
+    }
+    
+}
 
 class FileManagement {
 	
@@ -334,20 +345,20 @@ class FileManagement {
 
 //3: run the server_code.php file if it exists
             if (file_exists($path_component . "server_code.php")) {
-                if (!@(include($path_component . "server_code.php"))) {
+                if (!class_exists("mlab_ct_" . $comp_id) && !@(include($path_component . "server_code.php"))) {
                     return array(
                             'result' => 'failure',
                             'msg' => "Unable to load server_code.php file");
-                } else {
-                    if (class_exists("mlab_ct_" . $comp_id)) {
-                        $temp_class_name = "mlab_ct_" . $comp_id;
-                        $component_class = new $temp_class_name();
-                        if (method_exists($component_class, "onCreate")) {
-                            if (!$component_class->onCreate($path_app, $path_component, $comp_id)) {
-                                return array(
-                                    'result' => 'failure',
-                                    'msg' => "Unable to run application on server");
-                            }
+                }
+                
+                if (class_exists("mlab_ct_" . $comp_id)) {
+                    $temp_class_name = "mlab_ct_" . $comp_id;
+                    $component_class = new $temp_class_name();
+                    if (method_exists($component_class, "onCreate")) {
+                        if (!$component_class->onCreate($path_app, $path_component, $comp_id)) {
+                            return array(
+                                'result' => 'failure',
+                                'msg' => "Unable to run application on server");
                         }
                     }
                 }
@@ -863,6 +874,227 @@ class FileManagement {
         return md5(implode("", $md5sums));
         
         
+        
+    }
+
+/**
+ * Function that will go through each page in an app and run various processing functions
+ * 
+ * @param type $app
+ * @param type $config
+ * 
+ * 
+ */
+    public function preCompileProcessingAction($app, $config) {
+        
+//get basic objects and variables ready
+        $comp_dir = $config["paths"]["component"];
+        $components = $this->loadComponents(array(), $comp_dir, $config["component_files"], $app->getId());
+        $app_path = $app->calculateFullPath($config['paths']['app']);
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        
+//prepare processing class
+        $process = new CustomPreProcessing();
+
+//first make the cache dir (i.e. the dir with the files to be compiled) and then process index.html file
+//This can have special variables in it, for the other pages we only execute the onCompile function
+        if (!file_exists($cached_app_path)) {
+            mkdir($cached_app_path);
+        }
+        $frontpage_content = file_get_contents($app_path . "index.html");
+
+//get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
+        preg_match_all('~%%(.+?)%%~', $frontpage_content, $placeholders);
+        $placeholders = array_unique($placeholders[1]);
+
+//we use two separate loops to check for function or component placeholders. 
+//Reason for this is that a component may well have a function placeholder inside it.
+// * NB!!!!! This will not be suitable for components that are interactive at designtime, 
+//           such as a map that requires settings to be chosen.
+
+//start with the component placeholders
+        foreach ($placeholders as $placeholder) {
+            if (strpos($placeholder, "MLAB_CT_COMP_") !== false) {
+                $comp_name = strtolower(str_replace("MLAB_CT_COMP_", "", $placeholder));
+                if (array_key_exists($comp_name, $components)) {
+                    
+//here we insert the html of the component in place of the placeholder
+//this is a two step process, first insert the content of the component and then run the backend code (if any)
+                    $frontpage_content = str_replace("%%$placeholder%%", $components[$comp_name]["html"], $frontpage_content);
+                    $res = $this->componentAdded($app->getId(), $app, $comp_name, $config);
+                    if ($res["result"] != "success") {
+                        error_log("Failed to run ComponentAdded code for $comp_name");
+                    }
+                } else {
+                    error_log("$comp_name is not a component installed on this server");
+                }
+            }
+        }
+
+        
+//now check for functions to be run. starts with MLAB_CT_FUNC_. 
+        foreach ($placeholders as $placeholder) {
+//Functions are kept in the CustomPreProcessing class, where all names are in lower case (i.e. no CamelCase or similar)
+            if (strpos($placeholder, "MLAB_CT_FUNC_") !== false) {
+                $func_name = strtolower(str_replace("MLAB_CT_FUNC_", "", $placeholder));
+                if (method_exists($process, $func_name)) {
+                    
+//here we run the function and obtain the result
+                    $value = call_user_func_array(array($process, $func_name), array($config, $app, $app_path));
+                    
+//to avoid javascript errors we set empty values to -1
+//(for instance code may be: var x = %%MLAB_CT_FUNC_GET_NUM%%; , with an empty value this would cause all javascript below to fail at runtime
+                    if (empty($value)) {
+                        $value = -1;
+                    }
+                    
+                    $frontpage_content = str_replace("%%$placeholder%%", $value, $frontpage_content);
+                } else {
+                    error_log("$func_name is not a function in class CustomPreProcessing in " . __FILE__);
+                }
+                
+            } else if (strpos($placeholder, "MLAB_CT_") === false) {
+                error_log("Placeholder $placeholder was not processed");
+            }
+        }
+        
+//loop through all pages to process the components that have a matching onCompile function
+        $pages = glob ( $app_path . "???.html" );
+        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
+
+        foreach ($pages as $page) {
+//parse pages and loop through the components for each page
+            $doc = new \DOMDocument("1.0", "utf-8");
+            libxml_use_internal_errors(true);
+            $doc->validateOnParse = true;
+            if (substr($page, -10) == "index.html") {
+                $doc->loadHTML($frontpage_content);
+                libxml_clear_errors();
+                $page_components = $doc->getElementById($config["app"]["content_id"])->childNodes;
+            } else {
+                $doc->loadHTMLFile($page);
+                libxml_clear_errors();
+                $page_components = $doc->getElementsByTagName('body')->item(0)->childNodes;
+            }
+            
+
+            foreach ($page_components as $page_component) {
+                
+//check if this component has a server_code.php file and if it has a onCompile class, 
+//if so we send the inside of the DIV node object and the html version of this to the function to be manipulated. 
+//We get plain HTML back
+                if (get_class($page_component) == "DOMElement") {
+                    $comp_name = $page_component->getAttribute("data-mlab-type");
+                    if ($comp_name != "") {
+                        $path_component = $comp_dir . $comp_name . "/";
+                        if (file_exists($path_component . "server_code.php")) {
+                            if (!class_exists("mlab_ct_" . $comp_name) && !@(include($path_component . "server_code.php"))) {
+                                return array(
+                                        'result' => 'failure',
+                                        'msg' => "Unable to load server_code.php file");
+                            } 
+                            
+                            if (class_exists("mlab_ct_" . $comp_name)) {
+                                $temp_class_name = "mlab_ct_" . $comp_name;
+                                $component_class = new $temp_class_name();
+                                if (method_exists($component_class, "onCompile")) {
+                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
+                                    $temp_doc->appendChild($temp_doc->importNode($page_component,TRUE));
+                                    $processed_html = $component_class->onCompile($page_component, $temp_doc->saveHTML());
+
+                                    if (!$processed_html) {
+                                        return array(
+                                            'result' => 'failure',
+                                            'msg' => "Unable to run application on server");
+                                    } 
+//plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page
+                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
+                                    $temp_doc->loadHTML($processed_html);
+                                    $temp_comp = $temp_doc->getElementsByTagName('body')->item(0)->firstChild;
+//erase old nodes
+                                    while($page_component->childNodes->length){
+                                      $page_component->removeChild($page_component->firstChild);
+                                    }
+//insert the new nodes from the transformed HTML
+                                    foreach($temp_comp->childNodes as $transfer_node){
+                                        $page_component->appendChild($doc->importNode($transfer_node,TRUE));
+                                    }
+                                } //end method exists
+                            } //end class exists
+                        } //end file server_code.php exists
+                    } //end not blank component name
+                } // end dom element
+            } //end page loop
+
+            $doc->saveHTMLFile($cached_app_path . basename($page));
+        }
+        
+//update the include.js file with common variables. These include
+// - number of pages
+// - title of app
+// - version of app
+// - name of creator
+// - based on template
+// - categories 1, 2 & 3
+// - last preprocessing (now)
+// - last time updated (from db)
+// - uid
+        $metatags = get_meta_tags($app_path . "index.html");
+        date_default_timezone_set('UTC');
+
+        $app_vars = array(
+            "num_pages" => $process->getnumberofpages($config, $app, $app_path),
+            "app_title" => $metatags["mlab:app_uid"],
+            "app_version" => $app->getActiveVersion(),
+            "app_categoryOne" => $app->getCategoryOne(),
+            "app_categoryTwo" => $app->getCategoryTwo(),
+            "app_categoryThree" => $app->getCategoryThree(),
+            "app_creator" => $app->getUser(),
+            "app_template" => $app->getTemplate(),
+            "time_processed" => date("Y-m-d H:i:s"),
+            "time_updated" => $app->getUpdated(),
+            "app_uid" => $app->getUid()
+            
+        );
+        
+        if (!file_exists($app_path . "js/include.js")) {
+            file_put_contents($app_path . "js/include.js", "");
+        }
+        $include_js = file($app_path . "js/include.js");
+        $new_include_js = array();
+        foreach ($include_js as $line) {
+            if (substr(trim($line), 0, 12) == "MLAB_RT_VARS") {
+                $new_include_js[] = "var MLAB_RT_VARS = " . json_encode($app_vars) . ";";
+            } else {
+                $new_include_js[] = $line;
+            }
+        }
+        if (empty($new_include_js)) {
+            $new_include_js = array("var MLAB_RT_VARS = " . json_encode($app_vars) . ";");
+        }
+        
+//unlike other functions here, here we update the live file, an not the cached post-processing file, this is because the vars do not cause a problem in the original file, 
+//and we can still create symlinks to all non html files
+        file_put_contents($app_path . "js/include.js", implode("\n", $new_include_js));
+        
+//finally, to avoid using a lot of disk space (for uploaded videos for instance), we symlink all the files that are NOT HTML files
+//we need to delete existing symlinks first to avoid "dangling" links with no target file after a page is deleted, etc.
+        $symlinks = glob($cached_app_path . "*"); 
+        foreach ($symlinks as $symlink) {
+            if(is_link($symlink)) {
+                unlink($symlink);
+            } 
+        }
+        
+        $other_files = glob($app_path . "*");
+        foreach ($other_files as $other_file) {
+            if (substr($other_file, -5) != ".html" && substr($other_file, -5) != ".lock") {
+                $file_name = basename($other_file);
+                symlink($other_file, $cached_app_path . $file_name);
+            }
+        }
+        
+        return array("result" => "success");
         
     }
     

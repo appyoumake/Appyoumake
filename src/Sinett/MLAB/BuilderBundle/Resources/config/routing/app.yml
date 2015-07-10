@@ -118,3 +118,7 @@ app_list_create_new_version:
 app_list_create_new_branch:
     path:   /builder/{app_id}/create_new_branch
     defaults: { _controller: "SinettMLABBuilderBundle:App:createNewBranch" }
+
+app_preview:
+    path:   /builder/{app_id}/preview
+    defaults: { _controller: "SinettMLABBuilderBundle:App:appPreview" }

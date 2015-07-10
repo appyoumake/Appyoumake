@@ -13,6 +13,7 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 //use Symfony\Component\HttpFoundation\File\UploadedFile
 
@@ -547,19 +548,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             }
             
                         
-//finally we save the database record            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+//finally we save the database record 
             $em->flush();
             
             return new JsonResponse(array('db_table' => 'app',
@@ -601,6 +590,31 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     }
 
 /******* EDIT FUNCTIONALITY *******/
+    
+/**
+ * Runs the pre-compile processing function required for final HTML pages, and then redirects to show the cached files
+ * @param type $app_id
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
+    public function appPreviewAction($app_id) {
+        if ($app_id < 1) {
+    		return new Response("No app id specified");
+    	}
+        
+        $em = $this->getDoctrine()->getManager();
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        $request = $this->container->get('request');
+
+        $file_mgmt = $this->get('file_management');
+        $res = $file_mgmt->preCompileProcessingAction($app, $this->container->parameters['mlab']);
+        
+        if ($res["result"] == "success") {
+            return $this->redirect($request->getSchemeAndHttpHost() . $this->container->parameters['mlab']["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_cache/index.html");
+        } else {
+            return new Response( "Unable to pre-process app: " . implode("<br>",$res) );
+        }
+    }
+    
 /**
  * Opens the app page editor, loads initial app and various config details
  * @param type $id
@@ -680,6 +694,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
+                                        "app_preview" => $this->generateUrl('app_preview',  array('app_id' => '_APPID_')),
                     
                                         "mkt_get_tagged_users" => $this->generateUrl('mkt_get_tagged_users', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'tag' => '_TAG_')), 
                                         "mkt_submit_app_details" => $this->generateUrl('mkt_submit_app_details', array('window_uid' => '_WINDOW_UID_', 'app_details' => '_APP_DETAILS_')), 

@@ -62,6 +62,3 @@ cmp_get_app:
     pattern: /cmpGetApp/{window_uid}/user_uid/{app_uid}/{app_version}/{checksum}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetApp }
 
-test_precompile:
-    pattern: /preCompileProcessing/{app_id}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:preCompileProcessing }

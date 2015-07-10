@@ -1,5 +1,3 @@
-
-
 /***********************************************************
  ******************* App level functions *******************
 ************************************************************/
@@ -59,7 +57,8 @@ Mlab_dt_management.prototype = {
  * @returns void
  */
     app_download  : function () {
-        this.page_save(mlab_app_download_process);
+        that = this;
+        this.page_save( function() { that.app_download_process(); } );
     },
 
     app_download_process  : function () {
@@ -617,8 +616,8 @@ Mlab_dt_management.prototype = {
             alert("You can not copy the index page");
             return;
         }
-
-        this.page_save( function() { this.page_copy_process(page_num); } );
+        that = this;
+        this.page_save( function() { that.page_copy_process(page_num); } );
     },
 
     page_copy_process : function (page_num) {
@@ -690,23 +689,21 @@ Mlab_dt_management.prototype = {
      * @returns {undefined}
      */
     page_preview : function () {
-        this.page_save(this.page_preview_process);
+        that = this;
+        this.page_save( function() { 
+            that.page_preview_process(); 
+        } );
     },
 
     page_preview_process : function () {
-        
-        if (mlab.dt.app.curr_page_num == 0 || mlab.dt.app.curr_page_num == "index" ) {
-            page_name = ""
-        } else {
-            page_name = ("000" + mlab.dt.app.curr_page_num).slice(-3) + ".html";
-        }
+        var url = this.parent.urls.app_preview.replace("_APPID_", this.parent.app.id);
         var w = $(window).width() * 0.25;
         var h = $(window).height() * 0.75;
-        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.active_version + "_cache/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+        var res = window.open(url,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }
-        mlab.dt.utils.timer_start();
+        
     },
     
     market: {
