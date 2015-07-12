@@ -67,7 +67,6 @@
         $(document).ready(function() {
             if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
                 var stickyComponentTop = $('#mlab_toolbar_components').offset().top;
-                //TODO calculate this right....
                 var stickyComponentToolsTop = $('#mlab_toolbar_for_components').offset().top - 25;
                 var stickyComponentToolsLeft = 635; //this is 345 when starting but when scrolling it shifts down and needs 290 more...
                 
@@ -75,8 +74,8 @@
                     var windowTop = $(window).scrollTop(); // returns number
 
                     if (stickyComponentTop + 1 < stickyComponentTop + windowTop) {
-                        $('#mlab_toolbar_components ').css({ position: 'fixed', top: stickyComponentTop });
-                        $('#mlab_toolbar_for_components').css({ position: 'fixed', top: stickyComponentToolsTop, left: stickyComponentToolsLeft });
+                        $('#mlab_toolbar_components ').css({ top: stickyComponentTop, 'margin-top': '0px' });
+                        $('#mlab_toolbar_for_components').css({ top: stickyComponentToolsTop, left: stickyComponentToolsLeft });
                     }
                     else {
                         $('#mlab_toolbar_components #mlab_toolbar_for_components').css('position','static');
@@ -89,26 +88,33 @@
             $("#mlab_editor_menu_dropdown").on("click",function(event) {
                  //Toggles the Editor menu on and off
                  console.log(event.toElement);
-                  $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_dropdown'); 
-                  $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_dropdown_tab_selected'); 
+                  $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                  $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                  event.stopPropagation(); 
+             });
+             
+            //Checkes if the user menu icon is cliked
+            $("#mlab_user_menu_dropdown").on("click",function(event) {
+                 //Toggles the User menu on and off
+                 console.log(event.toElement);
+                  $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                  $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
                   event.stopPropagation(); 
              });
 
             //Listens for any click
              $(document).on('click', function (event) {
                   // Checks if editor menu is open
-                  if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_dropdown')) {
+                  if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
                       //Editor menu is open 
                       console.log('menyen er synlig');
                       console.log(event.toElement);
-
-
-
-                     //event.stopPropagation();   
-
-                    // $('#mlab_editor_menu_dropdown_content').removeClass('mlab_show_dropdown'); 
-
-
+                  } 
+                  // Checks if user menu is open
+                  if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
+                      //Editor menu is open 
+                      console.log('menyen er synlig');
+                      console.log(event.toElement);
                   } 
 
              });  

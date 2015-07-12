@@ -655,7 +655,7 @@ Mlab_api.prototype = {
          * @param {string} elementId The id of the HTML element where the text size will be toggled
          */
         pageTextSizeToggle: function (elementId) {
-
+            //TODO get .mlab_large_text to work and switch to toggle between the clas on an off
             if ($("#" + elementId).hasClass('mlab_large_text')) {
                 $("#" + elementId).removeClass('mlab_large_text');
                 $("#" + elementId).css("font-size", "100%");
@@ -674,7 +674,7 @@ Mlab_api.prototype = {
          * @param {string} toggleTextColor The text color used to toggle with
         */
         pageColorToggle: function (elementId, defaultBackgroundColor, defaultTextColor, toggleBackgroundColor, toggleTextColor) {
-
+            //TODO Set the attributes on classes instead of setting css directly
             if ($("#" + elementId).hasClass('mlab_color_toggle')) {
                 $("#" + elementId).removeClass('mlab_color_toggle');
                 $("#" + elementId).css("background-color", defaultBackgroundColor);

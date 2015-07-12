@@ -21,20 +21,22 @@
 
 
 /* ==========================================================================
+   Typography
+   ========================================================================== */
+    #page #mlab_editable_area {
+        font-size: 100%;
+    }
+
+    #page #mlab_editable_area .mlab_large_text{
+        font-size: 140%;
+    }
+
+
+/* ==========================================================================
    Header
    ========================================================================== */
 #page #mlab_header {
     padding: 0;
-/* ==========================================================================
-   Typography
-   ========================================================================== */
-    #page #mlab_editable_area{
-        font-size: 100%;
-    }
-
-    #page #mlab_editable_area.large_text{
-        font-size: 140%;
-    }
     margin: 0;
     background-image: url('./img/contentpage_header_backgr.png');
     background-repeat:no-repeat;

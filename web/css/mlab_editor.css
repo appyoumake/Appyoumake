@@ -55,9 +55,10 @@ made smaler than the min width */
     display: block;
     float: left;
     width: 145px;
-    padding-top: 55px;
+    margin-top: 65px;
     overflow-y: auto;
     height: 75%;
+    position: fixed;
 } 
 
 #mlab_editor #mlab_toolbar_components .mlab_button_components {
@@ -197,6 +198,9 @@ made smaler than the min width */
     margin-top: 25px;
     margin-left: 200px;
     max-width: 80px;
+    position: fixed;
+    top: 91px;
+    left: 635px;
 }
 
 #mlab_editor #mlab_toolbar_for_components #mlab_component_toolbar_heading {
