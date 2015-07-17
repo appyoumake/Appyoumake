@@ -1,13 +1,13 @@
-# Configuration file for simple header (H1) component
+# Configuration file for simple headline (H1) component
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: headline
 name: h1
-tooltip: This is a main headline, use only once per page
-compatible: ["h2", "h3", "ol", "ul", "p"]
-html: <h1>Legg til overskrift her</h1>
+tooltip: This is a main headline, use once per page
+compatible: ["h1", "h2", "h3", "p", "chapter"]
+html: <h1>Add your top level headline here</h1>
 process_keypress: true
-storage_plugin: true
+placeholder: Add your top level headline here
 custom:
     bold_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAS0lEQVQ4y2NgoDLgAOL/WPBdIJ4IxGzkGgDDPZQa8IBUA0AgAIsY2QbcpdQLE8k14AE0ANkGzACyvUBxIFIcjRQnJKolZaIzE8kAAK1SYN3E0m6CAAAAAElFTkSuQmCC
     italic_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAVCAYAAABPPm7SAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAASdAAAEnQB3mYfeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADySURBVDiNlZOxbQJREETfADIRKU4ILIeWCEiAFgicuwaaoBAacAduASyISMhISAgoAAlpndyhf3e7+N9KX3d/dnY0s9KXmZGWpCrwT/UcbFF8P4FlMLcCfgEwM/cAa8CCM3rwnggcguFzyut4/iQNgI/A/ia9uALA9EkvS2AW4ADbHIF5gN+BXQUJFnjBX+C+zm04kPQODAMHmzrgRcjOHwlE+V0HXv4tfv4roAa/NtwHboHAj7fweoQJ8JJt39lBu/wtBIzy+TY61R2c8PMfo1f7cCDpFXhrYx+gJ+mr+B9HJKBb8szsO22osJhdZqb0/gdF99yJyTkyOQAAAABJRU5ErkJggg==

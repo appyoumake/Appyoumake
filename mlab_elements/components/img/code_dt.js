@@ -1,5 +1,4 @@
-	
-	
+//image component	
 
     this.onCreate = function (el) {
         this.onLoad (el);
@@ -68,12 +67,11 @@
         fig.css({'float': 'none', 'margin-left': 'auto', 'margin-right': 'auto'});
     };
     
-    
     this.custom_upload_image = function (el) {
         this.api.uploadMedia(el, this.config, "jpg,jpeg,png,gif", this.cbSetImageSource);
     };
     
-        /**
+/**
      * Callback function for MLAB API to set image selected
      * @param {type} el
      * @param {type} img_url

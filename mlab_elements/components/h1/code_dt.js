@@ -1,31 +1,35 @@
-	
-	
-    
+//simple H1 headline, parent of all other headline components
+
+    this.getHTMLElement = function(el)  {
+        return $(el).find("h1");
+    };
+
     this.onCreate = function (el) {
         this.onLoad (el);
-        this.highlight($(el).find("h1"));
+        this.highlight(this.getHTMLElement(el));
     };
 
     //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
-        $(el).find("h1").attr("contenteditable", "true");
-        $(el).find("h1").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text("Add content"); } } ) ;
+        this.getHTMLElement(el).attr("contenteditable", "true")
+                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(this.config.placeholder); } } ) ;
     };
     
 	this.onSave = function (el) {
-		$(el).find("h1").removeAttr("contenteditable");
+		var inner_el = this.getHTMLElement(el)
+        inner_el.removeAttr("contenteditable");
         var temp_html = el.outerHTML;
-        $(el).find("h1").attr("contenteditable", "true");
+        inner_el.attr("contenteditable", "true");
         return temp_html;
     };
             
     this.onReplace = function (el, replacement_id, replacement_html) {
-		var content = $(el).find("h1").html();
+		var content = this.getHTMLElement(el).html();
         $(el).empty().html(replacement_html).data("mlab-type", replacement_id).children(0).html(content);
     };
     
     this.getContentSize = function (el) {
-        return $(el).find("h1").text().length;
+        return this.getHTMLElement(el).text().length;
     };
 
     this.custom_bold = function (el) {
