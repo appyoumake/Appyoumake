@@ -93,6 +93,8 @@ Mlab_api.prototype = {
 // added by arild
 // this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
 // these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
+// THE REASON FOR THIS IS THAT JQUERY WILL NOT CONFIRM RECEIVED FILE IF A .JS FILE DOES NOT CONTAIN VALID JS FIL
+// AT THE SAME TIME WE NEED TO CONTROL THE LOADING OF THESE FILES AS THEY ARE USED TO INITIALISE COMPONENTS
 
         /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
             Also splitting in index_html, because we do not know what parameters there are.
@@ -371,6 +373,11 @@ Mlab_api.prototype = {
         current_page: 0,
         max_pages: 0,
         self: this,
+        
+        initialise: function (app_current_page, app_max_pages) {
+            current_page = app_current_page;
+            max_pages = app_max_pages;
+        },
 /**
  * current = page that is currently displayed
  * move_to can be index, first, last, next, previous or a number
@@ -643,51 +650,9 @@ Mlab_api.prototype = {
             return document.mlab_dt_storage[comp][key];
         },
     
-    },
-        /**
-     * Object used for changing settings at runtime
-     */
-    
-    settings: {
-
-        /**
-         * This function toggles the text size of an html element between 100% and 130%
-         * @param {string} elementId The id of the HTML element where the text size will be toggled
-         */
-        pageTextSizeToggle: function (elementId) {
-
-            if ($("#" + elementId).hasClass('mlab_large_text')) {
-                $("#" + elementId).removeClass('mlab_large_text');
-                $("#" + elementId).css("font-size", "100%");
-            } else {
-                $("#" + elementId).addClass('mlab_large_text'); 
-                $("#" + elementId).css("font-size", "130%");
-            }
-        },
-        
-        /**
-        * This function toggles the text and background color of an html element
-         * @param {string} elementId The id of the HTML element where the color of the background and the text will be toggled
-         * @param {string} defaultBackgroundColor The default background color of the HTML element
-         * @param {string} defaultTextColor The default text color of the HTML element
-         * @param {string} toggleBackgroundColor The background color used to toggle with
-         * @param {string} toggleTextColor The text color used to toggle with
-        */
-        pageColorToggle: function (elementId, defaultBackgroundColor, defaultTextColor, toggleBackgroundColor, toggleTextColor) {
-
-            if ($("#" + elementId).hasClass('mlab_color_toggle')) {
-                $("#" + elementId).removeClass('mlab_color_toggle');
-                $("#" + elementId).css("background-color", defaultBackgroundColor);
-                $("#" + elementId).css("color", defaultTextColor);
-            } else {
-                $("#" + elementId).addClass('mlab_color_toggle'); 
-                $("#" + elementId).css("background-color", toggleBackgroundColor);
-                $("#" + elementId).css("color", toggleTextColor);
-            }
-        },
-        
-    },
+    }
 }; // end prototype for Mlab.api
+
 
 
 /* 

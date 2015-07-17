@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2dccbb91787d8fb5ff35ff8557c45406",
+    "hash": "46add3542a477819ec737e9dd2cf1843",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -181,7 +181,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -248,7 +248,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -525,7 +525,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -579,7 +579,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -740,7 +740,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/54af483e293e3f00fd4173b23d9dabdd8c30e33e",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/53704990223dc45fe71c35b93f39768bfe1d8006",
                 "reference": "54af483e293e3f00fd4173b23d9dabdd8c30e33e",
                 "shasum": ""
             },
@@ -1633,12 +1633,12 @@
             "version": "v1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig-extensions.git",
+                "url": "https://github.com/twigphp/Twig-extensions.git",
                 "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
                 "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
                 "shasum": ""
             },
@@ -1682,12 +1682,12 @@
             "version": "v1.16.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
+                "url": "https://github.com/twigphp/Twig.git",
                 "reference": "8ce37115802e257a984a82d38254884085060024"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
                 "reference": "8ce37115802e257a984a82d38254884085060024",
                 "shasum": ""
             },
@@ -1733,23 +1733,76 @@
                 "templating"
             ],
             "time": "2014-07-05 12:19:05"
+        },
+        {
+            "name": "willdurand/js-translation-bundle",
+            "version": "v2.2.2",
+            "target-dir": "Bazinga/Bundle/JsTranslationBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/willdurand/BazingaJsTranslationBundle.git",
+                "reference": "2f9ee8b087af3c2998b6091168c31da13ca0cfcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/willdurand/BazingaJsTranslationBundle/zipball/2f9ee8b087af3c2998b6091168c31da13ca0cfcd",
+                "reference": "2f9ee8b087af3c2998b6091168c31da13ca0cfcd",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": "~2.3",
+                "symfony/finder": "~2.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/intl": "~2.3"
+            },
+            "replace": {
+                "willdurand/expose-translation-bundle": "2.2.*"
+            },
+            "require-dev": {
+                "symfony/browser-kit": "~2.3",
+                "symfony/twig-bundle": "~2.3",
+                "symfony/yaml": "~2.3"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Bazinga\\Bundle\\JsTranslationBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "William Durand",
+                    "email": "william.durand1@gmail.com"
+                }
+            ],
+            "description": "A pretty nice way to expose your translation messages to your JavaScript.",
+            "keywords": [
+                "javascript",
+                "symfony",
+                "translation"
+            ],
+            "time": "2015-05-21 21:59:34"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "gedmo/doctrine-extensions": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.3"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

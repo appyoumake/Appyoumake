@@ -22,7 +22,8 @@
 
         "gedmo/doctrine-extensions": "dev-master",
         "symfony/yaml": "2.3.*",
-        "symfony/assetic-bundle": "2.3.*"
+        "symfony/assetic-bundle": "2.3.*",
+        "willdurand/js-translation-bundle": "^2.2"
     },
     "scripts": {
         "post-install-cmd": [

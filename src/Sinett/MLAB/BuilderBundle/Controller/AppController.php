@@ -11,7 +11,6 @@ use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
 
-use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -174,19 +173,28 @@ class AppController extends Controller
 //do they want to copy an existing app?
             switch ($temp_app_data["select_base"]) {
                case "existing_app":
-                     $orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
-                     $result = false;
-                     if ($orig_app) {
-                         $result = $file_mgmt->copyAppFiles($app_data["copyApp"], $app_destination);
-                     } 
+                    $orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
+                    $result = false;
+                    if ($orig_app) {
+                        $result = $file_mgmt->copyAppFiles($app_data["copyApp"], $app_destination);
+                    } 
 
-                     if ($result == false) {
-                         return new JsonResponse(array(
-                                 'action' => 'ADD',
-                                 'result' => 'FAILURE',
-                                 'message' => 'Unable to copy app files'));
-                     } 
-                     break;
+                    if ($result == false) {
+                        return new JsonResponse(array(
+                                'action' => 'ADD',
+                                'result' => 'FAILURE',
+                                'message' => 'Unable to copy app files'));
+                    } 
+
+//update the title of the app in the conf.json file
+                    if (file_exists($app_destination . "conf.json")) {
+                        $app_conf = json_decode(file_get_contents($app_destination . "conf.json"));
+                        $app_conf["title"] = $entity->getName();
+                    } else {
+                        $app_conf = array("title" => $entity->getName());
+                    }
+                    file_put_contents($app_destination . "conf.json", json_encode($app_conf));
+                    break;
         
 //otherwise we use the template they specified 
                 case "template":

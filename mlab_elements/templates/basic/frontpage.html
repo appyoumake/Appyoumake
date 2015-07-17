@@ -13,6 +13,7 @@
 <script src="./js/jquery-ui.js"></script>
 <script src="./js/jquery-mobile.js"></script>
 <script src="./js/mlab.api.js"></script>
+<script src="./js/basic.js"></script>
 <script src="./js/include.js"></script>
 <script>
     
@@ -45,9 +46,9 @@
         //Opens the next page 
         $("#mlab_next_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
         //Toggles the text and background color
-        $("#mlab_btn_color_toggle").on("click", function () { mlab.api.settings.pageColorToggle("page", "#1e1e1e", "#ffffff", "#ffffff", "#000000"); });
+        $("#mlab_btn_color_toggle").on("click", function () { mlab_set_display_settings.pageColorToggle("page", "#1e1e1e", "#ffffff", "#ffffff", "#000000"); });
         //Toggles the text size between 100% and 130%
-        $("#mlab_btn_txsize_toggle").on("click", function () { mlab.api.settings.pageTextSizeToggle("mlab_editable_area"); });
+        $("#mlab_btn_txsize_toggle").on("click", function () { mlab_set_display_settings.pageTextSizeToggle("mlab_editable_area"); });
       
     };
   

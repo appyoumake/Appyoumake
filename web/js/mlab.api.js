@@ -88,11 +88,21 @@ Mlab_api.prototype = {
      * Runs when mlab object has been set up.
      */
     onMlabReady: function() {
+        
+//add the app specific variables (generated in the pre-compile processing function)
+// to the object here
+        if (typeof (MLAB_RT_VARS) != "undefined") {
+            mlab.variables = MLAB_RT_VARS;
+        } else  {
+            mlab.variables = new Object();
+        }
         $.mobile.initializePage();
 
 // added by arild
 // this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
 // these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
+// THE REASON FOR THIS IS THAT JQUERY WILL NOT CONFIRM RECEIVED FILE IF A .JS FILE DOES NOT CONTAIN VALID JS FIL
+// AT THE SAME TIME WE NEED TO CONTROL THE LOADING OF THESE FILES AS THEY ARE USED TO INITIALISE COMPONENTS
 
         /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
             Also splitting in index_html, because we do not know what parameters there are.

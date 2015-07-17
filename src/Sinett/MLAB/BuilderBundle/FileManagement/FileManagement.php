@@ -16,6 +16,10 @@ class CustomPreProcessing {
     
 }
 
+/**
+ * a service class that is used primarily by the App and Services controllers. Deals with all aspects of file and app mangement (uploading, deleting, etc)
+ */
+
 class FileManagement {
 	
 	private $config;
@@ -250,7 +254,7 @@ class FileManagement {
         $path_component = $config['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($config['paths']['app']);
         $path_app_js = $path_app . "js/";
-        $path_app_permissions = $path_app . $config['filenames']["permissions"];
+        $path_app_config = $path_app . $config['filenames']["app_config"];
         
 //check if path to component and app exists
         if ( is_dir($path_component) && is_dir($path_app) ) {
@@ -279,14 +283,21 @@ class FileManagement {
             if (file_exists($path_component . "conf.yml")) {
                 $yaml = new Parser();
                 $config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                
                 if (isset($config["permissions"])) {
 
                     $new_permissions = $config["permissions"];
 
-                    if (!file_exists( $path_app_permissions)) {
-                        file_put_contents($path_app_permissions, implode("\n", $new_permissions));
+                    if (!file_exists( $path_app_config)) {
+                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "permissions" => $new_permissions)));
                     } else {
-                        file_put_contents($path_app_permissions, implode("\n", array_unique(array_merge($new_permissions, file($path_app_permissions)))));;
+                        $tmp_existing_config = json_decode(file_get_contents($path_app_config));
+                        if (key_exists("permissions", $tmp_existing_config)) {
+                            $tmp_existing_config["permissions"] = array_unique(array_merge($new_permissions, $tmp_existing_config["permissions"]));
+                        } else {
+                            $tmp_existing_config["permissions"] = $new_permissions;
+                        }
+                        file_put_contents($path_app_config, json_encode($tmp_existing_config));;
                     }
                 }
 
@@ -383,6 +394,7 @@ class FileManagement {
 		
 //prepare all the paths to use
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+        $app_config_path = $app_path . $this->config['filenames']["app_config"];
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
 		
@@ -393,6 +405,17 @@ class FileManagement {
             foreach ($template_items_to_copy as $from => $to) {
                 $this->func_copy("$template_path$from", "$app_path$to");
             }
+            
+//update the conf.json file with any permissions specified in the template file
+            $app_conf = array("title" => $app->getName());
+            if (file_exists($template_path . "conf.yml")) {
+                $yaml = new Parser();
+                $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
+                if (key_exists("permissions", $temp)) {
+                    $app_conf["permissions"] = $temp["permissions"];
+                }
+            }
+            file_put_contents($app_config_path, json_encode($app_conf));
             return true;
         } else {
             return array("Unable to create directory: $app_path");
