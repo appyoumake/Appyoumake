@@ -4,7 +4,7 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: list
 name: ol
 tooltip: Ordered list
-compatible: ["table", "ul", "p"]
+compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |
     <ol>
