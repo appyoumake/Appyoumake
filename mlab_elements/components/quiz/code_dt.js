@@ -4,47 +4,6 @@ this.domRoot = null;
 /* Flag indicating if component is initialized or not. */
 this.initialized = false;
 
-/* CSS rules for design time. Since all of the HTML is added by JS, it makes sense to add CSS by JS too. */
-this.css = '<style type="text/css">'
-    + '/* Common rules */'
-    + '.mlab_quiz, .mlab_quiz * { box-sizing: border-box; -moz-box-sizing: border-box; }'
-    + '.mlab_quiz .mlab_quiz_page { width: 100%; border: 1px solid; padding: 0.5em; }'
-    + '.mlab_quiz .mlab_quiz_page h2 { margin-top: 0px; }'
-    + '.mlab_quiz .mlab_quiz_page footer { display: inline-block; width: 100%; padding-top: 0.5em; }'
-    + '.mlab_quiz .mlab_quiz_line { display: block; width: 100%; clear: both; padding-bottom: 0.3em; }'
-    + '.mlab_quiz .mlab_quiz_line label { display: inline !important; margin-right: 0.2em; font-size: 1.2em; line-height: 1.4em; }'
-    + '.mlab_quiz ul.mlab_quiz_questions { padding: 0 0.5em !important; }'
-    + '.mlab_quiz .mlab_quiz_question { display: block; width: 100%; margin-bottom: 0.5em; padding: 0.5em; border: 1px solid transparent; border-bottom: 1px solid; }'
-    + '.mlab_quiz .mlab_quiz_question input, .mlab_quiz .mlab_quiz_question select { font-size: 1.2em; }'
-    + '.mlab_quiz .mlab_quiz_question select { width: 100%; }'
-    + '.mlab_quiz .mlab_quiz_text_input { width: 100%; }'
-    + '/* RT only */'
-    + '.mlab_quiz .mlab_quiz_button_prev { float: left; }'
-    + '.mlab_quiz .mlab_quiz_button_next { float: right; }'
-    + '.mlab_quiz textarea { width: 100%; height: 7em; }'
-    + '.mlab_quiz .mlab_quiz_question_text { padding-bottom: .5em; }'
-    + '.mlab_quiz .mlab_quiz_question_ok { border: 1px solid green; border-radius: 3px; }'
-    + '.mlab_quiz .mlab_quiz_question_not_ok { border: 1px solid red; border-radius: 3px; }'
-    + '.mlab_quiz .mlab_quiz_correct_answer { color: green; }'
-    + '.mlab_quiz .mlab_quiz_hide { display: none; }'
-    + '</style>'
-    + '<style type="text/css" class="mlab_dt_quiz_dtonly">'
-    + '/* DT only */'
-    + '.mlab_quiz ul.mlab_dt_quiz_page_nav { width: 100%; list-style: none !important; margin: 0 !important; padding:  0.2em 0 !important; }'
-    + '.mlab_quiz ul.mlab_dt_quiz_page_nav li { margin: 0; padding: 0.2em 0; display: inline; }'
-    + '.mlab_quiz ul.mlab_dt_quiz_page_nav li a { padding: 0.2em 0.8em; margin-right: -1px; border: 1px solid; border-bottom: 0; text-decoration: none; color: inherit; border-radius: 3px 3px 0px 0px; cursor: pointer; background-color: transparent; color: white; }'
-    + '.mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_page_add { padding: 0.2em; 0.2em; }'
-    + '.mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_active { background-color: white; color: black; }'
-    + '.mlab_quiz .mlab_dt_quiz_question_type, .mlab_quiz .mlab_quiz_question section {  }'
-    + '.mlab_quiz .mlab_quiz_line > span { font-size: 0.8em; }'
-    + '.mlab_quiz .mlab_quiz_line > .mlab_dt_quiz_meta { font-size: 1em; }'
-    + '.mlab_quiz .mlab_dt_quiz_current_question { border: 1px dashed white; }'
-    
-    + '.mlab_quiz .mlab_dt_factory { float: left; clear: both; width: 100%; border: 1px solid #D19F2A; padding: 10px; background-color: white; color: #717275; margin-bottom: 10px; }'
-    + '.mlab_quiz .mlab_dt_factory section { float: left; clear: both; width: 100%; margin: 5px 0; }'
-    + '.mlab_quiz .mlab_dt_factory input { float: left; clear: both; width: 100%; font-size: 1.2em; background-color: #d1d2d5; padding: 3px; }'
-+ '</style>';
-
 
 /* Class names are long and easy to misspell, so we define them all here.
  * Make sure to check in the CSS rules above if you change any of these. */
@@ -70,8 +29,9 @@ this.classes = {
     userPrompt: "mlab_dt_user_prompt",
     helpText: "mlab_dt_help_text",
     userInput: "mlab_dt_user_input",
-    correctResponse: "mlab_dt_correct_response",
-    mandatory: "mlab_dt_mandatory",
+//    correctResponse: "mlab_dt_correct_response",
+    correctResponseAlternative: "mlab_dt_correct_response_alternative",
+    mandatory: "mlab_dt_response_mandatory",
     questionType: "mlab_dt_quiz_question_type",
     meta: "mlab_dt_quiz_meta",
     dialogLink: "mlab_dt_quiz_dialog_link",
@@ -126,7 +86,7 @@ this.onLoad = function (el) {
     if (!this.domRoot.length) return; 
     if (this.initialized) return;
     this.domRoot.find("style").remove();
-    this.domRoot.prepend(this.css);
+//     this.domRoot.prepend(this.css);
     this.setupDesign();
 };
 /* Hook called when app is saved. Returns the HTML that is saved for this component, and must contain enough information to continue 
@@ -313,9 +273,7 @@ this.addStoredQuestions = function() {
             }
             if (pageQuestions[i]["correctResponse"]) {
                 if (questionType["type"]=="checkbox") {
-                    for (var j=0, jj=pageQuestions[i]["correctResponse"].length; j<jj; j++) {
-                        self.addCorrectResponse(question, pageQuestions[i]["correctResponse"][j], questionType["type"]);
-                    }
+                    self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
                 }
                 else self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
             }
@@ -512,9 +470,13 @@ this.handleUserInput = function(input, e) {
 
 this.setMandatory = function(question, value) {
     question.data("mandatory", value);
+    if (value) question.addClass(this.classes.mandatory);
+    else question.removeClass(this.classes.mandatory);
+/*
     var mandatoryOb = question.find("." + this.classes.mandatory);
     mandatoryOb.find("label").text(value ? "Ja" : "Nei");
     mandatoryOb.removeClass(this.classes.hide);
+*/
 };
 
 this.addQuestionAlternative = function(question, value, questionType) {
@@ -530,6 +492,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
 };
 
 this.addCorrectResponse = function(question, value, questionType) {
+    console.log("addCorrectResponse");
     var proceed = true;
     var correctResponse = "";
     if (questionType=="text" || questionType=="radio" || questionType=="select") {
@@ -537,6 +500,7 @@ this.addCorrectResponse = function(question, value, questionType) {
     }
     else if (questionType=="checkbox") {
         if (value) {
+            if (typeof value=="object") value = value.join(" ");
             if (typeof value!="string") value = value.toString();
             value = value.split(" ");
             for (var i=0, ii=value.length; i<ii; i++) {
@@ -547,12 +511,31 @@ this.addCorrectResponse = function(question, value, questionType) {
             correctResponse = value;
         }
     }
-    if (!value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) proceed = false;
+    //if (!value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) proceed = false;
     question.data("correctResponse", correctResponse)
+/*
     var responseOb = question.find("." + this.classes.correctResponse);
     responseOb.find("label").text(correctResponse);
     responseOb.removeClass(this.classes.hide);
+*/
+    this.markAlternativesAsCorrect(question,questionType);
+
     return proceed;
+};
+
+this.markAlternativesAsCorrect = function(question, questionType) {
+    var value = question.data("correctResponse");
+    var alternatives = question.find("." + this.classes.questionAlternatives + " li").removeClass(this.classes.correctResponseAlternative);
+    if (questionType=="text" || questionType=="radio" || questionType=="select") {
+        value = [value];
+    }
+    else if (questionType=="checkbox") {
+        if (typeof value!="string") value = value.toString();
+        value = value.split(" ");
+    }
+    for (var i=0, ii=value.length; i<ii; i++) {
+        alternatives.eq(parseInt(value[i])-1).addClass(this.classes.correctResponseAlternative);
+    }
 };
 
 this.finishAddingQuestions = function(page) {
@@ -579,16 +562,10 @@ this.makeQuestion = function(page, type, questionText, uuid) {
         + '<label class="' + this.classes.questionText + ' '  + this.classes.hide + '">' + questionText + '</label>'
         + '</span>'
         + '<span class="' + this.classes.line + ' ' + this.classes.questionType + '">'
-        + '<span>Spørsmålstype:</span> <label>' + typeName + '</label>'
+        + '<label>' + typeName + '</label>'
         + '</span>'
         + '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + ' ' + this.classes.hide + '">'
-        + '<span>Alternativer:</span> <ol class="' + this.classes.meta + '"></ol>'
-        + '</span>'
-        + '<span class="' + this.classes.line + ' ' + this.classes.correctResponse + ' ' + this.classes.hide + '">'
-        + '<span>Riktig svar:</span> <label class="' + this.classes.meta + '"></label>'
-        + '</span>'
-        + '<span class="' + this.classes.line + ' ' + this.classes.mandatory + ' ' + this.classes.hide + '">'
-        + '<span>Obligatorisk:</span> <label class="' + this.classes.meta + '"></label>'
+        + '<ol class="' + this.classes.meta + '"></ol>'
         + '</span>'
         + '<section></section>');
     question.data("questionid", uuid);
@@ -688,6 +665,9 @@ this.questionClicked = function(question) {
     html.push('</div>');
     var toggleMandatoryText = "Gjør spørsmålet obligatorisk";
     if (question.data("mandatory")) toggleMandatoryText = "Gjør spørsmålet <i>ikke</i>-obligatorisk"
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="togglemandatory">' + toggleMandatoryText + '</a>');
+    html.push('</div>');
     this.api.displayPropertyDialog(question, "Endre spørsmål", html);
 };
 
