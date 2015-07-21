@@ -65,6 +65,21 @@ Mlab_dt_utils.prototype = {
     timer_stop : function () {
         window.clearTimeout(this.timer_save);
         console.log("Stopped timer");
+    },
+
+//utility to merge two objects, but only ADD non-existing properties to the to_obj
+    merge_objects : function (from_obj, to_obj) {
+        for (var p in from_obj) {
+// Property in destination object set; update its value.
+            if ( typeof from_obj[p] == "object" && typeof to_obj[p] != "undefined") {
+                to_obj[p] = this.merge_objects(from_obj[p], to_obj[p]);
+            } else if (typeof to_obj[p] == "undefined") {
+                to_obj[p] = from_obj[p];
+            }
+
+        }
+
+        return to_obj;        
     }
 
 

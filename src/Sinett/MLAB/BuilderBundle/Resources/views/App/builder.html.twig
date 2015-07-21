@@ -8,17 +8,16 @@
     <table class="records_list app_list" id="table_app">
         <thead>
             <tr>
-                <th>{% trans %}app.builder.list.heading.app{% endtrans %}</th>
-                <th class="hidden"></th>
-                <th>{% trans %}app.builder.list.heading.version{% endtrans %}</th>
+                <th>&nbsp;</th>
+                <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
                 <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
                 <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
 	        {% for app in apps %}
-		        {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app } ) }}
+		        {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
 	        {% endfor %}
         </tbody>
     </table>
@@ -28,9 +27,13 @@
 {% block javascripts %}
 	{{ parent() }}
 	<script src="{{ asset('/js/jquery.ddslick-1.0.0.js') }}"></script>
-	<script>
+    <script src="{{ asset('/js/jquery.contextmenu.js') }}"></script>
+    <link href="{{ asset("/css/jquery.contextmenu.css") }}" rel="stylesheet" />
+
+    <script>
 		var url_new = "{{ path('app_new') }}";
 		var url_edit = "{{ path('app_edit', {id: 0} ) }}";
+        var mlab_current_app_id = 0;
 		
 		$(document).ready(function() {
 
@@ -39,59 +42,166 @@
 					autoOpen: false,
 				    show: { effect: "blind", duration: 500 },
 				    hide: { effect: "blind", duration: 500 },
-				    width: 900,
-				    height: 500,
+                    close: function(event, ui) { $("#builder_dialog_new_app").html("") },
+				    width: 800,
+				    height: 670,
 				    modal: true,
 				});
-			
-		});
+        
+            $('.builder_app_properties').contextPopup({
+                title: 'Mlab app options',
+                items: [
+                  {label:'Edit app content',                        icon:'/img/menu_field_edit.png',    action:function() { mlab_edit_app_content(); } },
+                  {label:'Edit app details',                        icon:'/img/properties.png',         action:function() { mlab_edit_app_properties(); } },
+                  null, // divider
+                  {label:'Download the app',                        icon:'/img/tools/down.png',         action:function() { mlab_download_app(); } },
+                  {label:'Copy link to the app',                    icon:'/img/copy_page.png',          action:function() { mlab_copy_app_link() } },
+                  null, // divider
+                  {label:'Create a new incremental version',        icon:'/img/newVersion.png',         action:function() { mlab_create_new_version(0.1); } },
+                  {label:'Create a new major version',              icon:'/img/newVersion.png',         action:function() { mlab_create_new_version(1); } },
+                  {label:'Create a new branch',                     icon:'/img/newVersion.png',         action:function() { mlab_create_new_branch(); } },
+                  {% if is_granted('ROLE_ADMIN') %}
+                        null, // divider
+                        {label:'Send app to market',                      icon:'/img/tools/storage.png',      action:function() { mlab_send_app_to_market() } },
+                        {label:'Hide app from market',                    icon:'/img/not_checked.png',        action:function() { mlab_hide_app_from_market() } },
+                        {label:'Withdraw app from market/devices',        icon:'/img/notPublished.png',       action:function() { mlab_withdraw_app_from_market() } },
+                        null, // divider
+                        {label:'Delete app',                              icon:'/img/delete2.png',            action:function() { mlab_delete_app() } },
+                  {% endif %}
+                ]
+              });
+
+		}); // end on ready
+        
+/**
+ * Updates the global var which is used in functions called from the popup menu, this is the ID of the app in the database
+ * @param {type} app_id
+ * @returns {undefined} */
+        function mlab_set_app_id(app_id) {
+            mlab_current_app_id = app_id;
+        }
 
 		/**
 		 * Opens up the properties dialog and displays a blank form
 		*/
 		function mlab_app_new () {
-			$("#builder_dialog_new_app").load(url_new, function() {
-				$('#builder_app_copy_from').ddslick();
-	    		//$('#form_template').ddslick();
-	    		$( "#build_app_properties" ).tabs();
-	    	}).dialog("open");
+			$("#builder_dialog_new_app").load(url_new).dialog("open");
 		};
 		
 		/**
-		 * Opens up the properties dialog for a given app, uses the predefiend URL and replaces the 0 placeholder
-		*/
-		function editAppProperties (id) {
-			var url_temp = url_edit.replace(/0/ , id);
-			console.log(url_temp);
-			$("#builder_dialog_new_app").load(url_temp, function() {
-	    		$( "#build_app_properties" ).tabs();
-	    	}).dialog("open");
+		 * Opens up the properties dialog for a given app, uses the predefined URL and replaces the 0 placeholder
+		 */
+		function mlab_edit_app_content () {
+            var url = "{{ path('app_builder_editor', { 'id': 'APP_ID', 'page_num': 'last' }) }}";
+            location.href = url.replace(/APP_ID/ , mlab_current_app_id);
+		};
+
+        /**
+		 * Opens up the properties dialog for a given app, uses the predefined URL and replaces the 0 placeholder
+		 */
+		function mlab_edit_app_properties () {
+            var url_temp = url_edit.replace(/0/ , mlab_current_app_id);
+			$("#builder_dialog_new_app").load(url_temp).dialog("open");
 		};
         
-		/**
-		 * submits data for new app from the dialog box where we collect details of the new app  
-		 */
-		function mlab_app_submit_properties(form) {
-			var frm = document.getElementById(form.attr('id'));
-			formData = new FormData(frm);
-			$("#builder_dialog_new_app").dialog("close");
-			$.ajax({
-		        url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
-		        type: 'POST',
-		        success: function( data ) {
-			    	if (data.result == 'FAILURE') {
-			    		alert(data.message);
-			    	} else {
-//here we update the list of apps with the new app details
-                        $(data.html).appendTo("#table_app");
-			    	}
-			  	},
-		        error: function(e) {alert('error'); console.log(e)},
-		        // Form data 
-		        data: form.serialize(),
-		        dataType: "json",
-		    });
-		}
-		
+        function mlab_download_app() {
+            alert(mlab_current_app_id);
+        }
+        
+        function mlab_copy_app_link() {
+            alert(mlab_current_app_id);
+        }
+        
+        function mlab_create_new_version(increment) {
+            if( !confirm("Do you want to create a new version based on the active version of this app? \n\nThis version will be the active version that you can edit, and send to the market to replace the current version (if any).") ) {
+                return;
+            }
+            
+            var url = "{{ path('app_list_create_new_version', { app_id: "_APP_ID_", increment: "_INCREMENT_" } ) }}";
+            url = url.replace("_APP_ID_", mlab_current_app_id);
+            url = url.replace("_INCREMENT_", increment);
+
+            $.get( url, function( data ) {
+                
+                if (data.result == "success") {
+                    var sel = $('select[data-mlab-dropdown-id="' + mlab_current_app_id + '"]');
+                    sel.find('option:selected').removeAttr("selected");    
+                    sel.append("<option value='" + data.new_version + "'selected='selected'>" + data.new_version + "</option>");
+                    
+                } else {
+                    alert(data.msg);
+                }
+            });
+        
+        }
+        
+        function mlab_create_new_branch() {
+            if( !confirm("Do you want to create a new branch based on the active version of this app? \n\nThis branch will be a copy of the current active version that you can edit, and send to the market independently of the app you are copying.") ) {
+                return;
+            }
+            
+            var url = "{{ path('app_list_create_new_branch', { app_id: "_APP_ID_"} ) }}";
+            url = url.replace("_APP_ID_", mlab_current_app_id);
+
+            $.get( url, function( data ) {
+                
+                if (data.result == "success") {
+                    $(data.html).appendTo("#table_app");
+                    
+                } else {
+                    alert(data.msg);
+                }
+            });
+        
+        }
+        
+        
+        function mlab_set_active_version(el, id) {
+            var new_active_version = parseFloat($(el).val());
+            
+            if( !confirm("Do you want to change the active version for this app? The version you activate will be the one you can edit, and will be the one you can send to the market to replace the current version (if any).") ) {
+                $(el).find(" option[selected]").prop('selected', true);
+                return;
+            }
+            
+            var url = "{{ path('app_list_set_active_version', { app_id: "_APP_ID_", version: "_VERSION_" } ) }}";
+            url = url.replace("_APP_ID_", id);
+            url = url.replace("_VERSION_", new_active_version);
+
+            $.get( url, function( data ) {
+                
+                if (data.result == "success") {
+                    $(el).val(data.new_version);
+                    var img = $('img[data-mlab-icon-id="' + id + '"]');
+                    var img_src = img.attr("src");
+//change icon to reflect new, active app
+//this is image path: /mlab_elements/apps/fba3bc5aX3aa8X4161Xa502X50a71809dd0f/1.1/icon.png
+                    var icon_name = img_src.replace(/^.*[\\\/]/, '');
+                    var re = new RegExp("\/\\d+(\\.\\d+)?\/" + icon_name + "$", "g");
+                    var new_img_src = img_src.replace(re, '/' + new_active_version + "/" + icon_name);
+                    img.attr("src", new_img_src);
+                } else {
+                    alert(data.msg);
+                }
+            });
+            
+        }
+        
+        function mlab_send_app_to_market() {
+            alert(mlab_current_app_id);
+        }
+        
+        function mlab_hide_app_from_market() {
+            alert(mlab_current_app_id);
+        }
+        
+        function mlab_withdraw_app_from_market() {
+            alert(mlab_current_app_id);
+        }
+        
+        function mlab_delete_app() {
+            alert(mlab_current_app_id);
+        }
+        
 	</script>
 {% endblock %}

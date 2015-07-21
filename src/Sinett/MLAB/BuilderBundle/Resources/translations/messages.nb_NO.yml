@@ -232,6 +232,7 @@ app.system.admin.help.edit.update.button: Oppdater
 # New app form 
 #-----------------------------------------------------
 builder.new.app.basedon.tab: Baser på
+builder.new.app.select_base.tab: Velg base
 builder.new.app.name.tab: Navn
 builder.new.app.classification.tab: Klassifiser
 builder.new.app.submit.tab: Lag
@@ -275,6 +276,7 @@ app.builder.list.new.app.button: Ny App
 app.builder.list.heading.app: App navn
 app.builder.list.heading.published: Publisert
 app.builder.list.heading.version: Versjon
+app.builder.list.heading.active_version: Aktiv versjon
 app.builder.list.heading.last.updated: Sist oppdatert
 
 app.builder.list.tooltip.name: Klikk på navnet for å redigere appen

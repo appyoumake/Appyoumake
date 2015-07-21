@@ -1,0 +1,39 @@
+Sinett\MLAB\BuilderBundle\Entity\AppVersion:
+  type: entity
+  table: app_version
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\AppVersionRepository
+  
+  indexes:
+    app_index:
+      columns: [ app_id ]
+    enabled_index:
+      columns: [ enabled ]
+    version_index:
+      columns: [ version ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+    version:
+      type: float
+      options:
+        default: 1
+        
+    enabled:
+      type: integer
+      options:
+        default: 1      
+            
+# link to apps for a version
+  manyToOne:
+    app:
+      targetEntity: App
+      inversedBy: appVersions
+      joinColumn:
+        name: app_id
+        referencedColumnName: id
+      

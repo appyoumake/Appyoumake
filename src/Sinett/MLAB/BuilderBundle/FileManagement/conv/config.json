@@ -1,0 +1,34 @@
+{
+    "parsing": {
+        "input_encoding": "utf-8", 
+        "invalid_tags": [
+            "font", 
+            "b", 
+            "i", 
+            "u", 
+            "span", 
+            "sdfield",
+            "sup"
+        ],
+        "skip_wrapping": [
+          "li",
+          "br",
+          "html",
+          "body"
+        ],
+        "textnode_required": [
+          "div",
+          "p"
+        ],
+        "mlab-type-map": {
+          "img":"komponent_bilde"
+        },
+        "output_encoding": "latin1", 
+        "skip_empty_documents": false,
+        "strip_attributes" : true,
+        "strip_image_borders" : true
+    }, 
+    "paths": {
+        "unoconv": "/home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv"
+    }
+}

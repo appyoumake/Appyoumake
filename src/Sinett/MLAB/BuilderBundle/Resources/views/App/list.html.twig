@@ -1,16 +1,19 @@
                 <tr id="row_app_{{ app.id }}">
 				  
-                    <td class="builder_app_list_name mlab_max_width_medium" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
-                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img class="builder_app_list_name_edit_img" alt="" src="/img/editGreyFlip.png" />{{ app.name }}</a>
+                    <td class="builder_app_list_properties" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
+				    	<div class="builder_app_properties" onmousedown="mlab_set_app_id({{ app.id }});"></div>
 				    </td>
-                    
-                    <td class="builder_app_list_properties hidden" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
-				    	<a class="builder_app_properties hidden" onclick="editAppProperties({{ app.id }}); return false;"></a>
+                    <td class="builder_app_list_icon"><a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img data-mlab-icon-id="{{ app.id }}" src="{{ app_url ~ app.path ~ "/" ~ app.active_version ~ "/" ~ app_icon }}"></a></td>
+                    <td class="builder_app_list_name mlab_max_width_medium" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
+                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
 				    </td>
                     
 				    <td class="mlab_align_center">
-				    	<span class="builder_app_version">{{ app.version }}</span>
-				    	<a class="builder_app_newversion hidden" href="{{ path('app_builder_copy_app', { 'id': app.id, 'version': app.version }) }}">&nbsp;</a>
+                        <select onchange="mlab_set_active_version(this, {{ app.id }}, {{ app.active_version }});" data-mlab-dropdown-id="{{ app.id }}" >
+                            {% for v in app.versions %}
+                                <option value='{{ v.version }}' {{ v.version == app.active_version ? " selected='selected' " : "" }}>{{ v.version }}</option>
+                            {% endfor %}
+                        </select>
 				    </td>
                     
                     <td class="mlab_align_center" title="{% if app.updated %}{{ app.updated|date('Y-m-d H:i:s') }}{% endif %}">
@@ -21,13 +24,5 @@
                     
 			    	{# TODO: fix this constant stuff #}
 				    <td class="mlab_align_center {% if app.published == 0 %}builder_app_not_published{% elseif app.published == 1 %}builder_app_old_version_published{% else %}builder_app_current_version_published{% endif %}">
-				    </td>
-                    
-                    <td class="mlab_align_center hidden">
-                        {% if app.published == 0 %}
-                            <a class="builder_app_publish" onclick="publishApp({{ app.id }}); return false;">&nbsp;</a>
-                        {% elseif app.published == 1 %}
-                            <a class="builder_app_publish" onclick="publishApp({{ app.id }}); return false;">&nbsp;</a>
-                        {% endif %}
 				    </td>
 				</tr>

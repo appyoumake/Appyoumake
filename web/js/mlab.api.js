@@ -88,11 +88,21 @@ Mlab_api.prototype = {
      * Runs when mlab object has been set up.
      */
     onMlabReady: function() {
+        
+//add the app specific variables (generated in the pre-compile processing function)
+// to the object here
+        if (typeof (MLAB_RT_VARS) != "undefined") {
+            mlab.variables = MLAB_RT_VARS;
+        } else  {
+            mlab.variables = new Object();
+        }
         $.mobile.initializePage();
 
 // added by arild
 // this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
 // these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
+// THE REASON FOR THIS IS THAT JQUERY WILL NOT CONFIRM RECEIVED FILE IF A .JS FILE DOES NOT CONTAIN VALID JS FIL
+// AT THE SAME TIME WE NEED TO CONTROL THE LOADING OF THESE FILES AS THEY ARE USED TO INITIALISE COMPONENTS
 
         /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
             Also splitting in index_html, because we do not know what parameters there are.
@@ -371,6 +381,11 @@ Mlab_api.prototype = {
         current_page: 0,
         max_pages: 0,
         self: this,
+        
+        initialise: function (app_current_page, app_max_pages) {
+            current_page = app_current_page;
+            max_pages = app_max_pages;
+        },
 /**
  * current = page that is currently displayed
  * move_to can be index, first, last, next, previous or a number
@@ -381,6 +396,7 @@ Mlab_api.prototype = {
             var filename, selector = "";
             var new_location = 0;
             switch (move_to) {
+                case 0:
                 case "index":
                     filename = "index.html";
                     new_location = 0;
@@ -397,7 +413,7 @@ Mlab_api.prototype = {
                     break;
 
                 case "next" :
-                    if (current == this.max_pages) {
+                    if (current >= this.max_pages) {
                         return current;
                     }
                     current++;
@@ -406,7 +422,7 @@ Mlab_api.prototype = {
                     break;
 
                 case "previous" :
-                    if (current == "index") {
+                    if (current == 0 || current == "index") {
                         return current;
                     }
                     if (current == 1) {
@@ -414,6 +430,9 @@ Mlab_api.prototype = {
                         new_location = 0;
                     } else {
                         current--;
+                        if (current < 0) {
+                            current = 0;
+                        }
                         filename = ("000" + current).slice(-3) + ".html";
                         new_location = current;
                     }

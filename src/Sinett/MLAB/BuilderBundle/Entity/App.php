@@ -40,7 +40,13 @@ class App
     /**
      * @var float
      */
-    private $version;
+    private $active_version;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $appVersions;
+    
 
     /**
      * @var \DateTime
@@ -102,14 +108,30 @@ class App
     private $zip_file;
     
     /**
-     * icon that is uploaded
+     * icon that is created, stored as a data url string
      */
     private $icon_file;
     
     /**
-     * splah image that is uploaded
+     * id of app to be copied to a new app
+     */
+    private $copy_app;
+    
+    /**
+     * splash image that is uploaded
      */
     private $splash_file;
+    
+    /**
+     * Office file to be imported
+     */
+    private $import_file;
+    
+    /**
+     * Unique ID for the app, same as the Java reverse domain
+     */
+    private $uid;
+    
     
     /**
      * Constructor
@@ -153,6 +175,29 @@ class App
     }
 
     /**
+     * Set uid
+     *
+     * @param string $uid
+     * @return App
+     */
+    public function setUid($uid)
+    {
+        $this->uid = $uid;
+    
+        return $this;
+    }
+
+    /**
+     * Get uid
+     *
+     * @return string 
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
      * Set path
      *
      * @param string $path
@@ -166,6 +211,7 @@ class App
     }
     
     /**
+     * NOW REDUNDANT, BUT KEEP FOR FUTURE REFERENCE/USE
      * generate a sanitised pathname from name of app
      *
      * @param array $replace: search / replace array
@@ -186,7 +232,7 @@ class App
      */
     public function calculateFullPath($start_path)
     {
-        return $start_path . $this->getPath() . "/" . $this->getVersion() . "/" ;
+        return $start_path . $this->getPath() . "/" . $this->getActiveVersion() . "/" ;
     }
     
         
@@ -247,14 +293,14 @@ class App
     }
 
     /**
-     * Set version
+     * Set active_version
      *
-     * @param integer $version
+     * @param float $active_version
      * @return App
      */
-    public function setVersion($version)
+    public function setActiveVersion($active_version)
     {
-        $this->version = $version;
+        $this->active_version = $active_version;
     
         return $this;
     }
@@ -262,11 +308,11 @@ class App
     /**
      * Get version
      *
-     * @return integer 
+     * @return float 
      */
-    public function getVersion()
+    public function getActiveVersion()
     {
-        return $this->version;
+        return $this->active_version;
     }
 
     /**
@@ -493,7 +539,7 @@ class App
      */
     public function __toString()
     {
-    	return $this->name . " (" . $this->version . ")";
+    	return $this->name . " (" . $this->active_version . ")";
     }
     
     /**
@@ -567,7 +613,8 @@ class App
     		'path' => $this->path,
     		'description' => $this->description,
     		'keywords' => $this->keywords,
-    		'version' => $this->version,
+            'versions' => $this->appVersions,
+    		'active_version' => $this->active_version,
     		'created' => $this->created,
     		'updated' => $this->updated,
     		'categoryOne' => $this->categoryOne,
@@ -579,7 +626,8 @@ class App
     		'updatedBy' => $this->updatedBy,
     		'groups' => $this->groups,
     		'published' => $this->published,
-    		'enabled' => $this->enabled
+    		'enabled' => $this->enabled,
+            'uid' => $this->uid
     		);
     }
     
@@ -599,13 +647,19 @@ class App
     	foreach ($this->groups as $group) {
     		$groups[] = $group->getName();
     	}
+        
+        $versions = array();
+        foreach ($this->appVersions as $version) {
+            $versions[$version->getId()] = $version->getVersion();
+        }
     	return array(
     			'id' => $this->id,
     			'name' => $this->name,
     			'path' => $this->path,
     			'description' => $this->description,
     			'keywords' => $this->keywords,
-    			'version' => $this->version,
+                'versions' => $versions,
+    			'active_version' => $this->active_version,
     			'created' => $this->created->format('Y-m-d H:i:s'),
     			'updated' => $this->updated->format('Y-m-d H:i:s'),
     			'categoryOne' => !empty($this->categoryOne) ? $this->categoryOne->getName() : "",
@@ -617,9 +671,28 @@ class App
     			'updatedBy' => $this->updatedBy->getUserName(),
     			'groups' => $groups,
     			'published' => $this->published,
-    			'enabled' => $this->enabled
+    			'enabled' => $this->enabled,
+    			'uid' => $this->uid
     	);
     }    
+    
+/**
+ * Retruns highest and lowest versions for a given app
+ * @return type
+ */
+    public function getVersionRange() {
+        $highest_version = 0;
+        $lowest_version = 99999999;
+        
+        foreach ($this->appVersions as $version) {
+            $highest_version = max($highest_version, $version->getVersion());
+            $lowest_version = min($lowest_version, $version->getVersion());
+        }
+        
+        return array("high" => $highest_version, "low" => $lowest_version);
+    }
+    
+    
 /**** FILES RELATED TO AN APP ****/
     /**
      * Sets file.
@@ -644,9 +717,9 @@ class App
     /**
      * Sets file.
      *
-     * @param UploadedFile $file
+     * @param string icon image as data url
      */
-    public function setIconFile(UploadedFile $icon_file = null)
+    public function setIconFile($icon_file = null)
     {
     	$this->icon_file = $icon_file;
     }
@@ -659,6 +732,26 @@ class App
     public function getIconFile()
     {
     	return $this->icon_file;
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param int $copy_app
+     */
+    public function setCopyApp($copy_app = null)
+    {
+    	$this->copy_app = $copy_app;
+    }
+    
+    /**
+     * Get file.
+     *
+     * @return int
+     */
+    public function getCopyApp()
+    {
+    	return $this->copy_app;
     }
     
     /**
@@ -681,6 +774,69 @@ class App
     	return $this->splash_file;
     }
     
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setImportFile(UploadedFile $import_file = null)
+    {
+    	$this->import_file = $import_file;
+    }
     
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getImportFile()
+    {
+    	return $this->import_file;
+    }
+    
+    /**
+     * Add appVersion
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version
+     * @return this
+     */
+    public function addAppVersion(\Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version)
+    {
+        $this->appVersions[] = $app_version;
+    
+        return $this;
+    }
 
+    /**
+     * Remove appVersion
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version
+     */
+    public function removeAppVersion(\Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version)
+    {
+        $this->appVersions->removeElement($app_version);
+    }
+
+    /**
+     * Get appVersion
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAppVersions()
+    {
+        return $this->appVersions;
+    }
+    
+    /**
+     * Sets the appversions array to a single appVersion, used when create a new branch
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function setSingleAppVersion(\Sinett\MLAB\BuilderBundle\Entity\AppVersion $app_version)
+    {
+        $this->appVersions = array($app_version);
+        
+        return $this;
+    }
+    
 }

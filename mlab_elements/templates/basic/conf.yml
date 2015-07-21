@@ -1,5 +1,6 @@
 tooltip: This is a new template that has everything you'll ever want.
 
+permissions: ["android.permission.INTERNET"] 
 pages:
   min:
     count: 3

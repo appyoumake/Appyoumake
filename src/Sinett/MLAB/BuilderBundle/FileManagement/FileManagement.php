@@ -4,6 +4,21 @@ namespace Sinett\MLAB\BuilderBundle\FileManagement;
 use ZipArchive;
 use Symfony\Component\Yaml\Parser;
 
+//this class is used to store new functions that will process embedded variables in the index.html file
+//one example is a class to 
+class CustomPreProcessing {
+    
+    public function getnumberofpages($config, $app, $app_path) {
+   		$pages = glob ( $app_path . "/???.html" );
+   		$page_num = intval(basename(array_pop($pages))) + 1;
+        return $page_num;
+    }
+    
+}
+
+/**
+ * a service class that is used primarily by the App and Services controllers. Deals with all aspects of file and app mangement (uploading, deleting, etc)
+ */
 
 class FileManagement {
 	
@@ -234,92 +249,176 @@ class FileManagement {
    
 		return $component;
 	}
+    
+    public function componentAdded($app_id, $app, $comp_id, $config) {
+        $path_component = $config['paths']['component'] . $comp_id . "/";
+        $path_app = $app->calculateFullPath($config['paths']['app']);
+        $path_app_js = $path_app . "js/";
+        $path_app_config = $path_app . $config['filenames']["app_config"];
+        
+//check if path to component and app exists
+        if ( is_dir($path_component) && is_dir($path_app) ) {
+
+//1: Copy JS file, it is called code_rt.js, but needs to be renamed as all JS files for components have same name to begin with
+//   We use the component name as a prefix
+            if (file_exists( $path_component . "code_rt.js") && !file_exists( $path_app_js . $comp_id . "_code_rt.js")) {
+                if (!@copy($path_component . "code_rt.js", $path_app_js . $comp_id . "_code_rt.js")) {
+                    return array(
+                        'result' => 'failure',
+                        'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $comp_id));
+                }
+
+                if (file_exists("$path_app_js/include_comp.txt")) {
+                    $include_items = file("$path_app_js/include_comp.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                } else {
+                    $include_items = array();
+                }
+                if (!in_array("/js/" . $comp_id . "_code_rt.js", $include_items)) {
+                    $include_items[] = "/js/" . $comp_id . "_code_rt.js";
+                }
+                file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
+            }
+
+//2: Add permissions to the local permissions file. We store these as Android permissions, the compiler service will translate these later for iOS.
+            if (file_exists($path_component . "conf.yml")) {
+                $yaml = new Parser();
+                $config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                
+                if (isset($config["permissions"])) {
+
+                    $new_permissions = $config["permissions"];
+
+                    if (!file_exists( $path_app_config)) {
+                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "permissions" => $new_permissions)));
+                    } else {
+                        $tmp_existing_config = json_decode(file_get_contents($path_app_config));
+                        if (key_exists("permissions", $tmp_existing_config)) {
+                            $tmp_existing_config["permissions"] = array_unique(array_merge($new_permissions, $tmp_existing_config["permissions"]));
+                        } else {
+                            $tmp_existing_config["permissions"] = $new_permissions;
+                        }
+                        file_put_contents($path_app_config, json_encode($tmp_existing_config));;
+                    }
+                }
+
+//2.5: copy across any runtime dependencies, can be JS or CSS
+                if (isset($config["required_libs"])) {
+                    if (isset($config["required_libs"]["runtime"])) {
+
+                        foreach ($config["required_libs"]["runtime"] as $dependency) {
+                            $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
+                            if ($filetype == "") {
+                                $filetype = "js";
+                            } 
+
+//if this is a URL we just add it to the include file, no need to copy the file
+                            if(!filter_var($dependency, FILTER_VALIDATE_URL)) {
+                                if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app/$filetype/$dependency" )) {
+//if we fail we bail
+                                    if (!@copy( "$path_component/$filetype/$dependency", "$path_app/$filetype/$dependency" )) {
+                                        return array(
+                                            'result' => 'failure',
+                                            'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id));
+                                    } 
+                                }
+                            }
+
+//we need to update the include files of the app
+                            if (file_exists("$path_app/$filetype/include.$filetype")) {
+                                $include_items = file("$path_app/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                            } else {
+                                $include_items = array();
+                            }
+
+                            if ($filetype == "css") {
+                                if (!in_array("@import url('$dependency');", $include_items)) {
+                                    $include_items[] = "@import url('$dependency');";
+                                }
+                            } else {
+                                if (substr($dependency, 0, 4) == "http") {
+                                    if (!in_array("$.getScript('$dependency');", $include_items)) {
+                                        $include_items[] = "$.getScript('$dependency');";
+                                    }
+                                } else {
+                                    if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
+                                        $include_items[] = "$.getScript('/js/$dependency');";
+                                    }
+                                }
+                            }
+                            file_put_contents("$path_app/$filetype/include.$filetype", implode("\n", $include_items));
+
+                        } //end loop for runtime scripts to copy and add
+
+                    } // end if runtime libs defined
+                }// end required libs handling
+
+            } //end conf file exists
+
+//3: run the server_code.php file if it exists
+            if (file_exists($path_component . "server_code.php")) {
+                if (!class_exists("mlab_ct_" . $comp_id) && !@(include($path_component . "server_code.php"))) {
+                    return array(
+                            'result' => 'failure',
+                            'msg' => "Unable to load server_code.php file");
+                }
+                
+                if (class_exists("mlab_ct_" . $comp_id)) {
+                    $temp_class_name = "mlab_ct_" . $comp_id;
+                    $component_class = new $temp_class_name();
+                    if (method_exists($component_class, "onCreate")) {
+                        if (!$component_class->onCreate($path_app, $path_component, $comp_id)) {
+                            return array(
+                                'result' => 'failure',
+                                'msg' => "Unable to run application on server");
+                        }
+                    }
+                }
+            }
+
+            return array('result' => 'success');
+
+        } else {
+                $error = "";
+                if (!is_dir($path_component)) { $error .= "Component not found\n"; }
+                if (!is_dir($path_app)) { $error .= "App not found\n"; }
+                return array(
+                            'result' => 'failure',
+                            'msg' => $error);
+        }        
+    }
 	
 	/**
-	 * Function called to create a new app, first calls cordova to generate structure, then copiues across relevant template files
-	 * Default platform is usually android, but could be iOS if run on mac for instance...
+	 * Function called to create a new app, copies across relevant template files 
 	 */
 	public function createAppFromTemplate ($template, $app) {
 		
 //prepare all the paths to use
 		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+        $app_config_path = $app_path . $this->config['filenames']["app_config"];
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
-		$cordova_asset_path = $app_path . $this->config["cordova"]["asset_path"];
-		$app_domain = $this->config["cordova"]["app_creator_identifier"] . "." . $app->getPath();
-		$cordova_chdir_command = str_replace("_FOLDER_", $app_path, $this->config["cordova"]["cmds"]["chdir"]);
 		
 		$output = array();
 		$exit_code = 0;
 		
-//if they are offline we just extract a ZIP file that has to be present, 
-//and then we need to update a few files with new data
-        if ($this->config["cordova"]["offline"]) {
-            if (!file_exists($this->config["cordova"]["offline_archive"])) {
-                return array("You are working offine, but the ZIP archive to use for a new app was not found:" . $this->config["cordova"]["offline_archive"]);
-            }
-            $zip = new ZipArchive();
-			$res = $zip->open($this->config["cordova"]["offline_archive"]);
-	
-//loop through and see if all required files are present
-			if ($res === TRUE) {
-            if (!mkdir($app_path, 0777, true)) { return array("Unable to create directory: $app_path");}
-//try to unzip it
-				if (!$zip->extractTo($app_path)) {
-// clean up the file property, not persisted to DB
-					$entity->setZipFile(null);
-					return array("Unable to unzip : " . $zip->getStatusString());
-				}
-				$zip->close();
-                $proj_files = $this->func_find($app_path, "f");
-                $s = array($this->config["cordova"]["offline_placeholder_name"], $this->config["cordova"]["offline_placeholder_identifier"]);
-                $r = array($app->getPath(), $app_domain);
-                $this->func_sed($proj_files, $s, $r);
-                foreach ($template_items_to_copy as $from => $to) {
-                    $this->func_copy("$template_path$from", "$cordova_asset_path$to");
-                }
-                return true;
-            } else {
-                return array("Unable to unzip : " . $res);
+        if (mkdir($app_path, 0777, true)) { 
+            foreach ($template_items_to_copy as $from => $to) {
+                $this->func_copy("$template_path$from", "$app_path$to");
             }
             
-                
-        } else {
-          
-          
-          // Create new app using cordova command
-          // May need to download, so change script time limit
-          set_time_limit(240);
-          exec("mkdir -p {$app_path}");  
-	      exec($cordova_create_command . " 2>&1", $output, $exit_code);	  
-		
-//check exit code, anything except 0 = fail
-            if ($exit_code != 0) {
-                return $output + array("Exit code: " . $exit_code);
-                error_log("Failed creating new app using cordova, {$exit_code}, {$output}", 0);
-            } else {
-	      // Add platform
-	        
-	      //shell_exec($cordova_chdir_command . " && " . $cordova_add_platform_command , $output, $exit_code);
-            exec("whoami", $output, $exit_code);	      
-            exec("echo $PATH", $output, $exit_code);	      
-            exec("android 2>&1 && echo $?", $output, $exit_code);
-            exec("java -version 2>&1 && echo $?", $output, $exit_code);
-
-            $shell_return = exec("{$cordova_chdir_command} 2>&1 && {$cordova_add_platform_command} 2>&1 && echo $?" , $output, $exit_code);
-	      
-// makes available custom build settings, e.g. for signing
-            exec("{$cordova_build_properties} 2>&1 && echo $?", $output, $exit_code);
-	      
-// Creates app-specific log file.
-            file_put_contents("{$app_path}cordov.log",print_r($output,true));
-
-            foreach ($template_items_to_copy as $from => $to) {
-                $cmd = "cp -r \"$template_path$from\"* \"$cordova_asset_path$to\"";
-                $ret = shell_exec($cmd);
+//update the conf.json file with any permissions specified in the template file
+            $app_conf = array("title" => $app->getName());
+            if (file_exists($template_path . "conf.yml")) {
+                $yaml = new Parser();
+                $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
+                if (key_exists("permissions", $temp)) {
+                    $app_conf["permissions"] = $temp["permissions"];
+                }
             }
-            $default_platform = $this->config["cordova"]["default_platform"];
+            file_put_contents($app_config_path, json_encode($app_conf));
             return true;
+        } else {
+            return array("Unable to create directory: $app_path");
         }
 	}
 	
@@ -328,16 +427,49 @@ class FileManagement {
 	 * @param string $sourceApp
 	 * @param string $targetApp
 	 */
-	public static function copyDirectory($sourceApp, $targetApp) {
+	public static function copyAppFiles($sourceApp, $targetApp) {
 	    if (!file_exists($sourceApp)) return false;
 	    if (!is_dir($sourceApp)) return copy($sourceApp, $targetApp);
-	    if (!mkdir($targetApp)) return false;
+	    if (!mkdir($targetApp, 0777, true)) return false;
 	    foreach (scandir($sourceApp) as $item) {
-	    	if ($item == '.' || $item == '..') continue;
-	    	if (!self::copyDirectory($sourceApp.DIRECTORY_SEPARATOR.$item, $targetApp.DIRECTORY_SEPARATOR.$item)) return false;
+	    	if ($item == '.' || $item == '..' || strtolower(substr($item, -5)) == ".lock") continue;
+	    	if (!self::copyAppFiles($sourceApp.DIRECTORY_SEPARATOR.$item, $targetApp.DIRECTORY_SEPARATOR.$item)) return false;
 	    }
 	    return true;
 	}
+
+    /**
+     * generates a new version number following these rules:
+     * 1: It gets the current highest number from the specified app
+     * 2.1: If there are no other apps with the same name, it adds the increment value (0.1 or 1.0) to the highest value
+     * 2.2: If other apps with the same name exists (i.e. another branch) it gets the hightst and lowest values from each of these
+     *      The final number generated cannot be equal to or larger than the integer value of other branches *above* the current version
+     *      number, so it may be that version 2, requesting a new version number of 3 is set to 2.1 if a version 3 exists
+     * @param type $app
+     * @return array(int $new_page_num, string $new_page_path (complete path to file))
+     */
+    public function getNewAppVersionNum($app, $branches, $increment) {
+        $current_versions = $app->getVersionRange();
+        $new_version = $current_versions["high"] + $increment;
+        if (sizeof($branches) < 2) {
+            return $new_version;
+        } else {
+            foreach ($branches as $branch) {
+                if ($branch->getId() != $app->getId()) {
+                   $check_versions = $branch->getVersionRange();
+//they are trying to move onto a version number used by a different branch, can't allow this, so we increment the original number with 0.1
+                   if ($new_version >= $check_versions["low"]) {
+                       while ($new_version >= $check_versions["low"]) {
+                           $increment = $increment / 10;
+                           $new_version = $current_versions["high"] + $increment;
+                       }
+                       return $new_version;
+                   }
+                }
+            }
+        }
+        return $new_version;
+    }    
 
     /**
      * generate new name, get a list of pages in folder, select last one, turn into an int, 
@@ -346,7 +478,7 @@ class FileManagement {
      * @return array(int $new_page_num, string $new_page_path (complete path to file))
      */
     public function getNewPageNum($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 
    		$pages = glob ( $app_path . "/???.html" );
    		$new_page_num = intval(basename(array_pop($pages))) + 1;
@@ -354,14 +486,14 @@ class FileManagement {
     	
     	while (file_exists("$app_path$new_page_name")) {
             if ($new_page_num == 999) {
-                return array(false, false);
+                return array("new_page_num" => false, "new_page_path" => false);
             }
             $new_page_num++;
             $new_page_name = substr("000" . $new_page_num, -3) . ".html";
         }
         
         $new_page_path = $app_path . $new_page_name;
-        return array($new_page_num, $new_page_path);
+        return array("new_page_num" => $new_page_num, "new_page_path" => $new_page_path);
     }
     
     /**
@@ -372,13 +504,13 @@ class FileManagement {
     public function newPage($app) {
         
 //create the name of the file to create
-	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
-        if ($new_page_num === false) {
+	    $new_page = $this->getNewPageNum($app);
+        if ($new_page["new_page_num"] === false) {
             return false;
         }
 
-        if (touch ($new_page_path)) {
-            return $new_page_num;
+        if (file_put_contents ($new_page["new_page_path"], "") !== false) {
+            return $new_page["new_page_num"];
         } else {
             return false;
         }
@@ -387,9 +519,9 @@ class FileManagement {
     public function savePage($app, $page_num, $html) {
 //get path of file to save
         if ($page_num == "index") {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . "index.html";
+            $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
         } else {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+            $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";;
         }
         
         return file_put_contents ($file_path, $html) ;
@@ -403,7 +535,7 @@ class FileManagement {
      */
     public function copyPage($app, $page_num) {
 //get path of file to copy
-        $source_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'] . substr("000" . $page_num, -3) . ".html";;
+        $source_path = $app->calculateFullPath($this->config['paths']['app']) .  substr("000" . $page_num, -3) . ".html";;
         
 //create the name of the file to create
 	    list($new_page_num, $new_page_path) = $this->getNewPageNum($app);
@@ -433,7 +565,7 @@ class FileManagement {
      */
     public function deletePage($app, $page_num, $uid) {
 //get path of file to delete
-        $app_path = $app->calculateFullPath($this->config['paths']['app']) . $this->config['cordova']['asset_path'];
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
         $page_to_delete = $this->getPageFileName($app_path, $page_num);
         
 //check if it is locked, we get a list of all locks, if one of them is "higher" then the one we want to delete, then we bail as we need to rename files to have 
@@ -477,7 +609,7 @@ class FileManagement {
  * @return types
  */
     public function getPageIdAndTitles($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 
         
         if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
@@ -535,7 +667,19 @@ class FileManagement {
     }
     
     /**
-     * Remove all potential locks on all other apps for specified unique ID
+     * Remove all potential locks on all apps for specified unique ID
+     * @param type $uid
+     */
+    public function clearAppLocks($app, $uid) {
+        $app_location = $app->calculateFullPath($this->config["paths"]["app"]);
+        $files = $this->func_find($app_location, "f",  "*.$uid.lock");
+        foreach ($files as $file) {
+             unlink($file);
+        }
+    }
+    
+    /**
+     * Remove all potential locks on all apps for specified unique ID
      * @param type $uid
      */
     public function clearLocks($uid) {
@@ -601,7 +745,7 @@ class FileManagement {
 //open it first time and clear all other locks
         } else {
             $this->clearLocks($uid);
-            touch("$filename.$uid.lock");
+            file_put_contents("$filename.$uid.lock", "");
             return "unlocked";
             
         }
@@ -625,43 +769,6 @@ class FileManagement {
         return $res;
     }
  
-/**
- * Calls on cordova to build the app and then returns the URL of the app
- * @param type $app
- * @return boolean
- */
-	public function buildApp ($app) {
-		
-//prepare all the paths to use
-		$default_platform = $this->config["cordova"]["default_platform"];
-		$include_paths = $this->config["cordova"][$default_platform]["include_paths"];
-        $compiled_app_location = $this->config["cordova"][$default_platform]["compiled_app_location"];
-		$app_path = $app->calculateFullPath($this->config["paths"]["app"]);
-		
-//prepare the command
-        $cordova_build_command = $this->config["cordova"]["cmds"]["compile"];
-		
-		$output = array();
-		$exit_code = 0;
-		
-		if (!putenv('PATH=' . $this->config["os_path"] . ":" . implode(":", $include_paths))) {
-			return array("Could not set path for Cordova");
-		}
-		
-		// May need to download and then run for a while, so set time limit
-		set_time_limit(300);
-        chdir($app_path);
-        exec($cordova_build_command . " 2>&1", $output, $exit_code);
-		
-//check exit code, anything except 0 = fail
-        $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
-        $url = $this->config["urls"]["app"] . $app->calculateFullPath("") . $compiled_app_location . $app->getPath() . "-release.apk";
-        if ($exit_code != 0) {
-            return array("result" => "error", "url" => $url, "message" => "Exit code: " . $exit_code . " (" . implode(", ", $output));
-        } else {
-            return array("result" => "success", "url" => $url);
-        }
-	}
     
     /**
      * Adds a "feature", that is, a hidden component that adds features to an app that are not a visual component
@@ -693,63 +800,47 @@ class FileManagement {
     }
     
     /**
-     * This function will update an XML file (typically /www/config.xml or /platforms/android/AndroidManifest.xml)
-     * with values that either replace existing ones or add to new ones 
-     * @param type $filename
-     * @param type string update: can be attribute or content, this is what will be added or replaced in the XML code
-     * @param type string $tag
-     * @param type string $attribute
-     * @param type string $value
-     * http://stackoverflow.com/questions/1193528/how-to-modify-xml-file-using-php
-     * http://stackoverflow.com/questions/15156464/i-want-to-modify-the-existing-data-in-xml-file-using-php
-     * http://stackoverflow.com/questions/10909372/checking-if-an-object-attribute-is-set-simplexml
-     * http://stackoverflow.com/questions/17661167/how-to-replace-xml-node-with-simplexmlelement-php
-     * http://www.php.net/manual/en/book.simplexml.php
-     */
-    public function updateCordovaConfiguration($filename, $update, $tag, $attribute, $existing_attribute_value, $update_value) {
-        if (!file_exists($filename)) {
-            return "File not found: $filename";
-        }
-        if (empty($tag)) {
-            return "No tag specified";
-        }
-
-        if (empty($attribute) || empty($existing_attribute_value)) {
-            $query = "//*[local-name() = '$tag']";
+     * Injects some HTML fragment into a div specified by the ID
+     * 
+     **/ 
+    public function injectHtml($filename, $container_id, $html_to_inject, $is_file) {
+        if ($is_file) {
+            $source = new \DOMDocument("1.0", "utf-8");
+            $source->loadHTMLFile($html_to_inject);
+            $html = $source->saveHTML($source->getElementsByTagName('body')->item(0));
+//must remove the surrounding BODY tag, a bit hacky, but works...
+            $html = substr(trim($html), 6, -7);
         } else {
-            $query = "//*[local-name() = '$tag'][@$attribute = '$existing_attribute_value']";
+            $html = $html_to_inject;
         }
-        $xml = simplexml_load_file($filename);
+        
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = true;
+        $doc->loadHTMLFile($filename);
+        libxml_clear_errors();
 
-        
-        $res = $xml->xpath($query);
-        if (sizeof($res) > 1) {
-            return "Found more than one configuration setting matching criteria, cannot continue";
-        }
-           
-        if (sizeof($res) == 0) {
-            $res[0] = $xml->addChild($update_value);
-        }
-        if ($update == "attribute") {
-            $res[0][$attribute] = $update_value;
-        } elseif ($update == "content") {
-            $xml->{$tag} = $update_value;
-        }
- 
-        if (!$xml->asXML($filename)) {
-            return "Unable to update the configuration for this application";
+        $xpath = new \DOMXPath($doc);
+        $div_content = $xpath->query("//*[@id='$container_id']")->item(0);
+
+        if (empty($div_content)) {
+            return false;
         }
         
-        return true;
+        $inject = $doc->createDocumentFragment();
+        $inject->appendXML($html);
+        $div_content->appendChild($inject);
+        return $doc->saveHTMLFile($filename);
     }
     
+
     /**
      * get number of pages in app, this is typically used to update javascript variables in mlab_parameters.js
      * @param type $app
      * @return array(int $new_page_num, string $new_page_path (complete path to file))
      */
     public function getTotalPageNum($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
 
    		$pages = glob ( $app_path . "/???.html" );
         
@@ -764,7 +855,7 @@ class FileManagement {
     
 //this scans through a javascript file and if it finds a parameter match it will replace the value, it not add it to the end of the file 
     public function updateAppParameter($app, $param, $value) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $file = $app_path . "/js/mlab_parameters.js";
 
         $lines = file($file);
@@ -791,7 +882,7 @@ class FileManagement {
     public function getAppMD5($app, $exclude_file = "") {
         
 //MÅ TESTE OM TOM EXCLUDEFILES TIL func_find VIRKER FOR Å IKKE EKSKLUDERE TING, SAMME FOR 
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]) . $this->config["cordova"]["asset_path"];
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $md5sums = array();
         
         if ($exclude_file != "") {
@@ -808,7 +899,233 @@ class FileManagement {
         
         
     }
+
+/**
+ * Function that will go through each page in an app and run various processing functions
+ * 
+ * @param type $app
+ * @param type $config
+ * 
+ * 
+ */
+    public function preCompileProcessingAction($app, $config) {
+        
+//get basic objects and variables ready
+        $comp_dir = $config["paths"]["component"];
+        $components = $this->loadComponents(array(), $comp_dir, $config["component_files"], $app->getId());
+        $app_path = $app->calculateFullPath($config['paths']['app']);
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        
+//prepare processing class
+        $process = new CustomPreProcessing();
+
+//first make the cache dir (i.e. the dir with the files to be compiled) and then process index.html file
+//This can have special variables in it, for the other pages we only execute the onCompile function
+        if (!file_exists($cached_app_path)) {
+            mkdir($cached_app_path);
+        }
+        $frontpage_content = file_get_contents($app_path . "index.html");
+
+//get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
+        preg_match_all('~%%(.+?)%%~', $frontpage_content, $placeholders);
+        $placeholders = array_unique($placeholders[1]);
+
+//we use two separate loops to check for function or component placeholders. 
+//Reason for this is that a component may well have a function placeholder inside it.
+// * NB!!!!! This will not be suitable for components that are interactive at designtime, 
+//           such as a map that requires settings to be chosen.
+
+//start with the component placeholders
+        foreach ($placeholders as $placeholder) {
+            if (strpos($placeholder, "MLAB_CT_COMP_") !== false) {
+                $comp_name = strtolower(str_replace("MLAB_CT_COMP_", "", $placeholder));
+                if (array_key_exists($comp_name, $components)) {
+                    
+//here we insert the html of the component in place of the placeholder
+//this is a two step process, first insert the content of the component and then run the backend code (if any)
+                    $frontpage_content = str_replace("%%$placeholder%%", $components[$comp_name]["html"], $frontpage_content);
+                    $res = $this->componentAdded($app->getId(), $app, $comp_name, $config);
+                    if ($res["result"] != "success") {
+                        error_log("Failed to run ComponentAdded code for $comp_name");
+                    }
+                } else {
+                    error_log("$comp_name is not a component installed on this server");
+                }
+            }
+        }
+
+        
+//now check for functions to be run. starts with MLAB_CT_FUNC_. 
+        foreach ($placeholders as $placeholder) {
+//Functions are kept in the CustomPreProcessing class, where all names are in lower case (i.e. no CamelCase or similar)
+            if (strpos($placeholder, "MLAB_CT_FUNC_") !== false) {
+                $func_name = strtolower(str_replace("MLAB_CT_FUNC_", "", $placeholder));
+                if (method_exists($process, $func_name)) {
+                    
+//here we run the function and obtain the result
+                    $value = call_user_func_array(array($process, $func_name), array($config, $app, $app_path));
+                    
+//to avoid javascript errors we set empty values to -1
+//(for instance code may be: var x = %%MLAB_CT_FUNC_GET_NUM%%; , with an empty value this would cause all javascript below to fail at runtime
+                    if (empty($value)) {
+                        $value = -1;
+                    }
+                    
+                    $frontpage_content = str_replace("%%$placeholder%%", $value, $frontpage_content);
+                } else {
+                    error_log("$func_name is not a function in class CustomPreProcessing in " . __FILE__);
+                }
+                
+            } else if (strpos($placeholder, "MLAB_CT_") === false) {
+                error_log("Placeholder $placeholder was not processed");
+            }
+        }
+        
+//loop through all pages to process the components that have a matching onCompile function
+        $pages = glob ( $app_path . "???.html" );
+        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
+
+        foreach ($pages as $page) {
+//parse pages and loop through the components for each page
+            $doc = new \DOMDocument("1.0", "utf-8");
+            libxml_use_internal_errors(true);
+            $doc->validateOnParse = true;
+            if (substr($page, -10) == "index.html") {
+                $doc->loadHTML($frontpage_content);
+                libxml_clear_errors();
+                $page_components = $doc->getElementById($config["app"]["content_id"])->childNodes;
+            } else {
+                $doc->loadHTMLFile($page);
+                libxml_clear_errors();
+                $page_components = $doc->getElementsByTagName('body')->item(0)->childNodes;
+            }
+            
+
+            foreach ($page_components as $page_component) {
+                
+//check if this component has a server_code.php file and if it has a onCompile class, 
+//if so we send the inside of the DIV node object and the html version of this to the function to be manipulated. 
+//We get plain HTML back
+                if (get_class($page_component) == "DOMElement") {
+                    $comp_name = $page_component->getAttribute("data-mlab-type");
+                    if ($comp_name != "") {
+                        $path_component = $comp_dir . $comp_name . "/";
+                        if (file_exists($path_component . "server_code.php")) {
+                            if (!class_exists("mlab_ct_" . $comp_name) && !@(include($path_component . "server_code.php"))) {
+                                return array(
+                                        'result' => 'failure',
+                                        'msg' => "Unable to load server_code.php file");
+                            } 
+                            
+                            if (class_exists("mlab_ct_" . $comp_name)) {
+                                $temp_class_name = "mlab_ct_" . $comp_name;
+                                $component_class = new $temp_class_name();
+                                if (method_exists($component_class, "onCompile")) {
+                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
+                                    $temp_doc->appendChild($temp_doc->importNode($page_component,TRUE));
+                                    $processed_html = $component_class->onCompile($page_component, $temp_doc->saveHTML());
+
+                                    if (!$processed_html) {
+                                        return array(
+                                            'result' => 'failure',
+                                            'msg' => "Unable to run application on server");
+                                    } 
+//plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page
+                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
+                                    $temp_doc->loadHTML($processed_html);
+                                    $temp_comp = $temp_doc->getElementsByTagName('body')->item(0)->firstChild;
+//erase old nodes
+                                    while($page_component->childNodes->length){
+                                      $page_component->removeChild($page_component->firstChild);
+                                    }
+//insert the new nodes from the transformed HTML
+                                    foreach($temp_comp->childNodes as $transfer_node){
+                                        $page_component->appendChild($doc->importNode($transfer_node,TRUE));
+                                    }
+                                } //end method exists
+                            } //end class exists
+                        } //end file server_code.php exists
+                    } //end not blank component name
+                } // end dom element
+            } //end page loop
+
+            $doc->saveHTMLFile($cached_app_path . basename($page));
+        }
+        
+//update the include.js file with common variables. These include
+// - number of pages
+// - title of app
+// - version of app
+// - name of creator
+// - based on template
+// - categories 1, 2 & 3
+// - last preprocessing (now)
+// - last time updated (from db)
+// - uid
+        $metatags = get_meta_tags($app_path . "index.html");
+        date_default_timezone_set('UTC');
+
+        $app_vars = array(
+            "num_pages" => $process->getnumberofpages($config, $app, $app_path),
+            "app_title" => $metatags["mlab:app_uid"],
+            "app_version" => $app->getActiveVersion(),
+            "app_categoryOne" => $app->getCategoryOne(),
+            "app_categoryTwo" => $app->getCategoryTwo(),
+            "app_categoryThree" => $app->getCategoryThree(),
+            "app_creator" => $app->getUser(),
+            "app_template" => $app->getTemplate(),
+            "time_processed" => date("Y-m-d H:i:s"),
+            "time_updated" => $app->getUpdated(),
+            "app_uid" => $app->getUid()
+            
+        );
+        
+        if (!file_exists($app_path . "js/include.js")) {
+            file_put_contents($app_path . "js/include.js", "");
+        }
+        $include_js = file($app_path . "js/include.js");
+        $new_include_js = array();
+        foreach ($include_js as $line) {
+            if (substr(trim($line), 0, 12) == "MLAB_RT_VARS") {
+                $new_include_js[] = "var MLAB_RT_VARS = " . json_encode($app_vars) . ";";
+            } else {
+                $new_include_js[] = $line;
+            }
+        }
+        if (empty($new_include_js)) {
+            $new_include_js = array("var MLAB_RT_VARS = " . json_encode($app_vars) . ";");
+        }
+        
+//unlike other functions here, here we update the live file, an not the cached post-processing file, this is because the vars do not cause a problem in the original file, 
+//and we can still create symlinks to all non html files
+        file_put_contents($app_path . "js/include.js", implode("\n", $new_include_js));
+        
+//finally, to avoid using a lot of disk space (for uploaded videos for instance), we symlink all the files that are NOT HTML files
+//we need to delete existing symlinks first to avoid "dangling" links with no target file after a page is deleted, etc.
+        $symlinks = glob($cached_app_path . "*"); 
+        foreach ($symlinks as $symlink) {
+            if(is_link($symlink)) {
+                unlink($symlink);
+            } 
+        }
+        
+        $other_files = glob($app_path . "*");
+        foreach ($other_files as $other_file) {
+            if (substr($other_file, -5) != ".html" && substr($other_file, -5) != ".lock") {
+                $file_name = basename($other_file);
+                symlink($other_file, $cached_app_path . $file_name);
+            }
+        }
+        
+        return array("result" => "success");
+        
+    }
     
+/**
+ * Removes the temporay files from a template or component upload
+ * @param type $entity: the component or template doctribe entity
+ * @param type $type: template or component
+ */
     public function removeTempCompFiles($entity, $type) {
         $path = $this->config["paths"][$type] . $entity->getPath();
         $this->func_rmdir($path);
@@ -819,7 +1136,7 @@ class FileManagement {
         $all_comps_used = array();
 
         foreach ($apps as $app) {
-            $app_path = $app->calculateFullPath($app_root) . $this->config["cordova"]["asset_path"] . "/";
+            $app_path = $app->calculateFullPath($app_root);
             $files = $this->func_find( $app_path, "f", "*.html" );
             
             foreach ($files as $filename) {
@@ -840,6 +1157,57 @@ class FileManagement {
         }
         $all_comps_used = array_unique($all_comps_used);
         return $all_comps_used;
+    }
+    
+//loads a list of app icon foregrounds from the icon directory
+    public function getForegrounds() {
+        $icon_root = $this->config["paths"]["icon"];
+        $icon_url = $this->config["urls"]["icon"];
+        $foregrounds = array();
+        
+        $temp_foregrounds = $this->func_find( $icon_root . "foregrounds/", "f", "*.png" ) + $this->func_find( $icon_root  . "foregrounds/", "f", "*.jpg" ) + $this->func_find( $icon_root . "foregrounds/", "f", "*.gif" );
+        foreach ($temp_foregrounds as $temp_foreground) {
+            $foregrounds[basename($temp_foreground)] = $icon_url . "foregrounds/" . basename($temp_foreground);
+        }
+        
+        return $foregrounds;
+    }
+ 
+//loads a list of app icon backgrounds from the icon directory
+    public function getBackgrounds() {
+        $icon_root = $this->config["paths"]["icon"];
+        $icon_url = $this->config["urls"]["icon"];
+        $backgrounds = array();
+        
+        $temp_backgrounds = $this->func_find( $icon_root . "backgrounds/", "f", "*.png" ) + $this->func_find( $icon_root  . "backgrounds/", "f", "*.jpg" ) + $this->func_find( $icon_root . "backgrounds/", "f", "*.gif" );
+        foreach ($temp_backgrounds as $temp_background) {
+            $backgrounds[basename($temp_background)] = $icon_url . "backgrounds/" . basename($temp_background);
+        }
+        
+        return $backgrounds;
+    }
+    
+    public static function GUID_v4() {
+        return sprintf('%04x%04xX%04xX%04xX%04xX%04x%04x%04x',
+
+          // 32 bits for "time_low"
+          mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+
+          // 16 bits for "time_mid"
+          mt_rand(0, 0xffff),
+
+          // 16 bits for "time_hi_and_version",
+          // four most significant bits holds version number 4
+          mt_rand(0, 0x0fff) | 0x4000,
+
+          // 16 bits, 8 bits for "clk_seq_hi_res",
+          // 8 bits for "clk_seq_low",
+          // two most significant bits holds zero and one for variant DCE1.1
+          mt_rand(0, 0x3fff) | 0x8000,
+
+          // 48 bits for "node"
+          mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
     }
  
 //functions that replicate linux commands
@@ -890,7 +1258,7 @@ class FileManagement {
  * @param type $search
  * @param type $replace
  */
-    private function func_sed($files, $search, $replace) {
+    public function func_sed($files, $search, $replace) {
         foreach ($files as $file) {
             $content = file_get_contents($file);
             file_put_contents( $file, str_replace($search, $replace, $content) );

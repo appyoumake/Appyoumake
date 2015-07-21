@@ -1,15 +1,8 @@
 # Configuration file for simple header (H2) component
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: headline
 name: h2
-tooltip: This is a sub headline, use sparingly per page to indicate change of topic 
-compatible: ["h1", "h3", "ol", "ul", "p"]
+tooltip: This is a sub headline, use sparingly on the page to indicate change of topic 
 html: <h2>Enter headline level 2 here</h2>
-process_keypress: true
-custom:
-    bold_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAS0lEQVQ4y2NgoDLgAOL/WPBdIJ4IxGzkGgDDPZQa8IBUA0AgAIsY2QbcpdQLE8k14AE0ANkGzACyvUBxIFIcjRQnJKolZaIzE8kAAK1SYN3E0m6CAAAAAElFTkSuQmCC
-    italic_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAVCAYAAABPPm7SAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAASdAAAEnQB3mYfeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADySURBVDiNlZOxbQJREETfADIRKU4ILIeWCEiAFgicuwaaoBAacAduASyISMhISAgoAAlpndyhf3e7+N9KX3d/dnY0s9KXmZGWpCrwT/UcbFF8P4FlMLcCfgEwM/cAa8CCM3rwnggcguFzyut4/iQNgI/A/ia9uALA9EkvS2AW4ADbHIF5gN+BXQUJFnjBX+C+zm04kPQODAMHmzrgRcjOHwlE+V0HXv4tfv4roAa/NtwHboHAj7fweoQJ8JJt39lBu/wtBIzy+TY61R2c8PMfo1f7cCDpFXhrYx+gJ+mr+B9HJKBb8szsO22osJhdZqb0/gdF99yJyTkyOQAAAABJRU5ErkJggg==
-    bold_tooltip: Add or remove bold font for current selection
-    italic_tooltip: Add or remove italics font for current selection
-    
+inherit: h1
+placeholder: Enter your headline level 2 here

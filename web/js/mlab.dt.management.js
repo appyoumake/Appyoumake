@@ -1,5 +1,3 @@
-
-
 /***********************************************************
  ******************* App level functions *******************
 ************************************************************/
@@ -52,30 +50,6 @@ Mlab_dt_management.prototype = {
         });
     },
 
-    app_update_metadata : function (el) {
-        $(el).next().slideUp();
-        switch ($(el).attr("id")) {
-            case "mlab_edit_app_title" :
-                break;
-
-            case "mlab_edit_app_description" :
-                break;
-
-            case "mlab_edit_app_keywords" :
-                break;
-
-            case "mlab_edit_app_category1" :
-                break;
-
-            case "mlab_edit_app_category2" :
-                break;
-
-            case "mlab_edit_app_category3" :
-                break;
-
-        }
-
-    },
 
 /*
  * Calls a function on the backend that returns a URL to the file to download.
@@ -83,7 +57,8 @@ Mlab_dt_management.prototype = {
  * @returns void
  */
     app_download  : function () {
-        this.page_save(mlab_app_download_process);
+        that = this;
+        this.page_save( function() { that.app_download_process(); } );
     },
 
     app_download_process  : function () {
@@ -185,7 +160,7 @@ Mlab_dt_management.prototype = {
     index_page_process  : function (page, page_num, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + this.parent.config.cordova.asset_path;
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
 //parse doc into a variable
         var doc = (new DOMParser()).parseFromString(page,"text/html");
@@ -220,7 +195,9 @@ Mlab_dt_management.prototype = {
 //insert stylesheets
         for ( var i = 0; i < stylesheets.length; i++) {
             temp_link = stylesheets[i].getAttribute("href");
-            temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
+            if(temp_link.indexOf("style_rt.css") < 0){
+                temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
+            }
         }
         $("head link[rel='stylesheet']").last().after(temp_stylesheets);
 
@@ -268,7 +245,7 @@ Mlab_dt_management.prototype = {
 
     regular_page_process  : function (page, page_num) {
         var comp_id, temp_comp, temp_link;
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.version + this.parent.config.cordova.asset_path;
+        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
 //remove old stuff
         $("#" + this.parent.config["app"]["content_id"]).html("");
@@ -639,8 +616,8 @@ Mlab_dt_management.prototype = {
             alert("You can not copy the index page");
             return;
         }
-
-        this.page_save( function() { this.page_copy_process(page_num); } );
+        that = this;
+        this.page_save( function() { that.page_copy_process(page_num); } );
     },
 
     page_copy_process : function (page_num) {
@@ -712,23 +689,84 @@ Mlab_dt_management.prototype = {
      * @returns {undefined}
      */
     page_preview : function () {
-        this.page_save(this.page_preview_process);
+        that = this;
+        this.page_save( function() { 
+            that.page_preview_process(); 
+        } );
     },
 
     page_preview_process : function () {
-        
-        if (mlab.dt.app.curr_page_num == 0 || mlab.dt.app.curr_page_num == "index" ) {
-            page_name = ""
-        } else {
-            page_name = ("000" + mlab.dt.app.curr_page_num).slice(-3) + ".html";
-        }
+        var url = this.parent.urls.app_preview.replace("_APPID_", this.parent.app.id);
         var w = $(window).width() * 0.25;
         var h = $(window).height() * 0.75;
-        var res = window.open(mlab.dt.config["urls"]["app"] + mlab.dt.app.path + "/" + mlab.dt.app.version + "/" + mlab.dt.config["cordova"]["asset_path"] + "/index.html?openpage=" + page_name,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
+        var res = window.open(url,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
             alert("Cannot open new window, change your settings to allow popup windows");
         }
-        mlab.dt.utils.timer_start();
+        
+    },
+    
+    market: {
+
+        login : function () {
+        
+        },
+        
+        submit_app_details : function () {
+        
+        },
+        
+        upload_app_file : function () {
+        
+        },
+        
+        publish_app : function () {
+        
+        },
+        
+        unpublish_app : function () {
+        
+        },
+        
+    },
+    
+    compiler: {
+        
+        get_app_status : function () {
+            var url = this.parent.urls.cs_get_app_status
+            var i = prompt("app database ID (leave blank is OK)");
+            url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
+            var v = prompt("version (leave blank is OK)");
+            url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
+            var p = prompt("platform (ios or android) (leave blank is OK)");
+            url = url.replace("/_PLATFORM_", ((p != null && p != "") ? "/" + p : ""));
+
+            $.getJSON(url, function( json ) {
+                if (json.result == "success") {
+                    alert("check javascript console");
+                    console.log("status of current app: ");
+                    console.log(json.app_status[mlab.dt.app.uid]);
+                } else {
+                    alert("Unable to get app status");
+                }
+            });
+        },
+    
+        upload_files : function () {
+        
+        },
+
+        verify_app : function () {
+        
+        },
+
+        compile_app : function () {
+        
+        },
+
+        get_app : function () {
+        
+        }
     }
 
 }// end management.prototype

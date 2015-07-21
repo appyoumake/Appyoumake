@@ -22,6 +22,7 @@ class AppRepository extends EntityRepository
 		foreach ($groups as $group) {
 			$temp_apps = $group->getApps();
 			foreach ($temp_apps as $temp_app) {
+                $temp_app->getAppVersions();
 				$apps[$temp_app->getId()] = $temp_app->getArray();
 			}
 		}

@@ -26,6 +26,10 @@ SinettMLABBuilderBundle_menu:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/menu.yml"
     prefix:   /menu
 
+SinettMLABBuilderBundle_services:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/services.yml"
+    prefix:   /services
+
 SinettMLABBuilderBundle_template:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/template.yml"
     prefix:   /template
@@ -53,3 +57,4 @@ system:
 index:
     pattern: /index
     defaults: { _controller: SinettMLABBuilderBundle:System:index }
+

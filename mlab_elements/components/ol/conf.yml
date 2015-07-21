@@ -1,10 +1,10 @@
 # Configuration file for ordered list (OL) component
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: text
+category: list
 name: ol
 tooltip: Ordered list
-compatible: ["h1", "h2", "h3", "ul", "p"]
+compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |
     <ol>

@@ -258,6 +258,11 @@ img.builder_app_list_name_edit_img {
      padding-right: 3px;
 }
 
+td.builder_app_list_icon img {
+    width: 24px;
+    height: 24px;
+}
+
 /* ==========================================================================
    Icons as background images
    ========================================================================== */
@@ -497,11 +502,12 @@ body.mlab_base div.mlab_top_bar_back {
 }
 
 .builder_app_properties {
-    background-image: url("/img/properties.png");
+    background-image: url("/img/tools/menu.png");
     opacity: 0.8;
     background-position: left center;
     background-repeat: no-repeat;
-    padding: 5px 0 5px 20px;
+    width: 16px;
+    height: 16px;
 
 }
 
@@ -590,3 +596,63 @@ body.mlab_base div.mlab_top_bar_back {
 #tabs_admin_apps.ui-tabs {
     position: absolute;
 }
+
+/* used in new app wizard */
+#build_app_properties {
+    height: 550px;
+}
+
+#mlab_app_new_previous {
+    float: left;
+} 
+
+#mlab_app_new_next {
+    float: right;
+}
+
+#build_app_properties .dd-container {
+    float: left;
+}
+
+#build_app_properties #app_icon_designer {
+    border: 1px solid gray;
+    clear: both;
+    float: left;
+    margin: 10px;
+}
+
+#build_app_properties .new_line {
+    width: 95%;
+    clear: both;
+    float: left;
+}
+
+#build_app_properties .left, #build_app_properties #mlab_select_background, #build_app_properties #mlab_select_foreground {
+    float: left;
+}
+
+#build_app_properties .dd-selected-text, #build_app_properties .dd-option-text {
+    display: none;
+}
+
+#build_app_properties .dd-option-image, #build_app_properties .dd-selected-image {
+    max-width: 64;
+}
+
+#build_app_properties fieldset {
+    width: 95%;
+}
+
+#build_app_properties fieldset p {
+    float: left; 
+    display: block;
+    width: auto;
+    margin-right: 5px;
+}
+
+#build_app_properties label.required:after {
+    content: " *";
+    color: red;
+}
+
+/* end used in new app wizard */
