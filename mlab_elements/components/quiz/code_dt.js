@@ -29,6 +29,8 @@ this.classes = {
     userPrompt: "mlab_dt_user_prompt",
     helpText: "mlab_dt_help_text",
     userInput: "mlab_dt_user_input",
+    cancelButton: "mlab_dt_cancel",
+    finishButton: "mlab_dt_finish",
 //    correctResponse: "mlab_dt_correct_response",
     correctResponseAlternative: "mlab_dt_correct_response_alternative",
     mandatory: "mlab_dt_response_mandatory",
@@ -150,6 +152,16 @@ this.setupDesign = function() {
         self.handleUserInput($(this), e);
     });
 
+    self.domRoot.on("click", "." + this.classes.cancelButton, function() {
+        self.cancelCurrentQuestion();
+    });
+
+    self.domRoot.on("click", "." + this.classes.finishButton, function() {
+        console.log("finish");
+        self.finishAddingQuestions();
+    });
+
+
     self.domRoot.on("click", "." + this.classes.editable, function() {
         var ob = $(this);
         self.api.editContent(ob);
@@ -187,6 +199,17 @@ this.setupDesign = function() {
     self.initTabs();
     // Adding role="none", to prevent jQuery mobile from turning my inputs and buttons into jQuery UI elements
     self.domRoot.find(":input").attr("data-role", "none");
+};
+
+
+this.cancelCurrentQuestion = function() {
+    var page = this.getActivePage();
+    var question = this.getCurrentQuestion(page);
+    var input = page.find("." + this.classes.userInput);
+    if (input.data("editStage")>1) {
+        this.removeQuestion(question);
+        this.enterEditMode(page,"questionType");
+    }
 };
 
 /* Saves the added questions and alternatives. Since the layout and functionality for the questions are radically different in DT and RT, 
@@ -317,6 +340,8 @@ this.setUpPage = function(page, setActive, editStage) {
         + '    <section class="' + this.classes.userPrompt + '"></section>'
         + '    <section class="' + this.classes.helpText + '"></section>'
         + '    <input name="user_input" type="text" class="' + this.classes.userInput + '" />'
+        + '    <input type="button" class="' + this.classes.cancelButton + '" value="Avbryt" />'
+        + '    <input type="button" class="' + this.classes.finishButton + '" value="Ferdig" />'
         + '</section>'
         + '<input type="button" class="mlab_dt_button_right ' + this.classes.removePage + '" value="Fjern side" />'
         + '</footer>');
@@ -342,6 +367,8 @@ this.enterEditMode = function(page, editStage, question, existing) {
     if (editStage=="alternatives" && questionType=="text") editStage = this.editStages[this.editStages.indexOf(editStage) + 1];
     input.data("editStage", this.editStages.indexOf(editStage));
     input.data("existing", existing);
+    if (editStage!="questionType") factory.find("input." + this.classes.cancelButton).show();
+    else factory.find("input." + this.classes.cancelButton).hide();
     var promptText = "";
     if (editStage=="questionType") {
         promptText = this.editPrompts[editStage];
@@ -492,7 +519,6 @@ this.addQuestionAlternative = function(question, value, questionType) {
 };
 
 this.addCorrectResponse = function(question, value, questionType) {
-    console.log("addCorrectResponse");
     var proceed = true;
     var correctResponse = "";
     if (questionType=="text" || questionType=="radio" || questionType=="select") {
@@ -512,6 +538,7 @@ this.addCorrectResponse = function(question, value, questionType) {
         }
     }
     //if (!value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) proceed = false;
+    //if (!value) proceed = false;
     question.data("correctResponse", correctResponse)
 /*
     var responseOb = question.find("." + this.classes.correctResponse);
@@ -539,6 +566,9 @@ this.markAlternativesAsCorrect = function(question, questionType) {
 };
 
 this.finishAddingQuestions = function(page) {
+    if (!page) page = this.getActivePage();
+    console.log("finish");
+    console.log(page);
     page.find("." + this.classes.factory).addClass(this.classes.hide);
     return true;
 };
@@ -615,6 +645,16 @@ this.alternativeClicked = function(alternative) {
     html.push('<div>');
     html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="editalternative">Endre teksten</a>');
     html.push('</div>');
+    if (alternative.prev("." + this.classes.questionAlternatives + " li").length) {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="alternativemoveup">Flytt opp</a>');
+        html.push('</div>');
+    }
+    if (alternative.next("." + this.classes.questionAlternatives + " li").length) {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="alternativemovedown">Flytt ned</a>');
+        html.push('</div>');
+    }
     html.push('<div>');
     html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changecorrectresponse">' + changeCorrectResponseText + '</a>');
     html.push('</div>');
@@ -703,6 +743,8 @@ this.dialogLinkClick = function(link) {
     else if (linkFunction=="editalternative") this.editAlternativeText(alternative);
     else if (linkFunction=="changecorrectresponse") this.toggleAlternativeCorrectness(alternative);
     else if (linkFunction=="deletealternative") this.removeAlternative(alternative);
+    else if (linkFunction=="alternativemoveup") this.moveAlternativeUp(alternative);
+    else if (linkFunction=="alternativemovedown") this.moveAlternativeDown(alternative);
 };
 
 /*
@@ -721,6 +763,15 @@ this.editAlternativeText = function(alternative) {
         self.saveQuestions();
         alternative.removeAttr("contenteditable");
     });
+    alternative.on("keydown", function(e) {
+        console.log(e);
+        console.log(e.which);
+        if (e.which==13) { // enter
+            $(this).blur();
+            return false;
+        }
+    });
+
 };
 
 this.toggleAlternativeCorrectness = function(alternative) {
@@ -731,7 +782,7 @@ this.toggleAlternativeCorrectness = function(alternative) {
     if (this.alternativeIsCorrect(alternative)) {
         if (questionType=="checkbox") {
             var correctResponse = this.getCorrectResponse(question);
-            var reponseIndex = correctResponse.indexOf(alternativeNumber);
+            var responseIndex = correctResponse.indexOf(alternativeNumber);
             correctResponse.splice(responseIndex, 1);
             alternativeValue = correctResponse.join(" ");
         }
@@ -755,6 +806,22 @@ this.removeAlternative = function(alternative) {
     alternative.remove();
     this.saveQuestions();
 };
+
+this.moveAlternativeUp = function(alternative) {
+    var previous = alternative.prev("." + this.classes.questionAlternatives + " li");
+    var isCorrect = this.alternativeIsCorrect(previous);
+    if (isCorrect) this.toggleAlternativeCorrectness(previous);
+    previous = this.switchPositions(previous, alternative);
+    if (isCorrect) this.toggleAlternativeCorrectness(previous);
+}
+
+this.moveAlternativeDown = function(alternative) {
+    var isCorrect = this.alternativeIsCorrect(alternative);
+    if (isCorrect) this.toggleAlternativeCorrectness(alternative);
+    var next = alternative.next("." + this.classes.questionAlternatives + " li");
+    alternative = this.switchPositions(alternative, next);
+    if (isCorrect) this.toggleAlternativeCorrectness(alternative);
+}
 
 this.toggleMandatory = function(question) {
     this.setMandatory(question, !question.data("mandatory"));
@@ -828,6 +895,7 @@ this.switchPositions = function(firstOb, secondOb) {
     firstObClone = firstOb.clone();
     firstOb.remove();
     secondOb.after(firstObClone);
+    return firstObClone;
 };
 
 this.custom_add_question = function(el) {

@@ -1,0 +1,42 @@
+/* Common rules */
+#mlab_content .mlab_quiz, .mlab_quiz * { box-sizing: border-box; -moz-box-sizing: border-box; }
+#mlab_content .mlab_quiz .mlab_quiz_page { width: 100%; border: 1px solid; padding: 0.5em; }
+#mlab_content .mlab_quiz .mlab_quiz_page h2 { margin-top: 0px; }
+#mlab_content .mlab_quiz .mlab_quiz_page footer { display: inline-block; width: 100%; padding-top: 0.5em; }
+#mlab_content .mlab_quiz .mlab_quiz_line { display: block; width: 100%; clear: both; padding-bottom: 0.3em; }
+#mlab_content .mlab_quiz .mlab_quiz_line label { display: inline !important; margin-right: 0.2em; font-size: 1.2em; line-height: 1.4em; }
+#mlab_content .mlab_quiz ul.mlab_quiz_questions { padding: 0 0.5em !important; }
+#mlab_content .mlab_quiz .mlab_quiz_question { display: block; width: 100%; margin-bottom: 0.5em; padding: 0.5em; border: 1px solid transparent; border-bottom: 1px solid; position: relative; }
+#mlab_content .mlab_quiz .mlab_quiz_question input, .mlab_quiz .mlab_quiz_question select { font-size: 1.2em; }
+#mlab_content .mlab_quiz .mlab_quiz_question select { width: 100%; }
+#mlab_content .mlab_quiz .mlab_quiz_text_input { width: 100%; }
+#mlab_content .mlab_quiz .mlab_quiz_hide { display: none; }
+
+/* DT only */
+#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav { width: 100%; list-style: none !important; margin: 0 !important; padding:  0.2em 0 !important; }
+#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li { margin: 0; padding: 0.2em 0; display: inline; }
+#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a { padding: 0.2em 0.8em; margin-right: -1px; border: 1px solid; border-bottom: 0; text-decoration: none; color: inherit; border-radius: 3px 3px 0px 0px; cursor: pointer; background-color: transparent; color: white; }
+#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_page_add { padding: 0.2em; 0.2em; }
+#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_active { background-color: white; color: black; }
+/* #mlab_editor .mlab_quiz .mlab_quiz_question { margin-bottom: 10px;  } */
+#mlab_editor .mlab_quiz .mlab_dt_quiz_question_type { font-size: 0.8em; }
+#mlab_editor .mlab_quiz .mlab_quiz_question section {  }
+#mlab_editor .mlab_quiz .mlab_quiz_line > span { font-size: 0.8em; }
+#mlab_editor .mlab_quiz .mlab_quiz_line > .mlab_dt_quiz_meta { font-size: 1em; }
+#mlab_editor .mlab_quiz .mlab_dt_quiz_current_question { border: 1px dashed white; }
+    
+#mlab_editor .mlab_quiz .mlab_dt_factory { float: left; clear: both; width: 100%; border: 1px solid #D19F2A; padding: 10px; background-color: white; color: #717275; margin-bottom: 10px; }
+#mlab_editor .mlab_quiz .mlab_dt_factory section { float: left; clear: both; width: 100%; margin: 5px 0; }
+#mlab_editor .mlab_quiz .mlab_dt_factory input.mlab_dt_user_input { float: left; clear: both; width: 100%; font-size: 1.2em; background-color: #d1d2d5; padding: 3px; }
+
+#mlab_editor .mlab_quiz .mlab_quiz_line li.mlab_dt_correct_response_alternative { color: green; }
+#mlab_editor .mlab_quiz .mlab_quiz_question.mlab_dt_response_mandatory::before { content: "* "; color: red; position: absolute; top: 5px; left: -9px; font-size: 1.5em; }
+
+/* RT only */
+.mlab_quiz .mlab_quiz_button_prev { float: left; }
+.mlab_quiz .mlab_quiz_button_next { float: right; }
+.mlab_quiz textarea { width: 100%; height: 7em; }
+.mlab_quiz .mlab_quiz_question_text { padding-bottom: .5em; }
+.mlab_quiz .mlab_quiz_question_ok { border: 1px solid green; border-radius: 3px; }
+.mlab_quiz .mlab_quiz_question_not_ok { border: 1px solid red; border-radius: 3px; }
+.mlab_quiz .mlab_quiz_correct_answer { color: green; }
