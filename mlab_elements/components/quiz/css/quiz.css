@@ -18,12 +18,13 @@
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a { padding: 0.2em 0.8em; margin-right: -1px; border: 1px solid; border-bottom: 0; text-decoration: none; color: inherit; border-radius: 3px 3px 0px 0px; cursor: pointer; background-color: transparent; color: white; }
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_page_add { padding: 0.2em; 0.2em; }
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_active { background-color: white; color: black; }
-/* #mlab_editor .mlab_quiz .mlab_quiz_question { margin-bottom: 10px;  } */
 #mlab_editor .mlab_quiz .mlab_dt_quiz_question_type { font-size: 0.8em; }
 #mlab_editor .mlab_quiz .mlab_quiz_question section {  }
 #mlab_editor .mlab_quiz .mlab_quiz_line > span { font-size: 0.8em; }
 #mlab_editor .mlab_quiz .mlab_quiz_line > .mlab_dt_quiz_meta { font-size: 1em; }
 #mlab_editor .mlab_quiz .mlab_dt_quiz_current_question { border: 1px dashed white; }
+#mlab_editor .mlab_quiz .mlab_dt_correct_response span { margin-right: 0.5em; }
+
     
 #mlab_editor .mlab_quiz .mlab_dt_factory { float: left; clear: both; width: 100%; border: 1px solid #D19F2A; padding: 10px; background-color: white; color: #717275; margin-bottom: 10px; }
 #mlab_editor .mlab_quiz .mlab_dt_factory section { float: left; clear: both; width: 100%; margin: 5px 0; }
@@ -37,6 +38,7 @@
 .mlab_quiz .mlab_quiz_button_next { float: right; }
 .mlab_quiz textarea { width: 100%; height: 7em; }
 .mlab_quiz .mlab_quiz_question_text { padding-bottom: .5em; }
+#page .mlab_quiz .mlab_quiz_question_text p { margin: 0; }
 .mlab_quiz .mlab_quiz_question_ok { border: 1px solid green; border-radius: 3px; }
 .mlab_quiz .mlab_quiz_question_not_ok { border: 1px solid red; border-radius: 3px; }
 .mlab_quiz .mlab_quiz_correct_answer { color: green; }

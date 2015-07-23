@@ -31,7 +31,7 @@ this.classes = {
     userInput: "mlab_dt_user_input",
     cancelButton: "mlab_dt_cancel",
     finishButton: "mlab_dt_finish",
-//    correctResponse: "mlab_dt_correct_response",
+    correctResponse: "mlab_dt_correct_response",
     correctResponseAlternative: "mlab_dt_correct_response_alternative",
     mandatory: "mlab_dt_response_mandatory",
     questionType: "mlab_dt_quiz_question_type",
@@ -317,8 +317,8 @@ this.addQuizPage = function() {
         + '<ul class="' + this.classes.questions + '"></ul>';
     
     nav.find("." + this.classes.addPage).closest("li").before('<li><a href="#' + uuid + '">' + title + '</a></li>');
-    
-    this.domRoot.append('<section class="' + this.classes.page + '" id="' + uuid + '">' + content + '</section>');
+    var lastPage = this.domRoot.find("." + this.classes.page).eq(-1);
+    lastPage.after('<section class="' + this.classes.page + '" id="' + uuid + '">' + content + '</section>');
     var page = this.domRoot.find("#" + uuid);
     this.setUpPage(page, true);
     
@@ -537,15 +537,16 @@ this.addCorrectResponse = function(question, value, questionType) {
             correctResponse = value;
         }
     }
-    //if (!value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) proceed = false;
-    //if (!value) proceed = false;
-    question.data("correctResponse", correctResponse)
-/*
-    var responseOb = question.find("." + this.classes.correctResponse);
-    responseOb.find("label").text(correctResponse);
-    responseOb.removeClass(this.classes.hide);
-*/
-    this.markAlternativesAsCorrect(question,questionType);
+    question.data("correctResponse", correctResponse);
+    var correctResponse = question.find("." + this.classes.correctResponse);
+    if (questionType=="text") {
+        correctResponse.find("label").text(value);
+        correctResponse.show();
+    }
+    else {
+        this.markAlternativesAsCorrect(question,questionType);
+        correctResponse.hide();
+    }
 
     return proceed;
 };
@@ -553,7 +554,7 @@ this.addCorrectResponse = function(question, value, questionType) {
 this.markAlternativesAsCorrect = function(question, questionType) {
     var value = question.data("correctResponse");
     var alternatives = question.find("." + this.classes.questionAlternatives + " li").removeClass(this.classes.correctResponseAlternative);
-    if (questionType=="text" || questionType=="radio" || questionType=="select") {
+    if (questionType=="radio" || questionType=="select") {
         value = [value];
     }
     else if (questionType=="checkbox") {
@@ -597,6 +598,9 @@ this.makeQuestion = function(page, type, questionText, uuid) {
         + '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + ' ' + this.classes.hide + '">'
         + '<ol class="' + this.classes.meta + '"></ol>'
         + '</span>'
+        + '<span class="' + this.classes.line + ' ' + this.classes.correctResponse + ' ' + this.classes.hide + '">'
+        + '<span>Korrekt svar:</span><label></label>'
+        + '</span>'
         + '<section></section>');
     question.data("questionid", uuid);
     question.data("questiontype", typeType);
@@ -607,7 +611,6 @@ this.addQuestion = function(page, type, questionText, uuid) {
     var question = this.makeQuestion(page, type, questionText, uuid);
     question = question.appendTo(questions);
     this.markQuestionAsCurrent(question);
-    //this.saveQuestions();
     return question;
 };
 
