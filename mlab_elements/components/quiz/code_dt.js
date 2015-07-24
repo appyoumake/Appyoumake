@@ -902,6 +902,7 @@ this.switchPositions = function(firstOb, secondOb) {
 };
 
 this.custom_add_question = function(el) {
+    debugger;
     var page = this.getActivePage();
     page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
     this.enterEditMode(page,"questionType");

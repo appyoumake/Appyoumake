@@ -16,7 +16,7 @@
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav { width: 100%; list-style: none !important; margin: 0 !important; padding:  0.2em 0 !important; }
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li { margin: 0; padding: 0.2em 0; display: inline; }
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a { padding: 0.2em 0.8em; margin-right: -1px; border: 1px solid; border-bottom: 0; text-decoration: none; color: inherit; border-radius: 3px 3px 0px 0px; cursor: pointer; background-color: transparent; color: white; }
-#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_page_add { padding: 0.2em; 0.2em; }
+#mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_page_add { padding: 0.2em 0.2em; }
 #mlab_editor .mlab_quiz ul.mlab_dt_quiz_page_nav li a.mlab_dt_quiz_active { background-color: white; color: black; }
 #mlab_editor .mlab_quiz .mlab_dt_quiz_question_type { font-size: 0.8em; }
 #mlab_editor .mlab_quiz .mlab_quiz_question section {  }
