@@ -543,6 +543,7 @@ Mlab_dt_api.prototype = {
         
         scrpt = document.createElement("script");
         scrpt.type = "text/javascript";
+        scrpt.className = "mlab_code";
         scrpt.text = code;
         $(el).append(scrpt);
         

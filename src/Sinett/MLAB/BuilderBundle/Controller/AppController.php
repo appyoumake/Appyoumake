@@ -188,7 +188,7 @@ class AppController extends Controller
 
 //update the title of the app in the conf.json file
                     if (file_exists($app_destination . "conf.json")) {
-                        $app_conf = json_decode(file_get_contents($app_destination . "conf.json"));
+                        $app_conf = json_decode(file_get_contents($app_destination . "conf.json"), true);
                         $app_conf["title"] = $entity->getName();
                     } else {
                         $app_conf = array("title" => $entity->getName());

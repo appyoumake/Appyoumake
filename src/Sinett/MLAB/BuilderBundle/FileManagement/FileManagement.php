@@ -291,7 +291,7 @@ class FileManagement {
                     if (!file_exists( $path_app_config)) {
                         file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "permissions" => $new_permissions)));
                     } else {
-                        $tmp_existing_config = json_decode(file_get_contents($path_app_config));
+                        $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
                         if (key_exists("permissions", $tmp_existing_config)) {
                             $tmp_existing_config["permissions"] = array_unique(array_merge($new_permissions, $tmp_existing_config["permissions"]));
                         } else {
@@ -914,6 +914,7 @@ class FileManagement {
         $comp_dir = $config["paths"]["component"];
         $components = $this->loadComponents(array(), $comp_dir, $config["component_files"], $app->getId());
         $app_path = $app->calculateFullPath($config['paths']['app']);
+        $path_app_config = $app_path . $config['filenames']["app_config"];
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
         
 //prepare processing class
@@ -1021,9 +1022,17 @@ class FileManagement {
                                 $temp_class_name = "mlab_ct_" . $comp_name;
                                 $component_class = new $temp_class_name();
                                 if (method_exists($component_class, "onCompile")) {
-                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
-                                    $temp_doc->appendChild($temp_doc->importNode($page_component,TRUE));
-                                    $processed_html = $component_class->onCompile($page_component, $temp_doc->saveHTML());
+//get variables from the JSON data structure saved as a script, also store it for later
+                                    $variables = array();
+                                    foreach ($page_component->childNodes as $child_element) {
+                                        if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_storage") {
+                                            $variables = json_decode($child_element->textContent, true);
+                                            $temp_variables = $doc->saveHtml($child_element);
+                                        } else if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_code") {
+                                            $temp_code = $doc->saveHtml($child_element);
+                                        }
+                                    }
+                                    $processed_html = $component_class->onCompile(json_decode(file_get_contents($path_app_config), true), $page_component, $doc->saveHTML($page_component), $app_path, $variables);
 
                                     if (!$processed_html) {
                                         return array(
@@ -1038,6 +1047,7 @@ class FileManagement {
                                     while($page_component->childNodes->length){
                                       $page_component->removeChild($page_component->firstChild);
                                     }
+                                    
 //insert the new nodes from the transformed HTML
                                     foreach($temp_comp->childNodes as $transfer_node){
                                         $page_component->appendChild($doc->importNode($transfer_node,TRUE));

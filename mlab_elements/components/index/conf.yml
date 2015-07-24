@@ -17,6 +17,9 @@ html:
             <li>Page z</li>
         </ul>
     runtime: |
-        %%mlab_ct_index_list%%
+        %%MLAB_CT_INDEX_LIST%%
+custom:
+    summary_style: Display chapter headlines only
+    detailed_style: Display chapter and page headlines
+    folding_style: Display chapter and page headlines in a outline style
     
-        

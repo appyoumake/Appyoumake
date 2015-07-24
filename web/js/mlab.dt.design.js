@@ -255,9 +255,9 @@ Mlab_dt_design.prototype = {
             return;
         }
 
-        if (created) {
+        if (created && typeof this.parent.components[comp_id].code.onCreate != "undefined") {
             this.parent.components[comp_id].code.onCreate(el);
-        } else {
+        } else if (typeof this.parent.components[comp_id].code.onLoad != "undefined") {
             this.parent.components[comp_id].code.onLoad(el);
         }
     },
