@@ -6,9 +6,8 @@ developer: Morten Krane, Snapper Net Solutions
 storage_plugin: true
 custom:
 tooltip: Build a quiz for users to answer
-required_libs: {"designtime": ["quiz_common.css", "quiz_dt.css"], "runtime": ["quiz_common.css", "quiz_rt.css"]}
+required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
 html: |
-    <link rel="stylesheet" href="/mlab_elements/components/quiz/css/quiz.css"/>
     <section class="mlab_quiz">
 
     </section>

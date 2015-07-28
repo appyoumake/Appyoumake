@@ -318,6 +318,7 @@ this.addQuizPage = function() {
     
     nav.find("." + this.classes.addPage).closest("li").before('<li><a href="#' + uuid + '">' + title + '</a></li>');
     var lastPage = this.domRoot.find("." + this.classes.page).eq(-1);
+    if (!lastPage.length) lastPage = nav;
     lastPage.after('<section class="' + this.classes.page + '" id="' + uuid + '">' + content + '</section>');
     var page = this.domRoot.find("#" + uuid);
     this.setUpPage(page, true);
@@ -346,7 +347,6 @@ this.setUpPage = function(page, setActive, editStage) {
         + '<input type="button" class="mlab_dt_button_right ' + this.classes.removePage + '" value="Fjern side" />'
         + '</footer>');
     page.append(footer);
-    //this.api.editContent(page.find("h2"));
     var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
     if (setActive) this.switchTabs(link);
     this.enterEditMode(page, editStage);
@@ -902,8 +902,8 @@ this.switchPositions = function(firstOb, secondOb) {
 };
 
 this.custom_add_question = function(el) {
-    debugger;
     var page = this.getActivePage();
+    console.log(page);
     page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
     this.enterEditMode(page,"questionType");
 };
