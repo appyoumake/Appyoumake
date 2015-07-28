@@ -1,6 +1,6 @@
 /* Common rules */
 #mlab_content .mlab_quiz, .mlab_quiz * { box-sizing: border-box; -moz-box-sizing: border-box; }
-#mlab_content .mlab_quiz .mlab_quiz_page { width: 100%; border: 1px solid; padding: 0.5em; }
+#mlab_content .mlab_quiz .mlab_quiz_page { width: 100%; border: 1px solid; padding: 0.5em; position: relative; }
 #mlab_content .mlab_quiz .mlab_quiz_page h2 { margin-top: 0px; }
 #mlab_content .mlab_quiz .mlab_quiz_page footer { display: inline-block; width: 100%; padding-top: 0.5em; }
 #mlab_content .mlab_quiz .mlab_quiz_line { display: block; width: 100%; clear: both; padding-bottom: 0.3em; }
@@ -29,6 +29,7 @@
 #mlab_editor .mlab_quiz .mlab_dt_factory { float: left; clear: both; width: 100%; border: 1px solid #D19F2A; padding: 10px; background-color: white; color: #717275; margin-bottom: 10px; }
 #mlab_editor .mlab_quiz .mlab_dt_factory section { float: left; clear: both; width: 100%; margin: 5px 0; }
 #mlab_editor .mlab_quiz .mlab_dt_factory input.mlab_dt_user_input { float: left; clear: both; width: 100%; font-size: 1.2em; background-color: #d1d2d5; padding: 3px; }
+#mlab_editor .mlab_quiz .mlab_dt_factory.mlab_dt_floated { position: absolute; left: 0px; }
 
 #mlab_editor .mlab_quiz .mlab_quiz_line li.mlab_dt_correct_response_alternative { color: green; }
 #mlab_editor .mlab_quiz .mlab_quiz_question.mlab_dt_response_mandatory::before { content: "* "; color: red; position: absolute; top: 5px; left: -9px; font-size: 1.5em; }

@@ -26,6 +26,7 @@ this.classes = {
     addPage: "mlab_dt_quiz_page_add",
     removePage: "mlab_dt_quiz_page_remove",
     factory: "mlab_dt_factory",
+    floated: "mlab_dt_floated",
     userPrompt: "mlab_dt_user_prompt",
     helpText: "mlab_dt_help_text",
     userInput: "mlab_dt_user_input",
@@ -157,7 +158,6 @@ this.setupDesign = function() {
     });
 
     self.domRoot.on("click", "." + this.classes.finishButton, function() {
-        console.log("finish");
         self.finishAddingQuestions();
     });
 
@@ -409,9 +409,30 @@ this.enterEditMode = function(page, editStage, question, existing) {
     else promptText = this.editPrompts[editStage];
     
     if (editStage!="correctResponse") question.find("." + this.classes.questionAlternatives + " li").off("click");
+    if (existing) this.floatFactory(question, factory, page);
+    else this.unfloatFactory(factory, page);
     factory.removeClass(this.classes.hide);
     prompt.html(promptText);
     input.val('').focus();
+};
+
+this.floatFactory = function(question, factory, page) {
+    if (!page) page = question.closest("." + this.classes.page);
+    if (!factory) factory = page.find("." + this.classes.factory);
+    
+    var top = question.position()["top"];
+    top += question.outerHeight();
+    var bottom = top + factory.outerHeight();
+    factory.css({"top": top + "px"});
+    factory.addClass(this.classes.floated);
+    if (bottom>page.outerHeight()) page.css({"height":bottom + "px"});
+};
+
+this.unfloatFactory = function(factory, page) {
+    if (!factory) factory = page.find("." + this.classes.factory);
+    if (!page) page = factory.closest("." + this.classes.page);
+    factory.removeClass(this.classes.floated);
+    page.css({"height": "auto"});
 };
 
 this.handleUserInput = function(input, e) {
@@ -491,7 +512,7 @@ this.handleUserInput = function(input, e) {
         editStage = 1;
         this.saveQuestions();
     }
-
+    if (existing) this.floatFactory(question);
     if (proceed) this.enterEditMode(page, this.editStages[editStage], question, existing);
 };
 
@@ -499,11 +520,6 @@ this.setMandatory = function(question, value) {
     question.data("mandatory", value);
     if (value) question.addClass(this.classes.mandatory);
     else question.removeClass(this.classes.mandatory);
-/*
-    var mandatoryOb = question.find("." + this.classes.mandatory);
-    mandatoryOb.find("label").text(value ? "Ja" : "Nei");
-    mandatoryOb.removeClass(this.classes.hide);
-*/
 };
 
 this.addQuestionAlternative = function(question, value, questionType) {
@@ -568,9 +584,8 @@ this.markAlternativesAsCorrect = function(question, questionType) {
 
 this.finishAddingQuestions = function(page) {
     if (!page) page = this.getActivePage();
-    console.log("finish");
-    console.log(page);
     page.find("." + this.classes.factory).addClass(this.classes.hide);
+    this.unfloatFactory(null, page);
     return true;
 };
 
@@ -767,8 +782,6 @@ this.editAlternativeText = function(alternative) {
         alternative.removeAttr("contenteditable");
     });
     alternative.on("keydown", function(e) {
-        console.log(e);
-        console.log(e.which);
         if (e.which==13) { // enter
             $(this).blur();
             return false;
@@ -903,7 +916,6 @@ this.switchPositions = function(firstOb, secondOb) {
 
 this.custom_add_question = function(el) {
     var page = this.getActivePage();
-    console.log(page);
     page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
     this.enterEditMode(page,"questionType");
 };
