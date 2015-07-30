@@ -383,8 +383,8 @@ Mlab_api.prototype = {
         self: this,
         
         initialise: function (app_current_page, app_max_pages) {
-            current_page = app_current_page;
-            max_pages = app_max_pages;
+            self.current_page = app_current_page;
+            self.max_pages = app_max_pages;
         },
 /**
  * current = page that is currently displayed
@@ -408,12 +408,12 @@ Mlab_api.prototype = {
                     break;
 
                 case "last" :
-                    filename = ("000" + this.max_pages).slice(-3) + ".html";
-                    new_location = this.max_pages;
+                    filename = ("000" + self.max_pages).slice(-3) + ".html";
+                    new_location = self.max_pages;
                     break;
 
                 case "next" :
-                    if (current >= this.max_pages) {
+                    if (current >= self.max_pages) {
                         return current;
                     }
                     current++;
@@ -444,7 +444,7 @@ Mlab_api.prototype = {
                     if (isNaN(pg)) {
                         return current;
                     }
-                    if (move_to < 0 || move_to > this.max_pages) {
+                    if (move_to < 0 || move_to > self.max_pages) {
                         return current;
                     }
                     if (move_to == 0) {

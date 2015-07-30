@@ -1019,6 +1019,8 @@ class FileManagement {
                             } 
                             
                             if (class_exists("mlab_ct_" . $comp_name)) {
+//store the variables and code script tags for later storage
+                                $temp_variables = $temp_code = "";
                                 $temp_class_name = "mlab_ct_" . $comp_name;
                                 $component_class = new $temp_class_name();
                                 if (method_exists($component_class, "onCompile")) {
@@ -1039,10 +1041,11 @@ class FileManagement {
                                             'result' => 'failure',
                                             'msg' => "Unable to run application on server");
                                     } 
-//plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page
+//plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page, together with the (optional) variables and code
                                     $temp_doc = new \DOMDocument("1.0", "utf-8");
-                                    $temp_doc->loadHTML($processed_html);
-                                    $temp_comp = $temp_doc->getElementsByTagName('body')->item(0)->firstChild;
+                                    $temp_doc->loadHTML($processed_html . $temp_variables . $temp_code);
+                                    $temp_comp = $temp_doc->getElementsByTagName('body')->item(0);
+                                    
 //erase old nodes
                                     while($page_component->childNodes->length){
                                       $page_component->removeChild($page_component->firstChild);
@@ -1052,6 +1055,8 @@ class FileManagement {
                                     foreach($temp_comp->childNodes as $transfer_node){
                                         $page_component->appendChild($doc->importNode($transfer_node,TRUE));
                                     }
+                                    
+
                                 } //end method exists
                             } //end class exists
                         } //end file server_code.php exists

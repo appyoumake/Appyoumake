@@ -87,7 +87,7 @@ class mlab_ct_index {
                         $html .= "    <h3>$chapter</h3>\n";
                     }
                     foreach ($titles as $page_num => $title) {
-                        $html .= "    <p onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . ")'>$title</p>\n";
+                        $html .= "    <p><a onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . "); return false;'>$title</a></p>\n";
                     }
                     $html .= "  </div>\n";
                 }
@@ -104,7 +104,7 @@ class mlab_ct_index {
                     
                     $html .= "<ul>\n";
                     foreach ($titles as $page_num => $title) {
-                        $html .= "    <li onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . ")'>$title</li>\n";
+                        $html .= "    <li><a onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . "); return false;'>$title</a></li>\n";
                     }
                     $html .= "  </ul></li>\n";
                 }
