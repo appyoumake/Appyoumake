@@ -874,7 +874,7 @@ class FileManagement {
     }
  
 /**
- * Using Linux commands to generate an MD5 sum for an app, looks in the /www folder, excluding lock files
+ * Using PHP function to generate an MD5 sum for an app, looks in the root folder, excluding lock files
  * @param type $app
  * @param type $exclude_file: Usually used to 
  * @return type
@@ -886,7 +886,7 @@ class FileManagement {
         $md5sums = array();
         
         if ($exclude_file != "") {
-            $files = $this->func_find( $app_path, "f", "*", array($exclude_file, " *.lock") );
+            $files = $this->func_find( $app_path, "f", "*", array($exclude_file, "*.lock") );
         } else {
             $files = $this->func_find( $app_path, "f", "*", array("*.lock") );
         }
@@ -916,7 +916,22 @@ class FileManagement {
         $app_path = $app->calculateFullPath($config['paths']['app']);
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        $app_checksum = $this->getAppMD5($app, $config['filenames']["app_config"]);
         
+// check to see if this has already been processed, if so just return
+        if (file_exists($path_app_config)) {
+            $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
+            if (key_exists("processed_checksum", $tmp_existing_config)) {
+                if ($tmp_existing_config["processed_checksum"] == $app_checksum) {
+                    return array("result" => "success", "checksum" => $app_checksum);
+                }
+            }
+        } else {
+            $tmp_existing_config = array();
+        }
+        $tmp_existing_config["processed_checksum"] = $app_checksum;
+        file_put_contents($path_app_config, json_encode($tmp_existing_config));
+
 //prepare processing class
         $process = new CustomPreProcessing();
 
@@ -1034,7 +1049,7 @@ class FileManagement {
                                             $temp_code = $doc->saveHtml($child_element);
                                         }
                                     }
-                                    $processed_html = $component_class->onCompile(json_decode(file_get_contents($path_app_config), true), $page_component, $doc->saveHTML($page_component), $app_path, $variables);
+                                    $processed_html = $component_class->onCompile($tmp_existing_config, $page_component, $doc->saveHTML($page_component), $app_path, $variables);
 
                                     if (!$processed_html) {
                                         return array(
@@ -1132,7 +1147,7 @@ class FileManagement {
             }
         }
         
-        return array("result" => "success");
+        return array("result" => "success", "checksum" => $app_checksum);
         
     }
     

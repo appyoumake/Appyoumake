@@ -670,7 +670,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //get app details + list of pages
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
         $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
-        $config_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . $this->container->parameters['mlab']["compiler_service"]['config_path'];
 
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
         $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
@@ -715,12 +714,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "mkt_set_user_state" => $this->generateUrl('mkt_set_user_state', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'app_uid' => '_APP_UID_', 'state' => '_STATE_')), 
                                         "mkt_set_tagged_users_state" => $this->generateUrl('mkt_set_tagged_users_state', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'tag' => '_TAG_', 'state' => '_STATE_')), 
                     
-                                        "cmp_create_app" => $this->generateUrl('cmp_create_app', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_')), 
                                         "cmp_get_app_status" => $this->generateUrl('cmp_get_app_status',  array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
-                                        "cmp_upload_files" => $this->generateUrl('cmp_upload_files', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_')), 
-                                        "cmp_verify_app" => $this->generateUrl('cmp_verify_app', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_', 'checksum' => '_CHECKSUM_')), 
-                                        "cmp_compile_app" => $this->generateUrl('cmp_compile_app', array('window_uid' => '_WINDOW_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_', 'checksum' => '_CHECKSUM_', 'platform' => '_PLATFORM_')), 
-                                        "cmp_get_app" => $this->generateUrl('cmp_get_app', array('window_uid' => '_WINDOW_UID_', 'user_uid' => '_USER_UID_', 'app_uid' => '_APP_UID_', 'app_version' => '_APP_VERSION_', 'checksum' => '_CHECKSUM_', 'platform' => '_PLATFORM_')), 
+                                        "cmp_get_app" => $this->generateUrl('cmp_get_app', array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')), 
                     
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )

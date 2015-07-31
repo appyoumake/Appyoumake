@@ -55,7 +55,7 @@
                                         <h4>Utilities</h4>
                                         <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
                                         <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
-                                        <a href="javascript: mlab.dt.management.cs_app_get();">Test connection to compiler </a>
+                                        <a href="javascript: mlab.dt.management.compiler.get_app_status();">Test connection to compiler </a>
                                     </div>
                                 </div>
 
@@ -71,9 +71,12 @@
                                         <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
                                         <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
                                         </div>
-                                                <a href="javascript: mlab.dt.management.app_download();">
-                                                <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
-                                                </a>
+                                            <a href="javascript:  mlab.dt.management.compiler.get_app('ios');">
+                                                <div title="Test app på iOS mobil enhet" class="mlab_download_icon" id="mlab_download_ios_icon"></div> 
+                                            </a>
+                                            <a href="javascript: mlab.dt.management.compiler.get_app('android');">
+                                                <div title="Test app på Android mobil enhet" class="mlab_download_icon" id="mlab_download_android_icon"></div> 
+                                            </a>
 
                                         <div class="mlab_end_appbuilder">
                                             <h4>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h4>
@@ -98,6 +101,7 @@
                         <li  class="single"><div id='mlab_statusbar_permanent'>Appnavn</div></li>
                         <li  class="single"><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
+                        <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
 
                         <li class="single menu_right">
                             Developed by the Sinett project at FFI.no

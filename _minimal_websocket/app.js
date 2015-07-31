@@ -11,6 +11,8 @@ var WebSocketServer = require('ws').Server;
 var mlabServicesCallbackServer = new WebSocketServer({port: config.port});
 mlabEditorClients = new Object();
 
+console.log("Listening on localhost:" + config.port);
+
 mlabServicesCallbackServer.on('connection', function(ws) {
     console.log(ws.upgradeReq.url);
     url_info = ws.upgradeReq.url.match(/[^/]+/g);
@@ -30,7 +32,8 @@ mlabServicesCallbackServer.on('connection', function(ws) {
             var objData = data;
         }
         
-        console.log('INFO: '); console.log(JSON.stringify(objData));
+        console.log('INFO: '); 
+        console.log(JSON.stringify(objData));
         
         if (typeof mlabEditorClients[objData.destination_id] != "undefined") {
             mlabEditorClients[objData.destination_id].send(objData.data);

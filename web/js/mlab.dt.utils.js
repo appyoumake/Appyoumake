@@ -59,12 +59,10 @@ Mlab_dt_utils.prototype = {
 
 //Need to provide context for timer event, otherwise the "this" inside page_save will point to Window object
         this.timer_save = window.setTimeout(this.parent.management.page_save.bind(this.parent.management), tm * 1000);
-        console.log("Restartet timer");
     },
 
     timer_stop : function () {
         window.clearTimeout(this.timer_save);
-        console.log("Stopped timer");
     },
 
 //utility to merge two objects, but only ADD non-existing properties to the to_obj

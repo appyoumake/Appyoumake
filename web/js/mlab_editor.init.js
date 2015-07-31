@@ -204,6 +204,7 @@
                         var host = window.document.location.host.replace(/:.*/, '');
                         mlab.dt.services_web_socket = new WebSocket('ws://' + host + ':' + mlab.dt.config.ws_socket.port + mlab.dt.config.ws_socket.url + '/' + mlab.dt.uid);
                         mlab.dt.services_web_socket.onmessage = function (event) {
+                            alert("ws");
                             console.log(event);
                         };
 

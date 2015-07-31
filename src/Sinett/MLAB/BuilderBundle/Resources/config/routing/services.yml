@@ -40,25 +40,9 @@ mkt_set_tagged_users_state:
 
 cmp_get_app_status:
     pattern: /cmpGetAppStatus/{window_uid}/{app_id}/{app_version}/{platform}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL  }
-
-cmp_create_app:
-    pattern: /cmpCreateApp/{window_uid}/{app_uid}/{app_version}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpCreateApp }
-
-cmp_upload_files:
-    pattern: /cmpUploadFiles/{window_uid}/{app_uid}/{app_version}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpUploadFiles }
-
-cmp_verify_app:
-    pattern: /cmpVerifyApp/{window_uid}/{app_uid}/{app_version}/{checksum}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpVerifyApp }
-
-cmp_compile_app:
-    pattern: /cmpCompileApp/{window_uid}/{app_uid}/{app_version}/{checksum}/{platform}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpCompileApp }
+    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL }
 
 cmp_get_app:
-    pattern: /cmpGetApp/{window_uid}/user_uid/{app_uid}/{app_version}/{checksum}/{platform}
+    pattern: /cmpGetApp/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetApp }
 

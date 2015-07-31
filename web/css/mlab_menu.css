@@ -268,7 +268,7 @@ ul#mlab_menu {
 /* Icons used by the drop down menu */
 #mlab_editor #mlab_menu #mlab_exit_icon, 
 #mlab_editor #mlab_menu #mlab_preview_icon, 
-#mlab_editor #mlab_menu #mlab_download_icon,
+#mlab_editor #mlab_menu .mlab_download_icon,
 #mlab_editor #mlab_menu .mlab_menu_field_edit_button,
 #mlab_editor #mlab_menu .mlab_menu_field_update_button {
 background-color: transparent;
@@ -286,8 +286,17 @@ width: 35px;
     background-image: url("/img/menu_preview_icon.png");
 }
 
-#mlab_editor #mlab_menu #mlab_download_icon {
-    background-image: url("/img/menu_download_icon.png");
+#mlab_editor #mlab_menu .mlab_download_icon {
+    display: block;
+    float: left;
+}
+
+#mlab_editor #mlab_menu #mlab_download_ios_icon {
+    background-image: url("/img/menu_download_ios_icon.png");
+}
+
+#mlab_editor #mlab_menu #mlab_download_android_icon {
+    background-image: url("/img/menu_download_android_icon.png");
 }
 
 /* For updating the Apps meta data ------ TODO */

@@ -736,10 +736,12 @@ Mlab_dt_management.prototype = {
         
     },
     
+//these are the compiler functions we call. At the front end we only use two functions, info about current app and get_app
+//in the background (i.e. on the PHP server) get_app calls lots of different functions to actually prepare app, upload files, compile and retrieve app
     compiler: {
-        
+
         get_app_status : function () {
-            var url = this.parent.urls.cs_get_app_status
+            var url = mlab.dt.urls.cmp_get_app_status.replace("_WINDOW_UID_", mlab.dt.uid);
             var i = prompt("app database ID (leave blank is OK)");
             url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
             var v = prompt("version (leave blank is OK)");
@@ -749,29 +751,34 @@ Mlab_dt_management.prototype = {
 
             $.getJSON(url, function( json ) {
                 if (json.result == "success") {
-                    alert("check javascript console");
-                    console.log("status of current app: ");
-                    console.log(json.app_status[mlab.dt.app.uid]);
+                    console.log("Status returned: ");
+                    console.log(json.app_status);
                 } else {
                     alert("Unable to get app status");
                 }
             });
+            
         },
     
-        upload_files : function () {
-        
-        },
+        get_app : function (platform) {
+            var url = mlab.dt.urls.cmp_get_app.replace("_WINDOW_UID_", mlab.dt.uid);
+            url = url.replace("_ID_", mlab.dt.app.id);
+            url = url.replace("_VERSION_", mlab.dt.app.active_version);
+            url = url.replace("_PLATFORM_", platform);
+            $("#mlab_statusbar_compiler").text("Compiling requested...");
 
-        verify_app : function () {
-        
-        },
-
-        compile_app : function () {
-        
-        },
-
-        get_app : function () {
-        
+            $.getJSON(url, function( json ) {
+                if (json.result == "success") {
+                    $("#mlab_statusbar_compiler").text("Compiling in progress...");
+                    console.log("Status returned: ");
+                    console.log(json.msg);
+                } else {
+                    $("#mlab_statusbar_compiler").text("Compiling failed!");
+                    alert("Unable to get app, error reported is: " + json.msg);
+                    
+                }
+            });
+            
         }
     }
 
