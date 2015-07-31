@@ -59,123 +59,6 @@ Mlab_dt_design.prototype = {
         };
     },
 
-
-/* this function processes the index page that was retrieved.
- *
- * It does the following:
-    Remove old HTML from the editing div (mlab_editor_chrome)
-    Remove old stylesheets from previously edited page from *this page*
-    Add new stylesheets from page that is opened for editing to *this page*
-    Extract BODY and insert content into mlab_editor_chrome
-    Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
-*/
-
-    index_page_process : function (page, page_num, is_final_destination) {
-        var comp_id, temp_comp, temp_link;
-        var temp_stylesheets = "";
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
-
-//parse doc into a variable
-        var doc = (new DOMParser()).parseFromString(page,"text/html");
-
-//check if it has editable area, if not we cannot continue
-        if (doc.getElementById(this.parent.config["app"]["content_id"]) == null) {
-            alert("This app does not have an editable area called " + this.parent.config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
-            return;
-        }
-
-//set the base href to the folder of the app
-        document.getElementsByTagName("base")[0].href = start_dir;
-
-//remove old stuff
-        $("#mlab_editor_chrome").empty();
-        $("link[rel=stylesheet][href^='css']").remove();
-
-//store different parts of doc for easy access/manipulation
-        var head = doc.getElementsByTagName("head")[0];
-        var divs = doc.getElementById(this.parent.config["app"]["content_id"]).cloneNode(true).childNodes;
-
-//assign vars to current app var, we remove all elements that are editable so we have clean HTML to add our edited content to
-//this HTML chunk will include HTML header + all body content outside the editable area, plus the empty div for the editable area
-        var content = doc.getElementById(this.parent.config["app"]["content_id"]);
-        while (content.firstChild) {
-            content.removeChild(content.firstChild);
-        }
-        var body = doc.getElementsByTagName("body")[0].cloneNode(true);
-
-        var stylesheets = head.getElementsByTagName("link");
-
-//insert stylesheets
-        for ( var i = 0; i < stylesheets.length; i++) {
-            temp_link = stylesheets[i].getAttribute("href");
-            temp_stylesheets = temp_stylesheets + "<link rel='stylesheet' href='" + temp_link + "' type='text/css'>" + "\n";
-        }
-        $("head link[rel='stylesheet']").last().after(temp_stylesheets);
-
-//here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
-        $("#mlab_editor_chrome").append(body.innerHTML);
-
-//now we need to make the internal code editable, but only if they actually want to edit this page
-        if (is_final_destination) {
-            $("#" + this.parent.config["app"]["content_id"]).html(divs);
-            this.prepare_editable_area();
-        }
-
-        this.parent.app.curr_indexpage_html = doc;
-//Page name is picked up from title tag in head
-        this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        this.parent.app.curr_page_num = page_num;
-        $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
-
-        this.parent.management.app_update_gui_metadata();
-
-//finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
-        $.mobile.initializePage();
-
-    },
-
-
-/* this function processes a regular page that was retrieved.
- *
- * It does the following:
-    Remove old HTML from the internal editing div (this.parent.config["app"]["content_id"])
-    Extract title and save it to JS var
-    Extract BODY and insert content into this.parent.config["app"]["content_id"]
-    Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
-*/
-
-    regular_page_process : function (page, page_num) {
-        var comp_id, temp_comp, temp_link;
-        var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
-
-//remove old stuff
-        $("#" + this.parent.config["app"]["content_id"]).html("");
-
-//a page may have failed to save, in this case we create an empty page here, then everything works
-        if (page == "") {
-            page = this.parent.config["app"]["html_header"].replace("%%TITLE%%", "Title") + this.parent.config["app"]["html_footer"];
-            page = page.replace(/\\n/g, "\n");
-        }
-//
-//parse doc into variables
-        var doc = (new DOMParser()).parseFromString(page,"text/html");
-        var head = doc.getElementsByTagName("head")[0];
-        var body = doc.getElementsByTagName("body")[0].cloneNode(true);
-
-//Page name is picked up from title tag in head
-        this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        this.parent.app.curr_page_num = page_num;
-        $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
-
-        this.parent.management.app_update_gui_metadata();
-
-//add body content
-        $("#" + this.parent.config["app"]["content_id"]).html(body.innerHTML);
-
-        this.prepare_editable_area();
-        $.mobile.initializePage();
-    },
-
 /***********************************************************
  *********** Functions to manipulate components ***********
 ************************************************************/
@@ -299,7 +182,7 @@ Mlab_dt_design.prototype = {
         }
         $(".mlab_current_component").remove();
         if (sel_comp.length > 0) {
-            sel_comp.addClass("mlab_current_component");
+            this.component_highlight_selected(sel_comp);
         }
         this.parent.flag_dirty = true;
     },
@@ -439,6 +322,7 @@ Mlab_dt_design.prototype = {
     component_menu_prepare: function () {
         var curr_comp = $(".mlab_current_component");
         if (curr_comp.length < 1) {
+            $('#mlab_toolbar_for_components').hide();
             return;
         }
         var conf = this.parent.components[curr_comp.data("mlab-type")].conf;
@@ -479,6 +363,7 @@ Mlab_dt_design.prototype = {
             $("#mlab_button_select_storage_plugin").addClass("mlab_hidden");
         }
 
+        $('#mlab_toolbar_for_components').show();
     },
     
 } // end design.prototype

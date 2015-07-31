@@ -166,15 +166,10 @@
                         for (index in mlab.dt.components) {
                             if (!mlab.dt.components[index].is_feature && !mlab.dt.components[index].is_storage_plugin && typeof mlab.dt.components[index].code.config["inherit"] != "undefined") {
                                 var from = mlab.dt.components[index].code.config.inherit;
-                                console.log("Copy from: " + from + " to " + index);
-                                console.log("---BEFORE---");
-                                console.log(mlab.dt.components[index]);
                                 if (typeof mlab.dt.components[from] != "undefined") {
                                     
 //we copy top level objectsm and objects within the code and and code.config objects
                                     mlab.dt.components[index] = mlab.dt.utils.merge_objects(mlab.dt.components[from], mlab.dt.components[index]);
-                                    console.log("---AFTER---");
-                                    console.log(mlab.dt.components[index]);
                                 } else {
                                     console.log("Parent object does not exist");
                                 }

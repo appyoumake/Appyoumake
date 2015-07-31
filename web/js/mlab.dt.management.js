@@ -192,7 +192,8 @@ Mlab_dt_management.prototype = {
 
         var stylesheets = head.getElementsByTagName("link");
 
-//insert stylesheets
+//insert stylesheets, but not when preview it, hence we look for the presence of the RT stylesheet
+//TODO use variable instead
         for ( var i = 0; i < stylesheets.length; i++) {
             temp_link = stylesheets[i].getAttribute("href");
             if(temp_link.indexOf("style_rt.css") < 0){
@@ -331,7 +332,7 @@ Mlab_dt_management.prototype = {
                     }
                     return;
                 } else {
-                    that.parent.design.regular_page_process ( data.html, data.page_num_real );
+                    that.regular_page_process ( data.html, data.page_num_real );
                     var path = window.location.pathname.split("/");
                     path[path.length - 3] = data.app_id;
                     path[path.length - 2] = data.page_num_real;
@@ -350,6 +351,11 @@ Mlab_dt_management.prototype = {
 
                 if ( $("#mlab_overlay").is(':visible') ) {
                     $("#mlab_overlay").slideUp();
+                }
+                
+//here we hide the tools for components until they select a control
+                if ($("#" + mlab.dt.config["app"]["content_id"] + " .mlab_current_component").length == 0) {
+                    $('#mlab_toolbar_for_components').hide();
                 }
 
                 that.parent.utils.timer_start();
