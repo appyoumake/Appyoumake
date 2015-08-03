@@ -15,10 +15,20 @@
     
     <body class="mlab_base">
     	<div class="mlab_min_page_width">     
-            <ul id="mlab_menu" class="mlab_basic_menu">
-                {{ include( 'menu.html.twig' ) }}
+            <ul id="mlab_menu">
+                <li>
+                    <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='Tilbake til App liste' src="/img/logo_menu.png" alt="logo" /></div></a>
+                </li>  <!-- The Mlab log -->
+
+                <li id="mlab_editor_menu_dropdown">    
+                        <img class="basic_menu_icon" title='Editor menu' src="/img/menu_icon.png" alt="logo" > 
+                </li>
                 <li class="single menu_right">
-                    Developed by the Sinett project at FFI.no
+                    <img class="mlab_help_icon" src="/img/help.png" title='Hjelp' alt="logo" >
+                </li>
+
+                <li id="mlab_user_menu_dropdown" class="menu_right">
+                    <img class="mlab_user_info_icon" src="/img/user.png" title='Bruker info' alt="logo" >
                 </li>
             </ul>
             <div class="mlab_align_menu_elements">
@@ -30,8 +40,133 @@
                     <script src="{{ asset('/js/jquery.ui-1.10.3.js') }}"></script>
                     <script src="{{ asset('/js/jquery.uploadfile-1.9.0.js') }}"></script>
                     <script src="{{ asset('/js/jquery.qtip-2.2.0.js') }}"></script>
+                    
+                    
+                    
+                     <script type="text/javascript">
+        
+        $(document).ready(function() {
+            
+            //Checkes if the editor menu icon is cliked
+            $("#mlab_editor_menu_dropdown").on("click",function(event) {   
+                  if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
+                      //User menu is open and needs to be closed 
+                      $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                      $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                  } 
+                  //Toggles the Editor menu on and off
+                  $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                  $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                  event.stopPropagation(); 
+             });
+             
+            //Checkes if the user menu icon is cliked
+            $("#mlab_user_menu_dropdown").on("click",function(event) { 
+                if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
+                      //Editor menu is open and needs to be closed 
+                      $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                      $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                  } 
+                 //Toggles the User menu on and off
+                  $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                  $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                  event.stopPropagation(); 
+             });
+
+            //Listens for any click
+             $(document).on('click', function (event) {
+                  // Checks if editor menu is open
+                  if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
+                      //Editor menu is open - close it
+                      $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                      $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                  } 
+                  // Checks if user menu is open
+                  if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
+                      //User menu is open - close it
+                      $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                      $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                  } 
+
+             });  
+       });
+    </script>
+                    
+                    
                 {% endblock %}  
             </div>    
         </div>
+        
+        <div id="mlab_editor_menu_dropdown_content" class="dropdown_editor_menu"><!-- Editor menu container -->
+
+            <div class="mlab_one_col"> <!-- Navigate col -->
+                <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
+
+                {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
+
+                {% if app.user == null %} <!-- If not loged in -->
+                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                    </p>
+
+                {% else %} <!-- If loged in -->
+                    {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
+                        <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
+                    {% endif %} 
+
+                    <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
+                    <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+
+
+                    {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
+                        {%  if path('admin_apps') not in currentPath  %}
+                            <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                        {% endif %} 
+                        {% if path('admin_users') not in currentPath %}
+                            <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                        {% endif %} 
+                    {% endif %} 
+
+                    {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
+                        {% if path('system') not in currentPath %}
+                                <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SUPER_ADMIN") %}
+                                <br>
+                    {% endif %}
+
+                    {% if path('app_builder_index') in currentPath  %} <!-- If on app list page - show the info  -->
+                                <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
+                    {% endif %} 
+                {% endif %}
+            </div> <!-- End Navigate col -->
+
+            <div class="mlab_three_col"> <!-- Developed by col -->
+                <h3></h3>
+                <p>Developed by the Sinett project at FFI.no</p>
+            </div> <!-- Developed by col -->
+
+        </div><!-- End Editor menu container -->
+        
+        <div id="mlab_user_menu_dropdown_content" class="dropdown_user_menu"><!-- User menu container -->
+
+            <div class="mlab_one_user_col"> <!-- User col -->
+                <h3>{% trans %}app.builder.menu.heading.user.info{% endtrans %}</h3>
+                
+                {% if app.user == null %} <!-- If not loged in -->
+                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                    </p>
+                {% else %} <!-- If loged in -->
+                    <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
+                        <b>{{ app.user.username }}</b><br><br>
+                    
+                    <a target="_top" href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
+                {% endif %}
+            </div>
+
+        </div><!-- End User menu container -->
     </body>
 </html>

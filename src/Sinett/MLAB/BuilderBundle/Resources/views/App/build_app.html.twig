@@ -85,18 +85,26 @@
             
 
             //Checkes if the editor menu icon is cliked
-            $("#mlab_editor_menu_dropdown").on("click",function(event) {
-                 //Toggles the Editor menu on and off
-                 console.log(event.toElement);
+            $("#mlab_editor_menu_dropdown").on("click",function(event) {   
+                  if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
+                      //User menu is open and needs to be closed 
+                      $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                      $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                  } 
+                  //Toggles the Editor menu on and off
                   $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
                   $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
                   event.stopPropagation(); 
              });
              
             //Checkes if the user menu icon is cliked
-            $("#mlab_user_menu_dropdown").on("click",function(event) {
+            $("#mlab_user_menu_dropdown").on("click",function(event) { 
+                if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
+                      //Editor menu is open and needs to be closed 
+                      $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                      $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                  } 
                  //Toggles the User menu on and off
-                 console.log(event.toElement);
                   $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
                   $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
                   event.stopPropagation(); 
@@ -106,15 +114,15 @@
              $(document).on('click', function (event) {
                   // Checks if editor menu is open
                   if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
-                      //Editor menu is open 
-                      console.log('menyen er synlig');
-                      console.log(event.toElement);
+                      //Editor menu is open - close it
+                      $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                      $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
                   } 
                   // Checks if user menu is open
                   if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
-                      //Editor menu is open 
-                      console.log('menyen er synlig');
-                      console.log(event.toElement);
+                      //User menu is open - close it
+                      $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                      $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
                   } 
 
              });  
