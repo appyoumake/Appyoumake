@@ -66,6 +66,11 @@ parameters:
             app_uid_metatag_placeholder: %%%%APP_UID%%%%
             target_version: {ios: 7, android: 18}
             file_extensions: {ios: 'ipa', android: 'apk'}
+            rsync_bin: /usr/bin/rsync
+            rsync_url: mlab@192.168.137.132::cs_inbox
+            rsync_password: mlab1316
+            rsync_suffix: /www/
+
 
 # when a user is uploading a file these files have to be present to be accepted
         verify_uploads:    

@@ -218,15 +218,21 @@ class ServicesController extends Controller
     public function mktSetTaggedUsersStateAction($token, $tag, $state) {
     }
 
+    private function cmpCreateApp($app_id, $app_version) {
+        $passphrase = $config["compiler_service"]["passphrase"];
+        $protocol = $config["compiler_service"]["protocol"];
+        $url = $protocol . "://" . $config["compiler_service"]["url"] . "/getAppStatus?passphrase=" . urlencode($passphrase);
+        
+    }
 /**
  * Uses the compiler services' getAppStatus API call to get info about one or more apps
- * 
+ * Unlike other compiler functions, this is NOT async, so we wait for answer
  * @param type $app_id
  * @param type $app_version
  * @param type $platform
  * @return type
  */
-    public function cmpGetAppStatusAction($window_uid, $app_id = NULL, $app_version = NULL, $platform = NULL) {
+    private function cmpGetAppStatus($app_id = NULL, $app_version = NULL, $platform = NULL) {
         $config = $this->container->parameters['mlab'];
         $passphrase = $config["compiler_service"]["passphrase"];
         $protocol = $config["compiler_service"]["protocol"];
@@ -235,7 +241,7 @@ class ServicesController extends Controller
         if ($app_id != NULL) {
             $em = $this->getDoctrine()->getManager();
             $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-            if (isnull($app)) {
+            if (is_null($app)) {
                 return new JsonResponse(array('result' => 'error', 'message' => 'Unable to retrieve app database entry: ' . $app_id));
             }
             $app_uid = $app->getUid();
@@ -267,7 +273,21 @@ class ServicesController extends Controller
             $status = file_get_contents($url, false, $context);
         }
         
-        return new JsonResponse(array('result' => 'success', 'app_status' => json_decode($status, true)));
+        return json_decode($status, true);
+    }
+    
+/**
+ * Public wrapper for private cmpGetAppStatus function
+ * 
+ * @param type $window_uid
+ * @param null $app_id
+ * @param null $app_version
+ * @param null $platform
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function cmpGetAppStatusAction($window_uid, $app_id = NULL, $app_version = NULL, $platform = NULL) {
+
+        return new JsonResponse(array('result' => 'success', 'app_status' => $this->cmpGetAppStatus($app_id = NULL, $app_version = NULL, $platform = NULL)));
             
     }
 
@@ -314,6 +334,7 @@ class ServicesController extends Controller
         $app_path = $app->calculateFullPath($config['paths']['app']);
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
 
 
 //see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
@@ -339,9 +360,38 @@ class ServicesController extends Controller
             return new JsonResponse(array('result' => 'error', 'msg' => $res["msg"]));
         }
         
-//now we run rsync
+//now we need to check to see if the app has been created on the remote server, if not we create it
+//the create function is async, so we need to point exit here, and wait for the callback to be called by the remote service.
         
+//TODO: Create functions for each element below to be called from the callback as well as from below here
+        $app_info = $this->cmpGetAppStatus($app_id, $app_version, $platform);
+        if ( empty($app_info) || !key_exists($app_uid, $app_info) || !key_exists($app_version, $app_info[$app_uid]) ) {
+            $this->cmpCreateApp($app_id, $app_version);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "creating"}}', $config), true);
+            if ($res_socket["data"]["status"] != "connected") {
+                return new JsonResponse(array('result' => 'error'));
+            }
+            return new JsonResponse(array('result' => 'success'));
+        }
         
+//now we run rsync, we need to "store" the password in the environment variable, then run the command using shell_exec
+//this is done in two rounds, first without the config file, and then afterwards only with the config file
+        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "uploading"}}', $config), true);
+        if ($res_socket["data"]["status"] != "connected") {
+            return new JsonResponse(array('result' => 'error'));
+        }
+
+        putenv("RSYNC_PASSWORD=" . $config['compiler_service']['rsync_password']);
+        
+        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -r --exclude '$cached_app_path/{$config['filenames']['app_config']}' $cached_app_path/* {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/{$config['compiler_service']['rsync_suffix']}/";
+        error_log($rsync_cmd);
+        $res_rsync = shell_exec($rsync_cmd);
+        error_log($res_rsync);
+        
+        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " '$cached_app_path/{$config['filenames']['app_config']}' {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/";
+        error_log($rsync_cmd);
+        $res_rsync = shell_exec($rsync_cmd);
+        error_log($res_rsync);
         
 //all well, return success
         return new JsonResponse(array('result' => 'success'));

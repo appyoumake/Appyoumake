@@ -209,7 +209,7 @@
                             data = JSON.parse(event.data);
                             switch (data.status) {
                                 case "connected":
-                                    $("#mlab_statusbar_compiler").text("Creating app...");
+                                    $("#mlab_statusbar_compiler").text("Connected to server");
                                     break;
 
                                 case "creating":
