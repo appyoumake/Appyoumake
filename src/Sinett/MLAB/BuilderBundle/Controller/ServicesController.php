@@ -19,18 +19,144 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServicesController extends Controller
 {
+    
+    private function hybi10Decode($data)
+    {
+        $bytes = $data;
+        $dataLength = '';
+        $mask = '';
+        $coded_data = '';
+        $decodedData = '';
+        $secondByte = sprintf('%08b', ord($bytes[1]));
+        $masked = ($secondByte[0] == '1') ? true : false;
+        $dataLength = ($masked === true) ? ord($bytes[1]) & 127 : ord($bytes[1]);
+
+        if($masked === true)
+        {
+            if($dataLength === 126)
+            {
+               $mask = substr($bytes, 4, 4);
+               $coded_data = substr($bytes, 8);
+            }
+            elseif($dataLength === 127)
+            {
+                $mask = substr($bytes, 10, 4);
+                $coded_data = substr($bytes, 14);
+            }
+            else
+            {
+                $mask = substr($bytes, 2, 4);       
+                $coded_data = substr($bytes, 6);        
+            }   
+            for($i = 0; $i < strlen($coded_data); $i++)
+            {       
+                $decodedData .= $coded_data[$i] ^ $mask[$i % 4];
+            }
+        }
+        else
+        {
+            if($dataLength === 126)
+            {          
+               $decodedData = substr($bytes, 4);
+            }
+            elseif($dataLength === 127)
+            {           
+                $decodedData = substr($bytes, 10);
+            }
+            else
+            {               
+                $decodedData = substr($bytes, 2);       
+            }       
+        }   
+
+        return $decodedData;
+    }
+
+
+    private function hybi10Encode($payload, $type = 'text', $masked = true) {
+        $frameHead = array();
+        $frame = '';
+        $payloadLength = strlen($payload);
+
+        switch ($type) {
+            case 'text':
+                // first byte indicates FIN, Text-Frame (10000001):
+                $frameHead[0] = 129;
+                break;
+
+            case 'close':
+                // first byte indicates FIN, Close Frame(10001000):
+                $frameHead[0] = 136;
+                break;
+
+            case 'ping':
+                // first byte indicates FIN, Ping frame (10001001):
+                $frameHead[0] = 137;
+                break;
+
+            case 'pong':
+                // first byte indicates FIN, Pong frame (10001010):
+                $frameHead[0] = 138;
+                break;
+        }
+
+        // set mask and payload length (using 1, 3 or 9 bytes)
+        if ($payloadLength > 65535) {
+            $payloadLengthBin = str_split(sprintf('%064b', $payloadLength), 8);
+            $frameHead[1] = ($masked === true) ? 255 : 127;
+            for ($i = 0; $i < 8; $i++) {
+                $frameHead[$i + 2] = bindec($payloadLengthBin[$i]);
+            }
+
+            // most significant bit MUST be 0 (close connection if frame too big)
+            if ($frameHead[2] > 127) {
+                $this->close(1004);
+                return false;
+            }
+        } elseif ($payloadLength > 125) {
+            $payloadLengthBin = str_split(sprintf('%016b', $payloadLength), 8);
+            $frameHead[1] = ($masked === true) ? 254 : 126;
+            $frameHead[2] = bindec($payloadLengthBin[0]);
+            $frameHead[3] = bindec($payloadLengthBin[1]);
+        } else {
+            $frameHead[1] = ($masked === true) ? $payloadLength + 128 : $payloadLength;
+        }
+
+        // convert frame-head to string:
+        foreach (array_keys($frameHead) as $i) {
+            $frameHead[$i] = chr($frameHead[$i]);
+        }
+
+        if ($masked === true) {
+            // generate a random mask:
+            $mask = array();
+            for ($i = 0; $i < 4; $i++) {
+                $mask[$i] = chr(rand(0, 255));
+            }
+
+            $frameHead = array_merge($frameHead, $mask);
+        }
+        $frame = implode('', $frameHead);
+        // append payload to frame:
+        for ($i = 0; $i < $payloadLength; $i++) {
+            $frame .= ($masked === true) ? $payload[$i] ^ $mask[$i % 4] : $payload[$i];
+        }
+
+        return $frame;
+    }    
     /**
      * This function uses basic PHP socket functions to send a message to the web socket server where the 
      * front end Javascript is listening to messages from the compilation services
-     * @param type $uid
-     * @param type $msg
+     * @param type $msg (must contain destination_id, this is the uid of the window that is being updated, so for example 
+     *                  '{"destination_id": "' . $window_uid . '", "state": "completed", "checksum": "' . $app_checksum . '"}')
      * @param type $config
+     * Solution to connection issue from https://forum.ripple.com/viewtopic.php?f=2&t=6171&p=43313&f=2&t=6171&p=43313#p43313
      */
-    private function sendWebsocketMessage($uid, $msg, $config) {
+    private function sendWebsocketMessage($msg, $config) {
 //prepare variables
         $host = $config["ws_socket"]["host"];
         $port = $config["ws_socket"]["port"];
-        $url = $config["ws_socket"]["url"] . $uid;
+        $url = $config["ws_socket"]["url"] . "0";
         if ( in_array("HTTPS", $_SERVER) && $_SERVER["HTTPS"] ) {
             $proto = "https://";
         } else {
@@ -42,6 +168,8 @@ class ServicesController extends Controller
                 "Connection: Upgrade"."\r\n" .
                 "Origin: $local"."\r\n" .
                 "Host: $host"."\r\n" .
+                "Sec-WebSocket-Version: 13"."\r\n".
+                "Sec-WebSocket-Key: asdasdaas76da7sd6asd6as7d"."\r\n".
                 "Content-Length: " . strlen($msg) . "\r\n" . "\r\n" ;
 
 
@@ -49,11 +177,10 @@ class ServicesController extends Controller
         $sock = fsockopen($host, $port, $errno, $errstr, 2);
         fwrite($sock, $head ) or die('error:'.$errno.':'.$errstr);
         $headers = fread($sock, 2000);
-        fwrite($sock, "\x00$msg\xff" ) or die('error:'.$errno.':'.$errstr);
+        fwrite($sock, $this->hybi10Encode($msg) ) or die('error:'.$errno.':'.$errstr);
         $wsdata = fread($sock, 2000);  //receives the data included in the websocket package "\x00MSG\xff"
         fclose($sock);     
-        error_log($wsdata);
-        return $wsdata;
+        return $this->hybi10Decode($wsdata);
     }
 
 
@@ -188,25 +315,36 @@ class ServicesController extends Controller
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
 
-//
-        die($this->sendWebsocketMessage($window_uid, '{"state": "completed", "checksum": "' . $app_checksum . '"}', $config));
 
 //see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
 //if it has been compiled we send a message via the websocket server
         if (file_exists($compiled_app_path . $app_checksum . $config["compiler_service"]["file_extensions"][$platform])) {
-            $this->sendWebsocketMessage($window_uid, '{"state": "completed", "checksum": "' . $app_checksum . '"}', $config);
-            return new JsonResponse(array('result' => 'success', 'msg' => "Already compiled"));
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $app_checksum . '"}}', $config), true);
+            if ($res_socket["data"]["status"] != "connected") {
+                return new JsonResponse(array('result' => 'error'));
+            } else {
+                return new JsonResponse(array('result' => 'success'));
+            }
         }
         
-//run the precompile process, it will return the same wheterh it runs the whole process, or if the app has already been processed
+//run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
+        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
+        if ($res_socket["data"]["status"] != "connected") {
+            return new JsonResponse(array('result' => 'error'));
+        }
+        
         $res = $file_mgmt->preCompileProcessingAction($app, $config);
         if ($res["result"] != "success") {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "error": "' . $res["msg"] . '"}}', $config), true);
             return new JsonResponse(array('result' => 'error', 'msg' => $res["msg"]));
         }
         
 //now we run rsync
         
         
+        
+//all well, return success
+        return new JsonResponse(array('result' => 'success'));
     }
 
 }

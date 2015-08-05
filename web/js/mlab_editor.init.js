@@ -203,9 +203,44 @@
 // finally we connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
                         var host = window.document.location.host.replace(/:.*/, '');
                         mlab.dt.services_web_socket = new WebSocket('ws://' + host + ':' + mlab.dt.config.ws_socket.port + mlab.dt.config.ws_socket.url + '/' + mlab.dt.uid);
+
                         mlab.dt.services_web_socket.onmessage = function (event) {
-                            alert("ws");
                             console.log(event);
+                            data = JSON.parse(event.data);
+                            switch (data.status) {
+                                case "connected":
+                                    $("#mlab_statusbar_compiler").text("Creating app...");
+                                    break;
+
+                                case "creating":
+                                    $("#mlab_statusbar_compiler").text("Creating app...");
+                                    break;
+
+                                case "precompilation":
+                                    $("#mlab_statusbar_compiler").text("Processing files...");
+                                    break;
+
+                                case "uploading":
+                                    $("#mlab_statusbar_compiler").text("Uploading files to compiler...");
+                                    break;
+
+                                case "waiting":
+                                    $("#mlab_statusbar_compiler").text("Waiting for compiler...");
+                                    break;
+
+                                case "receiving":
+                                    $("#mlab_statusbar_compiler").text("Receiving app...");
+                                    break;
+
+                                case "ready":
+                                    $("#mlab_statusbar_compiler").text("App ready!");
+                                    break;
+
+                                case "failed":
+                                    $("#mlab_statusbar_compiler").text("Unable to get app: " + data.error);
+                                    break;
+                            }
+                            
                         };
 
                     } else {
