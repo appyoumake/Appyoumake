@@ -13,7 +13,7 @@
    The top navigation bar
    ========================================================================== */
 #mlab_editor ul#mlab_menu,
-ul#mlab_menu {
+.mlab_base ul#mlab_menu {
     background: #000;
     border: 0;
     border-radius: 2px; 
@@ -22,18 +22,17 @@ ul#mlab_menu {
     list-style:none;
     margin:2px;
     padding:0px 20px 0px 20px;
-    //width:98%;
     z-index: 1000;
 }
  
 /* All the top elements */
 #mlab_editor #mlab_menu li,
-#mlab_menu li {
+.mlab_base #mlab_menu li {
     border:none;
     float:left;
-    margin-right:30px;
-    margin-top:7px;
-    padding: 15px 10px 0px 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    padding: 12px 10px 0px 10px;
     position:relative;
     text-align:center;
     z-index: 1000;
@@ -41,32 +40,43 @@ ul#mlab_menu {
 
 /* Mlab logo element, -placement */
 #mlab_editor #mlab_menu #mlab_menu_dropdown,
-#mlab_menu #mlab_menu_dropdown {
-    margin-right: 25px;
-    margin-top: 8px;
-    padding-top:10px;
+.mlab_base #mlab_menu #mlab_menu_dropdown {
+    padding-top:0px;
+    margin-right: 0px;
+    margin-top: 0px;
 }
 
 /* The builder/editor element, -placement */
-#mlab_editor #mlab_menu #mlab_editor_menu_dropdown {
-    margin-right: 35px;
+#mlab_editor #mlab_menu #mlab_editor_menu_dropdown,
+.mlab_base #mlab_menu #mlab_editor_menu_dropdown {
+    margin-right: 40px;
     margin-top: 6px;
     padding-top: 10px;
+    cursor: pointer;
 }
 
 /* The tab on the elements with a dropdown when hover */
 #mlab_editor #mlab_menu li:hover,
-#mlab_menu li:hover {
+.mlab_base #mlab_menu li:hover {
+   cursor: default;
+}
+
+/* The tab on the elements with a dropdown when menu element is open */
+#mlab_editor #mlab_menu .mlab_show_editor_dropdown_tab_selected,
+#mlab_editor #mlab_menu .mlab_show_user_dropdown_tab_selected,
+.mlab_base #mlab_menu .mlab_show_editor_dropdown_tab_selected,
+.mlab_base #mlab_menu .mlab_show_user_dropdown_tab_selected {
     background: #F4F4F4;
     border-radius: 2px 0px 0px 0px;
     padding-bottom: 4px;
+    cursor: pointer;
 }
 
 /* The elements with no dropdown menu */
 #mlab_editor #mlab_menu li.single,
-#mlab_menu li.single,
+.mlab_base #mlab_menu li.single,
 #mlab_editor #mlab_menu li.single:hover, 
-#mlab_menu li.single:hover { 
+.mlab_base #mlab_menu li.single:hover { 
     background:transparent; 
     border:none; 
     color: #FFFFFF;
@@ -75,23 +85,23 @@ ul#mlab_menu {
     padding: 10px 5px 0px 5px;
 }
 
-// TODO kan vi ta bort ID for .mlab_button_save osv???
-
 /* The edirots save, undo and redo buttons shown in the top bar */
 #mlab_editor #mlab_menu .mlab_editor_undo_redo_save, 
 #mlab_editor #mlab_menu .mlab_button_save {
-    margin: 8px 0px 0px 0px;
+    margin: 4px 0px 0px 0px;
     padding: 0px;
 }
 
 #mlab_editor #mlab_menu .mlab_button_undo,
 #mlab_editor #mlab_menu .mlab_button_redo {
     width: 20px;
+    cursor: pointer;
 }
 
 #mlab_editor #mlab_menu .mlab_button_save {
     padding-right: 8px;
     width: 18px;
+    cursor: pointer;
 }
 
 /* The editors status shown in the top bar and the developed by text */
@@ -124,7 +134,7 @@ ul#mlab_menu {
 
 /* Right alignment */
 #mlab_editor #mlab_menu .menu_right,
-#mlab_menu .menu_right{
+.mlab_base #mlab_menu .menu_right {
     float:right;
     margin-right:0px;
 }
@@ -132,80 +142,110 @@ ul#mlab_menu {
 
 /* ==========================================================================
    Drop Down and its content
-   ========================================================================== */
-#mlab_editor #mlab_menu .dropdown_1column, 
-#mlab_editor #mlab_menu .dropdown_2columns, 
-#mlab_editor #mlab_menu .dropdown_3columns, 
-#mlab_editor #mlab_menu .dropdown_4columns,
-#mlab_editor #mlab_menu .dropdown_5columns,
-#mlab_menu .dropdown_2columns {
-    background:#F4F4F4;
-    border:1px solid #777777;
+   ========================================================================== */ 
+#mlab_editor .dropdown_editor_menu,
+#mlab_editor .dropdown_user_menu,
+.mlab_base .dropdown_editor_menu,
+.mlab_base .dropdown_user_menu {
+    background: #F4F4F4;
+    border: 1px solid #777777;
     border-radius: 0px 2px 2px 2px;
-    border-top:none;
-    float:left;
-    left:-999em; /* Hides the drop down */
-    margin:4px auto;
-    padding:10px 5px 10px 5px;
-    position:absolute;
-    text-align:left;
+    border-top: none;
+    float: left;
+    left: -999em; /* Hides the drop down */
+    margin: 4px auto;
+    padding: 10px 5px 10px 5px;
+    position: absolute;
+    text-align: left;
+    width: 690px;
+    z-index: 1000;
+}
+
+#mlab_editor .dropdown_user_menu,
+.mlab_base .dropdown_editor_menu,
+.mlab_base .dropdown_user_menu {
+    width: 155px;
+    float: right;
+    position: relative;
+}
+
+.mlab_base .dropdown_editor_menu {
+    width: 260px;
+}
+
+#mlab_editor .mlab_show_editor_dropdown {
+    left: 119px;
+    top: 45px;
+}
+
+.mlab_base .mlab_show_editor_dropdown {
+left: -897px;
+top: -414px;
 }
  
-#mlab_editor #mlab_menu .dropdown_1column {width: 140px;}
-#mlab_editor #mlab_menu .dropdown_2columns {width: 500px;}
-#mlab_editor #mlab_menu .dropdown_3columns {width: 520px;}
-#mlab_editor #mlab_menu .dropdown_4columns {width: 690px;}
-#mlab_editor #mlab_menu .dropdown_5columns {width: 700px;}
-#mlab_menu .dropdown_2columns {width: 500px;}
- 
-#mlab_editor #mlab_menu li:hover .dropdown_1column, 
-#mlab_editor #mlab_menu li:hover .dropdown_2columns, 
-#mlab_editor #mlab_menu li:hover .dropdown_3columns,
-#mlab_editor #mlab_menu li:hover .dropdown_4columns,
-#mlab_editor #mlab_menu li:hover .dropdown_5columns,
-#mlab_menu li:hover .dropdown_2columns {
-    left:-1px; /* Shows the drop down */
-    top:auto;
+#mlab_editor .mlab_show_user_dropdown {
+    left: -61px;
+    top: -66px;
 }
- 
+
+.mlab_base .mlab_show_user_dropdown {
+    left: 211px;
+    top: -414px;
+}
+
 /* Columns */
-#mlab_editor #mlab_menu .col_1,
-#mlab_editor #mlab_menu .col_2,
-#mlab_editor #mlab_menu .col_3,
-#mlab_editor #mlab_menu .col_4,
-#mlab_editor #mlab_menu .col_5,
-#mlab_menu .col_1 {
-    display:inline;
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_one_col,
+#mlab_editor #mlab_user_menu_dropdown_content .mlab_one_col,
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_three_col,
+#mlab_editor #mlab_user_menu_dropdown_content .mlab_one_user_col,
+.mlab_base #mlab_editor_menu_dropdown_content .mlab_one_col,
+.mlab_base #mlab_user_menu_dropdown_content .mlab_one_col,
+.mlab_base #mlab_editor_menu_dropdown_content .mlab_three_col,
+.mlab_base #mlab_user_menu_dropdown_content .mlab_one_user_col {
+    display: inline;
     float: left;
     margin-left: 15px;
     margin-right: 15px;
     position: relative;
+    width:200px;
 }
-#mlab_editor #mlab_menu .col_1 {width:200px;}
-#mlab_editor #mlab_menu .col_2 {width:270px;}
-#mlab_editor #mlab_menu .col_3 {width:410px;}
-#mlab_editor #mlab_menu .col_4 {width:550px;}
-#mlab_editor #mlab_menu .col_5 {width:690px;}
-#mlab_menu .col_1 {width:200px;}
+
+#mlab_editor #mlab_user_menu_dropdown_content .mlab_one_user_col,
+.mlab_base #mlab_user_menu_dropdown_content .mlab_one_user_col {
+    width:125px;
+}
+
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_three_col {
+    width:660px;
+}
+
+.mlab_base #mlab_editor_menu_dropdown_content .mlab_three_col {
+    width:230px;
+}
  
 /* Drop Down Content Stylings */
-#mlab_editor #mlab_menu p, 
-#mlab_editor #mlab_menu h2, 
-#mlab_editor #mlab_menu h3, 
-#mlab_editor #mlab_menu h4, 
-#mlab_editor #mlab_menu ul li,
-#mlab_menu p, 
-#mlab_menu h2, 
-#mlab_menu h3, 
-#mlab_menu h4, 
-#mlab_menu ul li {
+#mlab_editor  #mlab_editor_menu_dropdown_content p, 
+#mlab_editor  #mlab_user_menu_dropdown_content p, 
+#mlab_editor  #mlab_editor_menu_dropdown_content h2, 
+#mlab_editor  #mlab_editor_menu_dropdown_content h3, 
+#mlab_editor  #mlab_user_menu_dropdown_content h3,
+#mlab_editor  #mlab_editor_menu_dropdown_content h4, 
+#mlab_editor  #mlab_editor_menu_dropdown_content ul li,
+.mlab_base  #mlab_editor_menu_dropdown_content p, 
+.mlab_base  #mlab_user_menu_dropdown_content p, 
+.mlab_base  #mlab_editor_menu_dropdown_content h2, 
+.mlab_base  #mlab_editor_menu_dropdown_content h3, 
+.mlab_base  #mlab_user_menu_dropdown_content h3,
+.mlab_base  #mlab_editor_menu_dropdown_content h4, 
+.mlab_base  #mlab_editor_menu_dropdown_content ul li {
     font-family:Arial, Helvetica, sans-serif;
     font-size:12px;
     line-height:21px;
     text-align:left;
 }
-#mlab_editor #mlab_menu h2, 
-#mlab_menu h2 {
+
+#mlab_editor  #mlab_editor_menu_dropdown_content h2, 
+.mlab_base  #mlab_editor_menu_dropdown_content h2 {
     border-bottom:1px solid #666666;
     font-weight:400;
     font-size:21px;
@@ -213,64 +253,77 @@ ul#mlab_menu {
     margin:7px 0 14px 0;
     padding-bottom:14px;
 }
-#mlab_editor #mlab_menu h3,
-#mlab_menu h3 {
+#mlab_editor #mlab_editor_menu_dropdown_content h3,
+#mlab_editor #mlab_user_menu_dropdown_content h3,
+.mlab_base #mlab_editor_menu_dropdown_content h3,
+.mlab_base #mlab_user_menu_dropdown_content h3 {
     border-bottom:1px solid #888888;
     font-size:14px;
     margin:7px 0 14px 0;
     padding-bottom:7px;
 }
 
-#mlab_editor #mlab_menu h4,
-#mlab_menu h4 {
+#mlab_editor #mlab_editor_menu_dropdown_content h4,
+.mlab_base #mlab_editor_menu_dropdown_content h4 {
     font-size: 13px;
     font-weight: bold;
     margin: 5px 0 5px 0;
     padding-bottom: 0;
 }
 
-#mlab_editor #mlab_menu p,
-#mlab_menu p {
+#mlab_editor #mlab_editor_menu_dropdown_content p,
+#mlab_editor #mlab_user_menu_dropdown_content p,
+.mlab_base #mlab_editor_menu_dropdown_content p,
+.mlab_base #mlab_user_menu_dropdown_content p {
     line-height:18px;
     margin:0 0 10px 0;
 }
 
-#mlab_editor #mlab_menu li a,
-#mlab_menu li a {
-    color: #EEEEEE;
+/* Link styling */
+#mlab_editor #mlab_editor_menu_dropdown_content a,
+#mlab_editor #mlab_user_menu_dropdown_content a,
+.mlab_base #mlab_editor_menu_dropdown_content a,
+.mlab_base #mlab_user_menu_dropdown_content a {
+    color: #015b86;
     display:block;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:17px; 
+    font-size:13px; 
     outline:0;
     text-decoration:none;
 }
+
+/* Feature and storage list */
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_features_list li, 
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_storage_plugin_list li {
+    cursor: pointer;
+    list-style: none;
+    color: green;
+    font-size:13px; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_features_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_storage_plugin_list li.mlab_item_applied:before {
+    content: "\2713 ";
+    margin-left: -1em;
+    margin-right: .100em;
+}
  
-#mlab_editor #mlab_menu li:hover div a,
-#mlab_menu li:hover div a {
-    color:#015b86;
-    font-size:12px;
-}
-
-#mlab_editor #mlab_menu li:hover div a:hover,
-#mlab_menu li:hover div a:hover {
-    color:#029feb;
-}
-
 /* QR kode styling */
-#mlab_editor #mlab_menu #mlab_download_qr2{
+#mlab_editor  #mlab_editor_menu_dropdown_content #mlab_download_qr2 {
     color: #912323;       
 }    
 
-#mlab_editor #mlab_menu .qr_wait_text {
+#mlab_editor  #mlab_editor_menu_dropdown_content .qr_wait_text {
     color: black;
 }
 
 /* Icons used by the drop down menu */
-#mlab_editor #mlab_menu #mlab_exit_icon, 
-#mlab_editor #mlab_menu #mlab_preview_icon, 
-#mlab_editor #mlab_menu .mlab_download_icon,
-#mlab_editor #mlab_menu .mlab_menu_field_edit_button,
-#mlab_editor #mlab_menu .mlab_menu_field_update_button {
+#mlab_editor  #mlab_editor_menu_dropdown_content #mlab_exit_icon, 
+#mlab_editor  #mlab_editor_menu_dropdown_content #mlab_preview_icon, 
+#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_icon,
+#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_menu_field_edit_button,
+#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_menu_field_update_button {
 background-color: transparent;
 background-image: url("/img/menu_exit_icon.png");
 background-repeat: no-repeat;
@@ -282,11 +335,11 @@ padding: 0;
 width: 35px;
 }
 
-#mlab_editor #mlab_menu #mlab_preview_icon {
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_preview_icon {
     background-image: url("/img/menu_preview_icon.png");
 }
 
-#mlab_editor #mlab_menu .mlab_download_icon {
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_download_icon {
     display: block;
     float: left;
 }
@@ -300,37 +353,24 @@ width: 35px;
 }
 
 /* For updating the Apps meta data ------ TODO */
-#mlab_editor #mlab_menu .mlab_menu_field_edit_button {
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_menu_field_edit_button {
     background-image: url("/img/menu_field_edit.png");
     height: 16px;
     width: 16px;
 }
 
-#mlab_editor #mlab_menu .mlab_menu_field_update_button {
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_menu_field_update_button {
     background-image: url("/img/save_menu.png");
     display: none;
     height: 20px;
     width: 20px;
 }
 
-#mlab_editor #mlab_menu .mlab_sub_menu * {
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_sub_menu *,
+.mlab_base #mlab_editor_menu_dropdown_content .mlab_sub_menu * {
     display: block;
     float: left;
     clear: both;   
-}
-
-/* Feature and storage list */
-#mlab_editor #mlab_menu #mlab_features_list li, 
-#mlab_editor #mlab_menu #mlab_storage_plugin_list li {
-    cursor: pointer;
-    list-style: none;
-}
-
-#mlab_editor #mlab_menu #mlab_features_list li.mlab_item_applied:before, 
-#mlab_editor #mlab_menu #mlab_storage_plugin_list li.mlab_item_applied:before {
-    content: "\2713 ";
-    margin-left: -1em;
-    margin-right: .100em;
 }
 
 /* adds a small app icon - used in App drop down menu */

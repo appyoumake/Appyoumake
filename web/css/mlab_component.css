@@ -4,7 +4,6 @@ the element is related to.
 
 Mlab has defined 4 main classes where most elemenst will fit in;
 .link, .interactive, .display and .entry.
-
 */
 
 
@@ -29,15 +28,94 @@ Mlab has defined 4 main classes where most elemenst will fit in;
 }
 
 
-
-
-/* For display elements that indicates a required entry element */
-#content .display.required {
+/* ==========================================================================
+   Link -for elements that are going to be a link
+   ========================================================================== */
+/*  */
+#content .link.text {
     
 }
 
-/* For display elements that is an output of an entry from the user */
-#content .display.output {
+/*  */
+#content .link.picture {
+    
+}
+
+/*  */
+#content .link.internal {
+    
+}
+
+/*  */
+#content .link.external {
+    
+}
+
+
+/* ==========================================================================
+   Interactive -for elements that the user is going to interact with
+   ========================================================================== */
+/* */
+#content .interactive.small {
+    
+}
+
+/* */
+#content .interactive.medium {
+    
+}
+
+/* */
+#content .interactive.large {
+    
+}
+
+/* */
+#content .interactive.map {
+    
+}
+
+/* video - audio*/
+#content .interactive.timebased {
+    
+}
+
+/* */
+#content .interactive.live_output {
+    
+}
+
+
+/* ==========================================================================
+   Display -for elements that are only showed/displayed to the user
+   ========================================================================== */
+/* */
+#content .display.heading.small {
+    
+}
+
+/* */
+#content .display.heading.medium {
+    
+}
+
+/* */
+#content .display.heading.large {
+    
+}
+
+/* */
+#content .display.ingress {
+    
+}
+
+/* */
+#content .display.text {
+    
+}
+
+/* */
+#content .display.picture {
     
 }
 
@@ -46,12 +124,66 @@ Mlab has defined 4 main classes where most elemenst will fit in;
     
 }
 
-/* For entry elements with requerd input */
-#content .entry.required {
+/* */
+#content .display.list.numeric {
     
 }
 
 /* */
+#content .display.list.bullet {
+    
+}
+
+/* For display elements that is an output of an entry from the user */
+#content .display.output {
+    
+}
+
+/* For display elements that is an output from a live output (ex twitterfeed) */
+#content .display.live_output {
+    
+}
+
+/* For display elements that indicates a required entry element */
+#content .display.required {
+    
+}
+
+/* For display elements that indicates a entry element that can not be selected */
+#content .display.disabled {
+    
+}
+
+/* For display elements that need to be emphasized */
+#content .display.emphasize {
+    
+}
+
+/* For display elements that should have less focus  */
+#content .display.depreciate {
+    
+}
+
+
+/* ==========================================================================
+   Entry -for elements that requiers an input/entry from the user
+   ========================================================================== */
+/* */
 #content .entry.list {
+    
+}
+
+/* ? */
+#content .entry.input{
+    
+}
+
+/* ? For entry elements that will give an output to display */
+#content .entry.output{
+    
+}
+
+/* For entry elements with requerd input */
+#content .entry.required {
     
 }
