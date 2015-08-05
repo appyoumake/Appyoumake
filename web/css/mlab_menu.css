@@ -46,13 +46,6 @@
     margin-top: 0px;
 }
 
-/* Mlab logo element, -placement 
-#mlab_menu #mlab_menu_dropdown {
-    margin-right: 25px;
-    margin-top: 8px;
-    padding-top:10px;
-}*/
-
 /* The builder/editor element, -placement */
 #mlab_editor #mlab_menu #mlab_editor_menu_dropdown,
 .mlab_base #mlab_menu #mlab_editor_menu_dropdown {
