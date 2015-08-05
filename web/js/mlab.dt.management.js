@@ -765,16 +765,11 @@ Mlab_dt_management.prototype = {
             url = url.replace("_ID_", mlab.dt.app.id);
             url = url.replace("_VERSION_", mlab.dt.app.active_version);
             url = url.replace("_PLATFORM_", platform);
-            $("#mlab_statusbar_compiler").text("Compiling requested...");
+            $("#mlab_statusbar_compiler").text("Contacting server...");
 
             $.getJSON(url, function( json ) {
-                if (json.result == "success") {
-                    $("#mlab_statusbar_compiler").text("Compiling in progress...");
-                    console.log("Status returned: ");
-                    console.log(json.msg);
-                } else {
-                    $("#mlab_statusbar_compiler").text("Compiling failed!");
-                    alert("Unable to get app, error reported is: " + json.msg);
+                if (json.result != "success") {
+                    $("#mlab_statusbar_compiler").text("Unable to contact server");
                     
                 }
             });
