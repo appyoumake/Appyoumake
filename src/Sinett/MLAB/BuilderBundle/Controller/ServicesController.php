@@ -218,12 +218,41 @@ class ServicesController extends Controller
     public function mktSetTaggedUsersStateAction($token, $tag, $state) {
     }
 
-    private function cmpCreateApp($app_uid, $app_version) {
+    private function cmpCreateApp($window_uid, $app_uid, $app_version, $tag, $config) {
+        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "creating"}}', $config), true);
+        if ($res_socket["data"]["status"] != "connected") {
+            return new JsonResponse(array('result' => 'error'));
+        }
+
         $passphrase = urlencode($config["compiler_service"]["passphrase"]);
         $protocol = $config["compiler_service"]["protocol"];
-        $url = "$protocol://{$config["compiler_service"]["url"]}/createApp?passphrase=$passphrase&app_uid=$app_uid&app_version=$app_version";
-        file_get_contents($url);
+        $url = "$protocol://{$config["compiler_service"]["url"]}/createApp?passphrase=$passphrase&app_uid=$app_uid&app_version=$app_version&tag=$tag-$window_uid";
+        return file_get_contents($url);
     }
+    
+//run rsync, we need to "store" the password in the environment variable, then run the command using shell_exec
+//this is done in two rounds, first without the config file, icon file and splash screen, and then afterwards only with these files
+    private function cmpUploadFiles($from_path, $window_uid, $app_uid, $app_version, $config) {
+        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "uploading"}}', $config), true);
+        if ($res_socket["data"]["status"] != "connected") {
+            return new JsonResponse(array('result' => 'error'));
+        }
+
+        putenv("RSYNC_PASSWORD=" . $config['compiler_service']['rsync_password']);
+        
+        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -r --exclude '$from_path/{$config['filenames']['app_config']}' --exclude '$from_path/{$config['filenames']['app_icon']}' --exclude '$from_path/{$config['filenames']['app_splash_screen']}*' $from_path/* {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/{$config['compiler_service']['rsync_suffix']}/";
+        error_log($rsync_cmd);
+        $res_rsync = shell_exec($rsync_cmd);
+        error_log($res_rsync);
+        
+        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " '$from_path/{$config['filenames']['app_config']}' '$from_path/{$config['filenames']['app_icon']}' '$from_path/{$config['filenames']['app_splash_screen']}*' {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/";
+        error_log($rsync_cmd);
+        $res_rsync = shell_exec($rsync_cmd);
+        error_log($res_rsync);
+        
+        return true;
+    }
+    
 /**
  * Uses the compiler services' getAppStatus API call to get info about one or more apps
  * Unlike other compiler functions, this is NOT async, so we wait for answer
@@ -363,47 +392,51 @@ class ServicesController extends Controller
 //now we need to check to see if the app has been created on the remote server, if not we create it
 //the create function is async, so we need to point exit here, and wait for the callback to be called by the remote service.
         
-//TODO: Create functions for each element below to be called from the callback as well as from below here
         $app_info = $this->cmpGetAppStatus($app_id, $app_version, $platform);
         if ( empty($app_info) || !key_exists($app_uid, $app_info) || !key_exists($app_version, $app_info[$app_uid]) ) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "creating"}}', $config), true);
-            if ($res_socket["data"]["status"] != "connected") {
-                return new JsonResponse(array('result' => 'error'));
+            $res_createapp = $this->cmpCreateApp($window_uid, $app_uid, $app_version, $config, "multistep");
+            if ($res_createapp != "True") {
+                return new JsonResponse(array('result' => 'error', 'msg' => 'CreateApp compiler service failed'));
+            } else {
+                return new JsonResponse(array('result' => 'success'));
             }
-CHECK THAT TRUES IS RETURNED FROM CREATEAPP 
-            
-            
-            $res_createapp = $this->cmpCreateApp($app_uid, $app_version, "multistep");
+        }        
+        
+//app already exists, time to upload files
+        $res_upload = $this->cmpUploadFiles($cached_app_path, $window_uid, $app_uid, $app_version, $config);
+TODO: Create these functions and matching callback functions. 
+Not all should be here        
+        $res_verifyapp = $this->cmpVerifyApp($window_uid, $app_uid, $app_version, $app_checksum, $config, "multistep");
+        $res_compileapp = $this->cmpCompileApp($window_uid, $app_uid, $app_version, $app_checksum, $platform, $config, "multistep");
+        $res_getapp = $this->cmpGetApp($window_uid, $app_uid, $app_version, $app_checksum, $platform, $config, "multistep");
 
-            return new JsonResponse(array('result' => 'success'));
-        }
-THEN CREATE CALLBACK url/FUNCTION
-        
-        
-        
-move this INTO FUNCTION
-//now we run rsync, we need to "store" the password in the environment variable, then run the command using shell_exec
-//this is done in two rounds, first without the config file, and then afterwards only with the config file
-        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "uploading"}}', $config), true);
-        if ($res_socket["data"]["status"] != "connected") {
-            return new JsonResponse(array('result' => 'error'));
-        }
-
-        putenv("RSYNC_PASSWORD=" . $config['compiler_service']['rsync_password']);
-        
-        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -r --exclude '$cached_app_path/{$config['filenames']['app_config']}' $cached_app_path/* {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/{$config['compiler_service']['rsync_suffix']}/";
-        error_log($rsync_cmd);
-        $res_rsync = shell_exec($rsync_cmd);
-        error_log($res_rsync);
-        
-ADD TWO OTHER ICON & SPLASH FILES HERE
-        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " '$cached_app_path/{$config['filenames']['app_config']}' {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/";
-        error_log($rsync_cmd);
-        $res_rsync = shell_exec($rsync_cmd);
-        error_log($res_rsync);
+//now ask for it to be compiled
         
 //all well, return success
         return new JsonResponse(array('result' => 'success'));
     }
 
+    /**
+     * URL called by the compiler service to indicate that an app (version) was successfully created
+     * @param type $app_uid
+     * @param type $app_version
+     * @param type $tag
+     */
+    public function cbCmpCreatedAppAction($passphrase, $app_uid, $app_version, $tag) {
+        $config = $this->container->parameters['mlab'];
+        $passphrase = $config["compiler_service"]["passphrase"];
+        
+        list($action, $window_uid) = array_pad(explode("-", $tag), 2, NULL);
+        if (!is_null($window_uid)) {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "created"}}', $config), true);
+            if ($res_socket["data"]["status"] != "connected") {
+                return new JsonResponse(array('result' => 'error'));
+            }
+        }
+        if ($action == "multistep") {
+//app now exists, time to upload files
+            $res_upload = $this->cmpUploadFiles($from_path, $window_uid, $app_uid, $app_version, $config);
+            
+        }
+    }
 }

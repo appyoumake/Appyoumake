@@ -213,7 +213,11 @@
                                     break;
 
                                 case "creating":
-                                    $("#mlab_statusbar_compiler").text("Creating app...");
+                                    $("#mlab_statusbar_compiler").text("Creating app remotely...");
+                                    break;
+
+                                case "created":
+                                    $("#mlab_statusbar_compiler").text("App created remotely");
                                     break;
 
                                 case "precompilation":
