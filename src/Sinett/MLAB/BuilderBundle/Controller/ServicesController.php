@@ -218,11 +218,11 @@ class ServicesController extends Controller
     public function mktSetTaggedUsersStateAction($token, $tag, $state) {
     }
 
-    private function cmpCreateApp($app_id, $app_version) {
-        $passphrase = $config["compiler_service"]["passphrase"];
+    private function cmpCreateApp($app_uid, $app_version) {
+        $passphrase = urlencode($config["compiler_service"]["passphrase"]);
         $protocol = $config["compiler_service"]["protocol"];
-        $url = $protocol . "://" . $config["compiler_service"]["url"] . "/getAppStatus?passphrase=" . urlencode($passphrase);
-        
+        $url = "$protocol://{$config["compiler_service"]["url"]}/createApp?passphrase=$passphrase&app_uid=$app_uid&app_version=$app_version";
+        file_get_contents($url);
     }
 /**
  * Uses the compiler services' getAppStatus API call to get info about one or more apps
@@ -366,14 +366,22 @@ class ServicesController extends Controller
 //TODO: Create functions for each element below to be called from the callback as well as from below here
         $app_info = $this->cmpGetAppStatus($app_id, $app_version, $platform);
         if ( empty($app_info) || !key_exists($app_uid, $app_info) || !key_exists($app_version, $app_info[$app_uid]) ) {
-            $this->cmpCreateApp($app_id, $app_version);
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "creating"}}', $config), true);
             if ($res_socket["data"]["status"] != "connected") {
                 return new JsonResponse(array('result' => 'error'));
             }
+CHECK THAT TRUES IS RETURNED FROM CREATEAPP 
+            
+            
+            $res_createapp = $this->cmpCreateApp($app_uid, $app_version, "multistep");
+
             return new JsonResponse(array('result' => 'success'));
         }
+THEN CREATE CALLBACK url/FUNCTION
         
+        
+        
+move this INTO FUNCTION
 //now we run rsync, we need to "store" the password in the environment variable, then run the command using shell_exec
 //this is done in two rounds, first without the config file, and then afterwards only with the config file
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "uploading"}}', $config), true);
@@ -388,6 +396,7 @@ class ServicesController extends Controller
         $res_rsync = shell_exec($rsync_cmd);
         error_log($res_rsync);
         
+ADD TWO OTHER ICON & SPLASH FILES HERE
         $rsync_cmd = $config['compiler_service']['rsync_bin'] . " '$cached_app_path/{$config['filenames']['app_config']}' {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/";
         error_log($rsync_cmd);
         $res_rsync = shell_exec($rsync_cmd);

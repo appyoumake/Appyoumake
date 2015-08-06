@@ -24,6 +24,7 @@ parameters:
         ws_socket:
             url: /messages/
             port: 8080
+            host: localhost
 
         missing_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==
         save_interval: 60
