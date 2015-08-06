@@ -161,6 +161,14 @@
     z-index: 1000;
 }
 
+#mlab_editor .dropdown_user_menu,
+.mlab_base .dropdown_editor_menu,
+.mlab_base .dropdown_user_menu {
+    width: 155px;
+    float: right;
+    position: relative;
+}
+
 .mlab_base .dropdown_editor_menu {
     width: 260px;
 }
@@ -171,15 +179,8 @@
 }
 
 .mlab_base .mlab_show_editor_dropdown {
-    left: 119px;
-    top: 45px;
-}
-
-#mlab_editor .dropdown_user_menu,
-.mlab_base .dropdown_user_menu {
-    width: 155px;
-    float: right;
-    position: relative;
+left: -897px;
+top: -414px;
 }
  
 #mlab_editor .mlab_show_user_dropdown {
@@ -188,8 +189,8 @@
 }
 
 .mlab_base .mlab_show_user_dropdown {
-    left: -61px;
-    top: -456px;
+    left: 211px;
+    top: -414px;
 }
 
 /* Columns */
@@ -318,11 +319,19 @@
 }
 
 /* Icons used by the drop down menu */
+<<<<<<< HEAD
+#mlab_editor #mlab_menu #mlab_exit_icon, 
+#mlab_editor #mlab_menu #mlab_preview_icon, 
+#mlab_editor #mlab_menu .mlab_download_icon,
+#mlab_editor #mlab_menu .mlab_menu_field_edit_button,
+#mlab_editor #mlab_menu .mlab_menu_field_update_button {
+=======
 #mlab_editor  #mlab_editor_menu_dropdown_content #mlab_exit_icon, 
 #mlab_editor  #mlab_editor_menu_dropdown_content #mlab_preview_icon, 
-#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_icon,
+#mlab_editor  #mlab_editor_menu_dropdown_content #mlab_download_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_menu_field_edit_button,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_menu_field_update_button {
+>>>>>>> cjg_design
 background-color: transparent;
 background-image: url("/img/menu_exit_icon.png");
 background-repeat: no-repeat;
@@ -338,7 +347,8 @@ width: 35px;
     background-image: url("/img/menu_preview_icon.png");
 }
 
-#mlab_editor #mlab_editor_menu_dropdown_content .mlab_download_icon {
+<<<<<<< HEAD
+#mlab_editor #mlab_menu .mlab_download_icon {
     display: block;
     float: left;
 }
@@ -349,6 +359,10 @@ width: 35px;
 
 #mlab_editor #mlab_menu #mlab_download_android_icon {
     background-image: url("/img/menu_download_android_icon.png");
+=======
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_download_icon {
+    background-image: url("/img/menu_download_icon.png");
+>>>>>>> cjg_design
 }
 
 /* For updating the Apps meta data ------ TODO */

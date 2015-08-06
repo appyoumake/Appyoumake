@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_menu.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery.contextMenu.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_component_config.css") }}" rel="stylesheet" />
+            
+        {% endblock %}
+        {% block javascripts %}
+            <script src="{{ asset('/js/jquery-2.0.3.js') }}"></script>
+            <script src="{{ asset('/js/jquery.mobile-1.4.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.ui-1.10.3.js') }}"></script>
+            <script src="{{ asset('/js/jquery.uploadfile-1.9.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.qtip-2.2.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.ddslick-1.0.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.qrcode-0.7.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.contextMenu-1.0.0.js') }}"></script>
+            <script src="{{ asset('/js/jquery.ui.position.js') }}"></script>
+
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
+    </head>
+    
+
+    <body id="mlab_editor">
+    	<div class="mlab_min_page_width">
+    		<div class="mlab_align_menu_elements">
+                    <ul id="mlab_menu">
+<<<<<<< HEAD
+
+                    {{ include( 'menu.html.twig' ) }}
+
+                        <li id="mlab_editor_menu_dropdown">
+                            <a href="#" class="drop">
+                                <img class="basic_menu_icon" src="/img/menu_icon.png" alt="logo" >
+                            </a><!-- Begin 4 columns Item -->
+
+                            <div id="mlab_editor_menu_dropdown_content" class="dropdown_3columns"><!-- Begin 3 columns container -->
+
+                                <div class="col_3">
+                                    <p>{% trans %}app.builder.edit.menu.welcome.info{% endtrans %}</p>
+                                </div>
+
+                                <div class="col_1">
+                                    <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
+                                    <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
+                                    <div id="mlab_features_list"></div>
+                                    <div class='mlab_sub_menu'>
+                                        <h4>Utilities</h4>
+                                        <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
+                                        <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
+                                        <a href="javascript: mlab.dt.management.compiler.get_app_status();">Test connection to compiler </a>
+                                    </div>
+                                </div>
+
+                                <div class="col_1">
+                                    <div class="mlab_end_appbuilder">
+                                        <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
+                                        <h4>Prøv App på web</h4>
+                                        <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
+                                                <a href="javascript: mlab.dt.management.page_preview();">
+                                                    <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                                                </a> 
+                                        <h4>Prøv App på mobil</h4>
+                                        <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
+                                        <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
+                                        </div>
+                                            <a href="javascript:  mlab.dt.management.compiler.get_app('ios');">
+                                                <div title="Test app på iOS mobil enhet" class="mlab_download_icon" id="mlab_download_ios_icon"></div> 
+                                            </a>
+                                            <a href="javascript: mlab.dt.management.compiler.get_app('android');">
+                                                <div title="Test app på Android mobil enhet" class="mlab_download_icon" id="mlab_download_android_icon"></div> 
+                                            </a>
+
+                                        <div class="mlab_end_appbuilder">
+                                            <h4>{% trans %}app.builder.edit.menu.heading.exit{% endtrans %}</h4>
+                                            <p>{% trans %}app.builder.edit.menu.exit.info{% endtrans %}</p>
+                                            <a href="{{ path('app_builder_index') }}" target="_top">
+                                                <div title="Avslutt" id="mlab_exit_icon"></div>   
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- End 4 columns container -->
+
+                        </li><!-- End 4 columns Item -->
+=======
+                        <li>
+                            <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='Tilbake til App liste' src="/img/logo_menu.png" alt="logo" /></div></a>
+                        </li>  <!-- The Mlab log -->
+    
+                        <li id="mlab_editor_menu_dropdown">    
+                                <img class="basic_menu_icon" title='Editor menu' src="/img/menu_icon.png" alt="logo" > 
+                        </li>
+>>>>>>> cjg_design
+
+                        <li id="mlab_editor_undo_redo" class="single mlab_editor_undo_redo_save">
+                            <img onclick='mlab.dt.management.page_save();' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
+                            <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
+                            <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
+                        </li><!-- End undo and redo menu items -->
+
+                        <li  class="single"><div id='mlab_statusbar_permanent'>Appnavn</div></li>
+                        <li  class="single"><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
+                        <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
+                        <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
+
+                        <li class="single menu_right">
+                            <img class="mlab_help_icon" src="/img/help.png" title='Hjelp' alt="logo" >
+                        </li>
+                        
+                        <li id="mlab_user_menu_dropdown" class="menu_right">
+                            <img class="mlab_user_info_icon" src="/img/user.png" title='Bruker info' alt="logo" >
+                        </li>
+                        
+                    </ul>
+                
+                    <div class="container">
+                        {% block body %}{% endblock %}
+                        <div style="clear: both;">&nbsp;</div>
+                    </div>
+               
+	        </div>
+	    </div>
+        
+        <div id="mlab_editor_menu_dropdown_content" class="dropdown_editor_menu"><!-- Editor menu container -->
+
+            <div class="mlab_one_col"> <!-- Navigate col -->
+                <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
+
+                {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
+
+                {% if app.user == null %} <!-- If not loged in -->
+                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                    </p>
+
+                {% else %} <!-- If loged in -->
+                    {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
+                        <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
+                    {% endif %} 
+
+                    <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
+                    <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+
+
+                    {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
+                        {%  if path('admin_apps') not in currentPath  %}
+                            <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                        {% endif %} 
+                        {% if path('admin_users') not in currentPath %}
+                            <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                        {% endif %} 
+                    {% endif %} 
+
+                    {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
+                        {% if path('system') not in currentPath %}
+                                <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SUPER_ADMIN") %}
+                                <br>
+                    {% endif %}
+
+                    {% if path('app_builder_index') in currentPath  %} <!-- If on app list page - show the info  -->
+                                <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
+                    {% endif %} 
+                {% endif %}
+            </div> <!-- End Navigate col -->
+
+            <div class="mlab_one_col"> <!-- Feature col -->
+                <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
+                <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
+                <div id="mlab_features_list"></div>
+                <div class='mlab_sub_menu'>
+                    <h4>Utilities</h4>
+                    <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
+                    <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
+                    <a href="javascript: mlab.dt.management.cs_app_get();">Test connection to compiler </a>
+                </div>
+            </div> <!-- End Feature col -->
+
+            <div class="mlab_one_col"> <!-- Testing col -->
+                <div class="mlab_end_appbuilder">
+                    <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
+                    <h4>Prøv App på web</h4>
+                    <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
+                            <a href="javascript: mlab.dt.management.page_preview();">
+                                <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                            </a> 
+                    <h4>Prøv App på mobil</h4>
+                    <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
+                    <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
+                    </div>
+                            <a href="javascript: mlab.dt.management.app_download();">
+                            <div title="Test app på mobil enhet" id="mlab_download_icon"></div> 
+                            </a>
+                </div>
+            </div> <!-- End Testing col -->
+
+            <div class="mlab_three_col"> <!-- Developed by col -->
+                <h3></h3>
+                <p>Developed by the Sinett project at FFI.no</p>
+            </div> <!-- Developed by col -->
+
+        </div><!-- End Editor menu container -->
+        
+        <div id="mlab_user_menu_dropdown_content" class="dropdown_user_menu"><!-- User menu container -->
+
+            <div class="mlab_one_user_col"> <!-- User col -->
+                <h3>{% trans %}app.builder.menu.heading.user.info{% endtrans %}</h3>
+                
+                {% if app.user == null %} <!-- If not loged in -->
+                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                    </p>
+                {% else %} <!-- If loged in -->
+                    <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
+                        <b>{{ app.user.username }}</b><br><br>
+                    
+                    <a target="_top" href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
+                {% endif %}
+            </div>
+
+        </div><!-- End User menu container -->
+        
+    </body>
+</html>
