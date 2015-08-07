@@ -58,6 +58,6 @@ cb_cmp_verified_app:
     defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpVerifiedApp }
 
 cb_cmp_compiled_app:
-    pattern: /callback/csAppCompiled/{passphrase}/{app_uid}/{app_version}/{app_checksum}/{checksum_exec_file}/{platform}/{tag}
+    pattern: /callback/csAppCompiled/{passphrase}/{app_uid}/{app_version}/{app_checksum}/{exec_file_checksum}/{platform}/{tag}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCompiledApp }
     

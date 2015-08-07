@@ -537,7 +537,7 @@ class ServicesController extends Controller
 
 //app finished compiling callback, if this is true all is well.
 //if this is called as a part of a complete getapp process, then we will ask for the app to be downloaded
-    public function cbCmpCompiledAppAppAction($passphrase, $app_uid, $app_version, $app_checksum, $checksum_exec_file, $platform, $result, $tag) {
+    public function cbCmpCompiledAppAppAction($passphrase, $app_uid, $app_version, $app_checksum, $exec_file_checksum, $platform, $result, $tag) {
         $config = $this->container->parameters['mlab'];
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
@@ -556,7 +556,7 @@ class ServicesController extends Controller
         
 //files are compiled, now we need to download the app.
         if ($action == "multistep" && $result == "true") {
-            $res_download = $this->cmpDownloadApp($app_uid, $app_version, $app_checksum, $platform);
+            $res_download = $this->cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $exec_file_checksum, $platform);
             $status = ($res_download ? "ready" : "failed");
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '", "checksum": "' . $res_download . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "connected") {
