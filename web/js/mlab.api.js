@@ -658,7 +658,51 @@ Mlab_api.prototype = {
             return document.mlab_dt_storage[comp][key];
         },
     
-    }
+    },
+        /**
+     * Object used for changing settings at runtime
+     */
+    
+    settings: {
+
+        /**
+         * This function toggles the text size of an html element between 100% and 130%
+         * @param {string} elementId The id of the HTML element where the text size will be toggled
+         */
+        pageTextSizeToggle: function (elementId) {
+            //TODO get .mlab_large_text to work and switch to toggle between the clas on an off
+    
+            if ($("#" + elementId).hasClass('mlab_large_text')) {
+                $("#" + elementId).removeClass('mlab_large_text');
+                $("#" + elementId).css("font-size", "100%");
+            } else {
+                $("#" + elementId).addClass('mlab_large_text'); 
+                $("#" + elementId).css("font-size", "130%");
+            }
+        },
+        
+        /**
+        * This function toggles the text and background color of an html element
+         * @param {string} elementId The id of the HTML element where the color of the background and the text will be toggled
+         * @param {string} defaultBackgroundColor The default background color of the HTML element
+         * @param {string} defaultTextColor The default text color of the HTML element
+         * @param {string} toggleBackgroundColor The background color used to toggle with
+         * @param {string} toggleTextColor The text color used to toggle with
+        */
+        pageColorToggle: function (elementId, defaultBackgroundColor, defaultTextColor, toggleBackgroundColor, toggleTextColor) {
+            //TODO Set the attributes on classes instead of setting css directly
+            if ($("#" + elementId).hasClass('mlab_color_toggle')) {
+                $("#" + elementId).removeClass('mlab_color_toggle');
+                $("#" + elementId).css("background-color", defaultBackgroundColor);
+                $("#" + elementId).css("color", defaultTextColor);
+            } else {
+                $("#" + elementId).addClass('mlab_color_toggle'); 
+                $("#" + elementId).css("background-color", toggleBackgroundColor);
+                $("#" + elementId).css("color", toggleTextColor);
+            }
+        },
+        
+    },
 }; // end prototype for Mlab.api
 
 
