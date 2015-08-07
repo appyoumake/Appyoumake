@@ -671,7 +671,7 @@ Mlab_api.prototype = {
          */
         pageTextSizeToggle: function (elementId) {
             //TODO get .mlab_large_text to work and switch to toggle between the clas on an off
-    }
+    
             if ($("#" + elementId).hasClass('mlab_large_text')) {
                 $("#" + elementId).removeClass('mlab_large_text');
                 $("#" + elementId).css("font-size", "100%");

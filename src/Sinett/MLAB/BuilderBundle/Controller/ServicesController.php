@@ -404,8 +404,8 @@ class ServicesController extends Controller
         
 //app already exists, time to upload files
         $res_upload = $this->cmpUploadFiles($cached_app_path, $window_uid, $app_uid, $app_version, $config);
-TODO: Create these functions and matching callback functions. 
-Not all should be here        
+//TODO: Create these functions and matching callback functions. 
+//Not all should be here        
         $res_verifyapp = $this->cmpVerifyApp($window_uid, $app_uid, $app_version, $app_checksum, $config, "multistep");
         $res_compileapp = $this->cmpCompileApp($window_uid, $app_uid, $app_version, $app_checksum, $platform, $config, "multistep");
         $res_getapp = $this->cmpGetApp($window_uid, $app_uid, $app_version, $app_checksum, $platform, $config, "multistep");
