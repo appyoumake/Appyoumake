@@ -228,8 +228,28 @@
                                     $("#mlab_statusbar_compiler").text("Uploading files to compiler...");
                                     break;
 
-                                case "waiting":
+                                case "verifying":
+                                    $("#mlab_statusbar_compiler").text("Verifying upload...");
+                                    break;
+
+                                case "verification_ok":
+                                    $("#mlab_statusbar_compiler").text("Files uploaded OK...");
+                                    break;
+
+                                case "verification_failed":
+                                    $("#mlab_statusbar_compiler").text("Files failed to upload");
+                                    break;
+
+                                case "compiling":
                                     $("#mlab_statusbar_compiler").text("Waiting for compiler...");
+                                    break;
+
+                                case "compilation_ok":
+                                    $("#mlab_statusbar_compiler").text("App compiled OK...");
+                                    break;
+
+                                case "compilation_failed":
+                                    $("#mlab_statusbar_compiler").text("App failed to compile");
                                     break;
 
                                 case "receiving":

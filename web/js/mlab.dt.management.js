@@ -761,7 +761,7 @@ Mlab_dt_management.prototype = {
         },
     
         get_app : function (platform) {
-            var url = mlab.dt.urls.cmp_get_app.replace("_WINDOW_UID_", mlab.dt.uid);
+            var url = mlab.dt.urls.cmp_get_app_process.replace("_WINDOW_UID_", mlab.dt.uid);
             url = url.replace("_ID_", mlab.dt.app.id);
             url = url.replace("_VERSION_", mlab.dt.app.active_version);
             url = url.replace("_PLATFORM_", platform);
