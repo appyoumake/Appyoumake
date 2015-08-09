@@ -22,7 +22,7 @@ mlabServicesCallbackServer.on('connection', function(ws) {
         ws.send('{"data": {"status": "connected"}}');
     } else {
         console.log("Temporary connection from " + ws.upgradeReq.connection.remoteAddress);
-        ws.send('{"data": {"status": "connected"}}');
+        ws.send('{"data": {"status": "SUCCESS"}}');
     }
     
     ws.on('message', function(data, flags) {
@@ -30,18 +30,31 @@ mlabServicesCallbackServer.on('connection', function(ws) {
         if (typeof data == "string") {
             var objData = JSON.parse(data);
         } else if (typeof data == "undefined") {
+            ws.send('{"data": {"status": "ERROR", "error": "received empty string"}}');
             console.log('ERR: received empty string');
             return;
         } else {
             var objData = data;
         }
         
-        if (typeof mlabEditorClients[objData.destination_id] != "undefined" && typeof objData.data != "undefined") {
+        if (typeof objData.destination_id != "undefined" && typeof objData.data != "undefined" && typeof mlabEditorClients[objData.destination_id] != "undefined") {
             console.log('DATA: ' + JSON.stringify(objData.data));
             mlabEditorClients[objData.destination_id].send(JSON.stringify(objData.data));
+            ws.send('{"data": {"status": "SUCCESS"}}');
             console.log('SENT TO: ' + objData.destination_id);
         } else {
-            console.log('No data payload present, nothing sent');
+            if (typeof objData.destination_id == "undefined") {
+                console.log('No destination present, nothing sent');
+                ws.send('{"data": {"status": "ERROR", "error": "No destination present, nothing sent"}}');
+            }
+            if (typeof objData.data == "undefined") {
+                console.log('No data payload present, nothing sent');
+                ws.send('{"data": {"status": "ERROR", "error": "No data payload present, nothing sent"}}');
+            }
+            if (typeof mlabEditorClients[objData.destination_id] == "undefined") {
+                console.log('Mlab client ' + objData.destination_id + ' not connected');
+                ws.send('{"data": {"status": "ERROR", "error": "Mlab client ' + objData.destination_id + ' not connected"}}');
+            }
         }
     });
 

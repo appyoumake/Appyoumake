@@ -47,17 +47,3 @@ cmp_get_app_status:
 cmp_get_app_process:
     pattern: /cmpGetAppProcess/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppProcess }
-
-# compiler API related URLS (callbacks from API)
-cb_cmp_created_app:
-    pattern: /callback/csAppCreated/{passphrase}/{app_uid}/{app_version}/{tag}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCreatedApp }
-    
-cb_cmp_verified_app:
-    pattern: /callback/csAppVerified/{passphrase}/{app_uid}/{app_version}/{app_checksum}/{result}/{tag}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpVerifiedApp }
-
-cb_cmp_compiled_app:
-    pattern: /callback/csAppCompiled/{passphrase}/{app_uid}/{app_version}/{app_checksum}/{exec_file_checksum}/{platform}/{tag}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCompiledApp }
-    

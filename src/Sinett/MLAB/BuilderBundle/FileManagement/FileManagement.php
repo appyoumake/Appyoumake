@@ -895,9 +895,31 @@ class FileManagement {
         }
         sort($md5sums);
         return md5(implode("", $md5sums));
+    }
+
+/**
+ * Using PHP function to generate an MD5 sum for the final generated files of an app, looks in the root folder, excluding lock files
+ * @param type $app
+ * @param type $exclude_file: Usually used to 
+ * @return type
+ */
+    public function getProcessedAppMD5($app, $exclude_file = "") {
         
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        $md5sums = array();
         
-        
+        if ($exclude_file != "") {
+            $files = $this->func_find( $cached_app_path, "f", "*", array($exclude_file, "*.lock") );
+        } else {
+            $files = $this->func_find( $cached_app_path, "f", "*", array("*.lock") );
+        }
+        foreach ($files as $file) {
+            $md5sums[] = md5_file($file);
+            error_log($file . " : " . $md5sums[sizeof($md5sums) - 1]);
+        }
+        sort($md5sums);
+        return md5(implode("", $md5sums));
     }
 
 /**
