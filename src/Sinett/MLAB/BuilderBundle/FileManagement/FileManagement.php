@@ -910,9 +910,9 @@ class FileManagement {
         $md5sums = array();
         
         if ($exclude_file != "") {
-            $files = $this->func_find( $cached_app_path, "f", "*", array($exclude_file, "*.lock") );
+            $files = $this->func_find( $cached_app_path, "", "*", array($exclude_file, "*.lock") );
         } else {
-            $files = $this->func_find( $cached_app_path, "f", "*", array("*.lock") );
+            $files = $this->func_find( $cached_app_path, "", "*", array("*.lock") );
         }
         foreach ($files as $file) {
             $md5sums[] = md5_file($file);
@@ -1357,7 +1357,7 @@ class FileManagement {
  * @param type $wildcard
  * @param type $exclude_files
  */
-    private function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
+    public function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
         $dir_iterator = new \RecursiveDirectoryIterator($path);
         $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
         if ($wildcard == "") {
@@ -1366,24 +1366,27 @@ class FileManagement {
         $result = array();
         
         foreach ($iterator as $file) {
-            if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
+            $result[] = $file->getPathname() . " - " . $file->isLink();
+//error_log($file->isDir() . " = " . $file->getPathname());            
+/*            if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
                 if ( fnmatch($wildcard, $file->getPathname()) ) {
                     if ($exclude_files != "") {
                         $exclude = false;
                         foreach ($exclude_files as $exclude_file) {
-                            if (fnmatch($exclude_file, $file->getPathname())) {
+                            if (fnmatch($exclude_file, $file->getPathname()) || $exclude_file == $file->getBasename()) {
                                 $exclude = true;
                                 break;
                             }
                         }
                         if (!$exclude) {
+//                            error_log("Added: " . $file->getPathname());
                             $result[] = $file->getPathname();
                         }
                     } else {
                         $result[] = $file->getPathname();
                     }
                 }
-            }
+            }*/
         }
         
         return $result;

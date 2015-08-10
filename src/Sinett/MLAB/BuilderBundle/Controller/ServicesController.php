@@ -424,11 +424,14 @@ class ServicesController extends Controller
         
 //prepare variables & get current processed app checksum
         $app_uid = $app->getUid();
-        $app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
         $app_path = $app->calculateFullPath($config['paths']['app']);
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+$files = $file_mgmt->func_find( $cached_app_path, "", "*", array($config['filenames']["app_config"], "*.lock") );
+        return new JsonResponse(array("files" => $files));
+
+        $app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
 
 
 //see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
