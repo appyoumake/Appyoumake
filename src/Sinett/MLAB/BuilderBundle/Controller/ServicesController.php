@@ -203,7 +203,6 @@ class ServicesController extends Controller
         fwrite($sock, $this->hybi10Encode($msg) ) or die('error:'.$errno.':'.$errstr);
         $wsdata = fread($sock, 2000);  //receives the data included in the websocket package "\x00MSG\xff"
         fclose($sock);
-        error_log($wsdata);
         return $this->hybi10Decode($wsdata);
     }
 
@@ -245,7 +244,7 @@ class ServicesController extends Controller
 //---Internal functions that contain code for externally exposed callback functions---
     
 /**
- * 
+ * Generic function to invoke a remote API function on server, passphrase is added in this function
  * @param type $config
  * @param type $window_uid
  * @param type $status
@@ -268,6 +267,9 @@ class ServicesController extends Controller
         foreach ($parameters as $key => $value) {
             $params .= urlencode($key) . "=" . urlencode($value) . "&";
         }
+        
+//add passphrase, used to see that we are allowed to talk to remote PC
+        $params .= "passphrase=" . urlencode($config['compiler_service']["passphrase"]);
         $url = "$protocol://$url/$func_name?$params";
         
         return $this->getUrlContent($url);
@@ -287,17 +289,12 @@ class ServicesController extends Controller
         while (substr($to_path, -1) == "/") {
             $to_path = substr($to_path, 0, strlen($to_path) - 1);
         }
-        error_log("To path = " . $to_path);
         $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -v -L -r --delete --exclude /{$config['filenames']['app_config']} --exclude /{$config['filenames']['app_icon']} --exclude /{$config['filenames']['app_splash_screen']}* $from_path/ $to_path";
-        error_log($rsync_cmd);
         $res_rsync = shell_exec($rsync_cmd);
-        error_log($res_rsync);
         
         $to_path = "{$config['compiler_service']['rsync_url']}/$app_uid/$app_version";
         $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -v -L \"$from_path/{$config['filenames']['app_config']}\" \"$from_path/{$config['filenames']['app_icon']}\" \"$from_path\"/{$config['filenames']['app_splash_screen']}.* $to_path";
-        error_log($rsync_cmd);
         $res_rsync = shell_exec($rsync_cmd);
-        error_log($res_rsync);
         
         return true;
     }
@@ -366,7 +363,7 @@ class ServicesController extends Controller
         $passphrase = urlencode($config["compiler_service"]["passphrase"]);
         $file_mgmt = $this->get('file_management');
         $app_path = $app->calculateFullPath($config['paths']['app']);
-        $compiled_app_filename = substr_replace($app_path, "_compiled/", -1) . $app_checksum . $config["compiler_service"]["file_extensions"][$platform];
+        $compiled_app_filename = substr_replace($app_path, "_compiled/", -1) . $app_checksum . "." . $config["compiler_service"]["file_extensions"][$platform];
         $download_url = $config["compiler_service"]["protocol"] . "://" . $config["compiler_service"]["url"] . "/getApp?passphrase=$passphrase&app_uid=$app_uid&app_version=$app_version&checksum=$app_checksum&platform=$platform";
         
         if ($remote_compiled_app_checksum == "") {
@@ -374,6 +371,9 @@ class ServicesController extends Controller
             $remote_compiled_app_checksum = $this->getUrlContent($checksum_url);
         }
 
+        if (!file_exists(substr_replace($app_path, "_compiled/", -1))) {
+            mkdir(substr_replace($app_path, "_compiled/", -1));
+        }
         $local_checksum = $file_mgmt->download_file($download_url, $compiled_app_filename);
         return ($local_checksum == $remote_compiled_app_checksum);
     }
@@ -403,6 +403,7 @@ class ServicesController extends Controller
      * @param type $platform
      */
     public function cmpGetAppProcessAction($window_uid, $app_id, $app_version, $platform) {
+        
 //check for valid variables first
         $config = $this->container->parameters['mlab'];
 
@@ -434,35 +435,37 @@ class ServicesController extends Controller
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
-        $app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
+        $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
 
 
 //see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
 //if it has been compiled we send a message via the websocket server
-        if (file_exists($compiled_app_path . $app_checksum . $config["compiler_service"]["file_extensions"][$platform])) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $app_checksum . '"}}', $config), true);
+        if (file_exists($compiled_app_path . $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform])) {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '"}}', $config), true);
             ($res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }
         
 //run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
+//the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
         if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => "Unable to update websocket messages")); }
         
-        $res = $file_mgmt->preCompileProcessingAction($app, $config);
-        if ($res["result"] != "success") {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "error": "' . $res["msg"] . '"}}', $config), true);
-            return new JsonResponse(array('result' => 'error', 'msg' => $res["msg"]));
+        $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
+        if ($res_precompile["result"] != "success") {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "error": "' . $res_precompile["msg"] . '"}}', $config), true);
+            return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
         }
+        $processed_app_checksum = $res_precompile["checksum"];
+        
         
 //now we need to check to see if the app has been created on the remote server, if not we create it
 //the create function is async, so we need to point exit here, and wait for the callback to be called by the remote service.
-        
         $app_info = $this->cmpGetAppStatus($app_id, $app_version, $platform);
         if ( empty($app_info) || !key_exists($app_uid, $app_info) || !key_exists($app_version, $app_info[$app_uid]) ) {
-            $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "tag" => "multistep-$window_uid-$platform", "passphrase" => urlencode($config['compiler_service']["passphrase"]));
-            $res = $this->cmpCallRemoteFunction($config, $window_uid, "creating", "compiler_service", $parameters, "createApp");
-            (strtolower($res) !== "true") ? $arr = array('result' => 'error', 'msg' => "createApp compiler service failed") : $arr = array('result' => 'success');
+            $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "tag" => "multistep-$window_uid-$platform");
+            $res_call_create = $this->cmpCallRemoteFunction($config, $window_uid, "creating", "compiler_service", $parameters, "createApp");
+            (strtolower($res_call_create) !== "true") ? $arr = array('result' => 'error', 'msg' => "createApp compiler service failed") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }        
         
@@ -470,13 +473,11 @@ class ServicesController extends Controller
         $res_upload = $this->cmpUploadFiles($cached_app_path, $window_uid, $app_uid, $app_version, $config);
         
 //files are uploaded, now we need to verify them. The steps from here, and the next two, compile and download, are called inside the callback from verify
-        $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $app_checksum, "tag" => "multistep-$window_uid-$platform", "passphrase" => urlencode($config['compiler_service']["passphrase"]));
-        $res = $this->cmpCallRemoteFunction($config, $window_uid, "verifying", "compiler_service", $parameters, "verifyApp");
-        (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "verifyApp compiler service failed") : $arr = array('result' => 'success');
-        return new JsonResponse($arr);
+        $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $processed_app_checksum, "tag" => "multistep-$window_uid-$platform");
+        $res_call_verify = $this->cmpCallRemoteFunction($config, $window_uid, "verifying", "compiler_service", $parameters, "verifyApp");
+        (strtolower($res_call_verify) != "true") ? $arr = array('result' => 'error', 'msg' => "verifyApp compiler service failed") : $arr = array('result' => 'success');
 
-        
-        $res_getapp = $this->cmpGetApp($window_uid, $app_uid, $app_version, $app_checksum, $platform, $config, "multistep");
+        return new JsonResponse($arr);
 
     }
 
@@ -494,6 +495,7 @@ class ServicesController extends Controller
         $passphrase = $request->query->get("passphrase");
         $app_uid = $request->query->get("app_uid");
         $app_version = $request->query->get("app_version");
+        $result = strtolower($request->query->get("result"));
         $tag = $request->query->get("tag");
         
         $config = $this->container->parameters['mlab'];
@@ -503,16 +505,19 @@ class ServicesController extends Controller
         }
         
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
+        $status = ($result == "true") ? "created" : "create_failed";
         
         if (!is_null($window_uid)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "created"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "$status"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }
         }
         
+        if ($result != "true") {
+            return new JsonResponse(array('result' => 'failure'));
+        } else if ($action == "multistep") {
 //this is called externally from compiler service, we therefore need to look up the app in the DB and generate a few app related variables
-        if ($action == "multistep") {
             $em = $this->getDoctrine()->getManager();
             $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
             if (is_null($app)) {
@@ -526,9 +531,10 @@ class ServicesController extends Controller
             $res_upload = $this->cmpUploadFiles($cached_app_path, $window_uid, $app_uid, $app_version, $config);
             
 //files are uploaded, now we need to verify them. The steps from here, and the next two, compile and download, are called inside the callback from verify
-            $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $app_checksum, "tag" => "multistep-$window_uid-$platform", "passphrase" => urlencode($config['compiler_service']["passphrase"]));
-            $res = $this->cmpCallRemoteFunction($config, $window_uid, "verifying", "compiler_service", $parameters, "verifyApp");
-            (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "verifyApp compiler service failed") : $arr = array('result' => 'success');
+            $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
+            $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $processed_app_checksum, "tag" => "multistep-$window_uid-$platform");
+            $res_verify = $this->cmpCallRemoteFunction($config, $window_uid, "verifying", "compiler_service", $parameters, "verifyApp");
+            (strtolower($res_verify) != "true") ? $arr = array('result' => 'error', 'msg' => "verifyApp compiler service failed") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
 
         } 
@@ -542,16 +548,18 @@ class ServicesController extends Controller
     public function cbCmpVerifiedAppAction() {
         error_log("cbCmpVerifiedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
+        $config = $this->container->parameters['mlab'];
 //we therefore need to read them from the request object
         $request = $this->getRequest();
         $passphrase = $request->query->get("passphrase");
         $app_uid = $request->query->get("app_uid");
         $app_version = $request->query->get("app_version");
-        $app_checksum = $request->query->get("checksum");
-        $result = $request->query->get("result");
+        $remote_processed_app_checksum = $request->query->get("checksum");
+        $result = strtolower($request->query->get("result"));
         $tag = $request->query->get("tag");
         
-        $config = $this->container->parameters['mlab'];
+        error_log("$passphrase, $app_uid, $app_version, $remote_processed_app_checksum, $result, $tag");
+        
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             return new JsonResponse(array('result' => 'error', 'msg' => 'Passphrase not matching'));
@@ -561,27 +569,25 @@ class ServicesController extends Controller
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
         if (!is_null($window_uid)) {
-            $local_checksum = "";
+            $local_processed_app_checksum = $remote_processed_app_checksum;
             if ($result != "true") {
                 $em = $this->getDoctrine()->getManager();
                 $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
                 if ($app) {
                     $file_mgmt = $this->get('file_management');
-                    $local_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
+                    $local_processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
                 }
-            } else {
-                
             }
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '", "remote_checksum": "' . $app_checksum . '", "local_checksum": "' . $local_checksum . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }
         }
         
-//this is called externally from compiler service, we therefore need to look up the app in the DB and generate a few app related variables
+//this is called externally from compiler service, we reuse the app related variables and call the next step, compiling the app
         if ($action == "multistep" && $result == "true") {
 //files are verified, now we need to compile the app. The final step, download app, is called inside the callback from verify
-            $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $app_checksum, "platform" => $platform, "tag" => "multistep-$window_uid-$platform", "passphrase" => urlencode($config['compiler_service']["passphrase"]));
+            $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $remote_processed_app_checksum, "platform" => $platform, "tag" => "multistep-$window_uid-$platform");
             $res = $this->cmpCallRemoteFunction($config, $window_uid, "compiling", "compiler_service", $parameters, "compileApp");
             (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "compileApp compiler service failed") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
@@ -601,8 +607,8 @@ class ServicesController extends Controller
         $passphrase = $request->query->get("passphrase");
         $app_uid = $request->query->get("app_uid");
         $app_version = $request->query->get("app_version");
-        $app_checksum = $request->query->get("app_checksum");
-        $exec_file_checksum = $request->query->get("exec_file_checksum");
+        $app_checksum = $request->query->get("checksum");
+        $exec_file_checksum = $request->query->get("checksum_exec_file");
         $platform = $request->query->get("platform");
         $result = $request->query->get("result");
         $tag = $request->query->get("tag");

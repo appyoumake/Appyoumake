@@ -220,6 +220,10 @@
                                     $("#mlab_statusbar_compiler").text("App created remotely");
                                     break;
 
+                                case "create_failed":
+                                    $("#mlab_statusbar_compiler").text("Failed to create app remotely");
+                                    break;
+
                                 case "precompilation":
                                     $("#mlab_statusbar_compiler").text("Processing files...");
                                     break;

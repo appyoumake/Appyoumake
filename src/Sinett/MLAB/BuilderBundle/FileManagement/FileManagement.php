@@ -916,7 +916,6 @@ class FileManagement {
         }
         foreach ($files as $file) {
             $md5sums[] = md5_file($file);
-            error_log($file . " : " . $md5sums[sizeof($md5sums) - 1]);
         }
         sort($md5sums);
         return md5(implode("", $md5sums));
@@ -924,7 +923,7 @@ class FileManagement {
 
 /**
  * Function that will go through each page in an app and run various processing functions
- * 
+ * Returns array that is status and the checksum of the code output (not original code!)
  * @param type $app
  * @param type $config
  * 
@@ -945,7 +944,7 @@ class FileManagement {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
             if (key_exists("processed_checksum", $tmp_existing_config)) {
                 if ($tmp_existing_config["processed_checksum"] == $app_checksum) {
-                    return array("result" => "success", "checksum" => $app_checksum);
+                    return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
                 }
             }
         } else {
@@ -1169,7 +1168,7 @@ class FileManagement {
             }
         }
         
-        return array("result" => "success", "checksum" => $app_checksum);
+        return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
         
     }
     
