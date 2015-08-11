@@ -283,12 +283,18 @@ class ServicesController extends Controller
 
         putenv("RSYNC_PASSWORD=" . $config['compiler_service']['rsync_password']);
         
-        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -L -r --exclude '$from_path/{$config['filenames']['app_config']}' --exclude '$from_path/{$config['filenames']['app_icon']}' --exclude '$from_path/{$config['filenames']['app_splash_screen']}*' $from_path/* {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/{$config['compiler_service']['rsync_suffix']}/";
+        $to_path = "{$config['compiler_service']['rsync_url']}/$app_uid/$app_version/{$config['compiler_service']['rsync_suffix']}";
+        while (substr($to_path, -1) == "/") {
+            $to_path = substr($to_path, 0, strlen($to_path) - 1);
+        }
+        error_log("To path = " . $to_path);
+        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -v -L -r --delete --exclude /{$config['filenames']['app_config']} --exclude /{$config['filenames']['app_icon']} --exclude /{$config['filenames']['app_splash_screen']}* $from_path/ $to_path";
         error_log($rsync_cmd);
         $res_rsync = shell_exec($rsync_cmd);
         error_log($res_rsync);
         
-        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -L '$from_path/{$config['filenames']['app_config']}' '$from_path/{$config['filenames']['app_icon']}' '$from_path/{$config['filenames']['app_splash_screen']}*' {$config['compiler_service']['rsync_url']}/$app_uid/$app_version/";
+        $to_path = "{$config['compiler_service']['rsync_url']}/$app_uid/$app_version";
+        $rsync_cmd = $config['compiler_service']['rsync_bin'] . " -v -L \"$from_path/{$config['filenames']['app_config']}\" \"$from_path/{$config['filenames']['app_icon']}\" \"$from_path\"/{$config['filenames']['app_splash_screen']}.* $to_path";
         error_log($rsync_cmd);
         $res_rsync = shell_exec($rsync_cmd);
         error_log($res_rsync);
@@ -428,9 +434,6 @@ class ServicesController extends Controller
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
-$files = $file_mgmt->func_find( $cached_app_path, "", "*", array($config['filenames']["app_config"], "*.lock") );
-        return new JsonResponse(array("files" => $files));
-
         $app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
 
 
