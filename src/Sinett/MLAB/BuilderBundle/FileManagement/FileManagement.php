@@ -279,23 +279,25 @@ class FileManagement {
                 file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
             }
 
-//2: Add permissions to the local permissions file. We store these as Android permissions, the compiler service will translate these later for iOS.
+//2: Add plugins to the local conf file. We store these as the compiler service will later add these through CLI commands
+//https://cordova.apache.org/docs/en/5.1.1/guide_cli_index.md.html
+//https://cordova.apache.org/docs/en/5.1.1/cordova_plugins_pluginapis.md.html#Plugin%20APIs.
             if (file_exists($path_component . "conf.yml")) {
                 $yaml = new Parser();
                 $config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
                 
-                if (isset($config["permissions"])) {
+                if (isset($config["plugins"])) {
 
-                    $new_permissions = $config["permissions"];
+                    $new_plugins = $config["plugins"];
 
                     if (!file_exists( $path_app_config)) {
-                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "permissions" => $new_permissions)));
+                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "plugins" => $new_plugins)));
                     } else {
                         $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-                        if (key_exists("permissions", $tmp_existing_config)) {
-                            $tmp_existing_config["permissions"] = array_unique(array_merge($new_permissions, $tmp_existing_config["permissions"]));
+                        if (key_exists("plugins", $tmp_existing_config)) {
+                            $tmp_existing_config["plugins"] = array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]));
                         } else {
-                            $tmp_existing_config["permissions"] = $new_permissions;
+                            $tmp_existing_config["plugins"] = $new_plugins;
                         }
                         file_put_contents($path_app_config, json_encode($tmp_existing_config));;
                     }
@@ -406,13 +408,13 @@ class FileManagement {
                 $this->func_copy("$template_path$from", "$app_path$to");
             }
             
-//update the conf.json file with any permissions specified in the template file
+//update the conf.json file with any plugins specified in the template file
             $app_conf = array("title" => $app->getName());
             if (file_exists($template_path . "conf.yml")) {
                 $yaml = new Parser();
                 $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
-                if (key_exists("permissions", $temp)) {
-                    $app_conf["permissions"] = $temp["permissions"];
+                if (key_exists("plugins", $temp)) {
+                    $app_conf["plugins"] = $temp["plugins"];
                 }
             }
             file_put_contents($app_config_path, json_encode($app_conf));
