@@ -208,7 +208,6 @@ Mlab_dt_api.prototype = {
                             $('.new_but_line').addClass('mlab_dt_button_new_line');
                             $('.new_big_line').addClass('mlab_dt_large_new_line');
                             $('.new_small_line').addClass('mlab_dt_small_new_line');
-                            $('.qtip-titlebar').addClass('mlab_dt_title_bar');
                             $('.info').addClass('mlab_dt_text_info');
                             $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
                             $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
