@@ -1,0 +1,352 @@
+/*
+
+Designd by: Cecilie Jackbo Gran
+Use this classes as a base when designing new templates, as theese classes are 
+used by all the standard Mlab components and componenetes that are developed 
+by the Mlab guiedlines. We used the prefix mc where mc stands for mlab component.
+
+
+The styling is divided in to three parts; 
+
+1) First you consider in witch of the follwing categories the element belongs;
+
+.mc_text 
+.mc_figure - all that is not a text....
+.mc_container - 
+
+2) If the element is an text or a figure then consider the possible actions the 
+elements is related to.  
+
+Mlab defined 4 main classes where most elemenst will fit in; 
+.mc_link
+.mc_interactive
+.mc_display
+.mc_entry
+
+3) Then each of the actions have spesifc attribures..egenskaper nei... for 
+styling... TODO
+*/
+
+
+/* ==========================================================================
+   Element categories 
+   ========================================================================== */
+/*  All elements that are used as a container for other elements - like the <ul>
+part of a list */
+#content .mc_container {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+/*  All text elements - as a heading or an ingress */
+#content .mc_text {
+    font-size: 1em;
+    font-family: Arial,sans-serif;
+    font-style: normal;
+    text-shadow: none;
+    color: #ffffff;  
+    margin: 0;
+}
+
+/*  All other elments will be some kind of figure - as an image or a map*/
+#content .mc_figure {
+    margin: 0;
+    padding: 0.6em;
+    border: none;
+    max-height: 100%; 
+    max-width: 100%;
+}
+
+/* ==========================================================================
+   Container -for elements that are a container for other elements
+   ========================================================================== */
+/*  For a container that will contain an index list */
+#content .mc_container.mc_index {
+
+}
+
+/* TODO finne ett bedre navn ( er  nå brukt i to komponenter img og img_text) */
+#content .mc_container.mc_picture_and_text {
+    margin: 7px 25px 0px 0px;
+    float: left; 
+    width: 50%; 
+    display: block
+}
+
+
+/* ==========================================================================
+   The actions the elements are related to
+   ========================================================================== */
+
+/* For elements that are only showed/displayed to the user */
+#content .mc_display {
+
+}
+
+/* For elements that are going to be a link */
+#content .mc_link {
+    
+}
+
+/* For elements that the user is going to interact with */
+#content .mc_interactive {
+    
+}
+
+/* For elements that requiers an input/entry from the user */
+#content .mc_entry {
+    
+}
+
+/* ==========================================================================
+   Styles that can be used with more than one of the main classes
+   ========================================================================== */
+
+
+/* 33% */
+#content .mc_small {
+    
+}
+
+/* 66% */
+#content .mc_medium {
+    
+}
+
+/* 100% */
+#content .mc_large {
+    
+}
+
+
+/*  */
+#content .mc_text.mc_small {
+    font-size: 0.8em;  
+}
+
+/* */
+#content .mc_text.mc_medium {
+    font-size: 1em;  
+}
+
+/*  */
+#content .mc_text.mc_large {
+    font-size: 1.2em;
+}
+
+/*  */
+#content .mc_text.mc_heading.mc_small {
+    font-size: 1.12em;
+}
+
+/* */
+#content .mc_text.mc_heading.mc_medium {
+    font-size: 1.27em; 
+}
+
+/*  */
+#content .mc_text.mc_heading.mc_large {
+    font-size: 1.45em;
+}
+
+/*  */
+#content .mc_left {
+    
+}
+
+/*  */
+#content .mc_center {
+    
+}
+
+/* */
+#content .mc_right {
+    
+}
+
+/*  ???? skal vi legge inn dette her? Blir i forhold til knappene til komponenten */
+#content .mc_resizable {
+    
+}
+
+
+/* ==========================================================================
+   Display -for elements that are only showed/displayed to the user
+   ========================================================================== */
+/* All heading display elements */
+#content .mc_display.mc_heading {
+    margin: 1em 0; 
+}
+
+/* An ingress display element - typically below a heading */
+#content .mc_display.mc_ingress {
+    font-style: italic;
+}
+
+/* A text display element */
+#content .mc_display.mc_text {
+
+}
+
+/* TODO annet navn???  */
+#content .mc_display.mc_figure_with_caption {
+    padding-bottom: 0.1em;
+}
+
+/*  TODO trenger vi denne? */
+#content .mc_display.mc_figure_in_text {
+
+}
+
+/*  */
+#content .mc_display.mc_figure_text {
+   text-align: center;
+   font-style: italic;
+   font-size: 0.9em;
+}
+
+/* */
+#content .mc_display.mc_list {
+    padding:0 2em 0 1.25em;  
+    list-style-position:outside;
+}
+
+/* */
+#content .mc_display.mc_list.mc_numeric {
+    list-style-type: decimal;
+}
+
+/* */
+#content .mc_display.mc_list.mc_bullet {
+    list-style-type: square;  
+}
+
+/* For display elements that is an output of an entry from the user */
+#content .mc_display.mc_output {
+    
+}
+
+/* For display elements that is an output from a live output (ex twitterfeed) */
+#content .mc_display.mc_live_output {
+    
+}
+
+/* For display elements that is an error message */
+#content .mc_display.mc_error {
+    
+}
+
+/* For display elements that indicates a required entry element */
+#content .mc_display.mc_required {
+    
+}
+
+/* For display elements that indicates a entry element that can not be selected */
+#content .mc_display.mc_disabled {
+    
+}
+
+/* For display elements that need to be emphasized */
+#content .mc_display.mc_emphasize {
+    
+}
+
+/* For display elements that should have less focus  */
+#content .mc_display.mc_depreciate {
+    
+}
+
+
+/* ==========================================================================
+   Link -for elements that are going to be a link
+   ========================================================================== */
+/* For text elements that are going to be a link */
+#content .mc_link.mc_text {
+    
+}
+
+/* For figure elements (ex. an image) that are going to be a link */
+#content .mc_link.mc_figure {
+    
+}
+
+/* For elements that are going to link to somthing internally/in the app  */
+#content .mc_link.mc_internal {
+    
+}
+
+/* For elements that are going to link to something externally/outside the app */
+#content .mc_link.mc_external {
+    
+}
+
+/* For a list of elements that are going to link to something - ( ex. an index) */
+#content .mc_link.mc_list {
+    
+}
+
+
+/* ==========================================================================
+   Interactive -for elements that the user is going to interact with
+   ========================================================================== */
+/* */
+#content .mc_interactive {
+    
+}
+
+/* */
+#content .mc_interactive {
+    
+}
+
+/* */
+#content .mc_interactive {
+    color: blueviolet;
+}
+
+/* */
+#content .mc_interactive.mc_map {
+    margin: 0;
+    padding: 0.6em;
+    border: none;
+}
+
+/* video - audio*/
+#content .mc_interactive.mc_timebased {
+    margin: 0;
+    padding: 0.6em;
+    border: none;
+    cursor: pointer;
+    width: 100%    !important;
+    height: auto   !important; 
+}
+
+/* */
+#content .mc_interactive.mc_live_output {
+    
+}
+
+
+/* ==========================================================================
+   Entry -for elements that requiers an input/entry from the user
+   ========================================================================== */
+/* */
+#content .mc_entry.mc_list {
+    
+}
+
+/* ? */
+#content .mc_entry.mc_input{
+    
+}
+
+/* ? For entry elements that will give an output to display */
+#content .mc_entry.mc_output{
+    
+}
+
+/* For entry elements with requerd input */
+#content .mc_entry.mc_required {
+    
+}

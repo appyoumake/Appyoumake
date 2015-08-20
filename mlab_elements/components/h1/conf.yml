@@ -5,7 +5,7 @@ category: headline
 name: h1
 tooltip: This is a main headline, use once per page
 compatible: ["h1", "h2", "h3", "p", "chapter"]
-html: <h1>Add your top level headline here</h1>
+html: <h1 class='mc_text mc_display mc_heading mc_large'>Add your top level headline here</h1>
 process_keypress: true
 placeholder: Add your top level headline here
 custom:

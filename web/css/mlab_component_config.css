@@ -163,21 +163,22 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 }
 
 
-/* ===  Image figure  === */
+/* ===  Image figure 
 
-#mlab_editor #mlab_editable_area figure {
+#mlab_editor figure {
     margin: 7px 25px 0px 0px;
 }
 
-#mlab_editor #mlab_editable_area figure img {
+#mlab_editor figure img {
    padding-bottom: 5px;
 }
 
-#mlab_editor #mlab_editable_area figure figcaption {
+#mlab_editor figure figcaption {
    text-align: center;
    font-style: italic;
    font-size: 14px;
 }
+=== */
 
 /* ===  Placement  === */
 

@@ -6,11 +6,11 @@ name: img_text
 inherit: img
 tooltip: This is an image and text component, use it for paragraphs that require an image in them
 html: |
-    <figure style="float: left; width: 50%; display: block">
-      <img alt="sample image" style="max-height: 100%; max-width: 100%;">
-      <figcaption contenteditable="true">Caption</figcaption>
+    <figure class="mc_container mc_picture_and_text">
+      <img class='mc_figure mc_display mc_figure_with_caption' alt="sample image">
+      <figcaption class='mc_text mc_display mc_figure_text' contenteditable="true">Caption</figcaption>
     </figure>
-    <p>Your text goes here</p>
+    <p class='mc_text mc_display'>Your text goes here</p>
     <div style="clear: both;"></div>
 custom:
     scale_to_25_percent_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC3KG9qAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAAAk8AAAJPAfeROJAAAAAHdElNRQffAgMNJxpotiCYAAAAM0lEQVQI12MwLweDYoYSJTBwZyhiAAN1BKMMxqjAkEIwBAUFYAxBmBRBBtjSNqClMGcAAAoZEjq+IEVZAAAAAElFTkSuQmCC
