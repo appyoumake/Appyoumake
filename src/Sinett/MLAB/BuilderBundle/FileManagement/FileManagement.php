@@ -279,23 +279,25 @@ class FileManagement {
                 file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
             }
 
-//2: Add permissions to the local permissions file. We store these as Android permissions, the compiler service will translate these later for iOS.
+//2: Add plugins to the local conf file. We store these as the compiler service will later add these through CLI commands
+//https://cordova.apache.org/docs/en/5.1.1/guide_cli_index.md.html
+//https://cordova.apache.org/docs/en/5.1.1/cordova_plugins_pluginapis.md.html#Plugin%20APIs.
             if (file_exists($path_component . "conf.yml")) {
                 $yaml = new Parser();
                 $config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
                 
-                if (isset($config["permissions"])) {
+                if (isset($config["plugins"])) {
 
-                    $new_permissions = $config["permissions"];
+                    $new_plugins = $config["plugins"];
 
                     if (!file_exists( $path_app_config)) {
-                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "permissions" => $new_permissions)));
+                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "plugins" => $new_plugins)));
                     } else {
                         $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-                        if (key_exists("permissions", $tmp_existing_config)) {
-                            $tmp_existing_config["permissions"] = array_unique(array_merge($new_permissions, $tmp_existing_config["permissions"]));
+                        if (key_exists("plugins", $tmp_existing_config)) {
+                            $tmp_existing_config["plugins"] = array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]));
                         } else {
-                            $tmp_existing_config["permissions"] = $new_permissions;
+                            $tmp_existing_config["plugins"] = $new_plugins;
                         }
                         file_put_contents($path_app_config, json_encode($tmp_existing_config));;
                     }
@@ -406,13 +408,13 @@ class FileManagement {
                 $this->func_copy("$template_path$from", "$app_path$to");
             }
             
-//update the conf.json file with any permissions specified in the template file
+//update the conf.json file with any plugins specified in the template file
             $app_conf = array("title" => $app->getName());
             if (file_exists($template_path . "conf.yml")) {
                 $yaml = new Parser();
                 $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
-                if (key_exists("permissions", $temp)) {
-                    $app_conf["permissions"] = $temp["permissions"];
+                if (key_exists("plugins", $temp)) {
+                    $app_conf["plugins"] = $temp["plugins"];
                 }
             }
             file_put_contents($app_config_path, json_encode($app_conf));
@@ -895,14 +897,35 @@ class FileManagement {
         }
         sort($md5sums);
         return md5(implode("", $md5sums));
+    }
+
+/**
+ * Using PHP function to generate an MD5 sum for the final generated files of an app, looks in the root folder, excluding lock files
+ * @param type $app
+ * @param type $exclude_file: Usually used to 
+ * @return type
+ */
+    public function getProcessedAppMD5($app, $exclude_file = "") {
         
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        $md5sums = array();
         
-        
+        if ($exclude_file != "") {
+            $files = $this->func_find( $cached_app_path, "f", "*", array($exclude_file, "*.lock") );
+        } else {
+            $files = $this->func_find( $cached_app_path, "f", "*", array("*.lock") );
+        }
+        foreach ($files as $file) {
+            $md5sums[] = md5_file($file);
+        }
+        sort($md5sums);
+        return md5(implode("", $md5sums));
     }
 
 /**
  * Function that will go through each page in an app and run various processing functions
- * 
+ * Returns array that is status and the checksum of the code output (not original code!)
  * @param type $app
  * @param type $config
  * 
@@ -923,7 +946,7 @@ class FileManagement {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
             if (key_exists("processed_checksum", $tmp_existing_config)) {
                 if ($tmp_existing_config["processed_checksum"] == $app_checksum) {
-                    return array("result" => "success", "checksum" => $app_checksum);
+                    return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
                 }
             }
         } else {
@@ -1147,7 +1170,7 @@ class FileManagement {
             }
         }
         
-        return array("result" => "success", "checksum" => $app_checksum);
+        return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
         
     }
     
@@ -1239,6 +1262,92 @@ class FileManagement {
           mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
     }
+    
+/**
+ * Copy remote file over HTTP one small chunk at a time.
+ * Based on http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage
+ * @param $infile The full URL to the remote file
+ * @param $outfile The path where to save the file
+ */
+    public function download_file($infile, $outfile) {
+        $chunksize = 10 * (1024 * 1024); // 10 Megs
+
+/**
+ * parse_url to find port, if no port, look at scheme, http = port 80, https = port 443
+ */
+        $parts = parse_url($infile);
+        if (!key_exists('port', $parts)) {
+            $parts['port'] = ($parts['scheme'] == "https" ? 443: 80);
+        }
+        
+        $i_handle = fsockopen($parts['host'], $parts['port'], $errstr, $errcode, 5);
+        $o_handle = fopen($outfile, 'wb');
+
+        if ($i_handle == false || $o_handle == false) {
+            return false;
+        }
+
+        if (!empty($parts['query'])) {
+            $parts['path'] .= '?' . $parts['query'];
+        }
+
+        /**
+         * Send the request to the server for the file
+         */
+        $request = "GET {$parts['path']} HTTP/1.1\r\n";
+        $request .= "Host: {$parts['host']}\r\n";
+        $request .= "User-Agent: Mozilla/5.0\r\n";
+        $request .= "Keep-Alive: 115\r\n";
+        $request .= "Connection: keep-alive\r\n\r\n";
+        fwrite($i_handle, $request);
+
+        /**
+         * Now read the headers from the remote server. We'll need
+         * to get the content length.
+         */
+        $headers = array();
+        while(!feof($i_handle)) {
+            $line = fgets($i_handle);
+            if ($line == "\r\n") break;
+            $headers[] = $line;
+        }
+
+        /**
+         * Look for the Content-Length header, and get the size
+         * of the remote file.
+         */
+        $length = 0;
+        foreach($headers as $header) {
+            if (stripos($header, 'Content-Length:') === 0) {
+                $length = (int)str_replace('Content-Length: ', '', $header);
+                break;
+            }
+        }
+
+        /**
+         * Start reading in the remote file, and writing it to the
+         * local file one chunk at a time.
+         */
+        $cnt = 0;
+        while(!feof($i_handle)) {
+            $buf = '';
+            $buf = fread($i_handle, $chunksize);
+            $bytes = fwrite($o_handle, $buf);
+            if ($bytes == false) {
+                return false;
+            }
+            $cnt += $bytes;
+
+            /**
+             * We're done reading when we've reached the conent length
+             */
+            if ($cnt >= $length) break;
+        }
+
+        fclose($i_handle);
+        fclose($o_handle);
+        return md5_file($outfile);
+    }
  
 //functions that replicate linux commands
     
@@ -1249,8 +1358,8 @@ class FileManagement {
  * @param type $wildcard
  * @param type $exclude_files
  */
-    private function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
-        $dir_iterator = new \RecursiveDirectoryIterator($path);
+    public function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
+        $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS);
         $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
         if ($wildcard == "") {
             $wildcard = "*";
@@ -1263,7 +1372,7 @@ class FileManagement {
                     if ($exclude_files != "") {
                         $exclude = false;
                         foreach ($exclude_files as $exclude_file) {
-                            if (fnmatch($exclude_file, $file->getPathname())) {
+                            if (fnmatch($exclude_file, $file->getPathname()) || $exclude_file == $file->getBasename()) {
                                 $exclude = true;
                                 break;
                             }

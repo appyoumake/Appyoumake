@@ -715,7 +715,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "mkt_set_tagged_users_state" => $this->generateUrl('mkt_set_tagged_users_state', array('window_uid' => '_WINDOW_UID_', 'token' => '_TOKEN_', 'tag' => '_TAG_', 'state' => '_STATE_')), 
                     
                                         "cmp_get_app_status" => $this->generateUrl('cmp_get_app_status',  array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
-                                        "cmp_get_app" => $this->generateUrl('cmp_get_app', array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')), 
+                                        "cmp_get_app_process" => $this->generateUrl('cmp_get_app_process', array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')), 
                     
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )

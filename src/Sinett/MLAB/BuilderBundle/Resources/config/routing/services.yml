@@ -1,3 +1,4 @@
+# market API related URLS (internal actions)
 mkt_get_tagged_users:
     pattern: /mktGetTaggedUsers/{window_uid}/{token}/{tag}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktGetTaggedUsers }
@@ -38,23 +39,11 @@ mkt_set_tagged_users_state:
     pattern: /mktsetTaggedUsersState/{window_uid}/{token}/{tag}/{state}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSetTaggedUsersState }
 
+# compiler API related URLS (internal actions)
 cmp_get_app_status:
     pattern: /cmpGetAppStatus/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL }
 
-cmp_get_app:
-    pattern: /cmpGetApp/{window_uid}/{app_id}/{app_version}/{platform}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetApp }
-
-cb_cmp_created_app:
-    pattern: /callback/csAppCreated/{passphrase}/{app_uid}/{app_version}/{tag}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCreatedApp }
-    
-cb_cmp_verified_app:
-    pattern: /callback/csAppVerified/{passphrase}/{app_uid}/{app_version}/{result}/{tag}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpVerifiedApp }
-
-cb_cmp_compiled_app:
-    pattern: /callback/csAppCompiled/{passphrase}/{app_uid}/{app_version}/{checksum}/{platform}/{tag}
-    defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCompiledApp }
-    
+cmp_get_app_process:
+    pattern: /cmpGetAppProcess/{window_uid}/{app_id}/{app_version}/{platform}
+    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppProcess }
