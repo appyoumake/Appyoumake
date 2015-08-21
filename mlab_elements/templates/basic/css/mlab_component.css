@@ -66,6 +66,12 @@ part of a list */
 
 }
 
+/*  For a container that will contain simpel list */
+#content .mc_container.mc_list {
+    padding:0 2em 0 1.25em;  
+    list-style-position:outside;
+}
+
 /* TODO finne ett bedre navn ( er  nå brukt i to komponenter img og img_text) */
 #content .mc_container.mc_picture_and_text {
     margin: 7px 25px 0px 0px;
@@ -204,12 +210,6 @@ part of a list */
    text-align: center;
    font-style: italic;
    font-size: 0.9em;
-}
-
-/* */
-#content .mc_display.mc_list {
-    padding:0 2em 0 1.25em;  
-    list-style-position:outside;
 }
 
 /* */

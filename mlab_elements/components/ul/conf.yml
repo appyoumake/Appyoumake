@@ -5,6 +5,6 @@ name: ul
 tooltip: Un-ordered list
 inherit: ol
 html: |
-    <ul>
-        <li>Enter your list here</li>
+    <ul class="mc_container mc_list">
+        <li class="mc_display mc_list mc_bullet">Enter your list here</li>
     </ul>

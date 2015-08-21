@@ -201,6 +201,10 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
    min-width: 205px;
 }
 
+#mlab_editor #mlab_cp_img_select_image {
+    min-width: 195px;
+}
+
 
 /* ==========================================================================
    Run time - rt
