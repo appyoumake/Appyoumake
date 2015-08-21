@@ -10,11 +10,11 @@ compatible: []
 process_keypress: true
 html: 
     designtime: |
-        <h1>Your index will be displayed here</h1>
-        <ul>
-            <li>Page x</li>
-            <li>Page y</li>
-            <li>Page z</li>
+        <h1 class='mc_text mc_display mc_heading mc_large'>Your index will be displayed here</h1>
+        <ul class='mc_container mc_index'>
+            <li class='mc_text mc_link mc_list'>Page x</li>
+            <li class='mc_text mc_link mc_list'>Page y</li>
+            <li class='mc_text mc_link mc_list'>Page z</li>
         </ul>
     runtime: |
         %%MLAB_CT_INDEX_LIST%%
