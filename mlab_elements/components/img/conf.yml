@@ -8,9 +8,9 @@ placeholder: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAWCAIAAADsC02XA
 
 urls: {upload: app_builder_component_upload}
 html: |
-    <figure style="float: left; width: 50%; display: block">
-      <img alt="sample image" style="max-height: 100%; max-width: 100%;">
-      <figcaption contenteditable="true">Caption</figcaption>
+    <figure class="mc_container mc_picture_and_text">
+      <img class='mc_figure mc_display mc_figure_with_caption' alt="sample image">
+      <figcaption class='mc_text mc_display mc_figure_text' contenteditable="true">Caption</figcaption>
     </figure>
     <div style="clear: both;"></div>
 custom:

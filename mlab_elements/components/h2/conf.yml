@@ -3,6 +3,6 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: h2
 tooltip: This is a sub headline, use sparingly on the page to indicate change of topic 
-html: <h2>Enter headline level 2 here</h2>
+html: <h2 class='mc_text mc_display mc_heading mc_medium'>Enter headline level 2 here</h2>
 inherit: h1
 placeholder: Enter your headline level 2 here

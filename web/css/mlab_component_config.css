@@ -20,17 +20,19 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 
 /* ===  Styling of the qtip boks  === */
 
-#mlab_editor .mlab_dt_box_style{
+#mlab_editor .qtip{
     background-color: white;
     border: solid orange 2px; 
 }
+
+
 
 /* ===  Information  === */
 
 #mlab_editor .mlab_dt_text,
 #mlab_editor .mlab_dt_text_headline,
 #mlab_editor .mlab_dt_text_info,
-#mlab_editor .mlab_dt_title_bar,
+#mlab_editor .qtip-titlebar,
 #mlab_editor .mlab_dt_text_filename {
     font-family: Arial,Helvetica,sans-serif;
     text-align: left;
@@ -39,6 +41,15 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     line-height: 12px;
     direction: ltr;
     margin: 0.5em;
+}
+
+#mlab_editor .qtip-titlebar {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: bold;
+    margin: 0;
+    padding-left: 0.5em;
+    background-color: rgba(255,165,0,0.2);
 }
 
 #mlab_editor .mlab_dt_text_headline {
@@ -50,14 +61,6 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 #mlab_editor .mlab_dt_text_info {  
     width: 95%;
     margin-bottom: 1.5em;
-}
-
-#mlab_editor .mlab_dt_title_bar {
-    font-size: 13px;
-    line-height: 16px;
-    font-weight: bold;
-    margin: 0;
-    margin-left: 0.5em; 
 }
 
 #mlab_editor .mlab_dt_text_filename {
@@ -163,21 +166,22 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 }
 
 
-/* ===  Image figure  === */
+/* ===  Image figure 
 
-#mlab_editor #mlab_editable_area figure {
+#mlab_editor figure {
     margin: 7px 25px 0px 0px;
 }
 
-#mlab_editor #mlab_editable_area figure img {
+#mlab_editor figure img {
    padding-bottom: 5px;
 }
 
-#mlab_editor #mlab_editable_area figure figcaption {
+#mlab_editor figure figcaption {
    text-align: center;
    font-style: italic;
    font-size: 14px;
 }
+=== */
 
 /* ===  Placement  === */
 
@@ -188,6 +192,13 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 
 #mlab_editor .mlab_dt_left {
    float: left;
+}
+
+/* ===  Spesific styling for individual components  === */
+
+#mlab_editor #mlab_cp_googlemap_center,
+#mlab_editor #mlab_cp_googlemap_markers {
+   min-width: 205px;
 }
 
 
