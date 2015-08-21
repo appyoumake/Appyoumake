@@ -338,7 +338,7 @@ Mlab_dt_api.prototype = {
  * @param {string} title
  * @param {HTML string} content, valid HTML5
  * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
- * @param {function object} func_visible, callback function when the property dialog is 
+ * @param {function object} func_visible, callback function when the property dialog is visible
  * @param {function object} func_hide currently unused
  * @returns {undefined}
  */
@@ -353,7 +353,7 @@ Mlab_dt_api.prototype = {
             hide:       false,
             style:      { classes: 'qtip-light mlab_dt_box_style' },
             events:     {   render: function(event, api) { that.executeCallback (func_render, el) },
-                            hide: function(event, api) { api.destroy(); },
+                            hide: function(event, api) { that.executeCallback (func_hide, el); api.destroy(); },
                             show: function(event, api) { that.executeCallback (func_visible, el) } 
                         }
         });

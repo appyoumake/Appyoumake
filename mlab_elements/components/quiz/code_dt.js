@@ -17,6 +17,8 @@ this.classes = {
     textInput: "mlab_quiz_text_input",
     line: "mlab_quiz_line",
     hide: "mlab_quiz_hide",
+    
+    qtip: "mlab_dt_quiz_dialog_input",
 
     dtOnly: "mlab_dt_quiz_dtonly", // All elements with this class will be removed on save
     nav: "mlab_dt_quiz_page_nav",
@@ -53,8 +55,8 @@ this.questionTypes = [
 
 this.editStages = [
     "pageTitle",
-    "questionType",
     "question",
+    "questionType",
     "alternatives",
     "correctResponse",
     "mandatory"
@@ -62,8 +64,8 @@ this.editStages = [
 
 this.editPrompts = {
     "pageTitle": "Vennligst legg inn tittel på siden. Avslutt med enter-tast.",
-    "questionType": "<h4>Nytt spørsmål</h4>Velg spørsmålstype: <br/>%types%<br/> Avslutt med enter-tast.",
-    "question": "Skriv inn spørsmål, avslutt med spørsmålstegn etterfulgt av enter-tast.",
+    "questionType": "Velg spørsmålstype: <br/>%types%<br/> Avslutt med enter-tast.",
+    "question": "Skriv inn forklarende tekst eller spørsmål, spørsmål indikeres med spørsmålstegn etterfulgt av enter-tast.",
     "alternatives": "Skriv inn alternativer. Avslutt hvert alternativ med enter-tast. Når du er ferdig, legg inn tom linje.",
     "correctResponse": [
         "Skriv inn riktig svar. Avslutt med enter-tast.", 
@@ -73,14 +75,18 @@ this.editPrompts = {
     "mandatory": "Er det obligatorisk å svare på dette spørsmålet? Svar med Y/y (for ja) eller N/n for (nei). Avslutt med enter-tast."
 };
 
+
+
+//---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT 
+
 /* Hook called when component is created.
  * @param {jQuery} el Main element for component. 
  */
 this.onCreate = function (el) {
-    this.globalSetup(el);
-    
     this.onLoad(el);
-}
+    this.custom_edit_quiz(el);
+};
+
 /* Hook called when component is loaded into app.
  * @param {jQuery} el Main element for component. 
  */
@@ -90,18 +96,7 @@ this.onLoad = function (el) {
     if (this.initialized) return;
     this.domRoot.find("style").remove();
 //     this.domRoot.prepend(this.css);
-    this.setupDesign();
-};
-/* Hook called when app is saved. Returns the HTML that is saved for this component, and must contain enough information to continue 
- * editing when user opens the app in MLAB the next time, and to run the component in rumtime.
- * @param {jQuery} el Main element for component. 
- * @return {String} HTML for component.
-*/
-this.onSave = function (el) {
-    var html = $('<div>' + el.outerHTML + '</div>');
-    html.find("." + this.classes.dtOnly).remove();
-    html.find("[contenteditable]").removeAttr("contenteditable");
-    return html.html();
+//    this.setupDesign();
 };
 
 /* Indicator of how much of a quiz is actually set up. Returns number of questions in quiz.
@@ -197,19 +192,127 @@ this.setupDesign = function() {
     });
 
     self.initTabs();
-    // Adding role="none", to prevent jQuery mobile from turning my inputs and buttons into jQuery UI elements
+// Adding role="none", to prevent jQuery mobile from turning my inputs and buttons into jQuery UI elements
     self.domRoot.find(":input").attr("data-role", "none");
 };
 
-
-this.cancelCurrentQuestion = function() {
-    var page = this.getActivePage();
-    var question = this.getCurrentQuestion(page);
-    var input = page.find("." + this.classes.userInput);
-    if (input.data("editStage")>1) {
-        this.removeQuestion(question);
-        this.enterEditMode(page,"questionType");
+/* Sets up page for editing and adding quesions.
+ * @param {jQuery} page The page to be set up.
+ * @param {boolean} setActive Whether or not the page should be set as the active page. 
+ */
+this.setUpPage = function(page, setActive, editStage) {
+    if (page.data("setupComplete")) return;
+    if (!editStage) {
+        if (!page.find("h2").text()) editStage = "pageTitle";
+        else editStage = "questionType";
     }
+    var footer = $('<footer class="' + this.classes.dtOnly + '">'
+        + '<section class="' + this.classes.hide + ' ' + this.classes.factory + '">'
+        + '    <section class="' + this.classes.userPrompt + '"></section>'
+        + '    <section class="' + this.classes.helpText + '"></section>'
+        + '    <input name="user_input" type="text" class="' + this.classes.userInput + '" />'
+        + '    <input type="button" class="' + this.classes.cancelButton + '" value="Avbryt" />'
+        + '    <input type="button" class="' + this.classes.finishButton + '" value="Ferdig" />'
+        + '</section>'
+        + '<input type="button" class="mlab_dt_button_right ' + this.classes.removePage + '" value="Fjern side" />'
+        + '</footer>');
+    page.append(footer);
+    var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
+    if (setActive) this.switchTabs(link);
+    this.enterEditMode(page, editStage);
+    page.data("setupComplete", true);
+};
+
+/**
+ * added by Arild, we want to use the tooltip for input from user, here we generate a tabbed interface with 4 tabs:
+ * 1: Title of page (if blank *AND* at least one question with answers on this page we exit editing)
+ * 2: Subtitle or Question (? at end determines, if blank *AND* at least one question with answers on this page we skip to 1)
+ * 3: Question type (if previous item was question)
+ * 4: Answer (repeat until blank, then go to 2
+ * 
+ * @param {type} el
+ * @returns {undefined}
+ */
+this.custom_edit_quiz = function(el) {
+
+    var self = this;
+    var id = this.domRoot.attr("id");
+    
+    var content = $('<div id="mlab_dt_quiz_tabs_' + id + '">' + 
+                    '    <ul>' + 
+                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
+                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
+                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
+                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_4">Responses</a></li>' + 
+                    '    </ul>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
+                    '        <label>' + this.editPrompts.pageTitle + '</label>' + 
+                    '        <input class="' + this.classes.userInput + '" id="mlab_dt_quiz_title_' + id  + '">' + 
+                    '    </div>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
+                    '        <label>' + this.editPrompts.question + '</label>' + 
+                    '        <textarea class="' + this.classes.userInput + '" id="mlab_dt_quiz_question_' + id  + '"></textarea>' + 
+                    '    </div>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
+                    '        <label>' + this.editPrompts.questionType + '</label>' + 
+                    '        <img id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
+                    '        <input class="' + this.classes.userInput + '" id="mlab_dt_quiz_type_' + id  + '">' + 
+                    '    </div>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
+                    '        <label>' + this.editPrompts.alternatives + '</label>' + 
+                    '        <textarea class="' + this.classes.userInput + '" id="mlab_dt_quiz_response_' + id  + '"></textarea>' + 
+                    '        <input type="button" class="' + this.classes.finishButton + '" value="Ferdig">' + 
+                    '    </div>' + 
+                    '</div>' + 
+                    '<input type="button" class="' + this.classes.cancelButton + '" value="Avbryt">' 
+                    );
+
+    $(content).on("keyup", "." + self.classes.userInput, function(e) {
+        self.handleUserInput(e);
+    });
+
+    $(content).on("click", "." + self.classes.cancelButton, function() {
+        self.cancelCurrentQuestion();
+    });
+
+    $(content).on("click", "." + self.classes.finishButton, function() {
+        self.finishAddingQuestions();
+    });
+
+    this.api.displayPropertyDialog(el, "Edit map", content, null, self.callbackMakeTabs);
+};
+
+/**
+ * Helper function for custom_edit_quiz, it is called when qtip properties box is displayed so we can turn on tabs
+ * @param {type} el
+ * @returns {undefined}
+ */
+this.callbackMakeTabs = function(el) {
+    var quiz = el.find(".mlab_quiz");
+    var id = quiz.attr("id");
+    var self = mlab.dt.components.quiz.code;
+
+    $("#mlab_dt_quiz_tabs_" + id + " ul li a").each(function() {
+        $(this).attr("href", location.href.toString() + $(this).attr("href"));
+    });
+    $("#mlab_dt_quiz_tabs_" + id).tabs();
+    
+}
+
+
+
+//---------- FUNCTIONS FOR STORING QUIZ INFORMATION
+
+/* Hook called when app is saved. Returns the HTML that is saved for this component, and must contain enough information to continue 
+ * editing when user opens the app in MLAB the next time, and to run the component in rumtime.
+ * @param {jQuery} el Main element for component. 
+ * @return {String} HTML for component.
+*/
+this.onSave = function (el) {
+    var html = $('<div>' + el.outerHTML + '</div>');
+    html.find("." + this.classes.dtOnly).remove();
+    html.find("[contenteditable]").removeAttr("contenteditable");
+    return html.html();
 };
 
 /* Saves the added questions and alternatives. Since the layout and functionality for the questions are radically different in DT and RT, 
@@ -242,10 +345,186 @@ this.saveQuestions = function() {
         });
     });
     self.api.setVariable(self.domRoot, "questions", questions);
-    // Tell MLAB that there's something to save
+// Tell MLAB that there's something to save
     self.api.setDirty();
 };
 
+
+
+//---------- MAIN FUNCTIONS THAT DEAL WITH USER ACTIONS DURING QUIZ CREATION
+
+/**
+ * Here we process the user input from the 
+ * @param {type} e
+ * @returns {undefined}
+ */
+this.handleUserInput = function(e) {
+    var enterKey = 13;
+    // Only proceed if we have hit enter
+    if (e.which!=enterKey) return;
+
+    var editStage = input.data("editStage");
+    var existing = input.data("existing");
+    var value = input.val();
+    var page = input.closest("." + this.classes.page);
+    var helpText = input.siblings("." + this.classes.helpText).empty();
+    var question = this.getCurrentQuestion(page);
+    var questionType = question.data("questiontype");
+    var proceed = true;
+    switch (editStage) {
+        case this.editStages.indexOf("pageTitle"):
+            page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
+            break;
+        case this.editStages.indexOf("questionType"):
+            value = parseInt(value);
+            var minValue = 1;
+            var maxValue = this.questionTypes.length;
+            if (!existing && question.length) {
+                maxValue += 1;
+                if (value==maxValue) {
+                    // We have selected to not add any more questions.
+                    this.finishAddingQuestions(page);
+                    proceed = false;
+                    break;
+                }
+            }
+            if (!value || value<minValue || value>maxValue) {
+                input.val('');
+                helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
+                proceed = false;
+            }
+            else if (existing) {
+                this.changeQuestionType(page, question, value);
+                editStage = this.editStages.length;
+            }
+            else {
+                this.addQuestion(page, value);
+            }
+            break;
+        case this.editStages.indexOf("question"):
+            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
+            if (value.slice(-1)!="?") proceed = false;
+            input.val('');
+            break;
+        case this.editStages.indexOf("alternatives"):
+            proceed = !this.addQuestionAlternative(question, value, questionType);
+            input.val('');
+            break;
+        case this.editStages.indexOf("correctResponse"):
+            proceed = this.addCorrectResponse(question, value, questionType);
+            input.val('');
+            break;
+        case this.editStages.indexOf("mandatory"):
+            if (value=="Y" || value=="y") value = true;
+            else if (value=="N" || value=="n") value = false;
+            if ((typeof value)!="boolean") proceed = false;
+            else this.setMandatory(question, value);
+            input.val('');
+            break;
+        default:
+            proceed = false;
+    }
+    editStage++;
+    if (editStage>=this.editStages.length) {
+        // We are done with this question, move on to the next one
+        if (existing) {
+            proceed = false;
+            this.finishAddingQuestions(page);
+            input.data("existing", false);
+        }
+        editStage = 1;
+        this.saveQuestions();
+    }
+    if (existing) this.floatFactory(question);
+    if (proceed) this.enterEditMode(page, this.editStages[editStage], question, existing);
+};
+
+//this function will process user input after each possible stage in the process
+this.enterEditMode = function(page, editStage, question, existing) {
+    var factory = page.find("." + this.classes.factory);
+    var prompt = factory.find("." + this.classes.userPrompt);
+    var input = factory.find("." + this.classes.userInput);
+    if (!question) question = this.getCurrentQuestion(page);
+    if (!existing) existing = false;
+    var questionType = question.data("questiontype");
+    
+// If text question, skip alternatives stage
+    if (editStage=="alternatives" && questionType=="text") editStage = this.editStages[this.editStages.indexOf(editStage) + 1];
+    input.data("editStage", this.editStages.indexOf(editStage));
+    input.data("existing", existing);
+    if (editStage!="questionType") factory.find("input." + this.classes.cancelButton).show();
+    else factory.find("input." + this.classes.cancelButton).hide();
+    var promptText = "";
+    if (editStage=="questionType") {
+        promptText = this.editPrompts[editStage];
+        var typesText = [];
+        for (var i=0, ii=this.questionTypes.length; i<ii; i++) {
+            typesText.push(i+1 + ": " + this.questionTypes[i]["name"] + ".");
+        }
+        if (!existing && this.getLastQuestion(page).length) typesText.push(this.questionTypes.length + 1 + ": Ikke legg til flere spørsmål.");
+        promptText = promptText.replace("%types%", typesText.join("<br/>"));
+    }
+    else if (editStage=="correctResponse") {
+        promptText = this.editPrompts[editStage];
+        if (questionType=="text") {
+            promptText = promptText[0];
+        }
+        else if (questionType=="radio" || questionType=="select") {
+            promptText = promptText[1];
+        }
+        else if (questionType=="checkbox") {
+            promptText = promptText[2];
+        }
+        
+        question.find("." + this.classes.questionAlternatives + " li").on("click", function() {
+            if (editStage!="correctResponse") return true;
+            var item = $(this);
+            var itemNumber = item.index() + 1;
+            var inputVal = input.val().split(" ");
+            var values = [];
+            for (var i=0, ii=inputVal.length; i<ii; i++) {
+                var val = parseInt(inputVal[i]);
+                if (val) values.push(val);
+            }
+            if (values.indexOf(itemNumber)==-1) values.push(itemNumber);
+            input.val(values.join(" "));
+            return false;
+        });
+    }
+    else promptText = this.editPrompts[editStage];
+    
+    if (editStage!="correctResponse") question.find("." + this.classes.questionAlternatives + " li").off("click");
+    if (existing) this.floatFactory(question, factory, page);
+    else this.unfloatFactory(factory, page);
+    factory.removeClass(this.classes.hide);
+    prompt.html(promptText);
+    input.val('').focus();
+};
+
+
+
+//---------- HELPER FUNCTIONS EXECUTING USER ACTIONS DURING QUIZ CREATION
+
+/**
+ * cancels current question, removes HTML and closes the qtip input dialog
+ * @returns {undefined}
+ */
+this.cancelCurrentQuestion = function() {
+    var page = this.getActivePage();
+    var question = this.getCurrentQuestion(page);
+    var input = page.find("." + this.classes.userInput);
+    if (input.data("editStage")>1) {
+        this.removeQuestion(question);
+        this.enterEditMode(page,"questionType");
+    }
+    mlab.dt.api.closeAllPropertyDialogs();
+};
+
+/**
+ * Requests 
+ * @param {type} question
+ * @returns {getCorrectResponse.correctResponse|String|Array}
+ */
 this.getCorrectResponse = function(question) {
     var questionType = question.data("questiontype");
     var correctResponse = question.data("correctResponse");
@@ -326,96 +605,6 @@ this.addQuizPage = function() {
     this.api.setDirty();
 };
 
-/* Sets up page for editing and adding quesions.
- * @param {jQuery} page The page to be set up.
- * @param {boolean} setActive Whether or not the page should be set as the active page. 
- */
-this.setUpPage = function(page, setActive, editStage) {
-    if (page.data("setupComplete")) return;
-    if (!editStage) {
-        if (!page.find("h2").text()) editStage = "pageTitle";
-        else editStage = "questionType";
-    }
-    var footer = $('<footer class="' + this.classes.dtOnly + '">'
-        + '<section class="' + this.classes.hide + ' ' + this.classes.factory + '">'
-        + '    <section class="' + this.classes.userPrompt + '"></section>'
-        + '    <section class="' + this.classes.helpText + '"></section>'
-        + '    <input name="user_input" type="text" class="' + this.classes.userInput + '" />'
-        + '    <input type="button" class="' + this.classes.cancelButton + '" value="Avbryt" />'
-        + '    <input type="button" class="' + this.classes.finishButton + '" value="Ferdig" />'
-        + '</section>'
-        + '<input type="button" class="mlab_dt_button_right ' + this.classes.removePage + '" value="Fjern side" />'
-        + '</footer>');
-    page.append(footer);
-    var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
-    if (setActive) this.switchTabs(link);
-    this.enterEditMode(page, editStage);
-    page.data("setupComplete", true);
-};
-
-
-
-this.enterEditMode = function(page, editStage, question, existing) {
-    var factory = page.find("." + this.classes.factory);
-    var prompt = factory.find("." + this.classes.userPrompt);
-    var input = factory.find("." + this.classes.userInput);
-    if (!question) question = this.getCurrentQuestion(page);
-    if (!existing) existing = false;
-    var questionType = question.data("questiontype");
-    
-    // If text question, skip alternatives stage
-    if (editStage=="alternatives" && questionType=="text") editStage = this.editStages[this.editStages.indexOf(editStage) + 1];
-    input.data("editStage", this.editStages.indexOf(editStage));
-    input.data("existing", existing);
-    if (editStage!="questionType") factory.find("input." + this.classes.cancelButton).show();
-    else factory.find("input." + this.classes.cancelButton).hide();
-    var promptText = "";
-    if (editStage=="questionType") {
-        promptText = this.editPrompts[editStage];
-        var typesText = [];
-        for (var i=0, ii=this.questionTypes.length; i<ii; i++) {
-            typesText.push(i+1 + ": " + this.questionTypes[i]["name"] + ".");
-        }
-        if (!existing && this.getLastQuestion(page).length) typesText.push(this.questionTypes.length + 1 + ": Ikke legg til flere spørsmål.");
-        promptText = promptText.replace("%types%", typesText.join("<br/>"));
-    }
-    else if (editStage=="correctResponse") {
-        promptText = this.editPrompts[editStage];
-        if (questionType=="text") {
-            promptText = promptText[0];
-        }
-        else if (questionType=="radio" || questionType=="select") {
-            promptText = promptText[1];
-        }
-        else if (questionType=="checkbox") {
-            promptText = promptText[2];
-        }
-        
-        question.find("." + this.classes.questionAlternatives + " li").on("click", function() {
-            if (editStage!="correctResponse") return true;
-            var item = $(this);
-            var itemNumber = item.index() + 1;
-            var inputVal = input.val().split(" ");
-            var values = [];
-            for (var i=0, ii=inputVal.length; i<ii; i++) {
-                var val = parseInt(inputVal[i]);
-                if (val) values.push(val);
-            }
-            if (values.indexOf(itemNumber)==-1) values.push(itemNumber);
-            input.val(values.join(" "));
-            return false;
-        });
-    }
-    else promptText = this.editPrompts[editStage];
-    
-    if (editStage!="correctResponse") question.find("." + this.classes.questionAlternatives + " li").off("click");
-    if (existing) this.floatFactory(question, factory, page);
-    else this.unfloatFactory(factory, page);
-    factory.removeClass(this.classes.hide);
-    prompt.html(promptText);
-    input.val('').focus();
-};
-
 this.floatFactory = function(question, factory, page) {
     if (!page) page = question.closest("." + this.classes.page);
     if (!factory) factory = page.find("." + this.classes.factory);
@@ -433,87 +622,6 @@ this.unfloatFactory = function(factory, page) {
     if (!page) page = factory.closest("." + this.classes.page);
     factory.removeClass(this.classes.floated);
     page.css({"height": "auto"});
-};
-
-this.handleUserInput = function(input, e) {
-    var enterKey = 13;
-    // Only proceed if we have hit enter
-    if (e.which!=enterKey) return;
-
-    var editStage = input.data("editStage");
-    var existing = input.data("existing");
-    var value = input.val();
-    var page = input.closest("." + this.classes.page);
-    var helpText = input.siblings("." + this.classes.helpText).empty();
-    var question = this.getCurrentQuestion(page);
-    var questionType = question.data("questiontype");
-    var proceed = true;
-    switch (editStage) {
-        case this.editStages.indexOf("pageTitle"):
-            page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
-            break;
-        case this.editStages.indexOf("questionType"):
-            value = parseInt(value);
-            var minValue = 1;
-            var maxValue = this.questionTypes.length;
-            if (!existing && question.length) {
-                maxValue += 1;
-                if (value==maxValue) {
-                    // We have selected to not add any more questions.
-                    this.finishAddingQuestions(page);
-                    proceed = false;
-                    break;
-                }
-            }
-            if (!value || value<minValue || value>maxValue) {
-                input.val('');
-                helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
-                proceed = false;
-            }
-            else if (existing) {
-                this.changeQuestionType(page, question, value);
-                editStage = this.editStages.length;
-            }
-            else {
-                this.addQuestion(page, value);
-            }
-            break;
-        case this.editStages.indexOf("question"):
-            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
-            if (value.slice(-1)!="?") proceed = false;
-            input.val('');
-            break;
-        case this.editStages.indexOf("alternatives"):
-            proceed = !this.addQuestionAlternative(question, value, questionType);
-            input.val('');
-            break;
-        case this.editStages.indexOf("correctResponse"):
-            proceed = this.addCorrectResponse(question, value, questionType);
-            input.val('');
-            break;
-        case this.editStages.indexOf("mandatory"):
-            if (value=="Y" || value=="y") value = true;
-            else if (value=="N" || value=="n") value = false;
-            if ((typeof value)!="boolean") proceed = false;
-            else this.setMandatory(question, value);
-            input.val('');
-            break;
-        default:
-            proceed = false;
-    }
-    editStage++;
-    if (editStage>=this.editStages.length) {
-        // We are done with this question, move on to the next one
-        if (existing) {
-            proceed = false;
-            this.finishAddingQuestions(page);
-            input.data("existing", false);
-        }
-        editStage = 1;
-        this.saveQuestions();
-    }
-    if (existing) this.floatFactory(question);
-    if (proceed) this.enterEditMode(page, this.editStages[editStage], question, existing);
 };
 
 this.setMandatory = function(question, value) {
@@ -621,6 +729,7 @@ this.makeQuestion = function(page, type, questionText, uuid) {
     question.data("questiontype", typeType);
     return question;
 };
+
 this.addQuestion = function(page, type, questionText, uuid) {
     var questions = page.find("." + this.classes.questions);
     var question = this.makeQuestion(page, type, questionText, uuid);

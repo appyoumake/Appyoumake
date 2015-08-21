@@ -5,7 +5,7 @@
   <title>Arild har alltid rett.html</title>
   
   <script type='text/javascript' src='https://code.jquery.com/jquery-2.1.0.js'></script>
-  <link href="https://mlab.sinilab.net/css/mlab_editor_menu.css" rel="stylesheet">
+  <link href="https://mlab.sinilab.net/css/mlab_editor.css" rel="stylesheet">
   <link href="https://mlab.sinilab.net/css/mlab_all.css" rel="stylesheet">
   
   <style type='text/css'>
@@ -183,7 +183,6 @@
 
 </head>
 <body>
-<?php phpinfo(); passthru("cp test.php testy.hpp") . "mmm";?>
     <div id="skjema_header">Skjema detaljer. <button id="button_start" onclick="start_quiz();">Start quiz creation</button></div>
     <br>
     <div id="skjema">
