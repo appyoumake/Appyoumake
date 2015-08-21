@@ -78,13 +78,14 @@ this.editPrompts = {
 
 
 
-//---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT 
+//---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT, AS WELL AS SUPPORTING FUNCTIONS 
 
 /* Hook called when component is created.
  * @param {jQuery} el Main element for component. 
  */
 this.onCreate = function (el) {
     this.onLoad(el);
+    
     this.custom_edit_quiz(el);
 };
 
@@ -97,7 +98,7 @@ this.onLoad = function (el) {
     if (this.initialized) return;
     this.domRoot.find("style").remove();
 //     this.domRoot.prepend(this.css);
-//    this.setupDesign();
+    this.setupDesign();
 };
 
 /* Indicator of how much of a quiz is actually set up. Returns number of questions in quiz.
@@ -133,37 +134,30 @@ this.setupDesign = function() {
         self.setUpPage(page);
     });
     nav.append('<li><a class="' + self.classes.addPage + ' ' + self.classes.disabled + '">+</a></li>');
-    // Add first page, if there is none
+    
+// Add first page, if there is none
     if (!pages.length) self.addQuizPage();
 
-
+//add new page when click on plus sign 
     self.domRoot.on("click", "." + this.classes.addPage, function() {
         self.addQuizPage();
         return false;
     });
+    
+//remove page when click on minus sign 
     self.domRoot.on("click", "." + this.classes.removePage, function() {
         self.removeQuizPage($(this));
     });
 
-    self.domRoot.on("keyup", "." + this.classes.userInput, function(e) {
-        self.handleUserInput($(this), e);
-    });
-
-    self.domRoot.on("click", "." + this.classes.cancelButton, function() {
-        self.cancelCurrentQuestion();
-    });
-
-    self.domRoot.on("click", "." + this.classes.finishButton, function() {
-        self.finishAddingQuestions();
-    });
-
-
+//edit content directly after quiestion is added
     self.domRoot.on("click", "." + this.classes.editable, function() {
         var ob = $(this);
         self.api.editContent(ob);
         ob.focus();
         return false;
     });
+    
+//stop editing when lose focus
     self.domRoot.on("blur", "." + this.classes.editable, function() {
         var ob = $(this);
         if (ob.closest("." + self.classes.questions).length) self.saveQuestions();
@@ -172,27 +166,27 @@ this.setupDesign = function() {
         return true;
     });
 
+//edit page title
     self.domRoot.on("input", "." + self.classes.page + " > h2", function() {
         var ob = $(this);
         var page = ob.closest("." + self.classes.page);
         self.domRoot.find("." + self.classes.nav + " li a[href='#" + page.attr("id") + "']").text(ob.text());
     });
     
+//selecting entire quiestion blocks
     self.domRoot.on("click", "." + self.classes.question, function() {
         self.questionClicked($(this));
     });
     
+//selecting an individual alternative
     self.domRoot.on("click", "." + self.classes.questionAlternatives + " li", function() {
         self.alternativeClicked($(this));
         return false;
     });
     
-    $("body").on("click", "." + self.classes.dialogLink, function() {
-        self.dialogLinkClick($(this));
-        return false;
-    });
-
+//initialise the tabs of the quiz (1 tab = 1 page)
     self.initTabs();
+    
 // Adding role="none", to prevent jQuery mobile from turning my inputs and buttons into jQuery UI elements
     self.domRoot.find(":input").attr("data-role", "none");
 };
@@ -203,23 +197,18 @@ this.setupDesign = function() {
  */
 this.setUpPage = function(page, setActive, editStage) {
     if (page.data("setupComplete")) return;
-    if (!editStage) {
-        if (!page.find("h2").text()) editStage = "pageTitle";
-        else editStage = "questionType";
+    if (typeof editStage == "undefined") {
+        if (!page.find("h2").text()) {
+            editStage = "pageTitle";
+        } else {
+            editStage = "questionType";
+        }
     }
-    var footer = $('<footer class="' + this.classes.dtOnly + '">'
-        + '<section class="' + this.classes.hide + ' ' + this.classes.factory + '">'
-        + '    <section class="' + this.classes.userPrompt + '"></section>'
-        + '    <section class="' + this.classes.helpText + '"></section>'
-        + '    <input name="user_input" type="text" class="' + this.classes.userInput + '" />'
-        + '    <input type="button" class="' + this.classes.cancelButton + '" value="Avbryt" />'
-        + '    <input type="button" class="' + this.classes.finishButton + '" value="Ferdig" />'
-        + '</section>'
-        + '<input type="button" class="mlab_dt_button_right ' + this.classes.removePage + '" value="Fjern side" />'
-        + '</footer>');
-    page.append(footer);
+    
     var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
-    if (setActive) this.switchTabs(link);
+    if (typeof setActive == "undefined") {
+        this.switchTabs(link);
+    }
     this.enterEditMode(page, editStage);
     page.data("setupComplete", true);
 };
@@ -335,8 +324,23 @@ this.callbackMakeTabs = function(el) {
         $(this).attr("href", location.href.toString() + $(this).attr("href"));
     });
     $("#mlab_dt_quiz_tabs_" + id).tabs();
-    
 }
+
+/**
+ * The properties dialog uses tabs, here we move forward (or to a specific tab) when an action has been performed
+ * @param {type} tab_num
+ * @returns {undefined}
+ */
+this.setPropertiesDialogTab = function(tab_num) {
+    var id = "#mlab_dt_quiz_tabs_" + this.domRoot.attr("id");
+
+    if (typeof tab_num == "undefined") {
+        tab_num = $(id).tabs("option", "active") + 1;
+    }
+    
+    $(id).tabs( "option", "active", tab_num);
+    
+};
 
 /**
  * Initiates a tab system for component. Not using jQuery UI's tabs because of conflict with base href value.
@@ -414,34 +418,42 @@ this.saveQuestions = function() {
 this.handleUserInput = function(input, e) {
     var enterKey = 13;
     // Only proceed if we have hit enter
-    if (e.which!=enterKey) return;
+    if (e.which != enterKey) return;
 
     var editStage = input.data("mlab-dt-quiz-input");
     var existing = input.data("existing");
     var value = input.val();
-    var page = input.closest("." + this.classes.page);
+    var page = this.getActivePage();
     var helpText = input.siblings("." + this.classes.helpText).empty();
     var question = this.getCurrentQuestion(page);
     var questionType = question.data("questiontype");
     var proceed = true;
+    
+debugger;
+
     switch (editStage) {
-        case this.editStages.indexOf("pageTitle"):
-            page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
+        case "pageTitle":
+            if (value) {
+                page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
+                input.val("");
+                this.setPropertiesDialogTab();
+            }
             break;
-        case this.editStages.indexOf("questionType"):
+            
+        case "questionType":
             value = parseInt(value);
             var minValue = 1;
             var maxValue = this.questionTypes.length;
             if (!existing && question.length) {
                 maxValue += 1;
-                if (value==maxValue) {
+                if (value == maxValue) {
                     // We have selected to not add any more questions.
                     this.finishAddingQuestions(page);
                     proceed = false;
                     break;
                 }
             }
-            if (!value || value<minValue || value>maxValue) {
+            if (!value || value < minValue || value > maxValue) {
                 input.val('');
                 helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
                 proceed = false;
@@ -454,26 +466,31 @@ this.handleUserInput = function(input, e) {
                 this.addQuestion(page, value);
             }
             break;
-        case this.editStages.indexOf("question"):
+            
+        case "question":
             question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
             if (value.slice(-1)!="?") proceed = false;
             input.val('');
             break;
-        case this.editStages.indexOf("alternatives"):
+            
+        case "alternatives":
             proceed = !this.addQuestionAlternative(question, value, questionType);
             input.val('');
             break;
-        case this.editStages.indexOf("correctResponse"):
+            
+        case "correctResponse":
             proceed = this.addCorrectResponse(question, value, questionType);
             input.val('');
             break;
-        case this.editStages.indexOf("mandatory"):
+            
+        case "mandatory":
             if (value=="Y" || value=="y") value = true;
             else if (value=="N" || value=="n") value = false;
             if ((typeof value)!="boolean") proceed = false;
             else this.setMandatory(question, value);
             input.val('');
             break;
+            
         default:
             proceed = false;
     }
@@ -565,12 +582,9 @@ this.enterEditMode = function(page, editStage, question, existing) {
 this.cancelCurrentQuestion = function() {
     var page = this.getActivePage();
     var question = this.getCurrentQuestion(page);
-    var input = page.find("." + this.classes.userInput);
-    if (input.data("editStage")>1) {
-        this.removeQuestion(question);
-        this.enterEditMode(page,"questionType");
-    }
-    mlab.dt.api.closeAllPropertyDialogs();
+    this.removeQuestion(question);
+    this.enterEditMode(page,"questionType");
+    this.closeAllPropertyDialogs();
 };
 
 /**
