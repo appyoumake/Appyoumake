@@ -65,8 +65,9 @@ this.editStages = [
 this.editPrompts = {
     "pageTitle": "Vennligst legg inn tittel på siden. Avslutt med enter-tast.",
     "questionType": "Velg spørsmålstype: <br/>%types%<br/> Avslutt med enter-tast.",
-    "question": "Skriv inn forklarende tekst eller spørsmål, spørsmål indikeres med spørsmålstegn etterfulgt av enter-tast.",
-    "alternatives": "Skriv inn alternativer. Avslutt hvert alternativ med enter-tast. Når du er ferdig, legg inn tom linje.",
+    "question": "Skriv inn spørsmål etterfulgt av enter-tast.",
+    "explanatory": "Skriv inn forklarende tekst etterfulgt av enter-tast.",
+    "alternatives": "Skriv inn svaralternativer. Avslutt hvert alternativ med enter-tast. Når du er ferdig, legg inn tom linje.",
     "correctResponse": [
         "Skriv inn riktig svar. Avslutt med enter-tast.", 
         "Velg riktig svar. Skriv nummeret eller klikk på alternativet. Avslutt med enter-tast.", 
@@ -224,6 +225,38 @@ this.setUpPage = function(page, setActive, editStage) {
 };
 
 /**
+ *  Fetches stored questions, adds them to pages and sets them up for further editing.
+ * @returns {undefined}
+ */
+this.addStoredQuestions = function() {
+    var self = this;
+    var allQuestions = self.api.getVariable(self.domRoot, "questions");
+    if (!allQuestions) allQuestions = {};
+    self.domRoot.find("." + self.classes.page).each(function() {
+        var page = $(this);
+        var pageId = page.attr("id");
+        if (!(pageId in allQuestions)) return true;
+        var pageQuestions = allQuestions[pageId];
+        
+        for (var i=0, ii=pageQuestions.length; i<ii; i++) {
+            var questionType = self.getQuestionType(pageQuestions[i]["type"]);
+            var question = self.addQuestion(page, questionType["order"], pageQuestions[i]["question"], pageQuestions[i]["id"]);
+            var alternatives = pageQuestions[i]["alternatives"];
+            for (var j=0, jj=alternatives.length; j<jj; j++) {
+                self.addQuestionAlternative(question, alternatives[j], questionType["type"]);
+            }
+            if (pageQuestions[i]["correctResponse"]) {
+                if (questionType["type"]=="checkbox") {
+                    self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
+                }
+                else self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
+            }
+            self.setMandatory(question, pageQuestions[i]["mandatory"]);
+        }
+    });
+};
+
+/**
  * added by Arild, we want to use the tooltip for input from user, here we generate a tabbed interface with 4 tabs:
  * 1: Title of page (if blank *AND* at least one question with answers on this page we exit editing)
  * 2: Subtitle or Question (? at end determines, if blank *AND* at least one question with answers on this page we skip to 1)
@@ -247,28 +280,34 @@ this.custom_edit_quiz = function(el) {
                     '    </ul>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
                     '        <label>' + this.editPrompts.pageTitle + '</label>' + 
-                    '        <input class="' + this.classes.userInput + '" id="mlab_dt_quiz_title_' + id  + '">' + 
+                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="pageTitle">' + 
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
+                    '        <label>' + this.editPrompts.explanatory + '</label>' + 
+                    '        <textarea class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="explanatory"></textarea>' + 
                     '        <label>' + this.editPrompts.question + '</label>' + 
-                    '        <textarea class="' + this.classes.userInput + '" id="mlab_dt_quiz_question_' + id  + '"></textarea>' + 
+                    '        <textarea class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="question"></textarea>' + 
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
                     '        <label>' + this.editPrompts.questionType + '</label>' + 
                     '        <img id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
-                    '        <input class="' + this.classes.userInput + '" id="mlab_dt_quiz_type_' + id  + '">' + 
+                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="questionType">' + 
+                    '        <label>' + this.editPrompts.mandatory + '</label>' + 
+                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="mandatory">' + 
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
                     '        <label>' + this.editPrompts.alternatives + '</label>' + 
-                    '        <textarea class="' + this.classes.userInput + '" id="mlab_dt_quiz_response_' + id  + '"></textarea>' + 
+                    '        <textarea class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="response"></textarea>' + 
                     '        <input type="button" class="' + this.classes.finishButton + '" value="Ferdig">' + 
+                    '        <label>' + this.editPrompts.correctResponse + '</label>' + 
+                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="correctResponse">' + 
                     '    </div>' + 
                     '</div>' + 
                     '<input type="button" class="' + this.classes.cancelButton + '" value="Avbryt">' 
                     );
 
     $(content).on("keyup", "." + self.classes.userInput, function(e) {
-        self.handleUserInput(e);
+        self.handleUserInput($(this), e);
     });
 
     $(content).on("click", "." + self.classes.cancelButton, function() {
@@ -299,6 +338,20 @@ this.callbackMakeTabs = function(el) {
     
 }
 
+/**
+ * Initiates a tab system for component. Not using jQuery UI's tabs because of conflict with base href value.
+ * @returns {undefined}
+ */
+this.initTabs = function() {
+    if (this.domRoot.data("tabsinit")) return;
+    var me = this;
+    this.domRoot.on("click", "." + this.classes.nav + " a", function() { return me.switchTabs($(this)); });
+    var pages = this.domRoot.find("." + this.classes.page);
+    pages.hide();
+    this.domRoot.data("tabsinit", true);
+    // Set first page as active
+    this.switchTabs(this.domRoot.find("." + this.classes.nav + " a").eq(0));
+};
 
 
 //---------- FUNCTIONS FOR STORING QUIZ INFORMATION
@@ -358,12 +411,12 @@ this.saveQuestions = function() {
  * @param {type} e
  * @returns {undefined}
  */
-this.handleUserInput = function(e) {
+this.handleUserInput = function(input, e) {
     var enterKey = 13;
     // Only proceed if we have hit enter
     if (e.which!=enterKey) return;
 
-    var editStage = input.data("editStage");
+    var editStage = input.data("mlab-dt-quiz-input");
     var existing = input.data("existing");
     var value = input.val();
     var page = input.closest("." + this.classes.page);
@@ -521,70 +574,17 @@ this.cancelCurrentQuestion = function() {
 };
 
 /**
- * Requests 
- * @param {type} question
- * @returns {getCorrectResponse.correctResponse|String|Array}
+ * This button is only on the last page, means they are done
+ * @param {type} page
+ * @returns {Boolean}
  */
-this.getCorrectResponse = function(question) {
-    var questionType = question.data("questiontype");
-    var correctResponse = question.data("correctResponse");
-    if (questionType=="checkbox") {
-        correctResponseRaw = correctResponse.split(" ");
-        correctResponse = [];
-        for (var i=0, ii=correctResponseRaw.length; i<ii; i++) {
-            var response = parseInt(correctResponseRaw[i]);
-            if (response) correctResponse.push(response);
-        }
-    }
-    else if (questionType=="radio" || questionType=="select") {
-        correctResponse = parseInt(correctResponse);
-        if (!correctResponse) correctResponse = "";
-    }
-    return correctResponse;
+this.finishAddingQuestions = function(page) {
+    this.closeAllPropertyDialogs();
 };
 
-this.getQuestionType = function(type) {
-    var questionType;
-    for (var i=0, ii=this.questionTypes.length; i<ii; i++) {
-        if (this.questionTypes[i]["type"]==type) {
-            questionType = this.questionTypes[i];
-            break;
-        }
-    }
-    return questionType;
-};
-
-/* Fetches stored questions, adds them to pages and sets them up for further editing.
- */
-this.addStoredQuestions = function() {
-    var self = this;
-    var allQuestions = self.api.getVariable(self.domRoot, "questions");
-    if (!allQuestions) allQuestions = {};
-    self.domRoot.find("." + self.classes.page).each(function() {
-        var page = $(this);
-        var pageId = page.attr("id");
-        if (!(pageId in allQuestions)) return true;
-        var pageQuestions = allQuestions[pageId];
-        
-        for (var i=0, ii=pageQuestions.length; i<ii; i++) {
-            var questionType = self.getQuestionType(pageQuestions[i]["type"]);
-            var question = self.addQuestion(page, questionType["order"], pageQuestions[i]["question"], pageQuestions[i]["id"]);
-            var alternatives = pageQuestions[i]["alternatives"];
-            for (var j=0, jj=alternatives.length; j<jj; j++) {
-                self.addQuestionAlternative(question, alternatives[j], questionType["type"]);
-            }
-            if (pageQuestions[i]["correctResponse"]) {
-                if (questionType["type"]=="checkbox") {
-                    self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
-                }
-                else self.addCorrectResponse(question, pageQuestions[i]["correctResponse"], questionType["type"]);
-            }
-            self.setMandatory(question, pageQuestions[i]["mandatory"]);
-        }
-    });
-};
-
-/* Adds a new page to the quiz.
+/**
+ * Adds a new page to the quiz.
+ * @returns {undefined}
  */
 this.addQuizPage = function() {
     // tabs require the use of IDs
@@ -603,31 +603,6 @@ this.addQuizPage = function() {
     this.setUpPage(page, true);
     
     this.api.setDirty();
-};
-
-this.floatFactory = function(question, factory, page) {
-    if (!page) page = question.closest("." + this.classes.page);
-    if (!factory) factory = page.find("." + this.classes.factory);
-    
-    var top = question.position()["top"];
-    top += question.outerHeight();
-    var bottom = top + factory.outerHeight();
-    factory.css({"top": top + "px"});
-    factory.addClass(this.classes.floated);
-    if (bottom>page.outerHeight()) page.css({"height":bottom + "px"});
-};
-
-this.unfloatFactory = function(factory, page) {
-    if (!factory) factory = page.find("." + this.classes.factory);
-    if (!page) page = factory.closest("." + this.classes.page);
-    factory.removeClass(this.classes.floated);
-    page.css({"height": "auto"});
-};
-
-this.setMandatory = function(question, value) {
-    question.data("mandatory", value);
-    if (value) question.addClass(this.classes.mandatory);
-    else question.removeClass(this.classes.mandatory);
 };
 
 this.addQuestionAlternative = function(question, value, questionType) {
@@ -675,6 +650,12 @@ this.addCorrectResponse = function(question, value, questionType) {
     return proceed;
 };
 
+this.setMandatory = function(question, value) {
+    question.data("mandatory", value);
+    if (value) question.addClass(this.classes.mandatory);
+    else question.removeClass(this.classes.mandatory);
+};
+
 this.markAlternativesAsCorrect = function(question, questionType) {
     var value = question.data("correctResponse");
     var alternatives = question.find("." + this.classes.questionAlternatives + " li").removeClass(this.classes.correctResponseAlternative);
@@ -688,13 +669,6 @@ this.markAlternativesAsCorrect = function(question, questionType) {
     for (var i=0, ii=value.length; i<ii; i++) {
         alternatives.eq(parseInt(value[i])-1).addClass(this.classes.correctResponseAlternative);
     }
-};
-
-this.finishAddingQuestions = function(page) {
-    if (!page) page = this.getActivePage();
-    page.find("." + this.classes.factory).addClass(this.classes.hide);
-    this.unfloatFactory(null, page);
-    return true;
 };
 
 /* Makes a new question
@@ -730,6 +704,14 @@ this.makeQuestion = function(page, type, questionText, uuid) {
     return question;
 };
 
+/**
+ * Add a single question to the page
+ * @param {type} page
+ * @param {type} type
+ * @param {type} questionText
+ * @param {type} uuid
+ * @returns {addQuestion.question|makeQuestion.question}
+ */
 this.addQuestion = function(page, type, questionText, uuid) {
     var questions = page.find("." + this.classes.questions);
     var question = this.makeQuestion(page, type, questionText, uuid);
@@ -738,6 +720,13 @@ this.addQuestion = function(page, type, questionText, uuid) {
     return question;
 };
 
+/**
+ * After user has added a question they may want to change this to another type, that is done here.
+ * @param {type} page
+ * @param {type} question
+ * @param {type} type
+ * @returns {undefined}
+ */
 this.changeQuestionType = function(page, question, type) {
     var self = this;
     var typeOb = this.questionTypes[type-1];
@@ -760,6 +749,83 @@ this.changeQuestionType = function(page, question, type) {
     }
     this.addCorrectResponse(newQuestion, correctResponse, typeType);
     this.setMandatory(newQuestion, mandatory);
+};
+
+/**
+ * Updates what is the correct repsponse(s) based on user input
+ * @param {type} question
+ * @returns {getCorrectResponse.correctResponse|String|Array}
+ */
+this.getCorrectResponse = function(question) {
+    var questionType = question.data("questiontype");
+    var correctResponse = question.data("correctResponse");
+    if (questionType=="checkbox") {
+        correctResponseRaw = correctResponse.split(" ");
+        correctResponse = [];
+        for (var i=0, ii=correctResponseRaw.length; i<ii; i++) {
+            var response = parseInt(correctResponseRaw[i]);
+            if (response) correctResponse.push(response);
+        }
+    }
+    else if (questionType=="radio" || questionType=="select") {
+        correctResponse = parseInt(correctResponse);
+        if (!correctResponse) correctResponse = "";
+    }
+    return correctResponse;
+};
+
+/**
+ * Selects how one should display the response input for this question.
+ * @param {type} question
+ * @returns {getCorrectResponse.correctResponse|String|Array}
+ */
+this.getQuestionType = function(type) {
+    var questionType;
+    for (var i=0, ii=this.questionTypes.length; i<ii; i++) {
+        if (this.questionTypes[i]["type"]==type) {
+            questionType = this.questionTypes[i];
+            break;
+        }
+    }
+    return questionType;
+};
+
+
+
+//---------- USER INTERACTION FUNCTIONS, RESPONDS TO CLICKS ON EXISTING QUIZ
+
+this.questionClicked = function(question) {
+    this.closeAllPropertyDialogs();
+    this.markQuestionAsCurrent(question);
+    var type = question.data("questiontype");
+    var html = [];
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="delete">Slett spørsmål</a>');
+    html.push('</div>');
+    if (question.prev("." + this.classes.question).length) {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="moveup">Flytt opp</a>');
+        html.push('</div>');
+    }
+    if (question.next("." + this.classes.question).length) {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="movedown">Flytt ned</a>');
+        html.push('</div>');
+    }
+    if (type=="radio" || type=="select" || type=="checkbox") {
+        html.push('<div>');
+        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="addalternative">Legg til svaralternativ</a>');
+        html.push('</div>');
+    }
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changetype">Endre spørsmåltype</a>');
+    html.push('</div>');
+    var toggleMandatoryText = "Gjør spørsmålet obligatorisk";
+    if (question.data("mandatory")) toggleMandatoryText = "Gjør spørsmålet <i>ikke</i>-obligatorisk"
+    html.push('<div>');
+    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="togglemandatory">' + toggleMandatoryText + '</a>');
+    html.push('</div>');
+    this.api.displayPropertyDialog(question, "Endre spørsmål", html);
 };
 
 this.alternativeClicked = function(alternative) {
@@ -804,40 +870,6 @@ this.markAlternative = function(alternative) {
     alternative.addClass(this.classes.markedAlternative);
 };
 
-this.questionClicked = function(question) {
-    this.closeAllPropertyDialogs();
-    this.markQuestionAsCurrent(question);
-    var type = question.data("questiontype");
-    var html = [];
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="delete">Slett spørsmål</a>');
-    html.push('</div>');
-    if (question.prev("." + this.classes.question).length) {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="moveup">Flytt opp</a>');
-        html.push('</div>');
-    }
-    if (question.next("." + this.classes.question).length) {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="movedown">Flytt ned</a>');
-        html.push('</div>');
-    }
-    if (type=="radio" || type=="select" || type=="checkbox") {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="addalternative">Legg til svaralternativ</a>');
-        html.push('</div>');
-    }
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changetype">Endre spørsmåltype</a>');
-    html.push('</div>');
-    var toggleMandatoryText = "Gjør spørsmålet obligatorisk";
-    if (question.data("mandatory")) toggleMandatoryText = "Gjør spørsmålet <i>ikke</i>-obligatorisk"
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="togglemandatory">' + toggleMandatoryText + '</a>');
-    html.push('</div>');
-    this.api.displayPropertyDialog(question, "Endre spørsmål", html);
-};
-
 this.markQuestionAsCurrent = function(question) {
     question.siblings("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
     question.addClass(this.classes.currentQuestion);
@@ -855,6 +887,12 @@ this.getLastQuestion = function(page) {
     return question;
 };
 
+/**
+ * Reponds to user clicks on menus in dialog
+ * TODO: MOVE THIS TO CUSTOM FUNCTIONS
+ * @param {type} link
+ * @returns {undefined}
+ */
 this.dialogLinkClick = function(link) {
     var linkFunction = link.data("function");
     this.closeAllPropertyDialogs();
@@ -872,13 +910,6 @@ this.dialogLinkClick = function(link) {
     else if (linkFunction=="deletealternative") this.removeAlternative(alternative);
     else if (linkFunction=="alternativemoveup") this.moveAlternativeUp(alternative);
     else if (linkFunction=="alternativemovedown") this.moveAlternativeDown(alternative);
-};
-
-/*
-The function in API of the same name simply does not work. Creating our own.
-*/
-this.closeAllPropertyDialogs = function() {
-    $("body .qtip").qtip("destroy");
 };
 
 this.editAlternativeText = function(alternative) {
@@ -926,32 +957,26 @@ this.toggleAlternativeCorrectness = function(alternative) {
     this.saveQuestions();
 };
 
+this.toggleMandatory = function(question) {
+    this.setMandatory(question, !question.data("mandatory"));
+};
+
+/**
+ * Removes a response alternative
+ * @param {type} alternative
+ * @returns {undefined}
+ */
 this.removeAlternative = function(alternative) {
     if (this.alternativeIsCorrect(alternative)) this.toggleAlternativeCorrectness(alternative);
     alternative.remove();
     this.saveQuestions();
 };
 
-this.moveAlternativeUp = function(alternative) {
-    var previous = alternative.prev("." + this.classes.questionAlternatives + " li");
-    var isCorrect = this.alternativeIsCorrect(previous);
-    if (isCorrect) this.toggleAlternativeCorrectness(previous);
-    previous = this.switchPositions(previous, alternative);
-    if (isCorrect) this.toggleAlternativeCorrectness(previous);
-}
-
-this.moveAlternativeDown = function(alternative) {
-    var isCorrect = this.alternativeIsCorrect(alternative);
-    if (isCorrect) this.toggleAlternativeCorrectness(alternative);
-    var next = alternative.next("." + this.classes.questionAlternatives + " li");
-    alternative = this.switchPositions(alternative, next);
-    if (isCorrect) this.toggleAlternativeCorrectness(alternative);
-}
-
-this.toggleMandatory = function(question) {
-    this.setMandatory(question, !question.data("mandatory"));
-};
-
+/**
+ * Removes an entire question
+ * @param {type} question
+ * @returns {undefined}
+ */
 this.removeQuestion = function(question) {
     question.remove();
     this.saveQuestions();
@@ -969,20 +994,6 @@ this.removeQuizPage = function(button) {
     page.remove();
     li.remove();
     this.api.setDirty();
-};
-
-
-/* Initiates a tab system for component. Not using jQuery UI's tabs because of conflict with base href value.
- */
-this.initTabs = function() {
-    if (this.domRoot.data("tabsinit")) return;
-    var me = this;
-    this.domRoot.on("click", "." + this.classes.nav + " a", function() { return me.switchTabs($(this)); });
-    var pages = this.domRoot.find("." + this.classes.page);
-    pages.hide();
-    this.domRoot.data("tabsinit", true);
-    // Set first page as active
-    this.switchTabs(this.domRoot.find("." + this.classes.nav + " a").eq(0));
 };
 
 /* Switch to a different tab pane.
@@ -1004,31 +1015,46 @@ this.switchTabs = function(link) {
     return false;
 };
 
+/**
+ * Updates title of currently selected tab
+ * @param {type} el
+ * @returns {undefined}
+ */
 this.updateTab = function(el) {
     var title = el.text();
     var pageId = el.closest("." + this.classes.page).attr("id");
     this.domRoot.find("." + this.classes.nav + " a[href='#" + pageId + "']").text(title);
 };
 
+/**
+ * returns currently selected tab
+ * @returns {code_dt@pro;domRoot@call;find}
+ */
 this.getActivePage = function() {
     var activeLink = this.domRoot.find("." + this.classes.nav + " a." + this.classes.active);
     return this.domRoot.find(activeLink.attr("href"));
 };
 
-this.switchPositions = function(firstOb, secondOb) {
-    if (!firstOb.length || !secondOb.length) return;
-    firstObClone = firstOb.clone();
-    firstOb.remove();
-    secondOb.after(firstObClone);
-    return firstObClone;
-};
 
+
+//---------- CUSTOM FUNCTIONS AVAILABLE FROM THE COMPONENTS TOOLBAR
+
+/**
+ * Start adding a new question to currently selected page
+ * @param {type} el
+ * @returns {undefined}
+ */
 this.custom_add_question = function(el) {
     var page = this.getActivePage();
     page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
     this.enterEditMode(page,"questionType");
 };
 
+/**
+ * Moves currently selected question up or down
+ * @param {type} el
+ * @returns {undefined}
+ */
 this.custom_move_question_up = function(question) {
     var previous = question.prev("." + this.classes.question);
     this.switchPositions(previous, question);
@@ -1037,5 +1063,73 @@ this.custom_move_question_up = function(question) {
 this.custom_move_question_down = function(question) {
     var next = question.next("." + this.classes.question);
     this.switchPositions(question, next);
+};
+
+this.custom_move_alternative_up = function(alternative) {
+    var previous = alternative.prev("." + this.classes.questionAlternatives + " li");
+    var isCorrect = this.alternativeIsCorrect(previous);
+    if (isCorrect) this.toggleAlternativeCorrectness(previous);
+    previous = this.switchPositions(previous, alternative);
+    if (isCorrect) this.toggleAlternativeCorrectness(previous);
+}
+
+this.custom_move_alternative_down = function(alternative) {
+    var isCorrect = this.alternativeIsCorrect(alternative);
+    if (isCorrect) this.toggleAlternativeCorrectness(alternative);
+    var next = alternative.next("." + this.classes.questionAlternatives + " li");
+    alternative = this.switchPositions(alternative, next);
+    if (isCorrect) this.toggleAlternativeCorrectness(alternative);
+}
+
+
+
+//---------- VARIOUS HELPER FUNCTIONS USED BY CODE ABOVE
+
+/**
+ * Moves two HTML objects around
+ * @param {type} firstOb
+ * @param {type} secondOb
+ * @returns {undefined|firstObClone}
+ */
+this.switchPositions = function(firstOb, secondOb) {
+    if (!firstOb.length || !secondOb.length) return;
+    firstObClone = firstOb.clone();
+    firstOb.remove();
+    secondOb.after(firstObClone);
+    return firstObClone;
+};
+
+/*
+The function in API of the same name simply does not work. Creating our own.
+*/
+this.closeAllPropertyDialogs = function() {
+    $("body .qtip").qtip("destroy");
+};
+
+/**
+ * Factory = data input area, TODO: this may go out
+ * @param {type} question
+ * @param {type} factory
+ * @param {type} page
+ * @returns {undefined}
+ */
+this.floatFactory = function(question, factory, page) {
+    if (!page) page = question.closest("." + this.classes.page);
+    if (!factory) factory = page.find("." + this.classes.factory);
+    
+    var top = question.position()["top"];
+    top += question.outerHeight();
+    var bottom = top + factory.outerHeight();
+    factory.css({"top": top + "px"});
+    factory.addClass(this.classes.floated);
+    if (bottom>page.outerHeight()) page.css({"height":bottom + "px"});
+};
+
+//TODO: MAY GO OUT
+this.unfloatFactory = function(factory, page) {
+    if (!factory) factory = page.find("." + this.classes.factory);
+    if (!page) page = factory.closest("." + this.classes.page);
+    factory.removeClass(this.classes.floated);
+    page.css({"height": "auto"});
 };
 

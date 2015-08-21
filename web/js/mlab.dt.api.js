@@ -124,6 +124,24 @@ Mlab_dt_api.prototype = {
     },
     
 /**
+ * Returns a CSS style class name which utilises standard Mlab styles
+ * properties = array of nouns describing what style they want
+ */
+     getStyle: function (properties) {
+         var style = "";
+         for (i in properties) {
+             switch (properties[i]) {
+                 case "text": 
+                     style = style + "mc_text ";
+                     break;
+                     
+                 case "imgtxt": 
+                     style = style + "mc_picture_and_text";
+                     break;
+             }
+         }
+     },
+/**
  * 
  * @param {type} el: DIV surrounding the component HTML
  * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
