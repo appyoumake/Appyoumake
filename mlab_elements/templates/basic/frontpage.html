@@ -38,7 +38,7 @@
 // http://demos.jquerymobile.com/1.4.3/navigation/
         $(document).on("pagecontainerload", function (e, ui) {
             mlab.api.navigation.prepareComponents(e, ui);
-        })
+        });
         
         mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
         
@@ -49,15 +49,15 @@
         //Toggles the text and background color
         $("#mlab_btn_color_toggle").on("click", function () { mlab_set_display_settings.pageColorToggle("page", "#1e1e1e", "#ffffff", "#ffffff", "#000000"); });
         //Toggles the text size between 100% and 130%
-        $("#mlab_btn_txsize_toggle").on("click", function () { mlab_set_display_settings.pageTextSizeToggle("mlab_editable_area"); });
+        $("#mlab_btn_txsize_toggle").on("click", function () { mlab_set_display_settings.pageTextSizeToggle("mlab_content"); });
       
     };
   
     //Uses on pagecreate to get the page name to display when the page is loaded the first time
     $( document ).on( "pagecreate", function( event ) {  
         var pageTitle = window.document.title;
-        $("#mlab_page_name").append(pageTitle);
-    } )
+        $("#mlab_page_name").text(pageTitle);
+    } );
     
 </script>
 </head>

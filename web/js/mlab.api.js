@@ -398,7 +398,7 @@ Mlab_api.prototype = {
             switch (move_to) {
                 case 0:
                 case "index":
-                    filename = "index.html";
+                    filename = "000.html";
                     new_location = 0;
                     break;
 
@@ -426,7 +426,7 @@ Mlab_api.prototype = {
                         return current;
                     }
                     if (current == 1) {
-                        filename = "index.html";
+                        filename = "000.html";
                         new_location = 0;
                     } else {
                         current--;
@@ -448,7 +448,7 @@ Mlab_api.prototype = {
                         return current;
                     }
                     if (move_to == 0) {
-                        filename = "index.html";
+                        filename = "000.html";
                     } else {
                         filename = ("000" + move_to).slice(-3) + ".html";
                     }
@@ -710,7 +710,7 @@ Mlab_api.prototype = {
 /* 
  * Mlab object is stored in a global variable "mlab", and is initialized automatically when device is ready.
  */
-if (typeof mlab=="undefined") {
+if (typeof mlab == "undefined") {
     var mlab = {"api":null};
 }
 
@@ -718,11 +718,13 @@ $(document).on("deviceready", function() {
     console.log("deviceready");
     mlab.api = new Mlab_api();
 });
+
 $(document).on("ready", function() {
     console.log("ready");
     // Problem: This must only be triggered if we are in a browser, and "deviceready" isn't triggered otherwise
     $(this).trigger("deviceready");
 });
+
 $(document).on("mlabready", function() {
     console.log("mlabready");
     if (mlab.api) mlab.api.onMlabReady();
