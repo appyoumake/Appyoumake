@@ -288,8 +288,9 @@ made smaler than the min width */
     display: block;
     height: auto;
     padding: 10px; 
-    font-size: 1em;
-    color: white;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 0.8em;
+    color: black;
     background-color: orange;
     text-align: center;
     vertical-align: middle;
