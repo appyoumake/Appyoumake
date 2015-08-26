@@ -42,6 +42,8 @@
         
         mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
         
+        mlab.api.navigation.pageDisplay(-1, 0);
+        
        //Opens the previous page 
         $("#mlab_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
         //Opens the next page 
