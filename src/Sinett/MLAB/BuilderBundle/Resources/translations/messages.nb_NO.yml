@@ -238,14 +238,23 @@ builder.new.app.classification.tab: Klassifiser
 builder.new.app.submit.tab: Lag
 
 
-builder.new.app.basedon.description: En app kan baseres på en mal eller en eksisterende app
-
+builder.new.app.select_base.description: Velg om du ønsker at appen skal baseres på en mal, en eksisterende app eller en Office fil.
+builder.new.app.select_base.template: Mal
+builder.new.app.select_base.existing_app: Eksisterende App
+builder.new.app.select_base.office_file: Office fil
+builder.new.app.basedon.description: Velg det du ønsker å basere appen på
 
 builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
 builder.new.app.name.name: Navn
 builder.new.app.name.descriptionLab: Beskrivelse
+builder.new.app.name.selectBackground: Velg bakgrunn
+builder.new.app.name.selectForground: Velg ikon
 builder.new.app.name.iconFile: Ikon-fil
+builder.new.app.name.addIconFileImage: Legg til bilde
+builder.new.app.name.iconText: Ikon-tekst
+builder.new.app.name.addIconText: Legg til tekst
 builder.new.app.name.splashFile: Splash-fil
+builder.new.app.active_version.number: Versjonsnummer
 
 builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
 builder.new.app.classification.keywords: Nøkkelord
@@ -259,6 +268,7 @@ builder.new.app.submit.name: Navn
 builder.new.app.submit.descriptionLab: Beskrivelse
 builder.new.app.submit.keywords: Nøkkelord
 builder.new.app.submit.category: Kategorier
+builder.new.app.submit.splashScreen: Splash screen
 
 app.wizard.button.previous: < Forrige
 app.wizard.button.next: Neste >
