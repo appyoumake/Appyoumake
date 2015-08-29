@@ -72,9 +72,12 @@ Mlab_dt_design.prototype = {
             alert("You can only have one component of this type on a page");
             return;
         }
+        
+        var data_resize = (typeof this.parent.components[id].conf.resizable != "undefined" && this.parent.components[id].conf.resizable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
+        var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
 
 //add a DIV wrapper around all components, makes it easier to move it up/down later
-        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + this.parent.components[id].html + "</div>");
+        var new_comp = $("<div data-mlab-type='" + id + "' " + data_resize + " " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
@@ -207,7 +210,10 @@ Mlab_dt_design.prototype = {
             }
         }
 
-        $(this.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + this.parent.components[comp_id].html + "</div>");
+        var data_resize = (typeof this.parent.components[comp_id].conf.resizable != "undefined" && this.parent.components[comp_id].conf.resizable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
+        var data_display_dependent = (typeof this.parent.components[comp_id].conf.display_dependent != "undefined" && this.parent.components[comp_id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
+
+        $(this.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "' " + data_resize + " " + data_display_dependent + " >" + this.parent.components[comp_id].html + "</div>");
 
         var new_feature = $(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']");
         if (new_feature.length > 0) {

@@ -17,6 +17,11 @@
 <script src="./js/basic.js"></script>
 <script src="./js/include.js"></script>
 <script>
+    $(document).on("mlabready", function() {
+    console.log("mlabready");
+    if (mlab.api) mlab.api.onMlabReady();
+});
+
     
 //this variable tracks the current page, may be replaced with jquery mobile code
     mlab_rt_current_page = 0;
@@ -27,7 +32,7 @@
      * This is done by assigning the mlab.api.navigation.pageDisplay call to various page navigation elements
      * @type type
      */
-    function inititaliseMlabApp() {
+    function mlabInitialiseApp() {
         
 //this function will loop through the components and initialise them by calling the components' onPageLoad function (if it exists)
 // see https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/

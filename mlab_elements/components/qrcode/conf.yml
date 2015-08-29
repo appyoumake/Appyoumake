@@ -8,6 +8,7 @@ placeholder: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAIAAACzY+a1A
 required_libs: {designtime: ["jquery.qrcode-0.12.0.js"]}
 html: <div></div>
 process_keypress: true
+resizeable: true
 custom:
     msg_request_title: Please enter a URL or text you want to share as a QR code
     msg_request_text: Edit QR code
