@@ -790,46 +790,51 @@ Mlab_api.prototype = {
 
 
 
+if ($("body").attr("id") != "mlab_editor") {
+
 /* 
  * Mlab object is stored in a global variable "mlab", and is initialized automatically when device is ready.
  */
-if (typeof mlab == "undefined") {
-    var mlab = {"api":null};
-}
+    if (typeof mlab == "undefined") {
+        var mlab = {"api":null};
+    }
 
-$(document).on("mobileinit", function(){
-    console.log("EVENT: mobileinit");
-    mlab.api = new Mlab_api();
-});
+    $(document).on("mobileinit", function(){
+        console.log("EVENT: mobileinit");
+        mlab.api = new Mlab_api();
+    });
 
 //page create for main page (that will contain other pages) only for index page
-$( document ).on( "pagecreate", "#index", function ( event ) {
-    console.log("EVENT: pagecreate-index");
-});
+    $( document ).on( "pagecreate", "#index", function ( event ) {
+        console.log("EVENT: pagecreate-index");
+    });
 
 //general pagecreate, run component code for components that do not care about display
-$( document ).on( "pagecreate", function ( event ) {
-    console.log("EVENT: pagecreate-general");
-    mlab.api.display.prepareRegularComponents();
-});
+    $( document ).on( "pagecreate", function ( event ) {
+        console.log("EVENT: pagecreate-general");
+        mlab.api.display.prepareRegularComponents();
+    });
 
 //general pagecontainerbeforeshow, run component code for components that require size information, ie. display is done
-$( document ).on( "pagecontainershow", function ( event, ui ) {
-    console.log("EVENT: pagecontainershow");
-    mlab.api.display.prepareDisplayDependentComponents();
-    mlab.api.display.updateDisplay();
-});
+    $( document ).on( "pagecontainershow", function ( event, ui ) {
+        console.log("EVENT: pagecontainershow");
+        mlab.api.display.prepareDisplayDependentComponents();
+        mlab.api.display.updateDisplay();
+    });
 
 //when the orientation changes we must redraw the komponents that require specific resizing
-$( window ).on( "orientationchange", function ( event ) {
-    console.log("EVENT: orientationchange");
-    mlab.api.display.updateDisplay();
-});
+    $( window ).on( "orientationchange", function ( event ) {
+        console.log("EVENT: orientationchange");
+        mlab.api.display.updateDisplay();
+    });
 
-$(document).on("mlabready", function() {
-    console.log("mlabready");
-    if (typeof mlabInitialiseApp != "undefined") {
-        mlabInitialiseApp();
-    }
-});
+//used to call app specific initialisation routine
+    $(document).on("mlabready", function() {
+        console.log("mlabready");
+        if (typeof mlabInitialiseApp != "undefined") {
+            mlabInitialiseApp();
+        }
+    });
+    
+}
  
