@@ -643,7 +643,7 @@ Mlab_dt_api.prototype = {
         setAspectRatio: function (el, aspect) {
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
                 $(el).attr("data-mlab-ratio", aspect);
-                self.updateDisplay(el);
+                this.updateDisplay(el);
             }
         },
         
@@ -657,7 +657,7 @@ Mlab_dt_api.prototype = {
         setSize: function (el, size) {
             if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
                 $(el).attr("data-mlab-size", size);
-                self.updateDisplay(el);
+                this.updateDisplay(el);
             }
         },
         
@@ -671,13 +671,13 @@ Mlab_dt_api.prototype = {
             
             components.each( function() {
                 var device_width = $('[data-role="page"]').first().width();
-                var aspect_ratio = $(el).data("mlab-aspectratio").split(":");
-                var size = $(el).data("mlab-size");
+                var aspect_ratio = $(this).data("mlab-aspectratio").split(":");
+                var size = $(this).data("mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
                 
                 var w = (device_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
-                component.css( {"width": w + "px", "height": h + "px"} );
+                $(this).css( {"width": w + "px", "height": h + "px"} );
 
             });    
         },

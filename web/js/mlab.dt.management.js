@@ -221,6 +221,7 @@ Mlab_dt_management.prototype = {
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
         $.mobile.initializePage();
+        mlab.dt.api.display.updateDisplay()
 
 //JS to fix the toolbars in a jQuery mobile page
         var border_width = (parseInt($("#mlab_editor_chrome").css("margin-bottom")) * 2) + parseInt($("#mlab_editor_chrome").css("border-bottom-width"));
@@ -274,6 +275,7 @@ Mlab_dt_management.prototype = {
 
         this.parent.design.prepare_editable_area();
         $.mobile.initializePage();
+        mlab.dt.api.display.updateDisplay()
     },
 
 

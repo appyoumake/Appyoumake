@@ -17,15 +17,10 @@
 <script src="./js/basic.js"></script>
 <script src="./js/include.js"></script>
 <script>
-    $(document).on("mlabready", function() {
-    console.log("mlabready");
-    if (mlab.api) mlab.api.onMlabReady();
-});
-
     
 //this variable tracks the current page, may be replaced with jquery mobile code
     mlab_rt_current_page = 0;
-    //this variable tracks the current page, may be replaced with jquery mobile code
+//this variable tracks the current text size
     mlab_rt_current_page_text_size = 0;
     /**
      * When document is ready we initialise the load code for the jquery mobile functionality
@@ -33,22 +28,7 @@
      * @type type
      */
     function mlabInitialiseApp() {
-        
-//this function will loop through the components and initialise them by calling the components' onPageLoad function (if it exists)
-// see https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/
-// http://jsfiddle.net/Palestinian/2SCbL/embedded/result/
-// http://jsfiddle.net/Palestinian/2SCbL/embedded/js/
-// https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/
-// http://api.jquerymobile.com/pagecontainer/#event-load
-// http://demos.jquerymobile.com/1.4.3/navigation/
-        $(document).on("pagecontainerload", function (e, ui) {
-            mlab.api.navigation.prepareComponents(e, ui);
-        });
-        
-        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
-        
-        mlab.api.navigation.pageDisplay(-1, 0);
-        
+        console.log("FUNCTION: mlabInitialiseApp");
        //Opens the previous page 
         $("#mlab_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
         //Opens the next page 
@@ -57,15 +37,19 @@
         $("#mlab_btn_color_toggle").on("click", function () { mlab_set_display_settings.pageColorToggle("page", "#1e1e1e", "#ffffff", "#ffffff", "#000000"); });
         //Toggles the text size between 100% and 130%
         $("#mlab_btn_txsize_toggle").on("click", function () { mlab_set_display_settings.pageTextSizeToggle("mlab_content"); });
+
+//Uses on pagecreate to get the page name to display when the page is loaded the first time
+        $( document ).on( "pagecreate", function( event ) {  
+            var pageTitle = window.document.title;
+            $("#mlab_page_name").text(pageTitle);
+        });
+        
+        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
+        mlab.api.navigation.pageDisplay(-1, 0);
+        
       
     };
   
-    //Uses on pagecreate to get the page name to display when the page is loaded the first time
-    $( document ).on( "pagecreate", function( event ) {  
-        var pageTitle = window.document.title;
-        $("#mlab_page_name").text(pageTitle);
-    } );
-    
 </script>
 </head>
 <body id="page_body">
@@ -112,8 +96,6 @@
             <div id="content">
                 <div id="mlab_editable_area" class="mlab_editable_area">
                     <!-- Where the content/components is placed -->
-                    sdf sdf sdf sdf sdf sdf
-                    
                 </div>
             </div>
         </div><!-- /Content -->
