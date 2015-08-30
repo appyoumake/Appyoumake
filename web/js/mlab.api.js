@@ -65,38 +65,38 @@ function Mlab_api () {
     documentOb.on("offline", function() { self.online = false; });
     mlab.api = this;
     
-    // added by arild
+// added by arild
 // this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
 // these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
 // THE REASON FOR THIS IS THAT JQUERY WILL NOT CONFIRM RECEIVED FILE IF A .JS FILE DOES NOT CONTAIN VALID JS FIL
 // AT THE SAME TIME WE NEED TO CONTROL THE LOADING OF THESE FILES AS THEY ARE USED TO INITIALISE COMPONENTS
 
-    /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
-        Also splitting in index_html, because we do not know what parameters there are.
-     */
+/* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
+    Also splitting in index_html, because we do not know what parameters there are.
+ */
     var mlab_ready_triggered = false;
     var path = '' + window.location.href.split('index.html')[0];
-    /* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
-        file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
-    */
+/* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
+    file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
+*/
     $.get(path + "js/include_comp.txt")
             .done(function(data) {
                     var components = data.split("\n");
                     var componentsLength = components.length;
                     var componentsAdded = 0;
-                    // MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
+// MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
                     $.each(components, function(i, component) {
-                        // MK: js/ was already part of the component name
+// MK: js/ was already part of the component name
                         var name = component.replace("_code_rt.js", "").replace("/js/", "");
                         $.get(path + component, function(componentCode) {
-            //we need to attach the code_rt.js content to an object so we can use it as JS code
+//we need to attach the code_rt.js content to an object so we can use it as JS code
                             eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
-            //here we create the api objects inside the newly created object
+//here we create the api objects inside the newly created object
                             mlab.api.components[name].api = mlab.api;
                             componentsAdded += 1;
-                            /* MK: Because ajax is asynchronous, we do not know the order in which the components will be added
-                                Only when these numbers add up do we know that everything is OK 
-                            */
+/* MK: Because ajax is asynchronous, we do not know the order in which the components will be added
+    Only when these numbers add up do we know that everything is OK 
+*/
                             if (componentsAdded == componentsLength) {
             // MK: Not sure if this is the way it should be, but "pagecontainerload" was never triggered.
                                 $(document).trigger("mlabready");
@@ -177,7 +177,7 @@ Mlab_api.prototype = {
     },
     
     
-    /* ---- functions that are run locally if no plugin is loaded ---- */
+/* ---- functions that are run locally if no plugin is loaded ---- */
     
     /* Sets state for user, also makes sure it is saved for later use.
      * @param {String} user User ID for the currently logged in user. Required.
@@ -352,6 +352,7 @@ Mlab_api.prototype = {
     logoffRemotely: function(service) {
         return this.internal.dispatchToPlugin("logoffRemotely", service);
     },
+    
     /**
      * Getter/setter for the login token string.
      * @param {String} service The short_name of the service
@@ -369,11 +370,12 @@ Mlab_api.prototype = {
         return false;
     },
     
-    /**
-     * Object used for navigation functionality at runtime
-     * (added by arild)
-     */
+//-------- OBJECT THAT CONTAIN SUB FUNCTIONS FOR DIFFERENT APP RELATED TASKS --------//
     
+/**
+ * Object used for navigation functionality at runtime
+ * (added by arild)
+ */
     navigation: {
         current_page: 0,
         max_pages: 0,
@@ -462,7 +464,10 @@ Mlab_api.prototype = {
         
     },
     
-//object for display functionality, primarily for resizing 
+
+/**
+ * object for display functionality, primarily for resizing components
+ */
     display: {
         self: this,
 /**
@@ -559,9 +564,10 @@ Mlab_api.prototype = {
         
     },
     
-    /**
-     * Object that keeps the functions that are not part of the main API of mlab.
-     */
+
+/**
+ * Object that keeps the functions that are not part of the outward facing API of mlab.
+ */
     internal: {
         /* Pointer to main mlab object */
         self: null,
@@ -735,10 +741,11 @@ Mlab_api.prototype = {
         },
     
     },
-        /**
-     * Object used for changing settings at runtime
-     */
-    
+
+
+/**
+ * Object used for changing settings at runtime
+ */   
     settings: {
 
         /**
