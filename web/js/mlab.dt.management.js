@@ -478,14 +478,14 @@ Mlab_dt_management.prototype = {
             final_doc.title = this.parent.app.curr_pagetitle;
             var html = (new XMLSerializer()).serializeToString(final_doc);
         } else {
-            var html = "<!DOCTYPE html>\n<html><head><title>" + this.parent.app.curr_pagetitle + "</title></head><body>" + page_content + "</body></html>";
+            var html = page_content;
         }
 
         curr_el.addClass("mlab_current_component");
 
 //finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
         var that = this;
-        $.post( url, {html: html}, function( data ) {
+        $.post( url, {title: this.parent.app.curr_pagetitle, html: html}, function( data ) {
 
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
             that.parent.counter_saving_page--;

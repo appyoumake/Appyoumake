@@ -7,8 +7,8 @@
    Page
    ========================================================================== */
 
-#mlab_editor_chrome #page,
-#page {
+#mlab_editor_chrome [data-role="page"],
+#mlab_page_body {
     margin: 0;
     padding: 0;
     display: block;
@@ -16,6 +16,6 @@
     background-color: #1e1e1e;  
 }
 
-#page #content {
+#mlab_page_body #content {
     padding: 0.6em;
 }

@@ -790,6 +790,7 @@ if (typeof mlab == "undefined") {
 }
 
 $(document).ready(function() {
+    
     console.log("EVENT: ready");
     
     if ($("body").attr("id") != "mlab_editor") {
@@ -831,4 +832,3 @@ $(document).ready(function() {
         });
     }
 });
- 

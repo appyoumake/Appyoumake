@@ -518,15 +518,22 @@ class FileManagement {
         }
     }
     
-    public function savePage($app, $page_num, $html) {
+    public function savePage($app, $page_num, $title, $html) {
 //get path of file to save
         if ($page_num == "index") {
             $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
+            return file_put_contents ($file_path, $html);
         } else {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";;
+            $template_page_path = $app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
+            $page = str_replace(array("%%TITLE%%", "%%CONTENT%%"), array($title, $html), file_get_contents ($template_page_path));
+//We use this code to save to cache directory as well, if so we will have a complete path, not a page number
+            if(is_numeric($page_num)) {
+                $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";
+            } else {
+                $file_path = $page_num;
+            }
+            return file_put_contents ($file_path, $page);
         }
-        
-        return file_put_contents ($file_path, $html) ;
     }
     
     /**
@@ -972,8 +979,7 @@ class FileManagement {
         $doc->loadHTML($frontpage_content);
         libxml_clear_errors();
         $content = $doc->saveHtml($doc->getElementById($config["app"]["content_id"]));
-        $html = "<!DOCTYPE html>\n<html><head><title>" . $doc->getElementsByTagName('title')->item(0)->textContent . "</title></head><body>" . $content . "</body></html>";
-        file_put_contents($cached_app_path . "000.html", $html);
+        $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
 
 //get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
         preg_match_all('~%%(.+?)%%~', $frontpage_content, $placeholders);
