@@ -72,7 +72,7 @@
             </div>
             
             
-            <div class="new_line">
+            <div class="new_line hidden">
                 {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
                 {{ form_errors(form.splashFile) }}
                 {{ form_widget(form.splashFile) }}
@@ -106,9 +106,9 @@
                     <input id="mlab_local_iconfile" name="mlab_local_iconfile" type="file">
                     <button class="button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('local');">{% trans %}builder.new.app.name.addIconFileImage{% endtrans %}</button>
                     
-                    <label for="mlab_icon_text">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
-                    <input id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
-                    <button class="button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('foreground_image_src');">{% trans %}builder.new.app.name.addIconText{% endtrans %}</button>
+                    <label class="hidden" for="mlab_icon_text ">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
+                    <input class="hidden" id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
+                    <button class="hidden button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('foreground_image_src');">{% trans %}builder.new.app.name.addIconText{% endtrans %}</button>
                 </div>
             </fieldset>
 
@@ -538,7 +538,7 @@
                                       $('#form_categoryOne option:selected').html() + " - " +
                                       $('#form_categoryTwo option:selected').html() + " - " +
                                       $('#form_categoryThree option:selected').html() + "</div>" +
-                                      "<div class='mlab_splash'><img id='mlab_splash_preview' width='128' height='128'><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.splashScreen{% endtrans %}</span></div>" + 
+                                      "<div class='hidden mlab_splash'><img id='mlab_splash_preview' width='128' height='128'><span class='hidden mlab_app_new_summary'>{% trans %}builder.new.app.submit.splashScreen{% endtrans %}</span></div>" + 
                                       "</fieldset>" +
                                       "<p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>";
 
