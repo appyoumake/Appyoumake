@@ -302,10 +302,10 @@ ul#mlab_menu {
 }
 
 /* Feature and storage list */
-#mlab_editor #mlab_editor_menu_dropdown_content #mlab_component_size_list li, 
-#mlab_editor #mlab_editor_menu_dropdown_content #mlab_component_aspect_list li, 
+#mlab_editor #mlab_component_size_list li, 
+#mlab_editor #mlab_component_aspect_list li, 
 #mlab_editor #mlab_editor_menu_dropdown_content #mlab_features_list li, 
-#mlab_editor #mlab_editor_menu_dropdown_content #mlab_storage_plugin_list li {
+#mlab_editor #mlab_storage_plugin_list li {
     cursor: pointer;
     list-style: none;
     color: green;
@@ -313,10 +313,10 @@ ul#mlab_menu {
     font-family:Arial, Helvetica, sans-serif;
 }
 
-#mlab_editor #mlab_editor_menu_dropdown_content #mlab_component_size_list li.mlab_item_applied:before, 
-#mlab_editor #mlab_editor_menu_dropdown_content #mlab_component_aspect_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_component_size_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_component_aspect_list li.mlab_item_applied:before, 
 #mlab_editor #mlab_editor_menu_dropdown_content #mlab_features_list li.mlab_item_applied:before, 
-#mlab_editor #mlab_editor_menu_dropdown_content #mlab_storage_plugin_list li.mlab_item_applied:before {
+#mlab_editor #mlab_storage_plugin_list li.mlab_item_applied:before {
     content: "\2713 ";
     margin-left: -1em;
     margin-right: .100em;

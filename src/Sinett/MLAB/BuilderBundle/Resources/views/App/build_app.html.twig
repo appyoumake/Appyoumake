@@ -51,16 +51,20 @@
     <div id="mlab_storage_plugin_list" style="display: none;"></div>
 
     <div id="mlab_component_size_list" style="display: none;">
-        <li data-mlab-comp-size="small"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>Small</li>
-        <li data-mlab-comp-size="medium"     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>Medium</li>
-        <li data-mlab-comp-size="large"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>Large</li>
-        <li data-mlab-comp-size="fullscreen" onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>Full Screen</li>
+        <ul>
+            <li data-mlab-comp-size="small"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>Small</li>
+            <li data-mlab-comp-size="medium"     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>Medium</li>
+            <li data-mlab-comp-size="large"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>Large</li>
+            <li data-mlab-comp-size="fullscreen" onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>Full Screen</li>
+        </ul>
     </div>
 
     <div id="mlab_component_aspect_list" style="display: none;">
-        <li data-mlab-comp-aspect="4:3" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>4:3</li>
-        <li data-mlab-comp-aspect="16:9" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>16:9</li>
-        <li data-mlab-comp-aspect="1:1" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>1:1</li>
+        <ul>
+            <li data-mlab-comp-aspect="4:3" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>4:3</li>
+            <li data-mlab-comp-aspect="16:9" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>16:9</li>
+            <li data-mlab-comp-aspect="1:1" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>1:1</li>
+        </ul>
     </div>
 
     <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
