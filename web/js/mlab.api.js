@@ -50,14 +50,58 @@ function Mlab_api () {
     // Populate the configs object
     this.internal.fetchConfigs();
     
-    /* Online/offline state. We assume we are starting online, and handle any change. */
+//add storage for the app specific variables (generated in the pre-compile processing function)
+// to the object here
+    this.variables = new Object();
+    
+/* Online/offline state. We assume we are starting online, and handle any change. */
     this.online = true;
     
     documentOb.on("online", function() { self.online = true; });
     documentOb.on("offline", function() { self.online = false; });
-    mlab.api = this;
     
-    if (typeof inititaliseMlabApp!="undefined") documentOb.trigger("mlabready");
+// added by arild
+// this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
+// these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
+// THE REASON FOR THIS IS THAT JQUERY WILL NOT CONFIRM RECEIVED FILE IF A .JS FILE DOES NOT CONTAIN VALID JS FIL
+// AT THE SAME TIME WE NEED TO CONTROL THE LOADING OF THESE FILES AS THEY ARE USED TO INITIALISE COMPONENTS
+
+/* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
+    Also splitting in index_html, because we do not know what parameters there are.
+ */
+    var mlab_ready_triggered = false;
+    var path = '' + window.location.href.split('index.html')[0];
+/* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
+    file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
+*/
+    $.get(path + "js/include_comp.txt")
+            .done(function(data) {
+                    var components = data.split("\n");
+                    var componentsLength = components.length;
+                    var componentsAdded = 0;
+// MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
+                    $.each(components, function(i, component) {
+// MK: js/ was already part of the component name
+                        var name = component.replace("_code_rt.js", "").replace("/js/", "");
+                        $.get(path + component, function(componentCode) {
+//we need to attach the code_rt.js content to an object so we can use it as JS code
+                            eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
+//here we create the api objects inside the newly created object
+                            mlab.api.components[name].api = mlab.api;
+                            componentsAdded += 1;
+/* MK: Because ajax is asynchronous, we do not know the order in which the components will be added
+    Only when these numbers add up do we know that everything is OK 
+*/
+                            if (componentsAdded == componentsLength) {
+            // MK: Not sure if this is the way it should be, but "pagecontainerload" was never triggered.
+                                $(document).trigger("mlabready");
+                            } 
+                        });
+                    });
+                })
+            .fail(function() {
+                  $(document).trigger("mlabready");
+                });
     return this;
 }
 
@@ -83,58 +127,6 @@ Mlab_api.prototype = {
     getLocale: function() {
         return this.parent.locale;
     },
-    
-    /**
-     * Runs when mlab object has been set up.
-     */
-    onMlabReady: function() {
-        
-//add the app specific variables (generated in the pre-compile processing function)
-// to the object here
-        if (typeof (MLAB_RT_VARS) != "undefined") {
-            mlab.variables = MLAB_RT_VARS;
-        } else  {
-            mlab.variables = new Object();
-        }
-        $.mobile.initializePage();
-
-// added by arild
-// this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
-// these are name COMPONENTNAME_code_rt.js, for instance googlemap_code_rt.js
-// THE REASON FOR THIS IS THAT JQUERY WILL NOT CONFIRM RECEIVED FILE IF A .JS FILE DOES NOT CONTAIN VALID JS FIL
-// AT THE SAME TIME WE NEED TO CONTROL THE LOADING OF THESE FILES AS THEY ARE USED TO INITIALISE COMPONENTS
-
-        /* MK: Slightly different handling of path. Adding it to empty string, to make sure we get a copy.
-            Also splitting in index_html, because we do not know what parameters there are.
-         */
-        var path = ''+window.location.href.split('index.html')[0];
-        /* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
-            file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
-        */
-        $.get(path + "js/include_comp.txt", function(data) {
-            var components = data.split("\n");
-            var componentsLength = components.length;
-            var componentsAdded = 0;
-            // MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
-            $.each(components, function(i, component) {
-                // MK: js/ was already part of the component name
-                var name = component.replace("_code_rt.js", "").replace("/js/", "");
-                $.get(path + component, function(componentCode, status, xhr) {
-//we need to attach the code_rt.js content to an object so we can use it as JS code
-                    eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
-//here we create the api objects inside the newly created object
-                    mlab.api.components[name].api = mlab.api;
-                    componentsAdded += 1;
-                    /* MK: Because ajax is asynchronous, we do not know the order in which the components will be added
-                        Only when these numbers add up do we know that everything is OK 
-                    */
-                    if (componentsAdded==componentsLength) $(document).trigger("pagecontainerload"); // MK: Not sure if this is the way it should be, but "pagecontainerload" was never triggered.
-                });
-            });
-        });
-        inititaliseMlabApp();
-    },
-    
     
     setupStoragePlugin: function(el) {
         var variables = this.getAllVariables(el);
@@ -180,7 +172,7 @@ Mlab_api.prototype = {
     },
     
     
-    /* ---- functions that are run locally if no plugin is loaded ---- */
+/* ---- functions that are run locally if no plugin is loaded ---- */
     
     /* Sets state for user, also makes sure it is saved for later use.
      * @param {String} user User ID for the currently logged in user. Required.
@@ -355,13 +347,14 @@ Mlab_api.prototype = {
     logoffRemotely: function(service) {
         return this.internal.dispatchToPlugin("logoffRemotely", service);
     },
+    
     /**
      * Getter/setter for the login token string.
      * @param {String} service The short_name of the service
      * @param {String} token. Token to be set. Optional.
      * @return {String} or {false}. The currently set token, or false if not set.
      */
-    loginToken: function(service, token) {
+    loginToken: function(service, token) {l
         if (typeof service=="undefined") return false;
         var loginTokens = this.internal.fetchTokens();
         if (typeof token!="undefined") {
@@ -372,11 +365,12 @@ Mlab_api.prototype = {
         return false;
     },
     
-    /**
-     * Object used for navigation functionality at runtime
-     * (added by arild)
-     */
+//-------- OBJECT THAT CONTAIN SUB FUNCTIONS FOR DIFFERENT APP RELATED TASKS --------//
     
+/**
+ * Object used for navigation functionality at runtime
+ * (added by arild)
+ */
     navigation: {
         current_page: 0,
         max_pages: 0,
@@ -393,12 +387,12 @@ Mlab_api.prototype = {
  * @returns {undefined}
  */
         pageDisplay: function (current, move_to) {
-            var filename, selector = "";
+            var filename = "";
             var new_location = 0;
             switch (move_to) {
                 case 0:
                 case "index":
-                    filename = "index.html";
+                    filename = "000.html";
                     new_location = 0;
                     break;
 
@@ -426,7 +420,7 @@ Mlab_api.prototype = {
                         return current;
                     }
                     if (current == 1) {
-                        filename = "index.html";
+                        filename = "000.html";
                         new_location = 0;
                     } else {
                         current--;
@@ -448,7 +442,7 @@ Mlab_api.prototype = {
                         return current;
                     }
                     if (move_to == 0) {
-                        filename = "index.html";
+                        filename = "000.html";
                     } else {
                         filename = ("000" + move_to).slice(-3) + ".html";
                     }
@@ -456,24 +450,35 @@ Mlab_api.prototype = {
                     break;
             }
 
-        //have calculated the file name, now we need to try to load it
-        //must load only content from the index.html to avoid duplicates inside each other
-            if (filename == "index.html") {
-                selector = " #content";
-            }
-            
+//have calculated the file name, now we need to try to load it
             $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
             //$.mobile.pageContainer.pagecontainer("load", "/Palestinian/epg47/show");
 
             return new_location;
         },
         
-        prepareComponents: function (e, ui) {
+    },
+    
+
+/**
+ * object for display functionality, primarily for resizing components
+ */
+    display: {
+        self: this,
+/**
+ * Goes through the components on a page and calls the onPageLoad function (if it exists)
+ * This is for components that does not require the layout of the page to be done
+ * It is called from jquery mobile's pagecreate
+ * @param {type} e
+ * @param {type} ui
+ * @returns {undefined}
+ */
+        prepareRegularComponents: function (e) {
             /* timestamp & ui object */
             console.log(e.type + " " + Date(e.timeStamp));
-            console.log(ui);
+            var components = $('[data-mlab-type]:not([data-mlab-displaydependent="true"])');
             
-            $("#content > div > div" ).each( function() {
+            components.each( function() {
                 var comp_id = $( this ).data("mlab-type");
                 if (typeof mlab.api.components[comp_id] != "undefined" && typeof mlab.api.components[comp_id].onPageLoad != "undefined") {
                     mlab.api.components[comp_id].onPageLoad($(this), mlab.api.getAllVariables($(this)));
@@ -481,11 +486,82 @@ Mlab_api.prototype = {
             });    
         },
         
+/**
+ * Goes through the components on a page and calls the onPageLoad function (if it exists)
+ * This is for components that does not require the layout of the page to be done
+ * It is called from jquery mobile's pagecreate
+ * @param {type} e
+ * @param {type} ui
+ * @returns {undefined}
+ */
+        prepareDisplayDependentComponents: function (e, ui) {
+            /* timestamp & ui object */
+            console.log(e.type + " " + Date(e.timeStamp));
+            console.log(ui);
+            var components = $('[data-mlab-type][data-mlab-displaydependent="true"]');
+            
+            components.each( function() {
+                var comp_id = $( this ).data("mlab-type");
+                if (typeof mlab.api.components[comp_id] != "undefined" && typeof mlab.api.components[comp_id].onPageLoad != "undefined") {
+                    mlab.api.components[comp_id].onPageLoad($(this), mlab.api.getAllVariables($(this)));
+                }
+            });    
+        },
+        
+/**
+ * Updates the aspect ratio setting for a component by updating the data-mlab-ratio setting
+ * @param {type} el
+ * @param {type} size
+ * @returns {undefined}
+ */
+        setAspectRatio: function (el, aspect) {
+            if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
+                $(el).attr("data-mlab-aspectratio", aspect);
+                this.updateDisplay(el);
+            }
+        },
+        
+/**
+ * Updates the size setting for a component by updating the data-mlab-size setting
+ * Initially this is small, medium, large and fullpage
+ * @param {type} el
+ * @param {type} size
+ * @returns {undefined}
+ */
+        setSize: function (el, size) {
+            if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
+                $(el).attr("data-mlab-size", size);
+                this.updateDisplay(el);
+            }
+        },
+        
+/**
+ * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * @param {type} el: Optional, the element to display. If not specified, then update all components
+ * @returns {undefined}
+ */
+        updateDisplay: function (el) {
+            var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
+            
+            components.each( function() {
+                var device_width = $('[data-role="page"]').first().width();
+                var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
+                var size = $(this).attr("data-mlab-size");
+                var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
+                
+                var w = (device_width * times);
+                var h = (w / aspect_ratio[0]) * aspect_ratio[1];
+                $(this).css( {"width": w + "px", "height": h + "px"} );
+
+            });    
+        },
+        
     },
     
-    /**
-     * Object that keeps the functions that are not part of the main API of mlab.
-     */
+
+/**
+ * Object that keeps the functions that are not part of the outward facing API of mlab.
+ */
     internal: {
         /* Pointer to main mlab object */
         self: null,
@@ -659,10 +735,11 @@ Mlab_api.prototype = {
         },
     
     },
-        /**
-     * Object used for changing settings at runtime
-     */
-    
+
+
+/**
+ * Object used for changing settings at runtime
+ */   
     settings: {
 
         /**
@@ -705,26 +782,53 @@ Mlab_api.prototype = {
     },
 }; // end prototype for Mlab.api
 
-
-
 /* 
  * Mlab object is stored in a global variable "mlab", and is initialized automatically when device is ready.
  */
-if (typeof mlab=="undefined") {
-    var mlab = {"api":null};
+if (typeof mlab == "undefined") {
+    mlab = {"api": null};
 }
 
-$(document).on("deviceready", function() {
-    console.log("deviceready");
-    mlab.api = new Mlab_api();
-});
-$(document).on("ready", function() {
-    console.log("ready");
-    // Problem: This must only be triggered if we are in a browser, and "deviceready" isn't triggered otherwise
-    $(this).trigger("deviceready");
-});
-$(document).on("mlabready", function() {
-    console.log("mlabready");
-    if (mlab.api) mlab.api.onMlabReady();
-});
+$(document).ready(function() {
+    
+    console.log("EVENT: ready");
+    
+    if ($("body").attr("id") != "mlab_editor") {
+        console.log("STATE: mobile mode, init own object");
 
+
+        mlab.api = new Mlab_api();
+
+//page create for main page (that will contain other pages) only for index page
+        $( document ).on( "pagecreate", "#index", function ( event ) {
+            console.log("EVENT: pagecreate-index");
+        });
+
+//general pagecreate, run component code for components that do not care about display
+        $( document ).on( "pagecreate", function ( event ) {
+            console.log("EVENT: pagecreate-general");
+            mlab.api.display.prepareRegularComponents(event);
+        });
+
+//general pagecontainerbeforeshow, run component code for components that require size information, ie. display is done
+        $( document ).on( "pagecontainershow", function ( event, ui ) {
+            console.log("EVENT: pagecontainershow");
+            mlab.api.display.prepareDisplayDependentComponents(event, ui);
+            mlab.api.display.updateDisplay();
+        });
+
+//when the orientation changes we must redraw the komponents that require specific resizing
+        $( window ).on( "orientationchange", function ( event ) {
+            console.log("EVENT: orientationchange");
+            mlab.api.display.updateDisplay();
+        });
+
+//used to call app specific initialisation routine
+        $(document).on("mlabready", function() {
+            console.log("mlabready");
+            if (typeof mlabInitialiseApp != "undefined") {
+                mlabInitialiseApp();
+            }
+        });
+    }
+});

@@ -72,9 +72,12 @@ Mlab_dt_design.prototype = {
             alert("You can only have one component of this type on a page");
             return;
         }
+        
+        var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
+        var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
 
 //add a DIV wrapper around all components, makes it easier to move it up/down later
-        var new_comp = $("<div data-mlab-type='" + id + "' style='display: block;'>" + this.parent.components[id].html + "</div>");
+        var new_comp = $("<div data-mlab-type='" + id + "' " + data_resize + " " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
@@ -183,6 +186,8 @@ Mlab_dt_design.prototype = {
         $(".mlab_current_component").remove();
         if (sel_comp.length > 0) {
             this.component_highlight_selected(sel_comp);
+        } else {
+            $('#mlab_toolbar_for_components').hide();
         }
         this.parent.flag_dirty = true;
     },
@@ -206,8 +211,11 @@ Mlab_dt_design.prototype = {
                 return;
             }
         }
+        var c = this.parent.components[comp_id].conf;
+        var data_resize = (typeof c.resizeable != "undefined" && c.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
+        var data_display_dependent = ((typeof c.display_dependent != "undefined" && c.display_dependent == true) || (typeof c.resizeable != "undefined" && c.resizeable == true)) ? "data-mlab-displaydependent='true'" : "";
 
-        $(this.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "'>" + this.parent.components[comp_id].html + "</div>");
+        $(this.parent.app.curr_indexpage_html).find("#mlab_features_content").append("<div data-mlab-type='" + comp_id + "' " + data_resize + " " + data_display_dependent + " >" + this.parent.components[comp_id].html + "</div>");
 
         var new_feature = $(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']");
         if (new_feature.length > 0) {
@@ -351,6 +359,7 @@ Mlab_dt_design.prototype = {
         }
         
         
+//display storage selection list button, if this supports storage
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
             $("#mlab_button_select_storage_plugin").removeClass("mlab_hidden");
             $("#mlab_storage_plugin_list li").removeClass("mlab_item_applied");
@@ -361,6 +370,20 @@ Mlab_dt_design.prototype = {
             }
         } else {
             $("#mlab_button_select_storage_plugin").addClass("mlab_hidden");
+        }
+        
+//display size and aspect ratio selection list buttons, if this supports resizing
+        if (typeof conf.resizeable != "undefined" && conf.resizeable == true) {
+            $("#mlab_button_component_size").removeClass("mlab_hidden");
+            $("#mlab_button_component_aspect").removeClass("mlab_hidden");
+            $("#mlab_component_size_list li").removeClass("mlab_item_applied");
+            $("#mlab_component_aspect_list li").removeClass("mlab_item_applied");
+//update the menus with the existing selection, if any
+            $("#mlab_component_size_list [data-data-mlab-comp-size='" + curr_comp.data("mlab-comp-size") + "']").addClass("mlab_item_applied");
+            $("#mlab_component_aspect_list [data-data-mlab-comp-aspect='" + curr_comp.data("mlab-comp-aspect") + "']").addClass("mlab_item_applied");
+        } else {
+            $("#mlab_button_component_size").addClass("mlab_hidden");
+            $("#mlab_button_component_aspect").addClass("mlab_hidden");
         }
 
         $('#mlab_toolbar_for_components').show();

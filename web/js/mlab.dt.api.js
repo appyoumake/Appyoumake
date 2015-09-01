@@ -628,7 +628,63 @@ Mlab_dt_api.prototype = {
                 }
             }).dialog("open");
             
-    }
+    },
+    
+//object for display functionality, primarily for resizing 
+    display: {
+        self: this,
+        
+/**
+ * Updates the aspect ratio setting for a component by updating the data-mlab-ratio setting
+ * @param {type} el
+ * @param {type} size
+ * @returns {undefined}
+ */
+        setAspectRatio: function (el, aspect) {
+            debugger;
+            if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
+                $(el).attr("data-mlab-aspectratio", aspect);
+                this.updateDisplay(el);
+            }
+        },
+        
+/**
+ * Updates the size setting for a component by updating the data-mlab-size setting
+ * Initially this is small, medium, large and fullpage
+ * @param {type} el
+ * @param {type} size
+ * @returns {undefined}
+ */
+        setSize: function (el, size) {
+            debugger;
+            if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
+                $(el).attr("data-mlab-size", size);
+                this.updateDisplay(el);
+            }
+        },
+        
+/**
+ * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * @param {type} el: Optional, the element to display. If not specified, then update all components
+ * @returns {undefined}
+ */
+        updateDisplay: function (el) {
+            var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
+            
+            components.each( function() {
+                var device_width = $('[data-role="page"]').first().width();
+                var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
+                var size = $(this).attr("data-mlab-size");
+                var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
+                
+                var w = (device_width * times);
+                var h = (w / aspect_ratio[0]) * aspect_ratio[1];
+                $(this).css( {"width": w + "px", "height": h + "px"} );
+
+            });    
+        },
+        
+    },
 
 }
 

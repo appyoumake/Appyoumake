@@ -6,14 +6,14 @@
 /* ==========================================================================
    Page
    ========================================================================== */
-#page #mlab_content {
+#mlab_page_body #content_wrapper {
    margin-top: 15%;
    margin-bottom: 5%;
    margin-left: 5%;
    margin-right: 5%;
 }
 
-#page #content {
+#mlab_page_body #content {
     overflow-y: visible;
     overflow-x: hidden;
 }
@@ -22,11 +22,11 @@
 /* ==========================================================================
    Typography
    ========================================================================== */
-#page #mlab_editable_area {
+#mlab_page_body #content {
     font-size: 100%;
 }
 
-#page #mlab_editable_area .mlab_large_text{
+#mlab_page_body #content .mlab_large_text{
     font-size: 140%;
 }
 
@@ -34,7 +34,7 @@
 /* ==========================================================================
    Header
    ========================================================================== */
-#page #mlab_header {
+#mlab_page_body .mlab_header {
     padding: 0;
     margin: 0;
     background-image: url('./img/contentpage_header_backgr.png');
@@ -51,14 +51,14 @@
     border-color: #666666;
 }
 
-#page #mlab_header_box{
+#mlab_page_body .mlab_header_box{
     padding: 0;
     margin: 0;
     overflow: hidden;
 }
 
-#page #mlab_previous_page, 
-#page #mlab_next_page {
+#mlab_page_body .mlab_nav_previous_page, 
+#mlab_page_body .mlab_nav_next_page {
     padding-bottom: 8%;
     width: 7%;
     margin-left: 2%;
@@ -70,12 +70,12 @@
     background-image: url('./img/btn_prev.svg');
 }
 
-#page #mlab_next_page {
+#mlab_page_body .mlab_nav_next_page {
     background-image: url('./img/btn_next.svg');  
     float: right;
 }
 
-#page #mlab_page_name {
+#mlab_page_body .mlab_page_name {
     float: left;
     max-width: 34%;
     width: 34%;
@@ -85,9 +85,9 @@
     font-size: 4vw;
 }
 
-#page #mlab_btn_menu, 
-#page #mlab_btn_heraldisk,  
-#page #mlab_btn_settings{
+#mlab_page_body .mlab_btn_menu, 
+#mlab_page_body .mlab_btn_heraldisk,  
+#mlab_page_body .mlab_btn_settings {
     padding: 0;
     margin: 0;
     background-repeat: no-repeat;
@@ -96,20 +96,20 @@
     float: left;  
 }
 
-#page #mlab_btn_menu {
+#mlab_page_body .mlab_btn_menu {
     background-image: url('./img/btn_menu.svg');
     width: 7%;
     margin-right: 5%;
 }
 
-#page #mlab_btn_heraldisk {
+#mlab_page_body .mlab_btn_heraldisk {
     background-image: url('./img/btn_heraldisk.svg');
     width: 10%;
     margin-left: 5%;
     margin-top: 1%;
 }
 
-#page #mlab_btn_settings {
+#mlab_page_body .mlab_btn_settings {
     background-image: url('./img/btn_settings.svg');
     width: 7%;
     float: right;
@@ -120,42 +120,42 @@
 /* ==========================================================================
    Menu and Settings Panel
    ========================================================================== */
-#page #mlab_menu_panel, 
-#page #mlab_settings_panel {
+#mlab_page_body .mlab_menu_panel, 
+#mlab_page_body .mlab_settings_panel {
     padding: 1%;
     background-color: #ffffff;
     color: #333333; 
     opacity: 0.92;
 }
 
-#page #mlab_settings_heading,
-#page #mlab_menu_heading {
+#mlab_page_body .mlab_settings_heading,
+#mlab_page_body .mlab_menu_heading {
     font-size: 1.4em;
     font-weight: bold;
     padding-top: 3em;
 }
 
-#page #mlab_settings_heading {
+#mlab_page_body .mlab_settings_heading {
     padding-top: 2em;
 }
 
-#page #mlab_hr_panel {
+#mlab_page_body .mlab_hr_panel {
     border: 0;
     height: 1px;
     background: #333;
     background-image: linear-gradient(to right, #ccc, #333, #ccc);
 }
 
-#page #mlab_settings_text,
-#page #mlab_menu_text {
+#mlab_page_body .mlab_settings_text,
+#mlab_page_body .mlab_menu_text {
     font-size: 0.9em;
     margin-top: 0.5em;
 }
 
-#page #mlab_btn_color_toggle, 
-#page #mlab_btn_txsize_toggle,
-#page #mlab_btn_close,
-#page #mlab_btn_close_menu {
+#mlab_page_body .mlab_btn_color_toggle, 
+#mlab_page_body .mlab_btn_txsize_toggle,
+#mlab_page_body .mlab_btn_close,
+#mlab_page_body .mlab_btn_close_menu {
     padding: 0;
     margin: 0;
     background-repeat: no-repeat;
@@ -166,23 +166,23 @@
     background-image: url('./img/btn_color_toggle.svg');
 }
 
-#page #mlab_btn_txsize_toggle {
+#mlab_page_body .mlab_btn_txsize_toggle {
     background-image: url('./img/btn_txsize.svg');
 }
 
-#page #mlab_btn_close,
-#page #mlab_btn_close_menu {
+#mlab_page_body .mlab_btn_close,
+#mlab_page_body .mlab_btn_close_menu {
     background-image: url('./img/btn_close.svg');
     float: right;
     margin-top: 0em;
     width: 1.7em;
 }
 
-#page #mlab_btn_close_menu {
+#mlab_page_body .mlab_btn_close_menu {
     float: left;
 }
 
-#page #mlab_creators {
+#mlab_page_body .mlab_creators {
     font-size: 0.7em;
 }
 

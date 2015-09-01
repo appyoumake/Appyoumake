@@ -195,6 +195,12 @@ part of a list */
 
 }
 
+/* */
+#content .mc_display.mc_qr_border {
+    border: solid 10px white;
+    padding: 0px;
+}
+
 /* TODO annet navn???  */
 #content .mc_display.mc_figure_with_caption {
     padding-bottom: 0.1em;

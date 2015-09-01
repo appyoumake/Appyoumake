@@ -193,9 +193,21 @@
                         
 //prepare the menu popup for the storage plugin selector
                         $("#mlab_button_select_storage_plugin").click( function(event) {
-                            
                             var div = $("#mlab_storage_plugin_list");
-                            
+                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
+                               .fadeIn("slow");
+                        } );
+                        
+//prepare the menu popup for the component resizer
+                        $("#mlab_button_component_size").click( function(event) {
+                            var div = $("#mlab_component_size_list");
+                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
+                               .fadeIn("slow");
+                        } );
+                        
+//prepare the menu popup for the component aspect ratio selector
+                        $("#mlab_button_component_aspect").click( function(event) {
+                            var div = $("#mlab_component_aspect_list");
                             div.css({ position: "absolute", top: event.pageY, left: event.pageX })
                                .fadeIn("slow");
                         } );

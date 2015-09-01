@@ -261,38 +261,45 @@ this.custom_edit_quiz = function(el) {
     var id = this.domRoot.attr("id");
     
     var content = $('<div id="mlab_dt_quiz_tabs_' + id + '">' + 
-                    '    <ul>' + 
-                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
-                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
-                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
-                    '        <li><a href="#mlab_dt_quiz_tabs_' + id + '_4">Responses</a></li>' + 
+                    '    <ul class="mlab_dt_tab_list">' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_4">Responses</a></li>' + 
                     '    </ul>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
-                    '        <label>' + this.editPrompts.pageTitle + '</label>' + 
-                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="pageTitle">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.pageTitle + '</label>' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="pageTitle">' + 
+                    '        <div class="mlab_dt_large_new_line"></div>' + 
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
-                    '        <label>' + this.editPrompts.explanatory + '</label>' + 
-                    '        <textarea class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="explanatory"></textarea>' + 
-                    '        <label>' + this.editPrompts.question + '</label>' + 
-                    '        <textarea class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="question"></textarea>' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.explanatory + '</label>' + 
+                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="explanatory"></textarea>' + 
+                    '        <div class="mlab_dt_larger_new_line"></div>' +        
+                    '        <label class="mlab_dt_text">' + this.editPrompts.question + '</label>' + 
+                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="question"></textarea>' + 
+                    '        <div class="mlab_dt_larger_new_line"></div>' +                     
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
-                    '        <label>' + this.editPrompts.questionType + '</label>' + 
-                    '        <img id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
-                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="questionType">' + 
-                    '        <label>' + this.editPrompts.mandatory + '</label>' + 
-                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="mandatory">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.questionType + '</label>' + 
+                    '        <img class="mlab_dt_picture" id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="questionType">' + 
+                    '        <div class="mlab_dt_largest_new_line"></div>' +   
+                    '        <label class="mlab_dt_text">' + this.editPrompts.mandatory + '</label>' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="mandatory">' + 
+                    '        <div class="mlab_dt_large_new_line"></div>' +
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
-                    '        <label>' + this.editPrompts.alternatives + '</label>' + 
-                    '        <textarea class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="response"></textarea>' + 
-                    '        <input type="button" class="' + this.classes.finishButton + '" value="Ferdig">' + 
-                    '        <label>' + this.editPrompts.correctResponse + '</label>' + 
-                    '        <input class="' + this.classes.userInput + '" data-mlab-dt-quiz-input="correctResponse">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.alternatives + '</label>' + 
+                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="response"></textarea>' + 
+                    '        <input type="button" class="mlab_dt_button_done ' + this.classes.finishButton + '" value="Ferdig">' + 
+                    '        <div class="mlab_dt_small_new_line"></div>' +  
+                    '        <label class="mlab_dt_text">' + this.editPrompts.correctResponse + '</label>' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="correctResponse">' + 
+                    '        <div class="mlab_dt_large_new_line"></div>' +         
                     '    </div>' + 
                     '</div>' + 
-                    '<input type="button" class="' + this.classes.cancelButton + '" value="Avbryt">' 
+                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right ' + this.classes.cancelButton + '" value="Avbryt">' 
                     );
 
     $(content).on("keyup", "." + self.classes.userInput, function(e) {

@@ -37,8 +37,8 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     font-family: Arial,Helvetica,sans-serif;
     text-align: left;
     color: #353535;
-    font-size: 10.5px;
-    line-height: 12px;
+    font-size: 12px;
+    line-height: 14px;
     direction: ltr;
     margin: 0.5em;
 }
@@ -84,6 +84,7 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 #mlab_editor .mlab_dt_button_cancel,
 #mlab_editor .mlab_dt_button_close,
 #mlab_editor .mlab_dt_button_retry,
+#mlab_editor .mlab_dt_button_done,
 #mlab_editor .mlab_dt_button_upload_files {
     background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, #B4B4B4 100%) repeat scroll center center rgba(0, 0, 0, 0);
     border: 1px solid #AAAAAA;
@@ -119,6 +120,15 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     padding: 22px;
 }
 
+#mlab_editor .mlab_dt_larger_new_line {
+    padding: 35px;
+}
+
+#mlab_editor .mlab_dt_largest_new_line {
+    padding: 44px;
+}
+
+
 #mlab_editor .mlab_dt_medium_new_line {
     padding: 12px;
 }
@@ -147,9 +157,12 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 */
 
 #mlab_editor .mlab_dt_input, 
+#mlab_editor .mlab_dt_large_input,
 #mlab_editor .mlab_dt_label, 
-#mlab_editor .mlab_dt_textarea, 
-#mlab_editor .mlab_dt_select {
+#mlab_editor .mlab_dt_textarea,
+#mlab_editor .mlab_dt_medium_textarea,
+#mlab_editor .mlab_dt_select,
+#mlab_editor .mlab_dt_picture {
     float: left;
     font-size:12px;
     font-family: Arial,Helvetica,sans-serif;
@@ -160,28 +173,53 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     padding-bottom: 0.2em;
 }
 
+#mlab_editor .mlab_dt_large_input {
+    min-width: 90%;
+}
 
-#mlab_editor .mlab_dt_label{
+#mlab_editor .mlab_dt_label {
     min-width: 55%;
 }
 
+#mlab_editor .mlab_dt_medium_textarea {
+    min-width: 90%;
+    min-height: 4em;
+} 
 
-/* ===  Image figure 
 
-#mlab_editor figure {
-    margin: 7px 25px 0px 0px;
+/* ===  Tabs  === */
+
+#mlab_editor .mlab_dt_tab {
+    //HER jeg skal legge til.... TODO
 }
 
-#mlab_editor figure img {
-   padding-bottom: 5px;
+#mlab_editor .mlab_dt_tab_list {
+border-bottom: 1px solid orange;
+padding-top: 0.5em;
+margin-bottom: 0.5em;   
 }
 
-#mlab_editor figure figcaption {
-   text-align: center;
-   font-style: italic;
-   font-size: 14px;
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab {
+font-size: 0.9em;
+font-family: Arial,Helvetica,sans-serif;
+padding: 0.3em;
+margin: 0.7px;
+margin-bottom: 0;
+border: 1px solid orange;
+border-bottom: 0;
+cursor: pointer;
 }
-=== */
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active {
+background-color: rgba(255,165,0,0.2);
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active a{
+outline: none;
+}
+
+
+
 
 /* ===  Placement  === */
 

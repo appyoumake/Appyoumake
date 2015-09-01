@@ -42,13 +42,31 @@
         <img onclick='mlab.dt.design.component_moveup();'    title='Move selected component up'     id='mlab_button_up'                     src='/img/tools/up.png'         class='mlab_tools' >
         <img onclick='mlab.dt.design.component_movedown();'  title='Move selected component down'   id='mlab_button_down'                   src='/img/tools/down.png'       class='mlab_tools' >
         <img onclick='mlab.dt.design.component_delete();'    title='Delete selected component'      id='mlab_button_delete'                 src='/img/tools/delete.png'     class='mlab_tools' >
+        <img                                                 title='Resize component'               id='mlab_button_component_size'         src='/img/tools/size.png'       class='mlab_tools mlab_hidden' >
+        <img                                                 title='Select aspect ratio'            id='mlab_button_component_aspect'       src='/img/tools/aspect.png'     class='mlab_tools mlab_hidden' >
         <img                                                 title='Select storage mechanism'       id='mlab_button_select_storage_plugin'  src='/img/tools/storage.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
         <div id='mlab_component_context_menu'></div>
     </div>
 
-    <div id="mlab_storage_plugin_list" style="display: none;">
-        
+    <div id="mlab_storage_plugin_list" style="display: none;"></div>
+
+    <div id="mlab_component_size_list" style="display: none;">
+        <ul>
+            <li data-mlab-comp-size="small"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>Small</li>
+            <li data-mlab-comp-size="medium"     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>Medium</li>
+            <li data-mlab-comp-size="large"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>Large</li>
+            <li data-mlab-comp-size="fullscreen" onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>Full Screen</li>
+        </ul>
     </div>
+
+    <div id="mlab_component_aspect_list" style="display: none;">
+        <ul>
+            <li data-mlab-comp-aspect="4:3" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>4:3</li>
+            <li data-mlab-comp-aspect="16:9" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>16:9</li>
+            <li data-mlab-comp-aspect="1:1" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>1:1</li>
+        </ul>
+    </div>
+
     <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>
     </div>

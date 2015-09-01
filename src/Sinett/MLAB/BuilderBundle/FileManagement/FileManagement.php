@@ -518,15 +518,22 @@ class FileManagement {
         }
     }
     
-    public function savePage($app, $page_num, $html) {
+    public function savePage($app, $page_num, $title, $html) {
 //get path of file to save
         if ($page_num == "index") {
             $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
+            return file_put_contents ($file_path, $html);
         } else {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";;
+            $template_page_path = $app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
+            $page = str_replace(array("%%TITLE%%", "%%CONTENT%%"), array($title, $html), file_get_contents ($template_page_path));
+//We use this code to save to cache directory as well, if so we will have a complete path, not a page number
+            if(is_numeric($page_num)) {
+                $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";
+            } else {
+                $file_path = $page_num;
+            }
+            return file_put_contents ($file_path, $page);
         }
-        
-        return file_put_contents ($file_path, $html) ;
     }
     
     /**
@@ -965,6 +972,15 @@ class FileManagement {
         }
         $frontpage_content = file_get_contents($app_path . "index.html");
 
+//we extract the content of the index.html file and store it in 000.html, otherwise the content will always be displayed
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = true;
+        $doc->loadHTML($frontpage_content);
+        libxml_clear_errors();
+        $content = $doc->saveHtml($doc->getElementById($config["app"]["content_id"]));
+        $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
+
 //get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
         preg_match_all('~%%(.+?)%%~', $frontpage_content, $placeholders);
         $placeholders = array_unique($placeholders[1]);
@@ -1020,24 +1036,34 @@ class FileManagement {
             }
         }
         
+//no more processing of index.html, can save it now
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = true;
+        $doc->loadHTML($frontpage_content);
+        libxml_clear_errors();
+        $content = $doc->getElementById($config["app"]["content_id"]);
+        $content->parentNode->removeChild($content);
+        $doc->saveHTMLFile($cached_app_path . "index.html");
+        
 //loop through all pages to process the components that have a matching onCompile function
         $pages = glob ( $app_path . "???.html" );
-        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
+//DEL 000        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
 
         foreach ($pages as $page) {
 //parse pages and loop through the components for each page
             $doc = new \DOMDocument("1.0", "utf-8");
             libxml_use_internal_errors(true);
             $doc->validateOnParse = true;
-            if (substr($page, -10) == "index.html") {
+/*/**DEL 000            if (substr($page, -10) == "index.html") {
                 $doc->loadHTML($frontpage_content);
                 libxml_clear_errors();
                 $page_components = $doc->getElementById($config["app"]["content_id"])->childNodes;
-            } else {
+            } else {**/
                 $doc->loadHTMLFile($page);
                 libxml_clear_errors();
                 $page_components = $doc->getElementsByTagName('body')->item(0)->childNodes;
-            }
+//            }
             
 
             foreach ($page_components as $page_component) {

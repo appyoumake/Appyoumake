@@ -387,7 +387,7 @@ a.mlab_button_new_app {
     padding-bottom: 0.9em;
     margin-right: 1.4em;
     line-height: 6.5em;
-	}
+}
 
 /* ==========================================================================
    Progressbar
@@ -397,8 +397,165 @@ progress {
     position: absolute;
     top: 12.8em;
     left: 6em;
-	}
-	
+}
+	 
+/* ==========================================================================
+   New App
+   ========================================================================== */
+    
+#build_app_properties {
+    height: 550px;
+}
+
+#mlab_app_new_previous {
+    float: left;
+} 
+
+#mlab_app_new_next {
+    float: right;
+}
+
+#build_app_properties .dd-container {
+    float: left;
+}
+
+#build_app_properties #app_icon_designer {
+    border: 1px solid gray;
+    clear: both;
+    float: left;
+    margin: 10px;
+}
+
+#build_app_properties .new_line {
+    width: 95%;
+    clear: both;
+    float: left;
+}
+
+#build_app_properties .left, #build_app_properties #mlab_select_background, #build_app_properties #mlab_select_foreground {
+    float: left;
+}
+
+#build_app_properties .dd-selected-text, #build_app_properties .dd-option-text {
+    display: none;
+}
+
+#build_app_properties .dd-option-image, #build_app_properties .dd-selected-image {
+    max-width: 64;
+}
+
+#build_app_properties fieldset {
+    width: 95%;
+}
+
+#build_app_properties fieldset p {
+    float: left; 
+    display: block;
+    width: auto;
+    margin-right: 5px;
+}
+
+#build_app_properties label.required:after {
+    content: " *";
+    color: red;
+}
+
+#builder_dialog_new_app p {
+    font-size: 0.85em !important;
+    margin-bottom: 1.5em;
+    width: 90%;
+    cursor: default;
+}
+
+#builder_dialog_new_app #mlab_select_background,
+#builder_dialog_new_app #mlab_select_foreground {
+    padding-bottom: 0.5em;
+}
+
+#builder_dialog_new_app .mlab_icon_design_input {
+    padding-top: 0.6em;
+}
+
+#builder_dialog_new_app small {
+    font-size: 0.7em;
+    height: auto;
+    overflow-wrap: normal;
+    overflow: visible;
+    white-space: normal;
+    width: 270px;
+}
+
+#builder_dialog_new_app #form_template {
+    padding-bottom: 0.6em;
+}
+
+#builder_dialog_new_app #mlab_make_icon label{
+    width: 25%;
+}
+
+#builder_dialog_new_app .mlab_button_new_icon{
+    margin: 0;
+    padding: 0;
+    height: 1.7em;
+    width: 22%;
+}
+
+#builder_dialog_new_app #mlab_icon_text,
+#builder_dialog_new_app #mlab_local_iconfile{
+    width: 43%;  
+}
+
+
+#builder_dialog_new_app label {
+    width: 20%;
+}
+
+#builder_dialog_new_app input[type=radio] {
+    width: 10%;
+}
+
+#mlab_app_new_summary {
+    font-size: 0.85em !important;
+    margin-bottom: 0.6em;
+    cursor: default;
+}
+
+#mlab_app_new_summary fieldset {
+    font-size: 0.85em;
+    margin-bottom: 2em;
+    word-wrap: normal;
+    overflow: visible;
+    white-space: normal;
+    padding: 1.5em;
+    width: 93%
+}
+
+#mlab_app_new_summary fieldset legend {
+    font-size: 1.2em;
+}
+
+#mlab_app_new_summary .mlab_icon_summary span {
+    font-weight: bold;
+}
+
+#mlab_app_new_summary div {
+    padding: 1.5em;
+}
+
+#mlab_app_new_summary img {
+    float: left;
+    padding-right: 1em;
+}
+
+#mlab_app_new_summary .mlab_splash {
+    margin-top: 70px;
+    float: none;
+}
+
+#mlab_app_new_summary span {
+    width: 45%;
+}
+    
 	
 /* ==========================================================================
 
@@ -567,27 +724,6 @@ body.mlab_base div.mlab_top_bar_back {
     color: gray;
 }
 
-#builder_dialog_new_app p {
-    font-size: 0.85em !important;
-    margin-bottom: 1.1em;
-    width: 90%;
-    cursor: default;
-}
-
-#mlab_app_new_summary {
-    font-size: 0.85em !important;
-    margin-bottom: 0.6em;
-    cursor: default;
-}
-
-#mlab_app_new_summary div {
-
-}
-
-#mlab_app_new_summary span {
-    width: 45%;
-}
-
 .mlab_category_system{
     color: #999;
     font-family: Arial;
@@ -596,63 +732,3 @@ body.mlab_base div.mlab_top_bar_back {
 #tabs_admin_apps.ui-tabs {
     position: absolute;
 }
-
-/* used in new app wizard */
-#build_app_properties {
-    height: 550px;
-}
-
-#mlab_app_new_previous {
-    float: left;
-} 
-
-#mlab_app_new_next {
-    float: right;
-}
-
-#build_app_properties .dd-container {
-    float: left;
-}
-
-#build_app_properties #app_icon_designer {
-    border: 1px solid gray;
-    clear: both;
-    float: left;
-    margin: 10px;
-}
-
-#build_app_properties .new_line {
-    width: 95%;
-    clear: both;
-    float: left;
-}
-
-#build_app_properties .left, #build_app_properties #mlab_select_background, #build_app_properties #mlab_select_foreground {
-    float: left;
-}
-
-#build_app_properties .dd-selected-text, #build_app_properties .dd-option-text {
-    display: none;
-}
-
-#build_app_properties .dd-option-image, #build_app_properties .dd-selected-image {
-    max-width: 64;
-}
-
-#build_app_properties fieldset {
-    width: 95%;
-}
-
-#build_app_properties fieldset p {
-    float: left; 
-    display: block;
-    width: auto;
-    margin-right: 5px;
-}
-
-#build_app_properties label.required:after {
-    content: " *";
-    color: red;
-}
-
-/* end used in new app wizard */

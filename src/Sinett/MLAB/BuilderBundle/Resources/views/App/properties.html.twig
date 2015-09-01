@@ -21,11 +21,11 @@
 
             <div class="mlab_form_tab" id="builder_app_property_tabs-1">
                 <p>{% trans %}builder.new.app.select_base.description{% endtrans %}</p>
-                <label for="select_base_template">builder.new.app.select_base.template</label> 
+                <label for="select_base_template">{% trans %}builder.new.app.select_base.template{% endtrans %}</label> 
                 <input type="radio" name="select_base" id="select_base_template" value="template">
-                <label for="select_base_existing_app">builder.new.app.select_base.existing_app</label> 
+                <label for="select_base_existing_app">{% trans %}builder.new.app.select_base.existing_app{% endtrans %}</label> 
                 <input type="radio" name="select_base" id="select_base_existing_app" value="existing_app">
-                <label for="select_base_office_file">builder.new.app.select_base.office_file</label> 
+                <label for="select_base_office_file">{% trans %}builder.new.app.select_base.office_file{% endtrans %}</label> 
                 <input type="radio" name="select_base" id="select_base_office_file" value="office_file">
             </div>
 
@@ -72,47 +72,43 @@
             </div>
             
             
-            <div class="new_line">
+            <div class="new_line hidden">
                 {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
                 {{ form_errors(form.splashFile) }}
                 {{ form_widget(form.splashFile) }}
             </div>
 
             
-            <fieldset class="new_line">
+            <fieldset id="mlab_make_icon" class="new_line">
                 {{ form_widget(form.iconFile) }}
                 <legend>Design icon:</legend>
                 <canvas id="app_icon_designer" height="256" width="256">
                 </canvas>                
-                <div class="left">
-                    <p>Select background</p>
+                <div class="left mlab_icon_design_input">
+                    <label for="mlab_select_background">{% trans %}builder.new.app.name.selectBackground{% endtrans %}</label>
                     <select id="mlab_select_background" name="mlab_select_background" >
                         <option value=""></option>
                         {% for icon, path in backgrounds %}
                             <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
                         {% endfor %}
                     </select>
-                </div>
                 
-                <div class="left">
-                    <p>Select foreground</p>
+                    <label for="mlab_select_background">{% trans %}builder.new.app.name.selectForground{% endtrans %}</label>
                     <select id="mlab_select_foreground" name="mlab_select_foreground" >
                         <option value=""></option>
                         {% for icon, path in foregrounds %}
                             <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
                         {% endfor %}
                     </select>
-                </div>
                 
-                <div class="left">
+                    
                     <label for="mlab_local_iconfile">{% trans %}builder.new.app.name.iconFile{% endtrans %}</label>
                     <input id="mlab_local_iconfile" name="mlab_local_iconfile" type="file">
-                    <div onclick="createIcon.buildIcon('local');">Add image</div>
-                </div>
-                <div class="left">
-                    <label for="mlab_icon_text">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
-                    <input id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
-                    <div onclick="createIcon.buildIcon(foreground_image_src)">Add text</div>
+                    <button class="button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('local');">{% trans %}builder.new.app.name.addIconFileImage{% endtrans %}</button>
+                    
+                    <label class="hidden" for="mlab_icon_text ">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
+                    <input class="hidden" id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
+                    <button class="hidden button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('foreground_image_src');">{% trans %}builder.new.app.name.addIconText{% endtrans %}</button>
                 </div>
             </fieldset>
 
@@ -124,7 +120,7 @@
 
             <p>{% trans %}builder.new.app.classification.description{% endtrans %}</p>
             
-            <div class="new_line">
+            <div>
                 {{ form_label(form.description, null, {'label': 'builder.new.app.name.descriptionLab'|trans}) }}
                 {{ form_errors(form.description) }}
                 {{ form_widget(form.description) }}
@@ -136,19 +132,19 @@
                 {{ form_widget(form.keywords) }}
             </div>
 
-            <div class="">
+            <div>
                 {{ form_label(form.categoryOne, null, {'label': 'builder.new.app.classification.categoryOne'|trans}) }}
                 {{ form_errors(form.categoryOne) }}
                 {{ form_widget(form.categoryOne) }}
             </div>
 
-            <div class="">
+            <div>
                 {{ form_label(form.categoryTwo, null, {'label': 'builder.new.app.classification.categoryTwo'|trans}) }}
                 {{ form_errors(form.categoryTwo) }}
                 {{ form_widget(form.categoryTwo) }}
             </div>
 
-            <div class="">
+            <div>
                 {{ form_label(form.categoryThree, null, {'label': 'builder.new.app.classification.categoryThree'|trans}) }}
                 {{ form_errors(form.categoryThree) }}
                 {{ form_widget(form.categoryThree) }}
@@ -158,7 +154,6 @@
         
 <!-- summary -->
         <div class="mlab_form_tab" id="builder_app_property_tabs-5">
-            <p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>
             {{ form_errors(form) }}
             <div id="mlab_app_new_summary"></div>
         </div>
@@ -531,16 +526,21 @@
                                 based_on = "You are creating a new app with content copied from the " + $("#form_importFile").val() + " file, with layout based on the " + $('#form_template').data('ddslick').selectedData.text + " template";
                                 break;
                         } //end switch what they want to base app on                        
-                        var summary = "<span class='mlab_app_new_summary'>" + based_on + "</span><br>" +
-                                      "<div class='left' ><p>Icon</p><img src='" + (icon_created ? document.getElementById("app_icon_designer").toDataURL() : "{{icon_default}}") + "' width='128' height='128'></div>" +
-                                      "<div class='left' ><p>Splash screen</p><img id='mlab_splash_preview' width='128' height='128'></div>" +
-                                      "<br class='new_line'><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() +
+                        var summary = 
+                                      "<fieldset>" +
+                                      "<legend>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() + "</legend>" + 
+                                      "<span class='mlab_app_new_summary'>" + based_on + "</span>" + 
+                                      "<div class='mlab_icon_summary'><img src='" + (icon_created ? document.getElementById("app_icon_designer").toDataURL() : "{{icon_default}}") + "' width='128' height='128'>" +
+                                     
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.keywords{% endtrans %}:</span> " + $('#form_keywords').val() + 
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.category{% endtrans %}:</span> " + 
                                       $('#form_categoryOne option:selected').html() + " - " +
                                       $('#form_categoryTwo option:selected').html() + " - " +
-                                      $('#form_categoryThree option:selected').html();
+                                      $('#form_categoryThree option:selected').html() + "</div>" +
+                                      "<div class='hidden mlab_splash'><img id='mlab_splash_preview' width='128' height='128'><span class='hidden mlab_app_new_summary'>{% trans %}builder.new.app.submit.splashScreen{% endtrans %}</span></div>" + 
+                                      "</fieldset>" +
+                                      "<p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>";
 
 
                         $("#mlab_app_new_summary").html(summary);

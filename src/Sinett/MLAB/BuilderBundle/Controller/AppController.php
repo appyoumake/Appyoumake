@@ -831,9 +831,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
 
-        $temp_html = $request->request->all();
-        $html = $temp_html["html"];
-        $res = $file_mgmt->savePage($app, $page_num, $html);
+        $temp_data = $request->request->all();
+        $html = $temp_data["html"];
+        $title = $temp_data["title"];
+        $res = $file_mgmt->savePage($app, $page_num, $title, $html);
         if ($res === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
