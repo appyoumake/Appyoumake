@@ -39,18 +39,20 @@
         $(".mlab_btn_txsize_toggle").on("click", function () { mlab_set_display_settings.pageTextSizeToggle("content"); });
 
 //Uses on pagecreate to get the page name to display when the page is loaded the first time
-        $( document ).on( "pagecreate", function( event ) {  
-            var pageTitle = window.document.title;
-            $(this).find(".mlab_page_name").text(pageTitle);
+/*        $( document ).on( "pagebeforeshow", function( event ) {  
+            console.log("FUNCTION: pagebeforeshow");
+            var page = $.mobile.pageContainer.pagecontainer('getActivePage');
+            var pageTitle = page.data("title");
+            page.find(".mlab_page_name").text(pageTitle);
         });
-        
+*/        
         mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
         mlab.api.navigation.pageDisplay(-1, 0);
         
       
     };
   
-    $(document).on('pagebeforecreate', '[data-role="page"]', function(e) { 
+    $(document).on('pagebeforecreate', '[data-role="page"]', function(e) {
         console.log("EVENT: pagebeforecreate");
 //    <!-- Menu panel content goes here -->
         var fixed_content = {"mlab_menu_panel_content": '<div class="ui-panel-inner">' + 
@@ -69,6 +71,7 @@
                                 '<div class="mlab_btn_color_toggle"></div>' + 
                                 '<div class="mlab_btn_txsize_toggle"></div> ' + 
                             '</div>',
+                    
                             "mlab_header_content": '<div class="mlab_header_box">' + 
                                 '<a href="#mlab_menu_panel"><div class="mlab_btn_menu btn_secondary"></div></a>' + 
                                 '<div class="mlab_nav_previous_page"></div>' + 
@@ -82,6 +85,9 @@
             el.empty();
             el.html(fixed_content[id]);
         } 
+        
+        $(this).find(".mlab_page_name").text($(this).data("title"));
+
     });
 
 
