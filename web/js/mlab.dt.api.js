@@ -632,7 +632,6 @@ Mlab_dt_api.prototype = {
     
 //object for display functionality, primarily for resizing 
     display: {
-        self: this,
         
 /**
  * Updates the aspect ratio setting for a component by updating the data-mlab-ratio setting
@@ -641,10 +640,9 @@ Mlab_dt_api.prototype = {
  * @returns {undefined}
  */
         setAspectRatio: function (el, aspect) {
-            debugger;
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
                 $(el).attr("data-mlab-aspectratio", aspect);
-                this.setDirty();
+                this.parent.setDirty();
                 this.updateDisplay(el);
             }
         },
@@ -657,10 +655,9 @@ Mlab_dt_api.prototype = {
  * @returns {undefined}
  */
         setSize: function (el, size) {
-            debugger;
             if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
                 $(el).attr("data-mlab-size", size);
-                this.setDirty();
+                this.parent.setDirty();
                 this.updateDisplay(el);
             }
         },
@@ -672,18 +669,23 @@ Mlab_dt_api.prototype = {
  */
         updateDisplay: function (el) {
             var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
+            var that = this;
             
             components.each( function() {
-                var device_width = $('[data-role="page"]').first().width();
+                var device_width = $('[data-role="page"]').first().innerWidth();
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
+                var comp_id = $(this).data("mlab-type");
                 
                 var w = (device_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
                 $(this).css( {"width": w + "px", "height": h + "px"} );
-
-            });    
+                
+                if (typeof that.parent.parent.components[comp_id] != "undefined" && typeof that.parent.parent.components[comp_id].code != "undefined" && typeof that.parent.parent.components[comp_id].code.onResize != "undefined") {
+                    that.parent.parent.components[comp_id].code.onResize(this);
+                };
+            });
         },
         
     },

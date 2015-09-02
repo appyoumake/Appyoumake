@@ -464,7 +464,7 @@ Mlab_api.prototype = {
  * object for display functionality, primarily for resizing components
  */
     display: {
-        self: this,
+        
 /**
  * Goes through the components on a page and calls the onPageLoad function (if it exists)
  * This is for components that does not require the layout of the page to be done
@@ -507,34 +507,7 @@ Mlab_api.prototype = {
                 }
             });    
         },
-        
-/**
- * Updates the aspect ratio setting for a component by updating the data-mlab-ratio setting
- * @param {type} el
- * @param {type} size
- * @returns {undefined}
- */
-        setAspectRatio: function (el, aspect) {
-            if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
-                $(el).attr("data-mlab-aspectratio", aspect);
-                this.updateDisplay(el);
-            }
-        },
-        
-/**
- * Updates the size setting for a component by updating the data-mlab-size setting
- * Initially this is small, medium, large and fullpage
- * @param {type} el
- * @param {type} size
- * @returns {undefined}
- */
-        setSize: function (el, size) {
-            if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
-                $(el).attr("data-mlab-size", size);
-                this.updateDisplay(el);
-            }
-        },
-        
+
 /**
  * Updates either a single component, or all components on a page, using data attributes to determine the display
  * @param {type} el: Optional, the element to display. If not specified, then update all components
@@ -544,7 +517,7 @@ Mlab_api.prototype = {
             var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
             
             components.each( function() {
-                var device_width = $('[data-role="page"]').first().width();
+                var device_width = $('[data-role="page"]').first().innerWidth();
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);

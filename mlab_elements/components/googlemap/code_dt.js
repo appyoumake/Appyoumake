@@ -66,6 +66,16 @@
 
     };
 
+
+    this.onResize = function (el) {
+        var w = $(el).innerWidth();
+        var h = $(el).innerHeight();
+        var aspectratio = $(el).attr("data-mlab-aspectratio").split(":");
+        $(el).find(".mlab_cp_googlemap_canvas").css({"width": w + "px", "height": h + "px"});
+    }
+    
+
+
 //we need to manipulate content for reopening the map either in design mode or at runtime.
 //therefore we need to generate new Google Maps API calls based on the current map settings (zoom level, controls displayed, etc
 //we also need to delete the script inside the DIV which has a script_GUID id.

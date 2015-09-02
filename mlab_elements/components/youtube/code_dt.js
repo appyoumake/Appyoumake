@@ -26,7 +26,10 @@
     };
     
     this.onResize = function (el) {
-        
+        var w = $(el).innerWidth();
+        var h = $(el).innerHeight();
+        var aspectratio = $(el).attr("data-mlab-aspectratio").split(":");
+        $(el).find("iframe").attr({"data-aspectratio" : (aspectratio[1] / aspectratio[0]), "width": w + "px", "height": h + "px"});
     }
     
     this.getContentSize = function (el) {

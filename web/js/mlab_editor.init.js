@@ -80,6 +80,7 @@
             this.initialise_dt_parents = function () {
                 self.dt.parent = self;
                 self.dt.api.parent = self.dt;
+                self.dt.api.display.parent = self.dt.api;
                 self.dt.bestpractice.parent = self.dt;
                 self.dt.design.parent = self.dt;
                 self.dt.management.parent = self.dt;
