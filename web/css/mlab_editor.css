@@ -197,7 +197,7 @@ made smaler than the min width */
     padding: 5px;
     margin-top: 25px;
     margin-left: 200px;
-    max-width: 80px;
+    max-width: 88px;
     position: fixed;
     top: 91px;
     left: 635px;
@@ -205,13 +205,22 @@ made smaler than the min width */
 
 #mlab_editor #mlab_toolbar_for_components #mlab_component_toolbar_heading {
     font-family: Verdana, Arial, sans-serif;
-    font-size:12px;
+    font-size:14px;
+    text-align: center;
+    text-align: -webkit-center;
     color: black;
     background-color: rgba(255,165,0,0.2);
-    padding: 2px;
-    margin: 2px;
+    padding: 4px;
+    margin: 0;
     margin-bottom: 5px;
 }
+
+#mlab_editor #mlab_toolbar_for_components .mlab_tools {
+    padding: 1px;
+    width: 24px;
+    height: 24px;
+}
+
 
 /* TODO - få inn en klasse så ikke bruker img? */
 #mlab_editor #mlab_toolbar_for_components #mlab_component_context_menu img {
@@ -224,19 +233,27 @@ made smaler than the min width */
 }
 
 /* TODO */
-#mlab_editor div#mlab_toolbar_for_components img.missing_icon {
-    width: 16px;
-    height: 16px;
+#mlab_editor div#mlab_toolbar_for_components img.missing_icon { 
+    width: 24px;
+    height: 24px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==);
     background-repeat: no-repeat;
 }
 
 /* TODO */
 #mlab_editor div#mlab_toolbar_for_components img.select_storage {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     background-repeat: no-repeat;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAAAjcAAAI3AfcGRMIAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAA4ElEQVQokXXRsSsEcBQH8M+iMEisNonkL+DKYhAli2RRFsrgP2AxmBSDSWxKJrOBbjpFWZTBZJGSRDcYnK/FOXfn+i7v1/u83/CeqEWPzr/viFoxrqSi7NiioSZg2GvdYFHvL9Bm1bPGvx+t6Qi63Dc1q3nSx3LLdsQ6FyK+LJk15UzsmVP8AbeciLixIcpm7NpWMe9axAFjKuLSjoh+KyLKJryLUWHandIP6LbpUzxYsK9Q20NHFYQPcdq4qIIrEVutwIg3EYctQJj06VxbeBFHTSAMaI8waLJ6iTrwf74BqMXT4d5gXgMAAAAASUVORK5CYII=);
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXFJREFUeNrcVd1NwzAQNiGIPnqEbEDYoGzQDdps0EyAmCDdIHnkkQ1SJog7AWEC+ljET/gOXeAwdpQmkZA46eTcKb7/76zUv6Wz89kaXIIbwSSvjrFz4jCscZTguOPeBrwDRyxvX54P274OMhzrAUkXcJLYytNfijC8xTEb4CDG3cf3t1cjlYEV/RyHHtG6pa0ILLmeelgCET01LB9pb86TFv9oMk9OJaZiLFElLtH0fZvBYkLjim0tZIl8xmkirsA3A52osKO5n8YpTQISyliLHhGo7vn7oo3WOzDUA3AlVkLFuliuBzpJdoAzt1bKA/f1G8liijSXJeKV0eIiQTYFX4xE1IbXyjXLd+AU/9Zdi44if7KiakQmcgmWvXBgUeZBdD4YaBYlXCZJKc32JA6ofo71a6Azjn2lWdfvPbB60QixzchXc2rspm+JlCczyqrwYMal/wKaj1JRDsNOEmRGnysHICd9szMeV63+kj4EGAC1FXiWIdnqPQAAAABJRU5ErkJggg==);
+}
+
+/* TODO */
+#mlab_editor div#mlab_component_context_menu img.edit_quiz { 
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXFJREFUeNrcVd1NwzAQNiGIPnqEbEDYoGzQDdps0EyAmCDdIHnkkQ1SJog7AWEC+ljET/gOXeAwdpQmkZA46eTcKb7/76zUv6Wz89kaXIIbwSSvjrFz4jCscZTguOPeBrwDRyxvX54P274OMhzrAUkXcJLYytNfijC8xTEb4CDG3cf3t1cjlYEV/RyHHtG6pa0ILLmeelgCET01LB9pb86TFv9oMk9OJaZiLFElLtH0fZvBYkLjim0tZIl8xmkirsA3A52osKO5n8YpTQISyliLHhGo7vn7oo3WOzDUA3AlVkLFuliuBzpJdoAzt1bKA/f1G8liijSXJeKV0eIiQTYFX4xE1IbXyjXLd+AU/9Zdi44if7KiakQmcgmWvXBgUeZBdD4YaBYlXCZJKc32JA6ofo71a6Azjn2lWdfvPbB60QixzchXc2rspm+JlCczyqrwYMal/wKaj1JRDsNOEmRGnysHICd9szMeV63+kj4EGAC1FXiWIdnqPQAAAABJRU5ErkJggg==);
 }
 
 
