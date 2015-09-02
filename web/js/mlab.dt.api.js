@@ -644,6 +644,7 @@ Mlab_dt_api.prototype = {
             debugger;
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
                 $(el).attr("data-mlab-aspectratio", aspect);
+                this.setDirty();
                 this.updateDisplay(el);
             }
         },
@@ -659,6 +660,7 @@ Mlab_dt_api.prototype = {
             debugger;
             if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
                 $(el).attr("data-mlab-size", size);
+                this.setDirty();
                 this.updateDisplay(el);
             }
         },

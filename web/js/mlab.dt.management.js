@@ -35,10 +35,21 @@ Mlab_dt_management.prototype = {
                         $("#mlab_features_list [data-mlab-feature-type='" + $(this).parent().data("mlab-type") + "']").addClass("mlab_item_applied");
                      });
 
+//if they are opening the app with a blank page and no components on the index page, let's assume they are opening a new app, and we'll ask for the title of the page
+                if (data.only_index && $("#" + that.parent.config["app"]["content_id"]).children().length == 0) {
+                    var title = prompt("Please enter the title for the front page of this app", that.parent.app.curr_pagetitle);
+                    if (title != null) {
+                        that.parent.app.curr_pagetitle = title;
+                        $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle); 
+                        that.parent.flag_dirty = true;
+                    }
+                }
+
 //if they are not opening the index page we need to call backend again to load the page they want to open
-                if (local_page_num != "0" && local_page_num != "index") {
+                if (local_page_num != "0" && local_page_num != "index" && !data.only_index) {
                     that.page_open_process(data.app_id, local_page_num);
                 } else {
+                    that.parent.utils.update_status("temporary", "Ready", false);
                     $("#mlab_overlay").slideUp();
                     that.parent.app.locked = (data.lock_status == "locked");
                     that.parent.utils.timer_start();

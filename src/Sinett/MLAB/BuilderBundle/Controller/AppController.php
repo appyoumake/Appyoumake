@@ -793,7 +793,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     'page_num_sent' => $page_num,
                     'page_num_real' => intval($doc),
                     'app_id' => $app_id,
-                    'page_title' => $title));
+                    'page_title' => $title,
+                    'only_index' => !file_exists("$app_path" . "001.html")
+                ));
     		 
     	} else {
     		return new JsonResponse(array(

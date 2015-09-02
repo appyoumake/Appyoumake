@@ -1,4 +1,6 @@
 	
+//TODO: Change to use input
+    var apiKey = 'AIzaSyB3PFClHfy5RC52VsPlf7U8zJ1iSplCDEs';
     
     
     this.onCreate = function (el) {
@@ -23,6 +25,10 @@
 		console.log('delete');
     };
     
+    this.onResize = function (el) {
+        
+    }
+    
     this.getContentSize = function (el) {
         return $(el).find(".mlab_cp_youtube_video").duration;
     };
@@ -39,8 +45,6 @@
         local_el = el;
         $("#mlab_cp_youtube_search").autocomplete({
             source: function(request, response){
-//TODO: Change to use input
-                var apiKey = 'AI39si7ZLU83bKtKd4MrdzqcjTVI3DK9FvwJR6a4kB_SW_Dbuskit-mEYqskkSsFLxN5DiG1OBzdHzYfW0zXWjxirQKyxJfdkg';
                 var query = request.term;
                 $.ajax({
                     url: "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="+query+"&key="+apiKey+"&format=5&alt=json&callback=?",  
@@ -73,21 +77,20 @@
             results.html('Searching...');
             $.ajax({
                 type: 'GET',
-                url: 'http://gdata.youtube.com/feeds/api/videos?q=' + search_term + '&max-results=15&v=2&alt=jsonc',
+                url: 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=' + search_term + '&key=' + apiKey + '&max-results=5',
                 dataType: 'jsonp',
-                success: function( veri ){
-                    if( veri.data.items ){
+                success: function( veri ) {
+                    if( veri.items ) {
                         results.empty();
-                        $.each( veri.data.items, function(i, data) {
+                        $.each( veri.items, function(i, data) {
                             results.append('<div class="youtube">\
-                                <img src="' + data.thumbnail.sqDefault + '" alt="" />\
-                                <h3><a href="javascript:void(0)" onclick="$.youtubeSelect(\'' + data.id + '\')">' + data.title + '</a></h3>\
-                                <p>' + data.description + '</p>\
+                                <img src="' + data.snippet.thumbnails.default.url + '" alt="" />\
+                                <h3><a href="javascript:void(0)" onclick="$.youtubeSelect(\'' + data.id.videoId + '\')">' + data.snippet.title + '</a></h3>\
+                                <p>' + data.snippet.description + '</p>\
                             </div>\
-                            <div class="mlab_dt_text_list" id="' + data.id + '"></div>');
+                            <div class="mlab_dt_text_list" id="' + data.id.videoId + '"></div>');
                         });
-                    }
-                    else {
+                    } else {
                         results.html('<div class="mlab_dt_error">No vidoes found for <strong>"' + search_term + '"</strong></div>');
                     }
                 }

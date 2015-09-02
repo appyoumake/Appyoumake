@@ -348,7 +348,7 @@ made smaler than the min width */
     clear: both;
 }
 
-#mlab_editor #mlab_editor_chrome #page {
+#mlab_editor #mlab_editor_chrome [data-role="page"] {
     overflow-y: visible;
     border: 4px solid rgb(255, 255, 255);
     box-shadow: orange 0px 0px 0px 1px inset, 
