@@ -16,6 +16,7 @@
     background-color: #1e1e1e;  
 }
 
-#mlab_page_body #content {
+#mlab_page_body .mlab_main_body_content,
+#mlab_editor_chrome .mlab_main_body_content {
     padding: 0.6em;
 }
