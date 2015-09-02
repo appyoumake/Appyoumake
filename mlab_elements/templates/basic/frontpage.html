@@ -16,7 +16,8 @@
 <script src="./js/mlab.api.js"></script>
 <script src="./js/basic.js"></script>
 <script src="./js/include.js"></script>
-<script>
+
+<script><!--//--><![CDATA[//><!--
     
 //this variable tracks the current page, may be replaced with jquery mobile code
     mlab_rt_current_page = 0;
@@ -55,31 +56,31 @@
     $(document).on('pagebeforecreate', '[data-role="page"]', function(e) {
         console.log("EVENT: pagebeforecreate");
 //    <!-- Menu panel content goes here -->
-        var fixed_content = {"mlab_menu_panel_content": '<div class="ui-panel-inner">' + 
-                                '<a href="#" data-rel="close"><div class="mlab_btn_close_menu"></div></a>' + 
-                                '<div class="mlab_menu_heading">Meny</div>' + 
-                                '<hr class="mlab_hr_panel">' + 
-                                '<div class="mlab_menu_text"> Her kan man putte inn menyelementer om man vil.... </div>' +
-                            '</div>',
+        var fixed_content = {"mlab_menu_panel_content": '<' + 'div class="ui-panel-inner">' + 
+                                '<' + 'a href="#" data-rel="close">' + '<' + 'div class="mlab_btn_close_menu">' + '<' + '/div>' + '<' + '/a>' + 
+                                '<' + 'div class="mlab_menu_heading">Meny' + '<' + '/div>' + 
+                                '<' + 'hr class="mlab_hr_panel">' + 
+                                '<' + 'div class="mlab_menu_text"> Her kan man putte inn menyelementer om man vil.... ' + '<' + '/div>' +
+                            '<' + '/div>',
 
 //<!-- Settings panel content goes here -->
-                            "mlab_settings_panel_content": '<div class="ui-panel-inner">' + 
-                                '<div class="mlab_creators">Made by Sinett</div> ' + 
-                                '<a href="#" data-rel="close"><div class="mlab_btn_close"></div></a>' + 
-                                '<div class="mlab_settings_heading">Settinger</div>' + 
-                                '<hr class="mlab_hr_panel">' + 
-                                '<div class="mlab_btn_color_toggle"></div>' + 
-                                '<div class="mlab_btn_txsize_toggle"></div> ' + 
-                            '</div>',
+                            "mlab_settings_panel_content": '<' + 'div class="ui-panel-inner">' + 
+                                '<' + 'div class="mlab_creators">Made by Sinett' + '<' + '/div> ' + 
+                                '<' + 'a href="#" data-rel="close">' + '<' + 'div class="mlab_btn_close">' + '<' + '/div>' + '<' + '/a>' + 
+                                '<' + 'div class="mlab_settings_heading">Settinger' + '<' + '/div>' + 
+                                '<' + 'hr class="mlab_hr_panel">' + 
+                                '<' + 'div class="mlab_btn_color_toggle">' + '<' + '/div>' + 
+                                '<' + 'div class="mlab_btn_txsize_toggle">' + '<' + '/div> ' + 
+                            '<' + '/div>',
                     
-                            "mlab_header_content": '<div class="mlab_header_box">' + 
-                                '<a href="#mlab_menu_panel"><div class="mlab_btn_menu btn_secondary"></div></a>' + 
-                                '<div class="mlab_nav_previous_page"></div>' + 
-                                '<div class="mlab_btn_heraldisk"></div> ' + 
-                                '<div class="mlab_page_name"></div> ' + 
-                                '<a href="#mlab_settings_panel"><div class="mlab_btn_settings"></div></a>' + 
-                                '<div class="mlab_nav_next_page"></div>' + 
-                            '</div>'};
+                            "mlab_header_content": '<' + 'div class="mlab_header_box">' + 
+                                '<' + 'a href="#mlab_menu_panel">' + '<' + 'div class="mlab_btn_menu btn_secondary">' + '<' + '/div>' + '<' + '/a>' + 
+                                '<' + 'div class="mlab_nav_previous_page">' + '<' + '/div>' + 
+                                '<' + 'div class="mlab_btn_heraldisk">' + '<' + '/div> ' + 
+                                '<' + 'div class="mlab_page_name">' + '<' + '/div> ' + 
+                                '<' + 'a href="#mlab_settings_panel">' + '<' + 'div class="mlab_btn_settings">' + '<' + '/div>' + '<' + '/a>' + 
+                                '<' + 'div class="mlab_nav_next_page">' + '<' + '/div>' + 
+                            '<' + '/div>'};
         for (id in fixed_content) {
             var el = $(this).find('.' + id);
             el.empty();
@@ -92,7 +93,7 @@
 
 
 
-</script>
+//--><!]]></script>
 
 
 </head>

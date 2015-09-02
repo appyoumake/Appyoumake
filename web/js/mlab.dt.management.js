@@ -26,7 +26,7 @@ Mlab_dt_management.prototype = {
         $.get(url, function( data ) {
             if (data.result == "success") {
                 that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
-
+                $("#mlab_statusbar_permanent").html(mlab.dt.app.name);
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_item_applied");
                 $(that.parent.app.curr_indexpage_html)
