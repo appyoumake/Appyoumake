@@ -255,7 +255,7 @@ this.addStoredQuestions = function() {
  * @param {type} el
  * @returns {undefined}
  */
-this.custom_edit_quiz = function(el) {
+this.custom_add_page = function(el) {
 
     var self = this;
     var id = this.domRoot.attr("id");
