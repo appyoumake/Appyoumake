@@ -272,7 +272,7 @@ Mlab_dt_management.prototype = {
 //parse doc into variables
         var doc = (new DOMParser()).parseFromString(page,"text/html");
         var head = doc.getElementsByTagName("head")[0];
-        var body = doc.getElementsByTagName("body")[0].cloneNode(true);
+        var body = doc.getElementsByClassName("mlab_main_body_content")[0].cloneNode(true);
 
 //Page name is picked up from title tag in head
         this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
