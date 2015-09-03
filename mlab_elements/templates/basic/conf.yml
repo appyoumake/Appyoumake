@@ -3,26 +3,26 @@ tooltip: This is a new template that has everything you'll ever want.
 permissions: ["android.permission.INTERNET"] 
 pages:
   min:
-    count: 3
-    message: You should have at least 3 pages in an app of this type
+    count: 1
+    message: You should have at least 1 pages in an app of this type
   max:
-    count: 30
-    message: You should have max 30 pages in an app of this type
+    count: 60
+    message: You should have max 60 pages in an app of this type
 
 components:
     
   headline:
     min: 
       count: 1
-      size: 3
-      message: You should have at least one headline per page, with minimum 3 characters
+      size: 0
+      message: You should have at least 0 headline per page, with minimum 1 characters
     max: 
-      count: 3
-      size: 40
-      message: Recommend max 3 headlines with max 40 characters per page
+      count: 20
+      size: 200
+      message: Recommend max 20 headlines with max 200 characters per page
       
   text:
     max: 
-      count: 3
-      size: 300
+      count: 10
+      size: 5000
       message: Recommend max 3 text boxes with max 300 characters per page

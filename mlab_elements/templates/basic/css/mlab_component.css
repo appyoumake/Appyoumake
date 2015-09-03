@@ -38,27 +38,35 @@ part of a list */
     margin: 0;
     padding: 0;
     border: none;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
 }
 
 /*  All text elements - as a heading or an ingress */
 #mlab_editor .mc_text,
 .mlab_main_body_content .mc_text {
+    margin: 0;
+    padding: 0;
     font-size: 1em;
+    line-height: 1.15em;
     font-family: Arial,sans-serif;
     font-style: normal;
     text-shadow: none;
     color: #ffffff;  
-    margin: 0;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
 }
 
 /*  All other elments will be some kind of figure - as an image or a map*/
 #mlab_editor .mc_figure,
 .mlab_main_body_content .mc_figure {
     margin: 0;
-    padding: 0.6em;
+    padding: 0;
     border: none;
     max-height: 100%; 
     max-width: 100%;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
 }
 
 /* ==========================================================================
@@ -75,12 +83,13 @@ part of a list */
 .mlab_main_body_content .mc_container.mc_list {
     padding:0 2em 0 1.25em;  
     list-style-position:outside;
+    margin: 0.6em 0;
 }
 
 /* TODO finne ett bedre navn ( er  nå brukt i to komponenter img og img_text) */
 #mlab_editor .mc_container.mc_picture_and_text,
 .mlab_main_body_content .mc_container.mc_picture_and_text {
-    margin: 7px 25px 0px 0px;
+    margin: 7px 25px 0 0;
     float: left; 
     width: 50%; 
     display: block
@@ -161,18 +170,21 @@ part of a list */
 #mlab_editor .mc_text.mc_heading.mc_small,
 .mlab_main_body_content .mc_text.mc_heading.mc_small {
     font-size: 1.12em;
+    margin: 0.6em 0; 
 }
 
 /* */
 #mlab_editor .mc_text.mc_heading.mc_medium,
 .mlab_main_body_content .mc_text.mc_heading.mc_medium {
     font-size: 1.27em; 
+    margin: 0.7em 0; 
 }
 
 /*  */
 #mlab_editor .mc_text.mc_heading.mc_large,
 .mlab_main_body_content .mc_text.mc_heading.mc_large {
     font-size: 1.45em;
+    margin: 0.8em 0; 
 }
 
 /*  */
@@ -206,7 +218,7 @@ part of a list */
 /* All heading display elements */
 #mlab_editor .mc_display.mc_heading,
 .mlab_main_body_content .mc_display.mc_heading {
-    margin: 1em 0; 
+    
 }
 
 /* An ingress display element - typically below a heading */
@@ -231,13 +243,15 @@ part of a list */
 /* TODO annet navn???  */
 #mlab_editor .mc_display.mc_figure_with_caption,
 .mlab_main_body_content .mc_display.mc_figure_with_caption {
-    padding-bottom: 0.1em;
+    margin-bottom: 0;
 }
 
 /*  TODO trenger vi denne? */
 #mlab_editor .mc_display.mc_figure_in_text,
 .mlab_main_body_content .mc_display.mc_figure_in_text {
-
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    margin-top: 0;
 }
 
 /*  */

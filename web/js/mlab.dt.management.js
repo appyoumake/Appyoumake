@@ -577,12 +577,18 @@ Mlab_dt_management.prototype = {
 
 //above we have counted the number of issues relating to the template "best practices" configuration, time to display the error message, if any
         if (template_best_practice_msg.length > 0) {
+            
+           
             $("#mlab_statusbar_permanent").qtip( {
                 content: {text: "<ul><li>" + template_best_practice_msg.join("</li><li>") + "</li></ul>" },
                 position: { my: 'topMiddle', at: 'bottomMiddle' },
-                show: { ready: true, modal: { on: false, blur: false } },
-                hide: 'unfocus',
+                show: { ready: true },
+                hide: { event: 'unfocus' },
                 style: { "background-color": "white", color: "blue", classes: "mlab_qtip_info" } } ) ;
+            
+                //hides the qTip after 5 seconds
+                window.setTimeout(function () { $(".mlab_qtip_info").remove();}, 5000);
+           
         } else {
              $(".mlab_qtip_info").remove();
         }
