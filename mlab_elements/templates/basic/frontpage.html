@@ -51,8 +51,8 @@
       
     };
   
-    $(document).on('pagecreate', '[data-role="page"]', function(e) {
-        console.log("EVENT: pagecreate");
+    $(document).on('pagecreate', '#mlab_index_page', function(e) {
+        console.log("EVENT: pagecreate for index page");
         
         //Opens the previous page 
         $(".mlab_nav_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
@@ -106,7 +106,7 @@
             </div>
         </div><!-- /Header -->
         
-    <div data-role="page">
+    <div data-role="page" id="mlab_index_page">
         
         <!-- The CONTENT of the page - are filled in via the App builder -->
         <div class="mlab_content_wrapper">
