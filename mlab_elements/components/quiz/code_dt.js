@@ -85,8 +85,7 @@ this.editPrompts = {
  */
 this.onCreate = function (el) {
     this.onLoad(el);
-    
-    this.custom_edit_quiz(el);
+    this.custom_add_page();
 };
 
 /* Hook called when component is loaded into app.
@@ -135,20 +134,6 @@ this.setupDesign = function() {
     });
     nav.append('<li><a class="' + self.classes.addPage + ' ' + self.classes.disabled + '">+</a></li>');
     
-// Add first page, if there is none
-    if (!pages.length) self.addQuizPage();
-
-//add new page when click on plus sign 
-    self.domRoot.on("click", "." + this.classes.addPage, function() {
-        self.addQuizPage();
-        return false;
-    });
-    
-//remove page when click on minus sign 
-    self.domRoot.on("click", "." + this.classes.removePage, function() {
-        self.removeQuizPage($(this));
-    });
-
 //edit content directly after quiestion is added
     self.domRoot.on("click", "." + this.classes.editable, function() {
         var ob = $(this);
@@ -245,80 +230,9 @@ this.addStoredQuestions = function() {
     });
 };
 
-/**
- * added by Arild, we want to use the tooltip for input from user, here we generate a tabbed interface with 4 tabs:
- * 1: Title of page (if blank *AND* at least one question with answers on this page we exit editing)
- * 2: Subtitle or Question (? at end determines, if blank *AND* at least one question with answers on this page we skip to 1)
- * 3: Question type (if previous item was question)
- * 4: Answer (repeat until blank, then go to 2
- * 
- * @param {type} el
- * @returns {undefined}
- */
-this.custom_add_page = function(el) {
-
-    var self = this;
-    var id = this.domRoot.attr("id");
-    
-    var content = $('<div id="mlab_dt_quiz_tabs_' + id + '">' + 
-                    '    <ul class="mlab_dt_tab_list">' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_4">Responses</a></li>' + 
-                    '    </ul>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.pageTitle + '</label>' + 
-                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="pageTitle">' + 
-                    '        <div class="mlab_dt_large_new_line"></div>' + 
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.explanatory + '</label>' + 
-                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="explanatory"></textarea>' + 
-                    '        <div class="mlab_dt_larger_new_line"></div>' +        
-                    '        <label class="mlab_dt_text">' + this.editPrompts.question + '</label>' + 
-                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="question"></textarea>' + 
-                    '        <div class="mlab_dt_larger_new_line"></div>' +                     
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.questionType + '</label>' + 
-                    '        <img class="mlab_dt_picture" id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
-                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="questionType">' + 
-                    '        <div class="mlab_dt_largest_new_line"></div>' +   
-                    '        <label class="mlab_dt_text">' + this.editPrompts.mandatory + '</label>' + 
-                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="mandatory">' + 
-                    '        <div class="mlab_dt_large_new_line"></div>' +
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.alternatives + '</label>' + 
-                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="response"></textarea>' + 
-                    '        <input type="button" class="mlab_dt_button_done ' + this.classes.finishButton + '" value="Ferdig">' + 
-                    '        <div class="mlab_dt_small_new_line"></div>' +  
-                    '        <label class="mlab_dt_text">' + this.editPrompts.correctResponse + '</label>' + 
-                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="correctResponse">' + 
-                    '        <div class="mlab_dt_large_new_line"></div>' +         
-                    '    </div>' + 
-                    '</div>' + 
-                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right ' + this.classes.cancelButton + '" value="Avbryt">' 
-                    );
-
-    $(content).on("keyup", "." + self.classes.userInput, function(e) {
-        self.handleUserInput($(this), e);
-    });
-
-    $(content).on("click", "." + self.classes.cancelButton, function() {
-        self.cancelCurrentQuestion();
-    });
-
-    $(content).on("click", "." + self.classes.finishButton, function() {
-        self.finishAddingQuestions();
-    });
-
-    this.api.displayPropertyDialog(el, "Edit map", content, null, self.callbackMakeTabs);
-};
 
 /**
- * Helper function for custom_edit_quiz, it is called when qtip properties box is displayed so we can turn on tabs
+ * Helper function for custom_add_page, it is called when qtip properties box is displayed so we can turn on tabs
  * @param {type} el
  * @returns {undefined}
  */
@@ -330,6 +244,7 @@ this.callbackMakeTabs = function(el) {
     $("#mlab_dt_quiz_tabs_" + id + " ul li a").each(function() {
         $(this).attr("href", location.href.toString() + $(this).attr("href"));
     });
+    
     $("#mlab_dt_quiz_tabs_" + id).tabs();
 }
 
@@ -418,7 +333,7 @@ this.saveQuestions = function() {
 //---------- MAIN FUNCTIONS THAT DEAL WITH USER ACTIONS DURING QUIZ CREATION
 
 /**
- * Here we process the user input from the 
+ * Here we process the user input from the tabbed wizard dialog box
  * @param {type} e
  * @returns {undefined}
  */
@@ -426,7 +341,7 @@ this.handleUserInput = function(input, e) {
     var enterKey = 13;
     // Only proceed if we have hit enter
     if (e.which != enterKey) return;
-
+    e.preventDefault();
     var editStage = input.data("mlab-dt-quiz-input");
     var existing = input.data("existing");
     var value = input.val();
@@ -436,66 +351,81 @@ this.handleUserInput = function(input, e) {
     var questionType = question.data("questiontype");
     var proceed = true;
     
-debugger;
-
     switch (editStage) {
         case "pageTitle":
             if (value) {
+                debugger;
                 page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
                 input.val("");
                 this.setPropertiesDialogTab();
+                $("[data-mlab-dt-quiz-input='explanatory']").focus();
             }
             break;
             
+        case "explanatory": 
+            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
+            $("[data-mlab-dt-quiz-input='question']").focus();
+            break;
+            
+        case "question":
+// We have selected to not add any more questions.
+            if (input.val() == "") {
+                this.finishAddingQuestions(page);
+                proceed = false;
+                break;
+            }
+            
+            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
+            this.setPropertiesDialogTab();
+            $("[data-mlab-dt-quiz-input='questionType']").focus();
+            break;
+            
+
         case "questionType":
             value = parseInt(value);
             var minValue = 1;
-            var maxValue = this.questionTypes.length;
-            if (!existing && question.length) {
-                maxValue += 1;
-                if (value == maxValue) {
-                    // We have selected to not add any more questions.
-                    this.finishAddingQuestions(page);
-                    proceed = false;
-                    break;
-                }
-            }
+//            var maxValue = this.questionTypes.length;
             if (!value || value < minValue || value > maxValue) {
                 input.val('');
                 helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
                 proceed = false;
-            }
-            else if (existing) {
+/*            } else if (existing) {
                 this.changeQuestionType(page, question, value);
-                editStage = this.editStages.length;
-            }
-            else {
+                editStage = this.editStages.length; */
+            } else {
                 this.addQuestion(page, value);
+                $("[data-mlab-dt-quiz-input='mandatory']").focus();
             }
             break;
             
-        case "question":
-            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
-            if (value.slice(-1)!="?") proceed = false;
-            input.val('');
+        case "mandatory":
+            if (value=="Y" || value=="y") {
+                value = true;
+            } else if (value=="N" || value=="n") {
+                value = false;
+            }
+            if ((typeof value)!="boolean") {
+                proceed = false;
+            } else {
+                this.setMandatory(question, value);
+                input.val('');
+                this.setPropertiesDialogTab();
+                $("[data-mlab-dt-quiz-input='response']").focus();
+            }
             break;
             
         case "alternatives":
             proceed = !this.addQuestionAlternative(question, value, questionType);
             input.val('');
+            if (proceed) {
+                $("[data-mlab-dt-quiz-input='correctResponse']").focus();
+            }
             break;
             
         case "correctResponse":
             proceed = this.addCorrectResponse(question, value, questionType);
             input.val('');
-            break;
-            
-        case "mandatory":
-            if (value=="Y" || value=="y") value = true;
-            else if (value=="N" || value=="n") value = false;
-            if ((typeof value)!="boolean") proceed = false;
-            else this.setMandatory(question, value);
-            input.val('');
+            this.setPropertiesDialogTab(1);
             break;
             
         default:
@@ -608,11 +538,11 @@ this.finishAddingQuestions = function(page) {
  * @returns {undefined}
  */
 this.addQuizPage = function() {
-    // tabs require the use of IDs
+// tabs require the use of IDs
     var uuid = this.api.getGUID();
     var pages = this.domRoot.find("." + this.classes.page);
     var nav = this.domRoot.find("." + this.classes.nav);
-    var title = 'Side ' + (pages.length+1);
+    var title = 'Page ' + (pages.length+1);
     var content = '<h2 class="' + this.classes.hide + ' ' + this.classes.editable + '"></h2>'
         + '<ul class="' + this.classes.questions + '"></ul>';
     
@@ -621,11 +551,19 @@ this.addQuizPage = function() {
     if (!lastPage.length) lastPage = nav;
     lastPage.after('<section class="' + this.classes.page + '" id="' + uuid + '">' + content + '</section>');
     var page = this.domRoot.find("#" + uuid);
+    debugger;
     this.setUpPage(page, true);
     
     this.api.setDirty();
 };
 
+/**
+ * Adds a response alternative for a question
+ * @param {type} question
+ * @param {type} value
+ * @param {type} questionType
+ * @returns {Boolean} true if question was added
+ */
 this.addQuestionAlternative = function(question, value, questionType) {
     var added = false;
     if (value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) {
@@ -1003,20 +941,6 @@ this.removeQuestion = function(question) {
     this.saveQuestions();
 };
 
-/* Removes a page from the component. 
- * @param {jQuery} button The button that was clicked to remove the page.
- */
-this.removeQuizPage = function(button) {
-    var page = button.closest("." + this.classes.page);
-    var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
-    var li = link.parent();
-    var neighbour = li.siblings("li").eq(0);
-    this.switchTabs(neighbour.find("a"));
-    page.remove();
-    li.remove();
-    this.api.setDirty();
-};
-
 /* Switch to a different tab pane.
  * @param {jQuery} link The link that was clicked.
  * @return {boolean} Always false
@@ -1061,6 +985,56 @@ this.getActivePage = function() {
 //---------- CUSTOM FUNCTIONS AVAILABLE FROM THE COMPONENTS TOOLBAR
 
 /**
+ * added by Arild, we want to use the tooltip for input from user, here we generate a tabbed interface with 4 tabs:
+ * 1: Title of page (if blank *AND* at least one question with answers on this page we exit editing)
+ * 2: Subtitle or Question (? at end determines, if blank *AND* at least one question with answers on this page we skip to 1)
+ * 3: Question type (if previous item was question)
+ * 4: Answer (repeat until blank, then go to 2
+ * 
+ * @param {type} el
+ * @returns {undefined}
+ */
+this.custom_add_page = function() {
+    var el = $(".mlab_current_component");
+    var self = this;
+    var id = this.domRoot.attr("id");
+    
+    this.addQuizPage();
+    
+    content = this.getDialogHtml(id);
+            
+    $(content).on("keyup", "." + self.classes.userInput, function(e) {
+        self.handleUserInput($(this), e);
+    });
+
+    $(content).on("click", "." + self.classes.cancelButton, function() {
+        self.cancelCurrentQuestion();
+    });
+
+    $(content).on("click", "." + self.classes.finishButton, function() {
+        self.finishAddingQuestions();
+    });
+
+    this.api.displayPropertyDialog(el, "Edit map", content, null, self.callbackMakeTabs, null, "[data-mlab-dt-quiz-input='pageTitle']");
+    
+};
+
+/* Removes a page from the component. 
+ * @param {jQuery} button The button that was clicked to remove the page.
+ */
+this.custom_removeQuizPage = function() {
+    var page = this.getActivePage();
+    var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
+    var li = link.parent();
+    var neighbour = li.siblings("li").eq(0);
+    this.switchTabs(neighbour.find("a"));
+    page.remove();
+    li.remove();
+    this.api.setDirty();
+};
+
+
+/**
  * Start adding a new question to currently selected page
  * @param {type} el
  * @returns {undefined}
@@ -1068,25 +1042,112 @@ this.getActivePage = function() {
 this.custom_add_question = function(el) {
     var page = this.getActivePage();
     page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
-    this.enterEditMode(page,"questionType");
+    this.enterEditMode(page, "questionType");
 };
+
+/**
+ * Wrapper function to move currently selected question OR alternative down
+ * @param {type} el
+ * @returns {undefined}
+ */
+this.custom_move_down = function() {
+    debugger;
+    var q = this.getCurrentQuestion();
+    var a = this.domRoot.find("li." + this.classes.markedAlternative);    
+    if (q) {
+        this.move_question_down(q);
+    } else {
+        this.move_alternative_down(a);
+    }
+}
+
+/**
+ * Wrapper function to move currently selected question OR alternative up
+ * @param {type} el
+ * @returns {undefined}
+ */
+this.custom_move_up = function(el) {
+    debugger;
+    var q = this.getCurrentQuestion();
+    var a = this.domRoot.find("li." + this.classes.markedAlternative);    
+    if (q) {
+        this.move_question_up(q);
+    } else {
+        this.move_alternative_up(a);
+    }
+}
+
+
+
+
+
+//---------- VARIOUS HELPER FUNCTIONS USED BY CODE ABOVE
+
+/**
+ * Returns HTML for the dialog box, used when add pag or question
+ * @param {type} el
+ * @returns {unresolved}
+ */
+this.getDialogHtml = function(id) {
+    return $('<div id="mlab_dt_quiz_tabs_' + id + '">' + 
+                    '    <ul class="mlab_dt_tab_list">' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
+                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_4">Responses</a></li>' + 
+                    '    </ul>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.pageTitle + '</label>' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="pageTitle">' + 
+                    '        <div class="mlab_dt_large_new_line"></div>' + 
+                    '    </div>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.explanatory + '</label>' + 
+                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="explanatory"></textarea>' + 
+                    '        <div class="mlab_dt_larger_new_line"></div>' +        
+                    '        <label class="mlab_dt_text">' + this.editPrompts.question + '</label>' + 
+                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="question"></textarea>' + 
+                    '        <div class="mlab_dt_larger_new_line"></div>' +                     
+                    '    </div>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.questionType + '</label>' + 
+                    '        <img class="mlab_dt_picture" id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="questionType">' + 
+                    '        <div class="mlab_dt_largest_new_line"></div>' +   
+                    '        <label class="mlab_dt_text">' + this.editPrompts.mandatory + '</label>' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="mandatory">' + 
+                    '        <div class="mlab_dt_large_new_line"></div>' +
+                    '    </div>' + 
+                    '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
+                    '        <label class="mlab_dt_text">' + this.editPrompts.alternatives + '</label>' + 
+                    '        <textarea class="mlab_dt_medium_textarea ' + this.classes.userInput + '" data-mlab-dt-quiz-input="response"></textarea>' + 
+                    '        <input type="button" class="mlab_dt_button_done ' + this.classes.finishButton + '" value="Ferdig">' + 
+                    '        <div class="mlab_dt_small_new_line"></div>' +  
+                    '        <label class="mlab_dt_text">' + this.editPrompts.correctResponse + '</label>' + 
+                    '        <input class="mlab_dt_large_input ' + this.classes.userInput + '" data-mlab-dt-quiz-input="correctResponse">' + 
+                    '        <div class="mlab_dt_large_new_line"></div>' +         
+                    '    </div>' + 
+                    '</div>' + 
+                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right ' + this.classes.cancelButton + '" value="Avbryt">' 
+                    );
+}
 
 /**
  * Moves currently selected question up or down
  * @param {type} el
  * @returns {undefined}
  */
-this.custom_move_question_up = function(question) {
+this.move_question_up = function(question) {
     var previous = question.prev("." + this.classes.question);
     this.switchPositions(previous, question);
 };
 
-this.custom_move_question_down = function(question) {
+this.move_question_down = function(question) {
     var next = question.next("." + this.classes.question);
     this.switchPositions(question, next);
 };
 
-this.custom_move_alternative_up = function(alternative) {
+this.move_alternative_up = function(alternative) {
     var previous = alternative.prev("." + this.classes.questionAlternatives + " li");
     var isCorrect = this.alternativeIsCorrect(previous);
     if (isCorrect) this.toggleAlternativeCorrectness(previous);
@@ -1094,17 +1155,13 @@ this.custom_move_alternative_up = function(alternative) {
     if (isCorrect) this.toggleAlternativeCorrectness(previous);
 }
 
-this.custom_move_alternative_down = function(alternative) {
+this.move_alternative_down = function(alternative) {
     var isCorrect = this.alternativeIsCorrect(alternative);
     if (isCorrect) this.toggleAlternativeCorrectness(alternative);
     var next = alternative.next("." + this.classes.questionAlternatives + " li");
     alternative = this.switchPositions(alternative, next);
     if (isCorrect) this.toggleAlternativeCorrectness(alternative);
 }
-
-
-
-//---------- VARIOUS HELPER FUNCTIONS USED BY CODE ABOVE
 
 /**
  * Moves two HTML objects around

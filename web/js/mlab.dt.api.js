@@ -359,14 +359,14 @@ Mlab_dt_api.prototype = {
  * @param {function object} func_hide currently unused
  * @returns {undefined}
  */
-    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide) {
+    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector) {
         this.closeAllPropertyDialogs()
         that = this;
         $(el).qtip({
             solo: true,
             content:    {text: content, title: title },
             position:   { my: 'leftMiddle', at: 'rightMiddle' },
-            show:       { ready: true, modal: { on: true, blur: false } },
+            show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: 'qtip-light mlab_dt_box_style' },
             events:     {   render: function(event, api) { that.executeCallback (func_render, el) },
