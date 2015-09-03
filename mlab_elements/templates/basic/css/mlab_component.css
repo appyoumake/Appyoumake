@@ -357,26 +357,24 @@ part of a list */
 /* */
 #mlab_editor .mc_interactive,
 .mlab_main_body_content .mc_interactive {
-    color: blueviolet;
+    //color: blueviolet;
+    cursor: pointer;
 }
 
 /* */
 #mlab_editor .mc_interactive.mc_map,
 .mlab_main_body_content .mc_interactive.mc_map {
-    margin: 0;
-    padding: 0.6em;
     border: none;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
 }
 
 /* video - audio*/
 #mlab_editor .mc_interactive.mc_timebased,
 .mlab_main_body_content .mc_interactive.mc_timebased {
-    margin: 0;
-    padding: 0.6em;
     border: none;
-    cursor: pointer;
-    width: 100%    !important;
-    height: auto   !important; 
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
 }
 
 /* */
