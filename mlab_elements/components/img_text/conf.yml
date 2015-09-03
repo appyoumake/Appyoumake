@@ -7,7 +7,7 @@ inherit: img
 tooltip: This is an image and text component, use it for paragraphs that require an image in them
 html: |
     <figure class="mc_container mc_picture_and_text">
-      <img class='mc_figure mc_display mc_figure_with_caption' alt="sample image">
+      <img class='mc_figure mc_display mc_figure_with_caption mc_figure_in_text' alt="sample image">
       <figcaption class='mc_text mc_display mc_figure_text' contenteditable="true">Caption</figcaption>
     </figure>
     <p class='mc_text mc_display'>Your text goes here</p>

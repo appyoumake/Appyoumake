@@ -11,6 +11,7 @@
     
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
+        el.find("." + this.config.custom.class_identifier).css("pointer-events", "none");
     };
 
 	this.onSave = function (el) {
@@ -103,7 +104,7 @@
 // Add youtube code to app, and resize it to fill whole width
         $.youtubeSelect = function(youtube_id){
             var container = $(local_el);
-            container.html('<iframe width="560" height="315" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen style="pointer-events: none" ></iframe>');
+            container.html('<iframe class="mc_figure mc_interactive mc_timebased" width="560" height="315" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen style="pointer-events: none" ></iframe>');
             var video = $(container).find("iframe");
             video.attr('data-aspectRatio', video.height() / video.width()).removeAttr('height').removeAttr('width');
             mlab.dt.api.closeAllPropertyDialogs();
