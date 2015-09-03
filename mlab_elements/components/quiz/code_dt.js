@@ -385,6 +385,8 @@ this.handleUserInput = function(input, e) {
             }
             if (!question) {
                 question = this.addQuestion(page, value);
+            } else {
+                question = this.getCurrentQuestion();
             }
             question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
             this.setPropertiesDialogTab();
@@ -425,9 +427,45 @@ this.handleUserInput = function(input, e) {
             break;
             
         case "alternatives":
-            proceed = !this.addQuestionAlternative(question, value, questionType);
+            //!this.addQuestionAlternative(question, value, questionType);
+            proceed = (value != "");
             input.val('');
+
             if (proceed) {
+                var quiz_type = $("[data-mlab-dt-quiz-input='questionType']").val();
+                var question = this.getCurrentQuestion();
+                
+                switch (quiz_type) {
+                    case quiz_checkbox: 
+                        var html = "<input type='checkbox'>" + value ;
+                        break;
+
+                    case quiz_radiobutton: 
+                        var html = "<input type='radio'>" + value ;
+                        break;
+
+                    case quiz_textbox: 
+                        var html = "<input type='text'>" + value;
+                        break;
+
+                    case quiz_dropdown_menu: 
+                        if (typeof current_select_box == "undefined" ) {
+                            var html = "<select><option>" + value + "<option></select>";
+                        } else {
+                            var html = "<option>" + value + "<option>";
+                        }
+                        break;
+
+                    case quiz_text: 
+                        addLine("<p class='info'>" + item + "</p>");
+                        $("#img_question_type").slideDown();
+                        current_state = state_waiting_for_question_type;
+                        return;
+                        break;
+                }
+
+                question.find("." + this.classes.questionText).append(html);
+                
                 $("[data-mlab-dt-quiz-input='correctResponse']").focus();
             }
             break;

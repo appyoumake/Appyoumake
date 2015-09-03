@@ -979,12 +979,12 @@ class FileManagement {
         $doc->loadHTML($frontpage_content);
         libxml_clear_errors();
         
-$content = ""; 
-$element = $doc->getElementById($config["app"]["content_id"]);
-$children  = $element->childNodes;
-foreach ($children as $child) { 
-    $content .= $element->ownerDocument->saveHTML($child);
-}
+        $content = ""; 
+        $element = $doc->getElementById($config["app"]["content_id"]);
+        $children  = $element->childNodes;
+        foreach ($children as $child) { 
+            $content .= $element->ownerDocument->saveHTML($child);
+        }
 
         //$content = $doc->saveHtml($doc->getElementById($config["app"]["content_id"]));
         $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
