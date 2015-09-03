@@ -978,7 +978,15 @@ class FileManagement {
         $doc->validateOnParse = true;
         $doc->loadHTML($frontpage_content);
         libxml_clear_errors();
-        $content = $doc->saveHtml($doc->getElementById($config["app"]["content_id"]));
+        
+$content = ""; 
+$element = $doc->getElementById($config["app"]["content_id"]);
+$children  = $element->childNodes;
+foreach ($children as $child) { 
+    $content .= $element->ownerDocument->saveHTML($child);
+}
+
+        //$content = $doc->saveHtml($doc->getElementById($config["app"]["content_id"]));
         $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
 
 //get list of all placeholders, each placeholder is surrounded by double percentage (%) signs

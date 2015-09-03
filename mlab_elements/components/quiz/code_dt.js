@@ -13,6 +13,7 @@ this.classes = {
     questions: "mlab_quiz_questions",
     question: "mlab_quiz_question",
     questionText: "mlab_quiz_question_text",
+    explanatoryText: "mlab_quiz_explanatory_text",
     questionAlternatives: "mlab_quiz_question_alternatives",
     textInput: "mlab_quiz_text_input",
     line: "mlab_quiz_line",
@@ -38,7 +39,7 @@ this.classes = {
     correctResponseAlternative: "mlab_dt_correct_response_alternative",
     mandatory: "mlab_dt_response_mandatory",
     questionType: "mlab_dt_quiz_question_type",
-    meta: "mlab_dt_quiz_meta",
+//    meta: "mlab_dt_quiz_meta",
     dialogLink: "mlab_dt_quiz_dialog_link",
     currentQuestion: "mlab_dt_quiz_current_question",
     markedAlternative: "mlab_dt_quiz_alternative_marked"
@@ -191,7 +192,7 @@ this.setUpPage = function(page, setActive, editStage) {
     }
     
     var link = this.domRoot.find('a[href="#' + page.attr("id") + '"]');
-    if (typeof setActive == "undefined") {
+    if (typeof setActive != "undefined" && setActive) {
         this.switchTabs(link);
     }
     this.enterEditMode(page, editStage);
@@ -213,8 +214,14 @@ this.addStoredQuestions = function() {
         var pageQuestions = allQuestions[pageId];
         
         for (var i=0, ii=pageQuestions.length; i<ii; i++) {
+            
             var questionType = self.getQuestionType(pageQuestions[i]["type"]);
-            var question = self.addQuestion(page, questionType["order"], pageQuestions[i]["question"], pageQuestions[i]["id"]);
+
+            var questions = page.find("." + this.classes.questions);
+            var question = this.makeQuestion(page, questionType["order"], pageQuestions[i]["question"], pageQuestions[i]["id"]);
+            question = question.appendTo(questions);
+            this.markQuestionAsCurrent(question);
+
             var alternatives = pageQuestions[i]["alternatives"];
             for (var j=0, jj=alternatives.length; j<jj; j++) {
                 self.addQuestionAlternative(question, alternatives[j], questionType["type"]);
@@ -354,7 +361,6 @@ this.handleUserInput = function(input, e) {
     switch (editStage) {
         case "pageTitle":
             if (value) {
-                debugger;
                 page.find("h2").text(value).removeClass(this.classes.hide).trigger("input");
                 input.val("");
                 this.setPropertiesDialogTab();
@@ -363,7 +369,10 @@ this.handleUserInput = function(input, e) {
             break;
             
         case "explanatory": 
-            question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
+            if (value) {
+                question = this.addQuestion(page, false, false, false, value);
+                question.find("." + this.classes.explanatoryText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
+            }
             $("[data-mlab-dt-quiz-input='question']").focus();
             break;
             
@@ -374,7 +383,9 @@ this.handleUserInput = function(input, e) {
                 proceed = false;
                 break;
             }
-            
+            if (!question) {
+                question = this.addQuestion(page, value);
+            }
             question.find("." + this.classes.questionText).append('<p class="' + this.classes.editable + '">' + value + '</p>').removeClass(this.classes.hide);
             this.setPropertiesDialogTab();
             $("[data-mlab-dt-quiz-input='questionType']").focus();
@@ -384,7 +395,7 @@ this.handleUserInput = function(input, e) {
         case "questionType":
             value = parseInt(value);
             var minValue = 1;
-//            var maxValue = this.questionTypes.length;
+            var maxValue = this.questionTypes.length;
             if (!value || value < minValue || value > maxValue) {
                 input.val('');
                 helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
@@ -393,7 +404,6 @@ this.handleUserInput = function(input, e) {
                 this.changeQuestionType(page, question, value);
                 editStage = this.editStages.length; */
             } else {
-                this.addQuestion(page, value);
                 $("[data-mlab-dt-quiz-input='mandatory']").focus();
             }
             break;
@@ -551,7 +561,6 @@ this.addQuizPage = function() {
     if (!lastPage.length) lastPage = nav;
     lastPage.after('<section class="' + this.classes.page + '" id="' + uuid + '">' + content + '</section>');
     var page = this.domRoot.find("#" + uuid);
-    debugger;
     this.setUpPage(page, true);
     
     this.api.setDirty();
@@ -637,34 +646,46 @@ this.markAlternativesAsCorrect = function(question, questionType) {
  * @param {string} uuid Unique ID for question, for existing questions. If not provided, one is generated.
  * @return {jQuery} The question that was added.
  */
-this.makeQuestion = function(page, type, questionText, uuid) {
-    if (!questionText) questionText = "";
-    if (!type) type = 1;
+this.makeQuestion = function(page, type, questionText, uuid, explanatoryText) {
+    
+    if (!questionText) { questionText = ""; }
+    if (!explanatoryText) { explanatoryText = ""; }
+    if (!type) { type = 1 };
     if (!uuid) uuid = this.api.getGUID();
+
+    var hide_explanatory = (!explanatoryText ? this.classes.hide : "");
+    var hide_question = (!questionText ? this.classes.hide : "");
+
     var typeOb = this.questionTypes[type-1];
     var typeType = typeOb["type"];
     var typeName = typeOb["name"];
+    
     var question = $('<li class="' + this.classes.question + ' ' + this.classes.dtOnly + '"></li>');
+    
     question.append('<span class="' + this.classes.line + '">'
-        + '<label class="' + this.classes.questionText + ' '  + this.classes.hide + '">' + questionText + '</label>'
+        + '<label class="' + this.classes.explanatoryText + ' '  + hide_explanatory + '">' + explanatoryText + '</label>'
         + '</span>'
-        + '<span class="' + this.classes.line + ' ' + this.classes.questionType + '">'
-        + '<label>' + typeName + '</label>'
+        + '<span class="' + this.classes.line + '">'
+        + '<label class="' + this.classes.questionText + ' '  + hide_question + '">' + questionText + '</label>'
         + '</span>'
+//        + '<span class="' + this.classes.line + ' ' + this.classes.questionType + '">'
+//        + '<label>' + typeName + '</label>'
+//        + '</span>'
         + '<span class="' + this.classes.line + ' ' + this.classes.questionAlternatives + ' ' + this.classes.hide + '">'
-        + '<ol class="' + this.classes.meta + '"></ol>'
+//        + '<ol class="' + this.classes.meta + '"></ol>'
         + '</span>'
-        + '<span class="' + this.classes.line + ' ' + this.classes.correctResponse + ' ' + this.classes.hide + '">'
-        + '<span>Korrekt svar:</span><label></label>'
-        + '</span>'
+//        + '<span class="' + this.classes.line + ' ' + this.classes.correctResponse + ' ' + this.classes.hide + '">'
+//        + '<span>Korrekt svar:</span><label></label>'
+//        + '</span>'
         + '<section></section>');
+
     question.data("questionid", uuid);
     question.data("questiontype", typeType);
     return question;
 };
 
 /**
- * Add a single question to the page
+ * Add a single question to the page, typically used only by the addstoredquestion function
  * @param {type} page
  * @param {type} type
  * @param {type} questionText
