@@ -558,8 +558,6 @@ class ServicesController extends Controller
         $result = strtolower($request->query->get("result"));
         $tag = $request->query->get("tag");
         
-        error_log("$passphrase, $app_uid, $app_version, $remote_processed_app_checksum, $result, $tag");
-        
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             return new JsonResponse(array('result' => 'error', 'msg' => 'Passphrase not matching'));
