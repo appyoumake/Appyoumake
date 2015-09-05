@@ -6,3 +6,4 @@ tooltip: This is a sub, sub headline, use sparingly per page to indicate change 
 html: <h3 class='mc_text mc_display mc_heading mc_small'>Enter headline level 3 here</h3>
 inherit: h1
 placeholder: Enter your headline level 3 here
+filterhtml: ["h3"]

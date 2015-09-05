@@ -29,7 +29,7 @@ this.classes = {
 this.onPageLoad = function(el) {
     var self = this;
     self.api.setupStoragePlugin(el);
-    self.user = "LOCAL"; // TODO: Can't remember why mlab.api always requires a user. Maybe something about the Moodle api? This might be changed when the MySQL storage is implemented.
+    self.user = self.api.getDeviceId(); // TODO: Request user name and store it
     self.domRoot = $(el).find("." + self.classes.root);
     self.variables = self.api.getAllVariables(this.domRoot);
     

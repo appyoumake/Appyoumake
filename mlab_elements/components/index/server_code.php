@@ -35,7 +35,7 @@ class mlab_ct_index {
  */
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
         if (!isset($variables) || !isset($variables["options"]) || !isset($variables["options"]["style"])) {
-            $style = "detailed";
+            $style = "folding";
         } else {
             $style = $variables["options"]["style"];
         }

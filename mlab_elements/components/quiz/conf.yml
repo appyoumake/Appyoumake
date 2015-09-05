@@ -2,11 +2,12 @@
 name: quiz
 category: quiz
 version: 0.2
-developer: Morten Krane, Snapper Net Solutions
+developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
 storage_plugin: true
 custom:
 tooltip: Build a quiz for users to answer
 required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
+plugins: ["cordova-plugin-device"]
 html: |
     <section class="mlab_quiz">
 

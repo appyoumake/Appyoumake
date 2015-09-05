@@ -324,15 +324,6 @@ Mlab_dt_api.prototype = {
     },
 
 /**
- * Matches a function found in the runtime API JS file/object mlab.api, used by components to call the current API and see what mode they are in. 
- * This can be used to execute different code based on whether the user designs the app, or runs the compiled version.
- * @returns {String}
- */
-    getMode : function () {
-        return "designtime";
-    },
-
-/**
  * Simple wrapper function which will ensure that the jQuery plugin qtip2 is closed.
  * @returns {undefined}
  */

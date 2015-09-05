@@ -384,3 +384,11 @@ made smaler than the min width */
     background-color: wheat;
     border: 1px solid gray;
 }
+
+#mlab_editor .ui-state-active a, #mlab_editor .ui-state-active a:link, #mlab_editor .ui-state-active a:visited {
+    color: white;
+}
+
+#mlab_editor .mlab_current_component_child {
+    border: 1px greenyellow double;
+}

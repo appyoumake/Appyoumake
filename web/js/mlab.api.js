@@ -112,11 +112,28 @@ function Mlab_api () {
 Mlab_api.prototype = {
     version: 0.1,
     /**
-     * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode.
-     * @return {String}
+     * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode, 
+     * with additional device info, app for mobile device, desktop for browser (i.e. no cordova)
+     * @return {object}
      */
     getMode: function() {
-        return "runtime";
+        var mode = {mode: "design", device: "desktop"};
+        if (typeof mlab.dt == "undefined") {
+            mode.mode = "runtime";
+        }
+        if (typeof window.cordova != "undefined") {
+            mode.device = "mobile";
+        }
+        return mode;
+    },
+    
+    getDeviceId: function() {
+        var mode = this.getMode();
+        if (mode.device == "mobile") {
+            return device.uuid;
+        } else {
+            return "demo"; //TODO, replace with function that looks in local storage to see if uuid is set, if so, rturn it, if not generate
+        }
     },
     
     /**

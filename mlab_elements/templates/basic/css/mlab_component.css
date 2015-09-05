@@ -408,5 +408,17 @@ part of a list */
 /* For entry elements with requerd input */
 #mlab_editor .mc_entry.mc_required,
 .mlab_main_body_content .mc_entry.mc_required {
-    
+    color: red;
+}
+
+/* Text for entry elements (typically labels) */
+#mlab_editor .mc_entry.mc_info,
+.mlab_main_body_content .mc_entry.mc_info {
+    color: white;
+}
+
+/* highlight */
+#mlab_editor .mc_entry.mc_input.mc_correct,
+.mlab_main_body_content .mc_entry.mc_input.mc_correct {
+    background-color: palegreen;
 }
