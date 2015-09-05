@@ -47,10 +47,11 @@ this.classes = {
 
 /* Question types available. Order matches user's input value. */
 this.questionTypes = [
-    {"type": "text", "name": "Tekst/tall", "order": 1},
+    {"type": "checkbox", "name": "Avkrysning (flere riktige svar)", "order": 1},
     {"type": "radio", "name": "Radioknapper (ett riktig svar)", "order": 2},
     {"type": "select", "name": "Nedtrekksmeny (ett riktig svar)", "order": 3},
-    {"type": "checkbox", "name": "Avkrysning (flere riktige svar)", "order": 4}
+    {"type": "multiselect", "name": "Liste (flere riktige svar)", "order": 4},
+    {"type": "text", "name": "Tekst/tall", "order": 5},
 ];
 
 
@@ -58,9 +59,9 @@ this.editStages = [
     "pageTitle",
     "question",
     "questionType",
+    "mandatory",
     "alternatives",
     "correctResponse",
-    "mandatory"
 ];
 
 this.editPrompts = {
@@ -237,24 +238,6 @@ this.addStoredQuestions = function() {
     });
 };
 
-
-/**
- * Helper function for custom_add_page, it is called when qtip properties box is displayed so we can turn on tabs
- * @param {type} el
- * @returns {undefined}
- */
-this.callbackMakeTabs = function(el) {
-    var quiz = el.find(".mlab_quiz");
-    var id = quiz.attr("id");
-    var self = mlab.dt.components.quiz.code;
-
-    $("#mlab_dt_quiz_tabs_" + id + " ul li a").each(function() {
-        $(this).attr("href", location.href.toString() + $(this).attr("href"));
-    });
-    
-    $("#mlab_dt_quiz_tabs_" + id).tabs();
-}
-
 /**
  * The properties dialog uses tabs, here we move forward (or to a specific tab) when an action has been performed
  * @param {type} tab_num
@@ -422,50 +405,19 @@ this.handleUserInput = function(input, e) {
                 this.setMandatory(question, value);
                 input.val('');
                 this.setPropertiesDialogTab();
-                $("[data-mlab-dt-quiz-input='response']").focus();
+                $("[data-mlab-dt-quiz-input='alternatives']").focus();
             }
             break;
             
         case "alternatives":
-            //!this.addQuestionAlternative(question, value, questionType);
-            proceed = (value != "");
+            proceed = (value == "");
             input.val('');
 
-            if (proceed) {
-                var quiz_type = $("[data-mlab-dt-quiz-input='questionType']").val();
+            if (!proceed) {
+                var questionType = $("[data-mlab-dt-quiz-input='questionType']").val();
                 var question = this.getCurrentQuestion();
-                
-                switch (quiz_type) {
-                    case quiz_checkbox: 
-                        var html = "<input type='checkbox'>" + value ;
-                        break;
-
-                    case quiz_radiobutton: 
-                        var html = "<input type='radio'>" + value ;
-                        break;
-
-                    case quiz_textbox: 
-                        var html = "<input type='text'>" + value;
-                        break;
-
-                    case quiz_dropdown_menu: 
-                        if (typeof current_select_box == "undefined" ) {
-                            var html = "<select><option>" + value + "<option></select>";
-                        } else {
-                            var html = "<option>" + value + "<option>";
-                        }
-                        break;
-
-                    case quiz_text: 
-                        addLine("<p class='info'>" + item + "</p>");
-                        $("#img_question_type").slideDown();
-                        current_state = state_waiting_for_question_type;
-                        return;
-                        break;
-                }
-
-                question.find("." + this.classes.questionText).append(html);
-                
+                this.addQuestionAlternative(question, value, questionType);
+            } else { //the user does not want to add more questions, now select correct response
                 $("[data-mlab-dt-quiz-input='correctResponse']").focus();
             }
             break;
@@ -490,7 +442,7 @@ this.handleUserInput = function(input, e) {
         editStage = 1;
         this.saveQuestions();
     }
-    if (existing) this.floatFactory(question);
+//    if (existing) this.floatFactory(question);
     if (proceed) this.enterEditMode(page, this.editStages[editStage], question, existing);
 };
 
@@ -549,13 +501,12 @@ this.enterEditMode = function(page, editStage, question, existing) {
     else promptText = this.editPrompts[editStage];
     
     if (editStage!="correctResponse") question.find("." + this.classes.questionAlternatives + " li").off("click");
-    if (existing) this.floatFactory(question, factory, page);
-    else this.unfloatFactory(factory, page);
+//    if (existing) this.floatFactory(question, factory, page);
+//    else this.unfloatFactory(factory, page);
     factory.removeClass(this.classes.hide);
     prompt.html(promptText);
     input.val('').focus();
 };
-
 
 
 //---------- HELPER FUNCTIONS EXECUTING USER ACTIONS DURING QUIZ CREATION
@@ -568,8 +519,7 @@ this.cancelCurrentQuestion = function() {
     var page = this.getActivePage();
     var question = this.getCurrentQuestion(page);
     this.removeQuestion(question);
-    this.enterEditMode(page,"questionType");
-    this.closeAllPropertyDialogs();
+    this.api.closeAllPropertyDialogs();
 };
 
 /**
@@ -612,15 +562,48 @@ this.addQuizPage = function() {
  * @returns {Boolean} true if question was added
  */
 this.addQuestionAlternative = function(question, value, questionType) {
-    var added = false;
-    if (value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) {
+    debugger;
+    switch (questionType) {
+        case "checkbox": 
+            var html = "<input type='checkbox'><label>" + value + "</label>";
+            break;
+
+        case "radio": 
+            var html = "<input type='radio'>" + value ;
+            break;
+
+        case "text": 
+            var html = "<input type='text' data-mlab-ct-correct='" + value +"'>";
+            break;
+
+        case "select": 
+
+            if (typeof current_select_box == "undefined" ) {
+                var html = "<select><option>" + value + "<option></select>";
+            } else {
+                var html = "<option>" + value + "<option>";
+            }
+            break;
+
+        case "multiselect": 
+            if (typeof current_select_box == "undefined" ) {
+                var html = "<select multiple size='7'><option>" + value + "<option></select>";
+            } else {
+                var html = "<option>" + value + "<option>";
+            }
+            break;
+
+    }
+
+    question.find("." + this.classes.questionText).append(html);
+/*    if (value && (questionType=="radio" || questionType=="select" || questionType=="checkbox")) {
         var alternatives = question.find("." + this.classes.questionAlternatives)
         var alternativesList = alternatives.find("ol");
         alternativesList.append('<li>' + value + '</li>');
         alternatives.removeClass(this.classes.hide);
         added = true;
-    }
-    return added;
+    }*/
+    return true;
 };
 
 this.addCorrectResponse = function(question, value, questionType) {
@@ -1074,7 +1057,11 @@ this.custom_add_page = function() {
         self.finishAddingQuestions();
     });
 
-    this.api.displayPropertyDialog(el, "Edit map", content, null, self.callbackMakeTabs, null, "[data-mlab-dt-quiz-input='pageTitle']");
+    $(content).find("ul li a").each(function() {
+        $(this).attr("href", location.href.toString() + $(this).attr("href"));
+    });
+    $(content).tabs();
+    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, null, "[data-mlab-dt-quiz-input='pageTitle']");
     
 };
 
@@ -1101,7 +1088,32 @@ this.custom_removeQuizPage = function() {
 this.custom_add_question = function(el) {
     var page = this.getActivePage();
     page.find("." + this.classes.currentQuestion).removeClass(this.classes.currentQuestion);
-    this.enterEditMode(page, "questionType");
+
+    var el = $(".mlab_current_component");
+    var self = this;
+    var id = this.domRoot.attr("id");
+    
+    content = this.getDialogHtml(id);
+            
+    $(content).on("keyup", "." + mlab.dt.components.quiz.code.classes.userInput, function(e) {
+        mlab.dt.components.quiz.code.handleUserInput($(this), e);
+    });
+
+    $(content).on("click", "." + mlab.dt.components.quiz.code.classes.cancelButton, function() {
+        mlab.dt.components.quiz.code.cancelCurrentQuestion();
+    });
+
+    $(content).on("click", "." + mlab.dt.components.quiz.code.classes.finishButton, function() {
+        mlab.dt.components.quiz.code.finishAddingQuestions();
+    });
+    
+    $(content).find("ul li a").each(function() {
+        $(this).attr("href", location.href.toString() + $(this).attr("href"));
+    });
+    $(content).tabs();
+    $(content).tabs("option", "active", 1);
+    $(content).tabs("disable", 0);
+    this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']");
 };
 
 /**
@@ -1234,39 +1246,5 @@ this.switchPositions = function(firstOb, secondOb) {
     firstOb.remove();
     secondOb.after(firstObClone);
     return firstObClone;
-};
-
-/*
-The function in API of the same name simply does not work. Creating our own.
-*/
-this.closeAllPropertyDialogs = function() {
-    $("body .qtip").qtip("destroy");
-};
-
-/**
- * Factory = data input area, TODO: this may go out
- * @param {type} question
- * @param {type} factory
- * @param {type} page
- * @returns {undefined}
- */
-this.floatFactory = function(question, factory, page) {
-    if (!page) page = question.closest("." + this.classes.page);
-    if (!factory) factory = page.find("." + this.classes.factory);
-    
-    var top = question.position()["top"];
-    top += question.outerHeight();
-    var bottom = top + factory.outerHeight();
-    factory.css({"top": top + "px"});
-    factory.addClass(this.classes.floated);
-    if (bottom>page.outerHeight()) page.css({"height":bottom + "px"});
-};
-
-//TODO: MAY GO OUT
-this.unfloatFactory = function(factory, page) {
-    if (!factory) factory = page.find("." + this.classes.factory);
-    if (!page) page = factory.closest("." + this.classes.page);
-    factory.removeClass(this.classes.floated);
-    page.css({"height": "auto"});
 };
 
