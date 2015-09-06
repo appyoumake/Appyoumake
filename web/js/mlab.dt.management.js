@@ -111,6 +111,7 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("temporary", "Unlocking all pages...", true);
         $.get( this.parent.urls.app_unlock );
         $("#mlab_editor_disabled").remove();
+        this.parent.app.locked = false;
     },
 
 /**

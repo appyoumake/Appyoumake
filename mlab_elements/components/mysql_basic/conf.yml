@@ -1,9 +1,10 @@
-# Configuration file for dummy "invisible" component
+# Configuration file for mysql component
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: storage_plugin
-name: mysql_dummy
+name: mysql_basic
 tooltip: Store data on an MySQL server
-credentials: ["server_url", "username", "password"]
+credentials: ["url", "username", "password"]
 custom:
+    table: mlab_
     prefix: mlab_rt_

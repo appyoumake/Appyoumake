@@ -315,6 +315,14 @@ Mlab_dt_api.prototype = {
     },
 
 /**
+ * Clear the global dirty flag
+ * @returns {undefined}
+ */
+    clearDirty : function () {
+        this.parent.flag_dirty = false;
+    },
+
+/**
  * Get the ID of the DIV that is the container for the editable area. 
  * The string name is specified in the parameter.yml file and can be changed, but there really is no reason to do this.
  * @returns {String: Mlab_dt_api.parent.config.content_id}

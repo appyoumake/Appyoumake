@@ -28,7 +28,7 @@ this.editPrompts = {
 };
 
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
-this.tabContentTemplate = '<div id="{id}"><h2 class="mc_text mc_display mc_heading mc_medium">{title}</h2></div>';
+this.tabContentTemplate = '<div id="{id}">{content}</div>';
 this.questionTemplate = '<div id="{id}" data-mlab-dt-quiz-role="question" class="mlab_current_component_child">{content}</div>';
 this.questionElementTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-dt-quiz-subrole="{role}">{content}</p>';
 this.alternativesTemplate = '<div data-mlab-dt-quiz-subrole="alternatives"></div>';
@@ -45,17 +45,39 @@ this.onCreate = function (el) {
 };
 
 /* Hook called when component is loaded into app.
+ * We store only the quiz content, each page as a separate div. For the 
  * @param {jQuery} el Main element for component. 
  */
 this.onLoad = function (el) {
+
+    var that = this;
     this.generateId(el);
     if (!this.domRoot.length) return; 
     if (this.initialized) return;
+
+//copy content of component, see onSave for how we store it, thsi will be one page per div
+    
+    var pages = $($(el).html());
+    $(el).html("");
+    
 //initialise the tabs of the quiz (1 tab = 1 page)
     this.initTabs(el);
     
+//reload the pages into the tabs vie this.addQuizPage
+    $(pages).each( function () { 
+        if (this.nodeName.toLowerCase() == "div") {
+            $(this).find("[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
+            that.addQuizPage($(this).find("h2").text(), $(this).html());
+        } else if (this.nodeName.toLowerCase() == "script") {
+            $(el).append(this);
+        }
+    });
+    
+    
 // Adding role="none", to prevent jQuery mobile from turning my inputs and buttons into jQuery UI elements
     this.domRoot.find(":input").attr("data-role", "none");
+    
+    this.api.clearDirty();
 };
 
 /* Hook called when app is saved. Returns the HTML that is saved for this component, and must contain enough information to continue 
@@ -68,8 +90,12 @@ this.onSave = function (el) {
     $(el).find(".ui-tabs").find("[role='tabpanel']").each( function() { 
         var page = $("<div style='display: none'>" + $(this).html() +  "</div>");
         page.find("[contenteditable]").removeAttr("contenteditable");
+        page.find(".mc_correct").removeClass("mc_correct");
         html.append( page );
     } );
+    $(el).children("script").each( function() { 
+        html.append( $(this)[0].outerHTML ) ;
+    });
     return html[0].outerHTML;
 };
 
@@ -189,7 +215,6 @@ this.handleUserInput = function(input, e) {
                 this.setPropertiesDialogTab(1);
                 $("[data-mlab-dt-quiz-input='explanatory']").focus();
             } else {
-                this.api.setVariable($(".mlab_current_component"), question.attr("id"), value);
                 this.markAlternativesAsCorrect(question, value, questionType);
             }
             break;
@@ -255,16 +280,24 @@ this.finishAddingQuestions = function(page) {
  * Adds a new page to the quiz.
  * @returns {undefined}
  */
-this.addQuizPage = function() {
+this.addQuizPage = function(title, content) {
 // tabs require the use of IDs
+
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id );
     var num_tabs = $( "#" + tab_id + " >ul >li").size();
     var new_tab_id = tab_id + '_' + num_tabs; 
-    var label = "Page " + num_tabs;
+    if (typeof title != "undefined") {
+        var label = title;
+    } else {
+        var label = "Page " + num_tabs;
+    }
+    if (typeof content == "undefined") {
+        content = '<h2 class="mc_text mc_display mc_heading mc_medium">{title}</h2>';
+    }
     var li = $( this.tabTemplate.replace( /\{href\}/g, location.href.toString() + "#" + new_tab_id ).replace( /\{label\}/g, label ) );
-    var div = this.tabContentTemplate.replace( /\{id\}/g, new_tab_id ).replace( /\{title\}/g, label );
-
+    var div = this.tabContentTemplate.replace( /\{id\}/g, new_tab_id ).replace( /\{content\}/g, content ).replace( /\{title\}/g, label );
+    
     tabs.find( ".ui-tabs-nav" ).append( li );
     tabs.append( div );
     tabs.tabs( "refresh" );
@@ -302,6 +335,7 @@ this.addQuestion = function(text, editMode) {
  * @returns {Boolean} true if question was added
  */
 this.addQuestionAlternative = function(question, value, questionType) {
+    value = this.escape(value);
     var set_selected = false;
     var alternatives_container = question.find('[data-mlab-dt-quiz-subrole="alternatives"]');
     if (alternatives_container.length == 0) {
@@ -311,24 +345,28 @@ this.addQuestionAlternative = function(question, value, questionType) {
 
     switch (this.questionTypes[questionType - 1].type) {
         case "checkbox": 
-            var html = "<label class='mc_entry mc_info'>" + value + "<input  class='mc_entry mc_input' type='checkbox'></label>";
+            var html = "<label class='mc_entry mc_info'>" + value + "<input value='" + value + "' class='mc_entry mc_input' type='checkbox'></label>";
             break;
 
         case "radio": 
-            var html = "<label class='mc_entry mc_info'>" + value + "<input class='mc_entry mc_input' type='radio'></label>";
+            var name = question.find("radio").first().attr("name");
+            if (typeof name == "undefined") {
+                name = this.api.getGUID();
+            }
+            var html = "<label class='mc_entry mc_info'>" + value + "<input value='" + value + "' class='mc_entry mc_input' type='radio' name='" + name + "'></label>";
             break;
 
         case "text": 
-            var html = "<input class='mc_entry mc_input' type='text'>";
+            var html = "<input class='mc_entry mc_input' type='text' data-mlab-cp-quiz-textvalue='" + value + "' >";
             break;
 
         case "select": 
             var current_select_box = question.find("select");
             if (current_select_box.length == 0) {
-                var html = "<select class='mc_entry mc_input' ><option class='mc_entry mc_input' ></option><option class='mc_entry mc_input' >" + value + "</option></select>";
+                var html = "<select class='mc_entry mc_input' ><option class='mc_entry mc_input' ></option><option class='mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<option class='mc_entry mc_input' >" + value + "</option>";
+                var html = "<option class='mc_entry mc_input' value='" + value + "' >" + value + "</option>";
             }
             set_selected = true;
             break;
@@ -336,10 +374,10 @@ this.addQuestionAlternative = function(question, value, questionType) {
         case "multiselect": 
             var current_select_box = question.find("select");
             if (current_select_box.length == 0) {
-                var html = "<select class='mc_entry mc_input' multiple size='7'><option class='mc_entry mc_input' >" + value + "</option></select>";
+                var html = "<select class='mc_entry mc_input' multiple size='7'><option class='mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<option class='mc_entry mc_input' >" + value + "</option>";
+                var html = "<option class='mc_entry mc_input' value='" + value + "' >" + value + "</option>";
             }
             break;
     }
@@ -372,9 +410,9 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
             var i = 1;
             $(question).find('input[type=' + this.questionTypes[questionType - 1].type + ']').each(function() {
                     if (correctResponses.indexOf(i.toString()) >= 0) {
-                        $(this).parent().addClass("mc_correct");
+                        $(this).parent().addClass("mc_correct").attr("data-mlab-cp-quiz-alternative", "correct");
                     } else {
-                        $(this).parent().removeClass("mc_correct");
+                        $(this).parent().removeClass("mc_correct").removeAttr("data-mlab-cp-quiz-alternative");
                     }
                     i++;
                 });
@@ -385,9 +423,9 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
             var i = 1;
             $(question).find('select > option').each(function() {
                     if (correctResponses.indexOf(i.toString()) >= 0) {
-                        $(this).addClass("mc_correct");
+                        $(this).addClass("mc_correct").attr("data-mlab-cp-quiz-alternative", "correct");
                     } else {
-                        $(this).removeClass("mc_correct");
+                        $(this).removeClass("mc_correct").removeAttr("data-mlab-cp-quiz-alternative");
                     }
                     i++;
                 });
@@ -681,33 +719,33 @@ this.custom_add_question = function(el) {
 /* Removes a page from the component. 
  * @param {jQuery} button The button that was clicked to remove the page.
  */
-this.custom_removeQuizPage = function() {
+/*this.custom_removeQuizPage = function() {
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id ).tabs();
     var activeTab = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
     $( "#" + activeTab).remove();
     tabs.tabs( "refresh" );
     this.api.setDirty();
-};
+};*/
 
 /**
  * Removes an entire question
  * @param {type} question
  * @returns {undefined}
  */
-this.custom_removeQuestion = function(question) {
+/*this.custom_removeQuestion = function(question) {
     var page = this.getCurrentPage();
     var question = page.find(".mlab_current_component_child");
     question.remove();
     this.saveQuestions();
-};
+};*/
 
 /**
  * Wrapper function to move currently selected question OR alternative down
  * @param {type} el
  * @returns {undefined}
  */
-this.custom_move_down = function() {
+/*this.custom_move_down = function() {
     var q = this.getCurrentQuestion();
     var a = this.domRoot.find("li." + this.classes.markedAlternative);    
     if (q) {
@@ -715,14 +753,14 @@ this.custom_move_down = function() {
     } else {
         this.move_alternative_down(a);
     }
-};
+};*/
 
 /**
  * Wrapper function to move currently selected question OR alternative up
  * @param {type} el
  * @returns {undefined}
  */
-this.custom_move_up = function(el) {
+/*this.custom_move_up = function(el) {
     var q = this.getCurrentQuestion();
     var a = this.domRoot.find("li." + this.classes.markedAlternative);    
     if (q) {
@@ -730,9 +768,30 @@ this.custom_move_up = function(el) {
     } else {
         this.move_alternative_up(a);
     }
-};
+};*/
 
+this.custom_set_options = function() {
+    var content = this.getQuizPropertiesDialogHtml();
+    var el = $(".mlab_current_component");
+    $(content).find("#mlab_dt_quiz_property_allowcheck").prop("checked", mlab.dt.api.getVariable(el, "property_allow_check"));
+    $(content).find("#mlab_dt_quiz_property_allowcheckonpage").prop("checked", mlab.dt.api.getVariable(el, "property_allow_check_on_page"));
+    $(content).find("#mlab_dt_quiz_property_submit").prop("checked", mlab.dt.api.getVariable(el, "property_submit"));
+            
+    $(content).on("click", "#mlab_dt_quiz_property_allowcheck", function() {
+        mlab.dt.api.setVariable(el, "property_allow_check", $("#mlab_dt_quiz_property_allowcheck").prop("checked"));
+    });
 
+    $(content).on("click", "#mlab_dt_quiz_property_allowcheckonpage", function() {
+        mlab.dt.api.setVariable(el, "property_allow_check_on_page", $("#mlab_dt_quiz_property_allowcheckonpage").prop("checked"));
+    });
+
+    $(content).on("click", "#mlab_dt_quiz_property_submit", function() {
+        mlab.dt.api.setVariable(el, "property_submit", $("#mlab_dt_quiz_property_submit").prop("checked"));
+    });
+
+    this.api.displayPropertyDialog(el, "Set quiz options", content);
+    
+}
 //---------- VARIOUS HELPER FUNCTIONS USED BY CODE ABOVE
 
 this.prepareDialogBox = function() {
@@ -775,7 +834,7 @@ this.setPropertiesDialogTab = function(tab_num) {
 };
 
 /**
- * Returns HTML for the dialog box, used when add pag or question
+ * Returns HTML for the dialog box, used when add page or question
  * @param {type} el
  * @returns {unresolved}
  */
@@ -824,6 +883,22 @@ this.getDialogHtml = function(id) {
                     '</div>' + 
                     '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Avbryt">' 
                     );
+};
+
+/**
+ * Returns HTML for the quiz setup, i.e. how to check, where to send data, etc
+ * @param {type} el
+ * @returns {unresolved}
+ */
+this.getQuizPropertiesDialogHtml = function() {
+    return $('<div>' + 
+            '    <p>The correct answers to a quiz can be checked and/or saved to a database. Choose your options below.</p>' + 
+            '    <label><input type="checkbox" id="mlab_dt_quiz_property_allowcheck">Allow check of answers on device?</label>' + 
+            '    <label><input type="checkbox" id="mlab_dt_quiz_property_allowcheckonpage">Allow check of answers on each page?</label>' + 
+            '    <label><input type="checkbox" id="mlab_dt_quiz_property_submit">Submit answers to remote database?</label>' + 
+            '</div>' + 
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Avbryt">' 
+            );
 }
 
 //---------- BASIC UTILITY FUNCTIONS
@@ -869,3 +944,7 @@ this.getLastQuestion = function(page) {
     var question = page.find("[data-mlab-dt-quiz-role='question']").last();
     return question;
 };
+
+this.escape = function(str) {
+    return str.replace("'", "&apos;").replace('"', "&quot;")
+}
