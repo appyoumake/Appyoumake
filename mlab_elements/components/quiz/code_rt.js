@@ -66,4 +66,10 @@ this.checkAnswers = function(page) {
 
 this.submitResults = function(page) {
     
-}
+};
+
+this.resultRetrieved = function(data) {
+    console.log("cb");
+    console.log(data);
+    
+};

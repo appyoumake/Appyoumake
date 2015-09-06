@@ -1,9 +1,18 @@
     this.serverUrl = null;
     this.serverUsername = null;
     this.serverPassword = null;
-    
-    this.pluginLoaded = function(name) {
-        
+    this.ownerComponent = null;
+/**
+ * called when this plugin is loaded by a component
+ * @param {type} pwner
+ * @returns {undefined}
+ */
+    this.onPluginLoaded = function(owner) {
+        this.ownerComponent = owner;
+        var settings = this.api.getAllVariables(owner);
+        this.serverUrl = settings.storage_plugin.credentials.url;
+        this.serverUsername = settings.storage_plugin.credentials.username;
+        this.serverPassword = settings.storage_plugin.credentials.password;
     }
     
     this.loginRemotely = function(username, password, callback) {
@@ -74,7 +83,19 @@
     };
     
     this.getResult = function(user, name, key, callback) {
-        
+        $.post(this.serverUrl, {action: 'get', type: 'result', usr: user, key: key})
+                .done(function( data ) {
+                    data = JSON.parse(data);
+                    if (data.status == "SUCCESS") {
+                        console.log( "Saved OK" );
+                        callback(data);
+                    } else {
+                        console.log( "ERROR: " + data.msg );
+                    }
+                  })
+                .fail(function() {
+                    alert( "error" );
+                  });
         return true;
     };
 

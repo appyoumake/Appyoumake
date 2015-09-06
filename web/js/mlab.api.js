@@ -84,6 +84,7 @@ for ease of use and performance */
                     var components = data.split("\n");
                     var componentsLength = components.length;
                     var componentsAdded = 0;
+
 // MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
                     $.each(components, function(i, component) {
 // MK: js/ was already part of the component name
@@ -140,12 +141,15 @@ Mlab_api.prototype = {
             return "demo"; //TODO, replace with function that looks in local storage to see if uuid is set, if so, rturn it, if not generate
         }
     },
-    
+
+    getAppUid:  function() {
+        return $('head > [name="mlab:app_uid"]').attr("content");
+    },
+        
 /**
  * Get current locale
  * @returns string
  */
-    
     getLocale: function() {
         return this.parent.locale;
     },
@@ -235,8 +239,8 @@ Mlab_api.prototype = {
                 return false;
             }
             // onpluginloaded isn't required for plugins
-            if ("onPageLoad" in component) {
-                component.onPageLoad(el);
+            if ("onPluginLoaded" in component) {
+                component.onPluginLoaded(el);
             }
             this.plugins[plugin["name"]] = component;
             return true;
@@ -391,7 +395,7 @@ Mlab_api.prototype = {
                     callback();
                 }
             }
-            return value;
+            return true;
         },
         
 /**
