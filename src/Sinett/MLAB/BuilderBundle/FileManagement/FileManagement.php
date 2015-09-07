@@ -1003,10 +1003,14 @@ class FileManagement {
             if (strpos($placeholder, "MLAB_CT_COMP_") !== false) {
                 $comp_name = strtolower(str_replace("MLAB_CT_COMP_", "", $placeholder));
                 if (array_key_exists($comp_name, $components)) {
-                    
+                      
 //here we insert the html of the component in place of the placeholder
-//this is a two step process, first insert the content of the component and then run the backend code (if any)
-                    $frontpage_content = str_replace("%%$placeholder%%", $components[$comp_name]["html"], $frontpage_content);
+//this is a two step process, first insert the content of the component and then run the backend code (if any) further down
+                    $disp = "";
+                    if ( (array_key_exists("resize", $components[$comp_name]) && $components[$comp_name]["resize"]) || (array_key_exists("display_dependent", $components[$comp_name]) && $components[$comp_name]["display_dependent"] == true ) ) {
+                        $disp = "data-mlab-displaydependent='true'";
+                    }
+                    $frontpage_content = str_replace("%%$placeholder%%", "<div data-mlab-type='" . $comp_name . "' " . $disp . " style='display: block;'>" . $components[$comp_name]["html"] . "</div>", $frontpage_content);
                     $res = $this->componentAdded($app->getId(), $app, $comp_name, $config);
                     if ($res["result"] != "success") {
                         error_log("Failed to run ComponentAdded code for $comp_name");
@@ -1043,7 +1047,7 @@ class FileManagement {
                 error_log("Placeholder $placeholder was not processed");
             }
         }
-        
+/*****   FRIDAY     
 //no more processing of index.html, can save it now
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
@@ -1053,33 +1057,41 @@ class FileManagement {
         $content = $doc->getElementById($config["app"]["content_id"]);
         $content->parentNode->removeChild($content);
         $doc->saveHTMLFile($cached_app_path . "index.html");
-        
+*****/
 //loop through all pages to process the components that have a matching onCompile function
         $pages = glob ( $app_path . "???.html" );
-//DEL 000        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
+        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
 
         foreach ($pages as $page) {
 //parse pages and loop through the components for each page
             $doc = new \DOMDocument("1.0", "utf-8");
             libxml_use_internal_errors(true);
             $doc->validateOnParse = true;
-/*/**DEL 000            if (substr($page, -10) == "index.html") {
+            if (substr($page, -10) == "index.html") {
+                $doc->loadHTML($frontpage_content);
+                libxml_clear_errors();
+                $content = $doc->getElementById($config["app"]["content_id"]);
+                $content->parentNode->removeChild($content);
+                /*******
                 $doc->loadHTML($frontpage_content);
                 libxml_clear_errors();
                 $page_components = $doc->getElementById($config["app"]["content_id"])->childNodes;
-            } else {**/
+                ********/
+                 
+            } else {
                 $doc->loadHTMLFile($page);
                 libxml_clear_errors();
-                $page_components = $doc->getElementsByTagName('body')->item(0)->childNodes;
-//            }
+            }
             
+            $xpath = new \DOMXPath($doc);
+            $page_components = $xpath->query('//div[@data-mlab-type]');
+            
+            if ($page_components) {
+                foreach ($page_components as $page_component) {
 
-            foreach ($page_components as $page_component) {
-                
-//check if this component has a server_code.php file and if it has a onCompile class, 
-//if so we send the inside of the DIV node object and the html version of this to the function to be manipulated. 
-//We get plain HTML back
-                if (get_class($page_component) == "DOMElement") {
+    //check if this component has a server_code.php file and if it has a onCompile class, 
+    //if so we send the inside of the DIV node object and the html version of this to the function to be manipulated. 
+    //We get plain HTML back
                     $comp_name = $page_component->getAttribute("data-mlab-type");
                     if ($comp_name != "") {
                         $path_component = $comp_dir . $comp_name . "/";
@@ -1089,7 +1101,7 @@ class FileManagement {
                                         'result' => 'failure',
                                         'msg' => "Unable to load server_code.php file");
                             } 
-                            
+
                             if (class_exists("mlab_ct_" . $comp_name)) {
 //store the variables and code script tags for later storage
                                 $temp_variables = $temp_code = "";
@@ -1117,25 +1129,25 @@ class FileManagement {
                                     $temp_doc = new \DOMDocument("1.0", "utf-8");
                                     $temp_doc->loadHTML($processed_html . $temp_variables . $temp_code);
                                     $temp_comp = $temp_doc->getElementsByTagName('body')->item(0);
-                                    
+
 //erase old nodes
                                     while($page_component->childNodes->length){
-                                      $page_component->removeChild($page_component->firstChild);
+                                        $page_component->removeChild($page_component->firstChild);
                                     }
-                                    
+
 //insert the new nodes from the transformed HTML
                                     foreach($temp_comp->childNodes as $transfer_node){
                                         $page_component->appendChild($doc->importNode($transfer_node,TRUE));
                                     }
-                                    
+
 
                                 } //end method exists
                             } //end class exists
                         } //end file server_code.php exists
                     } //end not blank component name
-                } // end dom element
-            } //end page loop
-
+                } //end page loop
+            }// end if any mlab components
+            
             $doc->saveHTMLFile($cached_app_path . basename($page));
         }
         

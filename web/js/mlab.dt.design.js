@@ -148,26 +148,30 @@ Mlab_dt_design.prototype = {
         }
     },
 
-    component_moveup : function () {
-        $el = $(".mlab_current_component");
-        if ($el.length == 0) {
+    component_moveup : function (el) {
+        if (typeof el == "undefined") {
+            var el = $(".mlab_current_component");
+        }
+        if (el.length == 0) {
             return;
         }
-        $el.fadeOut(500, function(){
-            $el.insertBefore($el.prev());
-            $el.fadeIn(500);
+        el.fadeOut(500, function(){
+            el.insertBefore(el.prev());
+            el.fadeIn(500);
         });
         this.parent.flag_dirty = true;
     },
 
     component_movedown : function () {
-        $el = $(".mlab_current_component");
-        if ($el.length == 0) {
+        if (typeof el == "undefined") {
+            var el = $(".mlab_current_component");
+        }
+        if (el.length == 0) {
             return;
         }
-        $el.fadeOut(500, function(){
-            $el.insertAfter($el.next());
-            $el.fadeIn(500);
+        el.fadeOut(500, function(){
+            el.insertAfter(el.next());
+            el.fadeIn(500);
         });
         this.parent.flag_dirty = true;
     },

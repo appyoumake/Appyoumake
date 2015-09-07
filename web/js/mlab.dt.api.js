@@ -315,21 +315,20 @@ Mlab_dt_api.prototype = {
     },
 
 /**
+ * Clear the global dirty flag
+ * @returns {undefined}
+ */
+    clearDirty : function () {
+        this.parent.flag_dirty = false;
+    },
+
+/**
  * Get the ID of the DIV that is the container for the editable area. 
  * The string name is specified in the parameter.yml file and can be changed, but there really is no reason to do this.
  * @returns {String: Mlab_dt_api.parent.config.content_id}
  */
     getEditorElement : function () {
         return this.parent.config.content_id;
-    },
-
-/**
- * Matches a function found in the runtime API JS file/object mlab.api, used by components to call the current API and see what mode they are in. 
- * This can be used to execute different code based on whether the user designs the app, or runs the compiled version.
- * @returns {String}
- */
-    getMode : function () {
-        return "designtime";
     },
 
 /**
@@ -365,13 +364,13 @@ Mlab_dt_api.prototype = {
         $(el).qtip({
             solo: true,
             content:    {text: content, title: title },
-            position:   { my: 'leftMiddle', at: 'rightMiddle' },
+            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: 'qtip-light mlab_dt_box_style' },
-            events:     {   render: function(event, api) { that.executeCallback (func_render, el) },
-                            hide: function(event, api) { that.executeCallback (func_hide, el); api.destroy(); },
-                            show: function(event, api) { that.executeCallback (func_visible, el) } 
+            events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
+                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy(); },
+                            visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
                         }
         });
     },
