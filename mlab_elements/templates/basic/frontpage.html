@@ -58,13 +58,12 @@
         $(".mlab_nav_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
         //Opens the next page 
         $(".mlab_nav_next_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
-        //Toggles the text and background color
-        $(".mlab_btn_color_toggle").on("click", function () { mlab_set_display_settings.pageColorToggle("page", "#1e1e1e", "#ffffff", "#ffffff", "#000000"); });
-        //Toggles the text size between 100% and 130%
-        $(".mlab_btn_txsize_toggle").on("click", function () { mlab_set_display_settings.pageTextSizeToggle("content"); });
+        //Toggles the text and background color            
+        $(".mlab_btn_color_toggle").on("vclick", function () { mlab.api.settings.pageColorToggle("mlab_page_body", "mc_text"); });
+        //Toggles the text size between 100% and 130%       
+        $(".mlab_btn_txsize_toggle").on("vclick", function () { mlab.api.settings.pageTextSizeToggle("mlab_main_body_content"); });
 
     });
-
 //--><!]]></script>
 
 
