@@ -3,11 +3,19 @@
     @param {DOM object} el Component element
 */
 this.onPageLoad = function(el) {
+    debugger;
     var self = this;
     self.domRoot = $(el);
-
-    self.addLastPage("div");
-    $(el).append("<button data-mlab-ct-quiz-role='check' style='display: none;'>Check answers</button>");
+    self.user = self.api.getDeviceId(); // TODO: Request user name and store it
+    self.settings = self.api.getVariable(this.domRoot, "settings");
+    if (typeof self.settings == "undefined") {
+        self.settings = {"allow_check":true,"allow_check_on_page":true,"display_correct":true,"lock_checked":true,"submit":false};
+    }
+    
+//    this.domRoot.attr("data-enhance", "false");
+    var disp = (self.settings.allow_check_on_page ? "" : "style='display: none'");
+    $(el).append("<div data-mlab-ct-quiz-role='check_and_submit' style='display: none;'><h1>You can now check and submit your answers</div>");
+    $(el).append("<button data-mlab-ct-quiz-role='check' " + disp + ">Check answers</button>");
     $(el).append("<button data-mlab-ct-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-ct-quiz-role='move_next'>Next</button>");
 
     self.domRoot.on("click", "[data-mlab-ct-quiz-role='move_next']", function() { self.move(1); });
@@ -15,9 +23,6 @@ this.onPageLoad = function(el) {
     self.domRoot.on("click", "[data-mlab-ct-quiz-role='check']", function() { self.checkAnswers(self.domRoot.find(".mlab_ct_quiz_currentpage")); });
     
     $(el).find("div").first().show().addClass("mlab_ct_quiz_currentpage");
-
-    self.user = self.api.getDeviceId(); // TODO: Request user name and store it
-    self.settings = self.api.getAllVariables(this.domRoot);
 
     self.api.db.prepareDataObjects([self.api.getAppUid(), this.domRoot.attr("id"), self.user]);
     
@@ -69,7 +74,7 @@ this.move = function(direction) {
 };
 
 this.loadAnswers = function() {
-    this.api.db.getAllResults(this.user, self.domRoot.attr("id"), this.processAnswers);
+    this.api.db.getAllResults(this.user, this.domRoot.attr("id"), this.processAnswers);
 };
 
 //this function is used for callbacks from the API database functions, it will contain a list of data which is {id_of_question: selected_answers}
@@ -110,14 +115,15 @@ this.checkAnswers = function(page) {
     }
 
 //first erase all previous markings
-    $(start).find("input").css("background-color", "");
+    $(start).find("input[type='radio'], input[type='checkbox']").parent().css("background-color", "");
     $(start).find("option").css("background-color", "");
+    $(start).find("input[type='text']").css("background-color", "");
 
 
-    $(start).find("input [data-mlab-cp-quiz-alternative='correct']").filter(":checked").css("background-color", "orange");
-    $(start).find("option [data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
+    $(start).find("input[data-mlab-cp-quiz-alternative='correct']").filter(":checked").parent().css("background-color", "orange");
+    $(start).find("option[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
     $(start).find(":text").each( function () {
-        if ($(this).attr("data-mlab-cp-quiz-textvalue") == $(this).val()) {
+        if ($(this).attr("data-mlab-cp-quiz-textvalue").toLowerCase().trim() == $(this).val().toLowerCase().trim()) {
             $(this).css("background-color", "orange");
         }
     });

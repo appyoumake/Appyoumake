@@ -151,6 +151,31 @@ Mlab_api.prototype = {
     },
     
 /**
+ * Reads in the Javascript values stored for the specified element, extracts the value of the key specified.
+ * This only works on top level vars, further processing must be done inside the JS code for the component.
+ * 
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * @param {jQuery DOM element} el
+ * @param {string} key, the key name in the object
+ * @returns {Mlab_dt_api.prototype.getVariable.vars|Array|Object}
+ */
+    getVariable: function (el, key) {
+        var json = $(el).find("script.mlab_storage").html();
+        if (typeof json == "undefined"  || json == "") {
+            return ;
+        }
+        try {
+            var vars = JSON.parse(json);
+        } catch(e) {
+            console.log(e);
+            return ;
+        }
+        
+        return vars[key];
+    },
+    
+/**
  * Reads in the Javascript values stored for the specified element, and returns it as a single JS object
  * Copy of design time code doing the same thing
  * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
@@ -253,9 +278,9 @@ Mlab_api.prototype = {
  * @returns {undefined}
 */
         prepareDataObjects: function(properties) {
-            objects = [this.parent.states, this.parent.results, this.parent.configs];
+            objects = [this.states, this.results, this.configs];
             for (j in objects) {
-                obj = objects[i];
+                obj = objects[j];
                 for (i in properties) {
                     if (!(properties[i] in obj)) {
                         obj[properties[i]] = {};
@@ -481,9 +506,9 @@ Mlab_api.prototype = {
             
 //-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
             setData: function(data_type, user_id, comp_id, key, value, callback) {
-                var app_id = this.parent.getAppUid();
+                var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, value, callback);
-                this[data_type][app_id][user_id][comp_id][key] = value;
+                this.parent[data_type][app_id][user_id][comp_id][key] = value;
                 
 //always update locally
                 var SEP = this.parent.parent.data_divider;
@@ -492,13 +517,13 @@ Mlab_api.prototype = {
             },
 
             getData: function(data_type, user_id, comp_id, key, callback) {
-                var app_id = this.parent.getAppUid();
+                var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, callback);
 
 //If false, getResult is not implemented in plugin, and we should use the local storage.
                 if (!res) {
-                    if (app_id in this[data_type] && user_id in this[data_type][app_id] && comp_id in this[data_type][app_id][user_id] && key in this[data_type][app_id][user_id][comp_id] ) {
-                        callback(this[data_type][app_id][user_id][comp_id][key]);
+                    if (app_id in this.parent[data_type] && user_id in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][user_id] && key in this.parent[data_type][app_id][user_id][comp_id] ) {
+                        callback(this.parent[data_type][app_id][user_id][comp_id][key]);
                     } else {
                         callback();
                     }
@@ -507,11 +532,11 @@ Mlab_api.prototype = {
             },
 
             getAllData: function(data_type, user_id, comp_id, callback) {
-                var app_id = this.parent.getAppUid();
-                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, comp_id, user, callback);
+                var app_id = this.parent.parent.getAppUid();
+                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, user_id, comp_id, callback);
                 if (!res) {
-                    if (app_id in this[data_type] && user_id in this[data_type][app_id] && comp_id in this[data_type][app_id][user_id] ) {
-                        callback(this[data_type][app_id][user_id][comp_id]);
+                    if (app_id in this.parent[data_type] && user_id in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][user_id] ) {
+                        callback(this.parent[data_type][app_id][user_id][comp_id]);
                     } else {
                         callback();
                     }
@@ -749,13 +774,18 @@ if (typeof mlab == "undefined") {
     mlab = {"api": null};
 }
 
+
+/*$( document ).on( "mobileinit" , function () {
+    console.log("EVENT: mobileinit");
+    $.mobile.ignoreContentEnabled = true;
+});*/
+  
 $(document).ready(function() {
     
     console.log("EVENT: ready");
     
     if ($("body").attr("id") != "mlab_editor") {
         console.log("STATE: mobile mode, init own object");
-
 
         mlab.api = new Mlab_api();
 
