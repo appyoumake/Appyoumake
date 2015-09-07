@@ -28,6 +28,8 @@ function Mlab_api () {
     var self = this;
     var documentOb = $(document);
     
+    this.data_divider = "/";
+    
     this.db.parent = this;
     this.db.internal.parent = this.db;
 
@@ -40,19 +42,11 @@ function Mlab_api () {
 /* Object to hold the plugins loaded */
     this.db.plugins = {};
     
-/* Object to hold all states. They are stored using localStorage, but kept locally in this object
+/* Object to hold all states, results and configs. They are stored using localStorage, but kept locally in this object
 for ease of use and performance */
     this.db.states = {};
-    this.db.internal.fetchStates();
-
     this.db.results = {};
-    this.db.internal.fetchResults();
-
-    /* Object to hold all configs. They are stored using localStorage, but kept locally in this object
-    for ease of use and performance */
     this.db.configs = {};
-    // Populate the configs object
-    this.db.internal.fetchConfigs();
     
 //add storage for the app specific variables (generated in the pre-compile processing function)
 // to the object here
@@ -96,6 +90,7 @@ for ease of use and performance */
 //here we create the api objects inside the newly created object
                             mlab.api.components[name].api = mlab.api;
                             componentsAdded += 1;
+                            
 /* MK: Because ajax is asynchronous, we do not know the order in which the components will be added
     Only when these numbers add up do we know that everything is OK 
 */
@@ -246,6 +241,33 @@ Mlab_api.prototype = {
             this.plugins[plugin["name"]] = component;
             return true;
         },    
+        
+/**
+ *  Function that prepares one the variables used to store data locally in
+ *  As it is objects within objects thay have to be appended before being filled
+ *  The variables are divided in mlab.api.states/configs/results vairables. In the LOCAL database (which is key-value pairs only)
+ *  state/config/result is used as a prefix, after this (with hyphen between) we have app id, component name and user id (which really is device ID from Cordova).
+ *  App need not be stored, but makes it easier to load/send data to and from server...
+ * @param {type} obj
+ * @param {type} properties
+ * @returns {undefined}
+*/
+        prepareDataObjects: function(properties) {
+            objects = [this.parent.states, this.parent.results, this.parent.configs];
+            for (j in objects) {
+                obj = objects[i];
+                for (i in properties) {
+                    if (!(properties[i] in obj)) {
+                        obj[properties[i]] = {};
+                        obj = obj[properties[i]];
+                    }
+                }
+            }
+            this.parent.states = this.internal.fetchLocalData("states");
+            this.parent.results = this.internal.fetchLocalData("results");
+            this.parent.configs = this.internal.fetchLocalData("configs");
+            
+        },
     
 /* ---- functions that are run locally if no plugin is loaded ---- */
 
@@ -254,61 +276,27 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @param {any} value The state value to be stored. Required. Can be anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setState: function(comp_id, user, key, value) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("setState", app_id, comp_id, user, key, value);
-            
-// Regardless of whether the plugin has stored the state successfully, we store it locally, since we can go offline at any time.
-            if (!(user in this.states)) this.states[user] = {};
-            this.states[user][key] = value;
-            this.internal.storeStates();
+        setState: function(user_id, comp_id, key, value, callback) {
+            return this.internal.setData("states", user_id, comp_id, key, value, callback);
         },
 
-    
 /**
  * Gets state for given user an key.
- *
- * getState() implemented in a plugin has to return an array with 1) boolean (success/failure to get state), and 2)
- * value. 
  * @param {String} user User ID for the currently logged in user. Required.
  * @param {String} key Key name for the state to be stored. Required.
  * @return {Any} Value of state
  */
-        getState: function(comp_id, user, key, callback) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("getState", app_id, comp_id, user, key, callback);
-            
-// If false, getState is not implemented in plugin, and we should use the local storage.
-            if (!res) {
-                if (user in this.states && key in this.states[user]) {
-                    callback(this.states[user][key]);
-                } else {
-                    callback();
-                }
-            }
-            return true;
+        getState: function(user_id, comp_id, key, callback) {
+            return this.internal.getData("states", user_id, comp_id, key, callback);
         },
 
 /**
- * Gets all stored states, or all stored states for user (if given).
+ * Gets all stored states for user 
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllStates: function(comp_id, user, callback) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("getAllStates", app_id, comp_id, user, callback);
-            if (!res) {
-                var allStates ;
-                if (user) {
-                    if (user in this.states) {
-                        allStates = this.states[user];
-                    }
-                } else {
-                    allStates = this.states;
-                }
-                callback(allStates);
-            }
-            return true;
+        getAllStates: function(user_id, comp_id, callback) {
+            return this.internal.getAllData("states", user_id, comp_id, callback);
         },
     
 /**
@@ -318,13 +306,8 @@ Mlab_api.prototype = {
  * @param {any} value The config value to be stored. Required. Anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
         setConfig: function(comp_id, user, key, value) {
-            var app_id = this.parent.getAppUid();
-            var pluginSetConfig = this.internal.dispatchToPlugin("setConfig", app_id, comp_id, user, key, value);
-            if (!(user in this.configs)) this.configs[user] = {};
-            this.configs[user][key] = value;
-            this.internal.storeConfigs();
+            return this.internal.setData("configs", user_id, comp_id, key, value, callback);
         },
-    
     
 /**
  * Gets config for given user an key.
@@ -332,19 +315,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @return {any} The config value (any type), or null
  */
-        getConfig: function(comp_id, user, key, callback) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("getConfig", app_id, comp_id, user, key, callback);
-
-// If false, getConfig is not implemented in plugin, and we should use the local storage.
-            if (!res) {
-                if (user in this.configs && key in this.configs[user]) {
-                    callback(this.configs[user][key]);
-                } else {
-                    callback();
-                }
-            }
-            return true;
+        getConfig: function(user_id, comp_id, key, callback) {
+            return this.internal.getData("configs", user_id, comp_id, key, callback);
         },
 
 /**
@@ -352,23 +324,9 @@ Mlab_api.prototype = {
  * @param {String} user: User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the configs
  */
-        getAllConfig: function(comp_id, user) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("getAllConfig", app_id, comp_id, user);
-            if (!res) {
-                var allConfigs;
-                if (user) {
-                    if (user in this.configs) {
-                        allConfigs = this.configs[user];
-                    }
-                } else {
-                    allConfigs = this.configs;
-                }
-                callback(allConfigs);
-            }
-            return true;
+        getAllConfig: function(user_id, comp_id, callback) {
+            return this.internal.getAllData("configs", user_id, comp_id, callback);
         },
-    
     
 /**
  * Saves result for a question.
@@ -377,13 +335,8 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @param {any} value The value to be stored.
  */
-        setResult: function(comp_id, user, name, key, value) {
-            var app_id = this.parent.getAppUid();
-            var pluginSetResult = this.internal.dispatchToPlugin("setResult", app_id, comp_id, user, name, key, value);
-            if (!(user in this.results)) this.results[user] = {};
-            if (!(name in this.results[user])) this.results[user][name] = {};
-            this.results[user][name][key] = value;
-            this.internal.storeResults();
+        setResult: function(comp_id, user, key, value) {
+            return this.internal.setData("results", user_id, comp_id, key, value, callback);
         },
     
 /**
@@ -394,18 +347,7 @@ Mlab_api.prototype = {
  * @return {any} The value that was saved. Normally an object, but any JSON-stringifiable value is allowed.
  */
         getResult: function(comp_id, user, name, key, callback) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("getResult", app_id, comp_id, user, name, key, callback);
-            
-//If false, getResult is not implemented in plugin, and we should use the local storage.
-            if (!res) {
-                if (user in this.results && name in this.results[user] && key in this.results[user][name]) {
-                    callback(this.results[user][name][key]);
-                } else {
-                    callback();
-                }
-            }
-            return true;
+            return this.internal.getData("results", user_id, comp_id, key, callback);
         },
         
 /**
@@ -414,20 +356,7 @@ Mlab_api.prototype = {
  * @return {Object} Object containing the states
  */
         getAllResults: function(comp_id, user, callback) {
-            var app_id = this.parent.getAppUid();
-            var res = this.internal.dispatchToPlugin("getAllResults", app_id, comp_id, user, callback);
-            if (!res) {
-                var allResults ;
-                if (user) {
-                    if (user in this.results) {
-                        allResults = this.results[user];
-                    }
-                } else {
-                    allResults = this.results;
-                }
-                callback(allResults);
-            }
-            return true;
+            return this.internal.getAllData("results", user_id, comp_id, callback);
         },
 
 /* Network-functions */
@@ -527,77 +456,67 @@ Mlab_api.prototype = {
             },
 
 /* 
- * Internal function that stores the states using localStorage 
+ * Internal function that fetches states, results or configs from localStorage and puts them into the relevant memory object
+ * All data is stored as app_id/user_id/comp_id/key_id so we can easily synch it
+ * However, as local data always will have the same app_id and user_id then we skip comparing that
  */
-            storeStates: function() {
-                for (user in this.parent.states) {
-                    window.localStorage.setItem("state-" + user, JSON.stringify(this.parent.states[user]));
-                }
-            },
-
-/* 
- * Internal function that fetches the states from localStorage and puts them into the object this.states 
- */
-            fetchStates: function() {
-                var states = {};
+            fetchLocalData: function(data_type) {
+                var local_data = {};
+                var path;
+                var data_id = 0;
+                var app_id = 1;
+                var user_id = 2;
+                var comp_id = 3;
+                var key_id = 4;
+                
                 for (key in window.localStorage) {
-                    if (key.indexOf("state-")==0) {
-                        states[key.substr(6)] = JSON.parse(window.localStorage.getItem(key));
+                    path = key.split(this.parent.parent.data_divider);
+                    if (path[data_id] == data_type) {
+                        local_data[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = JSON.parse(window.localStorage.getItem(key));
                     }
                 }
-                this.parent.states = states;
+                
+                return local_data;
+            },
+            
+//-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
+            setData: function(data_type, user_id, comp_id, key, value, callback) {
+                var app_id = this.parent.getAppUid();
+                var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, value, callback);
+                this[data_type][app_id][user_id][comp_id][key] = value;
+                
+//always update locally
+                var SEP = this.parent.parent.data_divider;
+                window.localStorage.setItem(data_type + SEP + app_id + SEP + user_id + SEP + comp_id + SEP + key, JSON.stringify(value));
             },
 
-/* 
- * Internal function that stores the configs using localStorage 
- */
-            storeConfigs: function() {
-                for (user in this.parent.configs) {
-                    window.localStorage.setItem("config-" + user, JSON.stringify(this.parent.configs[user]));
-                }
-            },
+            getData: function(data_type, user_id, comp_id, key, callback) {
+                var app_id = this.parent.getAppUid();
+                var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, callback);
 
-/* 
- * Internal function that fetches the configs from localStorage and puts them into the object this.configs 
- */
-            fetchConfigs: function() {
-                var configs = {};
-                for (key in window.localStorage) {
-                    if (key.indexOf("config-")==0) {
-                        configs[key.substr(7)] = JSON.parse(window.localStorage.getItem(key));
+//If false, getResult is not implemented in plugin, and we should use the local storage.
+                if (!res) {
+                    if (app_id in this[data_type] && user_id in this[data_type][app_id] && comp_id in this[data_type][app_id][user_id] && key in this[data_type][app_id][user_id][comp_id] ) {
+                        callback(this[data_type][app_id][user_id][comp_id][key]);
+                    } else {
+                        callback();
                     }
                 }
-                this.parent.configs = configs;
+                return true;
             },
 
-/* 
- * Internal function that stores the results using localStorage 
- */
-            storeResults: function() {
-                for (user in this.parent.results) {
-                    for (name in this.parent.results[user]) {
-// Using the & character to combine quiz name and user name, as we assume that it is not allowed in either
-                        window.localStorage.setItem("result-" + user + "&" + name, JSON.stringify(this.parent.results[user][name]));
+            getAllData: function(data_type, user_id, comp_id, callback) {
+                var app_id = this.parent.getAppUid();
+                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, comp_id, user, callback);
+                if (!res) {
+                    if (app_id in this[data_type] && user_id in this[data_type][app_id] && comp_id in this[data_type][app_id][user_id] ) {
+                        callback(this[data_type][app_id][user_id][comp_id]);
+                    } else {
+                        callback();
                     }
                 }
+                return true;
             },
-
-/* 
- * Internal function that fetches the results from localStorage and puts them into the object this.results 
- */
-            fetchResults: function() {
-                var results = {};
-                for (key in window.localStorage) {
-                    if (key.indexOf("result-")==0) {
-                        var userAndName = key.substr(7).split("&");
-                        if (!(userAndName[0] in results)) results[userAndName[0]] = {};
-                        var value = window.localStorage.getItem(key);
-                        if (value) results[userAndName[0]][userAndName[1]] = JSON.parse(value);
-                    }
-                }
-                this.parent.results = results;
-            },
-
 /**
  * Delete everything in localstorage. For testing/debugging purposes.
  */
@@ -611,7 +530,8 @@ Mlab_api.prototype = {
             clearSessionStorage: function() {
                 window.sessionStorage.clear();
             },
-        },
+            
+        }, //end internal
 
         
     }, //end db
@@ -683,7 +603,7 @@ Mlab_api.prototype = {
                     }
                     break;
 
-        //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
+//pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {

@@ -12,9 +12,11 @@ this.onPageLoad = function(el) {
     //self.addLastPage();
     $(el).find("div").first().show().addClass("mlab_ct_quiz_currentpage");
 
-    self.api.db.setupStoragePlugin(el);
     self.user = self.api.getDeviceId(); // TODO: Request user name and store it
-    self.variables = self.api.getAllVariables(this.domRoot);
+    self.settings = self.api.getAllVariables(this.domRoot);
+
+    self.api.db.prepareDataObjects([self.api.getAppUid(), this.domRoot.attr("id"), self.user]);
+    self.api.db.setupStoragePlugin(el);
     
 /*    self.domRoot.on("change", ":input", function() { return self.storeAnswers($(this)); });
     self.domRoot.on("change", "." + self.classes.questionLocked + " :input", function() { return false; });

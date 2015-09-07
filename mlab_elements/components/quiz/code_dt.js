@@ -139,6 +139,7 @@ this.handleUserInput = function(input, e) {
             
 //these both add some text to a P tag
         case "explanatory": 
+            input.val("");
             if (value) {
                 if (question.length > 0) {
                     var existing_text = question.find("[data-mlab-dt-quiz-subrole='explanatory']");
@@ -152,7 +153,6 @@ this.handleUserInput = function(input, e) {
                     this.addQuestion(value, editStage);
                 }
             } 
-            input.val("");
             $("[data-mlab-dt-quiz-input='question']").focus();
             break;
         
@@ -170,9 +170,10 @@ this.handleUserInput = function(input, e) {
                 } else {
                     this.addQuestion(value, editStage);
                 }
-            } else {
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='questionType']").focus();
+            } else {
+                this.api.closeAllPropertyDialogs();
             }
             break;
 
@@ -791,7 +792,10 @@ this.custom_set_options = function() {
             
     $(content).on("click", "[data-mlab-dt-quiz-property]", function() {
         var settings = mlab.dt.api.getVariable(el, "settings");
-        settings[$(this).attr("data-mlab-dt-quiz-property")] = $("#mlab_dt_quiz_property_allowcheck").prop("checked");
+        if (typeof settings == "undefined") {
+            settings = {};
+        }
+        settings[$(this).attr("data-mlab-dt-quiz-property")] = $(this).prop("checked");
         mlab.dt.api.setVariable(el, "settings", settings);
     });
     
