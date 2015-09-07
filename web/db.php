@@ -30,7 +30,16 @@ switch ($action) {
 
     case "set":
         //if ($_SESSION[$token]) {
-            $sql = "INSERT INTO data (`usr`, `type`, `key`, `value`) VALUES ('$usr', '$type', '$key', '$value')";
+            unset($_POST["action"]);
+            $columns = "";
+            $values = "";
+            foreach ($_POST as $key_name => $data_value) {
+                $columns .= "`$key_name`,";
+                $values .= '"' . $data_value . '",';
+            }
+            $columns = rtrim($columns, ",");
+            $values = rtrim($values, ",");
+            $sql = "INSERT INTO data ($columns) VALUES ($values)";
 
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
@@ -44,7 +53,7 @@ switch ($action) {
 
     case "update":
         //if ($_SESSION[$token]) {
-            $sql = "UPDATE data SET `value` = '$value' WHERE `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+            $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
 
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
@@ -58,16 +67,26 @@ switch ($action) {
 
     case "get":
         //if ($_SESSION[$token]) {
-            $sql = "SELECT * FROM data WHERE `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+            $sql = "SELECT * FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type'";
+            if (isset($key)) {
+                 $sql .= " AND `key` = '$key'";
+            }
             
             $result = $conn->query($sql);
             
+            
+            
             if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
+                $results_array = array();
+                $result = $conn->query($sql);
+                while ($row = $result->fetch_assoc()) {
+                    $results_array[] = $row;
+                }            
                 $row["status"] = "SUCCESS";
-                echo json_encode($row);
+                echo '{"status": "SUCCESS", "data": "' + json_encode($results_array) + '"}';
             } else {
-                echo '{"status": "ERROR", "msg": "' . $conn->error . '"}';
+                echo '{"status": "SUCCESS", "data": "[]"}';
+                
             }
         /*} else {
             echo '{"status": 'NOACCESS'}';
