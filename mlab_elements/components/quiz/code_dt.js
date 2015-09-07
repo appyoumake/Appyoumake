@@ -281,8 +281,12 @@ this.finishAddingQuestions = function(page) {
  * @returns {undefined}
  */
 this.addQuizPage = function(title, content) {
+    
+//turn off any current questions on current page
+    var page = this.getCurrentPage();
+    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+    
 // tabs require the use of IDs
-
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id );
     var num_tabs = $( "#" + tab_id + " >ul >li").size();

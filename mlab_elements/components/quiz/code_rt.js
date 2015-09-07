@@ -55,13 +55,16 @@ this.move = function(direction) {
     }
 }
 
-//
+//the answer check utilises the "data-mlab-cp-quiz-alternative=correct" we use for checkboxes, radio boxes and options to 
 this.checkAnswers = function(page) {
     if (typeof page == "undefined") {
         var start = this.domRoot;
     } else {
         var start = page;
     }
+
+    $(start).find("[data-mlab-cp-quiz-alternative='correct']").filter(":checked").css("background-color", "orange");
+    $(start).find("[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
 };
 
 this.submitResults = function(page) {

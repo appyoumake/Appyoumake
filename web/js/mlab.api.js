@@ -238,7 +238,7 @@ Mlab_api.prototype = {
             if (!component) {
                 return false;
             }
-            // onpluginloaded isn't required for plugins
+// onpluginloaded isn't required for plugins
             if ("onPluginLoaded" in component) {
                 component.onPluginLoaded(el);
             }
@@ -253,9 +253,11 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @param {any} value The state value to be stored. Required. Can be anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setState: function(user, key, value) {
-            var pluginSetState = this.internal.dispatchToPlugin("setState", user, key, value);
-            // Regardless of whether the plugin has stored the state successfully, we store it locally, since we can go offline at any time.
+        setState: function(comp_id, user, key, value) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("setState", app_id, comp_id, user, key, value);
+            
+// Regardless of whether the plugin has stored the state successfully, we store it locally, since we can go offline at any time.
             if (!(user in this.states)) this.states[user] = {};
             this.states[user][key] = value;
             this.internal.storeStates();
@@ -271,8 +273,9 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @return {Any} Value of state
  */
-        getState: function(user, key, callback) {
-            var res = this.internal.dispatchToPlugin("getState", user, key, callback);
+        getState: function(comp_id, user, key, callback) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("getState", app_id, comp_id, user, key, callback);
             
 // If false, getState is not implemented in plugin, and we should use the local storage.
             if (!res) {
@@ -290,8 +293,9 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllStates: function(user, callback) {
-            var res = this.internal.dispatchToPlugin("getAllStates", user, callback);
+        getAllStates: function(comp_id, user, callback) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("getAllStates", app_id, comp_id, user, callback);
             if (!res) {
                 var allStates ;
                 if (user) {
@@ -312,8 +316,9 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @param {any} value The config value to be stored. Required. Anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setConfig: function(user, key, value) {
-            var pluginSetConfig = this.internal.dispatchToPlugin("setConfig", user, key, value);
+        setConfig: function(comp_id, user, key, value) {
+            var app_id = this.parent.getAppUid();
+            var pluginSetConfig = this.internal.dispatchToPlugin("setConfig", app_id, comp_id, user, key, value);
             if (!(user in this.configs)) this.configs[user] = {};
             this.configs[user][key] = value;
             this.internal.storeConfigs();
@@ -326,8 +331,9 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @return {any} The config value (any type), or null
  */
-        getConfig: function(user, key, callback) {
-            var res = this.internal.dispatchToPlugin("getConfig", user, key, callback);
+        getConfig: function(comp_id, user, key, callback) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("getConfig", app_id, comp_id, user, key, callback);
 
 // If false, getConfig is not implemented in plugin, and we should use the local storage.
             if (!res) {
@@ -345,8 +351,9 @@ Mlab_api.prototype = {
  * @param {String} user: User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the configs
  */
-        getAllConfig: function(user) {
-            var res = this.internal.dispatchToPlugin("getAllConfig", user);
+        getAllConfig: function(comp_id, user) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("getAllConfig", app_id, comp_id, user);
             if (!res) {
                 var allConfigs;
                 if (user) {
@@ -369,8 +376,9 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @param {any} value The value to be stored.
  */
-        setResult: function(user, name, key, value) {
-            var pluginSetResult = this.internal.dispatchToPlugin("setResult", user, name, key, value);
+        setResult: function(comp_id, user, name, key, value) {
+            var app_id = this.parent.getAppUid();
+            var pluginSetResult = this.internal.dispatchToPlugin("setResult", app_id, comp_id, user, name, key, value);
             if (!(user in this.results)) this.results[user] = {};
             if (!(name in this.results[user])) this.results[user][name] = {};
             this.results[user][name][key] = value;
@@ -384,8 +392,9 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @return {any} The value that was saved. Normally an object, but any JSON-stringifiable value is allowed.
  */
-        getResult: function(user, name, key, callback) {
-            var res = this.internal.dispatchToPlugin("getResult", user, name, key, callback);
+        getResult: function(comp_id, user, name, key, callback) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("getResult", app_id, comp_id, user, name, key, callback);
             
 //If false, getResult is not implemented in plugin, and we should use the local storage.
             if (!res) {
@@ -403,8 +412,9 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllResults: function(user, callback) {
-            var res = this.internal.dispatchToPlugin("getAllResults", user, callback);
+        getAllResults: function(comp_id, user, callback) {
+            var app_id = this.parent.getAppUid();
+            var res = this.internal.dispatchToPlugin("getAllResults", app_id, comp_id, user, callback);
             if (!res) {
                 var allResults ;
                 if (user) {
@@ -538,12 +548,34 @@ Mlab_api.prototype = {
             },
 
 /* 
+ * Internal function that stores the configs using localStorage 
+ */
+            storeConfigs: function() {
+                for (user in this.parent.configs) {
+                    window.localStorage.setItem("config-" + user, JSON.stringify(this.parent.configs[user]));
+                }
+            },
+
+/* 
+ * Internal function that fetches the configs from localStorage and puts them into the object this.configs 
+ */
+            fetchConfigs: function() {
+                var configs = {};
+                for (key in window.localStorage) {
+                    if (key.indexOf("config-")==0) {
+                        configs[key.substr(7)] = JSON.parse(window.localStorage.getItem(key));
+                    }
+                }
+                this.parent.configs = configs;
+            },
+
+/* 
  * Internal function that stores the results using localStorage 
  */
             storeResults: function() {
                 for (user in this.parent.results) {
                     for (name in this.parent.results[user]) {
-                        // Using the & character to combine quiz name and user name, as we assume that it is not allowed in either
+// Using the & character to combine quiz name and user name, as we assume that it is not allowed in either
                         window.localStorage.setItem("result-" + user + "&" + name, JSON.stringify(this.parent.results[user][name]));
                     }
                 }
@@ -565,37 +597,16 @@ Mlab_api.prototype = {
                 this.parent.results = results;
             },
 
-/* 
- * Internal function that stores the configs using localStorage 
+/**
+ * Delete everything in localstorage. For testing/debugging purposes.
  */
-            storeConfigs: function() {
-                for (user in this.parent.configs) {
-                    window.localStorage.setItem("config-" + user, JSON.stringify(this.parent.configs[user]));
-                }
-            },
-
-            /* 
-             * Internal function that fetches the configs from localStorage and puts them into the object this.states 
-             */
-            fetchConfigs: function() {
-                var configs = {};
-                for (key in window.localStorage) {
-                    if (key.indexOf("config-")==0) {
-                        configs[key.substr(7)] = JSON.parse(window.localStorage.getItem(key));
-                    }
-                }
-                this.parent.configs = configs;
-            },
-
-            /**
-             * Delete everything in localstorage. For testing/debugging purposes.
-             */
             clearLocalStorage: function() {
                 window.localStorage.clear();
             },
-            /**
-             * Delete everything in sessionstorage. For testing/debugging purposes.
-             */
+            
+/**
+ * Delete everything in sessionstorage. For testing/debugging purposes.
+ */
             clearSessionStorage: function() {
                 window.sessionStorage.clear();
             },

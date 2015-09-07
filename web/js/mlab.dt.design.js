@@ -257,10 +257,12 @@ Mlab_dt_design.prototype = {
  * @param {type} component: the component that wants to use this storage plugin
  */
     storage_plugin_add: function(storage_plugin_id, component) {
+        
+        $("#mlab_storage_plugin_list").fadeOut("slow");
+        
         var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
         url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
         this.parent.utils.update_status("callback", 'Adding storage plugin...', true);
-        
         var that = this;
         $.get( url, function( data ) {
             if (data.result == "success") {
