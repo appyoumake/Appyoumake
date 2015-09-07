@@ -305,7 +305,7 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @param {any} value The config value to be stored. Required. Anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setConfig: function(comp_id, user, key, value) {
+        setConfig: function(user_id, comp_id, key, value, callback) {
             return this.internal.setData("configs", user_id, comp_id, key, value, callback);
         },
     
@@ -335,7 +335,7 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @param {any} value The value to be stored.
  */
-        setResult: function(comp_id, user, key, value) {
+        setResult: function(user_id, comp_id, key, value, callback) {
             return this.internal.setData("results", user_id, comp_id, key, value, callback);
         },
     
@@ -346,7 +346,7 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @return {any} The value that was saved. Normally an object, but any JSON-stringifiable value is allowed.
  */
-        getResult: function(comp_id, user, name, key, callback) {
+        getResult: function(user_id, comp_id, key, callback) {
             return this.internal.getData("results", user_id, comp_id, key, callback);
         },
         
@@ -355,7 +355,7 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllResults: function(comp_id, user, callback) {
+        getAllResults: function(user_id, comp_id, callback) {
             return this.internal.getAllData("results", user_id, comp_id, callback);
         },
 
@@ -488,6 +488,7 @@ Mlab_api.prototype = {
 //always update locally
                 var SEP = this.parent.parent.data_divider;
                 window.localStorage.setItem(data_type + SEP + app_id + SEP + user_id + SEP + comp_id + SEP + key, JSON.stringify(value));
+                return true;
             },
 
             getData: function(data_type, user_id, comp_id, key, callback) {

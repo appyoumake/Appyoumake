@@ -186,8 +186,8 @@ this.handleUserInput = function(input, e) {
                 input.val('');
                 helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
             } else {
+                question.attr("data-mlab-dt-quiz-questiontype", this.questionTypes[value - 1].type);
                 this.setMandatory(question, value);
-                question.data("mlab-dt-quiz-questiontype", value);
                 $("[data-mlab-dt-quiz-input='mandatory']").focus();
             }
             break;
@@ -355,16 +355,13 @@ this.addQuestionAlternative = function(question, value, questionType) {
         alternatives_container = question.find('[data-mlab-dt-quiz-subrole="alternatives"]');
     }
 
-    switch (this.questionTypes[questionType - 1].type) {
+    switch (questionType) {
         case "checkbox": 
             var html = "<label class='mc_entry mc_info'>" + value + "<input value='" + value + "' class='mc_entry mc_input' type='checkbox'></label>";
             break;
 
         case "radio": 
-            var name = question.find("radio").first().attr("name");
-            if (typeof name == "undefined") {
-                name = this.api.getGUID();
-            }
+            var name = question.attr("id");
             var html = "<label class='mc_entry mc_info'>" + value + "<input value='" + value + "' class='mc_entry mc_input' type='radio' name='" + name + "'></label>";
             break;
 
@@ -416,11 +413,11 @@ this.addQuestionAlternative = function(question, value, questionType) {
 this.markAlternativesAsCorrect = function(question, value, questionType) {
     var correctResponses = value.split(" ");
 
-    switch (this.questionTypes[questionType - 1].type) {
+    switch (questionType) {
         case "checkbox": 
         case "radio": 
             var i = 1;
-            $(question).find('input[type=' + this.questionTypes[questionType - 1].type + ']').each(function() {
+            $(question).find('input[type=' + questionType + ']').each(function() {
                     if (correctResponses.indexOf(i.toString()) >= 0) {
                         $(this).parent().addClass("mc_correct").attr("data-mlab-cp-quiz-alternative", "correct");
                     } else {
