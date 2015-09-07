@@ -92,6 +92,7 @@ for ease of use and performance */
                         $.get(path + component, function(componentCode) {
 //we need to attach the code_rt.js content to an object so we can use it as JS code
                             eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
+                            
 //here we create the api objects inside the newly created object
                             mlab.api.components[name].api = mlab.api;
                             componentsAdded += 1;

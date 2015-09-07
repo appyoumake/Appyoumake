@@ -784,22 +784,17 @@ this.custom_add_question = function(el) {
 this.custom_set_options = function() {
     var content = this.getQuizPropertiesDialogHtml();
     var el = $(".mlab_current_component");
-    $(content).find("#mlab_dt_quiz_property_allowcheck").prop("checked", mlab.dt.api.getVariable(el, "property_allow_check"));
-    $(content).find("#mlab_dt_quiz_property_allowcheckonpage").prop("checked", mlab.dt.api.getVariable(el, "property_allow_check_on_page"));
-    $(content).find("#mlab_dt_quiz_property_submit").prop("checked", mlab.dt.api.getVariable(el, "property_submit"));
+    var settings = mlab.dt.api.getVariable(el, "settings");
+    for (name in settings) {
+        $(content).find("[data-mlab-dt-quiz-property='" + name + "']").prop("checked", settings[name]);
+    }
             
-    $(content).on("click", "#mlab_dt_quiz_property_allowcheck", function() {
-        mlab.dt.api.setVariable(el, "property_allow_check", $("#mlab_dt_quiz_property_allowcheck").prop("checked"));
+    $(content).on("click", "[data-mlab-dt-quiz-property]", function() {
+        var settings = mlab.dt.api.getVariable(el, "settings");
+        settings[$(this).attr("data-mlab-dt-quiz-property")] = $("#mlab_dt_quiz_property_allowcheck").prop("checked");
+        mlab.dt.api.setVariable(el, "settings", settings);
     });
-
-    $(content).on("click", "#mlab_dt_quiz_property_allowcheckonpage", function() {
-        mlab.dt.api.setVariable(el, "property_allow_check_on_page", $("#mlab_dt_quiz_property_allowcheckonpage").prop("checked"));
-    });
-
-    $(content).on("click", "#mlab_dt_quiz_property_submit", function() {
-        mlab.dt.api.setVariable(el, "property_submit", $("#mlab_dt_quiz_property_submit").prop("checked"));
-    });
-
+    
     this.api.displayPropertyDialog(el, "Set quiz options", content);
     
 }
@@ -904,9 +899,11 @@ this.getDialogHtml = function(id) {
 this.getQuizPropertiesDialogHtml = function() {
     return $('<div>' + 
             '    <p>The correct answers to a quiz can be checked and/or saved to a database. Choose your options below.</p>' + 
-            '    <label><input type="checkbox" id="mlab_dt_quiz_property_allowcheck">Allow check of answers on device?</label>' + 
-            '    <label><input type="checkbox" id="mlab_dt_quiz_property_allowcheckonpage">Allow check of answers on each page?</label>' + 
-            '    <label><input type="checkbox" id="mlab_dt_quiz_property_submit">Submit answers to remote database?</label>' + 
+            '    <label><input type="checkbox" data-mlab-dt-quiz-property="allow_check">Allow check of answers on device?</label>' + 
+            '    <label><input type="checkbox" data-mlab-dt-quiz-property="allow_check_on_page">Allow check of answers on each page?</label>' + 
+            '    <label><input type="checkbox" data-mlab-dt-quiz-property="display_correct">Show correct answers when check</label>' + 
+            '    <label><input type="checkbox" data-mlab-dt-quiz-property="lock_checked">Lock checked questions for further editing</label>' + 
+            '    <label><input type="checkbox" data-mlab-dt-quiz-property="submit">Submit answers to remote database?</label>' + 
             '</div>' + 
             '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Avbryt">' 
             );

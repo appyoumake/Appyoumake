@@ -1060,6 +1060,7 @@ class FileManagement {
 *****/
 //loop through all pages to process the components that have a matching onCompile function
         $pages = glob ( $app_path . "???.html" );
+        array_unshift($pages, $cached_app_path . "000.html"); //fake placeholder to make loop below work neater
         array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
 
         foreach ($pages as $page) {
