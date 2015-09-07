@@ -781,6 +781,7 @@ Mlab_api.prototype = {
          * @param {string} elementId The id of the HTML element where the text size will be toggled
          */
         pageTextSizeToggle: function (elementClass) {
+            //TODO: Bytte til .toggle() og egentlig lage noen generiske toggleClassBasedOnID og toggleClassBasedOnClass
             if ($("." + elementClass).hasClass('mlab_large_text')) {
                 $("." + elementClass).removeClass('mlab_large_text');
             } else {
@@ -790,20 +791,18 @@ Mlab_api.prototype = {
         
         /**
         * This function toggles the text and background color of an html element
-         * @param {string} elementId The id of the HTML element where the color of the background and the text will be toggled
-         * @param {string} defaultBackgroundColor The default background color of the HTML element
-         * @param {string} defaultTextColor The default text color of the HTML element
-         * @param {string} toggleBackgroundColor The background color used to toggle with
-         * @param {string} toggleTextColor The text color used to toggle with
+         * @param {string} elementIdBackgroundColor The id of the HTML element where the color of the background will be toggled
+         * @param {string} elementClassTextColor  The class of the HTML element/s where the color of the text will be toggled
         */
-        pageColorToggle: function (elementIdBackgroundColor, classIdTextColor) {
-            //TODO Set the attributes on classes instead of setting css directly
+        pageColorToggle: function (elementIdBackgroundColor, elementClassTextColor) {
+            
+            //TODO: Bytte til .toggle() og egentlig lage noen generiske toggleClassBasedOnID og toggleClassBasedOnClass
             if ($("#" + elementIdBackgroundColor).hasClass('mlab_color_toggle')) {
                 $("#" + elementIdBackgroundColor).removeClass('mlab_color_toggle');
-                $("." + classIdTextColor).removeClass('mlab_color_toggle');
+                $("." + elementClassTextColor).removeClass('mlab_color');
             } else {
                 $("#" + elementIdBackgroundColor).addClass('mlab_color_toggle'); 
-                $("." + classIdTextColor).addClass('mlab_color_toggle');
+                $("." + elementClassTextColor).addClass('mlab_color');
             }
         },
         
