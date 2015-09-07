@@ -215,10 +215,28 @@ part of a list */
 /* ==========================================================================
    Display -for elements that are only showed/displayed to the user
    ========================================================================== */
-/* All heading display elements */
+/* A heading display element */
 #mlab_editor .mc_display.mc_heading,
 .mlab_main_body_content .mc_display.mc_heading {
     
+}
+
+/* A chapter display element */
+#mlab_editor .mc_display.mc_chapter,
+.mlab_main_body_content .mc_display.mc_chapter {
+    color: white;
+}
+
+/* An index heading display element */
+#mlab_editor .mc_display.mc_index_heading,
+.mlab_main_body_content .mc_display.mc_index_heading {
+    color: white;
+}
+
+/* An index sub heading display element */
+#mlab_editor .mc_display.mc_index_sub_heading,
+.mlab_main_body_content .mc_display.mc_index_sub_heading {
+    color: white;
 }
 
 /* An ingress display element - typically below a heading */

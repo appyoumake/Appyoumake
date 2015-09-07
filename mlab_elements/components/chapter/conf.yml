@@ -3,7 +3,7 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: chapter
 tooltip: This is a chapter headline, used to create new chapters that are listed in the index of an app, allowing internal navigation
-html: <h1 class="mlab_chapter">Add your chapter title here</h1>
+html: <h1 class="mlab_chapter mc_text mc_display mc_heading mc_large mc_chapter">Add your chapter title here</h1>
 inherit: h1
 unique: true
 placeholder: Enter your chapter headline here
