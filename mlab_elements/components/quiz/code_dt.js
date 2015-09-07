@@ -30,7 +30,8 @@ this.editPrompts = {
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
 this.tabContentTemplate = '<div id="{id}">{content}</div>';
 this.questionTemplate = '<div id="{id}" data-mlab-dt-quiz-role="question" class="mlab_current_component_child">{content}</div>';
-this.questionElementTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-dt-quiz-subrole="{role}">{content}</p>';
+this.questionExplanatoryTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-dt-quiz-subrole="explanatory">{content}</p>';
+this.questionQuestionTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-dt-quiz-subrole="question">{content}</p>';
 this.alternativesTemplate = '<div data-mlab-dt-quiz-subrole="alternatives"></div>';
 this.tabIdPrefix = 'mlab_dt_quiz_preview_tabs_';
 
@@ -138,36 +139,42 @@ this.handleUserInput = function(input, e) {
             
 //these both add some text to a P tag
         case "explanatory": 
-        case "question":
             if (value) {
                 if (question.length > 0) {
-                    var existing_text = question.find("[data-mlab-dt-quiz-subrole='" + editStage + "']");
+                    var existing_text = question.find("[data-mlab-dt-quiz-subrole='explanatory']");
                     if (existing_text.length > 0) {
                         existing_text.text(value);
                     } else {
-                        var div = this.questionElementTemplate.replace("{role}", editStage).replace("{content}", value);
-                        if (editStage == "explanatory") {
-                            question.prepend(div);
-                        } else {
-                            question.append(div);
-                        }
+                        var div = this.questionExplanatoryTemplate.replace("{content}", value);
+                        question.prepend(div);
                     }
                 } else {
                     this.addQuestion(value, editStage);
                 }
-            } else if (editStage == "question") {
-                this.finishAddingQuestions(page);
-                break;
-            }
+            } 
             input.val("");
-            if (editStage == "explanatory") {
-                $("[data-mlab-dt-quiz-input='question']").focus();
+            $("[data-mlab-dt-quiz-input='question']").focus();
+            break;
+        
+        case "question":
+            input.val("");
+            if (value) {
+                if (question.length > 0) {
+                    var existing_text = question.find("[data-mlab-dt-quiz-subrole='question']");
+                    if (existing_text.length > 0) {
+                        existing_text.text(value);
+                    } else {
+                        var div = this.questionQuestionTemplate.replace("{content}", value);
+                        question.append(div);
+                    }
+                } else {
+                    this.addQuestion(value, editStage);
+                }
             } else {
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='questionType']").focus();
             }
             break;
-            
 
         case "questionType":
             input.val('');
@@ -319,11 +326,11 @@ this.addQuizPage = function(title, content) {
  */
 this.addQuestion = function(text, editMode) {
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
+    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
     if (editMode == "explanatory") {
-        var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionElementTemplate.replace("{role}", "explanatory").replace("{content}", text));
+        var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionExplanatoryTemplate.replace("{content}", text));
     } else if (editMode == "question") {
-        var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionElementTemplate.replace("{role}", "question").replace("{content}", text));
+        var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionQuestionTemplate.replace("{content}", text));
     } else {
         var div = "";
     }
