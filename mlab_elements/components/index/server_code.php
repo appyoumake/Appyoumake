@@ -35,7 +35,7 @@ class mlab_ct_index {
  */
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
         if (!isset($variables) || !isset($variables["options"]) || !isset($variables["options"]["style"])) {
-            $style = "folding";
+            $style = "detailed";
         } else {
             $style = $variables["options"]["style"];
         }
@@ -94,17 +94,17 @@ class mlab_ct_index {
                 $html .= "</div>\n";
                 
         } else {
-                $html = "<ul>\n";
+                $html = "<ul class='mc_container mc_list'>\n";
                 foreach ($index as $chapter => $titles) {
                     if ($chapter == 0) {
-                        $html .= "  <li>" . $app_config["title"] . "\n";
+                        $html .= "  <li class='mc_text mc_display mc_list mc_bullet'>" . $app_config["title"] . "\n";
                     } else {
-                        $html .= "  <li>$chapter\n";
+                        $html .= "  <li class='mc_text mc_display mc_list mc_bullet'>$chapter\n";
                     }
                     
                     $html .= "<ul>\n";
                     foreach ($titles as $page_num => $title) {
-                        $html .= "    <li><a onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . "); return false;'>$title</a></li>\n";
+                        $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . "); return false;'>$title</a></li>\n";
                     }
                     $html .= "  </ul></li>\n";
                 }

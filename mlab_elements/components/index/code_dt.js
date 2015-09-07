@@ -5,6 +5,8 @@
         e.preventDefault();
     }
     
+/*
+    
     this.custom_summary_style = function (el) {
         this.api.setAllVariables(el, {options: {style: "summary"}});
     };
@@ -16,3 +18,4 @@
     this.custom_folding_style = function (el) {
         this.api.setAllVariables(el, {options: {style: "folding"}});
     };
+*/

@@ -227,18 +227,6 @@ part of a list */
     color: white;
 }
 
-/* An index heading display element */
-#mlab_editor .mc_display.mc_index_heading,
-.mlab_main_body_content .mc_display.mc_index_heading {
-    color: white;
-}
-
-/* An index sub heading display element */
-#mlab_editor .mc_display.mc_index_sub_heading,
-.mlab_main_body_content .mc_display.mc_index_sub_heading {
-    color: white;
-}
-
 /* An ingress display element - typically below a heading */
 #mlab_editor .mc_display.mc_ingress,
 .mlab_main_body_content .mc_display.mc_ingress {
@@ -341,7 +329,7 @@ part of a list */
 /* For text elements that are going to be a link */
 #mlab_editor .mc_link.mc_text,
 .mlab_main_body_content .mc_link.mc_text {
-    
+    text-decoration: underline;  
 }
 
 /* For figure elements (ex. an image) that are going to be a link */
