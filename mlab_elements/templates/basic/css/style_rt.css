@@ -26,10 +26,6 @@
     font-size: 100%;
 }
 
-#mlab_page_body .mlab_main_body_content .mlab_large_text{
-    font-size: 140%;
-}
-
 
 /* ==========================================================================
    Header
@@ -138,6 +134,7 @@
     font-size: 1.4em;
     font-weight: bold;
     padding-top: 3em;
+    cursor: alias;
 }
 
 #mlab_page_body .mlab_settings_heading {
@@ -155,6 +152,7 @@
 #mlab_page_body .mlab_menu_text {
     font-size: 0.9em;
     margin-top: 0.5em;
+    cursor: alias;
 }
 
 #mlab_page_body .mlab_btn_color_toggle, 
@@ -169,6 +167,7 @@
     width: 4em;
     float: left; 
     background-image: url('./img/btn_color_toggle.svg');
+    cursor: pointer;
 }
 
 #mlab_page_body .mlab_btn_txsize_toggle {
@@ -181,6 +180,7 @@
     float: right;
     margin-top: 0em;
     width: 1.7em;
+    cursor: pointer;
 }
 
 #mlab_page_body .mlab_btn_close_menu {
@@ -189,6 +189,19 @@
 
 #mlab_page_body .mlab_creators {
     font-size: 0.7em;
+    cursor: alias;
+}
+
+#mlab_page_body.mlab_color_toggle {
+    background-color: white;
+}
+
+#mlab_page_body .mlab_main_body_content .mc_text.mlab_color{
+    color: black;
+}
+
+#mlab_page_body .mlab_main_body_content.mlab_large_text{
+    font-size: 130%;
 }
 
 /* ==========================================================================
