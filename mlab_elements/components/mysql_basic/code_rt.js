@@ -38,7 +38,7 @@
         return true;
     };
     
-    this.setState = function(user, key, value, callback) {
+    this.setState = function(data_type, user_id, comp_id, key, value, callback) {
         
         return true;
     };
@@ -53,7 +53,7 @@
         return true;
     };
     
-    this.setConfig = function(user, key, value, callback) {
+    this.setConfig = function(data_type, user_id, comp_id, key, value, callback) {
         
         return true;
     };
@@ -68,8 +68,8 @@
         return true;
     };
     
-    this.setResult = function(user, name, key, value, callback) {
-        $.post(this.serverUrl, {action: 'set', type: 'result', usr: user, key: key, value: value})
+    this.setResult = function(data_type, app_id, user_id, comp_id, key, value, callback) {
+        $.post(this.serverUrl, {action: 'set', type: 'result', app: app_id, usr: user_id, comp: comp_id, key: key, value: value})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -82,8 +82,8 @@
         return true;
     };
     
-    this.getResult = function(user, name, key, callback) {
-        $.post(this.serverUrl, {action: 'get', type: 'result', usr: user, key: key})
+    this.getResult = function(data_type, app_id, user_id, comp_id, key, callback) {
+        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, usr: user_id, comp: comp_id, key: key})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -99,8 +99,20 @@
         return true;
     };
 
-    this.getAllResults = function(user, callback) {
-        
+    this.getAllResults = function(data_type, app_id, user_id, comp_id, callback) {
+        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, usr: user_id, comp: comp_id})
+                .done(function( data ) {
+                    data = JSON.parse(data);
+                    if (data.status == "SUCCESS") {
+                        console.log( "Saved OK" );
+                        callback(data.data);
+                    } else {
+                        console.log( "ERROR: " + data.msg );
+                    }
+                  })
+                .fail(function() {
+                    alert( "error" );
+                  });
         return true;
     };
     
