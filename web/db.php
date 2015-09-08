@@ -39,8 +39,15 @@ switch ($action) {
             }
             $columns = rtrim($columns, ",");
             $values = rtrim($values, ",");
-            $sql = "INSERT INTO data ($columns) VALUES ($values)";
-
+            
+            $sql = "SELECT * FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+            
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+            } else {
+                $sql = "INSERT INTO data ($columns) VALUES ($values)";
+            }
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
             } else {
@@ -82,7 +89,6 @@ switch ($action) {
                 while ($row = $result->fetch_assoc()) {
                     $results_array[] = $row;
                 }            
-                $row["status"] = "SUCCESS";
                 echo '{"status": "SUCCESS", "data": "' + json_encode($results_array) + '"}';
             } else {
                 echo '{"status": "SUCCESS", "data": "[]"}';

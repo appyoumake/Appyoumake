@@ -337,6 +337,7 @@ this.addQuestion = function(text, editMode) {
         var div = "";
     }
     question = page.append(div);
+    this.api.setDirty();
     return question;
 };
 
@@ -400,6 +401,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
     }
     
     $("#"  + correct_response_id).append("<option value='" + num + "'>" + num + " - " + value + "</option>").attr("size", num);
+    this.api.setDirty();
     return true;
 };
 
