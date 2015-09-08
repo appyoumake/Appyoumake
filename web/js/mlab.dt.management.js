@@ -424,7 +424,7 @@ Mlab_dt_management.prototype = {
  * @param {type} fnc
  * @returns {undefined}
  */
-    page_save : function (fnc) {
+    page_save : function (fnc, override) {
         this.parent.utils.timer_stop();
         var require_save = true;
         var res = false;
@@ -442,7 +442,7 @@ Mlab_dt_management.prototype = {
             require_save = false;
         }
 
-        if (!this.parent.flag_dirty) {
+        if (!this.parent.flag_dirty && typeof override == "undefined") {
             require_save = false;
         }
 
