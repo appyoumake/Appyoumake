@@ -117,6 +117,9 @@ Mlab_dt_design.prototype = {
             alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen.");
             $(new_comp).remove();
         });
+        
+//now we load the relevant CSS/JS files
+        this.parent.api.getLibraries(id);
 
 //finally we add dependencies, i.e. components that this component depends on
         if (this.parent.components[id].hasOwnProperty("conf") && this.parent.components[id].conf.hasOwnProperty("dependencies")) {
