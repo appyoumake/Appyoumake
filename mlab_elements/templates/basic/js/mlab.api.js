@@ -574,8 +574,8 @@ Mlab_api.prototype = {
         self: this,
         
         initialise: function (app_start_page, app_max_pages) {
-            self.max_pages = app_max_pages;
-            self.pageDisplay(app_start_page);
+            this.max_pages = app_max_pages;
+            this.pageDisplay(app_start_page);
         },
 /**
  * current = page that is currently displayed
@@ -599,39 +599,39 @@ Mlab_api.prototype = {
                     break;
 
                 case "last" :
-                    filename = ("000" + self.max_pages).slice(-3) + ".html";
-                    new_location = self.max_pages;
+                    filename = ("000" + this.max_pages).slice(-3) + ".html";
+                    new_location = this.max_pages;
                     break;
 
                 case "next" :
-                    if (self.current_page >= self.max_pages) {
-                        return self.current_page;
+                    if (this.current_page >= this.max_pages) {
+                        return this.current_page;
                     }
-                    self.current_page++;
-                    filename = ("000" + self.current_page).slice(-3) + ".html";
-                    new_location = self.current_page;
+                    this.current_page++;
+                    filename = ("000" + this.current_page).slice(-3) + ".html";
+                    new_location = this.current_page;
                     break;
 
                 case "previous" :
-                    if (self.current_page === 0 || self.current_page === "index") {
-                        return self.current_page;
+                    if (this.current_page === 0 || this.current_page === "index") {
+                        return this.current_page;
                     }
-                    self.current_page--;
-                    if (self.current_page < 0) {
-                        self.current_page = 0;
+                    this.current_page--;
+                    if (this.current_page < 0) {
+                        this.current_page = 0;
                     }
-                    filename = ("000" + self.current_page).slice(-3) + ".html";
-                    new_location = self.current_page;
+                    filename = ("000" + this.current_page).slice(-3) + ".html";
+                    new_location = this.current_page;
                     break;
 
 //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {
-                        return self.current_page;
+                        return this.current_page;
                     }
-                    if (move_to < 0 || move_to > self.max_pages) {
-                        return self.current_page;
+                    if (move_to < 0 || move_to > this.max_pages) {
+                        return this.current_page;
                     }
                     filename = ("000" + move_to).slice(-3) + ".html";
                     new_location = move_to;
