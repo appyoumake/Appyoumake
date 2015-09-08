@@ -7,15 +7,14 @@
    Page
    ========================================================================== */
 #mlab_page_body .mlab_content_wrapper {
-   margin-top: 15%;
-   margin-bottom: 5%;
+   margin-top: 2%;
+   margin-bottom: 2%;
    margin-left: 5%;
    margin-right: 5%;
 }
 
 #mlab_page_body .mlab_main_body_content {
     overflow-y: visible;
-    overflow-x: hidden;
 }
 
 

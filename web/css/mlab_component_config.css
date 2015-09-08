@@ -222,7 +222,29 @@ color: black;
 }
 
 
+/* ===  list for component size and aspect and storage plugin...   === */
+#mlab_editor #mlab_component_size_list li, 
+#mlab_editor #mlab_component_aspect_list li, 
+#mlab_editor #mlab_storage_plugin_list li {
+    cursor: pointer;
+    list-style-type: square; 
+    padding-right: 10px;
+    color: black;
+    font-size:13px; 
+    line-height: 16px;
+    text-decoration: underline; 
+    font-family:Arial, Helvetica, sans-serif;
+}
 
+#mlab_editor #mlab_component_size_list ul, 
+#mlab_editor #mlab_component_aspect_list ul, 
+#mlab_editor #mlab_storage_plugin_list ul {
+    background-color: white;
+    border: 1px orange solid;
+    padding: 8px;
+    padding-left:25px;
+    margin: 0;    
+}
 
 /* ===  Placement  === */
 

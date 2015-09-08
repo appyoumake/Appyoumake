@@ -330,6 +330,7 @@ part of a list */
 #mlab_editor .mc_link.mc_text,
 .mlab_main_body_content .mc_link.mc_text {
     text-decoration: underline;  
+    cursor: pointer;
 }
 
 /* For figure elements (ex. an image) that are going to be a link */
@@ -405,7 +406,6 @@ part of a list */
     background-color: white;
     border: 2px inset;
     color: black;
-    min-width: 15em;
 }
 
 /* ? For entry elements that will give an output to display */
@@ -429,7 +429,7 @@ part of a list */
 /* highlight */
 #mlab_editor .mc_entry.mc_input.mc_correct,
 .mlab_main_body_content .mc_entry.mc_input.mc_correct {
-    background-color: palegreen;
+    color: rgb(59, 190, 65);
 }
 
 #mlab_editor .mc_entry.mc_input.mc_blurred,

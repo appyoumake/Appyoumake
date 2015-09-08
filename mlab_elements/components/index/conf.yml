@@ -12,9 +12,9 @@ html:
     designtime: |
         <h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>Your index will be displayed here</h1>
         <ul class='mc_container mc_index mc_list'>
-            <li class='mc_text mc_display mc_list mc_bullet'>Page x</li>
-            <li class='mc_text mc_display mc_list mc_bullet'>Page y</li>
-            <li class='mc_text mc_display mc_list mc_bullet'>Page z</li>
+            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>Page x</li>
+            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>Page y</li>
+            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>Page z</li>
         </ul>
     runtime: |
         %%MLAB_CT_INDEX_LIST%%

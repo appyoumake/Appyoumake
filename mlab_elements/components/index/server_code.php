@@ -109,7 +109,7 @@ class mlab_ct_index {
                             } else {
                                 $head = trim($chapter);
                             }
-                            $html .= "  <li class='mc_text mc_display mc_list mc_bullet'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$head\n";
+                            $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$head\n";
                             $html .= "<ul>\n";
                             $added_chapter = true;
                         }

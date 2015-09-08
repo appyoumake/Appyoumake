@@ -175,7 +175,12 @@ z-index: 1;
     background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARNJREFUeNpiYqAiYIExWNk5BIBUAhALkKD/AxAv+P3zB4hmYEQyaD8QG5DhoAtA7AgyEOayBKhBIImNJBjkD9UH0j8BZhjMaxuBNjQQaxLQRwxQwwRQwoxYoNznAtLcD8SNjyqPYI8AIg0CuWA+1DUH0eWZSHQYzCBQ7E0g2zCgq0BeC4ByE+8W7fmAM50haQJpyAfiiUANG6BioNgqgCpZABMnaBgQKACxAwgDDQFpmggNcBB4AMSFuFyP4U2graCwOADlBkATswA+7xEKs0BoAkYGE4AGHcAXrlgNg9ruiGQgiG4kFEk4YxNqYCDUELzeQ48AmEJ/aBYBA6QUHgAUD8CRN+H6qVpqMFKzPKMqAAgwACGbW671eQ7aAAAAAElFTkSuQmCC);
 }
 
-
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info.mc_correct::after { 
+    content: "V";
+    color: #3bbe41;
+    font-weight: bold;
+    margin-left:0.5em;
+}
 
 
 #mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info input[type="radio"] {
