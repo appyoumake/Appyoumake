@@ -6,25 +6,23 @@ this.initialized = false;
 
 /* Question types available. Order matches user's input value. */
 this.questionTypes = [
-    {"type": "checkbox", "name": "Avkrysning (flere riktige svar)", "order": 1},
-    {"type": "radio", "name": "Radioknapper (ett riktig svar)", "order": 2},
-    {"type": "select", "name": "Nedtrekksmeny (ett riktig svar)", "order": 3},
-    {"type": "multiselect", "name": "Liste (flere riktige svar)", "order": 4},
-    {"type": "text", "name": "Tekst/tall", "order": 5},
+    {"type": "checkbox", "name": "Checkboxes (multi choice)", "order": 1},
+    {"type": "radio", "name": "Radio buttons (single choice)", "order": 2},
+    {"type": "select", "name": "Pulldown menu (single choice)", "order": 3},
+    {"type": "multiselect", "name": "List (multi choice)", "order": 4},
+    {"type": "text", "name": "Text/number", "order": 5},
 ];
 
+var cont = " Press enter or tab to continue.";
+
 this.editPrompts = {
-    "pageTitle": "Vennligst legg inn tittel på siden. Avslutt med enter-tast.",
-    "questionType": "Velg spørsmålstype: <br/>%types%<br/> Avslutt med enter-tast.",
-    "question": "Skriv inn spørsmål etterfulgt av enter-tast.",
-    "explanatory": "Skriv inn forklarende tekst etterfulgt av enter-tast.",
-    "alternatives": "Skriv inn svaralternativer. Avslutt hvert alternativ med enter-tast. Når du er ferdig, legg inn tom linje.",
-    "correctResponse": [
-        "Skriv inn riktig svar. Avslutt med enter-tast.", 
-        "Velg riktig svar. Skriv nummeret eller klikk på alternativet. Avslutt med enter-tast.", 
-        "Velg riktige svar. Skriv numrene, adskilt med mellomrom eller klikk på alternativene. Avslutt med enter-tast."
-    ], // text, single select, multi select
-    "mandatory": "Er det obligatorisk å svare på dette spørsmålet? Svar med Y/y (for ja) eller N/n for (nei). Avslutt med enter-tast."
+    "pageTitle": "Please enter the title of the page." + cont,
+    "questionType": "Select the type of question: <br/>1: Checkboxes (multi choice)<br/>." + cont,
+    "question": "Enter the question." + cont,
+    "explanatory": "You can enter some explanatory text here, or leave blank if not needed." + cont,
+    "alternatives": "Enter the possible answers for this question."  + cont + " Leave it blank to continue to next step.",
+    "correctResponse": "Enter the number(s) of the correct response(s) with a space or comma between each correct response. The correct responses will be highlighted. If you make a mistake you can redo the selection, or leave blank when done" + cont,
+    "mandatory": "Response required? Enter y or Y for yes. " + cont
 };
 
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
@@ -117,9 +115,9 @@ this.getContentSize = function() {
  * @returns {undefined}
  */
 this.handleUserInput = function(input, e) {
-    var enterKey = 13;
+    var enterKey = 13, tabKey = 9;
     // Only proceed if we have hit enter
-    if (e.which != enterKey) return;
+    if (e.which != enterKey && e.which != tabKey) return;
     e.preventDefault();
     var editStage = input.data("mlab-dt-quiz-input");
     var value = input.val();
@@ -140,8 +138,8 @@ this.handleUserInput = function(input, e) {
             
 //these both add some text to a P tag
         case "explanatory": 
-            input.addClass("mc_gray");
             if (value) {
+                input.addClass("mc_blurred");
                 if (question.length > 0) {
                     var existing_text = question.find("[data-mlab-dt-quiz-subrole='explanatory']");
                     if (existing_text.length > 0) {
@@ -158,8 +156,8 @@ this.handleUserInput = function(input, e) {
             break;
         
         case "question":
-            input.val("");
             if (value) {
+                input.addClass("mc_blurred");
                 if (question.length > 0) {
                     var existing_text = question.find("[data-mlab-dt-quiz-subrole='question']");
                     if (existing_text.length > 0) {
@@ -179,14 +177,14 @@ this.handleUserInput = function(input, e) {
             break;
 
         case "questionType":
-            input.val('');
             value = parseInt(value);
             var minValue = 1;
             var maxValue = this.questionTypes.length;
             if (!value || value < minValue || value > maxValue) {
                 input.val('');
-                helpText.text("Gyldige verdier: " + minValue + " - " + maxValue);
+                helpText.text("Valid selections from: " + minValue + " - " + maxValue);
             } else {
+                input.addClass("mc_blurred");
                 question.attr("data-mlab-dt-quiz-questiontype", this.questionTypes[value - 1].type);
                 this.setMandatory(question, value);
                 $("[data-mlab-dt-quiz-input='mandatory']").focus();
@@ -194,10 +192,11 @@ this.handleUserInput = function(input, e) {
             break;
             
         case "mandatory":
-            input.val('');
+            input.addClass("mc_blurred");
             if (value.toLowerCase() == "y") {
                 value = true;
             } else {
+                input.val('n');
                 value = false;
             }
             this.setMandatory(question, value);
@@ -206,24 +205,28 @@ this.handleUserInput = function(input, e) {
             break;
             
         case "alternatives":
-            input.val('');
             if (value != "") {
+                input.val('');
                 this.addQuestionAlternative(question, value, questionType);
             } else { //the user does not want to add more alternatives, move to select correct response
+                input.addClass("mc_blurred");
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='correctResponse']").focus();
             }
             break;
             
         case "correctResponse":
-            input.val('');
             if (value == "") {
                 var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
-                $("#"  + correct_response_id).find('option').remove();
+                $("#"  + correct_response_id).html("");
                 page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
+                $("div.qtip input:text").val("");
+                $("div.qtip textarea").val("");
+                $(question).find("p, label").attr('contenteditable','true');
                 this.setPropertiesDialogTab(1);
                 $("[data-mlab-dt-quiz-input='explanatory']").focus();
             } else {
+                input.val('');
                 this.markAlternativesAsCorrect(question, value, questionType);
             }
             break;
@@ -272,7 +275,7 @@ this.initTabs = function(el) {
 this.cancelCurrentQuestion = function() {
     var page = this.getCurrentPage();
     var question = this.getCurrentQuestion(page);
-    this.removeQuestion(question);
+    $(question).remove();
     this.api.closeAllPropertyDialogs();
 };
 
@@ -394,13 +397,13 @@ this.addQuestionAlternative = function(question, value, questionType) {
     }
     alternatives_container.append(html);
     var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
-    var num = document.getElementById(correct_response_id).length + 1;
+    var num = $("#" + correct_response_id).find("span").length + 1;
 
     if (set_selected) {
         question.find("select :nth-child(" + (num + 1).toString() +  ")").prop('selected', true); 
     }
     
-    $("#"  + correct_response_id).append("<option value='" + num + "'>" + num + " - " + value + "</option>").attr("size", num);
+    $("#"  + correct_response_id).append("<span data-mlab-dt-quiz-correct-response='" + num + "'>" + num + " - " + value + "</span>");
     this.api.setDirty();
     return true;
 };
@@ -414,7 +417,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
  * @returns {undefined}
  */
 this.markAlternativesAsCorrect = function(question, value, questionType) {
-    var correctResponses = value.split(" ");
+    var correctResponses = value.trim().split(/[\s,]+/);
 
     switch (questionType) {
         case "checkbox": 
@@ -814,13 +817,8 @@ this.prepareDialogBox = function() {
     $(content).on("keydown", "input, textarea", function(e) {
         mlab.dt.components.quiz.code.handleUserInput($(this), e);
     });
-
-    $(content).on("click", "[data-mlab-dt-quiz-button='cancel']", function() {
+    $(document).on("click", "[data-mlab-dt-quiz-button='cancel']", function() {
         mlab.dt.components.quiz.code.cancelCurrentQuestion();
-    });
-
-    $(content).on("click", "[data-mlab-dt-quiz-button='finished']", function() {
-        mlab.dt.components.quiz.code.finishAddingQuestions();
     });
 
     $(content).find("ul li a").each(function() {
@@ -882,16 +880,15 @@ this.getDialogHtml = function(id) {
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
                     '        <label class="mlab_dt_text">' + this.editPrompts.alternatives + '</label>' + 
                     '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="alternatives"></textarea>' + 
-                    '        <input type="button" class="mlab_dt_button_done" data-mlab-dt-quiz-button="finished" value="Ferdig">' + 
                     '    </div>' + 
                     '    <div id="mlab_dt_quiz_tabs_' + id + '_5">' + 
-                    '        <select id="mlab_dt_quiz_select_response_' + id + '"></select>' +
+                    '        <p id="mlab_dt_quiz_select_response_' + id + '"></p>' +
                     '        <label class="mlab_dt_text">' + this.editPrompts.correctResponse + '</label>' + 
                     '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="correctResponse">' + 
                     '        <div class="mlab_dt_large_new_line"></div>' +         
                     '    </div>' + 
                     '</div>' + 
-                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Avbryt">' 
+                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel">' 
                     );
 };
 
