@@ -26,10 +26,6 @@
 
 <script><!--//--><![CDATA[//><!--
     
-//this variable tracks the current page, may be replaced with jquery mobile code
-    mlab_rt_current_page = 0;
-//this variable tracks the current text size
-    mlab_rt_current_page_text_size = 0;
     /**
      * When document is ready we initialise the load code for the jquery mobile functionality
      * This is done by assigning the mlab.api.navigation.pageDisplay call to various page navigation elements
@@ -46,18 +42,16 @@
         });
 */        
         mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
-        mlab.api.navigation.pageDisplay(-1, 0);
         
-      
     };
   
     $(document).on('pagecreate', '#mlab_index_page', function(e) {
         console.log("EVENT: pagecreate for index page");
         
         //Opens the previous page 
-        $(".mlab_nav_previous_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "previous"); });
+        $(".mlab_nav_previous_page").on("click", function () { mlab.api.navigation.pageDisplay("previous"); });
         //Opens the next page 
-        $(".mlab_nav_next_page").on("click", function () { mlab_rt_current_page = mlab.api.navigation.pageDisplay(mlab_rt_current_page, "next"); });
+        $(".mlab_nav_next_page").on("click", function () { mlab.api.navigation.pageDisplay("next"); });
         //Toggles the text and background color            
         $(".mlab_btn_color_toggle").on("vclick", function () { mlab.api.settings.pageColorToggle("mlab_page_body", "mc_text"); });
         //Toggles the text size between 100% and 130%       

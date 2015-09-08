@@ -573,9 +573,9 @@ Mlab_api.prototype = {
         max_pages: 0,
         self: this,
         
-        initialise: function (app_current_page, app_max_pages) {
-            self.current_page = app_current_page;
-            self.max_pages = app_max_pages;
+        initialise: function (app_start_page, app_max_pages) {
+            this.max_pages = app_max_pages;
+            this.pageDisplay(app_start_page);
         },
 /**
  * current = page that is currently displayed
@@ -583,7 +583,7 @@ Mlab_api.prototype = {
  * @param {type} page
  * @returns {undefined}
  */
-        pageDisplay: function (current, move_to) {
+        pageDisplay: function (move_to) {
             var filename = "";
             var new_location = 0;
             switch (move_to) {
@@ -599,59 +599,49 @@ Mlab_api.prototype = {
                     break;
 
                 case "last" :
-                    filename = ("000" + self.max_pages).slice(-3) + ".html";
-                    new_location = self.max_pages;
+                    filename = ("000" + this.max_pages).slice(-3) + ".html";
+                    new_location = this.max_pages;
                     break;
 
                 case "next" :
-                    if (current >= self.max_pages) {
-                        return current;
+                    if (this.current_page >= this.max_pages) {
+                        return this.current_page;
                     }
-                    current++;
-                    filename = ("000" + current).slice(-3) + ".html";
-                    new_location = current;
+                    this.current_page++;
+                    filename = ("000" + this.current_page).slice(-3) + ".html";
+                    new_location = this.current_page;
                     break;
 
                 case "previous" :
-                    if (current == 0 || current == "index") {
-                        return current;
+                    if (this.current_page === 0 || this.current_page === "index") {
+                        return this.current_page;
                     }
-                    if (current == 1) {
-                        filename = "000.html";
-                        new_location = 0;
-                    } else {
-                        current--;
-                        if (current < 0) {
-                            current = 0;
-                        }
-                        filename = ("000" + current).slice(-3) + ".html";
-                        new_location = current;
+                    this.current_page--;
+                    if (this.current_page < 0) {
+                        this.current_page = 0;
                     }
+                    filename = ("000" + this.current_page).slice(-3) + ".html";
+                    new_location = this.current_page;
                     break;
 
 //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {
-                        return current;
+                        return this.current_page;
                     }
-                    if (move_to < 0 || move_to > self.max_pages) {
-                        return current;
+                    if (move_to < 0 || move_to > this.max_pages) {
+                        return this.current_page;
                     }
-                    if (move_to == 0) {
-                        filename = "000.html";
-                    } else {
-                        filename = ("000" + move_to).slice(-3) + ".html";
-                    }
+                    filename = ("000" + move_to).slice(-3) + ".html";
                     new_location = move_to;
                     break;
             }
 
 //have calculated the file name, now we need to try to load it
             $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
-            //$.mobile.pageContainer.pagecontainer("load", "/Palestinian/epg47/show");
-
-            return new_location;
+            this.current_page = new_location;
+            return this.current_page;
         },
         
     },
