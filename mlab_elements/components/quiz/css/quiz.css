@@ -49,7 +49,9 @@
 
 
 
-/* ===  Tabs  === */
+
+
+/* ===  Hækk  === */
 
 #mlab_editor [data-mlab-type="quiz"] .mlab_dt_tab_list {
 border:0;
@@ -122,6 +124,13 @@ border: 0;
 font-size: 1em;
 }
 
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] select,
+.mlab_main_body_content [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] select,
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] [type="text"],
+.mlab_main_body_content [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] [type="text"] {
+min-width: 15em;
+}
+
 #mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info,
 .mlab_main_body_content [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info{
 padding: 0.15em;
@@ -158,15 +167,37 @@ z-index: 1;
     vertical-align:middle;
     background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMlJREFUeNpiYKAiYMQmyMLOLgCkEoDYH4gdkKQOAPFGIF7w5+fPDwRNBxpUAMTvgfg/HgySTyBk0HwkDftBGoBYASqnAOXvR1IzH5+LYIoKiHA9drWgMELyWgExgY1k4HtoGGNI7Ccl9oDqzyM7gAkq7g+lF5KYGiai6QfbAPO/AokuU4DpxTCMnISKrJcJ3SZSXYbMZ0JK2QxoqZ0Y4ICsH2bYRiidT6Jh+Wj6qZzOKMwBCZTkzfME8yaSgQnklhq0Lc8oAQABBgC6+F+d4rVGJgAAAABJRU5ErkJggg==);
     cursor:pointer;
+    position: relative;
 }
 
 #mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info.mc_correct input[type="checkbox"] {
-  width:10px;
+  width: 19px;
     background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARNJREFUeNpiYqAiYIExWNk5BIBUAhALkKD/AxAv+P3zB4hmYEQyaD8QG5DhoAtA7AgyEOayBKhBIImNJBjkD9UH0j8BZhjMaxuBNjQQaxLQRwxQwwRQwoxYoNznAtLcD8SNjyqPYI8AIg0CuWA+1DUH0eWZSHQYzCBQ7E0g2zCgq0BeC4ByE+8W7fmAM50haQJpyAfiiUANG6BioNgqgCpZABMnaBgQKACxAwgDDQFpmggNcBB4AMSFuFyP4U2graCwOADlBkATswA+7xEKs0BoAkYGE4AGHcAXrlgNg9ruiGQgiG4kFEk4YxNqYCDUELzeQ48AmEJ/aBYBA6QUHgAUD8CRN+H6qVpqMFKzPKMqAAgwACGbW671eQ7aAAAAAElFTkSuQmCC);
 }
 
 
-/*for Run time */
+
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info input[type="radio"] {
+    display:none;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info input[type="radio"],
+.mlab_main_body_content [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info input[type="radio"]{
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMlJREFUeNpiYKAiYMQmyMLOLgCkEoDYH4gdkKQOAPFGIF7w5+fPDwRNBxpUAMTvgfg/HgySTyBk0HwkDftBGoBYASqnAOXvR1IzH5+LYIoKiHA9drWgMELyWgExgY1k4HtoGGNI7Ccl9oDqzyM7gAkq7g+lF5KYGiai6QfbAPO/AokuU4DpxTCMnISKrJcJ3SZSXYbMZ0JK2QxoqZ0Y4ICsH2bYRiidT6Jh+Wj6qZzOKMwBCZTkzfME8yaSgQnklhq0Lc8oAQABBgC6+F+d4rVGJgAAAABJRU5ErkJggg==);
+    cursor:pointer;
+    position: relative;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info.mc_correct input[type="radio"] {
+  width: 19px;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARNJREFUeNpiYqAiYIExWNk5BIBUAhALkKD/AxAv+P3zB4hmYEQyaD8QG5DhoAtA7AgyEOayBKhBIImNJBjkD9UH0j8BZhjMaxuBNjQQaxLQRwxQwwRQwoxYoNznAtLcD8SNjyqPYI8AIg0CuWA+1DUH0eWZSHQYzCBQ7E0g2zCgq0BeC4ByE+8W7fmAM50haQJpyAfiiUANG6BioNgqgCpZABMnaBgQKACxAwgDDQFpmggNcBB4AMSFuFyP4U2graCwOADlBkATswA+7xEKs0BoAkYGE4AGHcAXrlgNg9ruiGQgiG4kFEk4YxNqYCDUELzeQ48AmEJ/aBYBA6QUHgAUD8CRN+H6qVpqMFKzPKMqAAgwACGbW671eQ7aAAAAAElFTkSuQmCC);
+}
 
 .mlab_main_body_content .ui-input-text{
 margin: 0;
