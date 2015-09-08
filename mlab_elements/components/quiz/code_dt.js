@@ -906,7 +906,7 @@ this.getQuizPropertiesDialogHtml = function() {
             '    <label><input type="checkbox" data-mlab-dt-quiz-property="lock_checked">Lock checked questions for further editing</label>' + 
             '    <label><input type="checkbox" data-mlab-dt-quiz-property="submit">Submit answers to remote database?</label>' + 
             '</div>' + 
-            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Avbryt">' 
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="OK">' 
             );
 }
 

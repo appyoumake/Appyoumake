@@ -510,7 +510,7 @@ Mlab_api.prototype = {
 //-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
             setData: function(data_type, user_id, comp_id, key, value, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, JSON.stringify(value), callback);
+                var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, value, callback);
                 if (typeof this.parent[data_type][app_id][user_id][comp_id] == "undefined") {
                     this.parent[data_type][app_id][user_id][comp_id] = {};
                 }

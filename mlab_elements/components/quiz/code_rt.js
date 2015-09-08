@@ -13,7 +13,6 @@ this.onPageLoad = function(el) {
     
     $(el).append("<button data-mlab-ct-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-ct-quiz-role='move_next'>Next</button>");
 
-    self.settings.allow_check
     var disp = (self.settings.allow_check_on_page ? "" : "style='display: none'");
     $(el).append("<div data-mlab-ct-quiz-role='check_and_submit' style='display: none;'><h1>You can now check and submit your answers</div>");
     $(el).append("<button data-mlab-ct-quiz-role='check' " + disp + ">Check answers</button>");

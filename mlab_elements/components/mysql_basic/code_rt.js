@@ -69,7 +69,7 @@
     };
     
     this.setResult = function(app_id, user_id, comp_id, key, value, callback) {
-        $.post(this.serverUrl, {action: 'set', type: 'result', app: app_id, usr: user_id, comp: comp_id, key: key, value: value})
+        $.post(this.serverUrl, {action: 'set', type: 'result', app: app_id, usr: user_id, comp: comp_id, key: key, value: JSON.stringify(value)})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -87,11 +87,8 @@
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
-                        console.log( "Saved OK" );
-debugger;                        
-                        for (i in data.data) {
-                            data.data[i].value = JSON.parse(data.data[i].value);
-                        }
+                        console.log( "Retrieved OK" );
+                        data.data = JSON.parse(data.data[i]);
                         callback(data);
                     } else {
                         console.log( "ERROR: " + data.msg );
@@ -106,10 +103,12 @@ debugger;
     this.getAllResults = function(app_id, user_id, comp_id, callback) {
         $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, usr: user_id, comp: comp_id})
                 .done(function( data ) {
-debugger;
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
-                        console.log( "Saved OK" );
+                        console.log( "Retrieved OK" );
+                        for (i in data.data) {
+                            data.data[i] = JSON.parse(data.data[i]);
+                        }
                         callback(data.data);
                     } else {
                         console.log( "ERROR: " + data.msg );
