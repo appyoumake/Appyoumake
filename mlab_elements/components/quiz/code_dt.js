@@ -140,7 +140,7 @@ this.handleUserInput = function(input, e) {
             
 //these both add some text to a P tag
         case "explanatory": 
-            input.val("");
+            input.addClass("mc_gray");
             if (value) {
                 if (question.length > 0) {
                     var existing_text = question.find("[data-mlab-dt-quiz-subrole='explanatory']");

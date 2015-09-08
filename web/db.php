@@ -11,7 +11,7 @@ extract($_POST);
 $conn = mysqli_connect($server, $user, $pass, $dbname);
 // Check connection
 if (!$conn) {
-    die('{"status": "ERROR", "msg": "' . mysqli_error() . '"}');
+    die('{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", mysqli_error()) . '"}');
 }
 
 
@@ -24,19 +24,12 @@ switch ($action) {
             $_SESSION[$new_token] = true;
             echo '{"status": "SUCCESS", "token": "$new_token"}';
         } else {
-            echo '{"status": "ERROR", "msg": "' . $conn->error . '"}';
+            echo '{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", $conn->error) . '"}';
         }
         break;
 
     case "set":
         //if ($_SESSION[$token]) {
-            unset($_POST["action"]);
-            $columns = "";
-            $values = "";
-            foreach ($_POST as $key_name => $data_value) {
-                $columns .= "`$key_name`,";
-                $values .= '"' . $data_value . '",';
-            }
             $columns = rtrim($columns, ",");
             $values = rtrim($values, ",");
             
@@ -46,12 +39,13 @@ switch ($action) {
             if ($result->num_rows > 0) {
                 $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
             } else {
-                $sql = "INSERT INTO data ($columns) VALUES ($values)";
+                $val = addslashes($value);
+                $sql = "INSERT INTO data (`app`, `comp`, `usr`, `type`, `key`, `value`) VALUES ('$app', '$comp', '$usr', '$type', '$key', '$val')" ;
             }
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
             } else {
-                echo '{"status": "ERROR", "msg": "' . $conn->error . '"}';
+                echo '{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", $conn->error) . '", "sql": "' . $sql . '"}';
             }
         /*} else {
             echo '{"status": 'NOACCESS'}';
@@ -65,7 +59,7 @@ switch ($action) {
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
             } else {
-                echo '{"status": "ERROR", "msg": "' . $conn->error . '"}';
+                echo '{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", $conn->error) . '"}';
             }
         /*} else {
             echo '{"status": 'NOACCESS'}';
@@ -74,7 +68,7 @@ switch ($action) {
 
     case "get":
         //if ($_SESSION[$token]) {
-            $sql = "SELECT * FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type'";
+            $sql = "SELECT `key`, `value` FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type'";
             if (isset($key)) {
                  $sql .= " AND `key` = '$key'";
             }
@@ -82,14 +76,18 @@ switch ($action) {
             $result = $conn->query($sql);
             
             
-            
-            if ($result->num_rows > 0) {
+            if ($result->num_rows == 1) {
+                $result = $conn->query($sql);
+                $row = $result->fetch_assoc();
+                $row["value"] = stripslashes($row["value"]);
+                echo '{"status": "SUCCESS", "data": ' . json_encode(array($row["key"] => $row["value"])) . '}';
+            } else if ($result->num_rows > 1) {
                 $results_array = array();
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
-                    $results_array[] = $row;
+                    $results_array[$row["key"]] = stripslashes($row["value"]);
                 }            
-                echo '{"status": "SUCCESS", "data": "' + json_encode($results_array) + '"}';
+                echo '{"status": "SUCCESS", "data": ' . json_encode($results_array) . '}';
             } else {
                 echo '{"status": "SUCCESS", "data": "[]"}';
                 

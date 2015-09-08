@@ -95,6 +95,7 @@ this.processAnswers = function (data) {
 
             case "radio": 
                 q.find('input').prop("checked", false);
+                console.log( typeof data );
                 q.find('input[value="' + data[id] + '"]').prop("checked", true);
                 break;
 
@@ -143,7 +144,6 @@ this.checkAnswers = function(page) {
  * @returns {undefined}
  */
 this.saveAnswers = function(page) {
-    debugger;
     var user_id = this.user;
     var comp_id = this.domRoot.attr("id");
     var response;

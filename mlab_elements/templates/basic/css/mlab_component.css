@@ -431,3 +431,8 @@ part of a list */
 .mlab_main_body_content .mc_entry.mc_input.mc_correct {
     background-color: palegreen;
 }
+
+#mlab_editor .mc_entry.mc_input.mc_blurred,
+.mlab_main_body_content .mc_entry.mc_input.mc_correct.mc_blurred {
+    color: lightgray;
+}
