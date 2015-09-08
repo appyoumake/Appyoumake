@@ -402,7 +402,9 @@ part of a list */
 /* ? */
 #mlab_editor .mc_entry.mc_input,
 .mlab_main_body_content .mc_entry.mc_input {
-    
+    background-color: white;
+    border: 2px inset;
+    color: black;
 }
 
 /* ? For entry elements that will give an output to display */
