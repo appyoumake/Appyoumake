@@ -81,13 +81,18 @@ class mlab_ct_index {
                 $html = "<div data-role='collapsibleset' data-theme='a' data-content-theme='a' data-mini='true'>\n";
                 foreach ($index as $chapter => $titles) {
                     $html .= "  <div data-role='collapsible'>\n";
-                    if ($chapter == 0) {
-                        $html .= "    <h3>" . $app_config["title"] . "</h3>\n";
-                    } else {
-                        $html .= "    <h3>$chapter</h3>\n";
-                    }
+                    $added_chapter = false;
                     foreach ($titles as $page_num => $title) {
-                        $html .= "    <p><a onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . "); return false;'>$title</a></p>\n";
+                        if (!$added_chapter) {
+                            if ($chapter === 0) {
+                                $head = trim($app_config["title"]);
+                            } else {
+                                $head = trim($chapter);
+                            }
+                            $html .= "    <h3><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$head</a></h3>\n";
+                            $added_chapter = true;
+                        }
+                        $html .= "    <p><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></p>\n";
                     }
                     $html .= "  </div>\n";
                 }
@@ -96,15 +101,19 @@ class mlab_ct_index {
         } else {
                 $html = "<ul class='mc_container mc_list'>\n";
                 foreach ($index as $chapter => $titles) {
-                    if ($chapter == 0) {
-                        $html .= "  <li class='mc_text mc_display mc_list mc_bullet'>" . $app_config["title"] . "\n";
-                    } else {
-                        $html .= "  <li class='mc_text mc_display mc_list mc_bullet'>$chapter\n";
-                    }
-                    
-                    $html .= "<ul>\n";
+                    $added_chapter = false;
                     foreach ($titles as $page_num => $title) {
-                        $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(mlab.api.navigation.current_page, " . $page_num . "); return false;'>$title</a></li>\n";
+                        if (!$added_chapter) {
+                            if ($chapter === 0) {
+                                $head = trim($app_config["title"]);
+                            } else {
+                                $head = trim($chapter);
+                            }
+                            $html .= "  <li class='mc_text mc_display mc_list mc_bullet'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$head\n";
+                            $html .= "<ul>\n";
+                            $added_chapter = true;
+                        }
+                        $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
                     }
                     $html .= "  </ul></li>\n";
                 }

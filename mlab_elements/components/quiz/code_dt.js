@@ -67,7 +67,8 @@ this.onLoad = function (el) {
 //reload the pages into the tabs vie this.addQuizPage
     $(pages).each( function () { 
         if (this.nodeName.toLowerCase() == "div") {
-            $(this).find("[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
+            $(this).find("input[data-mlab-cp-quiz-alternative='correct']").parent().addClass("mc_correct");
+            $(this).find("option[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
             that.addQuizPage($(this).find("h2").text(), $(this).html());
         } else if (this.nodeName.toLowerCase() == "script") {
             $(el).append(this);
@@ -419,9 +420,9 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
             var i = 1;
             $(question).find('input[type=' + questionType + ']').each(function() {
                     if (correctResponses.indexOf(i.toString()) >= 0) {
-                        $(this).parent().addClass("mc_correct").attr("data-mlab-cp-quiz-alternative", "correct");
+                        $(this).attr("data-mlab-cp-quiz-alternative", "correct").parent().addClass("mc_correct");
                     } else {
-                        $(this).parent().removeClass("mc_correct").removeAttr("data-mlab-cp-quiz-alternative");
+                        $(this).removeAttr("data-mlab-cp-quiz-alternative").parent().removeClass("mc_correct");
                     }
                     i++;
                 });

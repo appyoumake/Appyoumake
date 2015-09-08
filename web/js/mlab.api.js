@@ -151,6 +151,31 @@ Mlab_api.prototype = {
     },
     
 /**
+ * Reads in the Javascript values stored for the specified element, extracts the value of the key specified.
+ * This only works on top level vars, further processing must be done inside the JS code for the component.
+ * 
+ * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
+ * These are all contained within a wrapper DIV that is the actual DOM element ppassed to this function.
+ * @param {jQuery DOM element} el
+ * @param {string} key, the key name in the object
+ * @returns {Mlab_dt_api.prototype.getVariable.vars|Array|Object}
+ */
+    getVariable: function (el, key) {
+        var json = $(el).find("script.mlab_storage").html();
+        if (typeof json == "undefined"  || json == "") {
+            return ;
+        }
+        try {
+            var vars = JSON.parse(json);
+        } catch(e) {
+            console.log(e);
+            return ;
+        }
+        
+        return vars[key];
+    },
+    
+/**
  * Reads in the Javascript values stored for the specified element, and returns it as a single JS object
  * Copy of design time code doing the same thing
  * Variables are stored in a <script> of type application/json as stringified JSON, on the same level as the main component HTML5 code.
@@ -253,9 +278,9 @@ Mlab_api.prototype = {
  * @returns {undefined}
 */
         prepareDataObjects: function(properties) {
-            objects = [this.parent.states, this.parent.results, this.parent.configs];
+            objects = [this.states, this.results, this.configs];
             for (j in objects) {
-                obj = objects[i];
+                obj = objects[j];
                 for (i in properties) {
                     if (!(properties[i] in obj)) {
                         obj[properties[i]] = {};
@@ -461,7 +486,6 @@ Mlab_api.prototype = {
  * However, as local data always will have the same app_id and user_id then we skip comparing that
  */
             fetchLocalData: function(data_type) {
-                var local_data = {};
                 var path;
                 var data_id = 0;
                 var app_id = 1;
@@ -472,18 +496,25 @@ Mlab_api.prototype = {
                 for (key in window.localStorage) {
                     path = key.split(this.parent.parent.data_divider);
                     if (path[data_id] == data_type) {
-                        local_data[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = JSON.parse(window.localStorage.getItem(key));
+                        if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] == "undefined") {
+                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] = {};
+                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
+                        } else if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] == "undefined") {
+                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
+                        }
+                        this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = JSON.parse(window.localStorage.getItem(key));
                     }
                 }
-                
-                return local_data;
             },
             
 //-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
             setData: function(data_type, user_id, comp_id, key, value, callback) {
-                var app_id = this.parent.getAppUid();
+                var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, value, callback);
-                this[data_type][app_id][user_id][comp_id][key] = value;
+                if (typeof this.parent[data_type][app_id][user_id][comp_id] == "undefined") {
+                    this.parent[data_type][app_id][user_id][comp_id] = {};
+                }
+                this.parent[data_type][app_id][user_id][comp_id][key] = value;
                 
 //always update locally
                 var SEP = this.parent.parent.data_divider;
@@ -492,13 +523,13 @@ Mlab_api.prototype = {
             },
 
             getData: function(data_type, user_id, comp_id, key, callback) {
-                var app_id = this.parent.getAppUid();
+                var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, callback);
 
 //If false, getResult is not implemented in plugin, and we should use the local storage.
                 if (!res) {
-                    if (app_id in this[data_type] && user_id in this[data_type][app_id] && comp_id in this[data_type][app_id][user_id] && key in this[data_type][app_id][user_id][comp_id] ) {
-                        callback(this[data_type][app_id][user_id][comp_id][key]);
+                    if (app_id in this.parent[data_type] && user_id in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][user_id] && key in this.parent[data_type][app_id][user_id][comp_id] ) {
+                        callback(this.parent[data_type][app_id][user_id][comp_id][key]);
                     } else {
                         callback();
                     }
@@ -507,11 +538,11 @@ Mlab_api.prototype = {
             },
 
             getAllData: function(data_type, user_id, comp_id, callback) {
-                var app_id = this.parent.getAppUid();
-                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, comp_id, user, callback);
+                var app_id = this.parent.parent.getAppUid();
+                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, user_id, comp_id, callback);
                 if (!res) {
-                    if (app_id in this[data_type] && user_id in this[data_type][app_id] && comp_id in this[data_type][app_id][user_id] ) {
-                        callback(this[data_type][app_id][user_id][comp_id]);
+                    if (app_id in this.parent[data_type] && user_id in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][user_id] ) {
+                        callback(this.parent[data_type][app_id][user_id][comp_id]);
                     } else {
                         callback();
                     }
@@ -548,9 +579,9 @@ Mlab_api.prototype = {
         max_pages: 0,
         self: this,
         
-        initialise: function (app_current_page, app_max_pages) {
-            self.current_page = app_current_page;
-            self.max_pages = app_max_pages;
+        initialise: function (app_start_page, app_max_pages) {
+            this.max_pages = app_max_pages;
+            this.pageDisplay(app_start_page);
         },
 /**
  * current = page that is currently displayed
@@ -558,7 +589,7 @@ Mlab_api.prototype = {
  * @param {type} page
  * @returns {undefined}
  */
-        pageDisplay: function (current, move_to) {
+        pageDisplay: function (move_to) {
             var filename = "";
             var new_location = 0;
             switch (move_to) {
@@ -574,59 +605,49 @@ Mlab_api.prototype = {
                     break;
 
                 case "last" :
-                    filename = ("000" + self.max_pages).slice(-3) + ".html";
-                    new_location = self.max_pages;
+                    filename = ("000" + this.max_pages).slice(-3) + ".html";
+                    new_location = this.max_pages;
                     break;
 
                 case "next" :
-                    if (current >= self.max_pages) {
-                        return current;
+                    if (this.current_page >= this.max_pages) {
+                        return this.current_page;
                     }
-                    current++;
-                    filename = ("000" + current).slice(-3) + ".html";
-                    new_location = current;
+                    this.current_page++;
+                    filename = ("000" + this.current_page).slice(-3) + ".html";
+                    new_location = this.current_page;
                     break;
 
                 case "previous" :
-                    if (current == 0 || current == "index") {
-                        return current;
+                    if (this.current_page === 0 || this.current_page === "index") {
+                        return this.current_page;
                     }
-                    if (current == 1) {
-                        filename = "000.html";
-                        new_location = 0;
-                    } else {
-                        current--;
-                        if (current < 0) {
-                            current = 0;
-                        }
-                        filename = ("000" + current).slice(-3) + ".html";
-                        new_location = current;
+                    this.current_page--;
+                    if (this.current_page < 0) {
+                        this.current_page = 0;
                     }
+                    filename = ("000" + this.current_page).slice(-3) + ".html";
+                    new_location = this.current_page;
                     break;
 
 //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {
-                        return current;
+                        return this.current_page;
                     }
-                    if (move_to < 0 || move_to > self.max_pages) {
-                        return current;
+                    if (move_to < 0 || move_to > this.max_pages) {
+                        return this.current_page;
                     }
-                    if (move_to == 0) {
-                        filename = "000.html";
-                    } else {
-                        filename = ("000" + move_to).slice(-3) + ".html";
-                    }
+                    filename = ("000" + move_to).slice(-3) + ".html";
                     new_location = move_to;
                     break;
             }
 
 //have calculated the file name, now we need to try to load it
             $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
-            //$.mobile.pageContainer.pagecontainer("load", "/Palestinian/epg47/show");
-
-            return new_location;
+            this.current_page = new_location;
+            return this.current_page;
         },
         
     },
@@ -749,13 +770,18 @@ if (typeof mlab == "undefined") {
     mlab = {"api": null};
 }
 
+
+/*$( document ).on( "mobileinit" , function () {
+    console.log("EVENT: mobileinit");
+    $.mobile.ignoreContentEnabled = true;
+});*/
+  
 $(document).ready(function() {
     
     console.log("EVENT: ready");
     
     if ($("body").attr("id") != "mlab_editor") {
         console.log("STATE: mobile mode, init own object");
-
 
         mlab.api = new Mlab_api();
 

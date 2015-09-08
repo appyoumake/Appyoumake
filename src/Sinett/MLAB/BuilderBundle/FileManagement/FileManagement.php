@@ -10,7 +10,7 @@ class CustomPreProcessing {
     
     public function getnumberofpages($config, $app, $app_path) {
    		$pages = glob ( $app_path . "/???.html" );
-   		$page_num = intval(basename(array_pop($pages))) + 1;
+   		$page_num = intval(basename(array_pop($pages)));
         return $page_num;
     }
     
