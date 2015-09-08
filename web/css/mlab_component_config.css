@@ -24,6 +24,7 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     background-color: white;
     border: solid orange 2px; 
     box-shadow: 10px 10px 5px #888888;
+    max-width: 500px;
 }
 
 
@@ -217,6 +218,7 @@ background-color: rgba(255,165,0,0.2);
 
 #mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active a{
 outline: none;
+color: black;
 }
 
 

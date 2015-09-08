@@ -43,3 +43,100 @@
 .mlab_quiz .mlab_quiz_question_ok { border: 1px solid green; border-radius: 3px; }
 .mlab_quiz .mlab_quiz_question_not_ok { border: 1px solid red; border-radius: 3px; }
 .mlab_quiz .mlab_quiz_correct_answer { color: green; }
+
+
+
+
+/* ===  Tabs  === */
+
+#mlab_editor [data-mlab-type="quiz"] .mlab_dt_tab_list {
+border:0;
+padding-top: 0.5em;
+/* margin: 0; */
+margin-bottom: 0;   
+color: grey;
+
+}
+
+#mlab_editor [data-mlab-type="quiz"] .mlab_dt_tab_list li{
+font-size: 0.9em;
+font-family: Arial,Helvetica,sans-serif;
+padding: 0.3em;
+margin: 0.05em;
+margin-bottom: 0;
+border: 1px solid orange;
+border-bottom: 0;
+cursor: pointer;
+background-color: white;
+}
+
+#mlab_editor [data-mlab-type="quiz"] .mlab_dt_tab_list .ui-tabs-active {
+background-color: #ffedcc;
+}
+
+#mlab_editor [data-mlab-type="quiz"] .mlab_dt_tab_list .ui-tabs-active a{
+outline: none;
+color: black;
+}
+
+#mlab_editor [data-mlab-type="quiz"] .ui-tabs-panel {
+border: 1px solid orange;
+padding: 0.3em;
+}
+
+#mlab_editor [data-mlab-type="quiz"] .ui-tabs-panel h2 {
+padding-bottom: 0.7em;
+}
+
+#mlab_editor [data-mlab-dt-quiz-role="question"] {
+padding-bottom: 1.6em;
+}
+
+#mlab_editor [data-mlab-type="quiz"] .mc_display.mc_text[data-mlab-dt-quiz-subrole="explanatory"] {
+border: 0;
+font-size: 1em;
+font-style: italic;
+padding-bottom: 0.4em;
+}
+
+#mlab_editor [data-mlab-type="quiz"] .mc_display.mc_text[data-mlab-dt-quiz-subrole="question"] {
+border: 0;
+font-size: 1.1em;
+font-weight: bold;
+padding-bottom: 0.2em;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] {
+border: 0;
+font-size: 1em;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info {
+padding: 0.15em;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_input {
+
+}
+
+
+
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info input[type="checkbox"] {
+    display:none;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info input[type="checkbox"] {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMlJREFUeNpiYKAiYMQmyMLOLgCkEoDYH4gdkKQOAPFGIF7w5+fPDwRNBxpUAMTvgfg/HgySTyBk0HwkDftBGoBYASqnAOXvR1IzH5+LYIoKiHA9drWgMELyWgExgY1k4HtoGGNI7Ccl9oDqzyM7gAkq7g+lF5KYGiai6QfbAPO/AokuU4DpxTCMnISKrJcJ3SZSXYbMZ0JK2QxoqZ0Y4ICsH2bYRiidT6Jh+Wj6qZzOKMwBCZTkzfME8yaSgQnklhq0Lc8oAQABBgC6+F+d4rVGJgAAAABJRU5ErkJggg==);
+    cursor:pointer;
+}
+
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-dt-quiz-subrole="alternatives"] .mc_entry.mc_info.mc_correct input[type="checkbox"] {
+  width:10px;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARNJREFUeNpiYqAiYIExWNk5BIBUAhALkKD/AxAv+P3zB4hmYEQyaD8QG5DhoAtA7AgyEOayBKhBIImNJBjkD9UH0j8BZhjMaxuBNjQQaxLQRwxQwwRQwoxYoNznAtLcD8SNjyqPYI8AIg0CuWA+1DUH0eWZSHQYzCBQ7E0g2zCgq0BeC4ByE+8W7fmAM50haQJpyAfiiUANG6BioNgqgCpZABMnaBgQKACxAwgDDQFpmggNcBB4AMSFuFyP4U2graCwOADlBkATswA+7xEKs0BoAkYGE4AGHcAXrlgNg9ruiGQgiG4kFEk4YxNqYCDUELzeQ48AmEJ/aBYBA6QUHgAUD8CRN+H6qVpqMFKzPKMqAAgwACGbW671eQ7aAAAAAElFTkSuQmCC);
+}

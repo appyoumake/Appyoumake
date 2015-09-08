@@ -357,25 +357,25 @@ this.addQuestionAlternative = function(question, value, questionType) {
 
     switch (questionType) {
         case "checkbox": 
-            var html = "<label class='mc_entry mc_info'>" + value + "<input value='" + value + "' class='mc_entry mc_input' type='checkbox'></label>";
+            var html = "<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='checkbox'>" + value + "</label>";
             break;
 
         case "radio": 
             var name = question.attr("id");
-            var html = "<label class='mc_entry mc_info'>" + value + "<input value='" + value + "' class='mc_entry mc_input' type='radio' name='" + name + "'></label>";
+            var html = "<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "'>" + value + "</label>";
             break;
 
         case "text": 
-            var html = "<input class='mc_entry mc_input' type='text' data-mlab-cp-quiz-textvalue='" + value + "' >";
+            var html = "<input class='mc_text mc_entry mc_input' type='text' data-mlab-cp-quiz-textvalue='" + value + "' >";
             break;
 
         case "select": 
             var current_select_box = question.find("select");
             if (current_select_box.length == 0) {
-                var html = "<select class='mc_entry mc_input' ><option class='mc_entry mc_input' ></option><option class='mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
+                var html = "<select class='mc_text mc_entry mc_input' ><option class='mc_text mc_entry mc_input' ></option><option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<option class='mc_entry mc_input' value='" + value + "' >" + value + "</option>";
+                var html = "<option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option>";
             }
             set_selected = true;
             break;
@@ -383,10 +383,10 @@ this.addQuestionAlternative = function(question, value, questionType) {
         case "multiselect": 
             var current_select_box = question.find("select");
             if (current_select_box.length == 0) {
-                var html = "<select class='mc_entry mc_input' multiple size='7'><option class='mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
+                var html = "<select class='mc_text mc_entry mc_input' multiple size='7'><option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<option class='mc_entry mc_input' value='" + value + "' >" + value + "</option>";
+                var html = "<option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option>";
             }
             break;
     }
