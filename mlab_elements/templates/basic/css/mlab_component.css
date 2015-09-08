@@ -405,6 +405,7 @@ part of a list */
     background-color: white;
     border: 2px inset;
     color: black;
+    min-width: 15em;
 }
 
 /* ? For entry elements that will give an output to display */
