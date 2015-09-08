@@ -486,7 +486,6 @@ Mlab_api.prototype = {
  * However, as local data always will have the same app_id and user_id then we skip comparing that
  */
             fetchLocalData: function(data_type) {
-                var local_data = {};
                 var path;
                 var data_id = 0;
                 var app_id = 1;
@@ -497,17 +496,24 @@ Mlab_api.prototype = {
                 for (key in window.localStorage) {
                     path = key.split(this.parent.parent.data_divider);
                     if (path[data_id] == data_type) {
-                        local_data[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = JSON.parse(window.localStorage.getItem(key));
+                        if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] == "undefined") {
+                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] = {};
+                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
+                        } else if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] == "undefined") {
+                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
+                        }
+                        this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = JSON.parse(window.localStorage.getItem(key));
                     }
                 }
-                
-                return local_data;
             },
             
 //-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
             setData: function(data_type, user_id, comp_id, key, value, callback) {
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, value, callback);
+                if (typeof this.parent[data_type][app_id][user_id][comp_id] == "undefined") {
+                    this.parent[data_type][app_id][user_id][comp_id] = {};
+                }
                 this.parent[data_type][app_id][user_id][comp_id][key] = value;
                 
 //always update locally
