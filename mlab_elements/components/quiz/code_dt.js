@@ -899,12 +899,12 @@ this.getDialogHtml = function(id) {
  */
 this.getQuizPropertiesDialogHtml = function() {
     return $('<div>' + 
-            '    <p>The correct answers to a quiz can be checked and/or saved to a database. Choose your options below.</p>' + 
-            '    <label><input type="checkbox" data-mlab-dt-quiz-property="allow_check">Allow check of answers on device?</label>' + 
-            '    <label><input type="checkbox" data-mlab-dt-quiz-property="allow_check_on_page">Allow check of answers on each page?</label>' + 
-            '    <label><input type="checkbox" data-mlab-dt-quiz-property="display_correct">Show correct answers when check</label>' + 
-            '    <label><input type="checkbox" data-mlab-dt-quiz-property="lock_checked">Lock checked questions for further editing</label>' + 
-            '    <label><input type="checkbox" data-mlab-dt-quiz-property="submit">Submit answers to remote database?</label>' + 
+            '    <p class="mlab_dt_text">The correct answers to a quiz can be checked and/or saved to a database. Choose your options below.</p>' + 
+            '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="allow_check">Allow check of answers on device?</label>' + 
+            '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="allow_check_on_page">Allow check of answers on each page?</label>' + 
+            '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="display_correct">Show correct answers when check</label>' + 
+            '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="lock_checked">Lock checked questions for further editing</label>' + 
+            '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="submit">Submit answers to remote database?</label>' + 
             '</div>' + 
             '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="OK">' 
             );

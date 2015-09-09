@@ -26,4 +26,5 @@ custom:
     map_options: {zoom: 8, center: { lat: 59.974944, lng: 11.048852 }, mapTypeId: "roadmap", zoomControl: true, scaleControl: true, mapTypeControl: true,}
     class_identifier: mlab_cp_googlemap_canvas
     map_script: http://maps.google.com/maps/api/js?v=3
-
+    edit_map_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQ5JREFUeNrUlMsNgkAQhkEweqQEStgStANLwA4ogQ6wA7QC7EA70A7g6A2OGp//JkOyyhCVHQ9u8mf2wX4zy86s4/y4ebaA4Wg88Xw/uF0vB/HoAE+gOymShkcGXN4JYDvGgb0TAFJIUT8TdWIAK2j2xonqC29F2rGmbOGNYvomNuYyKfgTkDIrNfe77+Awn17Y8nw6zl8nB0LwzuYKwdno2RPo8peCt04AeABTQVtIp1lgA+dO0ESuN02h2gbO/fsCyo2xoqpl0/JbuKLNKTNfWcGNR6z1WKEfQhsreMfzqx3mxjjpXQc6SpiCWS+hFbTAhdZ9HPhkwxfoWoMB3YtUMuW/zvsS0NL5p/YQYACxS492nFN6MAAAAABJRU5ErkJggg==
+    edit_map_tooltip: Edit map
