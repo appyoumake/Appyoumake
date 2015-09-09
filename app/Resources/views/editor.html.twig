@@ -142,12 +142,17 @@
                     <p>{% trans %}app.builder.edit.menu.test.app.mob.info{% endtrans %}</p>
                     <div id="mlab_download_qr2"><p class="qr_wait_text">{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
                     </div>
-                                            <a href="javascript:  mlab.dt.management.compiler.get_app('ios');">
+                                            <!--<a href="javascript:  mlab.dt.management.compiler.get_app('ios');">
                                                 <div title="{% trans %}app.builder.edit.menu.test.app.mob.ios.tooltip{% endtrans %}" class="mlab_download_icon" id="mlab_download_ios_icon"></div> 
-                                            </a>
+                                            </a> -->
+                                            
                                             <a href="javascript: mlab.dt.management.compiler.get_app('android');">
                                                 <div title="{% trans %}app.builder.edit.menu.test.app.mob.android.tooltip{% endtrans %}" class="mlab_download_icon" id="mlab_download_android_icon"></div> 
                                             </a>
+                                            
+                                            <div id='mlab_download_qr_link'>&nbsp;</div>
+                                            <div id='mlab_download_link'>&nbsp;</div>
+                                            
                 </div>
             </div> <!-- End Testing col -->
 

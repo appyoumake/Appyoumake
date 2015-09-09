@@ -216,7 +216,7 @@
 // finally we connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
                         var host = window.document.location.host.replace(/:.*/, '');
                         mlab.dt.services_web_socket = new WebSocket('ws://' + host + ':' + mlab.dt.config.ws_socket.port + mlab.dt.config.ws_socket.url + '/' + mlab.dt.uid);
-
+                        
                         mlab.dt.services_web_socket.onmessage = function (event) {
                             console.log(event);
                             data = JSON.parse(event.data);
@@ -274,7 +274,17 @@
                                     break;
 
                                 case "ready":
-                                    $("#mlab_statusbar_compiler").text("App ready!");
+                                    //inserting the QR code and url to the compiled app in the menu
+                                    var text = data.url;
+                                    if (text != null && text != "") {
+                                        $("#mlab_download_qr_link").empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});
+                                        var qr = $('#mlab_download_qr_link').find('canvas');
+                                        qr.css({'border': 'solid 10px white', 'padding': '0px'});
+                                        
+                                        $("#mlab_download_link").text("URL: " + text);
+                                    }     
+                                    
+                                    $("#mlab_statusbar_compiler").text("App ready! Links are found in the menu");
                                     break;
 
                                 case "failed":
