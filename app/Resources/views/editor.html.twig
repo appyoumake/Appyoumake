@@ -40,7 +40,7 @@
                         </li>  <!-- The Mlab log -->
     
                         <li id="mlab_editor_menu_dropdown">    
-                                <img class="basic_menu_icon" title='Editor menu' src="/img/menu_icon.png" alt="logo" > 
+                                <img class="basic_menu_icon" title='{% trans %}app.builder.edit.menu.tooltip{% endtrans %}' src="/img/menu_icon.png" alt="logo" > 
                         </li>
 
                         <li id="mlab_editor_undo_redo" class="single mlab_editor_undo_redo_save">
@@ -49,17 +49,17 @@
                             <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
                         </li><!-- End undo and redo menu items -->
 
-                        <li  class="single"><div id='mlab_statusbar_permanent'>Appnavn</div></li>
+                        <li  class="single"><div id='mlab_statusbar_permanent'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
                         <li  class="single"><div id='mlab_statusbar_progressbar'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
 			<li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
                         
                         <li class="single menu_right">
-                            <img class="mlab_help_icon" src="/img/help.png" title='Hjelp' alt="logo" >
+                            <img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" >
                         </li>
                         
                         <li id="mlab_user_menu_dropdown" class="menu_right">
-                            <img class="mlab_user_info_icon" src="/img/user.png" title='Bruker info' alt="logo" >
+                            <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}app.builder.user.info.menu.tooltip{% endtrans %}' alt="logo" >
                         </li>
                         
                     </ul>
@@ -123,8 +123,8 @@
                 <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
                 <div id="mlab_features_list"></div>
                 <div class='mlab_sub_menu'>
-                    <h4>Utilities</h4>
-                    <p> Om siden er grået ut kan du klikke her for å låse den opp igjen.</p> 
+                    <h4>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h4>
+                    <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
                     <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
                                         <a href="javascript: mlab.dt.management.compiler.get_app_status();">Test connection to compiler </a>
                 </div>
@@ -133,20 +133,20 @@
             <div class="mlab_one_col"> <!-- Testing col -->
                 <div class="mlab_end_appbuilder">
                     <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
-                    <h4>Prøv App på web</h4>
-                    <p>Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.</p>
+                    <h4>{% trans %}app.builder.edit.menu.heading.test.app.web{% endtrans %}</h4>
+                    <p>{% trans %}app.builder.edit.menu.test.app.web.info{% endtrans %}</p>
                             <a href="javascript: mlab.dt.management.page_preview();">
                                 <div title="Test app i nettleser" id="mlab_preview_icon"></div>
                             </a> 
-                    <h4>Prøv App på mobil</h4>
-                    <p>Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.</p>
-                    <div id="mlab_download_qr2"><p class="qr_wait_text">Det kan ta litt tid før QR-koden vises. Vennligst vent.</p>
+                    <h4>{% trans %}app.builder.edit.menu.heading.test.app.mob{% endtrans %}</h4>
+                    <p>{% trans %}app.builder.edit.menu.test.app.mob.info{% endtrans %}</p>
+                    <div id="mlab_download_qr2"><p class="qr_wait_text">{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
                     </div>
                                             <a href="javascript:  mlab.dt.management.compiler.get_app('ios');">
-                                                <div title="Test app på iOS mobil enhet" class="mlab_download_icon" id="mlab_download_ios_icon"></div> 
+                                                <div title="{% trans %}app.builder.edit.menu.test.app.mob.ios.tooltip{% endtrans %}" class="mlab_download_icon" id="mlab_download_ios_icon"></div> 
                                             </a>
                                             <a href="javascript: mlab.dt.management.compiler.get_app('android');">
-                                                <div title="Test app på Android mobil enhet" class="mlab_download_icon" id="mlab_download_android_icon"></div> 
+                                                <div title="{% trans %}app.builder.edit.menu.test.app.mob.android.tooltip{% endtrans %}" class="mlab_download_icon" id="mlab_download_android_icon"></div> 
                                             </a>
                 </div>
             </div> <!-- End Testing col -->

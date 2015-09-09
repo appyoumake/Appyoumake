@@ -332,12 +332,17 @@ app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i
 app.builder.page.tooltip.new: Ny side
 
 app.builder.overlay.info: Vennligst vent mens MLAB åpner appen din...
+app.builder.statusbar.info.permanent: Appnavn
 
 
 
 #-----------------------------------------------------
 # App builder (edit app) Menu
 #-----------------------------------------------------
+
+app.builder.edit.menu.tooltip: Editor meny
+app.mlab.menu.tooltip: Meny
+app.mlab.logo.tooltip: Tilbake til App liste
 
 app.builder.edit.menu.main.heading: Meny
 app.builder.edit.menu.welcome.info: Litt generelt - Hva menyen hjelper til med. feks forklare hva er en side...
@@ -349,17 +354,32 @@ app.builder.edit.menu.app.edit.info: Her kan du endre beskrivelse, legge til nø
 app.builder.edit.menu.heading.feature: App egenskaper
 app.builder.edit.menu.feature.info: Du kan legge til spesielle egenskaper til en app, det kan være oppkobling mot en database eller link til en kalender. Velg i fra listen nedenfor. De med en hake er allerede legt til i denne appen.
 
+app.builder.edit.menu.heading.utilities: Utilities
+app.builder.edit.menu.utilities.info: Om siden er grået ut kan du klikke her for å låse den opp igjen.
+
 app.builder.edit.menu.heading.page: Side
 app.builder.edit.menu.page.name.info: For å rediger sidenavnet klikke på blyanten. For å slette siden klikk på krysset under eller klikk på lagreknappen for å lagre
 app.builder.edit.menu.page.edit.info: Velg siden du ønsker å hoppe til, legg til en ny side eller kopier siden som er valgt
 
 app.builder.edit.menu.heading.test.app: App testing
+app.builder.edit.menu.heading.test.app.web: Prøv App på web
+app.builder.edit.menu.test.app.web.info: Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.
+app.builder.edit.menu.heading.test.app.mob: Prøv App på mobil
+app.builder.edit.menu.test.app.mob.info: Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.
+app.builder.edit.menu.test.app.mob.qr.wait.text: Det kan ta litt tid før QR-koden vises. Vennligst vent.
+app.builder.edit.menu.test.app.mob.ios.tooltip: Test app på iOS mobil enhet
+app.builder.edit.menu.test.app.mob.android.tooltip: Test app på Android mobil enhet
+    
 app.builder.edit.menu.test.app.info: Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. For å få en korekt test klikk på mobil-knappen som vil gi deg en QR-kode du kan bruke til å laste ned appen til din mobil
 
 app.builder.edit.menu.heading.exit: Avslutt
 app.builder.edit.menu.exit.info: Er du ferdig å redigere appen din så klikk på avslutt knappen under
 
 app.builder.edit.menu.tooltip.something: Something
+
+app.builder.help.menu.tooltip: Hjelp
+
+app.builder.user.info.menu.tooltip: Bruker info
 
 
 
