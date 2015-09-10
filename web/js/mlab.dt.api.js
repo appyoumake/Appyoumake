@@ -361,18 +361,24 @@ Mlab_dt_api.prototype = {
     displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector) {
         this.closeAllPropertyDialogs()
         that = this;
+        if ($(el).data("mlab-type") == "quiz") {
+            var c = 'qtip-light mlab_dt_box_style mlab_dt_wide_qtip_box';
+        } else {
+            var c = 'qtip-light mlab_dt_box_style';
+        };
         $(el).qtip({
             solo: true,
             content:    {text: content, title: title },
             position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
-            style:      { classes: 'qtip-light mlab_dt_box_style' },
+            style:      { classes: c },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
                             hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy(); },
                             visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
                         }
         });
+    
     },
 
 /**
