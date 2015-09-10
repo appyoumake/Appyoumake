@@ -220,8 +220,8 @@ this.handleUserInput = function(input, e) {
                 var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
                 $("#"  + correct_response_id).html("");
                 page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
-                $("div.qtip input:text").val("");
-                $("div.qtip textarea").val("");
+                $("div.qtip input:text").val("").removeClass("mc_blurred");
+                $("div.qtip textarea").val("").removeClass("mc_blurred");
                 $(question).find("p, label").attr('contenteditable','true');
                 this.setPropertiesDialogTab(1);
                 $("[data-mlab-dt-quiz-input='explanatory']").focus();

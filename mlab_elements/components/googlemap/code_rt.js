@@ -28,5 +28,9 @@
                     title: mapOptions.markers[i].title } ); 
             }
         }
+        var elem = $("#" + mapOptions.guid);
+        elem.hide();
+        elem.get(0).offsetHeight; // no need to store this anywhere, the reference is enough
+        elem.show();
         
     };
