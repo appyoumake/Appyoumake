@@ -403,7 +403,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
         question.find("select :nth-child(" + (num + 1).toString() +  ")").prop('selected', true); 
     }
     
-    $("#"  + correct_response_id).append("<span data-mlab-dt-quiz-correct-response='" + num + "'>" + num + " - " + value + "</span>");
+    $("#"  + correct_response_id).append("<span data-mlab-dt-quiz-correct-response='" + num + "'>" + num + " - " + value + "<br></span>");
     this.api.setDirty();
     return true;
 };

@@ -492,10 +492,10 @@ Mlab_api.prototype = {
                 var user_id = 2;
                 var comp_id = 3;
                 var key_id = 4;
-                
+                var app_id = this.parent.parent.getAppUid(); //todo why get data from ther apps? DT only
                 for (key in window.localStorage) {
                     path = key.split(this.parent.parent.data_divider);
-                    if (path[data_id] == data_type) {
+                    if (path[data_id] == data_type && path[app_id] == app_id) {
                         if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] == "undefined") {
                             this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] = {};
                             this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
