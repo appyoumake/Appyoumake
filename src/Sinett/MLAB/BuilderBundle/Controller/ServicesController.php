@@ -440,8 +440,10 @@ class ServicesController extends Controller
 
 //see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
 //if it has been compiled we send a message via the websocket server
-        if (file_exists($compiled_app_path . $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform])) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '"}}', $config), true);
+        $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
+        
+        if (file_exists($compiled_app_path . $app_filename)) {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "url": "/' . basename($compiled_app_path) . "/" . $app_filename . '"}}', $config), true);
             ($res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }
@@ -549,6 +551,7 @@ class ServicesController extends Controller
         error_log("cbCmpVerifiedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
         $config = $this->container->parameters['mlab'];
+        
 //we therefore need to read them from the request object
         $request = $this->getRequest();
         $passphrase = $request->query->get("passphrase");

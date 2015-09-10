@@ -916,6 +916,11 @@ class FileManagement {
         
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        
+        if (!file_exists($cached_app_path)) {
+            return "";
+        }
+        
         $md5sums = array();
         
         if ($exclude_file != "") {

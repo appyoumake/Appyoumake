@@ -274,8 +274,8 @@
                                     break;
 
                                 case "ready":
-                                    //inserting the QR code and url to the compiled app in the menu
-                                    var text = data.url;
+//inserting the QR code and url to the compiled app in the menu
+                                    var text = document.getElementsByTagName("base")[0].href + data.url;
                                     if (text != null && text != "") {
                                         $("#mlab_download_qr_link").empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});
                                         var qr = $('#mlab_download_qr_link').find('canvas');

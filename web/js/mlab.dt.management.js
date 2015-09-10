@@ -610,6 +610,7 @@ Mlab_dt_management.prototype = {
     },
 
     page_new_process : function (title) {
+        $("body").css("cursor", "wait");
         this.parent.utils.update_status("callback", "Storing page", true);
         var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
         url = url.replace("_UID_", this.parent.uid);
@@ -625,9 +626,11 @@ Mlab_dt_management.prototype = {
                 that.app_update_gui_metadata();
 
                 that.parent.flag_dirty = true;
+                $("body").css("cursor", "default");
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
+                $("body").css("cursor", "default");
             }
 
             that.parent.utils.timer_start();
