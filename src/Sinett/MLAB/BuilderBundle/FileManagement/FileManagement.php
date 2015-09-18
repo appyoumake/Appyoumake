@@ -333,8 +333,8 @@ class FileManagement {
                             }
 
                             if ($filetype == "css") {
-                                if (!in_array("@import url('$dependency');", $include_items)) {
-                                    $include_items[] = "@import url('$dependency');";
+                                if (!in_array("@import url('css/$dependency');", $include_items)) {
+                                    $include_items[] = "@import url('css/$dependency');";
                                 }
                             } else {
                                 if (substr($dependency, 0, 4) == "http") {
@@ -342,8 +342,8 @@ class FileManagement {
                                         $include_items[] = "$.getScript('$dependency');";
                                     }
                                 } else {
-                                    if (!in_array("$.getScript('/js/$dependency');", $include_items)) {
-                                        $include_items[] = "$.getScript('/js/$dependency');";
+                                    if (!in_array("$.getScript('js/$dependency');", $include_items)) {
+                                        $include_items[] = "$.getScript('js/$dependency');";
                                     }
                                 }
                             }
@@ -1249,12 +1249,15 @@ class FileManagement {
                     $doc = new \DOMDocument("1.0", "utf-8");
                     libxml_use_internal_errors(true);
                     $doc->loadHTMLFile($filename);
-                    $container = $doc->getElementById("content");
-                    $elements = $container->getElementsByTagName("div");
-                    foreach ( $elements as $el ) {
-                        $temp_tag = $el->getAttribute("data-mlab-type");
-                        if ($temp_tag != "") {
-                            $all_comps_used[] = $temp_tag;
+                    $xpath = new \DOMXPath($doc);
+                    $page_components = $xpath->query('//div[@data-mlab-type]');
+
+                    if ($page_components) {
+                        foreach ( $page_components as $el ) {
+                            $temp_tag = $el->getAttribute("data-mlab-type");
+                            if ($temp_tag != "") {
+                                $all_comps_used[] = $temp_tag;
+                            }
                         }
                     }
                 }

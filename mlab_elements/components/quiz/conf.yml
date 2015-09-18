@@ -1,13 +1,12 @@
-#Configuration file for quiz component
+# Configuration file for quiz component
 name: quiz
 category: quiz
 version: 0.2
 developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
 storage_plugin: true
-custom:
 tooltip: Build a quiz for users to answer
 required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
-plugins: ["cordova-plugin-device"]
+# plugins: ["cordova-plugin-device"]
 html: ""
 custom:
     add_page_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWtJREFUeNpiZEAC////3w+kHBioCJgYaAxYkNgJJiYmBry8vHg1CAgIMMyfPx9MkwoaQKFEDDYwMPj//v37/8QADAsaGhqwKgSJwwwH0UAf/D9//jxBC0iOg4CAAHAQffjwgcHR0ZHhwIED1I1kkIEPHz4EWwSzZMGCBURFMtEWoLs6MTERkkoSEsi3ID4+nsHe3h5D/MKFCwyFhYUMCxcupMwCBQUFMMYm/vHjRwZ5eXnqBBE2C+rr6wcuJ1NsgaubOwMbBycYg1IXEnAEYkGq+oAfrfhgZGT8QFULBPj5KY9kUDAsWryEQV9fD2zgh48f4HKHDh0C0wcPHWa4dv2aAlkWgAxvbmnBKucCjA/krAPEC+haHxAF/Px8UfigYDkIDZrenm5g+fQRJn5wz+5dpNUH2ICLq9t/VnYOMEYDDlTPaB8+fsSb0UA+YCSACaYwSuPAEV3Azs4OHAf2QFpfTw+loGWgBwAIMACL+gs1qnye0wAAAABJRU5ErkJggg==

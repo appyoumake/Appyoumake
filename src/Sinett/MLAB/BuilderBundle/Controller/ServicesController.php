@@ -375,7 +375,7 @@ class ServicesController extends Controller
             mkdir(substr_replace($app_path, "_compiled/", -1));
         }
         $local_checksum = $file_mgmt->download_file($download_url, $compiled_app_filename);
-        return ($local_checksum == $remote_compiled_app_checksum);
+        return $local_checksum;
     }
     
 /**
@@ -533,6 +533,7 @@ class ServicesController extends Controller
             $res_upload = $this->cmpUploadFiles($cached_app_path, $window_uid, $app_uid, $app_version, $config);
             
 //files are uploaded, now we need to verify them. The steps from here, and the next two, compile and download, are called inside the callback from verify
+            $file_mgmt = $this->get('file_management');
             $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
             $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $processed_app_checksum, "tag" => "multistep-$window_uid-$platform");
             $res_verify = $this->cmpCallRemoteFunction($config, $window_uid, "verifying", "compiler_service", $parameters, "verifyApp");
@@ -632,9 +633,13 @@ class ServicesController extends Controller
         
 //files are compiled, now we need to download the app.
         if ($action == "multistep" && $result == "true") {
-            $res_download = $this->cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $exec_file_checksum, $platform);
-            $status = ($res_download ? "ready" : "failed");
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '", "checksum": "' . $res_download . '"}}', $config), true);
+            $download_checksum = $this->cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $exec_file_checksum, $platform);
+            if ($download_checksum == $exec_file_checksum) {
+                $file_name = $app_checksum . "." . $config["compiler_service"]["file_extensions"][$platform];
+                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '"}}', $config), true);
+            } else {
+                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed"}}', $config), true);
+            }
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }

@@ -60,7 +60,7 @@ index:
 
 # compiler API related URLS (callbacks from API). These use "traditional" paremetr like ?x=y, so have no params specified here
 cb_cmp_created_app:
-    pattern: /callback/csAppCreated/{passphrase}/
+    pattern: /callback/csAppCreated/
     defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCreatedApp }
     
 cb_cmp_verified_app:
