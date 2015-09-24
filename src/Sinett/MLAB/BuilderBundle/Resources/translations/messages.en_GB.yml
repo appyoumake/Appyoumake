@@ -1,198 +1,345 @@
-app.admin.welcome: Velkommen til MLAB App Admin sidene
 %Users%: brukere
 
-
 #-----------------------------------------------------
-# Users tab
+# Index info page
 #-----------------------------------------------------
-app.admin.users.username: Brukernavn
-app.admin.users.email: E-post
-app.admin.users.groups: Grupper
-app.admin.users.last.login: Siste innlogging
-
-app.admin.users.tooltip.username: Rediger bruker
-app.admin.users.tooltip.delete: Slett bruker
-app.admin.users.tooltip.new: Opprett ny bruker
-
+app.builder.index.page.heading: Mlab
+app.builder.index.page.text: Welcome to Mlab. With this tool you can create your own interactive apps.
+app.builder.index.page.link.text.before: To get started go to the
+app.builder.index.page.link.app.list: App list
+app.builder.index.page.link.text.after: or chose a different action from the menu above.
 
 
 #-----------------------------------------------------
-# Edit and new user
+# List of apps page
 #-----------------------------------------------------
-app.admin.users.new.heading: Opprett ny bruker
-app.admin.users.edit.heading: Rediger bruker
+app.builder.list.main.heading: Apps
+app.builder.list.welcome.info: Welcome to Mlab app builder! <br><br> Here is a list of apps you can access. You can edit them by clicking on the app name. Use the button to create a new app.
+app.builder.list.new.app.button: New App
+app.builder.list.heading.app: App Name
+app.builder.list.heading.published: Published
+app.builder.list.heading.version: Version
+app.builder.list.heading.active_version: Active version
+app.builder.list.heading.last.updated: Last updated
 
-#???????For the new user form???????
-email: E-post
-username: Brukernavn
-plainPassword: Passord
-passwor: Passord
-categoryOne: Kategori en
-categoryTwo: Kategori to
-categoryThree: Kategori tre
-groups: Grupper
-roles: Roller
-enabled: Aktiv
-create: Opprett
-
+app.builder.list.tooltip.name: Click on the name to edit the app
 
 
 #-----------------------------------------------------
-# Groups tab
+# New App Form 
 #-----------------------------------------------------
-app.admin.groups.name: Navn
-app.admin.groups.description: Beskrivelse
-app.admin.groups.isdefault: gruppen er satt som default
+builder.new.app.basedon.tab: Based on
+builder.new.app.select_base.tab: Choose base
+builder.new.app.name.tab: Name
+builder.new.app.classification.tab: Classify
+builder.new.app.submit.tab: Make
 
-app.admin.groups.tooltip.name: Rediger gruppe
-app.admin.groups.tooltip.delete: Slett gruppe
-app.admin.groups.tooltip.new: Opprett ny gruppe
+builder.new.app.select_base.description: Choose whether you want the app to be based on a template, an existing app or an Office file.
+builder.new.app.select_base.template: Template
+builder.new.app.select_base.existing_app: Existing App
+builder.new.app.select_base.office_file: Office file
+builder.new.app.basedon.description: Choose what you want to base the app on
 
+builder.new.app.name.description: Give the app a name and a full description before proceeding
+builder.new.app.name.name: Name
+builder.new.app.name.descriptionLab: Description
+builder.new.app.name.selectBackground: Choose background
+builder.new.app.name.selectForground: Choose icon
+builder.new.app.name.iconFile: Icon file
+builder.new.app.name.addIconFileImage: Add image
+builder.new.app.name.iconText: Icon text
+builder.new.app.name.addIconText: Add text
+builder.new.app.name.splashFile: Splash file
+builder.new.app.active_version.number: Version number
 
+builder.new.app.classification.description: Keywords will help others find your app when searching
+builder.new.app.classification.keywords: Keywords
+builder.new.app.classification.categoryOne: 1. Category
+builder.new.app.classification.categoryTwo: 2. Category
+builder.new.app.classification.categoryThree: 3. Category
 
-#-----------------------------------------------------
-# Edit and new group
-#-----------------------------------------------------
-app.admin.groups.new.heading: Opprett ny gruppe
-app.admin.groups.edit.heading: Rediger gruppe
+builder.new.app.submit.description: Take a look at the details before finalizing the app. It will be possible to change the details later.
+builder.new.app.submit.basedon: Based on
+builder.new.app.submit.name: Name
+builder.new.app.submit.descriptionLab: Description
+builder.new.app.submit.keywords: Keywords
+builder.new.app.submit.category: Categories
+builder.new.app.submit.splashScreen: Splash screen
 
-
-
-#-----------------------------------------------------
-# App tab
-#-----------------------------------------------------
-app.admin.apps.name: Navn
-app.admin.apps.version: Versjon
-app.admin.apps.description: Beskrivelse
-app.admin.apps.Updated: Oppdatert
-app.admin.apps.groups: Grupper
-
-app.admin.apps.tooltip.name: Rediger app
-app.admin.apps.tooltip.delete: Slett app
-
-
-#-----------------------------------------------------
-# Edit app
-#-----------------------------------------------------
-app.admin.apps.edit.heading: Rediger app
-
-
-
-#-----------------------------------------------------
-# Template tab
-#-----------------------------------------------------
-app.admin.templates.name: Navn
-app.admin.templates.version: Versjon
-app.admin.templates.description: Beskrivelse
-app.admin.templates.compatiblewith: Kompatibel med
-app.admin.templates.groups: Grupper
-
-app.admin.templates.tooltip.name: Rediger template
-app.admin.templates.tooltip.delete: Slett tempalte
-app.admin.templates.tooltip.new: Opprett ny template
+app.wizard.button.previous: < Previous
+app.wizard.button.next: Nexgt >
+app.wizard.button.finished: Finished
 
 
 #-----------------------------------------------------
-# Edit and new template
+# Main Menu
 #-----------------------------------------------------
-app.admin.templates.new.heading: Opprett ny template
-app.admin.templates.edit.heading: Rediger template
+app.mlab.menu.tooltip: Menu
+app.builder.menu.welcome.info: This is the main manu for the Mlab app builder.
+app.builder.menu.heading.links: Navigate
+app.builder.menu.links.info: List of pages you have access to
+app.builder.menu.links.app.info: To get to the page where you create content for an app - click the name of the app you want to work with (or create a new app first).
 
-
-
-#-----------------------------------------------------
-# Components tab
-#-----------------------------------------------------
-app.admin.components.name: Navn
-app.admin.components.version: Versjon
-app.admin.components.description: Beskrivelse
-app.admin.components.groups: Grupper
-
-app.admin.components.tooltip.name: Rediger komponent
-app.admin.components.tooltip.delete: Slett komponent
-app.admin.components.tooltip.new: Opprett ny komponent
+app.builder.menu.link.app.builder: App list
+app.builder.menu.link.admin.app: App admin
+app.builder.menu.link.admin.users: User admin
+app.builder.menu.link.system: System admin
 
 
 #-----------------------------------------------------
-# Edit and new component
+# User info Menu
 #-----------------------------------------------------
-app.admin.components.new.heading: Opprett ny komponent
-app.admin.components.edit.heading: Rediger komponent
+app.builder.menu.user.info.heading: User info
+app.builder.menu.log.info: You are logged in as
+app.builder.menu.login.info: You must first login
+app.builder.menu.link.logout: Log out
+app.builder.menu.link.login: Login
 
-
-
-#-----------------------------------------------------
-# New app form 
-#-----------------------------------------------------
-builder.new.app.basedon.tab: Baser på
-builder.new.app.name.tab: Navn
-builder.new.app.classification.tab: Klassifiser
-builder.new.app.submit.tab: Lag
-
-
-builder.new.app.basedon.description: En app kan baseres på en mal eller en eksisterende app
-
-
-builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
-builder.new.app.name.name: Navn
-builder.new.app.name.descriptionLab: Beskrivelse
-builder.new.app.name.iconFile: Ikon-fil
-builder.new.app.name.splashFile: Splash-fil
-
-builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
-builder.new.app.classification.keywords: Nøkkelord
-builder.new.app.classification.categoryOne: 1. Kategori
-builder.new.app.classification.categoryTwo: 2. Kategori
-builder.new.app.classification.categoryThree: 3. Kategori
-
-builder.new.app.submit.description: Se over detaljer før du ferdigstiller appen. Det vil være mulighet for å endre detaljene senere.
-builder.new.app.submit.basedon: Basert på
-builder.new.app.submit.name: Navn
-builder.new.app.submit.descriptionLab: Beskrivelse
-builder.new.app.submit.keywords: Nøkkelord
-builder.new.app.submit.category: Kategorier
-
-app.wizard.button.previous: < Forrige
-app.wizard.button.next: Neste >
-app.wizard.button.finished: Ferdig
-
+app.builder.menu.user.info.main.tooltip: User info
 
 
 #-----------------------------------------------------
-# List of apps 
+# Help Menu
 #-----------------------------------------------------
-
-app.builder.list.main.heading: App'er
-app.builder.list.welcome.info: Velkommen til MLAB app-bygger! <br><br> Her har du en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. Bruk knappen for å lage en ny app.
-app.builder.list.new.app.button: Ny App
-app.builder.list.heading.app: App navn
-app.builder.list.heading.published: Publisert
-app.builder.list.heading.version: Versjon
-app.builder.list.heading.last.updated: Sist oppdatert
-
-app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
-
+app.builder.help.menu.tooltip: Help
 
 
 #-----------------------------------------------------
-# App builder (edit app) Menu
+# App builder Menu (edit app)
 #-----------------------------------------------------
+app.builder.edit.menu.tooltip: Editor menu
+app.mlab.logo.tooltip: Back to the App list
 
-app.builder.edit.menu.main.heading: Meny
-app.builder.edit.menu.welcome.info: Litt generelt - Hva menyen hjelper til med. feks forklare hva er en side...
+app.builder.edit.menu.heading.feature: App feature
+app.builder.edit.menu.feature.info: You can add special features to an application, it may be accessing a database or a link to a calendar. Choose from the list below. Those with a check mark is already added to this app.
+app.builder.edit.menu.heading.utilities: Utilities
+app.builder.edit.menu.utilities.info: If the page is greyed out, you can click here to unlock it.
 
-app.builder.edit.menu.heading.app: App
-app.builder.edit.menu.app.name.info: Rediger app-navnet ved å klikke på blyanten
-app.builder.edit.menu.app.edit.info: Her kan du endre beskrivelse, legge til nøkkelord eller opdatere kategoriene. Alle feltene må ha innhold
+app.builder.edit.menu.heading.test.app: App testing
+app.builder.edit.menu.heading.test.app.web: Try App in a web page
+app.builder.edit.menu.test.app.web.info: Do a quick test of how the app will look like by clicking the www-button. The App will then appear in a new web page.
+app.builder.edit.menu.heading.test.app.mob: Try App on a mobile
+app.builder.edit.menu.test.app.mob.info: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
+app.builder.edit.menu.test.app.mob.qr.wait.text: It may take some time before the QR code appears. Please wait.
+app.builder.edit.menu.test.app.mob.ios.tooltip: Test app on iOS mobile device
+app.builder.edit.menu.test.app.mob.android.tooltip: Test app on Android mobile device
 
-app.builder.edit.menu.heading.page: Side
-app.builder.edit.menu.page.name.info: For å rediger sidenavnet klikke på blyanten. For å slette siden klikk på krysset under eller klikk på lagreknappen for å lagre
-app.builder.edit.menu.page.edit.info: Velg siden du ønsker å hoppe til, legg til en ny side eller kopier siden som er valgt
 
-app.builder.edit.menu.heading.test.app: Prøv app
-app.builder.edit.menu.test.app.info: Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. For å få en korekt test klikk på mobil-knappen som vil gi deg en QR-kode du kan bruke til å laste ned appen til din mobil
+#-----------------------------------------------------
+# App builder - the page bar
+#-----------------------------------------------------
+app.builder.page.heading: Pages
+app.builder.page.save: Save
+app.builder.page.cancel: Cancel
 
-app.builder.edit.menu.heading.exit: Avslutt
-app.builder.edit.menu.exit.info: Er du ferdig å redigere appen din så klikk på avslutt knappen under
+app.builder.page.menu.delet.info: Click on the X to permanently delete the page you are on
+app.builder.page.menu.delete: Delete the currently open page
 
-app.builder.edit.menu.tooltip.something: Something
+app.builder.page.tooltip.previous: Previous page
+app.builder.page.tooltip.next: Next page
+app.builder.page.tooltip.save: Save changes to the page name
+app.builder.page.tooltip.cancel: Cancel changes to the page name
+app.builder.page.tooltip.pagelist: Click to bring up the list of pages in the app
+app.builder.page.tooltip.new: New page
+
+app.builder.overlay.info: Please wait while Mlab opens your app...
+app.builder.statusbar.info.permanent: App name
+
+
+#-----------------------------------------------------
+# Admin + System pages welcome
+#-----------------------------------------------------
+app.admin.users.welcome: Welcome to the Mlab User Admin Pages
+app.admin.apps.welcome: Welcome to the Mlab App Admin Pages
+app.system.admin.welcome: Welcome to the Mlab System Admin Pages
+
+
+#-----------------------------------------------------
+# Admin + System pages alert
+#-----------------------------------------------------
+app.system.admin.alert.Unable.to.update.record: Not able to update record -
+app.system.admin.alert.waiting.to.load.data: Waiting to load data
+app.system.admin.alert.delete.item: Do you want to delete?
+app.system.admin.alert.Unable.to.delete.record: Not able to delete record -
+
+
+#-----------------------------------------------------
+# Users tab - User Admin Pages
+#-----------------------------------------------------
+app.admin.users: Users
+app.admin.users.username: Username
+app.admin.users.email: Email
+app.admin.users.groups: Groups
+app.admin.users.enabled: Enabled
+app.admin.users.last.login: Last login
+
+app.admin.users.tooltip.username: Edit user
+app.admin.users.tooltip.delete: Delete user
+app.admin.users.tooltip.new: Create new user
+
+
+#-----------------------------------------------------
+# Edit and new user - User Admin Pages
+#-----------------------------------------------------
+app.admin.users.new.heading: Create new user
+app.admin.users.edit.heading: Edit user
+
+app.admin.users.new.or.edit.email: Email
+app.admin.users.new.or.edit.username: Username
+app.admin.users.new.or.edit.plain.password: Password
+app.admin.users.new.or.edit.categoryOne: Category one
+app.admin.users.new.or.edit.categoryTwo: Category two
+app.admin.users.new.or.edit.categoryThree: Category three
+app.admin.users.new.or.edit.groups: Groups
+app.admin.users.new.or.edit.roles: Roles
+app.admin.users.new.or.edit.enabled: Enabled
+
+app.admin.users.new.create.button: Save
+app.admin.users.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# Groups tab - User Admin Pages
+#-----------------------------------------------------
+app.admin.groups: Groups
+app.admin.groups.name: Name
+app.admin.groups.description: Description
+app.admin.groups.enabled: Enabled
+
+app.admin.groups.tooltip.isdefault: The group is set as default
+app.admin.groups.tooltip.name: Edit group
+app.admin.groups.tooltip.delete: Delete group
+app.admin.groups.tooltip.new: Create new group
+
+
+#-----------------------------------------------------
+# Edit and new group - User Admin Pages
+#-----------------------------------------------------
+app.admin.groups.new.heading: Create new group
+app.admin.groups.edit.heading: Edit group
+
+app.admin.groups.new.or.edit.name: Name
+app.admin.groups.new.or.edit.description: Description
+app.admin.groups.new.or.edit.isDefault: Default
+app.admin.groups.new.or.edit.enabled: Enabled
+app.admin.groups.new.or.edit.users: Users
+
+app.admin.groups.new.create.button: Save
+app.admin.groups.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# Template tab - App Admin Pages
+#-----------------------------------------------------
+app.admin.templates: Templates
+app.admin.templates.name: Name
+app.admin.templates.version: Version
+app.admin.templates.description: Description
+app.admin.templates.compatiblewith: Compatible with
+app.admin.templates.groups: Groups
+
+app.admin.templates.tooltip.group: Edit groups for template
+app.admin.templates.tooltip.enabled: Enabled template
+app.admin.templates.tooltip.disabled: Disabled template
+app.admin.templates.tooltip.delete: Delete template
+app.admin.templates.tooltip.new: Create new template
+app.admin.templates.enabled: Enabled
+
+
+#-----------------------------------------------------
+# Edit and new template - App Admin Pages
+#-----------------------------------------------------
+app.admin.templates.new.heading: Create new template
+app.admin.templates.new.enabled: Enabled
+app.admin.templates.new.groups: Groups
+app.admin.templates.new.file: Zip file
+app.admin.templates.new.create.button: Save
+
+app.admin.templates.edit.groups.heading: Edit groups
+app.admin.templates.edit.groups.groups: Groups
+app.admin.templates.edit.groups.update.button: Update
+
+
+#-----------------------------------------------------
+# Components tab - App Admin Pages
+#-----------------------------------------------------
+app.admin.components: Components
+app.admin.components.name: Name
+app.admin.components.version: Version
+app.admin.components.description: Description
+app.admin.components.groups: Groups
+
+app.admin.components.tooltip.group: Edit groups for components
+app.admin.components.tooltip.enabled: Enabled components
+app.admin.components.tooltip.disabled: Disabled components
+app.admin.components.tooltip.delete: Delete component
+app.admin.components.tooltip.new: Create new component
+app.admin.components.enabled: Enabled
+
+
+#-----------------------------------------------------
+# Edit and new component - App Admin Pages
+#-----------------------------------------------------
+app.admin.components.new.heading: Create new component
+app.admin.components.new.enabled: Enabled
+app.admin.components.new.groups: Groups
+app.admin.components.new.file: Zip file
+app.admin.components.new.create.button: Save
+
+app.admin.components.edit.groups.heading: Edit groups
+app.admin.components.edit.groups.groups: Groups
+app.admin.components.edit.groups.update.button: Update
+
+
+#-----------------------------------------------------
+# Categories tab - System + App Admin Pages
+#-----------------------------------------------------
+app.admin.categories: Categories
+app.system.admin.categories: Categories
+
+app.admin.categories.tooltip.new: Create new main category
+app.admin.categories.tooltip.edit: Edit category
+app.admin.categories.tooltip.delete: Delete category
+app.admin.categories.tooltip.new.sub: Create new subcategory for
+
+
+#-----------------------------------------------------
+# Edit and new categories - System + App Admin Pages
+#-----------------------------------------------------
+app.admin.categories.new.heading: Create new category
+app.admin.categories.new.name: Name
+app.admin.categories.new.parent: Belongs under
+app.admin.categories.new.system: System category
+app.admin.categories.new.create.button: Save
+
+app.admin.categories.edit.heading: Edit category
+app.admin.categories.edit.name: Name
+app.admin.categories.edit.parent: Belongs under
+app.admin.categories.edit.system: System category
+app.admin.categories.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# System Help tab - System Admin Pages
+#-----------------------------------------------------
+app.system.admin.help: Help
+app.system.admin.help.route: Page
+app.system.admin.help.message: Help text
+
+app.system.admin.help.tooltip.new: Create new help text
+app.system.admin.help.tooltip.route: Edit help text
+app.system.admin.help.tooltip.delete: Delete help text
+
+
+#-----------------------------------------------------
+# Edit and new system help - System Admin Pages
+#-----------------------------------------------------
+app.system.admin.help.new.heading: Create new help text
+app.system.admin.help.new.route: Page
+app.system.admin.help.new.message: Help text
+app.system.admin.help.new.create.button: Save
+
+app.system.admin.help.edit.heading: Edit help text
+app.system.admin.help.edit.route: Page
+app.system.admin.help.edit.message: Help text
+app.system.admin.help.edit.update.button: Update
