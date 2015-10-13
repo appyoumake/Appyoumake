@@ -1,0 +1,17 @@
+{
+    "name": "mlab.minimal_websocket.dev",
+    "description": "A minimal websocket server supporting mlab",
+    "version": "0.0.1",
+    "main": "app.js",
+    "author": {
+        "name": "FFI Sinett"
+    },
+    "licenses": {
+        "type": "none"
+    },
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "ws": "0.8.0"}
+}
