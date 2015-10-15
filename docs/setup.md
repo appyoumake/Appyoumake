@@ -12,16 +12,40 @@ Nginx, php-fpm, mysql, and nodejs
 
 Setup of Mlab includes at least...
 
-* Installing a web server with php, we use nginx with php5-fpm
+* Installing a web server with php, we use nginx in combination with php5-fpm
 * Installing mysql
 * Installing nodejs
 * Cloning the git repository
 * Div setup and configuration
-* I not on its own server, setup MLAB compiler service
+* If not on its own server, setup MLAB compiler service
 
 ### Install tools
-git-core
-VMWareTools (optional)
+* git-core
+* VMWareTools (optional)
+* zip (optional)
+
+### Create folders and get the MLAB code
+
+#### Folders
+
+We will install MLAB in `/var/local/`. The MLAB code goes into the `mlab` directory while `mlab_elements` is kept for MLAB's data (apps, uploaded components and templates). Create the directories
+
+```
+sudo mkdir /var/local/mlab
+sudo mkdir /var/local/mlab_elements
+sudo mkdir /var/local/mlab_elements/apps/
+sudo mkdir /var/local/mlab_elements/components/
+sudo mkdir /var/local/mlab_elements/templates/
+sudo mkdir /var/local/mlab_elements/icons/
+```
+
+We will set the permissions later
+
+#### Clone repository from git
+
+Replacing `git_username` do:
+
+```git clone https://git_username@github.com/Sinettlab/MLAB.git /var/local/mlab```
 
 
 ### Install nginx and php
@@ -76,7 +100,7 @@ Nginx should now be configured to serve mlab code from `/var/local/mlab/web` and
 In addition, uploaded components and templates, and apps in progress will be served as static content from `/var/local/mlab_elements`
 Packaged components and templates 
 
-Create a new file /etc/nginx/sites-available/mlab to contain the mlab nginx configuration 
+Create a new file /etc/nginx/sites-available/mlab to contain the mlab nginx configuration based on the code below. You may want to change the `server_name` 
 
 
 ```nginx
@@ -97,7 +121,7 @@ server {
 
     ## Static files in mlab_elements
     location /mlab_elements {
-      root /var/local/mlab_elements;
+      alias /var/local/mlab_elements;
     }
 
 
@@ -118,25 +142,27 @@ Create symlink to file to activate it
 
 In addition, you should set in `/etc/php5/fpm/php.ini`
 ```cgi.fix_pathinfo = 0```
+FIX! This will not work if you want to use the development environment and app_dev.php. 
+
 
 Restart after configuration changes:
-
 ```
 sudo service php5-fpm restart 
 sudo service nginx restart
 ```
-
+You should now be able to see the MLAB welcome page.
 
 ### Install mysql and phpmyadmin
 
 #### Mysql
-If mysql is not installed
+If mysql and php5-mysql is not installed
 
-```apt-get install mysql-server mysql-client```
+```apt-get install mysql-server mysql-client php5-mysql```
 
 You will be asked to set the password for the root user.
 
 
+Create the mlab database
 ```
 mysqladmin -u root -p create mlab
 ```
@@ -145,86 +171,95 @@ mysqladmin -u root -p create mlab
 mysql -u root -p
 ```
 
+and create the mlab database user
 ```sql
 GRANT ALL PRIVILEGES ON mlab.* TO 'mlab'@'localhost' IDENTIFIED BY 'mlab_db_password';
 FLUSH PRIVILEGES;
 quit;
 ```
 
-Setup the mlab database with the mlab.sql script: 
+Setup the database with tables and initial data: 
+The database will contain different data, users, installed components, templates, categories etc.. If you do not want to load all templates and components manually, you may load a database dump with the basic templates and components in it
 
+If you want an empty databse do:
+```mysql -u root -p < /var/local/mlab/mlab_empty.sql```
+else if you want a database with basic templates and components:
 ```mysql -u root -p < /var/local/mlab/mlab.sql```
 
+Both databses contains a superuser with credentials "admin@ffi.no" and "password". Use this to add your own admin and delete the default one.
 
 
-#### phpmyadmin (optional)
-Installing phpmyadmin is optional
+If you chose the database with the templates and components loaded, you will also have to copy the related template and component files.
+```cp -Rf /var/local/mlab/mlab_elements/components/. /var/local/mlab_elements/components```
+```cp -Rf /var/local/mlab/mlab_elements/templates/. /var/local/mlab_elements/templates```
 
-```apt-get install phpmyadmin```
+## Configure MLAB
 
-FIX! No auto config
+### Set permissions
 
-dbconfig-common
-
-passwords
-
-FIX! Create phpmyadmin nxinx vhost file or add to the mlab vhost file or dyn-link to /usr/share/phpmyadmin from mlab/web folder
-
-phpMyAdmin relies on the mcrypt PHP module. Enable it and restart php5-fpm:
+Nginx should run as 'www-data' (default), so we need to set owner and group for the folders nginx will be using:
 ```
-sudo php5enmod mcrypt
-sudo service php5-fpm restart
+sudo chown -R www-data:www-data /var/local/mlab_elements
+sudo chown www-data:www-data /var/local/mlab/web
 ```
-
-### Create folders and get the MLAB code
-
-#### Folders and permissions
-
-We will install MLAB in `/var/local/`. The MLAB code goes into the `mlab` directory while `mlab_elements` is kept for MLAB's data (apps, uploaded components and templates). Create the directories
+In addition we will let the www-data be the group for the cache and logs folders. Give write access to the group:  
 
 ```
-mkdir /var/local/mlab
-mkdir /var/local/mlab_elements
-mkdir /var/local/mlab_elements/apps/
-mkdir /var/local/mlab_elements/components/
-mkdir /var/local/mlab_elements/templates/
+sudo chgrp www-data /var/local/mlab/app/cache
+sudo chgrp www-data /var/local/mlab/app/logs
+sudo chmod g+w app/logs
 ```
-Set owner and group for the mlab_elements folders and the mlab/web folder:
-```
-chown -R www-data:www-data /var/local/mlab_elements
-chown www-data:www-data /var/local/mlab/web
-```
+FIX! Do not work that well if one has to manually clear the cache or run composer install/update. `chmod 777` is less trouble...
 
-#### Clone repository from git
+## Composer
 
-Replacing `git_username` do:
+```cd /var/local/mlab```
+and 
+`composer install` 
 
-```git clone https://git_username@github.com/Sinettlab/MLAB.git /var/local/mlab```
-
-
-### Configure MLAB
-
-`composer install` creates the `parameters.yml` if it does not exist, using `parameters.yml.dist` as a template. Every `composer install` will look for new keys in `parameters.yml.dist` and add them to `parameters.yml`
+This creates the `parameters.yml` (in `app/config`) if it does not exist, using `parameters.yml.dist` as a template. Every `composer install` will look for new keys in `parameters.yml.dist` and add them to `parameters.yml`
   
 (Use `--no-interaction` to silently use default values for new keys.)
 
-FIX! permisions on the app/cache folders
+`composer install` will generate the cache in `app/cache`. You may need to correct permissions on the cache folder after running `composer install`
 
-FIX! Permissions on cache folder:
-```chmod -R 777 app/cache```
+### The icons
+"Install" the icons by copying them to`/var/local/mlab_elements/icons`. You may also use your own icon set.
 
-FIX! Permissions on the logs folder:
-```chmod -R 777 app/logs```
+```cp -Rf /var/local/mlab/mlab_elements/icons/. /var/local/mlab_elements/icons```
 
-FIX! edit parameters.yml:
+### Edit `parameters.yml`
 
-database
-set path
+Composer should have given you a parameters.yml in `app/config`. Edit this file according to your setup.
 
+The database:
+```
+database_name: mlab
+database_user: mlab
+database_password: mlab_db_password
+```
 
+The paths in mlab:paths:{app,component,template,icon}
+
+The config for the compiler
+
+### mlab web-sockets messaging
+
+Install node.js and npm if it is not installed. Then
+
+``` cd /var/local/mlab/_minimal_websocket ```
+``` npm install ```
+``` npm start ```
+
+FIX! This mini-server should start on power up. Run it as a service.
+
+Go start the compiler service and you are good to go!
+
+## Testing you MLAB installation
+
+There are some selenium test in the `test/selenium` folder. Use these to quickly test your installation.
  
 ## Updating MLAB
-
 
 Do git updates with `git pull https://github.com/Sinettlab/MLAB.git`
 
@@ -234,10 +269,10 @@ Update dependencies and add new keys to parameters.yml
 cd /var/local/mlab
 composer install
 ```
-installs dependencies from the lock file `composer.lock`
+installs dependencies from the lock file `composer.lock` and resets the dev cache.
 
 
-Make resources folders, set permissions
+Make resources folders for the zip files, set permissions
 
 Make new component zip-files and copy to resoruces:
 ```
@@ -248,10 +283,11 @@ cp *.zip /var/local/mlab/web/resources/
 Repeat for templates
 
 
-FIX! Clear the cache, check permissions
+Clear the cache, check permissions
 
 ```php app/console cache:clear --env=prod ```
 ```php app/console cache:clear --env=dev ```
 
-FIX? Restart or reload config for nginx
+Restart or reload config for nginx: `service nginx restart`
+
  
