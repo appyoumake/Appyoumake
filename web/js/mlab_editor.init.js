@@ -221,12 +221,27 @@
                             console.log(event);
                             data = JSON.parse(event.data);
                             switch (data.status) {
+                                
+//1: When click on menu, then it should indicate that the app is requested ( mlab.dt.management.js  -  compiler: {  get_app :)
+//2: When the request has been processed by the PHP backend it should indicate one stage has passed (? -  case "connected"?)
+//3: Then it should indicate that precompilation has taken place (may not be required, so a numeric is not good) (case "precompilation")
+//4: createApp is called, this creates the empty app (case "creating"....case "created"?)
+//5: Then files are uploaded (lengthy) (case "uploading"? (hoppe vider på case "verifying" og  case "verification_ok"- tar tid----)
+//6: App upload finished, compilation starts (case "compiling"...case "compilation_ok")
+//7: App is being (case "receiving":)
+//8: App is ready (case "ready")
+
+//Sette en grå versjon av iconet om siste versjon er kopilert?
+// kan Andoid og iOS kopileres på samme tid?
+// hva om man lagrer en ny versjon mens kompiler
+
                                 case "connected":
-                                    $("#mlab_statusbar_compiler").text("Connected to server");
+                                    $("#mlab_statusbar_compiler").text("Creating app...connected to server");
                                     break;
 
                                 case "creating":
                                     $("#mlab_statusbar_compiler").text("Creating app remotely...");
+                                    //createApp is called, this creates the empty app
                                     break;
 
                                 case "created":
@@ -235,6 +250,7 @@
 
                                 case "create_failed":
                                     $("#mlab_statusbar_compiler").text("Failed to create app remotely");
+                                    //stoppe statusbar og tekst og komme med en alert boks?
                                     break;
 
                                 case "precompilation":
@@ -255,6 +271,7 @@
 
                                 case "verification_failed":
                                     $("#mlab_statusbar_compiler").text("Files failed to upload");
+                                    //stoppe statusbar og tekst og komme med en alert boks?
                                     break;
 
                                 case "compiling":
@@ -267,6 +284,7 @@
 
                                 case "compilation_failed":
                                     $("#mlab_statusbar_compiler").text("App failed to compile");
+                                    //stoppe statusbar og tekst og komme med en alert boks?
                                     break;
 
                                 case "receiving":
@@ -274,7 +292,10 @@
                                     break;
 
                                 case "ready":
-//inserting the QR code and url to the compiled app in the menu
+                                    $('#mlab_statusbar_progressbar').spin(false);
+                                    $("#mlab_statusbar_progressbar").hide();
+                                    $("#mlab_download_android_icon").spin(false);
+                                    //inserting the QR code and url to the compiled app in the menu
                                     var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                                     if (text != null && text != "") {
                                         $("#mlab_download_qr_link").empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});

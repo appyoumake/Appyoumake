@@ -145,6 +145,8 @@ app.builder.page.tooltip.new: New page
 app.builder.overlay.info: Please wait while Mlab opens your app...
 app.builder.statusbar.info.permanent: App name
 
+app.builder.mlab.statusbar.compiler.connected: Connected to server 
+app.builder.mlab.statusbar.compiler.contacting.server: Contacting server...juhu
 
 #-----------------------------------------------------
 # Admin + System pages welcome

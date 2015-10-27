@@ -27,13 +27,16 @@ Mlab_dt_utils.prototype = {
             $("#mlab_statusbar_temporary").text(content);
         } else if (state == "completed") {
             $("#mlab_statusbar_temporary").text('');
+            $('#mlab_statusbar_progressbar').spin(false);
             $("#mlab_statusbar_progressbar").hide();
             return;
         }
 
         if (typeof display_progress != "undefined" && display_progress == true) {
             $("#mlab_statusbar_progressbar").show();
+            $("#mlab_statusbar_progressbar").spin('small', '#fff');
         } else if (typeof display_progress != "undefined" && display_progress == false) {
+            $('#mlab_statusbar_progressbar').spin(false);
             $("#mlab_statusbar_progressbar").hide();
         }
     },
