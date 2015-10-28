@@ -599,7 +599,7 @@ Mlab_dt_api.prototype = {
 
 /**
   * Requests credentials such as login name and password (for instance, can also be URL to use, database name, etc)
-  * These are all just treated as strings and returned as an array of strings. If cancelled, returns false
+  * These are all just treated as strings and returned as an array of strings. 
   * @param {type} credentials_required
   * @param {type} cb_function
   * @param {type} params

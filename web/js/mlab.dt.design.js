@@ -229,6 +229,15 @@ Mlab_dt_design.prototype = {
             this.parent.components[comp_id].code.onCreate(new_feature[0]);
         }
 
+
+//here we request any credentials that are required
+/*                    if (typeof that.parent.components[data.component_id].conf.credentials != "undefined") {
+                        if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
+                            that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
+                        }
+                    }
+*/
+
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
         if (this.parent.app.curr_page_num != "0" && this.parent.app.curr_page_num != "index") {
@@ -243,6 +252,8 @@ Mlab_dt_design.prototype = {
                 if (data.result == "success") {
                     that.parent.utils.update_status("temporary", "Feature added", false);
                     $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_item_applied");
+                    
+
                 } else {
                     that.parent.utils.update_status("temporary", data.msg, false);
                 }
@@ -272,10 +283,8 @@ Mlab_dt_design.prototype = {
                 that.parent.utils.update_status("temporary", "Storage plugin added", false);
                 if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
                     that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
-                    
                 } else {
                     mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
-                    
                 }
                 
                 $("#mlab_storage_plugin_list [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");

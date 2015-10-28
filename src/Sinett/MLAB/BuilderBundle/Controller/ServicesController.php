@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @author Arild Bergh <firstname.lastname@ffi.no>
+ * @copyright (c) 2013 - 2015, Norwegian Defence Reserarch Establishment
+ */
+
 //compiler services calls
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
@@ -481,6 +486,55 @@ class ServicesController extends Controller
 
         return new JsonResponse($arr);
 
+    }
+    
+/**
+ * 
+ * @param type $app_id
+ * @param type $app_version
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function cmpGetCompiledAppExists($app_id, $app_version) {
+        
+//check for valid variables first
+        $config = $this->container->parameters['mlab'];
+
+        if (intval($app_id) <= 0) {
+            return new JsonResponse(array('result' => 'error', 'msg' => 'App ID not specified: ' . $app_id));
+        }
+        
+        if (floatval($app_version) <= 0) {
+            return new JsonResponse(array('result' => 'error', 'msg' => 'App version not specified: ' . $app_version));
+        }
+        
+        $platforms = $config['compiler_service']["supported_platforms"];
+        
+//get the app database record
+        $file_mgmt = $this->get('file_management');
+        $em = $this->getDoctrine()->getManager();
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        if (is_null($app)) {
+            return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to retrieve app database entry: ' . $app_id));
+        }
+        
+//prepare variables & get current processed app checksum
+        $app_uid = $app->getUid();
+        $app_path = $app->calculateFullPath($config['paths']['app']);
+        $path_app_config = $app_path . $config['filenames']["app_config"];
+        $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
+
+
+//see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
+//if it has been compiled we send a message via the websocket server
+        $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
+        
+        if (file_exists($compiled_app_path . $app_filename)) {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "url": "/' . basename($compiled_app_path) . "/" . $app_filename . '"}}', $config), true);
+            ($res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
+            return new JsonResponse($arr);
+        }
     }
 
     /**
