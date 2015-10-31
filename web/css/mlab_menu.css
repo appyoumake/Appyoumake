@@ -107,11 +107,12 @@ ul#mlab_menu {
 /* The editors status shown in the top bar and the developed by text */
 #mlab_editor #mlab_menu #mlab_statusbar_permanent, 
 #mlab_editor #mlab_menu #mlab_statusbar_temporary, 
-#mlab_editor #mlab_menu #mlab_statusbar_progressbar { 
+#mlab_editor #mlab_menu #mlab_statusbar_progress_spin,
+#mlab_editor #mlab_menu #mlab_statusbar_compiler { 
     border:none; 
     color: #FFFFFF;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:14px; 
+    font-size:13px;
     text-decoration:none;
 }
 
@@ -120,7 +121,41 @@ ul#mlab_menu {
     display: block;
     font-weight: bold;
     margin-left: 105px;
+    font-size: 14px;
     padding: 5px 0px 0px 30px;
+}
+
+#mlab_editor #mlab_menu #mlab_statusbar_progress_spin { 
+    padding-left: 20px;
+    margin-bottom: -4px;
+}
+
+#mlab_editor #mlab_menu #mlab_statusbar_temporary,
+#mlab_editor #mlab_menu #mlab_statusbar_compiler { 
+    padding-top: 6px;
+}
+
+progress::-webkit-progress-bar{
+    background-color: #ffffff;
+}
+
+progress::-webkit-progress-value {
+    background-color: orange;
+}
+
+progress::-moz-progress-bar {
+    background-color: #ffffff;
+    color: orange;
+}
+
+#mlab_editor #mlab_menu #mlab_statusbar_progressbar .mlab_progressbar {
+    background-color: orange;
+    border: 0;
+    border-radius: 0px;
+    width: 100px;
+    height: 11px;
+    margin-top: 7px;
+    display: none;
 }
 
 
@@ -364,6 +399,7 @@ ul#mlab_menu {
 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey {
     background-image: url("/img/menu_download_ios_icon_grey.png");
+    cursor: default;
 }
 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon {
@@ -372,6 +408,7 @@ ul#mlab_menu {
 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon_grey {
     background-image: url("/img/menu_download_android_icon_grey.png");
+    cursor: default;
 }
 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_icon {

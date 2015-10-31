@@ -236,64 +236,87 @@
 // hva om man lagrer en ny versjon mens kompiler
 
                                 case "connected":
+                                    $("#mlab_progressbar").val(5);
                                     $("#mlab_statusbar_compiler").text("Creating app...connected to server");
                                     break;
 
                                 case "creating":
+                                    $("#mlab_progressbar").val(10);
                                     $("#mlab_statusbar_compiler").text("Creating app remotely...");
                                     //createApp is called, this creates the empty app
                                     break;
 
                                 case "created":
+                                    $("#mlab_progressbar").val(15);
                                     $("#mlab_statusbar_compiler").text("App created remotely");
                                     break;
 
                                 case "create_failed":
                                     $("#mlab_statusbar_compiler").text("Failed to create app remotely");
-                                    //stoppe statusbar og tekst og komme med en alert boks?
+                                    $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_progressbar").hide();
+                                    $("#mlab_download_android_icon").spin(false);
+                                    //komme med en alert boks?
+                                    $("#mlab_statusbar_compiler").text(" ");
                                     break;
 
                                 case "precompilation":
+                                    $("#mlab_progressbar").val(20);
                                     $("#mlab_statusbar_compiler").text("Processing files...");
                                     break;
 
                                 case "uploading":
+                                    $("#mlab_progressbar").val(25);
                                     $("#mlab_statusbar_compiler").text("Uploading files to compiler...");
                                     break;
 
                                 case "verifying":
+                                    $("#mlab_progressbar").val(30);
                                     $("#mlab_statusbar_compiler").text("Verifying upload...");
                                     break;
 
                                 case "verification_ok":
+                                    $("#mlab_progressbar").val(35);
                                     $("#mlab_statusbar_compiler").text("Files uploaded OK...");
                                     break;
 
                                 case "verification_failed":
                                     $("#mlab_statusbar_compiler").text("Files failed to upload");
-                                    //stoppe statusbar og tekst og komme med en alert boks?
+                                    $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_progressbar").hide();
+                                    $("#mlab_download_android_icon").spin(false);
+                                    //komme med en alert boks?
+                                    $("#mlab_statusbar_compiler").text(" ");
                                     break;
 
                                 case "compiling":
+                                    $("#mlab_progressbar").val(40);
                                     $("#mlab_statusbar_compiler").text("Waiting for compiler...");
                                     break;
 
                                 case "compilation_ok":
+                                    $("#mlab_progressbar").val(80);
                                     $("#mlab_statusbar_compiler").text("App compiled OK...");
                                     break;
 
                                 case "compilation_failed":
                                     $("#mlab_statusbar_compiler").text("App failed to compile");
-                                    //stoppe statusbar og tekst og komme med en alert boks?
+                                    $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_progressbar").hide();
+                                    $("#mlab_download_android_icon").spin(false);
+                                    //komme med en alert boks?
+                                    $("#mlab_statusbar_compiler").text(" ");
                                     break;
 
                                 case "receiving":
+                                    $("#mlab_progressbar").val(90);
                                     $("#mlab_statusbar_compiler").text("Receiving app...");
                                     break;
 
                                 case "ready":
-                                    $('#mlab_statusbar_progressbar').spin(false);
-                                    $("#mlab_statusbar_progressbar").hide();
+                                    $("#mlab_progressbar").val(100);
+                                    //$("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_progressbar").hide();
                                     $("#mlab_download_android_icon").spin(false);
                                     //inserting the QR code and url to the compiled app in the menu
                                     var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
@@ -306,6 +329,7 @@
                                     }     
                                     
                                     $("#mlab_statusbar_compiler").text("App ready! Links are found in the menu");
+                                    //hvor lenge skal teksten stå??
                                     break;
 
                                 case "failed":

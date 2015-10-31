@@ -792,8 +792,9 @@ Mlab_dt_management.prototype = {
             var caption_finished = "Creating app...";
             $("#mlab_statusbar_compiler").text(caption_finished);
             $("#mlab_download_android_icon").empty().spin('large', '#fff');
-            $("#mlab_statusbar_progressbar").show();
-            $("#mlab_statusbar_progressbar").spin('small', '#fff');
+            $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon_grey');
+            $("#mlab_progressbar").show();
+            $("#mlab_progressbar").val(2);
             $.getJSON(url, function( json ) {
                 if (json.result != "success") {
                     $("#mlab_statusbar_compiler").text("Unable to contact server");
