@@ -290,6 +290,7 @@ class FileManagement {
 
                     $new_plugins = $config["plugins"];
 
+//TODO: replace these with getAppConfigValue & updateAppConfigFile
                     if (!file_exists( $path_app_config)) {
                         file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "plugins" => $new_plugins)));
                     } else {
@@ -424,6 +425,45 @@ class FileManagement {
         }
 	}
 	
+/**
+ * Simple function to update the conf.json file that is used to store info about an app for compilation purposes
+ * @param type $app
+ * @param type $values = associative array
+ */
+    public function updateAppConfigFile($app, $config, $values) {
+        $path_app = $app->calculateFullPath($config['paths']['app']);
+        $path_app_config = $path_app . $config['filenames']["app_config"];
+        if (file_exists($path_app_config)) {
+            $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
+        } else {
+            $tmp_existing_config = array();
+        }
+        foreach($values as $key => $value) {
+            $tmp_existing_config[$key] = $value;
+        }
+        file_put_contents($path_app_config, json_encode($tmp_existing_config));        
+    }
+
+/**
+ * Simple function to retrieve a value from the app specific config file
+ * @param type $app
+ * @param type $config
+ * @param type $key
+ * @return any requested value
+ */
+    public function getAppConfigValue($app, $config, $key) {
+        $path_app = $app->calculateFullPath($config['paths']['app']);
+        $path_app_config = $path_app . $config['filenames']["app_config"];
+        if (file_exists($path_app_config)) {
+            $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
+            if (key_exists($key, $tmp_existing_config)) {
+                return $tmp_existing_config[$key];
+            } 
+        }
+        return false;
+
+    }
+    
 	/**
 	 * simple function to copy an app folder to a new one
 	 * @param string $sourceApp

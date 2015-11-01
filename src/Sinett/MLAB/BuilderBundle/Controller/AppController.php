@@ -629,7 +629,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  * @param type $page_num
  */
     public function buildAppAction($id, $page_num) {
-    	$em = $this->getDoctrine()->getManager();
+/*    	$em = $this->getDoctrine()->getManager();
     	
 // pick up config from parameters.yml, we use this mainly for paths
         $config = $this->container->parameters['mlab'];
@@ -641,7 +641,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	$file_mgmt->setConfig('component');
         
     	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
-        
+*/        
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
     			"mlab_app_id" => $id, 
@@ -664,8 +664,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $config = $this->container->parameters['mlab'];
         $file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('app');
-    	unset($config["replace_in_filenames"]);
-    	unset($config["verify_uploads"]);
 
 //get app details + list of pages
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -678,6 +676,19 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
         $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
         
+//pick up previously compiled files
+        $comp_files = array();
+        foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
+            $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
+            if ($compiled_app !== false) {
+                $comp_files[$platform] = $compiled_app;
+            }
+        }
+
+//dont need everything in config file when return config settings
+    	unset($config["replace_in_filenames"]);
+    	unset($config["verify_uploads"]);
+
         return new JsonResponse(array(
                 "result" => "success",
     			"mlab_app_page_num" => $page_num,
@@ -686,6 +697,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 "mlab_uid" => $this->getUser()->getId() . "_" . time() . "_" . rand(1000, 9999),
                 "mlab_current_user_email" => $this->getUser()->getEmail(),
                 "mlab_app_checksum" => $mlab_app_checksum,
+                "mlab_compiled_files" => $comp_files,
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
@@ -716,6 +728,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     
                                         "cmp_get_app_status" => $this->generateUrl('cmp_get_app_status',  array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
                                         "cmp_get_app_process" => $this->generateUrl('cmp_get_app_process', array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')), 
+                                        "cmp_get_list_compiled_apps" => $this->generateUrl('cmp_get_list_compiled_apps', array('app_id' => '_ID_', 'app_version' => '_VERSION_')), 
                     
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )

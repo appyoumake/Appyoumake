@@ -27,6 +27,8 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+    globals:
+        mlab_variables: %mlab%
 #    form:
 #        resources:
 #            - 'SinettMLABBuilderBundle:Form:selectElement.html.twig'
