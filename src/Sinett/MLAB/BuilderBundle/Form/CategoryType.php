@@ -12,7 +12,8 @@ use Doctrine\ORM\EntityRepository;
 
 class CategoryType extends AbstractType
 {
-        /**
+/**
+ * Need to modify this so it shows the categories properly as parent-child lists
      * @param FormBuilderInterface $builder
      * @param array $options
      */
@@ -21,17 +22,15 @@ class CategoryType extends AbstractType
     	$action = explode("/", $options["action"]);
     	$action = array_pop($action);
         $entity = $builder->getData();
-        $x = $entity->getParent();
         
         if ($action == "create") {
-            print $x;
     		$builder
             ->add('name', null, array('label' => 'app.admin.categories.new.name'))
     		->add('parent', 
                     null, 
                     array('query_builder' => function(EntityRepository $er) {
-                              return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.lvl')->addOrderBy('c.name');
-                        },'label' => 'app.admin.categories.new.parent')
+                              return $er->createQueryBuilder('c')->select("c")->where('c.lvl < 2')->addOrderBy('c.root')->addOrderBy('c.lft');
+                        },'label' => 'app.admin.categories.new.parent', 'property' => 'indentedName')
                  )
     		->add('system', null, array('label' => 'app.admin.categories.new.system', 'attr'=> array('class' => $options["class"]), 'label_attr'=> array('class' => $options["class"])));
     	} else {

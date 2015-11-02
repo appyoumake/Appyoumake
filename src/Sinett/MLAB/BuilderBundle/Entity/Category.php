@@ -532,4 +532,8 @@ class Category
     {
         return $this->usersCategory3;
     }
+    
+    public function getIndentedName() {
+        return str_repeat("--", $this->lvl).$this->name;
+    }
 }

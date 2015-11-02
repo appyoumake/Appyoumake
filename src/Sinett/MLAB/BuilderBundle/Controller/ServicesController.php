@@ -448,7 +448,7 @@ class ServicesController extends Controller
         $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
         
         if (file_exists($compiled_app_path . $app_filename)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "url": "/' . basename($compiled_app_path) . "/" . $app_filename . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);
             ($res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }
@@ -488,55 +488,6 @@ class ServicesController extends Controller
 
     }
     
-/**
- * 
- * @param type $app_id
- * @param type $app_version
- * @return \Symfony\Component\HttpFoundation\JsonResponse
- */
-    public function cmpGetCompiledAppExists($app_id, $app_version) {
-        
-//check for valid variables first
-        $config = $this->container->parameters['mlab'];
-
-        if (intval($app_id) <= 0) {
-            return new JsonResponse(array('result' => 'error', 'msg' => 'App ID not specified: ' . $app_id));
-        }
-        
-        if (floatval($app_version) <= 0) {
-            return new JsonResponse(array('result' => 'error', 'msg' => 'App version not specified: ' . $app_version));
-        }
-        
-        $platforms = $config['compiler_service']["supported_platforms"];
-        
-//get the app database record
-        $file_mgmt = $this->get('file_management');
-        $em = $this->getDoctrine()->getManager();
-        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-        if (is_null($app)) {
-            return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to retrieve app database entry: ' . $app_id));
-        }
-        
-//prepare variables & get current processed app checksum
-        $app_uid = $app->getUid();
-        $app_path = $app->calculateFullPath($config['paths']['app']);
-        $path_app_config = $app_path . $config['filenames']["app_config"];
-        $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
-        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
-        $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
-
-
-//see if app is already downloaded, apps are stored in folders called {version}_compiled/{platform}_{checksum}.ext where ext = .apk or .ipa
-//if it has been compiled we send a message via the websocket server
-        $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
-        
-        if (file_exists($compiled_app_path . $app_filename)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "url": "/' . basename($compiled_app_path) . "/" . $app_filename . '"}}', $config), true);
-            ($res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
-            return new JsonResponse($arr);
-        }
-    }
-
     /**
      * URL called by the compiler service to indicate that an app (version) was successfully created
      * @param type $app_uid
@@ -690,6 +641,14 @@ class ServicesController extends Controller
             $download_checksum = $this->cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $exec_file_checksum, $platform);
             if ($download_checksum == $exec_file_checksum) {
                 $file_name = $app_checksum . "." . $config["compiler_service"]["file_extensions"][$platform];
+
+//before we send the websocket message we must update the conf.json file with the compilation info, 
+//this way we can pick up already compiled files quickly when an app is reopened (and then display the download links)
+                $em = $this->getDoctrine()->getManager();
+                $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
+                $file_mgmt = $this->get('file_management');
+                $file_mgmt->updateAppConfigFile($app, $config, array("latest_executable_" . $platform => $file_name));
+                
                 $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '"}}', $config), true);
             } else {
                 $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed"}}', $config), true);

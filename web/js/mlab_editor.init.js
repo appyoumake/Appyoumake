@@ -107,6 +107,9 @@
 //checksum of current file
                 mlab.dt.app.app_checksum = data.mlab_app_checksum;
 
+//any existing compiled files for this app
+                mlab.dt.app.compiled_files = data.mlab_compiled_files;
+                
 //configuration stuff from parameter.yml
                 mlab.dt.config = data.mlab_config;
 
@@ -318,9 +321,9 @@
                                     //$("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
                                     $("#mlab_progressbar").hide();
                                     $("#mlab_download_android_icon").spin(false);
-                                    //inserting the QR code and url to the compiled app in the menu
+//inserting the QR code and url to the compiled app in the menu
                                     var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
-                                    if (text != null && text != "") {
+                                    if (typeof data.filename != undefined && data.filename != null && data.filename != "") {
                                         $("#mlab_download_qr_link").empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});
                                         var qr = $('#mlab_download_qr_link').find('canvas');
                                         qr.css({'border': 'solid 10px white', 'padding': '0px'});

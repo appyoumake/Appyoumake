@@ -121,8 +121,7 @@ app.builder.edit.menu.test.app.web.info: Gjøre en rask test av hvordan appen ko
 app.builder.edit.menu.heading.test.app.mob: Prøv App på mobil
 app.builder.edit.menu.test.app.mob.info: Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.
 app.builder.edit.menu.test.app.mob.qr.wait.text: Det kan ta litt tid før QR-koden vises. Vennligst vent.
-app.builder.edit.menu.test.app.mob.ios.tooltip: Test app på iOS mobil enhet
-app.builder.edit.menu.test.app.mob.android.tooltip: Test app på Android mobil enhet
+app.builder.edit.menu.test.app.mob.tooltip: Test app på %platform% mobil enhet
 
 
 #-----------------------------------------------------

@@ -47,3 +47,7 @@ cmp_get_app_status:
 cmp_get_app_process:
     pattern: /cmpGetAppProcess/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppProcess }
+
+cmp_get_list_compiled_apps:
+    pattern: /cmpGetListCompiledApps/{app_id}/{app_version}
+    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetListCompiledApps }

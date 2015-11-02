@@ -121,8 +121,7 @@ app.builder.edit.menu.test.app.web.info: Do a quick test of how the app will loo
 app.builder.edit.menu.heading.test.app.mob: Try App on a mobile
 app.builder.edit.menu.test.app.mob.info: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
 app.builder.edit.menu.test.app.mob.qr.wait.text: It may take some time before the QR code appears. Please wait.
-app.builder.edit.menu.test.app.mob.ios.tooltip: Test app on iOS mobile device
-app.builder.edit.menu.test.app.mob.android.tooltip: Test app on Android mobile device
+app.builder.edit.menu.test.app.mob.tooltip: Test app on %platform% mobile device
 
 
 #-----------------------------------------------------
