@@ -31,7 +31,7 @@ this.onPageLoad = function(el) {
     }
     
     self.loadAnswers();
-    // TODO 
+    //TODO 
     $(".ui-btn.ui-icon-carat-d.ui-btn-icon-right.ui-corner-all.ui-shadow.ui-li-has-count").removeClass("ui-btn")
 /*    self.domRoot.on("change", ":input", function() { return self.storeAnswers($(this)); });
     self.domRoot.on("change", "." + self.classes.questionLocked + " :input", function() { return false; });
