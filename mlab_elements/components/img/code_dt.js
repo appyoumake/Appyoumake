@@ -32,24 +32,35 @@
         return { "width": ctrl.width(), "height": ctrl.height() }
     };
     
+    this.centerFigureCaption = function (el) {
+        var img = $('.mlab_current_component').find('img');
+        var figcap = $('.mlab_current_component').find('figcaption');
+        var imgWidth = img.width();
+        figcap.css('width', imgWidth);
+    };
+      
     this.custom_scale_to_25_percent = function (el) {
         var fig = $('.mlab_current_component').find('figure');
         fig.css('width', '25%');
+        this.centerFigureCaption(el);
     };
     
     this.custom_scale_to_50_percent = function (el) {
         var fig = $('.mlab_current_component').find('figure');
         fig.css('width', '50%');
+        this.centerFigureCaption(el); 
     };
     
     this.custom_scale_to_75_percent = function (el) {
         var fig = $('.mlab_current_component').find('figure');
         fig.css('width', '75%');
+        this.centerFigureCaption(el);
     };
     
     this.custom_scale_to_100_percent = function (el) {
         var fig = $('.mlab_current_component').find('figure');
         fig.css('width', '100%');
+        this.centerFigureCaption(el);
     };
     
     this.custom_position_left = function (el) {

@@ -67,7 +67,7 @@ builder.new.app.submit.category: Categories
 builder.new.app.submit.splashScreen: Splash screen
 
 app.wizard.button.previous: < Previous
-app.wizard.button.next: Nexgt >
+app.wizard.button.next: Next >
 app.wizard.button.finished: Finished
 
 
