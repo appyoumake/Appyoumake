@@ -4,8 +4,12 @@
     <td class="mlab_align_center">{{ entity.version }}</td>
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
-        <a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">
-            {{ entity.groups|join(", ") }}
+        <a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
+            {% if entity.groups is empty %} <!-- If no group -->
+               {% trans %}app.admin.components.no.group{% endtrans %}
+            {% else %} <!-- If have groups -->
+                {{ entity.groups|join(", ") }}
+            {% endif %}  
         </a>
     </td>
     <td>

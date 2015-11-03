@@ -131,7 +131,8 @@ form button {
 table {
     border-collapse: collapse;
     margin-bottom: 1.5em;
-    font-size: 1.1em
+    font-size: 1.1em;
+    min-width: 300px;
 }
 
 table.app_list{
