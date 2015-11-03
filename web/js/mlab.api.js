@@ -487,22 +487,22 @@ Mlab_api.prototype = {
  */
             fetchLocalData: function(data_type) {
                 var path;
-                var data_id = 0;
-                var app_id = 1;
-                var user_id = 2;
-                var comp_id = 3;
-                var key_id = 4;
+                var data_idx = 0;
+                var app_idx = 1;
+                var user_idx = 2;
+                var comp_idx = 3;
+                var key_idx = 4;
                 var app_id = this.parent.parent.getAppUid(); //todo why get data from ther apps? DT only
                 for (key in window.localStorage) {
                     path = key.split(this.parent.parent.data_divider);
-                    if (path[data_id] == data_type && path[app_id] == app_id) {
-                        if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] == "undefined") {
-                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]] = {};
-                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
-                        } else if (typeof this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] == "undefined") {
-                            this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = {};
+                    if (path[data_idx] == data_type && path[app_idx] == app_id) {
+                        if (typeof this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]] == "undefined") {
+                            this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]] = {};
+                            this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] = {};
+                        } else if (typeof this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] == "undefined") {
+                            this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] = {};
                         }
-                        this.parent[path[data_id]][path[app_id]][path[user_id]][path[comp_id]][path[key_id]] = JSON.parse(window.localStorage.getItem(key));
+                        this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] = JSON.parse(window.localStorage.getItem(key));
                     }
                 }
             },
@@ -521,7 +521,7 @@ Mlab_api.prototype = {
                 window.localStorage.setItem(data_type + SEP + app_id + SEP + user_id + SEP + comp_id + SEP + key, JSON.stringify(value));
                 return true;
             },
-
+            
             getData: function(data_type, user_id, comp_id, key, callback) {
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, callback);
