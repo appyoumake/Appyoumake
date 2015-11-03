@@ -218,7 +218,7 @@
                         
 // finally we connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
                         var host = window.document.location.host.replace(/:.*/, '');
-                        mlab.dt.services_web_socket = new WebSocket(mlab.dt.config.ws_socket.host_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);
+                        mlab.dt.services_web_socket = new WebSocket(mlab.dt.config.ws_socket.url_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);
                         
                         mlab.dt.services_web_socket.onmessage = function (event) {
                             console.log(event);
