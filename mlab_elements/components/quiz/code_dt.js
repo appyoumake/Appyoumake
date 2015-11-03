@@ -216,19 +216,16 @@ this.handleUserInput = function(input, e) {
             break;
             
         case "correctResponse":
-            if (value == "") {
-                var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
-                $("#"  + correct_response_id).html("");
-                page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
-                $("div.qtip input:text").val("").removeClass("mc_blurred");
-                $("div.qtip textarea").val("").removeClass("mc_blurred");
-                $(question).find("p, label").attr('contenteditable','true');
-                this.setPropertiesDialogTab(1);
-                $("[data-mlab-dt-quiz-input='explanatory']").focus();
-            } else {
-                input.val('');
-                this.markAlternativesAsCorrect(question, value, questionType);
-            }
+            input.val('');
+            this.markAlternativesAsCorrect(question, value, questionType);
+            var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
+            $("#"  + correct_response_id).html("");
+            page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
+            $("div.qtip input:text").val("").removeClass("mc_blurred");
+            $("div.qtip textarea").val("").removeClass("mc_blurred");
+            $(question).find("p, label").attr('contenteditable','true');
+            this.setPropertiesDialogTab(1);
+            $("[data-mlab-dt-quiz-input='explanatory']").focus();
             break;
             
         default:
