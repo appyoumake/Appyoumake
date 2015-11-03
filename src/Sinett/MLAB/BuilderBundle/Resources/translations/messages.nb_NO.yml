@@ -274,6 +274,7 @@ app.admin.components.tooltip.disabled: Deaktiver komponent
 app.admin.components.tooltip.delete: Slett komponent
 app.admin.components.tooltip.new: Opprett ny komponent
 app.admin.components.enabled: Aktiv
+app.admin.components.no.group: Ingen
 
 
 #-----------------------------------------------------

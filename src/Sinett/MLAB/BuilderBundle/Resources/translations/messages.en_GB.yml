@@ -276,6 +276,7 @@ app.admin.components.tooltip.disabled: Disabled components
 app.admin.components.tooltip.delete: Delete component
 app.admin.components.tooltip.new: Create new component
 app.admin.components.enabled: Enabled
+app.admin.components.no.group: None
 
 
 #-----------------------------------------------------

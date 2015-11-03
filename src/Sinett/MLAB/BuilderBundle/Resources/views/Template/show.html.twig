@@ -5,7 +5,11 @@
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
         <a href="{{ path('template_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.templates.tooltip.group{% endtrans %} '{{ entity.name }}'">
-            {{ entity.groups|join(", ") }}
+            {% if entity.groups is empty %} <!-- If no group -->
+               {% trans %}app.admin.components.no.group{% endtrans %}
+            {% else %} <!-- If have groups -->
+                {{ entity.groups|join(", ") }}
+            {% endif %} 
         </a>
     </td>
     <td class="mlab_align_center">
