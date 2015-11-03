@@ -181,17 +181,21 @@ class ServicesController extends Controller
      * Solution to connection issue from https://forum.ripple.com/viewtopic.php?f=2&t=6171&p=43313&f=2&t=6171&p=43313#p43313
      */
     private function sendWebsocketMessage($msg, $config) {
+        
 //prepare variables
-        $host = $config["ws_socket"]["host"];
-        $port = $config["ws_socket"]["port"];
-        $url = $config["ws_socket"]["url"] . "0";
+        $url = $config["ws_socket"]["url_server"];
+        $path = $config["ws_socket"]["path_server"] . "0";
+        list($dummy, $host, $port) = explode(":", $url);
+        $port = intval($port);
+        $host = substr($host, 2);
         if ( in_array("HTTPS", $_SERVER) && $_SERVER["HTTPS"] ) {
             $proto = "https://";
         } else {
             $proto = "http://";
         }
+        
         $local = $proto . $_SERVER["HTTP_HOST"] . ":" . $_SERVER["SERVER_PORT"];  //url where this script run
-        $head = "GET $url HTTP/1.1"."\r\n" .
+        $head = "GET $path HTTP/1.1"."\r\n" .
                 "Upgrade: WebSocket"."\r\n" .
                 "Connection: Upgrade"."\r\n" .
                 "Origin: $local"."\r\n" .
@@ -200,6 +204,7 @@ class ServicesController extends Controller
                 "Sec-WebSocket-Key: asdasdaas76da7sd6asd6as7d"."\r\n".
                 "Content-Length: " . strlen($msg) . "\r\n" . "\r\n" ;
 
+error_log($head);
 
 //WebSocket handshake & data transmission
         $sock = fsockopen($host, $port, $errno, $errstr, 2);
