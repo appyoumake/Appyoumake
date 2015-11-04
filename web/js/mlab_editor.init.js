@@ -150,9 +150,14 @@
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
-                                            "title='" + c.conf.tooltip + "' " +
                                             "class='mlab_button_components' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
+                                        "</div>" + 
+                                        "<div class='mlab_component_tooltip'>" +
+                                            c.conf.tooltip + "<a class='mlab_component_tooltip_link' href='#'>Mer...</a>" +
+                                        "</div>" + 
+                                        "<div class='mlab_component_extended_tooltip'>" +
+                                            c.conf.tooltip +
                                         "</div>"
                                 );
                             } else if (c.accessible && c.is_feature) {
@@ -188,7 +193,34 @@
                             }
                         }
 
-
+//set the component qTip tooltip
+//TODO use api.elements.tooltip
+                        $('.mlab_button_components').each(function() {
+                            $(this).qtip({
+                            hide:{ //moved hide to here,
+                                delay:500, //give a small delay to allow the user to mouse over it.
+                                fixed:true
+                            },
+                                content: {
+                                    text: $(this).next('.mlab_component_tooltip')
+                                },
+                                 style: 'qtip-wiki'
+                            });
+                            
+                            $(this).next().find('.mlab_component_tooltip_link').qtip({
+                            hide:{ //moved hide to here,
+                                delay:500, //give a small delay to allow the user to mouse over it.
+                                fixed:true
+                            },
+                                content: {
+                                    text: $(this).next().next()
+                                },
+                                 style: 'qtip-wiki'
+                            });
+                            
+                        });
+                                         
+            
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
 
@@ -320,15 +352,18 @@
                                     $("#mlab_progressbar").val(100);
                                     //$("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
                                     $("#mlab_progressbar").hide();
-                                    $("#mlab_download_android_icon").spin(false);
+                                    //TODO finne ut hvilken knapp som er trykket på å sette spinneren der
+                                    $("#mlab_download_" + data.platform + "_icon").spin(false);
+                                    
+                                    mlab.dt.app.compiled_files[data.platform] = data.filename;
 //inserting the QR code and url to the compiled app in the menu
-                                    var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                                     if (typeof data.filename != undefined && data.filename != null && data.filename != "") {
-                                        $("#mlab_download_qr_link").empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});
+                                        var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
+                                        $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});
                                         var qr = $('#mlab_download_qr_link').find('canvas');
                                         qr.css({'border': 'solid 10px white', 'padding': '0px'});
                                         
-                                        $("#mlab_download_link").text("URL: " + text);
+                                        $("#mlab_download_link_" + data.platform).text("URL: " + text);
                                     }     
                                     
                                     $("#mlab_statusbar_compiler").text("App ready! Links are found in the menu");
@@ -354,7 +389,5 @@
             }
 
         });
-
-    });
-
-
+                
+});

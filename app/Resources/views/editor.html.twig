@@ -151,7 +151,7 @@
 #}
                     {% for platform in mlab_variables.compiler_service.supported_platforms %}
                         <a href="javascript: mlab.dt.management.compiler.get_app('{{ platform }}');">
-                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon"></div> 
+                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon"></div> 
                         </a> 
                     {% endfor %}
 

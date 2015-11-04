@@ -72,6 +72,38 @@ made smaler than the min width */
     line-height: 0px;
 }
 
+#mlab_editor .mlab_component_tooltip,
+#mlab_editor .mlab_component_extended_tooltip {
+    display: none;
+}
+
+.qtip-wiki{
+    max-width: 385px;
+}
+
+.qtip-wiki p{
+    margin: 0 0 6px;
+}
+
+.qtip-wiki h1{
+    font-size: 20px;
+    line-height: 1.1;
+    margin: 0 0 5px;
+}
+
+.qtip-wiki img{
+    float: left;
+    margin: 10px 10px 10px 0;
+}
+
+.qtip-wiki .info{
+    overflow: hidden;
+}
+
+.qtip-wiki p.note{
+    font-weight: 700;
+}
+
 
 /* ==========================================================================
    2. The page controls and management

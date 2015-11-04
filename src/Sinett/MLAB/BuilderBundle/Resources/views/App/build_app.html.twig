@@ -81,8 +81,9 @@
         //these vars are generated from backend and are required for the initialisation of the mlab object later
         document.mlab_temp_vars = {locale: '{{ app.request.locale }}', app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
 
-        //get the list of components & the component menu to stick to the top when scrollin down
         $(document).ready(function() {
+            
+            //get the list of components & the component menu to stick to the top when scrollin down
             if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
                 var stickyComponentTop = $('#mlab_toolbar_components').offset().top;
                 var stickyComponentToolsTop = $('#mlab_toolbar_for_components').offset().top - 25;
@@ -101,7 +102,6 @@
                 });
             }
             
-
             //Checkes if the editor menu icon is cliked
             $("#mlab_editor_menu_dropdown").on("click",function(event) {   
                   if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
