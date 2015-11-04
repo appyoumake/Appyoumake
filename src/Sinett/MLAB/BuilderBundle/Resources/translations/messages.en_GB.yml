@@ -345,3 +345,5 @@ app.system.admin.help.edit.heading: Edit help text
 app.system.admin.help.edit.route: Page
 app.system.admin.help.edit.message: Help text
 app.system.admin.help.edit.update.button: Update
+
+unsaved: You have unsaved changes, do you want to lose these?
