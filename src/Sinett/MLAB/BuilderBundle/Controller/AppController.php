@@ -675,7 +675,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $dumper->dump($catalogue);        
 */
         $yaml = new Parser();
-        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.en_GB.yml'));
+        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->parameters['locale'] . '.yml'));
 
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
