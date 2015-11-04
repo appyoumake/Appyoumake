@@ -343,3 +343,5 @@ app.system.admin.help.edit.heading: Rediger hjelpetekst
 app.system.admin.help.edit.route: Side
 app.system.admin.help.edit.message: Hjelpetekst
 app.system.admin.help.edit.update.button: Oppdater
+
+unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?

@@ -334,8 +334,8 @@ class FileManagement {
                             }
 
                             if ($filetype == "css") {
-                                if (!in_array("@import url('css/$dependency');", $include_items)) {
-                                    $include_items[] = "@import url('css/$dependency');";
+                                if (!in_array("@import url('../css/$dependency');", $include_items)) {
+                                    $include_items[] = "@import url('../css/$dependency');";
                                 }
                             } else {
                                 if (substr($dependency, 0, 4) == "http") {

@@ -80,7 +80,9 @@
     <script type="text/javascript">
         //these vars are generated from backend and are required for the initialisation of the mlab object later
         document.mlab_temp_vars = {locale: '{{ app.request.locale }}', app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
-
+        _tr = {{ mlab_translations|raw }};
+                
+        //get the list of components & the component menu to stick to the top when scrollin down
         $(document).ready(function() {
             
             //get the list of components & the component menu to stick to the top when scrollin down

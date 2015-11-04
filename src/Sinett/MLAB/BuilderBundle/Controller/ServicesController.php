@@ -654,9 +654,9 @@ error_log($head);
                 $file_mgmt = $this->get('file_management');
                 $file_mgmt->updateAppConfigFile($app, $config, array("latest_executable_" . $platform => $file_name));
                 
-                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '"}}', $config), true);
+                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '", "plaform": "' . $platform . '"}}', $config), true);
             } else {
-                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed"}}', $config), true);
+                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed", "plaform": "' . $platform . '"}}', $config), true);
             }
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));

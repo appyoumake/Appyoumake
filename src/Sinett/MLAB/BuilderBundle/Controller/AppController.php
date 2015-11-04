@@ -13,6 +13,12 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Yaml\Parser;
+
+/*use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Dumper\JsonFileDumper;
+*/
 
 //use Symfony\Component\HttpFoundation\File\UploadedFile
 
@@ -642,10 +648,40 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         
     	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
 */        
+        
+//load translation for use in Javascript
+        /*
+         * 
+         * http://blog.servergrove.com/2014/03/18/symfony2-components-overview-translation/
+         * 
+         * 
+ 
+        include_once $this->get('kernel')->getRootDir() . '/../vendor/autoload.php';
+
+        $local_translator = new Translator('en_GB');
+        $local_translator->addLoader('yaml', new YamlFileLoader());
+        $local_translator->addResource('yaml', $this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.en_GB.yml' , 'en_GB');
+
+        $dumper = new JsonFileDumper();
+        $dumper->dump($catalogue, array('path' => __DIR__.'/dumps'));
+        
+        die($local_translator->trans('app.admin.categories.new.heading'));        
+
+        
+        $loader = new YamlFileLoader();
+        $catalogue = $loader->load($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.en_GB.yml' , 'en_GB');
+
+        $dumper = new JsonFileDumper();
+        $dumper->dump($catalogue);        
+*/
+        $yaml = new Parser();
+        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->parameters['locale'] . '.yml'));
+
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
     			"mlab_app_id" => $id, 
-                "mlab_appbuilder_root_url" => $this->generateUrl('app_builder_index')
+                "mlab_appbuilder_root_url" => $this->generateUrl('app_builder_index'),
+                "mlab_translations" => json_encode($temp)
     	));
     }
     
