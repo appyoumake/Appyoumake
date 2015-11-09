@@ -12,16 +12,16 @@ this.onPageLoad = function(el) {
     }
     
     var disp = (self.settings.allow_check_on_page ? "" : "style='display: none'");
-    $(el).append("<div data-mlab-ct-quiz-role='check_and_submit' style='display: none;'><h1>You can now check and submit your answers</h1><div data-mlab-ct-quiz-role='display_results'></div><button data-mlab-ct-quiz-role='check_all' >Check answers</button></div>");
-    $(el).append("<button data-mlab-ct-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-ct-quiz-role='move_next'>Next</button>");
-    $(el).append("<button data-mlab-ct-quiz-role='check' " + disp + ">Check answers</button>");
+    $(el).append("<div data-mlab-cp-quiz-role='check_and_submit' style='display: none;'><div data-mlab-cp-quiz-subrole='display_results'><h1>You can now check and submit your answers</h1></div><button data-mlab-cp-quiz-role='check_all' >Check answers</button></div>");
+    $(el).append("<button data-mlab-cp-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-cp-quiz-role='move_next'>Next</button>");
+    $(el).append("<button data-mlab-cp-quiz-role='check' " + disp + ">Check answers</button>");
 
-    self.domRoot.on("click", "[data-mlab-ct-quiz-role='move_next']", function() { self.move(1); });
-    self.domRoot.on("click", "[data-mlab-ct-quiz-role='move_previous']", function() { self.move(-1); });
-    self.domRoot.on("click", "[data-mlab-ct-quiz-role='check']", function() { self.checkPageAnswers(self.domRoot.find(".mlab_ct_quiz_currentpage")); });
-    self.domRoot.on("click", "[data-mlab-ct-quiz-role='check_all']", function() { self.checkAllAnswers(); });
+    self.domRoot.on("click", "[data-mlab-cp-quiz-role='move_next']", function() { self.move(1); });
+    self.domRoot.on("click", "[data-mlab-cp-quiz-role='move_previous']", function() { self.move(-1); });
+    self.domRoot.on("click", "[data-mlab-cp-quiz-role='check']", function() { self.checkPageAnswers(self.domRoot.find(".mlab_cp_quiz_currentpage")); });
+    self.domRoot.on("click", "[data-mlab-cp-quiz-role='check_all']", function() { self.checkAllAnswers(); });
     
-    $(el).find("div").first().show().addClass("mlab_ct_quiz_currentpage");
+    $(el).find("div").first().show().addClass("mlab_cp_quiz_currentpage");
 
     self.api.db.prepareDataObjects([self.api.getAppUid(), self.user, this.domRoot.attr("id")]);
     
@@ -43,18 +43,18 @@ this.onPageLoad = function(el) {
 //navigates from page to page and stores replies every time change page
 //checks if required fields are filled in, then saves everything, if check per page is allowed, runs check
 this.move = function(direction) {
-    var q_div_curr = $(this.domRoot.find(".mlab_ct_quiz_currentpage"));
+    var q_div_curr = $(this.domRoot.find(".mlab_cp_quiz_currentpage"));
     var missing_fields = "";
     var self = this;
     var direction_text = {"-1": "prev", "1": "next"};
     
     if (direction == 1) {
 //check if any questions are mandatory and if so, are they filled in
-        q_div_curr.children("[data-mlab-ct-quiz-role='question']").each(function() {
-            if ($(this).data("mlab-ct-quiz-mandatory") == true) {
+        q_div_curr.children("[data-mlab-cp-quiz-role='question']").each(function() {
+            if ($(this).data("mlab-cp-quiz-mandatory") == true) {
                 response = self.getResponse($(this));
                 if ( (typeof response == "undefined") || (response.length == 0) ) {
-                    missing_fields = missing_fields + $(this).find("[data-mlab-ct-quiz-subrole='question']").text() + "\n";
+                    missing_fields = missing_fields + $(this).find("[data-mlab-cp-quiz-subrole='question']").text() + "\n";
                 }
             } 
 
@@ -78,11 +78,11 @@ this.move = function(direction) {
     this.saveAnswers(q_div_curr);
     
     if (moveto_pages.length > 0) {
-        q_div_curr.removeClass("mlab_ct_quiz_currentpage").hide();
-        $(moveto_pages[0]).show().addClass("mlab_ct_quiz_currentpage");
-        this.domRoot.find("[data-mlab-ct-quiz-role='move_" + direction_text[(direction * -1).toString()] + "']").show();
+        q_div_curr.removeClass("mlab_cp_quiz_currentpage").hide();
+        $(moveto_pages[0]).show().addClass("mlab_cp_quiz_currentpage");
+        this.domRoot.find("[data-mlab-cp-quiz-role='move_" + direction_text[(direction * -1).toString()] + "']").show();
         if (moveto_pages.length == 1) {
-            this.domRoot.find("[data-mlab-ct-quiz-role='move_" + direction_text[direction.toString()] + "']").hide();
+            this.domRoot.find("[data-mlab-cp-quiz-role='move_" + direction_text[direction.toString()] + "']").hide();
         }
     } else {
         return;
@@ -90,9 +90,9 @@ this.move = function(direction) {
 
     
     if (direction == 1 && moveto_pages.length == 1 && mlab.api.components['quiz'].settings.allow_check && !mlab.api.components['quiz'].settings.allow_check_on_page) {
-        this.domRoot.find("[data-mlab-ct-quiz-role='check_all']").show();
+        this.domRoot.find("[data-mlab-cp-quiz-role='check_all']").show();
     } else {
-        this.domRoot.find("[data-mlab-ct-quiz-role='check_all']").hide();
+        this.domRoot.find("[data-mlab-cp-quiz-role='check_all']").hide();
     }
  
 };
@@ -107,7 +107,7 @@ this.processAnswers = function (data) {
     var q, q_type;
     for (id in data) {
         q = $("#" + id);
-        q_type = q.data("mlab-ct-quiz-questiontype");
+        q_type = q.data("mlab-cp-quiz-questiontype");
         
         switch (q_type) {
             case "checkbox": 
@@ -160,27 +160,34 @@ this.checkPageAnswers = function(page) {
 //here we check all answers for the end of the quiz, so we need to list page name, title of question and which answers are right or not
 this.checkAllAnswers = function() {
 debugger;
-    var pages = this.domRoot.find("div[data-mlab-ct-quiz-role='page']");
-    var result_page = $(this.domRoot.find("div[data-mlab-ct-quiz-role='display_results']")[0]);
+    var pages = this.domRoot.find("div[data-mlab-cp-quiz-role='page']");
+    var result_page = $(this.domRoot.find("div[data-mlab-cp-quiz-subrole='display_results']")[0]);
     result_page.empty();
+    var x = false;
     
-    for (i in pages) {
-        result_page.append($(pages[i]).find("h2").clone());
+    pages.each( function() {
+        if (x) {
+            return;
+        }
+        result_page.append($(this).find("h2").clone());
         
-        $(pages[i]).children("[data-mlab-ct-quiz-role='question']").each(function() {
-            result_page.append($(this).find("[data-mlab-ct-quiz-subrole='question']").clone());
-            var q_type = $(this).data("mlab-ct-quiz-questiontype");
+        $(this).children("[data-mlab-cp-quiz-role='question']").each(function() {
+            if (x) {
+                return;
+            }
+            result_page.append($(this).find("[data-mlab-cp-quiz-subrole='question']").clone());
+            var q_type = $(this).data("mlab-cp-quiz-questiontype");
             switch (q_type) {
                 case "checkbox": 
                     $(this).find("input").each( function() { 
                         if ( $(this).data("mlab-cp-quiz-alternative") == "correct" ) {
                             if ( $(this).prop("checked") ) {
-                                result_page.append("<p class='mlab_ct_quiz_correct'>Corr " + $(this).parent().text() + "</p>");
+                                result_page.append("<p class='mlab_cp_quiz_correct'>Corr " + $(this).parent().text() + "</p>");
                             } else {
-                                result_page.append("<p class='mlab_ct_quiz_incorrect'>Should have " + $(this).parent().text() + "</p>");
+                                result_page.append("<p class='mlab_cp_quiz_incorrect'>Should have " + $(this).parent().text() + "</p>");
                             }
                         } else if ( $(this).prop("checked") ) {
-                            result_page.append("<p class='mlab_ct_quiz_incorrect'>Incorr " + $(this).parent().text() + "</p>");
+                            result_page.append("<p class='mlab_cp_quiz_incorrect'>Incorr " + $(this).parent().text() + "</p>");
                         }
                     });
                         
@@ -202,10 +209,10 @@ debugger;
                     break;
 
                 case "text": 
-                    if ($(this).attr("data-mlab-cp-quiz-textvalue").toLowerCase().trim() == $(this).val().toLowerCase().trim()) {
-                        result_page.append("<p class='mlab_ct_quiz_correct'>Corr " + $(this).val() + "</p>");
+                    if ($(this).find("input").attr("data-mlab-cp-quiz-textvalue").toLowerCase().trim() == $(this).find("input").val().toLowerCase().trim()) {
+                        result_page.append("<p class='mlab_cp_quiz_correct'>Corr " + $(this).find("input").val() + "</p>");
                     } else {
-                        result_page.append("<p class='mlab_ct_quiz_incorrect'>Incorr " + $(this).val() + "</p>");
+                        result_page.append("<p class='mlab_cp_quiz_incorrect'>Incorr " + $(this).find("input").val() + "</p>");
                     }
                     
                     break;
@@ -216,7 +223,7 @@ debugger;
 
         
 //        $(start).find("option[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
-    }
+    });
     
 };
 
@@ -224,7 +231,7 @@ debugger;
 
 /**
  * To save the answers we need to get app_id. user_id, comp_id and for key we use id of question.
- * So we loop through each div with data-mlab-ct-quiz-role=question, get the type and the retrieve the value
+ * So we loop through each div with data-mlab-cp-quiz-role=question, get the type and the retrieve the value
  * @param {type} page
  * @returns {undefined}
  */
@@ -234,7 +241,7 @@ this.saveAnswers = function(page) {
     var response;
     var self = this;
     
-    $(page).children("[data-mlab-ct-quiz-role='question']").each(function() {
+    $(page).children("[data-mlab-cp-quiz-role='question']").each(function() {
         q_id = $(this).attr("id");
         response = self.getResponse($(this));
         self.api.db.setResult(user_id, comp_id, q_id, response);
@@ -243,7 +250,7 @@ this.saveAnswers = function(page) {
 
 this.getResponse = function(q_el) {
     var response;
-    var q_type = q_el.data("mlab-ct-quiz-questiontype");
+    var q_type = q_el.data("mlab-cp-quiz-questiontype");
     switch (q_type) {
         case "checkbox": 
             response = [];

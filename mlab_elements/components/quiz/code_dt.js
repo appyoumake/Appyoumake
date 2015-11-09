@@ -26,11 +26,11 @@ this.editPrompts = {
 };
 
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
-this.tabContentTemplate = '<div id="{id}" data-mlab-ct-quiz-role="page" >{content}</div>';
-this.questionTemplate = '<div id="{id}" data-mlab-ct-quiz-role="question" class="mlab_current_component_child">{content}</div>';
-this.questionExplanatoryTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-ct-quiz-subrole="explanatory">{content}</p>';
-this.questionQuestionTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-ct-quiz-subrole="question">{content}</p>';
-this.alternativesTemplate = '<div data-mlab-ct-quiz-subrole="alternatives"></div>';
+this.tabContentTemplate = '<div id="{id}" data-mlab-cp-quiz-role="page" >{content}</div>';
+this.questionTemplate = '<div id="{id}" data-mlab-cp-quiz-role="question" class="mlab_current_component_child">{content}</div>';
+this.questionExplanatoryTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-cp-quiz-subrole="explanatory">{content}</p>';
+this.questionQuestionTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-cp-quiz-subrole="question">{content}</p>';
+this.alternativesTemplate = '<div data-mlab-cp-quiz-subrole="alternatives"></div>';
 this.tabIdPrefix = 'mlab_dt_quiz_preview_tabs_';
 
 //---------- STANDARD COMPONENT FUNCTIONS 
@@ -88,7 +88,7 @@ this.onLoad = function (el) {
 this.onSave = function (el) {
     var html = $('<div data-mlab-type="quiz" style="display: block;" id="' + $(el).attr("id") + '"></div>');
     $(el).find(".ui-tabs").find("[role='tabpanel']").each( function() { 
-        var page = $("<div style='display: none' data-mlab-ct-quiz-role='page' >" + $(this).html() +  "</div>");
+        var page = $("<div style='display: none' data-mlab-cp-quiz-role='page' >" + $(this).html() +  "</div>");
         page.find("[contenteditable]").removeAttr("contenteditable");
         page.find(".mc_correct").removeClass("mc_correct");
         html.append( page );
@@ -103,7 +103,7 @@ this.onSave = function (el) {
  * @return {int} Number of questions in quiz.
  */
 this.getContentSize = function() {
-    return this.domRoot.find('[data-mlab-ct-quiz-role="question"]').length;
+    return this.domRoot.find('[data-mlab-cp-quiz-role="question"]').length;
 };
 
 
@@ -123,7 +123,7 @@ this.handleUserInput = function(input, e) {
     var value = input.val();
     var page = this.getCurrentPage();
     var question = this.getCurrentQuestion(page);
-    var questionType = question.data("mlab-ct-quiz-questiontype");
+    var questionType = question.data("mlab-cp-quiz-questiontype");
     
     switch (editStage) {
         case "pageTitle":
@@ -141,7 +141,7 @@ this.handleUserInput = function(input, e) {
             if (value) {
                 input.addClass("mc_blurred");
                 if (question.length > 0) {
-                    var existing_text = question.find("[data-mlab-ct-quiz-subrole='explanatory']");
+                    var existing_text = question.find("[data-mlab-cp-quiz-subrole='explanatory']");
                     if (existing_text.length > 0) {
                         existing_text.text(value);
                     } else {
@@ -159,7 +159,7 @@ this.handleUserInput = function(input, e) {
             if (value) {
                 input.addClass("mc_blurred");
                 if (question.length > 0) {
-                    var existing_text = question.find("[data-mlab-ct-quiz-subrole='question']");
+                    var existing_text = question.find("[data-mlab-cp-quiz-subrole='question']");
                     if (existing_text.length > 0) {
                         existing_text.text(value);
                     } else {
@@ -185,7 +185,7 @@ this.handleUserInput = function(input, e) {
                 helpText.text("Valid selections from: " + minValue + " - " + maxValue);
             } else {
                 input.addClass("mc_blurred");
-                question.attr("data-mlab-ct-quiz-questiontype", this.questionTypes[value - 1].type);
+                question.attr("data-mlab-cp-quiz-questiontype", this.questionTypes[value - 1].type);
                 this.setMandatory(question, value);
                 $("[data-mlab-dt-quiz-input='mandatory']").focus();
             }
@@ -203,12 +203,22 @@ this.handleUserInput = function(input, e) {
             this.setPropertiesDialogTab();
             $("[data-mlab-dt-quiz-input='alternatives']").focus();
             break;
-            
+            c
         case "alternatives":
             if (value != "") {
                 input.val('');
                 this.addQuestionAlternative(question, value, questionType);
-            } else { //the user does not want to add more alternatives, move to select correct response
+                if (questionType == "text") {
+                    input.val('');
+                    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
+                    $("div.qtip input:text").val("").removeClass("mc_blurred");
+                    $("div.qtip textarea").val("").removeClass("mc_blurred");
+                    $(question).find("p, label").attr('contenteditable','true');
+                    $(question).find("label").on("click", function(e){e.preventDefault();})
+                    this.setPropertiesDialogTab(1);
+                    $("[data-mlab-dt-quiz-input='explanatory']").focus();
+                }
+            } else { //the user does not want to add more alternatives, move to select correct response BUT NOT IF TEXTBOX, that only has a single answer
                 input.addClass("mc_blurred");
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='correctResponse']").focus();
@@ -224,6 +234,7 @@ this.handleUserInput = function(input, e) {
             $("div.qtip input:text").val("").removeClass("mc_blurred");
             $("div.qtip textarea").val("").removeClass("mc_blurred");
             $(question).find("p, label").attr('contenteditable','true');
+            $(question).find("label").on("click", function(e){e.preventDefault();})
             this.setPropertiesDialogTab(1);
             $("[data-mlab-dt-quiz-input='explanatory']").focus();
             break;
@@ -351,10 +362,10 @@ this.addQuestion = function(text, editMode) {
 this.addQuestionAlternative = function(question, value, questionType) {
     value = this.escape(value);
     var set_selected = false;
-    var alternatives_container = question.find('[data-mlab-ct-quiz-subrole="alternatives"]');
+    var alternatives_container = question.find('[data-mlab-cp-quiz-subrole="alternatives"]');
     if (alternatives_container.length == 0) {
         question.append(this.alternativesTemplate);
-        alternatives_container = question.find('[data-mlab-ct-quiz-subrole="alternatives"]');
+        alternatives_container = question.find('[data-mlab-cp-quiz-subrole="alternatives"]');
     }
 
     switch (questionType) {
@@ -368,7 +379,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
             break;
 
         case "text": 
-            var html = "<input class='mc_text mc_entry mc_input' type='text' data-mlab-ct-quiz-textvalue='" + value + "' >";
+            var html = "<input class='mc_text mc_entry mc_input' type='text' data-mlab-cp-quiz-textvalue='" + value + "' >";
             break;
 
         case "select": 
@@ -400,7 +411,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
         question.find("select :nth-child(" + (num + 1).toString() +  ")").prop('selected', true); 
     }
     
-    $("#"  + correct_response_id).append("<span data-mlab-ct-quiz-correct-response='" + num + "'>" + num + " - " + value + "<br></span>");
+    $("#"  + correct_response_id).append("<span data-mlab-cp-quiz-correct-response='" + num + "'>" + num + " - " + value + "<br></span>");
     this.api.setDirty();
     return true;
 };
@@ -450,7 +461,7 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
 };
 
 this.setMandatory = function(question, value) {
-    question.attr("data-mlab-ct-quiz-mandatory", value);
+    question.attr("data-mlab-cp-quiz-mandatory", value);
     if (value) question.addClass("mc_required");
     else question.removeClass("mc_required");
 };
@@ -944,7 +955,7 @@ this.getCurrentQuestion = function(page) {
  * @returns {getCurrentQuestion.question}
  */
 this.getLastQuestion = function(page) {
-    var question = page.find("[data-mlab-ct-quiz-role='question']").last();
+    var question = page.find("[data-mlab-cp-quiz-role='question']").last();
     return question;
 };
 
