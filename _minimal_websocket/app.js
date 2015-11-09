@@ -39,7 +39,13 @@ mlabServicesCallbackServer.on('connection', function(ws) {
         
         if (typeof objData.destination_id != "undefined" && typeof objData.data != "undefined" && typeof mlabEditorClients[objData.destination_id] != "undefined") {
             console.log('DATA: ' + JSON.stringify(objData.data));
-            mlabEditorClients[objData.destination_id].send(JSON.stringify(objData.data));
+
+            try {
+                mlabEditorClients[objData.destination_id].send(JSON.stringify(objData.data));
+            } catch (error) {
+                console.log('Trying to relay message to disconnected client' + error);
+            }
+
             ws.send('{"data": {"status": "SUCCESS"}}', function(error){console.log(error);});
             console.log('SENT TO: ' + objData.destination_id);
         } else {
@@ -56,6 +62,16 @@ mlabServicesCallbackServer.on('connection', function(ws) {
                 ws.send('{"data": {"status": "ERROR", "error": "Mlab client ' + objData.destination_id + ' not connected"}}', function(error){console.log(error);});
             }
         }
+    });
+
+    ws.on('close', function() {
+        console.log('Client disconnected');
+
+
+    });
+
+    ws.on('error', function() {
+        console.log('ERROR');
     });
 
 });
