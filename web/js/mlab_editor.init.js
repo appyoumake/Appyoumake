@@ -119,6 +119,25 @@
 
 /**** Finished preparing variables, now we set up rest of environment ****/
 
+//set the compiler qTip to show QR code and link when hower over compile icon
+//Burde endre ikonet til grønt eller noe....
+//TODO use api.elements.tooltip
+                $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, platform) {
+                    if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
+//TODO skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
+                        var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
+                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                        $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
+
+                        $('#mlab_download_'+ platform + '_icon').qtip({
+                            hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
+                            content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
+                                     title: { text: "Download to " + platform } },
+                            style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                        });
+                    }
+                });  
+
 //check if the doc is modified, if so warn user, also unlock file
                 window.onbeforeunload = function() {
                     var url = mlab.dt.urls.editor_closed.replace("_UID_", mlab.dt.uid);
@@ -205,7 +224,8 @@
                             $(this).qtip({
                             content: { text: $(this).next('.mlab_component_tooltip') },
                             position: { my: 'leftcenter', at: 'rightMiddle', adjust: { x: -14, y: -4, } },
-                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);} },
+                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);},   
+                                    hidden: function() { mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', "testy"); } },
                             hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                             style: { "background-color": "white", color: "blue", classes: "mlab_qtip_tooltip" } } ) ;         
                         });
@@ -350,11 +370,8 @@
 //inserting the QR code and url to the compiled app in the menu
                                     if (typeof data.filename != undefined && data.filename != null && data.filename != "") {
                                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
-                                        $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "table"});
-                                        var qr = $('#mlab_download_qr_link').find('table');
-                                        qr.css({'border': 'solid 10px white', 'padding': '0px'});
-                                        
-                                        $("#mlab_download_link_" + data.platform).text("URL: " + text);
+                                        $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                                        $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
                                     }     
                                     
                                     $("#mlab_statusbar_compiler").text("App ready! Links are found in the menu");
@@ -379,23 +396,7 @@
                 document.location.href = document.mlab_temp_vars.appbuilder_root_url;
             }
 
-//set the compiler qTip to show QR code and link when hower over compile icon
-//Burde endre ikonet til grønt eller noe....
-//TODO use api.elements.tooltip
-                                        $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, value) {
-//TODO skille ut de 4 neste linjene som egen funksjon - dette skal brukes flere steder....
-                                            var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + value;
-                                            $('#mlab_download_qr_link_' + value).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
-                                            var qr = $('#mlab_download_qr_link_' + value).find('table');
-                                            $('#mlab_download_link_' + value).html("<b>URL</b>:</br>" + text);
 
-                                                $('#mlab_download_'+ value + '_icon').qtip({
-                                                    hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
-                                                    content: {text: function(){ return $("[data-mlab-download-link-info='" + value + "']").html()},
-                                                             title: { text: "Download to " + value } },
-                                                    style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
-                                                });
-                                            });  
                                             
         });
         
