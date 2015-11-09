@@ -44,6 +44,22 @@ this.onPageLoad = function(el) {
 //navigates from page to page and stores replies every time change page
 //checks if required fields are filled in, then saves everything, if check per page is allowed, runs check
 this.move = function(direction) {
+    var q_el = $(this.domRoot.find(".mlab_ct_quiz_currentpage"));
+    
+//check if any questions are mandatory and if so, are they filled in
+/*    q_el.children("[data-mlab-dt-quiz-role='question']").each(function() {
+        
+        if (this.data("mlab-dt-quiz-mandatory") == "true") {
+            if () {
+                return;
+            }
+        } 
+        
+        response = this.getResponse($(this));
+        
+        self.api.db.setResult(user_id, comp_id, q_id, response);
+    }); //end quiz on pages loop
+*/
     
     this.saveAnswers(this.domRoot.find(".mlab_ct_quiz_currentpage"));
             
@@ -149,43 +165,52 @@ this.saveAnswers = function(page) {
     var self = this;
     
     $(page).children("[data-mlab-dt-quiz-role='question']").each(function() {
-        q_type = $(this).data("mlab-dt-quiz-questiontype");
+        
         q_id = $(this).attr("id");
         
-        switch (q_type) {
-            case "checkbox": 
-                response = [];
-                $(this).find("input:checked").each(function() {
-                    response.push($(this).val());
-                });
-                break;
-                
-            case "radio": 
-                response = $(this).find("input[name='" + q_id + "']:checked").val();
-                break;
-
-            case "multiselect": 
-                response = [];
-                $(this).find('select > option:selected').each(function() {
-                    response.push($(this).val());
-                });
-                break;
-                
-            case "select": 
-                response = $(this).find("select").val();
-                break;
-
-            case "text": 
-                response = $(this).find('input').val()
-                break;
-        }; //end switch question type
+        response = this.getResponse($(this));
         
-        if (typeof response == "undefined") {
-            response = "";
-        }
         self.api.db.setResult(user_id, comp_id, q_id, response);
     }); //end quiz on pages loop
 };
+
+this.getResponse = function(q_el) {
+    var response;
+    var q_type = q_el.data("mlab-dt-quiz-questiontype");
+    switch (q_type) {
+        case "checkbox": 
+            response = [];
+            q_el.find("input:checked").each(function() {
+                response.push(q_el.val());
+            });
+            break;
+
+        case "radio": 
+            response = q_el.find("input[name='" + q_id + "']:checked").val();
+            break;
+
+        case "multiselect": 
+            response = [];
+            q_el.find('select > option:selected').each(function() {
+                response.push(q_el.val());
+            });
+            break;
+
+        case "select": 
+            response = q_el.find("select").val();
+            break;
+
+        case "text": 
+            response = q_el.find('input').val()
+            break;
+    }; //end switch question type
+
+    if (typeof response == "undefined") {
+        response = "";
+    }
+    
+    return response;
+}
 
 this.resultRetrieved = function(data) {
     console.log("cb");

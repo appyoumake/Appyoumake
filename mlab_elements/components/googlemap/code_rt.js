@@ -11,7 +11,7 @@
         }
         
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='" + vars.config.map_script + "&callback=mlab.api.components.googlemap.initMap" + trimmed_id + "'>")); 
+            $("head").append($("<script src='" + location.protocol + "//" + vars.config.map_script + "&callback=mlab.api.components.googlemap.initMap" + trimmed_id + "'>")); 
         } else {
             eval("mlab.api.components.googlemap.initMap" + trimmed_id + "();");
         }

@@ -17,7 +17,7 @@
 	this.onSave = function (el) {
         var temp_html = el.outerHTML;
 //hack to fix bug whereby http is missing from URL in iframe tag
-        temp_html = temp_html.replace('src="//', 'src="http://');
+        temp_html = temp_html.replace('src="//', 'src="' + location.protocol + '//');
         temp_html = temp_html.replace('pointer-events: none', '');
         return temp_html;
     };
@@ -51,7 +51,7 @@
             source: function(request, response){
                 var query = request.term;
                 $.ajax({
-                    url: "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="+query+"&key="+apiKey+"&format=5&alt=json&callback=?",  
+                    url: location.protocol + "//suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="+query+"&key="+apiKey+"&format=5&alt=json&callback=?",  
                     dataType: 'jsonp',
                     success: function(data, textStatus, request) { 
                        response( $.map( data[1], function(item) {
