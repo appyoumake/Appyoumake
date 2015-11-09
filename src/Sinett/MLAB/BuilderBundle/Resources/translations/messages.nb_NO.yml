@@ -146,6 +146,16 @@ app.builder.statusbar.info.permanent: Appnavn
 
 
 #-----------------------------------------------------
+# App builder - javascript
+#-----------------------------------------------------
+app.builder.mlab.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
+app.builder.mlab.js.alert.unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?
+
+app.builder.mlab.statusbar.compiler.connected: Koblet til server 
+app.builder.mlab.statusbar.compiler.contacting.server: Kontakter server...
+
+
+#-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
 app.admin.users.welcome: Velkommen til Mlab Bruker Admin sidene
@@ -343,5 +353,3 @@ app.system.admin.help.edit.heading: Rediger hjelpetekst
 app.system.admin.help.edit.route: Side
 app.system.admin.help.edit.message: Hjelpetekst
 app.system.admin.help.edit.update.button: Oppdater
-
-unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?

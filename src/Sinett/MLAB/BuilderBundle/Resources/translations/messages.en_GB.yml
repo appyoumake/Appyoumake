@@ -144,14 +144,15 @@ app.builder.page.tooltip.new: New page
 app.builder.overlay.info: Please wait while Mlab opens your app...
 app.builder.statusbar.info.permanent: App name
 
-app.builder.mlab.statusbar.compiler.connected: Connected to server 
-app.builder.mlab.statusbar.compiler.contacting.server: Contacting server...juhu
 
 #-----------------------------------------------------
 # App builder - javascript
 #-----------------------------------------------------
 app.builder.mlab.js.alert.browser.support: This web app will only work in Chrome/Chromium or Firefox
 app.builder.mlab.js.alert.unsaved: You have unsaved changes, do you want to lose these?
+
+app.builder.mlab.statusbar.compiler.connected: Connected to server 
+app.builder.mlab.statusbar.compiler.contacting.server: Contacting server...
 
 
 #-----------------------------------------------------
