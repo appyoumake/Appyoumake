@@ -8,7 +8,6 @@
 /* general variables used globally by different functions
    (variables with data from backend are loaded from the backend in the document.ready event and enters this file as JSON structures */
 
-
 //turn off automatic initialisation of mobile pages
     $.mobile.autoInitializePage = false;
 
@@ -20,7 +19,7 @@
 		if (bowser.gecko || bowser.chrome) {
 
         } else {
-            alert("This web app will only work in Chrome/Chromium or Firefox");
+            alert(_tr["app.builder.mlab.js.alert.browser.support"]);
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
         }
 
@@ -46,6 +45,7 @@
                 flag_dirty: false,
                 counter_saving_page: 0, // counter which tells us if inside the save function we should restart the timer for
                 drag_origin: 'sortable',
+                mlab_component_cur_tooltip: null,
 
 // drag'n'drop definitions used by jQuery
                 droppable_options: {
@@ -124,7 +124,7 @@
                     var url = mlab.dt.urls.editor_closed.replace("_UID_", mlab.dt.uid);
                     $.ajax({ url: url, async: false });
 
-                    if (mlab.dt.flag_dirty) { return _tr["unsaved"] ; }
+                    if (mlab.dt.flag_dirty) { return _tr["app.builder.mlab.js.alert.unsaved"] ; }
                 };
 
 //now we load components, the go into a mlab object called components,
@@ -154,11 +154,11 @@
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
                                         "<div class='mlab_component_tooltip'>" +
-                                            c.conf.tooltip + "<a class='mlab_component_tooltip_link' href='#'>Mer...</a>" +
-                                        "</div>" + 
-                                        "<div class='mlab_component_extended_tooltip'>" +
-                                            c.conf.tooltip +
-                                        "</div>"
+                                            c.conf.tooltip + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
+                                            "<div class='mlab_component_extended_tooltip'>" +
+                                                c.conf.extended_tooltip +
+                                            "</div>" +
+                                         "</div>"
                                 );
                             } else if (c.accessible && c.is_feature) {
                                 feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
@@ -166,7 +166,13 @@
                                 storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
-
+                        
+//When the component tooltips link is clicked the exteded help tekst for the component will show in the tooltip box
+                        $( ".mlab_component_tooltip_more_link" ).on( "click", function() {
+                            var extendedText = $(this).parent().find('.mlab_component_extended_tooltip').text();
+                            mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', extendedText);
+                        });
+                      
 //add the HTML generated in the component load loop above to their respecitve containers.
                         $("#mlab_features_list").html(feature_list);
                         $("#mlab_storage_plugin_list").html(storage_plugin_list);
@@ -197,29 +203,14 @@
 //TODO use api.elements.tooltip
                         $('.mlab_button_components').each(function() {
                             $(this).qtip({
-                            hide:{ //moved hide to here,
-                                delay:500, //give a small delay to allow the user to mouse over it.
-                                fixed:true
-                            },
-                                content: {
-                                    text: $(this).next('.mlab_component_tooltip')
-                                },
-                                 style: 'qtip-wiki'
-                            });
-                            
-                            $(this).next().find('.mlab_component_tooltip_link').qtip({
-                            hide:{ //moved hide to here,
-                                delay:500, //give a small delay to allow the user to mouse over it.
-                                fixed:true
-                            },
-                                content: {
-                                    text: $(this).next().next()
-                                },
-                                 style: 'qtip-wiki'
-                            });
-                            
+                            content: { text: $(this).next('.mlab_component_tooltip') },
+                            position: { my: 'leftcenter', at: 'rightMiddle', adjust: { x: -14, y: -4, } },
+                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);} },
+                            hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
+                            style: { "background-color": "white", color: "blue", classes: "mlab_qtip_tooltip" } } ) ;         
                         });
-                                         
+                                
+
             
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
@@ -359,8 +350,8 @@
 //inserting the QR code and url to the compiled app in the menu
                                     if (typeof data.filename != undefined && data.filename != null && data.filename != "") {
                                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
-                                        $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "canvas"});
-                                        var qr = $('#mlab_download_qr_link').find('canvas');
+                                        $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, background: "#ffffff", foreground: "#000000", render : "table"});
+                                        var qr = $('#mlab_download_qr_link').find('table');
                                         qr.css({'border': 'solid 10px white', 'padding': '0px'});
                                         
                                         $("#mlab_download_link_" + data.platform).text("URL: " + text);
@@ -388,6 +379,24 @@
                 document.location.href = document.mlab_temp_vars.appbuilder_root_url;
             }
 
+//set the compiler qTip to show QR code and link when hower over compile icon
+//Burde endre ikonet til grønt eller noe....
+//TODO use api.elements.tooltip
+                                        $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, value) {
+//TODO skille ut de 4 neste linjene som egen funksjon - dette skal brukes flere steder....
+                                            var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + value;
+                                            $('#mlab_download_qr_link_' + value).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                                            var qr = $('#mlab_download_qr_link_' + value).find('table');
+                                            $('#mlab_download_link_' + value).html("<b>URL</b>:</br>" + text);
+
+                                                $('#mlab_download_'+ value + '_icon').qtip({
+                                                    hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
+                                                    content: {text: function(){ return $("[data-mlab-download-link-info='" + value + "']").html()},
+                                                             title: { text: "Download to " + value } },
+                                                    style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                                                });
+                                            });  
+                                            
         });
-                
+        
 });

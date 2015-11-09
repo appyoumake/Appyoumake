@@ -148,6 +148,13 @@ app.builder.mlab.statusbar.compiler.connected: Connected to server
 app.builder.mlab.statusbar.compiler.contacting.server: Contacting server...juhu
 
 #-----------------------------------------------------
+# App builder - javascript
+#-----------------------------------------------------
+app.builder.mlab.js.alert.browser.support: This web app will only work in Chrome/Chromium or Firefox
+app.builder.mlab.js.alert.unsaved: You have unsaved changes, do you want to lose these?
+
+
+#-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
 app.admin.users.welcome: Welcome to the Mlab User Admin Pages
@@ -345,5 +352,3 @@ app.system.admin.help.edit.heading: Edit help text
 app.system.admin.help.edit.route: Page
 app.system.admin.help.edit.message: Help text
 app.system.admin.help.edit.update.button: Update
-
-unsaved: You have unsaved changes, do you want to lose these?

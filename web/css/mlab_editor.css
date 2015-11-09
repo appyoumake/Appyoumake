@@ -73,34 +73,65 @@ made smaler than the min width */
 }
 
 #mlab_editor .mlab_component_tooltip,
-#mlab_editor .mlab_component_extended_tooltip {
+#mlab_editor .mlab_component_extended_tooltip,
+#mlab_editor [data-mlab-download-link-info] {
     display: none;
 }
-
-.qtip-wiki{
-    max-width: 385px;
+#mlab_editor .mlab_download_link{
+   padding-top: 10px; 
 }
 
-.qtip-wiki p{
+#mlab_editor .mlab_qtip_tooltip.qtip{
+    max-width: 250px;
+    background-color: white;
+    color: black;
+    border: solid orange 2px;
+    box-shadow: 5px 5px 5px darkslategray;
+    padding: 6px;
+    line-height: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+}
+
+#mlab_editor .mlab_qtip_tooltip .qtip-titlebar {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0px;
+    padding-bottom: 10px;
+    background-color: white;
+}
+
+#mlab_editor .mlab_qtip_menu_tooltip.qtip{
+    z-index: 20000 !important;
+}
+
+#mlab_editor .mlab_component_tooltip_link{
+    color: blue;
+    font-weight: bold;
+}
+
+#mlab_editor .mlab_qtip_tooltip.qtip p{
     margin: 0 0 6px;
 }
 
-.qtip-wiki h1{
+#mlab_editor .mlab_qtip_tooltip.qtip h1{
     font-size: 20px;
     line-height: 1.1;
     margin: 0 0 5px;
 }
 
-.qtip-wiki img{
+#mlab_editor .mlab_qtip_tooltip.qtip img{
     float: left;
     margin: 10px 10px 10px 0;
 }
 
-.qtip-wiki .info{
+#mlab_editor .mlab_qtip_tooltip.qtip .info{
     overflow: hidden;
 }
 
-.qtip-wiki p.note{
+#mlab_editor .mlab_qtip_tooltip.qtip p.note{
     font-weight: 700;
 }
 

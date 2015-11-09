@@ -394,7 +394,6 @@ progress::-moz-progress-bar {
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey {
     background-image: url("/img/menu_download_ios_icon.png");
-    margin-left: 50px;
 }
 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey {
@@ -413,10 +412,6 @@ progress::-moz-progress-bar {
 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_icon {
     background-image: url("/img/menu_download_icon.png");
-}
-
-#mlab_editor  #mlab_editor_menu_dropdown_content #mlab_download_qr_link {
-    margin: 10px 0;
 }
 
 /* For updating the Apps meta data ------ TODO */
@@ -438,6 +433,19 @@ progress::-moz-progress-bar {
     display: block;
     float: left;
     clear: both;   
+}
+
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_download_link_ios,
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_download_link_android {   
+    word-wrap: break-word;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    margin: 5px 0px 15px 0px;
+}
+
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_download_qr_link_ios,
+#mlab_editor #mlab_editor_menu_dropdown_content #mlab_download_qr_link_android {   
+    margin-top: 60px;
 }
 
 /* adds a small app icon - used in App drop down menu */

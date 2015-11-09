@@ -153,11 +153,11 @@
                         <a href="javascript: mlab.dt.management.compiler.get_app('{{ platform }}');">
                             <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon"></div> 
                         </a> 
-                    {% endfor %}
-
-                    <div id='mlab_download_qr_link'>&nbsp;</div>
-                    <div id='mlab_download_link'>&nbsp;</div>
-                                            
+                        <div data-mlab-download-link-info="{{ platform }}">
+                            <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>
+                            <div id='mlab_download_link_{{ platform }}'class='mlab_download_link'>&nbsp;</div>
+                        </div>
+                    {% endfor %}                             
                 </div>
             </div> <!-- End Testing col -->
 
