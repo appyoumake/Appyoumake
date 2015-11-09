@@ -38,7 +38,7 @@
                                 "} ");
 
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
+            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
 //need to wait until google maps files are downloaded, hence the loop with a timeout
             var local_el = el;
             window.setTimeout(function(){ mlab.dt.components.googlemap.code.local_edit_map(local_el); }, 2000)
@@ -59,7 +59,7 @@
         var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
         var trimmed_guid = guid.replace(/-/g, "");
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
+            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
         } else {
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }
@@ -104,7 +104,7 @@
                             mapTypeControl: curr_map.mapTypeControl,
                             panControl: curr_map.panControl,
                             markers : clean_markers,
-                            config : {class_identifier: this.config.custom.class_identifier, map_script: this.config.custom.map_script}
+                            config : {class_identifier: this.config.custom.class_identifier, map_script: location.protocol + "//" + this.config.custom.map_script}
                         };
                         
         this.api.setAllVariables(el, map_options);
