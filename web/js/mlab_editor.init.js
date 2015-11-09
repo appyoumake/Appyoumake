@@ -366,9 +366,9 @@
                                     //TODO finne ut hvilken knapp som er trykket på å sette spinneren der
                                     $("#mlab_download_" + data.platform + "_icon").spin(false);
                                     
-                                    mlab.dt.app.compiled_files[data.platform] = data.filename;
 //inserting the QR code and url to the compiled app in the menu
                                     if (typeof data.filename != undefined && data.filename != null && data.filename != "") {
+                                        mlab.dt.app.compiled_files[data.platform] = data.filename;
                                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                                         $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
                                         $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);

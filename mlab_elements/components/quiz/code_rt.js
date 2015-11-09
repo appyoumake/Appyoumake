@@ -11,15 +11,15 @@ this.onPageLoad = function(el) {
         self.settings = {"allow_check":true,"allow_check_on_page":true,"display_correct":true,"lock_checked":true,"submit":false};
     }
     
-    $(el).append("<button data-mlab-ct-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-ct-quiz-role='move_next'>Next</button>");
-
     var disp = (self.settings.allow_check_on_page ? "" : "style='display: none'");
-    $(el).append("<div data-mlab-ct-quiz-role='check_and_submit' style='display: none;'><h1>You can now check and submit your answers</div>");
+    $(el).append("<div data-mlab-ct-quiz-role='check_and_submit' style='display: none;'><h1>You can now check and submit your answers</h1><div data-mlab-ct-quiz-role='display_results'></div><button data-mlab-ct-quiz-role='check_all' >Check answers</button></div>");
+    $(el).append("<button data-mlab-ct-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-ct-quiz-role='move_next'>Next</button>");
     $(el).append("<button data-mlab-ct-quiz-role='check' " + disp + ">Check answers</button>");
 
     self.domRoot.on("click", "[data-mlab-ct-quiz-role='move_next']", function() { self.move(1); });
     self.domRoot.on("click", "[data-mlab-ct-quiz-role='move_previous']", function() { self.move(-1); });
-    self.domRoot.on("click", "[data-mlab-ct-quiz-role='check']", function() { self.checkAnswers(self.domRoot.find(".mlab_ct_quiz_currentpage")); });
+    self.domRoot.on("click", "[data-mlab-ct-quiz-role='check']", function() { self.checkPageAnswers(self.domRoot.find(".mlab_ct_quiz_currentpage")); });
+    self.domRoot.on("click", "[data-mlab-ct-quiz-role='check_all']", function() { self.checkAllAnswers(); });
     
     $(el).find("div").first().show().addClass("mlab_ct_quiz_currentpage");
 
@@ -35,7 +35,6 @@ this.onPageLoad = function(el) {
     $(".ui-btn.ui-icon-carat-d.ui-btn-icon-right.ui-corner-all.ui-shadow.ui-li-has-count").removeClass("ui-btn")
 /*    self.domRoot.on("change", ":input", function() { return self.storeAnswers($(this)); });
     self.domRoot.on("change", "." + self.classes.questionLocked + " :input", function() { return false; });
-    self.domRoot.on("click", "." + this.classes.checkAnswers, function() { self.checkAnswers(); }); 
 
     */
     
@@ -44,49 +43,59 @@ this.onPageLoad = function(el) {
 //navigates from page to page and stores replies every time change page
 //checks if required fields are filled in, then saves everything, if check per page is allowed, runs check
 this.move = function(direction) {
-    var q_el = $(this.domRoot.find(".mlab_ct_quiz_currentpage"));
+    var q_div_curr = $(this.domRoot.find(".mlab_ct_quiz_currentpage"));
+    var missing_fields = "";
+    var self = this;
+    var direction_text = {"-1": "prev", "1": "next"};
+    debugger;
     
-//check if any questions are mandatory and if so, are they filled in
-/*    q_el.children("[data-mlab-dt-quiz-role='question']").each(function() {
-        
-        if (this.data("mlab-dt-quiz-mandatory") == "true") {
-            if () {
-                return;
-            }
-        } 
-        
-        response = this.getResponse($(this));
-        
-        self.api.db.setResult(user_id, comp_id, q_id, response);
-    }); //end quiz on pages loop
-*/
-    
-    this.saveAnswers(this.domRoot.find(".mlab_ct_quiz_currentpage"));
-            
     if (direction == 1) {
-        var next = this.domRoot.find(".mlab_ct_quiz_currentpage").next().length;
-        if (next > 0) {
-            this.domRoot.find(".mlab_ct_quiz_currentpage").removeClass("mlab_ct_quiz_currentpage").hide().next().show().addClass("mlab_ct_quiz_currentpage");
-            this.domRoot.find("[data-mlab-ct-quiz-role='move_previous']").show();
-        } else {
+//check if any questions are mandatory and if so, are they filled in
+        q_div_curr.children("[data-mlab-dt-quiz-role='question']").each(function() {
+            if ($(this).data("mlab-dt-quiz-mandatory") == true) {
+                response = self.getResponse($(this));
+                if ( (typeof response == "undefined") || (response.length == 0) ) {
+                    missing_fields = missing_fields + $(this).find("[data-mlab-dt-quiz-subrole='question']").text() + "\n";
+                }
+            } 
+
+        }); //end quiz on pages loop
+    
+//if there is one ore more fields that are not filled in then we need to alert user and bail
+        if (missing_fields !== "") {
+            alert("Required field(s) not filled in:\n" + missing_fields);
             return;
         }
-        if (next == 1) {
-            this.domRoot.find("[data-mlab-ct-quiz-role='move_next']").hide();
-        }
+
+        var direction_text = 'next';
+        var moveto_pages = q_div_curr.nextAll('div');
+        
     } else if (direction == -1) {
-        var next = this.domRoot.find(".mlab_ct_quiz_currentpage").prev().length;
-        if (next > 0) {
-            this.domRoot.find(".mlab_ct_quiz_currentpage").removeClass("mlab_ct_quiz_currentpage").hide().prev().show().addClass("mlab_ct_quiz_currentpage");
-            this.domRoot.find("[data-mlab-ct-quiz-role='move_next']").show();
-        } else {
-            return;
-        }
-        if (next == 1) {
-            this.domRoot.find("[data-mlab-ct-quiz-role='move_previous']").hide();
-        }
+        var direction_text = 'previous';
+        var moveto_pages = q_div_curr.prevAll('div');
+        
     }
     
+    this.saveAnswers(q_div_curr);
+    
+    if (moveto_pages.length > 0) {
+        q_div_curr.removeClass("mlab_ct_quiz_currentpage").hide();
+        $(moveto_pages[0]).show().addClass("mlab_ct_quiz_currentpage");
+        this.domRoot.find("[data-mlab-ct-quiz-role='move_" + direction_text[(direction * -1).toString()] + "']").show();
+        if (moveto_pages.length == 1) {
+            this.domRoot.find("[data-mlab-ct-quiz-role='move_" + direction_text[direction.toString()] + "']").hide();
+        }
+    } else {
+        return;
+    }
+
+    
+    if (direction == 1 && moveto_pages.length == 1 && mlab.api.components['quiz'].settings.allow_check && !mlab.api.components['quiz'].settings.allow_check_on_page) {
+        this.domRoot.find("[data-mlab-ct-quiz-role='check_all']").show();
+    } else {
+        this.domRoot.find("[data-mlab-ct-quiz-role='check_all']").hide();
+    }
+ 
 };
 
 this.loadAnswers = function() {
@@ -96,7 +105,6 @@ this.loadAnswers = function() {
 //this function is used for callbacks from the API database functions, it will contain a list of data which is {id_of_question: selected_answers}
 //selected_answers can be a string (for text boxes), or an array of values for select, radio or check boxes.
 this.processAnswers = function (data) {
-    debugger;
     var q, q_type;
     for (id in data) {
         q = $("#" + id);
@@ -129,28 +137,96 @@ this.processAnswers = function (data) {
 }
 
 //the answer check utilises the "data-mlab-cp-quiz-alternative=correct" we use for checkboxes, radio boxes and options to 
-this.checkAnswers = function(page) {
+this.checkPageAnswers = function(page) {
     if (typeof page == "undefined") {
-        var start = this.domRoot;
-    } else {
-        var start = page;
+        return;
     }
 
 //first erase all previous markings
-    $(start).find("input[type='radio'], input[type='checkbox']").parent().css("background-color", "");
-    $(start).find("option").css("background-color", "");
-    $(start).find("input[type='text']").css("background-color", "");
+    $(page).find("input[type='radio'], input[type='checkbox']").parent().css("background-color", "");
+    $(page).find("option").css("background-color", "");
+    $(page).find("input[type='text']").css("background-color", "");
 
 
-    $(start).find("input[data-mlab-cp-quiz-alternative='correct']").filter(":checked").parent().css("background-color", "orange");
-    $(start).find("option[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
-    $(start).find(":text").each( function () {
+    $(page).find("input[data-mlab-cp-quiz-alternative='correct']").filter(":checked").parent().css("background-color", "orange");
+    $(page).find("option[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
+    $(page).find(":text").each( function () {
         if ($(this).attr("data-mlab-cp-quiz-textvalue").toLowerCase().trim() == $(this).val().toLowerCase().trim()) {
             $(this).css("background-color", "orange");
         }
     });
     
 };
+
+//here we check all answers for the end of the quiz, so we need to list page name, title of question and which answers are right or not
+this.checkAllAnswers = function() {
+    if (typeof page == "undefined") {
+        return;
+    }
+
+    var pages = this.domRoot.find("div[data-mlab-dt-quiz-role='page']");
+    var result_page = $(this.domRoot.find("div[data-mlab-dt-quiz-role='display_results']")[0]);
+    result_page.empty();
+    
+    for (i in pages) {
+        result_page.append($(pages[i]).find("h2").clone());
+        
+        $(pages[i]).children("[data-mlab-dt-quiz-role='question']").each(function() {
+            result_page.append($(this).find("[data-mlab-dt-quiz-subrole='question']").clone());
+            var q_type = $(this).data("mlab-dt-quiz-questiontype");
+            switch (q_type) {
+                case "checkbox": 
+                    $(this).find("input").each( function() { 
+                        if ( $(this).data("mlab-cp-quiz-alternative") == "correct" ) {
+                            if ( $(this).prop("checked") ) {
+                                result_page.append("<p class='mlab_ct_quiz_correct'>Corr " + $(this).find("[data-mlab-dt-quiz-subrole='question']").text() + "</p>");
+                            } else {
+                                result_page.append("<p class='mlab_ct_quiz_incorrect'>Should have " + $(this).find("[data-mlab-dt-quiz-subrole='question']").text() + "</p>");
+                            }
+                        } else if ( $(this).prop("checked") ) {
+                            result_page.append("<p class='mlab_ct_quiz_incorrect'>Incorr " + $(this).find("[data-mlab-dt-quiz-subrole='question']").text() + "</p>");
+                        }
+                    });
+                        
+                    break;
+
+                case "radio": 
+                    response = q_el.find("input[name='" + q_id + "']:checked").val();
+                    break;
+
+                case "multiselect": 
+                    response = [];
+                    q_el.find('select > option:selected').each(function() {
+                        response.push($(this).val());
+                    });
+                    break;
+
+                case "select": 
+                    response = q_el.find("select").val();
+                    break;
+
+                case "text": 
+                    if ($(this).attr("data-mlab-cp-quiz-textvalue").toLowerCase().trim() == $(this).val().toLowerCase().trim()) {
+                        result_page.append("<p class='mlab_ct_quiz_correct'>Corr " + $(this).val() + "</p>");
+                    } else {
+                        
+                    }
+                    
+                    break;
+            }; //end switch question type
+            
+            response = self.getResponse($(this));
+            self.api.db.setResult(user_id, comp_id, q_id, response);
+            
+        }); //end quiz on pages loop
+
+        
+//        $(start).find("option[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
+    }
+    
+};
+
+
 
 /**
  * To save the answers we need to get app_id. user_id, comp_id and for key we use id of question.
@@ -165,11 +241,8 @@ this.saveAnswers = function(page) {
     var self = this;
     
     $(page).children("[data-mlab-dt-quiz-role='question']").each(function() {
-        
         q_id = $(this).attr("id");
-        
-        response = this.getResponse($(this));
-        
+        response = self.getResponse($(this));
         self.api.db.setResult(user_id, comp_id, q_id, response);
     }); //end quiz on pages loop
 };
@@ -181,7 +254,7 @@ this.getResponse = function(q_el) {
         case "checkbox": 
             response = [];
             q_el.find("input:checked").each(function() {
-                response.push(q_el.val());
+                response.push($(this).val());
             });
             break;
 
@@ -192,7 +265,7 @@ this.getResponse = function(q_el) {
         case "multiselect": 
             response = [];
             q_el.find('select > option:selected').each(function() {
-                response.push(q_el.val());
+                response.push($(this).val());
             });
             break;
 

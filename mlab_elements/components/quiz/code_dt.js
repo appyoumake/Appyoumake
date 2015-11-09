@@ -26,7 +26,7 @@ this.editPrompts = {
 };
 
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
-this.tabContentTemplate = '<div id="{id}">{content}</div>';
+this.tabContentTemplate = '<div id="{id}" data-mlab-ct-quiz-role="page" >{content}</div>';
 this.questionTemplate = '<div id="{id}" data-mlab-dt-quiz-role="question" class="mlab_current_component_child">{content}</div>';
 this.questionExplanatoryTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-dt-quiz-subrole="explanatory">{content}</p>';
 this.questionQuestionTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-dt-quiz-subrole="question">{content}</p>';
@@ -88,7 +88,7 @@ this.onLoad = function (el) {
 this.onSave = function (el) {
     var html = $('<div data-mlab-type="quiz" style="display: block;" id="' + $(el).attr("id") + '"></div>');
     $(el).find(".ui-tabs").find("[role='tabpanel']").each( function() { 
-        var page = $("<div style='display: none'>" + $(this).html() +  "</div>");
+        var page = $("<div style='display: none' data-mlab-ct-quiz-role='page' >" + $(this).html() +  "</div>");
         page.find("[contenteditable]").removeAttr("contenteditable");
         page.find(".mc_correct").removeClass("mc_correct");
         html.append( page );
