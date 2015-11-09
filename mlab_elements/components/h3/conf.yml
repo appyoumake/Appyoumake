@@ -2,7 +2,8 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: h3
-tooltip: This is a sub, sub headline, use sparingly per page to indicate change of topic 
+tooltip: Du bruker denne knappen for å sette inn Overskrift 2.
+extended_tooltip: Du bruker denne knappen for å sette inn Overskrift 2.</br></br>Dette er som i Word</br></br>En god tommelfinger regel kan være å bruke denne som for Forsvarets maler
 html: <h3 class='mc_text mc_display mc_heading mc_small'>Enter headline level 3 here</h3>
 inherit: h1
 placeholder: Enter your headline level 3 here

@@ -2,7 +2,8 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: h2
-tooltip: This is a sub headline, use sparingly on the page to indicate change of topic 
+tooltip: Du bruker denne knappen for å sette inn Overskrift 1.
+extended_tooltip: Du bruker denne knappen for å sette inn Overskrift 1.</br></br>Dette er som i Word</br></br>En god tommelfinger regel kan være å bruke denne som for Forsvarets maler
 html: <h2 class='mc_text mc_display mc_heading mc_medium'>Enter headline level 2 here</h2>
 inherit: h1
 placeholder: Enter your headline level 2 here

@@ -4,7 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: image
 name: img_text
 inherit: img
-tooltip: This is an image and text component, use it for paragraphs that require an image in them
+tooltip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.
+extended_tooltip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.</br></br>Du velger et bilde lagret på din maskin og kan gi bildet en undertekst og skrive en tekst som vil omslutte bildet.
 filterhtml: ["figcaption", "p"]
 html: |
     <figure class="mc_container mc_picture_and_text">

@@ -188,7 +188,7 @@
                         
 //When the component tooltips link is clicked the exteded help tekst for the component will show in the tooltip box
                         $( ".mlab_component_tooltip_more_link" ).on( "click", function() {
-                            var extendedText = $(this).parent().find('.mlab_component_extended_tooltip').text();
+                            var extendedText = $(this).parent().find('.mlab_component_extended_tooltip').html();
                             mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', extendedText);
                         });
                       
@@ -224,8 +224,9 @@
                             $(this).qtip({
                             content: { text: $(this).next('.mlab_component_tooltip') },
                             position: { my: 'leftcenter', at: 'rightMiddle', adjust: { x: -14, y: -4, } },
-                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);},   
-                                    hidden: function() { mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', "testy"); } },
+                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);}
+                            //,   hidden: function() { mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', "testy"); } 
+                                },
                             hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                             style: { "background-color": "white", color: "blue", classes: "mlab_qtip_tooltip" } } ) ;         
                         });

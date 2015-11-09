@@ -2,7 +2,8 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: ul
-tooltip: Un-ordered list
+tooltip: Med denne knappen setter du en kulepunktliste inn i appen.
+extended_tooltip: Med denne knappen setter du en kulepunktliste inn i appen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
 inherit: ol
 html: |
     <ul class="mc_container mc_list">

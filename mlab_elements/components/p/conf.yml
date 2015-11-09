@@ -3,7 +3,8 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: text
 name: p
-tooltip: Regular body text
+tooltip: Klikker du på denne knappen kan du legge inn vanlig brødtekst i din App.
+extended_tooltip: Klikker du på denne knappen kan du legge inn vanlig brødtekst i din App.</br></br>Tenk på budskapet, korte setninger, du skriver ikke en avhandling
 compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p class='mc_text mc_display'>Enter your body text here</p>
 process_keypress: true
