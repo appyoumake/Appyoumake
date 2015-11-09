@@ -11,6 +11,13 @@ var WebSocketServer = require('ws').Server;
 var mlabServicesCallbackServer = new WebSocketServer({port: config.port});
 mlabEditorClients = new Object();
 
+console.logCopy = console.log.bind(console);
+console.log = function (data){
+    var timestamp = '[' + Date.now() + '] ';
+    this.logCopy(timestamp, data);
+}
+
+
 console.log("Listening on localhost:" + config.port);
 
 mlabServicesCallbackServer.on('connection', function(ws) {
