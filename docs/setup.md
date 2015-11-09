@@ -116,7 +116,7 @@ server {
     
     ## First try to serve mlab static files
     location / {
-      try_files $uri $uri/ /app.php;
+      try_files $uri $uri/ /app.php?$query_string;
     }
 
     ## Static files in mlab_elements

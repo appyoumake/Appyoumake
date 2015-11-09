@@ -814,9 +814,6 @@ this.prepareDialogBox = function() {
     $(content).on("keydown", "input, textarea", function(e) {
         mlab.dt.components.quiz.code.handleUserInput($(this), e);
     });
-    $(document).on("click", "[data-mlab-dt-quiz-button='cancel']", function() {
-        mlab.dt.components.quiz.code.cancelCurrentQuestion();
-    });
 
     $(content).find("ul li a").each(function() {
         $(this).attr("href", location.href.toString() + $(this).attr("href"));
@@ -885,7 +882,7 @@ this.getDialogHtml = function(id) {
                     '        <div class="mlab_dt_large_new_line"></div>' +         
                     '    </div>' + 
                     '</div>' + 
-                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel">' 
+                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.components.quiz.code.cancelCurrentQuestion();">' 
                     );
 };
 
@@ -903,7 +900,7 @@ this.getQuizPropertiesDialogHtml = function() {
             '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="lock_checked">Lock checked questions for further editing</label>' + 
             '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="submit">Submit answers to remote database?</label>' + 
             '</div>' + 
-            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="OK">' 
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="OK"  onclick="mlab.dt.api.closeAllPropertyDialogs();">' 
             );
 }
 
