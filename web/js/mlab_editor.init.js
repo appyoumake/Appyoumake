@@ -119,24 +119,7 @@
 
 /**** Finished preparing variables, now we set up rest of environment ****/
 
-//set the compiler qTip to show QR code and link when hower over compile icon
-//Burde endre ikonet til grønt eller noe....
-//TODO use api.elements.tooltip
-                $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, platform) {
-                    if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
-//TODO skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
-                        var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
-                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
-                        $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
 
-                        $('#mlab_download_'+ platform + '_icon').qtip({
-                            hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
-                            content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
-                                     title: { text: "Download to " + platform } },
-                            style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
-                        });
-                    }
-                });  
 
 //check if the doc is modified, if so warn user, also unlock file
                 window.onbeforeunload = function() {

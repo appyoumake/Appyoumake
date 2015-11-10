@@ -48,7 +48,7 @@ this.onCreate = function (el) {
  * @param {jQuery} el Main element for component. 
  */
 this.onLoad = function (el) {
-debugger;
+
     var that = this;
     this.generateId(el);
     if (!this.domRoot.length) return;
@@ -73,6 +73,7 @@ debugger;
             $(new_div).find("p").attr('contenteditable','true').on("click", function(e){ that.selectItem(e); });
             $(new_div).find("label").attr('contenteditable','true').on("click", function(e){ e.preventDefault(); that.selectItem(e); });
             $(new_div).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+            $(new_div).find("select option").on("click", function(e){ that.selectItem(e); });
         } else if (this.nodeName.toLowerCase() == "script") {
             $(el).append(this);
         }
@@ -246,12 +247,13 @@ this.handleUserInput = function(input, e) {
 };
 
 this.selectItem = function (event) {
+    debugger;
     var page = this.getCurrentPage();
     page.find(".mlab_current_component_grandchild").removeClass("mlab_current_component_grandchild");
     page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
     $(event.currentTarget).addClass("mlab_current_component_grandchild");
     $(event.currentTarget).parents("[data-mlab-cp-quiz-role='question']").addClass("mlab_current_component_child");
-}
+};
 
 this.prepareQuestion = function (page, question) {
     var that = this;
@@ -259,7 +261,7 @@ this.prepareQuestion = function (page, question) {
     $(question).find("p, label").attr('contenteditable','true').on("click", function(e){ that.selectItem(e); });
     $(question).find("label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
     $(question).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
-}
+};
 
 //---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT, AS WELL AS SUPPORTING FUNCTIONS
 

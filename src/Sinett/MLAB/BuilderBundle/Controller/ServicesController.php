@@ -666,5 +666,25 @@ error_log($head);
         
         return new JsonResponse(array('result' => 'success'));
     }
-
+    
+    public function cmpGetListCompiledAppsAction($app_id, $app_version) {
+        
+        $em = $this->getDoctrine()->getManager();
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        if (is_null($app)) {
+            return new JsonResponse(array('result' => 'error', 'message' => 'Unable to retrieve app database entry: ' . $app_id));
+        }
+        //pick up previously compiled files
+        $config = $this->container->parameters['mlab'];
+        $file_mgmt = $this->get('file_management');
+        $comp_files = array();
+        foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
+            $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
+            if ($compiled_app !== false) {
+                $comp_files[$platform] = $compiled_app;
+            }
+        }
+        return new JsonResponse(array('result' => 'success', "mlab_compiled_files" => $comp_files));
+    }
+    
 }

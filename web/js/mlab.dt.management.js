@@ -23,9 +23,43 @@ Mlab_dt_management.prototype = {
         url = url.replace("_UID_", this.parent.uid);
         this.parent.utils.update_status("callback", 'Opening app', true);
         var that = this;
+        var local_app_id = app_id;
         $.get(url, function( data ) {
             if (data.result == "success") {
                 that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
+                
+                
+                
+//set the compiler qTip to show QR code and link when hower over compile icon
+//Burde endre ikonet til grønt eller noe....
+//TODO use api.elements.tooltip
+//any existing compiled files for this app
+                var url = mlab.dt.urls.cmp_get_list_compiled_apps.replace("_ID_", mlab.dt.app.id);
+                url = url.replace("_VERSION_", mlab.dt.app.active_version);
+                debugger;
+                $.get( url , function( data ) {
+
+                    if (data.result === "success") {
+                        mlab.dt.app.compiled_files = data.mlab_compiled_files;
+                        $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, platform) {
+                            if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
+    //TODO skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
+                                var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
+                                $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                                $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
+
+                                $('#mlab_download_'+ platform + '_icon').qtip({
+                                    hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
+                                    content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
+                                             title: { text: "Download to " + platform } },
+                                    style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                
                 $("#mlab_statusbar_permanent").html(mlab.dt.app.name);
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_item_applied");
