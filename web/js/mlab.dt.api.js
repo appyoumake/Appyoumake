@@ -615,7 +615,6 @@ Mlab_dt_api.prototype = {
                 autoOpen: true,
                 modal: true,
                 closeOnEscape: true,
-                dialogClass: 'mlab_dt_dialog_credentials',
                 
                 buttons: {
                     'Save': function() {

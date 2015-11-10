@@ -320,10 +320,6 @@ made smaler than the min width */
 }
 
 #mlab_editor #mlab_dt_dialog_credentials{
-   
-}
-
-#mlab_editor .mlab_dt_dialog_credentials{
     background-color: white;
     color: black;
     border: solid orange 2px;
