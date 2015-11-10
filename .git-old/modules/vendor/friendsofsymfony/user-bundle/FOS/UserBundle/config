@@ -1,0 +1,12 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	worktree = ../../../../../../../vendor/friendsofsymfony/user-bundle/FOS/UserBundle
+[remote "origin"]
+	url = https://github.com/FriendsOfSymfony/FOSUserBundle.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master

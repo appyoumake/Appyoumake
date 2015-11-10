@@ -1,0 +1,219 @@
+0000000000000000000000000000000000000000 b8303d810420b25211ec79af3b0dc629713a807e Arild Bergh <info@bergh.fm> 1395063405 +0100	clone: from git@github.com:bardreitanffi/nyeMLAB.git
+b8303d810420b25211ec79af3b0dc629713a807e a5c837d0f066e8a5034eb5ffd36497269ba47f1b Arild Bergh <info@bergh.fm> 1395142707 +0100	commit: Fixed #53, #45, #52, #51, #56, #54, #48, #47, #50
+a5c837d0f066e8a5034eb5ffd36497269ba47f1b c464c717724ac09f4417a4be5abaab755046826c Arild Bergh <info@bergh.fm> 1395303858 +0100	commit: Fixed #44, #5, #46, #35
+c464c717724ac09f4417a4be5abaab755046826c 063b44abe159fabd9f3cbc77e994fc5ec1fbf2f6 Arild Bergh <info@bergh.fm> 1395650521 +0100	merge arild_enhancing_components_ui: Fast-forward
+063b44abe159fabd9f3cbc77e994fc5ec1fbf2f6 48aade3388345d7f8a7ea6848a88cfba869f8447 Arild Bergh <info@bergh.fm> 1395855643 +0100	pull: Fast-forward
+48aade3388345d7f8a7ea6848a88cfba869f8447 d5ba370cc13bec18f0001ba9adaf0544c1acbbe4 Arild Bergh <info@bergh.fm> 1395855702 +0100	merge arild_enhancing_components_ui: Merge made by the 'recursive' strategy.
+d5ba370cc13bec18f0001ba9adaf0544c1acbbe4 9da781b70f27ad752d5ba65988d9c992f39e2c31 Arild Bergh <info@bergh.fm> 1395910568 +0100	commit: Fjerner vendor fra GIT kontroll, bruk composer
+9da781b70f27ad752d5ba65988d9c992f39e2c31 1d26f1b23e20c5a4f6e069c7d8fd139ad1bd0e2a Arild Bergh <info@bergh.fm> 1395912627 +0100	commit: Re-added all vendor files through composer, composer.lock/json updated to use version 2.3 of Symfony/YAML
+1d26f1b23e20c5a4f6e069c7d8fd139ad1bd0e2a f3267f8c06614b15f0e85c7fef68ef62aff23b0d Arild Bergh <info@bergh.fm> 1396009354 +0100	commit: Fikset bug som gjorde at komponenter ikke kunne manipuleres (legge til link, qr kode, etc) etter at siden var lagret
+f3267f8c06614b15f0e85c7fef68ef62aff23b0d e6d20126b961f4e8f2209521da6760e21997f65c Arild Bergh <info@bergh.fm> 1396009420 +0100	pull: Merge made by the 'recursive' strategy.
+e6d20126b961f4e8f2209521da6760e21997f65c 12cc7662498bb74eb474324a3d6eea7731ca7f24 Arild Bergh <info@bergh.fm> 1396013782 +0100	commit: Rensket opp alle tekst komponenter
+12cc7662498bb74eb474324a3d6eea7731ca7f24 539fcd0c195b6002f2b3db8d66c26edd155fe349 Arild Bergh <info@bergh.fm> 1396524334 +0200	merge arild_enhancing_components_ui: Fast-forward
+539fcd0c195b6002f2b3db8d66c26edd155fe349 35733d8e705c295a7c59bd37d85360266bf8537f Arild Bergh <info@bergh.fm> 1396535898 +0200	commit: Finalised changes to IMG component, now completely standalone and request image immediately
+35733d8e705c295a7c59bd37d85360266bf8537f 5f4f47e7bfac7ba8a683cff13a6eae6a4f658fe0 Arild Bergh <info@bergh.fm> 1396610825 +0200	commit: Cleaned up rest of components using new onCreate function + added QR code component
+5f4f47e7bfac7ba8a683cff13a6eae6a4f658fe0 2538207df58f6a2271ca1c65141b44d44b158627 Arild Bergh <info@bergh.fm> 1396610841 +0200	pull: Merge made by the 'recursive' strategy.
+2538207df58f6a2271ca1c65141b44d44b158627 7209c16d5aad50e4659eba87b7181b51647d2e3d Arild Bergh <info@bergh.fm> 1396612302 +0200	commit: Fixed missing qtip in editor
+7209c16d5aad50e4659eba87b7181b51647d2e3d 7749c942a0f1eb4fc1f92961f7522d636c8ed03d Arild Bergh <info@bergh.fm> 1396616547 +0200	commit: Fixed issue of saving new pages (lost page num) and buglet in image upload
+7749c942a0f1eb4fc1f92961f7522d636c8ed03d 20b7e27909133dd9c4f919cd3ee1a9ba138676b3 Arild Bergh <info@bergh.fm> 1399027880 +0200	pull: Fast-forward
+20b7e27909133dd9c4f919cd3ee1a9ba138676b3 ef026ecbea6fe73b545a8a3366587f6cb8a0b334 Arild Bergh <info@bergh.fm> 1399035244 +0200	commit: Added scroll bar in editor, checking for save interval so is 60 seconds if no value specified
+ef026ecbea6fe73b545a8a3366587f6cb8a0b334 495eb54a0207f3b7a3d6e8a867b7a2ba38385965 Arild Bergh <info@bergh.fm> 1399383832 +0200	commit: Added code to update JS variable with current number of pages, untested
+495eb54a0207f3b7a3d6e8a867b7a2ba38385965 08250de9af7a6fc445907f0b9419b3aba2b72fc3 Arild Bergh <info@bergh.fm> 1399395679 +0200	commit: Tested code to update JS variable with current number of pages
+08250de9af7a6fc445907f0b9419b3aba2b72fc3 70383921db9a5b3414887825a58276ff2f18d862 Arild Bergh <info@bergh.fm> 1399396108 +0200	commit: Fixed so trimming line before comparing
+70383921db9a5b3414887825a58276ff2f18d862 7096e3f2b1753cf4d1ca1d66c87ec8ce178378c3 Arild Bergh <info@bergh.fm> 1404729170 +0200	pull: Fast-forward
+7096e3f2b1753cf4d1ca1d66c87ec8ce178378c3 2bc159cfa61707098ca8abffc51147988955483f Arild Bergh <info@bergh.fm> 1404729721 +0200	commit: Added initial Snapper code
+2bc159cfa61707098ca8abffc51147988955483f 8f21a141638f6a6a34382c8005182a694bf5707b Arild Bergh <info@bergh.fm> 1408870911 +0200	commit: Cleaned up and integrated all changes from Bård before Gol in build_app.html.twig
+8f21a141638f6a6a34382c8005182a694bf5707b 1ac03d2f9d63b7f9779c11fba6bb88c9609ecdd9 Arild Bergh <info@bergh.fm> 1408873604 +0200	commit: Fixed display of pages in list
+1ac03d2f9d63b7f9779c11fba6bb88c9609ecdd9 4fddefbc9ea6b7df96bb007ec6956725e2d1426e Arild Bergh <info@bergh.fm> 1408891380 +0200	commit: Changed all paths from TWIG to use mlab_urls from JSON data, Fixed so not fail on empty page, fixed #80, started on #74
+4fddefbc9ea6b7df96bb007ec6956725e2d1426e 39e1e1aa92a2f2d14a0b3d039c00be7e547857b2 Arild Bergh <info@bergh.fm> 1408967726 +0200	commit: Add app-pages to meta data coming back, display these corectly, fiks problem of duplicate pages listed, update page name in list when update title of curent page, fikser #78 vanlig brukere har ignen gruppe, gjør ferdig #74, legg til komp med klikk
+39e1e1aa92a2f2d14a0b3d039c00be7e547857b2 b99eae4b7e876b96f5f231ee45d93096162e220d Arild Bergh <info@bergh.fm> 1409031680 +0200	commit: #69 er ferdig
+b99eae4b7e876b96f5f231ee45d93096162e220d 19423f156b694c73173187ce0fad5c008f1fa929 Arild Bergh <info@bergh.fm> 1409046581 +0200	commit: Fikser #91, #92, begynt på #79
+19423f156b694c73173187ce0fad5c008f1fa929 09fa5d4ab797a9fa4cac8b38de1dc214be172a81 Arild Bergh <info@bergh.fm> 1409123321 +0200	pull: Fast-forward
+09fa5d4ab797a9fa4cac8b38de1dc214be172a81 d3f28683fb80526f357978109f8e8a0c062302e1 Arild Bergh <info@bergh.fm> 1409125043 +0200	commit: Fixed issue # 93, system vs regular category
+d3f28683fb80526f357978109f8e8a0c062302e1 d9304b77a844ee85df232b8196afda975840decf Arild Bergh <info@bergh.fm> 1409148418 +0200	commit: Fixed issue #65, mesteparten av 79
+d9304b77a844ee85df232b8196afda975840decf d08466e0d9e3abe91c1c679255d5eaec468d59f9 Arild Bergh <info@bergh.fm> 1409148733 +0200	commit (merge): Fixed issue #65, mesteparten av 79
+d08466e0d9e3abe91c1c679255d5eaec468d59f9 c1698d7a7a2bc12c982b54a11f395fc5109a6382 Arild Bergh <info@bergh.fm> 1409149540 +0200	commit: Mer av 79
+c1698d7a7a2bc12c982b54a11f395fc5109a6382 7dfabd48532e44d7a002205fb01624532e204784 Arild Bergh <info@bergh.fm> 1409205318 +0200	pull: Fast-forward
+7dfabd48532e44d7a002205fb01624532e204784 ec720f8357c32ec81dbef160e6ca2e1942437ca1 Arild Bergh <info@bergh.fm> 1409210503 +0200	commit: La til stub funksjon for lagring av app side, forandret navn på funksjoner i meny for å matche resten av funksjonene i mlab_edit.js
+ec720f8357c32ec81dbef160e6ca2e1942437ca1 ef6552d074a36f26aadb267fc29edfe80efb8a9d Arild Bergh <info@bergh.fm> 1409224356 +0200	commit: Mer oppdateringer i mlab_edit.js for å lagre uten problemer, nesten ferdig
+ef6552d074a36f26aadb267fc29edfe80efb8a9d 04aa1feb92da7c81d4c3f118ff87d42adadf91f0 Arild Bergh <info@bergh.fm> 1409227998 +0200	commit: Ferdig med #95
+04aa1feb92da7c81d4c3f118ff87d42adadf91f0 a14816f5624667a85b126ced9d3aecac82fbec8f Arild Bergh <info@bergh.fm> 1409228006 +0200	pull: Merge made by the 'recursive' strategy.
+a14816f5624667a85b126ced9d3aecac82fbec8f 52c9c7d1b8e462b7e1bcdf68d07438aa7f508ec6 Arild Bergh <info@bergh.fm> 1409294322 +0200	commit: Ferdig med #95 for ordentlig, la til klasse for å gjemme ADD for 3. nivå og ikke ha i liste som mulig parent
+52c9c7d1b8e462b7e1bcdf68d07438aa7f508ec6 7c9ef00141d62930794c4ea11c2165e38c79842e Arild Bergh <info@bergh.fm> 1409298524 +0200	pull: Fast-forward
+7c9ef00141d62930794c4ea11c2165e38c79842e 1578dc63f1c9801952c2334f030c13bb6fc82c14 Arild Bergh <info@bergh.fm> 1409298861 +0200	commit: Fixed issue with parent category not being selected when first open Add dialog box
+1578dc63f1c9801952c2334f030c13bb6fc82c14 ecd04f356f1e1d594e510f3ea0a639ba5a9ba0bc Arild Bergh <info@bergh.fm> 1409312259 +0200	commit: Fikset #68
+ecd04f356f1e1d594e510f3ea0a639ba5a9ba0bc 06c4a0c6ee5c98fa08fd2b1b9e1314fbd91c45ca Arild Bergh <info@bergh.fm> 1409312268 +0200	pull: Merge made by the 'recursive' strategy.
+06c4a0c6ee5c98fa08fd2b1b9e1314fbd91c45ca a5962dad492a7b604a322eb180d6c5b63f9fabc5 Arild Bergh <info@bergh.fm> 1410162470 +0200	pull: Fast-forward
+a5962dad492a7b604a322eb180d6c5b63f9fabc5 dc6fd3bf747540c7c41e509fdd68ecb0a686542a Arild Bergh <info@bergh.fm> 1410165975 +0200	commit: Fixed #106, manglet start slash i default URL
+dc6fd3bf747540c7c41e509fdd68ecb0a686542a 63afc4d88348853b25f915009693a157eb81d488 Arild Bergh <info@bergh.fm> 1410172283 +0200	commit: Added a graphic to front page, to be improved over time
+63afc4d88348853b25f915009693a157eb81d488 ddc73560ae3a4529207795c67009cecccb0c7d3e Arild Bergh <info@bergh.fm> 1410765701 +0200	pull: Fast-forward
+ddc73560ae3a4529207795c67009cecccb0c7d3e 6f62ab98f06c633fc20b0349477c6ecf36ac49f5 Arild Bergh <info@bergh.fm> 1410767098 +0200	commit: Fixed #83, generere GUID
+6f62ab98f06c633fc20b0349477c6ecf36ac49f5 9627ea16a443aa01ac1c560d51060a39e0264818 Arild Bergh <info@bergh.fm> 1410768791 +0200	commit: Fixed #81, kapittel header
+9627ea16a443aa01ac1c560d51060a39e0264818 d7c0bd481718f7d4d5751b068610a5466547b3d9 Arild Bergh <info@bergh.fm> 1410769712 +0200	commit: Added class to new chapter header component
+d7c0bd481718f7d4d5751b068610a5466547b3d9 6985830ac77660e444964350799f9de7834bd306 Arild Bergh <info@bergh.fm> 1410777345 +0200	commit: Fixed #113, index komponent
+6985830ac77660e444964350799f9de7834bd306 5f99b465121c5d737ec7d90798ab81c805024ce8 Arild Bergh <info@bergh.fm> 1410778561 +0200	commit: Fixed #115, index komponent (113 was chapter component) and fixed small issue where onSave was called even if it did not exists in a component, also fixed so contenteditable is only set inside the component, not from MLAB editor code
+5f99b465121c5d737ec7d90798ab81c805024ce8 c04bf38c69d3862d0a6962472e5c123badf1d58f Arild Bergh <info@bergh.fm> 1410778652 +0200	commit: Removed debugger statement from previous commit
+c04bf38c69d3862d0a6962472e5c123badf1d58f 74a03fd32f3361932cd7374f126e1a11ff3310ed Arild Bergh <info@bergh.fm> 1410779782 +0200	commit: Fixed #112, ikke la brukere legge til komponenter når låst
+74a03fd32f3361932cd7374f126e1a11ff3310ed b9afcfffe3e0b4ab68fef536415d2fdddf325207 Arild Bergh <info@bergh.fm> 1410788166 +0200	commit: Initial code for #120 & #123
+b9afcfffe3e0b4ab68fef536415d2fdddf325207 d8759036cf80c568ff8e62eacfd2ebcaee0b0783 Arild Bergh <info@bergh.fm> 1410849281 +0200	pull: Fast-forward
+d8759036cf80c568ff8e62eacfd2ebcaee0b0783 805d9026e804907f157609a54198fd356b79596e Arild Bergh <info@bergh.fm> 1410873358 +0200	commit: Wrapped up #124, added API calls for common features as per #123, Removed droppable options, redid all components to use new callable API function, changed required_libs to distinguish between runtime and designtime, added code to copy designtime files across, load already uploaded files into select box and insert them for images. Also changed so backend componentaddedAction is ALWAYS called, used for more than just executing php code now. Updated qtip, bug in old version. Updated basic template to use new include files.
+805d9026e804907f157609a54198fd356b79596e 93836a7a84c85eb3f8291416e339123724fbee9f Arild Bergh <info@bergh.fm> 1410877775 +0200	commit: Started work on #118, found relevant code. Fixed bug when try to update manifest file, would have affected youtube video.
+93836a7a84c85eb3f8291416e339123724fbee9f 896d78c0357b799f2a3895b4de851934b29d891d Arild Bergh <info@bergh.fm> 1411024792 +0200	pull: Fast-forward
+896d78c0357b799f2a3895b4de851934b29d891d 6a70b8c6cc0a554a5ee8ffe1e31dbfc5a943697f Arild Bergh <info@bergh.fm> 1411044069 +0200	commit: Minor changes to youtube component
+6a70b8c6cc0a554a5ee8ffe1e31dbfc5a943697f 0eae11eb2e99c428042e7f661e32d694a57aed87 Arild Bergh <info@bergh.fm> 1412073095 +0200	commit: Updated basic template with resizable style for video
+0eae11eb2e99c428042e7f661e32d694a57aed87 d8b683bc69dbfd8c80c26d1669d3ebb34499d0c1 Arild Bergh <info@bergh.fm> 1412167275 +0200	commit: Redone image component, #134 + vieo bredde, #131
+d8b683bc69dbfd8c80c26d1669d3ebb34499d0c1 973ab3bd3ecbfef5396c6eb3e153d0733d0a19ea Arild Bergh <info@bergh.fm> 1412579703 +0200	pull: Fast-forward
+973ab3bd3ecbfef5396c6eb3e153d0733d0a19ea 73cb92ec8039f4391ee4963414cb230e4f235417 Arild Bergh <info@bergh.fm> 1412582785 +0200	commit: Now hiding component that are not enabled
+73cb92ec8039f4391ee4963414cb230e4f235417 16f81e4dd37aaef40b2ed1b18bbbb01ace80e7be Arild Bergh <info@bergh.fm> 1412666056 +0200	commit: Basic version of Google Maps reimplemented (without dialog until next iteration). Fixed: Does not fail if YAML in conf.txt is wrong, but marks item as non accessible. Corrected URL for components required to load JS libraries at designtime. Checking for onInit function when add comp before try to trigger it.
+16f81e4dd37aaef40b2ed1b18bbbb01ace80e7be 91681574031f1ba59c389a3a4244ca03fec1eeea Arild Bergh <info@bergh.fm> 1412666352 +0200	commit (merge): Merged changes
+91681574031f1ba59c389a3a4244ca03fec1eeea 834ed36278fef189fcb3480391d85b371b927692 Arild Bergh <info@bergh.fm> 1412678249 +0200	commit: Fix not restart saving timer (again), fixed new way of returning HTML for saving (#135), further work on Google Maps.
+834ed36278fef189fcb3480391d85b371b927692 e145615773dabe14fd57cb415a2dba8f2242d1b9 Arild Bergh <info@bergh.fm> 1412678801 +0200	commit: Fixed typo in mlab_editor.js
+e145615773dabe14fd57cb415a2dba8f2242d1b9 358fb85fcfb6d909af764eebf8c8e033f8d7575f Arild Bergh <info@bergh.fm> 1412689606 +0200	commit: More work on Google Maps, Fjernet drop.png i CSS for editor menu.
+358fb85fcfb6d909af764eebf8c8e033f8d7575f b3be53a749b50eeedc93e6a827d13607c9459fd2 Arild Bergh <info@bergh.fm> 1412751982 +0200	pull: Fast-forward
+b3be53a749b50eeedc93e6a827d13607c9459fd2 d255664b4760101cb1a804135286359aff06729d Arild Bergh <info@bergh.fm> 1412770241 +0200	commit: Google Maps basic now working
+d255664b4760101cb1a804135286359aff06729d 67c47913d0ba1cf9f21bb75d3921ba04c6b7b723 Arild Bergh <info@bergh.fm> 1412770343 +0200	commit: Google Maps basic now working 2
+67c47913d0ba1cf9f21bb75d3921ba04c6b7b723 40a6d45a8099999023201faf08f2bf959959719a Arild Bergh <info@bergh.fm> 1413186862 +0200	pull: Fast-forward
+40a6d45a8099999023201faf08f2bf959959719a 7c17c67884bb224989f639171b00da1ca8bb268d Arild Bergh <info@bergh.fm> 1413526766 +0200	commit: Google Maps basic now working 3
+7c17c67884bb224989f639171b00da1ca8bb268d e8d4256a65c1e5b52e598134feeb05b58d90d43c Arild Bergh <info@bergh.fm> 1413526777 +0200	pull: Merge made by the 'recursive' strategy.
+e8d4256a65c1e5b52e598134feeb05b58d90d43c 7fbe156c2ae0e89f64047c4562f841353b743aec Arild Bergh <info@bergh.fm> 1413529158 +0200	commit: Velg komponent over/under når sletter komponent #140
+7fbe156c2ae0e89f64047c4562f841353b743aec 210a4d5f1442e1c3f0b7a299039e85d9a18e4afb Arild Bergh <info@bergh.fm> 1413533739 +0200	commit: Dialog box for opplasting av bilder virker ikke lenger #138
+210a4d5f1442e1c3f0b7a299039e85d9a18e4afb e7e692a8910325e07d6ea6818123821df9b810b6 Arild Bergh <info@bergh.fm> 1413543340 +0200	pull: Fast-forward
+e7e692a8910325e07d6ea6818123821df9b810b6 5b1e0d3510292f51055577f5fa33f099576ce107 Arild Bergh <info@bergh.fm> 1413551108 +0200	pull: Fast-forward
+5b1e0d3510292f51055577f5fa33f099576ce107 791fa45012f9366c0cd8ec33e6d94c06eeec5438 Arild Bergh <info@bergh.fm> 1413556295 +0200	commit: Major changes to display of editor page, tidying up files not required, where code is stored, etc, etc. FavIcon added, #111
+791fa45012f9366c0cd8ec33e6d94c06eeec5438 9060e7cbe0c45ed835764a621d3ce4338f44a54e Arild Bergh <info@bergh.fm> 1413788803 +0200	pull: Fast-forward
+9060e7cbe0c45ed835764a621d3ce4338f44a54e 1583f4594c9755b487010d4231676c937e70d098 Arild Bergh <info@bergh.fm> 1413793745 +0200	pull: Fast-forward
+1583f4594c9755b487010d4231676c937e70d098 05a68062398e84a5d69e05937ee01e40dea642d5 Arild Bergh <info@bergh.fm> 1413793773 +0200	commit: Updating app updated field when save a page
+05a68062398e84a5d69e05937ee01e40dea642d5 2c06fa890db0726017362ca0ffc397d7d366f839 Arild Bergh <info@bergh.fm> 1413803957 +0200	commit: Fikset lite problem med overlay når bare en side i appen
+2c06fa890db0726017362ca0ffc397d7d366f839 1266af836a27e1970074f31a5a13fc6f24db7e82 Arild Bergh <info@bergh.fm> 1413803970 +0200	pull: Merge made by the 'recursive' strategy.
+1266af836a27e1970074f31a5a13fc6f24db7e82 e40a8b6daa4e1f9f5ba17e62ff528b44b43bc547 Arild Bergh <info@bergh.fm> 1413823124 +0200	pull: Fast-forward
+e40a8b6daa4e1f9f5ba17e62ff528b44b43bc547 102293b5cce98070ea63b311da8fb2cd1d632ab5 Arild Bergh <info@bergh.fm> 1413872401 +0200	pull: Fast-forward
+102293b5cce98070ea63b311da8fb2cd1d632ab5 ee919eaab77ec5ff153269e8d139ec23a844fab7 Arild Bergh <info@bergh.fm> 1415199455 +0100	pull: Fast-forward
+ee919eaab77ec5ff153269e8d139ec23a844fab7 4447772dec1a19449b25129710b7f9bf2e5c44aa Arild Bergh <info@bergh.fm> 1415606792 +0100	pull: Fast-forward
+4447772dec1a19449b25129710b7f9bf2e5c44aa a8f66084ecff2b13f2ecaf22e6264694447d187c Arild Bergh <info@bergh.fm> 1415631116 +0100	commit: Added API code and started on further dividing up JS code
+a8f66084ecff2b13f2ecaf22e6264694447d187c b95435a129c16013e2bb3ea289b93334015dc26d Arild Bergh <info@bergh.fm> 1415723354 +0100	commit: Non-working version of multi-level Mlab variable spread across files
+b95435a129c16013e2bb3ea289b93334015dc26d 4b240a6731d7f595a4c0cb8dea6146949225789e Arild Bergh <info@bergh.fm> 1415785043 +0100	commit: Reworked all of mlab_editor into object/multiple files, NOT TESTED
+4b240a6731d7f595a4c0cb8dea6146949225789e b230ab84fecb6b80bccffc7287d38f45b84b590c Arild Bergh <info@bergh.fm> 1415805520 +0100	commit: Bugfixing the new mlab object
+b230ab84fecb6b80bccffc7287d38f45b84b590c bfc172f252ade734f48b5d244dbf35c90c46bdba Arild Bergh <info@bergh.fm> 1417756847 +0100	pull: Fast-forward
+bfc172f252ade734f48b5d244dbf35c90c46bdba 6594e6edf504e1c886f70ba721650dfed4787ccc Arild Bergh <info@bergh.fm> 1417782650 +0100	commit: Demo of final quiz solution
+6594e6edf504e1c886f70ba721650dfed4787ccc 7c39c1b45622e72ccc303abfdc24614761bbe0be Arild Bergh <info@bergh.fm> 1418128883 +0100	commit: Minor change to getGUID to prefix with mlab_
+7c39c1b45622e72ccc303abfdc24614761bbe0be 7e92b2cd8dfcb859b023f4ce6b0244b029a9bf66 Arild Bergh <info@bergh.fm> 1420544307 +0100	commit: Fixed new page not working, simple 'this' scope failure
+7e92b2cd8dfcb859b023f4ce6b0244b029a9bf66 7ee7fc86a3850afbb0bbcb43051f420f7dc20797 Arild Bergh <info@bergh.fm> 1421226487 +0100	commit: Lots of changes as per #166 to match Snappers requirements
+7ee7fc86a3850afbb0bbcb43051f420f7dc20797 73f2c7e4a44705a5f031e15f99d4745bae6a71b2 Arild Bergh <info@bergh.fm> 1421242928 +0100	commit: Add icons for custom actions when select component in #166
+73f2c7e4a44705a5f031e15f99d4745bae6a71b2 de3fd67701aac3992b21ed499109f109f90fc7ff Arild Bergh <info@bergh.fm> 1422365507 +0100	commit: Halfway through storage_plugin implementation
+de3fd67701aac3992b21ed499109f109f90fc7ff 7d7daeeaa435e6869b8634824b27cb458be5574a Arild Bergh <info@bergh.fm> 1422447126 +0100	commit: 3/4 through storage_plugin implementation
+7d7daeeaa435e6869b8634824b27cb458be5574a c7fb9cdaa9ba663d777a3f74719ae915a9e3bc51 Arild Bergh <info@bergh.fm> 1422871746 +0100	pull: Fast-forward
+c7fb9cdaa9ba663d777a3f74719ae915a9e3bc51 034e6d55f35a0fd9eece57f2028fcf80ff4e9498 Arild Bergh <info@bergh.fm> 1422976997 +0100	commit: #166: Update config file so has icons for all custom functions, Use api for custom_add_link
+034e6d55f35a0fd9eece57f2028fcf80ff4e9498 208d8fa904126c1ce36fa519e1715e528f41db3b Arild Bergh <info@bergh.fm> 1425496796 +0100	pull: Fast-forward
+208d8fa904126c1ce36fa519e1715e528f41db3b 298726de70883102d903c80b2b048f3edf9b8e8e Arild Bergh <info@bergh.fm> 1425507459 +0100	commit: Fixed QR code bugs and enabled categories in New App dlg box
+298726de70883102d903c80b2b048f3edf9b8e8e b4d2d169ba6a76f7e009ed294daa89dc2246c6f1 Arild Bergh <info@bergh.fm> 1425845813 +0100	pull: Fast-forward
+b4d2d169ba6a76f7e009ed294daa89dc2246c6f1 a0d8258d39d7142a09ae6b7f63d600ac849c0b54 Arild Bergh <info@bergh.fm> 1425845832 +0100	commit: MySQL dump for Fofo
+a0d8258d39d7142a09ae6b7f63d600ac849c0b54 c41ca0bc2fa627dcd936aea44cfd5c03096bd845 Arild Bergh <info@bergh.fm> 1425900383 +0100	commit: Fixed three issues found during Fofo demo: Could not move to next/previous page, could not add link to text
+c41ca0bc2fa627dcd936aea44cfd5c03096bd845 9a8163576d6713cb1858dd34e669277ae0ce8bef Arild Bergh <info@bergh.fm> 1426676927 +0100	pull: Fast-forward
+9a8163576d6713cb1858dd34e669277ae0ce8bef 78f00154a1e170470d02eb4540c7965e7015633d Arild Bergh <info@bergh.fm> 1429691513 +0200	pull: Fast-forward
+78f00154a1e170470d02eb4540c7965e7015633d 6b8cc3038d7a93a321404f64c10cb5ec49b01f90 Arild Bergh <info@bergh.fm> 1430120188 +0200	pull: Fast-forward
+6b8cc3038d7a93a321404f64c10cb5ec49b01f90 991aa497b42ebccaa5e66b815b51ef9d86fa1ffe Arild Bergh <info@bergh.fm> 1430131416 +0200	commit: Fixed #166
+991aa497b42ebccaa5e66b815b51ef9d86fa1ffe 5c946424b3a401a5462cc8f5e898ec2b2527c5cf Arild Bergh <info@bergh.fm> 1430138179 +0200	commit: Updated stylesheet in basic_api template, fixed minor issue with previewing YouTube and Google Maps, did some temporary changes to stylesheets
+5c946424b3a401a5462cc8f5e898ec2b2527c5cf 006c9b0620a5cf862877fb1e790708be3591a1d2 Arild Bergh <info@bergh.fm> 1430810166 +0200	pull: Fast-forward
+006c9b0620a5cf862877fb1e790708be3591a1d2 4642e704bd14c1cac786de82d5fe00ba7e0a4785 Arild Bergh <info@bergh.fm> 1430832651 +0200	commit: More code to replace Linux system functions being called
+4642e704bd14c1cac786de82d5fe00ba7e0a4785 3a7fc0e66f80ce78282b17cb06cb9493bbea27d4 Arild Bergh <info@bergh.fm> 1431503239 +0200	pull: Fast-forward
+3a7fc0e66f80ce78282b17cb06cb9493bbea27d4 e428876fdeb1d88e6314b5b35e4986503aabe558 Arild Bergh <info@bergh.fm> 1432733038 +0200	commit: Added first code for connecting to compiler API (cs_app_get in mlab.dt.management.js, csGetAppStatusAction in app controller, available through temporary menu
+e428876fdeb1d88e6314b5b35e4986503aabe558 ef0ee452f4be6fa4c76c49a70f8c8b47161a69df Arild Bergh <info@bergh.fm> 1432735562 +0200	commit: Created skeleton files for separating put external services code (controller + mlab.dt javascript)
+ef0ee452f4be6fa4c76c49a70f8c8b47161a69df c045ea8cbea33ecc97de5e1cd89acf35f700b656 Arild Bergh <info@bergh.fm> 1433314515 +0200	pull: Fast-forward
+c045ea8cbea33ecc97de5e1cd89acf35f700b656 2d5d9abeaec3349ac727ff39c1ecff9c127885d6 Arild Bergh <info@bergh.fm> 1433848870 +0200	commit: Added Anniken's preliminary components and comments from 2014, need to be converted to new format
+2d5d9abeaec3349ac727ff39c1ecff9c127885d6 5cf8e169d326712976a7915b16649dcdc2427d8f Arild Bergh <info@bergh.fm> 1433850251 +0200	commit: Added PPT & DOC conversion code to FileManagement folder, must be integrated
+5cf8e169d326712976a7915b16649dcdc2427d8f a8a4a3b3098a3364ad77d43a5560b2d0f13fbf5f Arild Bergh <info@bergh.fm> 1433941037 +0200	commit: Created new controller, etc. for connecting to services
+a8a4a3b3098a3364ad77d43a5560b2d0f13fbf5f 25a746c89917b466bcb232cb8b909900c226d153 Arild Bergh <info@bergh.fm> 1434376476 +0200	commit: Started on #14 (icon design), #180 (Change how createapp works), #179 (flytte Cordova work til comp process)
+25a746c89917b466bcb232cb8b909900c226d153 1e6f3d77703c67a4a302d4d6aeb1c7c38fec7df2 Arild Bergh <info@bergh.fm> 1434978681 +0200	commit: Startet work on #77
+1e6f3d77703c67a4a302d4d6aeb1c7c38fec7df2 62143cb2a2a9a233f3b1dd5f4c1c2a9d88e881cd Arild Bergh <info@bergh.fm> 1435040452 +0200	commit: Fixed #182, skip next/previous
+62143cb2a2a9a233f3b1dd5f4c1c2a9d88e881cd cd675e0b954774e111a2a5fb315e6b2ff889c5ac Arild Bergh <info@bergh.fm> 1435067475 +0200	commit: Fixed #14, letting end user creating an icon for an app
+cd675e0b954774e111a2a5fb315e6b2ff889c5ac db77773b258c6ce65fca9a511bf1b7ee2e007fc7 Arild Bergh <info@bergh.fm> 1435128823 +0200	pull: Fast-forward
+db77773b258c6ce65fca9a511bf1b7ee2e007fc7 72b246271fae8e7535edc6650b6bc092350e8edc Arild Bergh <info@bergh.fm> 1435157244 +0200	commit: Almost completed new app wizard, just checking file upload
+72b246271fae8e7535edc6650b6bc092350e8edc 539c41440923a31b2f504578251a26837704edd8 Arild Bergh <info@bergh.fm> 1435558301 +0200	pull: Fast-forward
+539c41440923a31b2f504578251a26837704edd8 cf6e03a46669b50ec2214137183a991002e4ee4a Arild Bergh <info@bergh.fm> 1435567297 +0200	commit: Added UID update in metatag
+cf6e03a46669b50ec2214137183a991002e4ee4a 3da2a9b5bb36a0ed03afe16f1584450ba38491d1 Arild Bergh <info@bergh.fm> 1435567970 +0200	pull: Fast-forward
+3da2a9b5bb36a0ed03afe16f1584450ba38491d1 8bcf13805aa9e17301fd1fa012be28c4c5dae1c0 Arild Bergh <info@bergh.fm> 1435568271 +0200	commit: Fixed percentage signs in metatag in parameter.yml.dist
+8bcf13805aa9e17301fd1fa012be28c4c5dae1c0 53b228bff757b109a7920731edb16661d85ee010 Arild Bergh <info@bergh.fm> 1435572045 +0200	commit: Removed app metainfo editing from editor page
+53b228bff757b109a7920731edb16661d85ee010 f3987f1e145a87f8495d5645ca75d5ef90ad07e1 Arild Bergh <info@bergh.fm> 1435606845 +0200	commit: BROKEN, committing for backup, working on versions of apps
+f3987f1e145a87f8495d5645ca75d5ef90ad07e1 8e118fb7ad9a02517c24fcc85619627d3efa84e8 Arild Bergh <info@bergh.fm> 1435649976 +0200	commit: Not broken anymore, still working on versions of apps
+8e118fb7ad9a02517c24fcc85619627d3efa84e8 7bb8a44526fe8c30bbf96dfe0a509947206f2b69 Arild Bergh <info@bergh.fm> 1435672965 +0200	commit: Adding new app and editing content is now working fine using the new functions
+7bb8a44526fe8c30bbf96dfe0a509947206f2b69 a1b73401a2ff21bc5e29b7a4d7a57422c9900b77 Arild Bergh <info@bergh.fm> 1435691730 +0200	commit: Adding versions and branches work
+a1b73401a2ff21bc5e29b7a4d7a57422c9900b77 b27ebf8f9b48c5a5b59b692aef8d0aaa7ea67355 Arild Bergh <info@bergh.fm> 1435751857 +0200	commit: Final bit on versions and fixed problem of loading the editing page
+b27ebf8f9b48c5a5b59b692aef8d0aaa7ea67355 da0140a9b5f9314c6854522aad838e95e255a27e Arild Bergh <info@bergh.fm> 1435759247 +0200	commit: Started work on preprocessing for compilation
+da0140a9b5f9314c6854522aad838e95e255a27e af492f77ef959e6f3543a62c5a8204e813e8f993 Arild Bergh <info@bergh.fm> 1436454079 +0200	commit: Further work on preprocessing for compilation, getting close
+af492f77ef959e6f3543a62c5a8204e813e8f993 e41102b802dfcb4f57283ae0243e29459ab94ada Arild Bergh <info@bergh.fm> 1436536593 +0200	commit: Further work on preprocessing for compilation, almost done
+e41102b802dfcb4f57283ae0243e29459ab94ada 0348b81a75856058718c3230ef5501a0eab90443 Arild Bergh <info@bergh.fm> 1437127394 +0200	commit: Finished #66, precompilation processing, added bundle for Javascript text translation, this updated some other bundles
+0348b81a75856058718c3230ef5501a0eab90443 7dcec24e3c733058b27983c8c32c00e586e74dbd Arild Bergh <info@bergh.fm> 1437140632 +0200	commit: Finished #191, inherit properties from other components
+7dcec24e3c733058b27983c8c32c00e586e74dbd c401a793393e50eca787da19915addbbb57d4a13 Arild Bergh <info@bergh.fm> 1437141550 +0200	commit: Added inheritance to ol/ul components
+c401a793393e50eca787da19915addbbb57d4a13 6840e657de14b86f6984e73b832d308dfec7fbda Arild Bergh <info@bergh.fm> 1437141947 +0200	commit: Started #188, index component completion
+6840e657de14b86f6984e73b832d308dfec7fbda 6f40aea9222e124567e4ad2681adcb3fc83a0773 Arild Bergh <info@bergh.fm> 1437721773 +0200	pull: Fast-forward
+6f40aea9222e124567e4ad2681adcb3fc83a0773 7c54a59634c4a5f966291113ea690fd7196fc90f Arild Bergh <info@bergh.fm> 1437724235 +0200	commit: Minor change to quiz CSS, error on line 19 fixed
+7c54a59634c4a5f966291113ea690fd7196fc90f 84da8e7153abdb4df892ed1157dcdb2a96f6e72a Arild Bergh <info@bergh.fm> 1437746422 +0200	commit: Almost done with #192, #188, Fixed bug in mlab.dt.api: missing class when save script, new mlab.sql, fixed bug in google maps DT JS, other buglet
+84da8e7153abdb4df892ed1157dcdb2a96f6e72a ec3c2201ae30ca146849d298968541d322179572 Arild Bergh <info@bergh.fm> 1438327307 +0200	pull: Fast-forward
+ec3c2201ae30ca146849d298968541d322179572 1563bb7b98fb5df054e97523e55ff29f809e6524 Arild Bergh <info@bergh.fm> 1438331545 +0200	commit: Fixed #193, #196
+1563bb7b98fb5df054e97523e55ff29f809e6524 72f23e6550c8be6bdb018c70dfa08fb99c708826 Arild Bergh <info@bergh.fm> 1438352626 +0200	commit: Start work on get_app code, including websocket comms
+72f23e6550c8be6bdb018c70dfa08fb99c708826 d2c0cee83e00ea7a59c56fd28fa12f6ea0b6f9f8 Arild Bergh <info@bergh.fm> 1438766761 +0200	commit: Websocket comms now working, all code up to rsync now working
+d2c0cee83e00ea7a59c56fd28fa12f6ea0b6f9f8 b7234c40a74ebcb5f2307db7c6ee5412bd27f4e7 Arild Bergh <info@bergh.fm> 1438780031 +0200	pull: Fast-forward
+b7234c40a74ebcb5f2307db7c6ee5412bd27f4e7 eb1c116935dd0099587eb3960837582d4b82c05d Arild Bergh <info@bergh.fm> 1438784477 +0200	commit: More work on the getapp code, need createapp and callback functions only
+eb1c116935dd0099587eb3960837582d4b82c05d 0621d59d56bf3fa99139cc9042235aba88f75145 Arild Bergh <info@bergh.fm> 1438932148 +0200	commit: Cleaning up merge issues
+0621d59d56bf3fa99139cc9042235aba88f75145 9e9c6f1a6e711530f8885d9f3631fd43bf2703a0 Arild Bergh <info@bergh.fm> 1438932159 +0200	pull: Merge made by the 'recursive' strategy.
+9e9c6f1a6e711530f8885d9f3631fd43bf2703a0 310c3b09b123aff0ccf26293e3ae4ca4cf9ddbb5 Arild Bergh <info@bergh.fm> 1438932840 +0200	commit: Cleaning up merge issues, v2
+310c3b09b123aff0ccf26293e3ae4ca4cf9ddbb5 f70581fe88cf21082d00cb729e1d821ddca0088c Arild Bergh <info@bergh.fm> 1438932956 +0200	commit: Oppdatert mlab RT api med forandringer fra Cecilie
+f70581fe88cf21082d00cb729e1d821ddca0088c c0de87fa2eb5853fe464a70e7a450bba04a9f398 Arild Bergh <info@bergh.fm> 1438946519 +0200	commit: Implemented all functionality for compiling and download app, untested
+c0de87fa2eb5853fe464a70e7a450bba04a9f398 75c9fb71c48218940e5624d2250e327223090a5c Arild Bergh <info@bergh.fm> 1438956862 +0200	commit: Minor updates to compile interface, renamed some params
+75c9fb71c48218940e5624d2250e327223090a5c d11c9e8747b09d1fea96b1031450728ca211d454 Arild Bergh <info@bergh.fm> 1439537007 +0200	pull: Fast-forward
+d11c9e8747b09d1fea96b1031450728ca211d454 1aaf3df354a216cdb7f60b27dcb28aeb90be2257 Arild Bergh <info@bergh.fm> 1439990634 +0200	commit: Added support for plugins rather than permissions
+1aaf3df354a216cdb7f60b27dcb28aeb90be2257 4f6238a896b7e027ba05f5674d62c6b423204116 Arild Bergh <info@bergh.fm> 1440139236 +0200	commit: Started changing Quiz to work with Qtip dialog
+4f6238a896b7e027ba05f5674d62c6b423204116 ede3a29c2943f0a29cf8a53dd913ec4b902e3e54 Arild Bergh <info@bergh.fm> 1440139247 +0200	pull: Merge made by the 'recursive' strategy.
+ede3a29c2943f0a29cf8a53dd913ec4b902e3e54 2cece770d709015b854fe300cb96a99c37f55aa4 Arild Bergh <info@bergh.fm> 1440147689 +0200	commit: Implemented all new fields in qtip dialog
+2cece770d709015b854fe300cb96a99c37f55aa4 e1ad7871d28ea2ec827bcb30bae2f823737000d6 Arild Bergh <info@bergh.fm> 1440161820 +0200	commit: More work on quiz, getting new wizard to work
+e1ad7871d28ea2ec827bcb30bae2f823737000d6 dfac6c1d4dcab03ea895667e795f0defe7836110 Arild Bergh <info@bergh.fm> 1440161829 +0200	pull: Merge made by the 'recursive' strategy.
+dfac6c1d4dcab03ea895667e795f0defe7836110 15ee26ef8dc8465c201f9f9dcf7378783ab0a5ed Arild Bergh <info@bergh.fm> 1441004073 +0200	pull: Fast-forward
+15ee26ef8dc8465c201f9f9dcf7378783ab0a5ed fff971f603d707f2457d740378593a2aa1c3ce3b Arild Bergh <info@bergh.fm> 1441010461 +0200	commit: Removed some components temporarily, fixed small bugs in new resize functionality
+fff971f603d707f2457d740378593a2aa1c3ce3b 9f844ead0b6ce3395971ea86c13fb2541b440246 Arild Bergh <info@bergh.fm> 1441024176 +0200	pull: Fast-forward
+9f844ead0b6ce3395971ea86c13fb2541b440246 b9eea9fff3bfa3805e2d1fad13ee1567cfe6cdbe Arild Bergh <info@bergh.fm> 1441030184 +0200	commit: Redoing template so it works properly with jQuery mobile page loading: redid all IDs to classes, added code to insert static elements, changed to use page.html again for non-index pages
+b9eea9fff3bfa3805e2d1fad13ee1567cfe6cdbe 72a00365c32a4e31d0a5e523c9f04d9560342372 Arild Bergh <info@bergh.fm> 1441183240 +0200	pull: Fast-forward
+72a00365c32a4e31d0a5e523c9f04d9560342372 5c9ed5951de2ca8c3f46dfd7fe981f4fc91b8565 Arild Bergh <info@bergh.fm> 1441186486 +0200	pull: Fast-forward
+5c9ed5951de2ca8c3f46dfd7fe981f4fc91b8565 e1d1f2170e297a845b3788b68355f8254d2d6132 Arild Bergh <info@bergh.fm> 1441187202 +0200	commit: Fixed youtube video issues, display page title dlg box when new app, editable area not streching fixed
+e1d1f2170e297a845b3788b68355f8254d2d6132 c5846ea64bc0e67483a823399883ca5014a1971d Arild Bergh <info@bergh.fm> 1441198311 +0200	commit: Fixed youtube and maps resizing
+c5846ea64bc0e67483a823399883ca5014a1971d 16b317dc5cb5fd9b731b51f56cecafca8c80f62b Arild Bergh <info@bergh.fm> 1441198760 +0200	pull: Fast-forward
+16b317dc5cb5fd9b731b51f56cecafca8c80f62b 6ae4fb23acf050fa7e73ff1e9597b5920b8595e0 Arild Bergh <info@bergh.fm> 1441202028 +0200	commit: Fixed major (new) problem of PHP LoadHTML eating HTML codes inside Javascript (which were added to always add the header with the jquery mobile page loading).
+6ae4fb23acf050fa7e73ff1e9597b5920b8595e0 2e87ae3e4ffb30507e4f726fcff899320e877cdc Arild Bergh <info@bergh.fm> 1441203773 +0200	commit: Minor change to quiz
+2e87ae3e4ffb30507e4f726fcff899320e877cdc e66b78b327c4f7ac2ce66f506270fde182644b1c Arild Bergh <info@bergh.fm> 1441275746 +0200	commit: Fixed issue with pages after index picking up surrounging HTML when load page, more work on quiz
+e66b78b327c4f7ac2ce66f506270fde182644b1c 85bd9faacb4ce37758b824fa824fd7cf2b9c9139 Arild Bergh <info@bergh.fm> 1441283753 +0200	commit: Removed DIV mlab_editable_area when precompile, more quiz work
+85bd9faacb4ce37758b824fa824fd7cf2b9c9139 455aef16767c0ffecffddd96acee41e8c1a9e977 Arild Bergh <info@bergh.fm> 1441283764 +0200	pull: Merge made by the 'recursive' strategy.
+455aef16767c0ffecffddd96acee41e8c1a9e977 74f0225c79f6a3b4466fa67c3a2b12247d6a2f6d Arild Bergh <info@bergh.fm> 1441288321 +0200	commit: More work on Quiz
+74f0225c79f6a3b4466fa67c3a2b12247d6a2f6d 61cafd250c8e5544bae34927f6038c100aa4b59d Arild Bergh <info@bergh.fm> 1441693946 +0200	pull: Fast-forward
+61cafd250c8e5544bae34927f6038c100aa4b59d d6774b30c956b3115dd13ad24562b76c1b3c095b Arild Bergh <info@bergh.fm> 1441699427 +0200	commit: Index komponent fikset
+d6774b30c956b3115dd13ad24562b76c1b3c095b 9b9640b7fc8743964e8354fd701ccef1317fdca8 Arild Bergh <info@bergh.fm> 1441699448 +0200	commit: Index komponent fikset2
+9b9640b7fc8743964e8354fd701ccef1317fdca8 df40fcb8e5837736bbe374f25e28a8df48ff9812 Arild Bergh <info@bergh.fm> 1441712060 +0200	commit: Quiz save/retrive works
+df40fcb8e5837736bbe374f25e28a8df48ff9812 d12bf1ac9ccc4ceba7dfd65ac9b09c403e0df531 Arild Bergh <info@bergh.fm> 1441712391 +0200	pull: Fast-forward
+d12bf1ac9ccc4ceba7dfd65ac9b09c403e0df531 ca10a2e19c48fd0e0fde1ee4d92ed2ab43c0027d Arild Bergh <info@bergh.fm> 1441714295 +0200	commit: Fixed dirty flag for quiz, MySQL working
+ca10a2e19c48fd0e0fde1ee4d92ed2ab43c0027d 00eab32e48523ffea6b34660ca27318e1a29d080 Arild Bergh <info@bergh.fm> 1441722331 +0200	commit: Fixed småbugs i mysql plugin
+00eab32e48523ffea6b34660ca27318e1a29d080 d758f7902f49a5ab2e3a8262dd9b18f2e2a29aee Arild Bergh <info@bergh.fm> 1441722340 +0200	pull: Merge made by the 'recursive' strategy.
+d758f7902f49a5ab2e3a8262dd9b18f2e2a29aee 866246f3fc086317fe19af54e2256cf332d6b710 Arild Bergh <info@bergh.fm> 1445847963 +0100	pull: Fast-forward
+866246f3fc086317fe19af54e2256cf332d6b710 0eaf22d920abf793beaa9fee45f2f3402807164f Arild Bergh <info@bergh.fm> 1445945404 +0100	pull: Fast-forward
+0eaf22d920abf793beaa9fee45f2f3402807164f 13ceeb0f77749e0457c230f1d27973991cedcafe Arild Bergh <info@bergh.fm> 1446031967 +0100	commit: Starting work on credentials for all types of components and cmpGetCompiledAppExists
+13ceeb0f77749e0457c230f1d27973991cedcafe 4c36c3f31dbb18ad9bf885f2ee7bf51e58449328 Arild Bergh <info@bergh.fm> 1446381066 +0100	pull: Fast-forward
+4c36c3f31dbb18ad9bf885f2ee7bf51e58449328 eceddddce598d374d4bd946630a4eb6698612915 Arild Bergh <info@bergh.fm> 1446392626 +0100	commit: Fixed issue with check for filename coming back from compiler (for QR code), updated editor.html.twig to use supported platforms variable & not hardcode them, fixed bug which used url instead of filename as return key when app was already compiled, did backend and request for #219
+eceddddce598d374d4bd946630a4eb6698612915 556f980652706ca0907deb38af21d073efb3fe3a Arild Bergh <info@bergh.fm> 1446395428 +0100	commit: Fixed bug re display of new categories #222, working on dropdownlist for new/edit categories #177
+556f980652706ca0907deb38af21d073efb3fe3a 3ebc8884f34f784cb65d23f4a6c720aba720cfb3 Arild Bergh <info@bergh.fm> 1446397043 +0100	commit: Fixed categories treelist issue, #177
+3ebc8884f34f784cb65d23f4a6c720aba720cfb3 6536913b483f26376d73024aab40e21515002995 Arild Bergh <info@bergh.fm> 1446536402 +0100	pull: Fast-forward
+6536913b483f26376d73024aab40e21515002995 90d59a17feb9700273b0f354806eb4f58c90480c Arild Bergh <info@bergh.fm> 1446540959 +0100	commit: Finished #218
+90d59a17feb9700273b0f354806eb4f58c90480c cae845f8375136f318352669059569edf4436cfb Arild Bergh <info@bergh.fm> 1446540970 +0100	pull: Merge made by the 'recursive' strategy.
+cae845f8375136f318352669059569edf4436cfb fdeb5002d06b7b3dea5325afcb13241546e590d2 Arild Bergh <info@bergh.fm> 1446551306 +0100	commit: Fixed bug in fix for #218, fixed #224
+fdeb5002d06b7b3dea5325afcb13241546e590d2 06d5e45c3724e002ed5090d7f032e73484f07600 Arild Bergh <info@bergh.fm> 1446556393 +0100	commit: Fixed a bug in API which meant saved data was never reloaded + added platform name to callback when successfully compiled app
+06d5e45c3724e002ed5090d7f032e73484f07600 83cbfac86ff67b3fb8fa24e81ed6021526599e97 Arild Bergh <info@bergh.fm> 1446629875 +0100	commit: Fixed #167
+83cbfac86ff67b3fb8fa24e81ed6021526599e97 801bbed08449229f06da404e9fb894c4de5e7c8a Arild Bergh <info@bergh.fm> 1446630236 +0100	commit: reading correct language for issue #167
+801bbed08449229f06da404e9fb894c4de5e7c8a 0a53b7c6fd8629ea478458d826c5fd7c34d446e6 Arild Bergh <info@bergh.fm> 1446632782 +0100	commit: Fixed so both dialog boxes for a quiz (at design time) are hidden when click on OK/Cancel button
+0a53b7c6fd8629ea478458d826c5fd7c34d446e6 0f775216c88a68d7c94f9901809ec8c242d36173 Arild Bergh <info@bergh.fm> 1447053984 +0100	pull: Fast-forward
+0f775216c88a68d7c94f9901809ec8c242d36173 c3713b6433bab45185e1784b49e4cf8b68155232 Arild Bergh <info@bergh.fm> 1447055632 +0100	commit: Fixed #223 (use same http/s protocol in components as Mlab server is using
+c3713b6433bab45185e1784b49e4cf8b68155232 ce7ef85009cba545afc695facd8a7e7408492622 Arild Bergh <info@bergh.fm> 1447058294 +0100	commit: Possible fix for #227, must be tested with PHP loadhtml function
+ce7ef85009cba545afc695facd8a7e7408492622 b057f9c360d47ae0da1a326230bd160c8a5d7a51 Arild Bergh <info@bergh.fm> 1447073299 +0100	pull: Fast-forward
+b057f9c360d47ae0da1a326230bd160c8a5d7a51 8e955ed1875269eb832c0d791e8086dacdc6583c Arild Bergh <info@bergh.fm> 1447079112 +0100	pull: Fast-forward
+8e955ed1875269eb832c0d791e8086dacdc6583c 885b3eb2793e5568ac98e3018534a798b1627c11 Arild Bergh <info@bergh.fm> 1447079178 +0100	commit: Fixed speelingmistake for platform in ServciesController, means that QR download links did not work
+885b3eb2793e5568ac98e3018534a798b1627c11 84258c227c3171a831c606aedf3ceea99c863567 Arild Bergh <info@bergh.fm> 1447083564 +0100	commit: Almost done with displaying correct/wrong answers
+84258c227c3171a831c606aedf3ceea99c863567 6d1f04306da1b201bc2ae6ce30b66f8c65a27a28 Arild Bergh <info@bergh.fm> 1447140763 +0100	pull: Fast-forward
+6d1f04306da1b201bc2ae6ce30b66f8c65a27a28 86833180525898dda7a21e6f228fb6f25beab6dc Arild Bergh <info@bergh.fm> 1447142980 +0100	commit: Completed displaying correct/wrong answers for text & checkbox
+86833180525898dda7a21e6f228fb6f25beab6dc 1b8744fdf5368e6318ccd25509e0c56b3df9cfcb Arild Bergh <info@bergh.fm> 1447142988 +0100	pull: Merge made by the 'recursive' strategy.
+1b8744fdf5368e6318ccd25509e0c56b3df9cfcb a6af84ecee021392eb1da128ab9f0525ac884b7f Arild Bergh <info@bergh.fm> 1447144767 +0100	commit: Completed displaying correct/wrong answers for all
+                                                                                                                                                                                            

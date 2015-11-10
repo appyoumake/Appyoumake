@@ -467,5 +467,9 @@ made smaler than the min width */
 }
 
 #mlab_editor .mlab_current_component_child {
-    border: 1px greenyellow double;
+    border: 1px greenyellow double !important;
+}
+
+#mlab_editor .mlab_current_component_grandchild {
+    border: 1px white double !important;
 }

@@ -17,7 +17,7 @@ var cont = " Press enter or tab to continue.";
 
 this.editPrompts = {
     "pageTitle": "Please enter the title of the page." + cont,
-    "questionType": "Select the type of question: <br/>1: Checkboxes (multi choice)<br/>." + cont,
+    "questionType": "Select the type of question: <br/>1: Checkboxes (multi choice), 2: Radio button (single choice), 3: drop down list (single choice), 4: list (multi choice), 5: text (freeform)<br/>." + cont,
     "question": "Enter the question." + cont,
     "explanatory": "You can enter some explanatory text here, or leave blank if not needed." + cont,
     "alternatives": "Enter the possible answers for this question."  + cont + " Leave it blank to continue to next step.",
@@ -48,10 +48,10 @@ this.onCreate = function (el) {
  * @param {jQuery} el Main element for component. 
  */
 this.onLoad = function (el) {
-
+debugger;
     var that = this;
     this.generateId(el);
-    if (!this.domRoot.length) return; 
+    if (!this.domRoot.length) return;
     if (this.initialized) return;
 
 //copy content of component, see onSave for how we store it, thsi will be one page per div
@@ -67,7 +67,12 @@ this.onLoad = function (el) {
         if (this.nodeName.toLowerCase() == "div") {
             $(this).find("input[data-mlab-cp-quiz-alternative='correct']").parent().addClass("mc_correct");
             $(this).find("option[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
-            that.addQuizPage($(this).find("h2").text(), $(this).html());
+            var new_div = that.addQuizPage($(this).find("h2").text(), $(this).html());
+            
+//code to prepare elements for DT interaction
+            $(new_div).find("p").attr('contenteditable','true').on("click", function(e){ that.selectItem(e); });
+            $(new_div).find("label").attr('contenteditable','true').on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+            $(new_div).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
         } else if (this.nodeName.toLowerCase() == "script") {
             $(el).append(this);
         }
@@ -210,11 +215,9 @@ this.handleUserInput = function(input, e) {
                 this.addQuestionAlternative(question, value, questionType);
                 if (questionType == "text") {
                     input.val('');
-                    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
                     $("div.qtip input:text").val("").removeClass("mc_blurred");
                     $("div.qtip textarea").val("").removeClass("mc_blurred");
-                    $(question).find("p, label").attr('contenteditable','true');
-                    $(question).find("label").on("click", function(e){e.preventDefault();})
+                    this.prepareQuestion(page, question);
                     this.setPropertiesDialogTab(1);
                     $("[data-mlab-dt-quiz-input='explanatory']").focus();
                 }
@@ -230,11 +233,9 @@ this.handleUserInput = function(input, e) {
             this.markAlternativesAsCorrect(question, value, questionType);
             var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
             $("#"  + correct_response_id).html("");
-            page.find(".mlab_current_component_child").removeClass("mlab_current_component_child")
             $("div.qtip input:text").val("").removeClass("mc_blurred");
             $("div.qtip textarea").val("").removeClass("mc_blurred");
-            $(question).find("p, label").attr('contenteditable','true');
-            $(question).find("label").on("click", function(e){e.preventDefault();})
+            this.prepareQuestion(page, question);
             this.setPropertiesDialogTab(1);
             $("[data-mlab-dt-quiz-input='explanatory']").focus();
             break;
@@ -244,6 +245,21 @@ this.handleUserInput = function(input, e) {
     }
 };
 
+this.selectItem = function (event) {
+    var page = this.getCurrentPage();
+    page.find(".mlab_current_component_grandchild").removeClass("mlab_current_component_grandchild");
+    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+    $(event.currentTarget).addClass("mlab_current_component_grandchild");
+    $(event.currentTarget).parents("[data-mlab-cp-quiz-role='question']").addClass("mlab_current_component_child");
+}
+
+this.prepareQuestion = function (page, question) {
+    var that = this;
+    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+    $(question).find("p, label").attr('contenteditable','true').on("click", function(e){ that.selectItem(e); });
+    $(question).find("label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+    $(question).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+}
 
 //---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT, AS WELL AS SUPPORTING FUNCTIONS
 
@@ -323,10 +339,11 @@ this.addQuizPage = function(title, content) {
     var div = this.tabContentTemplate.replace( /\{id\}/g, new_tab_id ).replace( /\{content\}/g, content ).replace( /\{title\}/g, label );
     
     tabs.find( ".ui-tabs-nav" ).append( li );
-    tabs.append( div );
+    var new_div = $(div).appendTo( tabs );
     tabs.tabs( "refresh" );
     tabs.tabs( "option", "active", num_tabs );
     this.api.setDirty();
+    return new_div;
 };
 
 /**
@@ -738,6 +755,16 @@ this.custom_add_question = function(el) {
     $(content).tabs("disable", 0);
     this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']");
 };
+
+this.custom_delete_question = function(el) {
+    var page = this.getCurrentPage();
+    page.find(".mlab_current_component_child").remove();
+}
+
+this.custom_delete_question_element = function(el) {
+    var page = this.getCurrentPage();
+    page.find(".mlab_current_component_grandchild").remove();
+}
 
 /* Removes a page from the component. 
  * @param {jQuery} button The button that was clicked to remove the page.

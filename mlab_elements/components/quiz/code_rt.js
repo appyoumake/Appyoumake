@@ -12,7 +12,7 @@ this.onPageLoad = function(el) {
     }
     
     var disp = (self.settings.allow_check_on_page ? "" : "style='display: none'");
-    $(el).append("<div data-mlab-cp-quiz-role='check_and_submit' style='display: none;'><div data-mlab-cp-quiz-subrole='display_results'><h1>You can now check and submit your answers</h1></div><button data-mlab-cp-quiz-role='check_all' >Check answers</button></div>");
+    $(el).append("<div data-mlab-cp-quiz-role='check_and_submit' style='display: none;'><div data-mlab-cp-quiz-subrole='display_results'><h1 class='mc_text mc_display mc_heading mc_medium'>You can now check and submit your answers</h1></div><button data-mlab-cp-quiz-role='check_all' >Check answers</button></div>");
     $(el).append("<button data-mlab-cp-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-cp-quiz-role='move_next'>Next</button>");
     $(el).append("<button data-mlab-cp-quiz-role='check' " + disp + ">Check answers</button>");
 
@@ -74,7 +74,7 @@ this.move = function(direction) {
     }
     
     this.saveAnswers(q_div_curr);
-    debugger;
+
     if (moveto_pages.length > 0) {
         q_div_curr.removeClass("mlab_cp_quiz_currentpage").hide();
         $(moveto_pages[0]).show().addClass("mlab_cp_quiz_currentpage");
@@ -121,9 +121,12 @@ this.processAnswers = function (data) {
 
             case "select": 
             case "multiselect": 
-                var i = 1;
                 q.find('select > option').prop("selected", false);
-                q.find('select > option').filter('[value=' + data[id].join('], [value=') + ']').prop("selected", true);
+                if (typeof data[id] == "string") {
+                    q.find('select > option').filter('[value=' + data[id] + ']').prop("selected", true);
+                } else {
+                    q.find('select > option').filter('[value=' + data[id].join('], [value=') + ']').prop("selected", true);
+                }
                 break;
 
             case "text": 
@@ -157,7 +160,7 @@ this.checkPageAnswers = function(page) {
 
 //here we check all answers for the end of the quiz, so we need to list page name, title of question and which answers are right or not
 this.checkAllAnswers = function() {
-debugger;
+
     var pages = this.domRoot.find("div[data-mlab-cp-quiz-role='page']");
     var result_page = $(this.domRoot.find("div[data-mlab-cp-quiz-subrole='display_results']")[0]);
     result_page.empty();
@@ -198,12 +201,7 @@ debugger;
                     break;
 
                 case "multiselect": 
-                    response = [];
-                    q_el.find('').each(function() {
-                        response.push($(this).val());
-                    });
-                    
-                    $(this).find("select option:selected").each( function() {
+                    $(this).find("select option").each( function() {
                         if ( $(this).data("mlab-cp-quiz-alternative") == "correct" ) {
                             if ( $(this).prop("selected") ) {
                                 result_page.append("<p class='mc_entry mc_info mc_correct'>" + $(this).text() + "</p>");
@@ -284,7 +282,7 @@ this.getResponse = function(q_el) {
             break;
 
         case "radio": 
-            response = q_el.find("input[name='" + q_id + "']:checked").val();
+            response = q_el.find("input:checked").val();
             break;
 
         case "multiselect": 

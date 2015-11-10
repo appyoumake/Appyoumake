@@ -1,0 +1,18 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = git@github.com:bardreitanffi/nyeMLAB.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[submodule "vendor/friendsofsymfony/user-bundle/FOS/UserBundle"]
+	url = https://github.com/FriendsOfSymfony/FOSUserBundle.git
+[submodule "vendor/gedmo/doctrine-extensions"]
+	url = git://github.com/l3pp4rd/DoctrineExtensions.git
+[branch "arild_enhancing_components_ui"]
+	remote = origin
+	merge = refs/heads/arild_enhancing_components_ui
