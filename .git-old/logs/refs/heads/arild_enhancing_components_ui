@@ -1,8 +1,0 @@
-0000000000000000000000000000000000000000 c464c717724ac09f4417a4be5abaab755046826c Arild Bergh <info@bergh.fm> 1395307934 +0100	branch: Created from HEAD
-c464c717724ac09f4417a4be5abaab755046826c 3fce32e93d328cbf6e8069d99e7330e2da6835f8 Arild Bergh <info@bergh.fm> 1395337226 +0100	commit: Fikset # 58 pluss stor forandring på håndtering av komponenter, la til en mengde funksjonalitet for flytting, undo/redo, etc., for komp
-3fce32e93d328cbf6e8069d99e7330e2da6835f8 063b44abe159fabd9f3cbc77e994fc5ec1fbf2f6 Arild Bergh <info@bergh.fm> 1395595579 +0100	commit: Fixed or merged #39, #19, #15, #40, #57, #59
-063b44abe159fabd9f3cbc77e994fc5ec1fbf2f6 e22927d72d345ac1244da7c7e99291fb7a10d1c1 Arild Bergh <info@bergh.fm> 1395756706 +0100	commit: Implementing template best practices check, further changes/fixes to components, and their configuration
-e22927d72d345ac1244da7c7e99291fb7a10d1c1 20da3c0ee9cf9d01567e0a433e1fd13ce1c8189e Arild Bergh <info@bergh.fm> 1395780075 +0100	commit: Implemented hiden components, AKA features, #21
-20da3c0ee9cf9d01567e0a433e1fd13ce1c8189e d2607b235bdb4033a7aada991e6faf33c28fc438 Arild Bergh <info@bergh.fm> 1395855612 +0100	commit: Added XML editing code to update config.xml if required #17
-d2607b235bdb4033a7aada991e6faf33c28fc438 12cc7662498bb74eb474324a3d6eea7731ca7f24 Arild Bergh <info@bergh.fm> 1396348073 +0200	rebase finished: refs/heads/arild_enhancing_components_ui onto 12cc7662498bb74eb474324a3d6eea7731ca7f24
-12cc7662498bb74eb474324a3d6eea7731ca7f24 539fcd0c195b6002f2b3db8d66c26edd155fe349 Arild Bergh <info@bergh.fm> 1396524257 +0200	commit: Fixed bug when opening last page in app with only index page, furhter changes to components to ensure standloneness
