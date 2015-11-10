@@ -46,7 +46,7 @@ this.move = function(direction) {
     var q_div_curr = $(this.domRoot.find(".mlab_cp_quiz_currentpage"));
     var missing_fields = "";
     var self = this;
-    var direction_text = {"-1": "prev", "1": "next"};
+    var direction_text = {"-1": "previous", "1": "next"};
     
     if (direction == 1) {
 //check if any questions are mandatory and if so, are they filled in
@@ -66,17 +66,15 @@ this.move = function(direction) {
             return;
         }
 
-        var direction_text = 'next';
         var moveto_pages = q_div_curr.nextAll('div');
         
     } else if (direction == -1) {
-        var direction_text = 'previous';
         var moveto_pages = q_div_curr.prevAll('div');
         
     }
     
     this.saveAnswers(q_div_curr);
-    
+    debugger;
     if (moveto_pages.length > 0) {
         q_div_curr.removeClass("mlab_cp_quiz_currentpage").hide();
         $(moveto_pages[0]).show().addClass("mlab_cp_quiz_currentpage");
@@ -89,7 +87,7 @@ this.move = function(direction) {
     }
 
     
-    if (direction == 1 && moveto_pages.length == 1 && mlab.api.components['quiz'].settings.allow_check && !mlab.api.components['quiz'].settings.allow_check_on_page) {
+    if (direction == 1 && moveto_pages.length == 1 && this.settings.allow_check && !this.settings.allow_check_on_page) {
         this.domRoot.find("[data-mlab-cp-quiz-role='check_all']").show();
     } else {
         this.domRoot.find("[data-mlab-cp-quiz-role='check_all']").hide();
@@ -163,56 +161,84 @@ debugger;
     var pages = this.domRoot.find("div[data-mlab-cp-quiz-role='page']");
     var result_page = $(this.domRoot.find("div[data-mlab-cp-quiz-subrole='display_results']")[0]);
     result_page.empty();
-    var x = false;
     
     pages.each( function() {
-        if (x) {
-            return;
-        }
         result_page.append($(this).find("h2").clone());
         
         $(this).children("[data-mlab-cp-quiz-role='question']").each(function() {
-            if (x) {
-                return;
-            }
             result_page.append($(this).find("[data-mlab-cp-quiz-subrole='question']").clone());
             var q_type = $(this).data("mlab-cp-quiz-questiontype");
             switch (q_type) {
                 case "checkbox": 
-                    $(this).find("input").each( function() { 
+                    $(this).find("input").each( function() {
                         if ( $(this).data("mlab-cp-quiz-alternative") == "correct" ) {
                             if ( $(this).prop("checked") ) {
-                                result_page.append("<p class='mlab_cp_quiz_correct'>Corr " + $(this).parent().text() + "</p>");
-                            } else {
-                                result_page.append("<p class='mlab_cp_quiz_incorrect'>Should have " + $(this).parent().text() + "</p>");
+                                result_page.append("<p class='mc_entry mc_info mc_correct'>" + $(this).parent().text() + "</p>");
+                            } else if (mlab.api.components['quiz'].settings.display_correct) {
+                                result_page.append("<p class='mc_entry mc_info mc_suggest'>[Correct answer was " + $(this).parent().text() + "]</p>");
                             }
                         } else if ( $(this).prop("checked") ) {
-                            result_page.append("<p class='mlab_cp_quiz_incorrect'>Incorr " + $(this).parent().text() + "</p>");
+                            result_page.append("<p class='mc_entry mc_info mc_wrong'>" + $(this).parent().text() + "</p>");
                         }
                     });
                         
                     break;
 
                 case "radio": 
-                    response = q_el.find("input[name='" + q_id + "']:checked").val();
+                    var sel = $(this).find("input:checked");
+                    var corr = $(this).find("input[data-mlab-cp-quiz-alternative='correct']");
+                    if (sel.val() == corr.val()) {
+                        result_page.append("<p class='mc_entry mc_info mc_correct'>" + sel.parent().text() + "</p>");
+                    } else {
+                        result_page.append("<p class='mc_entry mc_info mc_wrong'>" + sel.parent().text() + "</p>");
+                        if (mlab.api.components['quiz'].settings.display_correct) {
+                            result_page.append("<p class='mc_entry mc_info mc_suggest'>[Correct answer was " + corr.parent().text() + "]</p>");
+                        }
+                    }
                     break;
 
                 case "multiselect": 
                     response = [];
-                    q_el.find('select > option:selected').each(function() {
+                    q_el.find('').each(function() {
                         response.push($(this).val());
                     });
+                    
+                    $(this).find("select option:selected").each( function() {
+                        if ( $(this).data("mlab-cp-quiz-alternative") == "correct" ) {
+                            if ( $(this).prop("selected") ) {
+                                result_page.append("<p class='mc_entry mc_info mc_correct'>" + $(this).text() + "</p>");
+                            } else if (mlab.api.components['quiz'].settings.display_correct) {
+                                result_page.append("<p class='mc_entry mc_info mc_suggest'>[Correct answer was " + $(this).text() + "]</p>");
+                            }
+                        } else if ( $(this).prop("selected") ) {
+                            result_page.append("<p class='mc_entry mc_info mc_wrong'>" + $(this).text() + "</p>");
+                        }
+                    });
+                    
                     break;
 
                 case "select": 
-                    response = q_el.find("select").val();
+                    var sel = $(this).find("select option:selected");
+                    var corr = $(this).find("select option[data-mlab-cp-quiz-alternative='correct']");
+                    if (sel.val() == corr.val()) {
+                        result_page.append("<p class='mc_entry mc_info mc_correct'>" + sel.text() + "</p>");
+                    } else {
+                        result_page.append("<p class='mc_entry mc_info mc_wrong'>" + sel.text() + "</p>");
+                        if (mlab.api.components['quiz'].settings.display_correct) {
+                            result_page.append("<p class='mc_entry mc_info mc_suggest'>[Correct answer was " + corr.text() + "]</p>");
+                        }
+                    }
+                    
                     break;
 
                 case "text": 
                     if ($(this).find("input").attr("data-mlab-cp-quiz-textvalue").toLowerCase().trim() == $(this).find("input").val().toLowerCase().trim()) {
-                        result_page.append("<p class='mlab_cp_quiz_correct'>Corr " + $(this).find("input").val() + "</p>");
+                        result_page.append("<p class='mc_entry mc_info mc_correct'>" + $(this).find("input").val() + "</p>");
                     } else {
-                        result_page.append("<p class='mlab_cp_quiz_incorrect'>Incorr " + $(this).find("input").val() + "</p>");
+                        result_page.append("<p class='mc_entry mc_info mc_wrong'>" + $(this).find("input").val() + "</p>");
+                        if (mlab.api.components['quiz'].settings.display_correct) {
+                            result_page.append("<p class='mc_entry mc_info mc_suggest'>[Correct answer was " + $(this).find("input").attr("data-mlab-cp-quiz-textvalue").trim() + "]</p>");
+                        }
                     }
                     
                     break;
@@ -221,8 +247,6 @@ debugger;
             
         }); //end quiz on pages loop
 
-        
-//        $(start).find("option[data-mlab-cp-quiz-alternative='correct']").filter(":selected").css("background-color", "orange");
     });
     
 };
