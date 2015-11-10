@@ -233,6 +233,7 @@ color: black;
     cursor: pointer;
     list-style-type: square; 
     padding-right: 10px;
+    padding-left: 4px;
     color: black;
     font-size:13px; 
     line-height: 16px;
