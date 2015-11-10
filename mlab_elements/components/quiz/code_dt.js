@@ -17,7 +17,7 @@ var cont = " Press enter or tab to continue.";
 
 this.editPrompts = {
     "pageTitle": "Please enter the title of the page." + cont,
-    "questionType": "Select the type of question: <br/>1: Checkboxes (multi choice)<br/>." + cont,
+    "questionType": "Select the type of question: <br/>1: Checkboxes (multi choice), 2: Radio button (single choice), 3: drop down list (single choice), 4: list (multi choice), 5: text (freeform)<br/>." + cont,
     "question": "Enter the question." + cont,
     "explanatory": "You can enter some explanatory text here, or leave blank if not needed." + cont,
     "alternatives": "Enter the possible answers for this question."  + cont + " Leave it blank to continue to next step.",
