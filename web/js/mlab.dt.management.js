@@ -472,7 +472,7 @@ Mlab_dt_management.prototype = {
 
 //this is called from a timer, so we also need to check if an app has been created, etc
 //also if any changes have occurred
-        if (this.parent.app.curr_page_num == undefined || this.parent.app.id == undefined) {
+        if (typeof this.parent.app.curr_page_num == "undefined" || typeof this.parent.app.id == "undefined") {
             require_save = false;
         }
 

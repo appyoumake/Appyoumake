@@ -63,7 +63,7 @@ this.onLoad = function (el) {
     this.initTabs(el);
     
 //reload the pages into the tabs vie this.addQuizPage
-    $(pages).each( function () { 
+    $(pages).each( function () {
         if (this.nodeName.toLowerCase() == "div") {
             $(this).find("input[data-mlab-cp-quiz-alternative='correct']").parent().addClass("mc_correct");
             $(this).find("option[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
