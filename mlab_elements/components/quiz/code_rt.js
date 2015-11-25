@@ -12,7 +12,7 @@ this.onPageLoad = function(el) {
     }
     
     var disp = (self.settings.allow_check_on_page ? "" : "style='display: none'");
-    $(el).append("<div data-mlab-cp-quiz-role='check_and_submit' style='display: none;'><div data-mlab-cp-quiz-subrole='display_results'><h1>You can now check and submit your answers</h1></div><button data-mlab-cp-quiz-role='check_all' >Check answers</button></div>");
+    $(el).append("<div data-mlab-cp-quiz-role='check_and_submit' style='display: none;'><div data-mlab-cp-quiz-subrole='display_results'><h1 class='mc_text mc_display mc_heading mc_medium'>You can now check and submit your answers</h1></div><button data-mlab-cp-quiz-role='check_all' >Check answers</button></div>");
     $(el).append("<button data-mlab-cp-quiz-role='move_previous' style='display: none;'>Previous</button><button data-mlab-cp-quiz-role='move_next'>Next</button>");
     $(el).append("<button data-mlab-cp-quiz-role='check' " + disp + ">Check answers</button>");
 
