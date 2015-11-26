@@ -39,25 +39,13 @@
         figcap.css('width', imgWidth);
     };
       
-    this.custom_scale_to_25_percent = function (el) {
+    this.custom_scale_decrease = function (el) {
         var fig = $('.mlab_current_component').find('figure');
         fig.css('width', '25%');
         this.centerFigureCaption(el);
     };
     
-    this.custom_scale_to_50_percent = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css('width', '50%');
-        this.centerFigureCaption(el); 
-    };
-    
-    this.custom_scale_to_75_percent = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css('width', '75%');
-        this.centerFigureCaption(el);
-    };
-    
-    this.custom_scale_to_100_percent = function (el) {
+    this.custom_scale_increase = function (el) {
         var fig = $('.mlab_current_component').find('figure');
         fig.css('width', '100%');
         this.centerFigureCaption(el);
