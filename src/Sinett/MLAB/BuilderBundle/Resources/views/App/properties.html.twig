@@ -104,11 +104,10 @@
                     
                     <label for="mlab_local_iconfile">{% trans %}builder.new.app.name.iconFile{% endtrans %}</label>
                     <input id="mlab_local_iconfile" name="mlab_local_iconfile" type="file">
-                    <button class="button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('local');">{% trans %}builder.new.app.name.addIconFileImage{% endtrans %}</button>
                     
                     <label class="hidden" for="mlab_icon_text ">{% trans %}builder.new.app.name.iconText{% endtrans %}</label>
                     <input class="hidden" id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
-                    <button class="hidden button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon('foreground_image_src');">{% trans %}builder.new.app.name.addIconText{% endtrans %}</button>
+                    <button class="hidden button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon();">{% trans %}builder.new.app.name.addIconText{% endtrans %}</button>
                 </div>
             </fieldset>
 
@@ -176,7 +175,6 @@
         
 //this variable stores the icon functionality
         createIcon = new iconFunctions();
-        var foreground_image_src = 'server';
         
 //create tabs and make sure they can only move between them using the next/previous buttons
         $( "#build_app_properties" ).tabs();
@@ -203,7 +201,7 @@
             selectText: "{% trans %}app.select.icon.background{% endtrans %}",
             onSelected: function (data) {
                 if (data.selectedIndex > 0) {
-                    createIcon.buildIcon(foreground_image_src);
+                    createIcon.buildIcon();
                 }
             }
         });
@@ -215,11 +213,17 @@
             selectText: "{% trans %}app.select.icon.foreground{% endtrans %}",
             onSelected: function (data) {
                 if (data.selectedIndex > 0) {
-                    createIcon.buildIcon('server');
+                    $("#mlab_local_iconfile").val("");
+                    createIcon.buildIcon();
                 }
             }
         });
-
+        
+        $("#mlab_local_iconfile").on("change", function () {
+            $('#mlab_select_foreground').ddslick('select', {index: 0 });
+            createIcon.buildIcon();
+        });
+        
     }); //end onready
     
 //functions to build an icon
@@ -232,25 +236,24 @@
  * @param {type} direction
  * @returns {undefined|Boolean}
  */
-        function buildIcon(source) {
+        function buildIcon() {
             icon_created = true;
             var canvas = document.getElementById("app_icon_designer");
             var ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            foreground_image_src = source;
 
 //first we draw background, regardless of what has been changed
             drawImage(getBackgroundFromServerFile(), false);
             
 //next we draw foreground, if it i 
-            if (foreground_image_src == 'local' && typeof document.getElementById('mlab_local_iconfile').files != "undefined" && typeof document.getElementById('mlab_local_iconfile').files.length) {
+            if (typeof document.getElementById('mlab_local_iconfile').files != "undefined" && document.getElementById('mlab_local_iconfile').files.length > 0) {
                 if (!getForegroundFromFile()) {
                     if ($("#mlab_icon_text").val() != "") {
                         outputText();
                     }
                 }
 
-            } else if (foreground_image_src == 'server' && $('#mlab_select_foreground').data('ddslick').selectedData.value != "") {
+            } else if ($('#mlab_select_foreground').data('ddslick').selectedData.value != "") {
                 drawImage(getForegroundFromServerFile(), true);
                 if ($("#mlab_icon_text").val() != "") {
                     outputText();

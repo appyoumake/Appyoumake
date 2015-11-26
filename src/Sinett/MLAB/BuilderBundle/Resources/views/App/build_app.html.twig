@@ -9,16 +9,15 @@
 
 
     <div id="mlab_page_control">
-  
-        <img id="mlab_page_control_previous" onclick="mlab.dt.management.page_move_to(-1);" src="/img/tools/previous.png" title="{% trans %}app.builder.page.tooltip.previous{% endtrans %}">
-        <img id="mlab_page_control_next" onclick="mlab.dt.management.page_move_to(1);" src="/img/tools/next.png" title="{% trans %}app.builder.page.tooltip.next{% endtrans %}">
+        <div class="mlab_left">Sider i app</div>
         <h3 id="mlab_page_control_title" onclick="mlab.dt.api.editContent(this);$('#mlab_page_control_title_actions').slideDown();"></h3>
-
         <div id="mlab_page_control_title_actions" class="mlab_hidden">
             <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').slideUp(); mlab.dt.management.page_update_title();" class="mlab_dt_button_ok_left" title="{% trans %}app.builder.page.tooltip.save{% endtrans %}">{% trans %}app.builder.page.save{% endtrans %}</button>
             <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').slideUp(); $('#mlab_page_control_title').text(mlab.dt.app.curr_pagetitle);" class="mlab_dt_button_cancel_left" title="{% trans %}app.builder.page.tooltip.cancel{% endtrans %}">{% trans %}app.builder.page.cancel{% endtrans %}</button>
         </div>
         <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png" title="{% trans %}app.builder.page.tooltip.pagelist{% endtrans %}">
+        <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
+        <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
         <img id="mlab_page_control_new" onclick="mlab.dt.management.page_new();" src="/img/menu_new_icon.png" title="{% trans %}app.builder.page.tooltip.new{% endtrans %}">
 
     </div>

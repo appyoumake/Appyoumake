@@ -29,14 +29,13 @@ Mlab_dt_management.prototype = {
                 that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
                 
                 
-                
 //set the compiler qTip to show QR code and link when hower over compile icon
 //Burde endre ikonet til grønt eller noe....
 //TODO use api.elements.tooltip
 //any existing compiled files for this app
                 var url = mlab.dt.urls.cmp_get_list_compiled_apps.replace("_ID_", mlab.dt.app.id);
                 url = url.replace("_VERSION_", mlab.dt.app.active_version);
-                debugger;
+                
                 $.get( url , function( data ) {
 
                     if (data.result === "success") {
@@ -83,6 +82,18 @@ Mlab_dt_management.prototype = {
                 if (local_page_num != "0" && local_page_num != "index" && !data.only_index) {
                     that.page_open_process(data.app_id, local_page_num);
                 } else {
+                    
+                    if (data.lock_status == "locked") {
+                        that.parent.app.locked = true;
+                        $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
+                        $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                    } else {
+                        that.parent.app.locked = false;
+                        $("#mlab_editor_disabled").remove();
+                        $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);
+                    }
+
+                    
                     that.parent.utils.update_status("temporary", "Ready", false);
                     $("#mlab_overlay").slideUp();
                     that.parent.app.locked = (data.lock_status == "locked");

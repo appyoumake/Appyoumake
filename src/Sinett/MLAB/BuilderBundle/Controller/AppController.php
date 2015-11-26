@@ -591,15 +591,22 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if (!$entity) {
             return new JsonResponse(array('db_table' => 'app',
         							      'db_id' => $id,
-        							  	  'result' => 'FAILURE',
-        								  'message' => ''));
+        							  	  'result' => 'failure',
+        								  'message' => 'Unable to find record to delete'));
         }
 
+        if ($entity->getPublished() != $entity::MARKET_NOT_PUBLISHED) {
+            return new JsonResponse(array('db_table' => 'app',
+        							      'db_id' => $id,
+        							  	  'result' => 'failure',
+        								  'message' => 'Cannot delete apps that have been sent to the market'));
+        }
+        
         $em->remove($entity);
         $em->flush();
         return new JsonResponse(array('db_table' => 'app',
         							  'db_id' => $id,
-        							  'result' => 'SUCCESS',
+        							  'result' => 'success',
         						 	  'message' => ''));
     }
 

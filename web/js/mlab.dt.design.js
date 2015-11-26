@@ -186,6 +186,7 @@ Mlab_dt_design.prototype = {
     },
 
     component_delete : function () {
+        mlab.dt.api.closeAllPropertyDialogs();
         var sel_comp = $(".mlab_current_component").prev();
         if (sel_comp.length == 0) {
             sel_comp = $(".mlab_current_component").next();
