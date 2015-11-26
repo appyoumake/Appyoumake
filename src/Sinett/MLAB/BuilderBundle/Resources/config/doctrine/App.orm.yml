@@ -154,7 +154,6 @@ Sinett\MLAB\BuilderBundle\Entity\App:
         joinColumns:
           app_id:
             referencedColumnName: id
-            onDelete: CASCADE
         inverseJoinColumns:
           group_id:
             referencedColumnName: id
@@ -164,6 +163,6 @@ Sinett\MLAB\BuilderBundle\Entity\App:
     appVersions:
       targetEntity: AppVersion
       mappedBy: app
-      cascade: [persist, remove]
+      cascade: [persist]
     
   lifecycleCallbacks: {  }
