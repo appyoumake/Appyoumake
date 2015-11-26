@@ -35,6 +35,10 @@ Mlab_dt_management.prototype = {
 //any existing compiled files for this app
                 var url = mlab.dt.urls.cmp_get_list_compiled_apps.replace("_ID_", mlab.dt.app.id);
                 url = url.replace("_VERSION_", mlab.dt.app.active_version);
+<<<<<<< HEAD
+=======
+                
+>>>>>>> abh_posttest
                 $.get( url , function( data ) {
 
                     if (data.result === "success") {

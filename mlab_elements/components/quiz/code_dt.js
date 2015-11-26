@@ -63,7 +63,7 @@ this.onLoad = function (el) {
     this.initTabs(el);
     
 //reload the pages into the tabs vie this.addQuizPage
-    $(pages).each( function () { 
+    $(pages).each( function () {
         if (this.nodeName.toLowerCase() == "div") {
             $(this).find("input[data-mlab-cp-quiz-alternative='correct']").parent().addClass("mc_correct");
             $(this).find("option[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
@@ -601,7 +601,7 @@ this.alternativeClicked = function(alternative) {
     html.push('<div>');
     html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="deletealternative">Slett svaralternativ</a>');
     html.push('</div>');
-    this.api.displayPropertyDialog(alternative, "Redigér svaralternativ", html);
+    this.api.displayPropertyDialog(alternative, "Redigér svaralternativ", html, null, null, null, null, true);
 };
 
 this.alternativeIsCorrect = function(alternative) {
@@ -737,7 +737,7 @@ this.custom_add_page = function(el) {
     if (typeof el == "undefined") { 
         el = $(".mlab_current_component");
     }
-    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, null, "[data-mlab-dt-quiz-input='pageTitle']");
+    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, null, "[data-mlab-dt-quiz-input='pageTitle']", true);
     
 };
 
@@ -755,7 +755,7 @@ this.custom_add_question = function(el) {
     
     $(content).tabs("option", "active", 1);
     $(content).tabs("disable", 0);
-    this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']");
+    this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']", true);
 };
 
 this.custom_delete_question = function(el) {

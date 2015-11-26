@@ -44,12 +44,6 @@
                                 <img class="basic_menu_icon" title='{% trans %}app.builder.edit.menu.tooltip{% endtrans %}' src="/img/menu_icon.png" alt="logo" > 
                         </li>
 
-                        <li id="mlab_editor_undo_redo" class="single mlab_editor_undo_redo_save">
-                            <img onclick='var temp; mlab.dt.management.page_save(temp, true);' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
-                            <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
-                            <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
-                        </li><!-- End undo and redo menu items -->
-
                         <li  class="single"><div id='mlab_statusbar_permanent'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
                         <li  class="single"><div id='mlab_statusbar_progress_spin'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
@@ -121,6 +115,7 @@
             </div> <!-- End Navigate col -->
 
             <div class="mlab_one_col"> <!-- Feature col -->
+                <img onclick='var temp; mlab.dt.management.page_save(temp, true);' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
                 <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
                 <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
                 <div id="mlab_features_list"></div>

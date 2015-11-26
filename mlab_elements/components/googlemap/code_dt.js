@@ -104,7 +104,7 @@
                             mapTypeControl: curr_map.mapTypeControl,
                             panControl: curr_map.panControl,
                             markers : clean_markers,
-                            config : {class_identifier: this.config.custom.class_identifier, map_script: location.protocol + "//" + this.config.custom.map_script}
+                            config : {class_identifier: this.config.custom.class_identifier, map_script: this.config.custom.map_script}
                         };
                         
         this.api.setAllVariables(el, map_options);

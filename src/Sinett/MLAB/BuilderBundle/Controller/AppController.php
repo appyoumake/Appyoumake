@@ -591,15 +591,51 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if (!$entity) {
             return new JsonResponse(array('db_table' => 'app',
         							      'db_id' => $id,
-        							  	  'result' => 'FAILURE',
-        								  'message' => ''));
+        							  	  'result' => 'failure',
+        								  'message' => 'Unable to find record to delete'));
         }
 
-        $em->remove($entity);
-        $em->flush();
+        if ($entity->getPublished() != $entity::MARKET_NOT_PUBLISHED) {
+            return new JsonResponse(array('db_table' => 'app',
+        							      'db_id' => $id,
+        							  	  'result' => 'failure',
+        								  'message' => 'Cannot delete apps that have been sent to the market'));
+        }
+        
+        $app_path = $entity->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $app_path = dirname($app_path);
+        
+        try {
+//first we need to remove all groups that have access to this app using the removeGroup
+            foreach($entity->getGroups() as $group) {
+                $entity->removeGroup($group);
+            }
+
+//same for the versions an app can have
+            foreach($entity->getAppVersions() as $version) {
+                $em->remove($version);
+            }
+            
+//finally delete app directory
+            $em->remove($entity);
+            $em->flush();
+            
+//finally delete the actual files, need to do N_cache folders first as we are not able to get hold of broken symlinks
+            foreach(glob($app_path . '/*cache') as $cache_folder) { 
+                $this->rmdir($cache_folder);
+            }
+            $this->rmdir($app_path);
+            
+        } catch (Exception $e) {
+            return new JsonResponse(array('db_table' => 'app',
+        							  'db_id' => $id,
+        							  'result' => 'failure',
+        						 	  'message' => $e->getMessage()));
+        } 
+        
         return new JsonResponse(array('db_table' => 'app',
         							  'db_id' => $id,
-        							  'result' => 'SUCCESS',
+        							  'result' => 'success',
         						 	  'message' => ''));
     }
 
@@ -1455,5 +1491,27 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 'html' =>  $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $new_branch->getArray(), 'app_url' => $config["urls"]["app"], 'app_icon' => $config["filenames"]["app_icon"]))));
         }
         
+    }
+    
+    private function rmdir($dir) { 
+        foreach(glob($dir . '/*') as $file) { 
+            if (is_link($file)) {
+                error_log("SYMLINK = " . $file);
+                unlink($file); 
+            } else if (is_dir($file)) { 
+                error_log("DIR = " . $file);
+                $this->rmdir($file); 
+            } else {
+                error_log("FILE = " . $file);
+                unlink($file); 
+            }
+        }; 
+        if (is_link($dir)) {
+            error_log("SYMLINK = " . $dir);
+            unlink($dir); 
+        } else {
+            error_log("TOPDIR = " . $dir);
+            rmdir($dir);
+        }
     }
 }

@@ -200,7 +200,22 @@
         }
         
         function mlab_delete_app() {
-            alert(mlab_current_app_id);
+            if  (confirm("Are you sure you want to delete this app? This will only work if it has not been sent to the market.")) {
+                var temp_app_id = mlab_current_app_id;
+                var url = "{{ path('app_delete', { id: "_APP_ID_"} ) }}";
+                url = url.replace("_APP_ID_", mlab_current_app_id);
+
+                $.get( url, function( data ) {
+
+                    if (data.result == "success") {
+                        $("#row_app_" + temp_app_id).css("background-color", "red");
+                        alert("App was deleted");
+                        $("#row_app_" + temp_app_id).remove();
+                    } else {
+                        alert(data.message);
+                    }
+                });                
+            }
         }
         
 	</script>

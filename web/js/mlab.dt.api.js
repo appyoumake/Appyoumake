@@ -358,10 +358,10 @@ Mlab_dt_api.prototype = {
  * @param {function object} func_hide currently unused
  * @returns {undefined}
  */
-    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector) {
+    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector, wide) {
         this.closeAllPropertyDialogs()
         that = this;
-        if ($(el).data("mlab-type") == "quiz") {
+        if (wide == true) { 
             var c = 'qtip-light mlab_dt_box_style mlab_dt_wide_qtip_box';
         } else {
             var c = 'qtip-light mlab_dt_box_style';
