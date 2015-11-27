@@ -87,7 +87,7 @@ Mlab_dt_design.prototype = {
             $(new_comp).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
         }
 
-        $('.mlab_current_component').qtip('hide');
+        $('.mlab_current_component').qtip('hide'); //TODO use mlab dt api to hide qtip
 
         this.component_run_code(new_comp, id, true);
         this.component_highlight_selected(new_comp);
@@ -197,6 +197,39 @@ Mlab_dt_design.prototype = {
         } else {
             $('#mlab_toolbar_for_components').hide();
         }
+        this.parent.flag_dirty = true;
+    },
+
+//cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard
+    component_cut : function () {
+        mlab.dt.clipboard = $(".mlab_current_component").clone();
+        this.component_delete();
+    },
+
+    component_copy : function () {
+        mlab.dt.clipboard = $(".mlab_current_component").clone();
+    },
+
+//when they past we need to go through similar checks as we do when adding a component, like is it unique, etc.
+//also need to attach event handlers, etc, they are lost as 
+    component_paste : function() {
+        var comp_id = mlab.dt.clipboard.data("mlab-type")
+        if (this.parent.components[comp_id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + comp_id + "']").length > 0) {
+            alert("You can only have one component of this type on a page");
+            return;
+        }
+        $(".mlab_current_component").removeClass("mlab_current_component");
+        $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
+        this.component_highlight_selected(mlab.dt.clipboard);
+        window.scrollTo(0,document.body.scrollHeight);
+        mlab.dt.clipboard.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
+        mlab.dt.clipboard.on("input", function(){mlab.dt.flag_dirty = true;});
+        
+//process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
+        if (typeof this.parent.components[comp_id].conf.process_keypress != "undefined" && this.parent.components[comp_id].conf.process_keypress) {
+            $(mlab.dt.clipboard).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
+        }
+        
         this.parent.flag_dirty = true;
     },
 
@@ -357,22 +390,31 @@ Mlab_dt_design.prototype = {
         var items = new Object();
         var title = "";
         var menu = $("#mlab_component_context_menu");
+        var temp_menu = [];
         
         $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(comp_name);
         menu.html("");
+        
 
         if (typeof conf.custom != "undefined") {
             for(var index in this.parent.components[comp_name].code) {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
-                    var icon = ( typeof conf.custom[title + "_icon"] != "undefined" ) ? "src='" + conf.custom[title + "_icon"] + "'" : "class='missing_icon'";
-                    var tooltip = ( typeof conf.custom[title + "_tooltip"] != "undefined" ) ? conf.custom[title + "_tooltip"] : title;
-                    menu.append("<img onclick='mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"));' " + 
+                    var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
+                    var tooltip = ( typeof conf.custom[title]["tooltip"] != "undefined" ) ? conf.custom[title]["tooltip"] : title;
+                    var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
+                    if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
+                        var cl = "mlab_newline";
+                    } else {
+                        var cl = "";
+                    }
+                    temp_menu[order] = "<img onclick='mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"));' " + 
                                      "title='" + tooltip + "' " + 
-                                     icon + " >");
+                                     "class='" + cl + "' " + 
+                                     icon + " >";
                 }
             }
-            
+            menu.append(temp_menu.join(""));
             menu.append("<div class='clear'>&nbsp;</div>");
             
         }

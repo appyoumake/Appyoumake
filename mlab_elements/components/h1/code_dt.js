@@ -40,6 +40,24 @@
 		document.execCommand('italic', null, null);
     };
     
+    this.custom_decrease_size = function (el) {
+		var content = this.getHTMLElement(el);
+        if (content.hasClass("mc_large")) {
+            content.removeClass("mc_large").addClass("mc_medium");
+        } else if (content.hasClass("mc_medium")) {
+            content.removeClass("mc_medium").addClass("mc_small");
+        }
+    };
+    
+    this.custom_increase_size = function (el) {
+		var content = this.getHTMLElement(el);
+        if (content.hasClass("mc_small")) {
+            content.removeClass("mc_small").addClass("mc_medium");
+        } else if (content.hasClass("mc_medium")) {
+            content.removeClass("mc_medium").addClass("mc_large");
+        }
+    };
+    
     this.highlight = function (el) {
         el.focus();
         var range = document.createRange();

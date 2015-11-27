@@ -234,7 +234,10 @@ class FileManagement {
             if (isset($component["conf"]) && isset($component["conf"]["category"])) {
                 $component["is_feature"] = ($component["conf"]["category"] == "feature");
                 $component["is_storage_plugin"] = ($component["conf"]["category"] == "storage_plugin");
+                $component["is_component"] = (!$component["is_feature"] && !$component["is_storage_plugin"]);
+                $component["inheritance_processed"] = false;
             }
+            
             if (isset($component["conf"]) && isset($component["conf"]["urls"])) {
                 foreach ($component["conf"]["urls"] as $url_key => $url_name) {
                     $component["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $comp_id));

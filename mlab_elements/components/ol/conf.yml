@@ -3,8 +3,8 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: list
 name: ol
-tooltip: For å sette inn en Nummerert liste i appen din skal du benytte denne knappen.
-extended_tooltip: For å sette inn en Nummerert liste i appen din skal du benytte denne knappen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
+tooltip: For å sette inn en nummerert liste i appen din skal du benytte denne knappen.
+extended_tooltip: For å sette inn en nummerert liste i appen din skal du benytte denne knappen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |
@@ -14,8 +14,14 @@ html: |
 inherit: p
 filterhtml: ["li"]
 custom:
-    indent_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAOElEQVQ4y2NgoAL4TyGm3ACaAaJdsACIuSgxAERcBWItSp36FYgTyHUBxQZQ5AWKA5HiaBzpeQEA6F2He+Nh8ZIAAAAASUVORK5CYII=
-    outdent_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAOUlEQVQ4y2NgoAL4TyGm3ACaAZJdwAXE88k1QAuIr5LrpwQg/orFSUS7gGIDKPYCVQKRKtE4UvMCAKhkh3lClupIAAAAAElFTkSuQmCC
-    indent_tooltip: Indent selected line to a lower level
-    outdent_tooltip: Remove indent
+    indent:
+        tooltip: Indent selected line to a lower level
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAOElEQVQ4y2NgoAL4TyGm3ACaAaJdsACIuSgxAERcBWItSp36FYgTyHUBxQZQ5AWKA5HiaBzpeQEA6F2He+Nh8ZIAAAAASUVORK5CYII=
+        newline: true
+        order: 7
+    outdent:
+        tooltip: Remove indent
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAOUlEQVQ4y2NgoAL4TyGm3ACaAZJdwAXE88k1QAuIr5LrpwQg/orFSUS7gGIDKPYCVQKRKtE4UvMCAKhkh3lClupIAAAAAElFTkSuQmCC
+        order: 8
+    
     

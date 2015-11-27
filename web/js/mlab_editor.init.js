@@ -180,18 +180,9 @@
                         $("#mlab_storage_plugin_list").html(storage_plugin_list);
                         
 //now loop through all components and for those that inherit another we transfer properties
-                        for (index in mlab.dt.components) {
-                            if (!mlab.dt.components[index].is_feature && !mlab.dt.components[index].is_storage_plugin && typeof mlab.dt.components[index].code.config["inherit"] != "undefined") {
-                                var from = mlab.dt.components[index].code.config.inherit;
-                                if (typeof mlab.dt.components[from] != "undefined") {
-                                    
-//we copy top level objectsm and objects within the code and and code.config objects
-                                    mlab.dt.components[index] = mlab.dt.utils.merge_objects(mlab.dt.components[from], mlab.dt.components[index]);
-                                } else {
-                                    console.log("Parent object does not exist");
-                                }
-                            }
-                        }
+                        console.log(mlab.dt.components);
+                        mlab.dt.utils.process_inheritance(mlab.dt.components);
+                        console.log(mlab.dt.components);
                         
 //finally we assign the API object to teh component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
 //when trying to merge properties in the previous code block
@@ -221,7 +212,8 @@
 
 //erase the temporary variable, this is used in inititalisation process only.
                         delete document.mlab_temp_vars;
-                        
+
+
 //prepare the menu popup for the storage plugin selector
                         $("#mlab_button_select_storage_plugin").click( function(event) {
                             var div = $("#mlab_storage_plugin_list");

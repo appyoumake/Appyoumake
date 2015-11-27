@@ -3,5 +3,5 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: feature
 name: dummy
-tooltip: This is an invisible component
+tooltip: This is a feature
 html: <script></script>
