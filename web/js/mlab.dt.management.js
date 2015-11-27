@@ -101,6 +101,26 @@ Mlab_dt_management.prototype = {
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }
+            
+//set the trap for the paste function so we force plain text
+            $("#" + mlab.dt.config["app"]["content_id"]).on("paste", function(e) {
+// stop original paste from happening
+                e.preventDefault();
+                
+//if they are not allowed to paste into this component we quit
+                var comp_id = $(".mlab_current_component").data("mlab-type");
+                if (typeof mlab.dt.components[comp_id].conf.paste_allowed == "undefined" || mlab.dt.components[comp_id].conf.paste_allowed === false) {
+                    return;
+                } 
+
+
+//obtain plain text
+                var text = e.originalEvent.clipboardData.getData("text/plain");
+
+//insert via built in exec commands
+                document.execCommand("insertHTML", false, text);
+            });
+            
 
         });
     },

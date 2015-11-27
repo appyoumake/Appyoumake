@@ -9,6 +9,7 @@ compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p class='mc_text mc_display'>Enter your body text here</p>
 inherit: h1
 filterhtml: ["p"]
+paste_allowed: false
 custom:
     add_link:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAfZJREFUeNqsVj1Tg0AQhRDHlNhZJv+AdHZSapfWjvwLO7HSjuQXYOdYaWuV8ReE0o5YWoUyjh/xbeaSwfWW4wI38+bg7vYex77dPcdp2A4Oez4QAzmwLoHeU6DvtNWwWQgsGREHzUdbG68BGW3yCPQMS2l+5HW7bz/fX5nbgCwVpjMg0IwXwLDTItkEOPr8WA2pB67ZvA9cWZMJfoqE9TEXkmtJGKgvpUbqOwVecKo7ScHoluWxJoQZiIoaNnPBp5Vxlgryn1FoGGz/2HQMZCN0ORCVTlZuREakibAFH194BjXe14gzaieIMx9x9szsY7Zu6lpKv1Bx1lfgbQC/LgR7sh3YSD9RqpPSWmSwD63jTPmU59I6ZNE+ZJHuS7fvtmRhTbJt9g+Z9JO6ZK7yS66R/ZgyiKpnuUYgC4VACJmxLgN5kPMl+jNpMaRekORJ+ppk3BfCZiylO0dTqRNhXWIotP9+t0TIjXxDhZ8JRGmVbdmH63LxVPXMmF9LCbmATVY3N3fZe0CbSVVAqW5TkpRg9roucB/GbRRfqZFKA1avQoy5QAaFrujEeL7B+K2VGit8SNKeC7GUVRRPa7LNCVWcvdNVTjN/3CbZ7l5K90W6N6qCWlX/SEznIHva9z67K8CK9EH9Wp/9YlLkFLgA2WuT2/qvAAMAxsAUsXEY02oAAAAASUVORK5CYII=

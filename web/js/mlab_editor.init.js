@@ -22,7 +22,7 @@
             alert(_tr["app.builder.mlab.js.alert.browser.support"]);
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
         }
-
+        
 //initialise the Mlab object, then create an global instance of it
 //the MLAB object contains several other objects loaded in different files
         Mlab = function () {
@@ -133,6 +133,7 @@
 //and for each component we need to turn the text of the
                 $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
+
                         var feature_list = $("<ul></ul>");
                         var storage_plugin_list = $("<ul></ul>");
                         mlab.dt.components = data.mlab_components;
