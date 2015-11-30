@@ -779,7 +779,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_types' => '_FILETYPES_', 'app_id' => '_APPID_')),
                                         "editor_closed" => $this->generateUrl('app_builder_editor_closed',  array('uid' => '_UID_')),
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
-                                        "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
+                                        "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => 'false')),
+                                        "app_open" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => '_OPEN_MODE_')),
                                         "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
@@ -800,7 +801,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     
                                         "cmp_get_app_status" => $this->generateUrl('cmp_get_app_status',  array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')),
                                         "cmp_get_app_process" => $this->generateUrl('cmp_get_app_process', array('window_uid' => '_WINDOW_UID_', 'app_id' => '_ID_', 'app_version' => '_VERSION_', 'platform' => '_PLATFORM_')), 
-                                        "cmp_get_list_compiled_apps" => $this->generateUrl('cmp_get_list_compiled_apps', array('app_id' => '_ID_', 'app_version' => '_VERSION_')), 
                     
                                         "components_root_url" =>  $config["urls"]["component"]
                                     )
@@ -839,7 +839,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @param unknown $page_num
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
      */
-    public function getPageAction ($app_id, $page_num, $uid) {
+    public function getPageAction ($app_id, $page_num, $uid, $app_open_mode) {
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -871,6 +871,22 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             } else {
                 $title = "Untitled";
             }
+            
+            if ($app_open_mode) {
+                
+//here we pick up a list of compiled apps, this has to come here rather than when app is opened as the URL is manipualted after app is opened
+//only happens if $app_open_mode = true, this is when we call this function from the mlab.dt.manage,ent.app_open function
+
+                $config = $this->container->parameters['mlab'];
+                $comp_files = array();
+                foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
+                    $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
+                    if ($compiled_app !== false) {
+                        $comp_files[$platform] = $compiled_app;
+                    }
+                }
+            }
+            
     		return new JsonResponse(array(
     				'result' => 'success',
     				'html' => $page["html"],
@@ -879,7 +895,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     'page_num_real' => intval($doc),
                     'app_id' => $app_id,
                     'page_title' => $title,
-                    'only_index' => !file_exists("$app_path" . "001.html")
+                    'only_index' => !file_exists("$app_path" . "001.html"),
+                    "compiled_files" => $comp_files
                 ));
     		 
     	} else {

@@ -1,6 +1,6 @@
 	
 //TODO: Change to use input
-    this.apiKey = '';
+    apiKey = '';
     
     
     this.onCreate = function (el) {
@@ -13,7 +13,7 @@
 	this.onLoad = function (el) {
         var temp = this.api.getVariable(el, "credentials");
         if (typeof temp != "undefined" && typeof temp["apikey"] != "undefined") {
-            this.apiKey = temp["apikey"];
+            apiKey = temp["apikey"];
         } else {
             alert("No YouTube API key specified, will not be able to request videos. Contact the Mlab administrator to obtain a YouTube API key");
         }
@@ -52,12 +52,13 @@
 */
     this.initYoutube = function (el) {
 /* Set up autoComplete */
-        local_el = el;
+        var local_el = el;
+
         $("#mlab_cp_youtube_search").autocomplete({
             source: function(request, response){
                 var query = request.term;
                 $.ajax({
-                    url: location.protocol + "//suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q=" + query + "&key=" + this.apiKey + "&format=5&alt=json&callback=?",  
+                    url: location.protocol + "//suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q=" + query + "&key=" + apiKey + "&format=5&alt=json&callback=?",  
                     dataType: 'jsonp',
                     success: function(data, textStatus, request) { 
                        response( $.map( data[1], function(item) {
@@ -85,9 +86,10 @@
         $.youtubeAPI = function(search_term){
             var results = $('#mlab_cp_youtube_results');
             results.html('Searching...');
+            
             $.ajax({
                 type: 'GET',
-                url: 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=' + search_term + '&key=' + this.apiKey + '&max-results=5',
+                url: 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=' + search_term + '&key=' + apiKey + '&max-results=5',
                 dataType: 'jsonp',
                 success: function( veri ) {
                     if( veri.items ) {

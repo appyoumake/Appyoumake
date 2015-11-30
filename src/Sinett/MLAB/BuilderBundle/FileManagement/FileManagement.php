@@ -403,7 +403,7 @@ class FileManagement {
         $app_config_path = $app_path . $this->config['filenames']["app_config"];
 		$template_path = $template->calculateFullPath($this->config["paths"]["template"]);
 		$template_items_to_copy = $this->config["app"]["copy_files"];
-		
+		$app_conf = array("title" => $app->getName(), "plugins" => array());
 		$output = array();
 		$exit_code = 0;
 		
@@ -412,15 +412,20 @@ class FileManagement {
                 $this->func_copy("$template_path$from", "$app_path$to");
             }
             
+//first update the conf.json file with any global plugins, as specified in parameters.yml
+            if ($this->config["plugins"]) {
+                $app_conf["plugins"] = array_merge($app_conf["plugins"], $this->config["plugins"]);
+            }
+                        
 //update the conf.json file with any plugins specified in the template file
-            $app_conf = array("title" => $app->getName());
             if (file_exists($template_path . "conf.yml")) {
                 $yaml = new Parser();
                 $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
                 if (key_exists("plugins", $temp)) {
-                    $app_conf["plugins"] = $temp["plugins"];
+                    $app_conf["plugins"] = array_merge($app_conf["plugins"], $temp["plugins"]);
                 }
             }
+            
             file_put_contents($app_config_path, json_encode($app_conf));
             return true;
         } else {

@@ -418,6 +418,7 @@ Mlab_dt_design.prototype = {
         var title = "";
         var menu = $("#mlab_component_context_menu");
         var temp_menu = [];
+        var loc = mlab.dt.api.getLocale();
         
         $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(comp_name);
         menu.html("");
@@ -428,7 +429,9 @@ Mlab_dt_design.prototype = {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
                     var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
-                    var tooltip = ( typeof conf.custom[title]["tooltip"] != "undefined" ) ? conf.custom[title]["tooltip"] : title;
+                    var temp_tt = ( typeof conf.custom[title]["tooltip"] != "undefined" ) ? conf.custom[title]["tooltip"] : title;
+                    var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+
                     var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
                     if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
                         var cl = "mlab_newline";
@@ -436,7 +439,7 @@ Mlab_dt_design.prototype = {
                         var cl = "";
                     }
                     temp_menu[order] = "<img onclick='mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"));' " + 
-                                     "title='" + tooltip + "' " + 
+                                     "title='" + tt + "' " + 
                                      "class='" + cl + "' " + 
                                      icon + " >";
                 }

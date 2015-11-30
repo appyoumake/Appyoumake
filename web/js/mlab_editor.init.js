@@ -136,6 +136,7 @@
 
                         var feature_list = $("<ul></ul>");
                         var storage_plugin_list = $("<ul></ul>");
+                        var loc = mlab.dt.api.getLocale();
                         mlab.dt.components = data.mlab_components;
 
                         for (type in mlab.dt.components) {
@@ -150,6 +151,13 @@
                             }
                             var c = mlab.dt.components[type];
                             if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
+                                
+//prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
+                                var temp_tt = c.conf.tooltip;
+                                var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                                var temp_tt = c.conf.extended_tooltip;
+                                var tte = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                                
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
@@ -157,9 +165,9 @@
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
                                         "<div class='mlab_component_tooltip'>" +
-                                            c.conf.tooltip + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
+                                            tt + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
                                             "<div class='mlab_component_extended_tooltip'>" +
-                                                c.conf.extended_tooltip +
+                                                tte +
                                             "</div>" +
                                          "</div>"
                                 );

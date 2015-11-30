@@ -17,12 +17,13 @@ Mlab_dt_utils.prototype = {
  * @returns {undefined}
 */
     update_status : function (state, content, display_progress) {
+        
         if (state == "permanent") {
             $("#mlab_statusbar_permanent").text(content);
             return;
         } else if (state == "temporary") {
             $("#mlab_statusbar_temporary").text(content);
-            window.setInterval(this.clear_status.bind(this), 3000);
+            window.setTimeout(this.clear_status.bind(this), 3000);
         } else if (state == "callback") {
             $("#mlab_statusbar_temporary").text(content);
         } else if (state == "completed") {
