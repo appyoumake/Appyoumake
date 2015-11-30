@@ -73,6 +73,7 @@ Mlab_dt_design.prototype = {
             return;
         }
         
+        this.parent.flag_dirty = true;
         var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
 
@@ -89,35 +90,8 @@ Mlab_dt_design.prototype = {
 
         $('.mlab_current_component').qtip('hide'); //TODO use mlab dt api to hide qtip
 
-        this.component_run_code(new_comp, id, true);
         this.component_highlight_selected(new_comp);
         window.scrollTo(0,document.body.scrollHeight);
-
-//execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
-        var url = this.parent.urls.component_added.replace("_APPID_", this.parent.app.id);
-        url = url.replace("_COMPID_", id);
-        var that = this;
-
-        var request = $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "json"
-        });
-
-        request.done(function( result ) {
-            if (result.result == "success") {
-                that.parent.drag_origin = 'sortable';
-            } else {
-                alert(result.msg + "'\n\nLegg til komponenten igjen.");
-                $(new_comp).remove();
-            }
-        });
-
-        request.fail(function( jqXHR, textStatus ) {
-            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen.");
-            $(new_comp).remove();
-        });
-        
 //now we load the relevant CSS/JS files
         this.parent.api.getLibraries(id);
 
@@ -128,8 +102,41 @@ Mlab_dt_design.prototype = {
             }
         }
 
-        this.parent.flag_dirty = true;
+//execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
+        var url = this.parent.urls.component_added.replace("_APPID_", this.parent.app.id);
+        url = url.replace("_COMPID_", id);
+        var that = this;
+        var comp_id = id;
 
+        var request = $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json"
+        });
+
+        request.done(function( result ) {
+            if (result.result == "success") {
+                that.parent.drag_origin = 'sortable';
+                
+//if this component requires any credentials we request them here
+                if (Object.prototype.toString.call( that.parent.components[comp_id].conf.credentials ) === "[object Array]") {
+                    var local_comp = new_comp;
+                    var local_comp_id = comp_id;
+                    that.parent.api.getCredentials(that.parent.components[comp_id].conf.credentials, function (credentials, params) { mlab.dt.design.component_store_credentials(credentials, params); that.component_run_code(local_comp, local_comp_id, true); }, { component: new_comp });
+                } 
+                
+            } else {
+                alert(result.msg + "'\n\nLegg til komponenten igjen.");
+                $(new_comp).remove();
+            }
+        });
+
+        request.fail(function( jqXHR, textStatus ) {
+            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen.");
+            $(new_comp).remove();
+            this.parent.flag_dirty = false;
+        });
+        
     },
 
 /**
@@ -231,6 +238,14 @@ Mlab_dt_design.prototype = {
         }
         
         this.parent.flag_dirty = true;
+    },
+    
+    component_edit_credentials : function () {
+        var curr_comp = $(".mlab_current_component");
+        var comp_id = curr_comp.data("mlab-type");
+        if (Object.prototype.toString.call( this.parent.components[comp_id].conf.credentials ) === "[object Array]") {
+            this.parent.api.getCredentials(this.parent.components[comp_id].conf.credentials, this.component_store_credentials, { component: curr_comp });
+        }        
     },
 
 /**
@@ -339,6 +354,18 @@ Mlab_dt_design.prototype = {
  * @param {type} params
  * 
  */
+    component_store_credentials: function (credentials, params) {
+        
+        mlab.dt.api.setVariable( params.component, "credentials", credentials );
+
+    },
+
+/**
+ * Callback function which stores the storage_plugin name and the credentials entered
+ * @param {type} credentials: 
+ * @param {type} params
+ * 
+ */
     storage_plugin_store_credentials: function (credentials, params) {
         
         mlab.dt.api.setVariable( params.component, "storage_plugin", { name: params.storage_plugin_id, credentials: credentials } );
@@ -420,6 +447,13 @@ Mlab_dt_design.prototype = {
         }
         
         
+//display storage selection list button, if this supports storage
+        if (typeof conf.credentials != "undefined" && Object.prototype.toString.call( conf.credentials ) === "[object Array]") {
+            $("#mlab_button_get_credentials").removeClass("mlab_hidden");
+        } else {
+            $("#mlab_button_get_credentials").addClass("mlab_hidden");
+        }        
+
 //display storage selection list button, if this supports storage
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
             $("#mlab_button_select_storage_plugin").removeClass("mlab_hidden");

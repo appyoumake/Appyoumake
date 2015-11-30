@@ -11,8 +11,9 @@
 
     //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
+        var that = this;
         this.getHTMLElement(el).attr("contenteditable", "true")
-                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(this.config.placeholder); } } ) ;
+                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.config.placeholder); } } ) ;
     };
     
 	this.onSave = function (el) {

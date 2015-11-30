@@ -181,9 +181,7 @@
                         $("#mlab_storage_plugin_list").html(storage_plugin_list);
                         
 //now loop through all components and for those that inherit another we transfer properties
-                        console.log(mlab.dt.components);
                         mlab.dt.utils.process_inheritance(mlab.dt.components);
-                        console.log(mlab.dt.components);
                         
 //finally we assign the API object to teh component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
 //when trying to merge properties in the previous code block

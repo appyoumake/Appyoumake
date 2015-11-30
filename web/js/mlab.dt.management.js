@@ -119,6 +119,8 @@ Mlab_dt_management.prototype = {
 
 //insert via built in exec commands
                 document.execCommand("insertHTML", false, text);
+                
+                mlab.dt.flag_dirty = true;
             });
             
 

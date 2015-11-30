@@ -31,10 +31,12 @@
     };
     
     this.custom_indent = function (el) {
+        debugger;
 		document.execCommand('indent', null, null);
     };
     
     this.custom_outdent = function (el) {
+        debugger;
 		document.execCommand('outdent', null, null);
     };
     
