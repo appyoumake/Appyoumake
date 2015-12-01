@@ -110,6 +110,10 @@ app.builder.help.menu.tooltip: Hjelp
 app.builder.edit.menu.tooltip: Editor meny
 app.mlab.logo.tooltip: Tilbake til App liste
 
+app.builder.overlay.info: Vennligst vent mens Mlab åpner appen din...
+app.builder.statusbar.info.permanent: Appnavn
+app.builder.statusbar.info.permanent.label: App
+
 app.builder.edit.menu.heading.feature: App egenskaper
 app.builder.edit.menu.feature.info: Du kan legge til spesielle egenskaper til en app, det kan være oppkobling mot en database eller link til en kalender. Velg i fra listen nedenfor. De med en hake er allerede lagt til i denne appen.
 app.builder.edit.menu.heading.utilities: Ekstra verktøy
@@ -131,18 +135,13 @@ app.builder.page.heading: Sider
 app.builder.page.save: Lagre
 app.builder.page.cancel: Avbryt
 
-app.builder.page.menu.delet.info: Klikk på krysset for å permanent slette siden du står på
+app.builder.page.menu.delete.info: Klikk på krysset for å permanent slette siden du står på
 app.builder.page.menu.delete: Slett siden som er åpen 
 
-app.builder.page.tooltip.previous: Forrige side
-app.builder.page.tooltip.next: Neste side
 app.builder.page.tooltip.save: Lagre endring av sidenavn
 app.builder.page.tooltip.cancel: Avbryt endring av sidenavn
 app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
 app.builder.page.tooltip.new: Ny side
-
-app.builder.overlay.info: Vennligst vent mens Mlab åpner appen din...
-app.builder.statusbar.info.permanent: Appnavn
 
 
 #-----------------------------------------------------

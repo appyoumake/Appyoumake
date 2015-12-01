@@ -110,6 +110,10 @@ app.builder.help.menu.tooltip: Help
 app.builder.edit.menu.tooltip: Editor menu
 app.mlab.logo.tooltip: Back to the App list
 
+app.builder.overlay.info: Please wait while Mlab opens your app...
+app.builder.statusbar.info.permanent: App name
+app.builder.statusbar.info.permanent.label: App
+
 app.builder.edit.menu.heading.feature: App feature
 app.builder.edit.menu.feature.info: You can add special features to an application, it may be accessing a database or a link to a calendar. Choose from the list below. Those with a check mark is already added to this app.
 app.builder.edit.menu.heading.utilities: Utilities
@@ -131,18 +135,13 @@ app.builder.page.heading: Pages
 app.builder.page.save: Save
 app.builder.page.cancel: Cancel
 
-app.builder.page.menu.delet.info: Click on the X to permanently delete the page you are on
+app.builder.page.menu.delete.info: Click on the X to permanently delete the page you are on
 app.builder.page.menu.delete: Delete the currently open page
 
-app.builder.page.tooltip.previous: Previous page
-app.builder.page.tooltip.next: Next page
 app.builder.page.tooltip.save: Save changes to the page name
 app.builder.page.tooltip.cancel: Cancel changes to the page name
 app.builder.page.tooltip.pagelist: Click to bring up the list of pages in the app
 app.builder.page.tooltip.new: New page
-
-app.builder.overlay.info: Please wait while Mlab opens your app...
-app.builder.statusbar.info.permanent: App name
 
 
 #-----------------------------------------------------

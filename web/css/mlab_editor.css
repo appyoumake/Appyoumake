@@ -39,11 +39,12 @@ made smaler than the min width */
     display: none !important;
 }
 
-/* TODO - is tihis in use??? comented out to se if we are going to miss it... */
-#mlab_editor_chrome div.ui-loader {
-   /* ????? 
-   display: none !important; 
-   */
+#mlab_editor .mlab_align_menu_elements .mlab_permanent_top_menu {
+    position: fixed;
+    z-index: 10;
+    background-color: white;
+    padding-bottom: 20px;
+    width: 100%;
 }
 
 
@@ -143,20 +144,22 @@ made smaler than the min width */
 
 /* The page controls */
 #mlab_editor #mlab_page_control {
-    padding: 20px 0px 0px 320px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding: 30px 0px 0px 170px;
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 10px;
     width: 644px;
     height: 20px;
     position: static;
 }
 
-#mlab_editor #mlab_page_control #mlab_page_control_previous,
-#mlab_editor #mlab_page_control #mlab_page_control_next {
+#mlab_editor #mlab_page_control .mlab_page_control_label {
     float: left;
-    width: 10px;
-    margin-top: 2px;
-    margin-right: 15px;
+    border: 0;
+    padding: 4px;
+    margin: 0;
+    margin-right: 2px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 #mlab_editor #mlab_page_control #mlab_page_control_title {
@@ -178,6 +181,12 @@ made smaler than the min width */
     margin-top: 8px;
 }
 
+#mlab_editor #mlab_page_control .mlab_button_undo,
+#mlab_editor #mlab_page_control .mlab_button_redo{
+    float: right;
+    padding: 5px 4px 0px 0px;
+}
+
 #mlab_editor #mlab_page_control #mlab_page_control_new {
     float: left;
     width: 20px;
@@ -195,10 +204,11 @@ made smaler than the min width */
     overflow-y: auto;
     display: none;
     position: absolute;
-    left: 370px;
-    top: 100px;
+    left: 220px;
+    top: 104px;
     z-index: 980;
-    width: 350px;
+    min-width: 250px;
+    max-width: 350px;
     background: #FFFFFF;
     height: 200px;
     border: 1px solid #777777;
@@ -431,6 +441,7 @@ made smaler than the min width */
     overflow-x: visible;
     position: absolute;
     left: 160px;
+    top: 105px;
     clear: both;
 }
 
