@@ -81,4 +81,20 @@
         img.attr('src', img_url);
     };
 
-  
+    this.custom_decrease_size = function (el) {
+        var figcap = $('.mlab_current_component').find('figcaption');
+        if (figcap.hasClass("mc_large")) {
+            figcap.removeClass("mc_large").addClass("mc_medium");
+        } else if (figcap.hasClass("mc_medium")) {
+            figcap.removeClass("mc_medium").addClass("mc_small");
+        }
+    };
+    
+    this.custom_increase_size = function (el) {
+		var figcap = $('.mlab_current_component').find('figcaption');
+        if (figcap.hasClass("mc_small")) {
+            figcap.removeClass("mc_small").addClass("mc_medium");
+        } else if (figcap.hasClass("mc_medium")) {
+            figcap.removeClass("mc_medium").addClass("mc_large");
+        }
+    };

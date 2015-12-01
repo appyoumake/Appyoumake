@@ -293,9 +293,14 @@ made smaler than the min width */
     margin: 5px 2px;
 }
 
+#mlab_editor #mlab_toolbar_for_components .mlab_newline {
+    clear: both;
+}
+
 /* TODO - få inn en klasse så ikke bruker img? */
 #mlab_editor #mlab_toolbar_for_components #mlab_component_context_menu img {
     padding: 2px;
+    float: left;
 }
 
 /* makes the last clear div short */
@@ -477,3 +482,4 @@ made smaler than the min width */
 #mlab_editor .mlab_current_component_grandchild {
     border: 1px white double !important;
 }
+

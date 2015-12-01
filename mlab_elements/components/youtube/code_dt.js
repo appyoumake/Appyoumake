@@ -1,6 +1,6 @@
 	
 //TODO: Change to use input
-    var apiKey = 'AIzaSyB3PFClHfy5RC52VsPlf7U8zJ1iSplCDEs';
+    apiKey = '';
     
     
     this.onCreate = function (el) {
@@ -11,6 +11,12 @@
     
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
+        var temp = this.api.getVariable(el, "credentials");
+        if (typeof temp != "undefined" && typeof temp["apikey"] != "undefined") {
+            apiKey = temp["apikey"];
+        } else {
+            alert("No YouTube API key specified, will not be able to request videos. Contact the Mlab administrator to obtain a YouTube API key");
+        }
         el.find("." + this.config.custom.class_identifier).css("pointer-events", "none");
     };
 
@@ -46,12 +52,13 @@
 */
     this.initYoutube = function (el) {
 /* Set up autoComplete */
-        local_el = el;
+        var local_el = el;
+
         $("#mlab_cp_youtube_search").autocomplete({
             source: function(request, response){
                 var query = request.term;
                 $.ajax({
-                    url: location.protocol + "//suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="+query+"&key="+apiKey+"&format=5&alt=json&callback=?",  
+                    url: location.protocol + "//suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q=" + query + "&key=" + apiKey + "&format=5&alt=json&callback=?",  
                     dataType: 'jsonp',
                     success: function(data, textStatus, request) { 
                        response( $.map( data[1], function(item) {
@@ -79,6 +86,7 @@
         $.youtubeAPI = function(search_term){
             var results = $('#mlab_cp_youtube_results');
             results.html('Searching...');
+            
             $.ajax({
                 type: 'GET',
                 url: 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=' + search_term + '&key=' + apiKey + '&max-results=5',

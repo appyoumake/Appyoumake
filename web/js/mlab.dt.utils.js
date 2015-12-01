@@ -17,12 +17,13 @@ Mlab_dt_utils.prototype = {
  * @returns {undefined}
 */
     update_status : function (state, content, display_progress) {
+        
         if (state == "permanent") {
             $("#mlab_statusbar_permanent").text(content);
             return;
         } else if (state == "temporary") {
             $("#mlab_statusbar_temporary").text(content);
-            window.setInterval(this.clear_status.bind(this), 3000);
+            window.setTimeout(this.clear_status.bind(this), 3000);
         } else if (state == "callback") {
             $("#mlab_statusbar_temporary").text(content);
         } else if (state == "completed") {
@@ -81,7 +82,46 @@ Mlab_dt_utils.prototype = {
         }
 
         return to_obj;        
-    }
+    },
+    
+    process_inheritance_helper : function (components, index) {
+//does this component inherit from another component?
+            if (typeof components[index].conf["inherit"] != "undefined") {
+                var from = components[index].conf.inherit;
+                
+//does the component to inherit from exist?
+                if (typeof components[from] != "undefined") {
+                    
+//is it of the same type?
+                    if (components[from].is_component === components[index].is_component && components[from].is_feature === components[index].is_feature && components[from].is_storage_plugin === components[index].is_storage_plugin) {
+                        
+//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first first
+                        if (!components[from].inheritance_processed && components[from].conf["inherit"] != "undefined") {
+                            this.process_inheritance_helper(components, from);
+                        }
+//we copy top level objects and objects within the code and and code.config objects
+                        components[index] = this.merge_objects(components[from], components[index]); 
+                        components[index].inheritance_processed = true;
 
+                    } else {
+                        console.log("Parent object for " + index + " does not match type:" + from);
+                    }
+                } else {
+                    console.log("Parent object for " + index + " does not exist:" + from);
+                }
+            }        
+    },
+
+//this function takes care of the simple inheritance facility that compoennts offer
+//Have a property called inheritance_processed, if true we've added properties from parents for that component. Set this to true for components that do not inherit from anyone else
+//When loop through components and it inherits from a component that had not loaded parents yet, then process that first, then inherit from grandparent to parent first.
+//If grandparent also inherits, then same for that, and so on.
+//Need to have a call stack to avoid circular inheritance
+    process_inheritance: function (components) {
+        for (index in components) {
+            this.process_inheritance_helper(components, index);
+        }
+        
+    }
 
 }

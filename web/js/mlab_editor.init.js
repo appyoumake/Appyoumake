@@ -22,7 +22,7 @@
             alert(_tr["app.builder.mlab.js.alert.browser.support"]);
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
         }
-
+        
 //initialise the Mlab object, then create an global instance of it
 //the MLAB object contains several other objects loaded in different files
         Mlab = function () {
@@ -133,8 +133,10 @@
 //and for each component we need to turn the text of the
                 $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
+
                         var feature_list = $("<ul></ul>");
                         var storage_plugin_list = $("<ul></ul>");
+                        var loc = mlab.dt.api.getLocale();
                         mlab.dt.components = data.mlab_components;
 
                         for (type in mlab.dt.components) {
@@ -149,6 +151,13 @@
                             }
                             var c = mlab.dt.components[type];
                             if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
+                                
+//prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
+                                var temp_tt = c.conf.tooltip;
+                                var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                                var temp_tt = c.conf.extended_tooltip;
+                                var tte = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                                
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
@@ -156,9 +165,9 @@
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
                                         "<div class='mlab_component_tooltip'>" +
-                                            c.conf.tooltip + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
+                                            tt + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
                                             "<div class='mlab_component_extended_tooltip'>" +
-                                                c.conf.extended_tooltip +
+                                                tte +
                                             "</div>" +
                                          "</div>"
                                 );
@@ -180,18 +189,7 @@
                         $("#mlab_storage_plugin_list").html(storage_plugin_list);
                         
 //now loop through all components and for those that inherit another we transfer properties
-                        for (index in mlab.dt.components) {
-                            if (!mlab.dt.components[index].is_feature && !mlab.dt.components[index].is_storage_plugin && typeof mlab.dt.components[index].code.config["inherit"] != "undefined") {
-                                var from = mlab.dt.components[index].code.config.inherit;
-                                if (typeof mlab.dt.components[from] != "undefined") {
-                                    
-//we copy top level objectsm and objects within the code and and code.config objects
-                                    mlab.dt.components[index] = mlab.dt.utils.merge_objects(mlab.dt.components[from], mlab.dt.components[index]);
-                                } else {
-                                    console.log("Parent object does not exist");
-                                }
-                            }
-                        }
+                        mlab.dt.utils.process_inheritance(mlab.dt.components);
                         
 //finally we assign the API object to teh component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
 //when trying to merge properties in the previous code block
@@ -221,7 +219,8 @@
 
 //erase the temporary variable, this is used in inititalisation process only.
                         delete document.mlab_temp_vars;
-                        
+
+
 //prepare the menu popup for the storage plugin selector
                         $("#mlab_button_select_storage_plugin").click( function(event) {
                             var div = $("#mlab_storage_plugin_list");

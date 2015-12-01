@@ -188,7 +188,7 @@ this.handleUserInput = function(input, e) {
             var maxValue = this.questionTypes.length;
             if (!value || value < minValue || value > maxValue) {
                 input.val('');
-                helpText.text("Valid selections from: " + minValue + " - " + maxValue);
+                alert("Valid selections from: " + minValue + " - " + maxValue);
             } else {
                 input.addClass("mc_blurred");
                 question.attr("data-mlab-cp-quiz-questiontype", this.questionTypes[value - 1].type);
@@ -209,7 +209,7 @@ this.handleUserInput = function(input, e) {
             this.setPropertiesDialogTab();
             $("[data-mlab-dt-quiz-input='alternatives']").focus();
             break;
-            c
+            
         case "alternatives":
             if (value != "") {
                 input.val('');
@@ -247,7 +247,6 @@ this.handleUserInput = function(input, e) {
 };
 
 this.selectItem = function (event) {
-    debugger;
     var page = this.getCurrentPage();
     page.find(".mlab_current_component_grandchild").removeClass("mlab_current_component_grandchild");
     page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");

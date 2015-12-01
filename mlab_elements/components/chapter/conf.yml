@@ -8,3 +8,4 @@ html: <h1 class="mlab_chapter mc_text mc_display mc_heading mc_large mc_chapter"
 inherit: h1
 unique: true
 placeholder: Enter your chapter headline here
+category: text

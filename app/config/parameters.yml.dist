@@ -94,3 +94,4 @@ parameters:
             
         replace_in_filenames: { a: /[ÂÃÄÀÁÅàáâãäå]/, ae: /[Ææ]/, c: /[Çç]/, e: /[ÈÉÊËèéêë]/, i: /[ÌÍÎÏìíîï]/, o: /[ÒÓÔÕÖØòóôõöø]/, n: /[Ññ]/, u: /[ÙÚÛÜùúûü]/, y: /[Ýýÿ]/, _: /[^A-Za-z0-9]/ }    
 
+        plugins: ["cordova-plugin-device", "cordova-plugin-network-information"]

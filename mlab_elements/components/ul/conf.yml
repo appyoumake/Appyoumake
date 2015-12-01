@@ -5,6 +5,7 @@ name: ul
 tooltip: Med denne knappen setter du en kulepunktliste inn i appen.
 extended_tooltip: Med denne knappen setter du en kulepunktliste inn i appen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
 inherit: ol
+category: list
 html: |
     <ul class="mc_container mc_list">
         <li class="mc_text mc_display mc_list mc_bullet">Enter your list here</li>

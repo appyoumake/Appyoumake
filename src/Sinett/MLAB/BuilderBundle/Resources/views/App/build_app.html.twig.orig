@@ -48,8 +48,12 @@
          <!-- TODO bytte ut resize24.png med increase.png og decrease.png  -->
         <img                                                 title='Resize component'               id='mlab_button_component_size'         src='/img/tools/resize24.png'       class='mlab_tools mlab_hidden' >
         <img                                                 title='Select aspect ratio'            id='mlab_button_component_aspect'       src='/img/tools/aspect.png'     class='mlab_tools mlab_hidden' >
+<<<<<<< HEAD
         <img                                                 title='Select storage mechanism'       id='mlab_button_select_storage_plugin'  src='/img/tools/storage.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
+=======
+        <img                                                 title='Select storage mechanism'       id='mlab_button_select_storage_plugin'  src='/img/tools/storage24.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
         <img onclick='mlab.dt.design.component_edit_credentials();'     title='Edit credentials'       id='mlab_button_get_credentials'  src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
+>>>>>>> abh_posttest
         <div id='mlab_component_context_menu'></div>
     </div>
 

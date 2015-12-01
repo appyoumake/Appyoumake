@@ -11,8 +11,9 @@
 
     //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
+        var that = this;
         this.getHTMLElement(el).attr("contenteditable", "true")
-                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(this.config.placeholder); } } ) ;
+                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.config.placeholder); } } ) ;
     };
     
 	this.onSave = function (el) {
@@ -38,6 +39,24 @@
 
     this.custom_italic = function (el) {
 		document.execCommand('italic', null, null);
+    };
+    
+    this.custom_decrease_size = function (el) {
+		var content = this.getHTMLElement(el);
+        if (content.hasClass("mc_large")) {
+            content.removeClass("mc_large").addClass("mc_medium");
+        } else if (content.hasClass("mc_medium")) {
+            content.removeClass("mc_medium").addClass("mc_small");
+        }
+    };
+    
+    this.custom_increase_size = function (el) {
+		var content = this.getHTMLElement(el);
+        if (content.hasClass("mc_small")) {
+            content.removeClass("mc_small").addClass("mc_medium");
+        } else if (content.hasClass("mc_medium")) {
+            content.removeClass("mc_medium").addClass("mc_large");
+        }
     };
     
     this.highlight = function (el) {

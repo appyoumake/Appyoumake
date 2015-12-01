@@ -30,31 +30,13 @@
         return this.getHTMLElement(el).text().length;
     };
     
-    this.custom_add_link = function (el) {
-        link = this.api.getLink();
-        if (link) {
-            var newLink = document.execCommand('createlink', false, link);
-            newLink.target = "_new";
-        }
-    };
-
-    this.custom_remove_link = function (el) {
-		document.execCommand("unlink", false, false);
-    };
-    
-    this.custom_bold = function (el) {
-		document.execCommand('bold', null, null);
-    };
-
-    this.custom_italic = function (el) {
-		document.execCommand('italic', null, null);
-    };
-    
     this.custom_indent = function (el) {
+        debugger;
 		document.execCommand('indent', null, null);
     };
     
     this.custom_outdent = function (el) {
+        debugger;
 		document.execCommand('outdent', null, null);
     };
     

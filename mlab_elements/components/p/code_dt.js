@@ -41,23 +41,6 @@
 		document.execCommand("unlink", false, false);
     };
     
-    this.custom_bold = function (el) {
-		document.execCommand('bold', null, null);
-    };
-
-    this.custom_italic = function (el) {
-		document.execCommand('italic', null, null);
-    };
-
-    this.highlight = function (el) {
-        el.focus();
-        var range = document.createRange();
-        var sel = window.getSelection();
-        range.selectNodeContents(el[0]);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    };
-  
     this.onKeyPress = function (e) {
         if (e.keyCode == 13) {
             e.preventDefault();
