@@ -1,11 +1,14 @@
-	
 //TODO: Change to use input
     apiKey = '';
     
-    
+
+    this.getHTMLElement = function(el)  {
+        return $(el).find("." + this.config.custom.class_identifier);
+    };
+
     this.onCreate = function (el) {
         this.onLoad (el);
-        $(el).html('<img src="' + this.config.placeholder + '" >');
+        this.getHTMLElement(el).html('<img src="' + this.config.placeholder + '" >');
         this.custom_select_video(el);
     };
     
@@ -17,7 +20,7 @@
         } else {
             alert("No YouTube API key specified, will not be able to request videos. Contact the Mlab administrator to obtain a YouTube API key");
         }
-        el.find("." + this.config.custom.class_identifier).css("pointer-events", "none");
+        this.getHTMLElement(el).css("pointer-events", "none");
     };
 
 	this.onSave = function (el) {
@@ -40,7 +43,7 @@
     }
     
     this.getContentSize = function (el) {
-        return $(el).find(".mlab_cp_youtube_video").duration;
+        return this.getHTMLElement(el).duration;
     };
     
     
@@ -111,8 +114,8 @@
 
 // Add youtube code to app, and resize it to fill whole width
         $.youtubeSelect = function(youtube_id){
-            var container = $(local_el);
-            container.html('<iframe class="mc_figure mc_interactive mc_timebased" width="560" height="315" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen style="pointer-events: none" ></iframe>');
+            var container = mlab.dt.components.youtube.code.getHTMLElement(local_el);
+            container.html('<iframe class="mc_figure mc_interactive mc_timebased" width="560" height="315" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen ></iframe>');
             var video = $(container).find("iframe");
             video.attr('data-aspectRatio', video.height() / video.width()).removeAttr('height').removeAttr('width');
             mlab.dt.api.closeAllPropertyDialogs();
