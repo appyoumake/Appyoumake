@@ -7,7 +7,7 @@
  */
 function Mlab_dt_api () {
     this.storage = new Object();
-    this.version = 0.2;
+    this.version = 0.9;
 };
 
 /**
@@ -15,9 +15,6 @@ function Mlab_dt_api () {
  * @type type
  */
 Mlab_dt_api.prototype = {
-  testy : function (test) {
-    alert("Mlab_dt_api" + test);
-  },
 
 /*
  * Symfony allows us to redfine URLs at any time using the route functionality, so we should avoid fixed URLs.

@@ -32,6 +32,7 @@ function Mlab_api () {
     
     this.db.parent = this;
     this.db.internal.parent = this.db;
+    this.mode = this.getMode();
 
 /* Object to hold components loaded */
     this.components = {};
@@ -51,12 +52,6 @@ for ease of use and performance */
 //add storage for the app specific variables (generated in the pre-compile processing function)
 // to the object here
     this.variables = new Object();
-    
-/* Online/offline state. We assume we are starting online, and handle any change. */
-    this.online = true;
-    
-    documentOb.on("online", function() { self.online = true; });
-    documentOb.on("offline", function() { self.online = false; });
     
 // added by arild
 // this will load the text file js/include_comp.txt and load all the component runtime code that are listed there
@@ -112,7 +107,7 @@ for ease of use and performance */
  * @type Mlab_api
  */
 Mlab_api.prototype = {
-    version: 0.1,
+    version: 0.9,
     /**
      * Get the mode the app is in: "runtime" if in app mode, "design" if in editor mode, 
      * with additional device info, app for mobile device, desktop for browser (i.e. no cordova)
@@ -134,13 +129,34 @@ Mlab_api.prototype = {
         if (mode.device == "mobile") {
             return device.uuid;
         } else {
-            return "demo"; //TODO, replace with function that looks in local storage to see if uuid is set, if so, rturn it, if not generate
+            var global_data = window.localStorage.getItem("GLOBAL");
+            if (!global_data) {
+                global_data = {"device_uuid": this.getGUID()};
+                window.localStorage.setItem("GLOBAL", JSON.stringify(global_data));
+            } else {
+                global_data = JSON.parse(global_data);
+            }
+            return global_data.device_uuid;
         }
     },
 
     getAppUid:  function() {
         return $('head > [name="mlab:app_uid"]').attr("content");
     },
+
+    
+/**
+ * Creates a unique ID starting with the prefix mlab_, followed by a rfc4122 version 4 compliant GUID. 
+ * This is typically used to create an ID for a component that must not clash with any other IDs.
+ * @returns {String}
+ */
+    getGUID : function () {
+        return 'mlab_' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    },
+
         
 /**
  * Get current locale
@@ -301,8 +317,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @param {any} value The state value to be stored. Required. Can be anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setState: function(user_id, comp_id, key, value, callback) {
-            return this.internal.setData("states", user_id, comp_id, key, value, callback);
+        setState: function(uuid, comp_id, key, value, callback) {
+            return this.internal.setData("states", uuid, comp_id, key, value, callback);
         },
 
 /**
@@ -311,8 +327,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @return {Any} Value of state
  */
-        getState: function(user_id, comp_id, key, callback) {
-            return this.internal.getData("states", user_id, comp_id, key, callback);
+        getState: function(uuid, comp_id, key, callback) {
+            return this.internal.getData("states", uuid, comp_id, key, callback);
         },
 
 /**
@@ -320,8 +336,8 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllStates: function(user_id, comp_id, callback) {
-            return this.internal.getAllData("states", user_id, comp_id, callback);
+        getAllStates: function(uuid, comp_id, callback) {
+            return this.internal.getAllData("states", uuid, comp_id, callback);
         },
     
 /**
@@ -330,8 +346,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @param {any} value The config value to be stored. Required. Anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setConfig: function(user_id, comp_id, key, value, callback) {
-            return this.internal.setData("configs", user_id, comp_id, key, value, callback);
+        setConfig: function(uuid, comp_id, key, value, callback) {
+            return this.internal.setData("configs", uuid, comp_id, key, value, callback);
         },
     
 /**
@@ -340,8 +356,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @return {any} The config value (any type), or null
  */
-        getConfig: function(user_id, comp_id, key, callback) {
-            return this.internal.getData("configs", user_id, comp_id, key, callback);
+        getConfig: function(uuid, comp_id, key, callback) {
+            return this.internal.getData("configs", uuid, comp_id, key, callback);
         },
 
 /**
@@ -349,8 +365,8 @@ Mlab_api.prototype = {
  * @param {String} user: User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the configs
  */
-        getAllConfig: function(user_id, comp_id, callback) {
-            return this.internal.getAllData("configs", user_id, comp_id, callback);
+        getAllConfig: function(uuid, comp_id, callback) {
+            return this.internal.getAllData("configs", uuid, comp_id, callback);
         },
     
 /**
@@ -360,8 +376,8 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @param {any} value The value to be stored.
  */
-        setResult: function(user_id, comp_id, key, value, callback) {
-            return this.internal.setData("results", user_id, comp_id, key, value, callback);
+        setResult: function(uuid, comp_id, key, value, callback) {
+            return this.internal.setData("results", uuid, comp_id, key, value, callback);
         },
     
 /**
@@ -371,8 +387,8 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @return {any} The value that was saved. Normally an object, but any JSON-stringifiable value is allowed.
  */
-        getResult: function(user_id, comp_id, key, callback) {
-            return this.internal.getData("results", user_id, comp_id, key, callback);
+        getResult: function(uuid, comp_id, key, callback) {
+            return this.internal.getData("results", uuid, comp_id, key, callback);
         },
         
 /**
@@ -380,8 +396,8 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllResults: function(user_id, comp_id, callback) {
-            return this.internal.getAllData("results", user_id, comp_id, callback);
+        getAllResults: function(uuid, comp_id, callback) {
+            return this.internal.getAllData("results", uuid, comp_id, callback);
         },
 
 /* Network-functions */
@@ -482,54 +498,54 @@ Mlab_api.prototype = {
 
 /* 
  * Internal function that fetches states, results or configs from localStorage and puts them into the relevant memory object
- * All data is stored as app_id/user_id/comp_id/key_id so we can easily synch it
- * However, as local data always will have the same app_id and user_id then we skip comparing that
+ * All data is stored as app_id/uuid/comp_id/key_id so we can easily synch it
+ * However, as local data always will have the same app_id and uuid then we skip comparing that
  */
             fetchLocalData: function(data_type) {
                 var path;
                 var data_idx = 0;
                 var app_idx = 1;
-                var user_idx = 2;
+                var uuidx = 2;
                 var comp_idx = 3;
                 var key_idx = 4;
                 var app_id = this.parent.parent.getAppUid(); //todo why get data from ther apps? DT only
                 for (key in window.localStorage) {
                     path = key.split(this.parent.parent.data_divider);
                     if (path[data_idx] == data_type && path[app_idx] == app_id) {
-                        if (typeof this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]] == "undefined") {
-                            this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]] = {};
-                            this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] = {};
-                        } else if (typeof this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] == "undefined") {
-                            this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] = {};
+                        if (typeof this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]] == "undefined") {
+                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]] = {};
+                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = {};
+                        } else if (typeof this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] == "undefined") {
+                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = {};
                         }
-                        this.parent[path[data_idx]][path[app_idx]][path[user_idx]][path[comp_idx]][path[key_idx]] = JSON.parse(window.localStorage.getItem(key));
+                        this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = JSON.parse(window.localStorage.getItem(key));
                     }
                 }
             },
             
 //-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
-            setData: function(data_type, user_id, comp_id, key, value, callback) {
+            setData: function(data_type, uuid, comp_id, key, value, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, value, callback);
-                if (typeof this.parent[data_type][app_id][user_id][comp_id] == "undefined") {
-                    this.parent[data_type][app_id][user_id][comp_id] = {};
+                var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, uuid, comp_id, key, value, callback);
+                if (typeof this.parent[data_type][app_id][uuid][comp_id] == "undefined") {
+                    this.parent[data_type][app_id][uuid][comp_id] = {};
                 }
-                this.parent[data_type][app_id][user_id][comp_id][key] = value;
+                this.parent[data_type][app_id][uuid][comp_id][key] = value;
                 
 //always update locally
                 var SEP = this.parent.parent.data_divider;
-                window.localStorage.setItem(data_type + SEP + app_id + SEP + user_id + SEP + comp_id + SEP + key, JSON.stringify(value));
+                window.localStorage.setItem(data_type + SEP + app_id + SEP + uuid + SEP + comp_id + SEP + key, JSON.stringify(value));
                 return true;
             },
             
-            getData: function(data_type, user_id, comp_id, key, callback) {
+            getData: function(data_type, uuid, comp_id, key, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, user_id, comp_id, key, callback);
+                var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, uuid, comp_id, key, callback);
 
 //If false, getResult is not implemented in plugin, and we should use the local storage.
                 if (!res) {
-                    if (app_id in this.parent[data_type] && user_id in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][user_id] && key in this.parent[data_type][app_id][user_id][comp_id] ) {
-                        callback(this.parent[data_type][app_id][user_id][comp_id][key]);
+                    if (app_id in this.parent[data_type] && uuid in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][uuid] && key in this.parent[data_type][app_id][uuid][comp_id] ) {
+                        callback(this.parent[data_type][app_id][uuid][comp_id][key]);
                     } else {
                         callback();
                     }
@@ -537,12 +553,12 @@ Mlab_api.prototype = {
                 return true;
             },
 
-            getAllData: function(data_type, user_id, comp_id, callback) {
+            getAllData: function(data_type, uuid, comp_id, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, user_id, comp_id, callback);
+                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, uuid, comp_id, callback);
                 if (!res) {
-                    if (app_id in this.parent[data_type] && user_id in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][user_id] ) {
-                        callback(this.parent[data_type][app_id][user_id][comp_id]);
+                    if (app_id in this.parent[data_type] && uuid in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][uuid] ) {
+                        callback(this.parent[data_type][app_id][uuid][comp_id]);
                     } else {
                         callback();
                     }
