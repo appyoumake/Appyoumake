@@ -1,6 +1,0 @@
-# Configuration file for a phone link component
-version: 1.0
-developer: Anniken S. Hofgaard @ Sinett/FFI.no
-category: link
-name: pLink
-tooltip: This is phone link component

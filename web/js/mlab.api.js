@@ -43,12 +43,6 @@ function Mlab_api () {
 /* Object to hold the plugins loaded */
     this.db.plugins = {};
     
-/* Object to hold all states, results and configs. They are stored using localStorage, but kept locally in this object
-for ease of use and performance */
-    this.db.states = {};
-    this.db.results = {};
-    this.db.configs = {};
-    
 //add storage for the app specific variables (generated in the pre-compile processing function)
 // to the object here
     this.variables = new Object();
@@ -240,19 +234,19 @@ Mlab_api.prototype = {
     * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
     * @returns {Javascript variable}
  */
-        getAppVariable: function (comp, key) {
-            if (typeof document.mlab_dt_storage == "undefined") {
-                return;
-            }
-            if (typeof document.mlab_dt_storage[comp] == "undefined") {
-                return;
-            }
-            if (typeof document.mlab_dt_storage[comp][key] == "undefined") {
-                return;
-            }
+    getAppVariable: function (comp, key) {
+        if (typeof document.mlab_storage == "undefined") {
+            return;
+        }
+        if (typeof document.mlab_storage[comp] == "undefined") {
+            return;
+        }
+        if (typeof document.mlab_storage[comp][key] == "undefined") {
+            return;
+        }
 
-            return document.mlab_dt_storage[comp][key];
-        },
+        return document.mlab_storage[comp][key];
+    },
 
     
     db: {
@@ -275,6 +269,7 @@ Mlab_api.prototype = {
             if (!component) {
                 return false;
             }
+            
 // onpluginloaded isn't required for plugins
             if ("onPluginLoaded" in component) {
                 component.onPluginLoaded(el);
@@ -283,33 +278,6 @@ Mlab_api.prototype = {
             return true;
         },    
         
-/**
- *  Function that prepares one the variables used to store data locally in
- *  As it is objects within objects thay have to be appended before being filled
- *  The variables are divided in mlab.api.states/configs/results vairables. In the LOCAL database (which is key-value pairs only)
- *  state/config/result is used as a prefix, after this (with hyphen between) we have app id, component name and user id (which really is device ID from Cordova).
- *  App need not be stored, but makes it easier to load/send data to and from server...
- * @param {type} obj
- * @param {type} properties
- * @returns {undefined}
-*/
-        prepareDataObjects: function(properties) {
-            objects = [this.states, this.results, this.configs];
-            for (j in objects) {
-                obj = objects[j];
-                for (i in properties) {
-                    if (!(properties[i] in obj)) {
-                        obj[properties[i]] = {};
-                        obj = obj[properties[i]];
-                    }
-                }
-            }
-            this.parent.states = this.internal.fetchLocalData("states");
-            this.parent.results = this.internal.fetchLocalData("results");
-            this.parent.configs = this.internal.fetchLocalData("configs");
-            
-        },
-    
 /* ---- functions that are run locally if no plugin is loaded ---- */
 
 /* Sets state for user, also makes sure it is saved for later use.
@@ -464,6 +432,17 @@ Mlab_api.prototype = {
 // we have to slice the arguments manually.
                 var args = Array.prototype.slice.call(arguments).slice(1);
                 var opDone;
+                
+/*
+ * Todo: Need to send to only one plugin, this should be specified by the component UID, otherwise could be one of many
+ * In setupStoragePlugin we should perhaps return a uuid, and then the componet can use that later to refer to it (or should it be uid of comp + comp name + plugin name? that way if already logged in, no need to do login again... when reload page would lose uuid)
+ * Also, this should be a timer event that processes the queue... or perhaps queue just when fail, so first try here, and then
+ * have two callback, for fail and success, (the original callback is used for success!), in fail we add things to the queue which is processed again only when offline
+ * 
+ * 
+ * 
+ */                
+                
                 // There are possibly (?) more than one plugin loaded, so loop through them all.
                 for (var pluginName in this.parent.plugins) {
                     var plugin = this.parent.plugins[pluginName];
@@ -496,41 +475,11 @@ Mlab_api.prototype = {
                 window.sessionStorage.setItem("loginTokens", JSON.stringify(loginTokens));
             },
 
-/* 
- * Internal function that fetches states, results or configs from localStorage and puts them into the relevant memory object
- * All data is stored as app_id/uuid/comp_id/key_id so we can easily synch it
- * However, as local data always will have the same app_id and uuid then we skip comparing that
- */
-            fetchLocalData: function(data_type) {
-                var path;
-                var data_idx = 0;
-                var app_idx = 1;
-                var uuidx = 2;
-                var comp_idx = 3;
-                var key_idx = 4;
-                var app_id = this.parent.parent.getAppUid(); //todo why get data from ther apps? DT only
-                for (key in window.localStorage) {
-                    path = key.split(this.parent.parent.data_divider);
-                    if (path[data_idx] == data_type && path[app_idx] == app_id) {
-                        if (typeof this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]] == "undefined") {
-                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]] = {};
-                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = {};
-                        } else if (typeof this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] == "undefined") {
-                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = {};
-                        }
-                        this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = JSON.parse(window.localStorage.getItem(key));
-                    }
-                }
-            },
             
 //-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
             setData: function(data_type, uuid, comp_id, key, value, callback) {
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, uuid, comp_id, key, value, callback);
-                if (typeof this.parent[data_type][app_id][uuid][comp_id] == "undefined") {
-                    this.parent[data_type][app_id][uuid][comp_id] = {};
-                }
-                this.parent[data_type][app_id][uuid][comp_id][key] = value;
                 
 //always update locally
                 var SEP = this.parent.parent.data_divider;
@@ -538,31 +487,58 @@ Mlab_api.prototype = {
                 return true;
             },
             
+/**
+ * Returns the value of a single, type specific, record. Returned as a json object
+ * @param {type} data_type
+ * @param {type} uuid
+ * @param {type} comp_id
+ * @param {type} key
+ * @param {type} callback
+ * @returns {Boolean}
+ */
             getData: function(data_type, uuid, comp_id, key, callback) {
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, uuid, comp_id, key, callback);
 
 //If false, getResult is not implemented in plugin, and we should use the local storage.
+                var SEP = this.parent.parent.data_divider;
+                
                 if (!res) {
-                    if (app_id in this.parent[data_type] && uuid in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][uuid] && key in this.parent[data_type][app_id][uuid][comp_id] ) {
-                        callback(this.parent[data_type][app_id][uuid][comp_id][key]);
-                    } else {
-                        callback();
-                    }
+                    var value = JSON.parse(window.localStorage.getItem(data_type + SEP + app_id + SEP + uuid + SEP + comp_id + SEP + key));
+                    callback(value);
+                    
                 }
                 return true;
             },
 
+/**
+ * Returns all value of a single type for a specific app_id/uuid/component
+ * @param {type} data_type
+ * @param {type} uuid
+ * @param {type} comp_id
+ * @param {type} callback
+ * @returns {Boolean}
+ */
             getAllData: function(data_type, uuid, comp_id, callback) {
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, uuid, comp_id, callback);
+                var len = 0;
+                
                 if (!res) {
-                    if (app_id in this.parent[data_type] && uuid in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][uuid] ) {
-                        callback(this.parent[data_type][app_id][uuid][comp_id]);
-                    } else {
-                        callback();
+                    var i = 0;
+                    var values = {};
+                    var sKey;
+                    var SEP = this.parent.parent.data_divider;
+                    var key = data_type + SEP + app_id + SEP + uuid + SEP + comp_id + SEP;
+                    for (; sKey = window.localStorage.key(i); i++) {
+                        len = key.length;
+                        if (sKey.substr(0, len) == key) {
+                            values[sKey] = JSON.parse(window.localStorage.getItem(sKey));
+                        }
                     }
+                    callback(values);
                 }
+                
                 return true;
             },
 /**

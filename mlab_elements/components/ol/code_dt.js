@@ -85,7 +85,7 @@
         } else if (e.keyCode == 9 && e.shiftKey == true) {
             e.preventDefault();
             this.custom_outdent($(e.target).parent());
-        }
+        } 
     };
     
     
