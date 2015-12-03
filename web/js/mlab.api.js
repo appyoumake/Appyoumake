@@ -34,7 +34,9 @@ function Mlab_api () {
     this.db.internal.parent = this.db;
     this.mode = this.getMode();
 
-/* Object to hold components loaded */
+/* 
+ * Object to hold components loaded, this includes regular components, features and storage plugins
+*/
     this.components = {};
     
     
@@ -254,21 +256,26 @@ Mlab_api.prototype = {
 /* Pointer to main mlab object */
         parent: null,
 
+//we read the storage plugin information directly from the variables stored with the component that initialises the storage plugin
+//these are stored in a JSON format in a script inside the div, and the variable is always named storage_plugin
         setupStoragePlugin: function(el) {
-            var variables = this.parent.getAllVariables(el);
-            var plugin,component;
-            if (variables && "storage_plugin" in variables) { 
-                plugin = variables["storage_plugin"];
-            }
+            var component;
+            var owner_id = $(el).attr("id");
+            var plugin = this.parent.getVariable(el, "storage_plugin");
+            
             if (!plugin) {
                 return false;
             }
+            
             if ("name" in plugin && plugin["name"] in this.parent.components) {
                 component = this.parent.components[plugin["name"]];
             }
+            
             if (!component) {
                 return false;
             }
+            
+            //var y = jQuery.extend(true, {}, mlab.dt.components.h1);
             
 // onpluginloaded isn't required for plugins
             if ("onPluginLoaded" in component) {
@@ -405,7 +412,7 @@ Mlab_api.prototype = {
         loginToken: function(service, token) {l
             if (typeof service=="undefined") return false;
             var loginTokens = this.internal.fetchTokens();
-            if (typeof token!="undefined") {
+            if (typeof token != "undefined") {
                 loginTokens[service] = token;
                 this.internal.saveTokens(loginTokens);
             }
@@ -443,7 +450,7 @@ Mlab_api.prototype = {
  * 
  */                
                 
-                // There are possibly (?) more than one plugin loaded, so loop through them all.
+// There are possibly (?) more than one plugin loaded, so loop through them all.
                 for (var pluginName in this.parent.plugins) {
                     var plugin = this.parent.plugins[pluginName];
                     if (name in plugin && typeof plugin[name] == "function") {

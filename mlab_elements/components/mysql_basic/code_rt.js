@@ -19,11 +19,11 @@
         $.post(this.serverUrl, {action: 'login', username: this.serverPassword, password: this.serverPassword})
                 .done(function( data ) {
                     if (data.status == "SUCCESS") {
-                        alert( "Data Loaded: " + data );
+                        alert( "Logged in remotely: " + data );
                     }
                   })
                 .fail(function() {
-                    alert( "error" );
+                    alert( "Error loggin in remotely" );
                   });
         return true;
     };
