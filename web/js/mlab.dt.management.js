@@ -434,7 +434,7 @@ Mlab_dt_management.prototype = {
                 
 //here we hide the tools for components until they select a control
                 if ($("#" + mlab.dt.config["app"]["content_id"] + " .mlab_current_component").length == 0) {
-                    $('#mlab_toolbar_for_components').hide();
+                    $(that.parent.qtip_tools).qtip('hide'); //$('#mlab_toolbar_for_components').hide();
                 }
 
                 that.parent.utils.timer_start();

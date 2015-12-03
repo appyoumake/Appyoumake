@@ -266,15 +266,15 @@ made smaler than the min width */
 
 #mlab_editor #mlab_toolbar_for_components {
     display: block;
-    float: left;
-    border: orange dotted 3px;
     padding: 5px;
+    max-width: 98px;
+    /*float: left;
+    border: orange dotted 3px;
     margin-top: 25px;
     margin-left: 200px;
-    max-width: 98px;
     position: fixed;
     top: 91px;
-    left: 635px;
+    left: 635px;*/
 }
 
 #mlab_editor #mlab_toolbar_for_components #mlab_component_toolbar_heading {

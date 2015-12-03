@@ -157,7 +157,7 @@ Mlab_dt_api.prototype = {
         var that = this;
         
         $(el).qtip({
-            solo: true,
+            solo: false,
             content: {text: content, title: "Last opp bilde" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
@@ -364,7 +364,7 @@ Mlab_dt_api.prototype = {
             var c = 'qtip-light mlab_dt_box_style';
         };
         $(el).qtip({
-            solo: true,
+            solo: false,
             content:    {text: content, title: title },
             position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },

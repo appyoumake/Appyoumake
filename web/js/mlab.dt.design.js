@@ -204,7 +204,8 @@ Mlab_dt_design.prototype = {
         if (sel_comp.length > 0) {
             this.component_highlight_selected(sel_comp);
         } else {
-            $('#mlab_toolbar_for_components').hide();
+            $(that.parent.qtip_tools).qtip('hide'); //$('#mlab_toolbar_for_components').hide();
+            //$('#mlab_toolbar_for_components').hide();
         }
         this.parent.flag_dirty = true;
     },
@@ -411,7 +412,8 @@ Mlab_dt_design.prototype = {
     component_menu_prepare: function () {
         var curr_comp = $(".mlab_current_component");
         if (curr_comp.length < 1) {
-            $('#mlab_toolbar_for_components').hide();
+            $(that.parent.qtip_tools).qtip('hide'); //$('#mlab_toolbar_for_components').hide();
+            //$('#mlab_toolbar_for_components').hide();
             return;
         }
         var conf = this.parent.components[curr_comp.data("mlab-type")].conf;
@@ -485,8 +487,35 @@ Mlab_dt_design.prototype = {
             $("#mlab_button_component_size").addClass("mlab_hidden");
             $("#mlab_button_component_aspect").addClass("mlab_hidden");
         }
+       
+        this.parent.qtip_tools = $(curr_comp).qtip({
+            solo: false,
+            content:    { text: $('#mlab_toolbar_for_components') },
+            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
+            show: {ready: true, modal: { on: false, blur: false }},
+            hide: false,
+            events: {
+                show: function(event, api) {
+                    var oEvent = event.originalEvent;
 
-        $('#mlab_toolbar_for_components').show();
+                    if(api.lastTarget && api.lastTarget !== oEvent.target) {
+                        console.log('hiding and saving stats')
+                    }
+
+                    api.lastTarget = oEvent.target;
+                },
+
+                visible: function(event, api) {
+                    console.log('show info', event.originalEvent.currentTarget)
+                    $('#mlab_toolbar_for_components').show();
+                }
+            }
+    
+/*            show:       { ready: true, modal: { on: false, blur: false } },
+            hide:       false, */
+        });
+        
+        //$('#mlab_toolbar_for_components').show();
     },
     
 } // end design.prototype

@@ -261,27 +261,33 @@ Mlab_api.prototype = {
         setupStoragePlugin: function(el) {
             var component;
             var owner_id = $(el).attr("id");
-            var plugin = this.parent.getVariable(el, "storage_plugin");
+            var plugin_info = this.parent.getVariable(el, "storage_plugin");
             
-            if (!plugin) {
+            if (!plugin_info) {
                 return false;
             }
             
-            if ("name" in plugin && plugin["name"] in this.parent.components) {
-                component = this.parent.components[plugin["name"]];
+            if ("name" in plugin_info && plugin_info["name"] in this.parent.components) {
+                component = this.parent.components[plugin_info["name"]];
             }
             
             if (!component) {
                 return false;
             }
             
-            //var y = jQuery.extend(true, {}, mlab.dt.components.h1);
+//the plugins object holds a list of components (effectively pointers to components), this means all components share a single instance of the code
+//we therefore need to add a variable that holds unique values for each "instance" of this plugin
+            this.plugins[owner_id] = component;
+            if (!("_data" in this.plugins[owner_id])) {
+                this.plugins[owner_id]._data = {}
+            }
+            this.plugins[owner_id]._data[owner_id].settings = plugin_info;
             
 // onpluginloaded isn't required for plugins
             if ("onPluginLoaded" in component) {
                 component.onPluginLoaded(el);
             }
-            this.plugins[plugin["name"]] = component;
+            
             return true;
         },    
         
