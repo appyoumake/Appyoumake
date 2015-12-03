@@ -8,8 +8,8 @@ extended_tooltip: For å sette inn en nummerert liste i appen din skal du benytt
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |
-    <ol class="mc_container mc_list">
-        <li class="mc_text mc_display mc_list mc_numeric mc_medium">Enter your numbered list here</li>
+    <ol class="mc_container mc_list mc_text mc_medium">
+        <li class="mc_text mc_display mc_list mc_numeric">Enter your numbered list here</li>
     </ol>
 inherit: p
 filterhtml: ["li"]
