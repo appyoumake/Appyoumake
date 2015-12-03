@@ -1,4 +1,5 @@
-//simple H1 headline, parent of all other headline components
+//simple H1 headline, parent of all other text components
+
 
     this.getHTMLElement = function(el)  {
         return $(el).find("h1");

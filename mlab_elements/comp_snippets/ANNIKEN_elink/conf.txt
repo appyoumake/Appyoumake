@@ -1,7 +1,0 @@
-# Configuration file for san e-mail link component
-version: 1.0
-developer: Anniken S. Hofgaard @ Sinett/FFI.no
-category: link
-name: eLink
-tooltip: This is an e-mail link component
-

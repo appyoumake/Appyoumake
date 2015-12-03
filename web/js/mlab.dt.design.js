@@ -119,11 +119,13 @@ Mlab_dt_design.prototype = {
                 that.parent.drag_origin = 'sortable';
                 
 //if this component requires any credentials we request them here
+                var local_comp = new_comp;
+                var local_comp_id = comp_id;
                 if (Object.prototype.toString.call( that.parent.components[comp_id].conf.credentials ) === "[object Array]") {
-                    var local_comp = new_comp;
-                    var local_comp_id = comp_id;
                     that.parent.api.getCredentials(that.parent.components[comp_id].conf.credentials, function (credentials, params) { mlab.dt.design.component_store_credentials(credentials, params); that.component_run_code(local_comp, local_comp_id, true); }, { component: new_comp });
-                } 
+                } else {
+                    that.component_run_code(local_comp, local_comp_id, true);
+                }
                 
             } else {
                 alert(result.msg + "'\n\nLegg til komponenten igjen.");
@@ -455,7 +457,7 @@ Mlab_dt_design.prototype = {
             $("#mlab_button_get_credentials").removeClass("mlab_hidden");
         } else {
             $("#mlab_button_get_credentials").addClass("mlab_hidden");
-        }        
+        }
 
 //display storage selection list button, if this supports storage
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {

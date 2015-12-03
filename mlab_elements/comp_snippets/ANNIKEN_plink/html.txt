@@ -1,2 +1,0 @@
-
-<a href="" id="tel"><button>Ring</button></a>

@@ -5,7 +5,7 @@
 this.onPageLoad = function(el) {
     var self = this;
     self.domRoot = $(el);
-    self.user = self.api.getDeviceId(); // TODO: Request user name and store it
+    self.deviceId = self.api.getDeviceId(); 
     self.settings = self.api.getVariable(this.domRoot, "settings");
     if (typeof self.settings == "undefined") {
         self.settings = {"allow_check":true,"allow_check_on_page":true,"display_correct":true,"lock_checked":true,"submit":false};
@@ -23,7 +23,7 @@ this.onPageLoad = function(el) {
     
     $(el).find("div").first().show().addClass("mlab_cp_quiz_currentpage");
 
-    self.api.db.prepareDataObjects([self.api.getAppUid(), self.user, this.domRoot.attr("id")]);
+    self.api.db.prepareDataObjects([self.api.getAppUid(), self.deviceId, this.domRoot.attr("id")]);
     
 //we only set up the storage plugin if they want to "submit" the answers
     if (self.settings.submit) {
@@ -96,7 +96,7 @@ this.move = function(direction) {
 };
 
 this.loadAnswers = function() {
-    this.api.db.getAllResults(this.user, this.domRoot.attr("id"), this.processAnswers);
+    this.api.db.getAllResults(this.deviceId, this.domRoot.attr("id"), this.processAnswers);
 };
 
 //this function is used for callbacks from the API database functions, it will contain a list of data which is {id_of_question: selected_answers}
@@ -258,7 +258,7 @@ this.checkAllAnswers = function() {
  * @returns {undefined}
  */
 this.saveAnswers = function(page) {
-    var user_id = this.user;
+    var dev_id = this.deviceId;
     var comp_id = this.domRoot.attr("id");
     var response;
     var self = this;
@@ -266,7 +266,7 @@ this.saveAnswers = function(page) {
     $(page).children("[data-mlab-cp-quiz-role='question']").each(function() {
         q_id = $(this).attr("id");
         response = self.getResponse($(this));
-        self.api.db.setResult(user_id, comp_id, q_id, response);
+        self.api.db.setResult(dev_id, comp_id, q_id, response);
     }); //end quiz on pages loop
 };
 

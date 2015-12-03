@@ -190,6 +190,7 @@ Mlab_dt_management.prototype = {
         if (currpage == "index") {
             currpage = 0;
         }
+        
         for (i in this.parent.app.page_names) {
             if (i > 0) {
                 span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
@@ -456,16 +457,16 @@ Mlab_dt_management.prototype = {
             return;
         }
 
+        if (this.parent.app.curr_page_num == "index") {
+            var pagenum = 0;
+        } else {
+            var pagenum = this.parent.app.curr_page_num;
+        }
         this.parent.flag_dirty = true;
         this.parent.app.curr_pagetitle = $("#mlab_page_control_title").text();
         this.parent.app.page_names[this.parent.app.curr_page_num] = this.parent.app.curr_pagetitle;
         $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
-        if (this.parent.app.curr_page_num == "index") {
-            $("#mlab_existing_pages [data-mlab-page-open='0']").html(this.parent.app.curr_pagetitle);
-        } else {
-            $("#mlab_existing_pages [data-mlab-page-open='" + this.parent.app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='this.page_copy(\"" + this.parent.app.curr_page_num + "\");' >&nbsp;</span>" + this.parent.app.curr_pagetitle);
-        }
-
+        $("#mlab_existing_pages [data-mlab-page-open='" + pagenum + "']").html("<span class='mlab_copy_file' onclick='this.page_copy(\"" + pagenum + "\");' >&nbsp;</span>" + this.parent.app.curr_pagetitle);
 
     },
 

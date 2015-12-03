@@ -31,13 +31,41 @@
     };
     
     this.custom_indent = function (el) {
-        debugger;
-		document.execCommand('indent', null, null);
+        el.focus();
+		var curr_node = $(window.getSelection().focusNode);
+        if (typeof curr_node.prop("tagName") == "undefined") {
+            curr_node = curr_node.parent();
+        }
+        if (curr_node.prop("tagName").toLowerCase() != "li") {
+            return;
+        }
+        var prev_node = curr_node.prev();
+        if (prev_node.length == 0) {
+            return;
+        }
+        prev_node.append("<ol></ol>");
+        var element = curr_node.detach();
+        prev_node.find("ol").append(element);
+        this.api.dirty_flag = true;
     };
     
     this.custom_outdent = function (el) {
-        debugger;
-		document.execCommand('outdent', null, null);
+        el.focus();
+        var curr_node = $(window.getSelection().focusNode);
+        if (typeof curr_node.prop("tagName") == "undefined") {
+            curr_node = curr_node.parent();
+        }
+        if (curr_node.prop("tagName").toLowerCase() != "li") {
+            return;
+        }
+        var parent_node = curr_node.parent().parent();
+        if (parent_node.prop("tagName").toLowerCase() != "li") {
+            return;
+        }
+        var element = curr_node.detach();
+        parent_node.after(element);
+        this.api.dirty_flag = true;
+        
     };
     
     this.highlight = function (el) {
@@ -51,11 +79,13 @@
   
 //we need to use tab to create indents/outdents
     this.onKeyPress = function (e) {
-        if (e.keyCode == 9) {
+        if (e.keyCode == 9 && e.shiftKey == false) {
             e.preventDefault();
-            this.custom_indent($(e.target));
-            
-        }
+            this.custom_indent($(e.target).parent());
+        } else if (e.keyCode == 9 && e.shiftKey == true) {
+            e.preventDefault();
+            this.custom_outdent($(e.target).parent());
+        } 
     };
     
     
