@@ -7,6 +7,6 @@ extended_tooltip: Med denne knappen setter du en kulepunktliste inn i appen.</br
 inherit: ol
 category: list
 html: |
-    <ul class="mc_container mc_list mc_medium">
-        <li class="mc_text mc_display mc_list mc_bullet mc_medium">Enter your list here</li>
+    <ul class="mc_container mc_list mc_text mc_medium">
+        <li class="mc_text mc_display mc_list mc_bullet">Enter your list here</li>
     </ul>
