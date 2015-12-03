@@ -1,4 +1,6 @@
-	
+    this.getHTMLElement = function(el)  {
+        return $(el).find("p");
+    };	
 	
 
     this.onCreate = function (el) {
