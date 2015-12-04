@@ -189,9 +189,18 @@ Mlab_dt_design.prototype = {
     },
 
     component_highlight_selected : function (el) {
-         $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
-         $( el ).addClass("mlab_current_component");
-         this.component_menu_prepare();
+        $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
+        //get the background color for the app page
+        var pageBgColor = $("[data-role=page]").css( "background-color" );
+        
+        //set that as the border-color for the current selected component
+        $(el).css("border-color", pageBgColor);
+        //add invert color to the current component (virker i firefox 35 - som kom i januar2015)
+        //$(el).css({"-webkit-filter":"invert(100%)", "filter":"invert(100%)"});
+        $( el ).addClass("mlab_current_component_invert mlab_current_component");
+        //invert the color back on the next level element so the rest of the component get the right colors
+        $(el).children().first().addClass("mlab_current_component_invert");
+        this.component_menu_prepare();
     },
 
     component_delete : function () {

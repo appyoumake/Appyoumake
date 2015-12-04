@@ -192,10 +192,17 @@ progress::-moz-progress-bar {
     left: -999em; /* Hides the drop down */
     margin: 4px auto;
     padding: 10px 5px 10px 5px;
-    position: absolute;
+    position: fixed;
     text-align: left;
     width: 690px;
     z-index: 1000;
+}
+
+#mlab_editor .mlab_show_editor_dropdown,
+.mlab_base .mlab_show_editor_dropdown,
+.mlab_layout .mlab_show_editor_dropdown {
+    left: 119px;
+    top: 45px;
 }
 
 .mlab_base .dropdown_editor_menu,
@@ -204,14 +211,7 @@ progress::-moz-progress-bar {
 }
 
 #mlab_editor .mlab_show_editor_dropdown {
-    left: 119px;
-    top: 45px;
-}
-
-.mlab_base .mlab_show_editor_dropdown,
-.mlab_layout .mlab_show_editor_dropdown {
-    left: 119px;
-    top: 45px;
+    width: 690px;
 }
 
 #mlab_editor .dropdown_user_menu,
@@ -219,22 +219,15 @@ progress::-moz-progress-bar {
 .mlab_layout .dropdown_user_menu {
     width: 155px;
     float: right;
-    position: relative;
+    margin-right: 0px;
 }
  
-#mlab_editor .mlab_show_user_dropdown {
-    left: -61px;
-    top: -66px;
-}
-
-.mlab_base .mlab_show_user_dropdown{
-    left: -61px;
-    top: -884px; //TODO ustabil... -456px... 524px...884px...
-}
-
+#mlab_editor .mlab_show_user_dropdown,
+.mlab_base .mlab_show_user_dropdown,
 .mlab_layout .mlab_show_user_dropdown{
-    left: -61px;
-    top: -153px; 
+    right: 50px;
+    left: 0px;
+    top: 45px;
 }
 
 /* Columns */

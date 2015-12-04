@@ -8,7 +8,7 @@ extended_tooltip: Med denne knappen setter du inn en Tittel på innholdet ditt.<
 compatible: ["h1", "h2", "h3", "p", "chapter"]
 html: <h1 class='mc_text mc_display mc_heading mc_large'>Add your top level headline here</h1>
 process_keypress: true
-placeholder: Add your top level headline here
+placeholder: Add your headline here
 filterhtml: ["h1"]
 paste_allowed: true
 custom:
