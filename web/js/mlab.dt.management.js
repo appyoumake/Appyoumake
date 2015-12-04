@@ -855,13 +855,18 @@ Mlab_dt_management.prototype = {
             url = url.replace("_PLATFORM_", platform);
             var caption_finished = "Creating app...";
             $("#mlab_statusbar_compiler").text(caption_finished);
-            $("#mlab_download_android_icon").empty().spin('large', '#fff');
-            $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon_grey');
+            $("#mlab_download_" + platform + "_icon").find('img').show();
+            $("#mlab_download_" + platform + "_icon").addClass("mlab_download_" + platform + "_icon_grey");
             $("#mlab_progressbar").show();
             $("#mlab_progressbar").val(2);
             $.getJSON(url, function( json ) {
                 if (json.result != "success") {
-                    $("#mlab_statusbar_compiler").text("Unable to contact server");
+                    $("#mlab_statusbar_compiler").text("");
+                    $("#mlab_progressbar").hide();
+                    mlab.dt.utils.update_status("temporary", "Unable to contact server", false);
+                    $("#mlab_download_" + platform + "_icon").find('img').hide();
+                    $("#mlab_download_" + platform + "_icon").removeClass("mlab_download_" + platform + "_icon_grey");
+                    
                     
                 }
             });

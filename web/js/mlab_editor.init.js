@@ -282,9 +282,9 @@
 
                                 case "create_failed":
                                     $("#mlab_statusbar_compiler").text("Failed to create app remotely");
-                                    $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon');
                                     $("#mlab_progressbar").hide();
-                                    $("#mlab_download_android_icon").spin(false);
+                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                                     //komme med en alert boks?
                                     $("#mlab_statusbar_compiler").text(" ");
                                     break;
@@ -311,11 +311,11 @@
 
                                 case "verification_failed":
                                     $("#mlab_statusbar_compiler").text("Files failed to upload");
-                                    $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon');
                                     $("#mlab_progressbar").hide();
-                                    $("#mlab_download_android_icon").spin(false);
+                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                                     //komme med en alert boks?
-                                    $("#mlab_statusbar_compiler").text(" ");
+                                    $("#mlab_statusbar_compiler").text("");
                                     break;
 
                                 case "compiling":
@@ -330,11 +330,11 @@
 
                                 case "compilation_failed":
                                     $("#mlab_statusbar_compiler").text("App failed to compile");
-                                    $("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
+                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon');
                                     $("#mlab_progressbar").hide();
-                                    $("#mlab_download_android_icon").spin(false);
+                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                                     //komme med en alert boks?
-                                    $("#mlab_statusbar_compiler").text(" ");
+                                    $("#mlab_statusbar_compiler").text("");
                                     break;
 
                                 case "receiving":
@@ -344,10 +344,8 @@
 
                                 case "ready":
                                     $("#mlab_progressbar").val(100);
-                                    //$("#mlab_download_android_icon").toggleClass('mlab_download_android_icon');
                                     $("#mlab_progressbar").hide();
-                                    //TODO finne ut hvilken knapp som er trykket på å sette spinneren der
-                                    $("#mlab_download_" + data.platform + "_icon").spin(false);
+                                    $("#mlab_statusbar_compiler").text("");
                                     
 //inserting the QR code and url to the compiled app in the menu
                                     if (typeof data.filename != "undefined" && data.filename != null && data.filename != "") {
@@ -355,14 +353,16 @@
                                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                                         $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
                                         $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
-                                    }     
-                                    
-                                    $("#mlab_statusbar_compiler").text("App ready! Links are found in the menu");
+                                        mlab.dt.utils.update_status("temporary", "App ready! Links are found in the menu", false);
+                                    } else {
+                                        mlab.dt.utils.update_status("temporary", "App ready but there was a problem obtaining the links, please try again", false);
+                                    }
                                     //hvor lenge skal teksten stå??
                                     break;
 
                                 case "failed":
                                     $("#mlab_statusbar_compiler").text("Unable to get app: " + data.error);
+                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                                     break;
                             }
                             

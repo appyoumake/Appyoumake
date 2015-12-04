@@ -33,7 +33,6 @@
     };
     
     this.custom_indent = function (el) {
-        debugger;
         el.focus();
 		var curr_node = $(window.getSelection().focusNode);
         if (typeof curr_node.prop("tagName") == "undefined") {
@@ -46,9 +45,12 @@
         if (prev_node.length == 0) {
             return;
         }
-        prev_node.append("<" + this.tagName + " class='mc_container mc_list'></" + this.tagName +">");
+        if (prev_node.find(this.tagName).length == 0) {
+            prev_node.append("<" + this.tagName + " class='mc_container mc_list'></" + this.tagName +">");
+        }
         var element = curr_node.detach();
         prev_node.find(this.tagName).append(element);
+        element.focus();
         this.api.dirty_flag = true;
     };
     
@@ -67,6 +69,7 @@
         }
         var element = curr_node.detach();
         parent_node.after(element);
+        element.focus();
         this.api.dirty_flag = true;
         
     };

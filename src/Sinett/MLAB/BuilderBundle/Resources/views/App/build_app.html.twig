@@ -205,7 +205,9 @@
                 #}
                                     {% for platform in mlab_variables.compiler_service.supported_platforms %}
                                         <a href="javascript: mlab.dt.management.compiler.get_app('{{ platform }}');">
-                                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon"></div> 
+                                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon">
+                                                <img src="/img/spinner.gif" class="mlab_hidden">
+                                            </div> 
                                         </a> 
                                         <div data-mlab-download-link-info="{{ platform }}">
                                             <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>

@@ -207,13 +207,20 @@ class ServicesController extends Controller
 error_log($head);
 
 //WebSocket handshake & data transmission
-        $sock = fsockopen($host, $port, $errno, $errstr, 2);
-        fwrite($sock, $head ) or die('error:'.$errno.':'.$errstr);
-        $headers = fread($sock, 2000);
-        fwrite($sock, $this->hybi10Encode($msg) ) or die('error:'.$errno.':'.$errstr);
-        $wsdata = fread($sock, 2000);  //receives the data included in the websocket package "\x00MSG\xff"
-        fclose($sock);
-        return $this->hybi10Decode($wsdata);
+        try {
+            $sock = @fsockopen($host, $port, $errno, $errstr, 2);
+            if (!$sock) {
+                return false;
+            }
+            fwrite($sock, $head ) or die('error:'.$errno.':'.$errstr);
+            $headers = fread($sock, 2000);
+            fwrite($sock, $this->hybi10Encode($msg) ) or die('error:'.$errno.':'.$errstr);
+            $wsdata = fread($sock, 2000);  //receives the data included in the websocket package "\x00MSG\xff"
+            fclose($sock);
+            return $this->hybi10Decode($wsdata);
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
 
@@ -454,14 +461,14 @@ error_log($head);
         
         if (file_exists($compiled_app_path . $app_filename)) {
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);
-            ($res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
+            (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }
         
 //run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
 //the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
-        if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => "Unable to update websocket messages")); }
+        if (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => "Unable to update websocket messages")); }
         
         $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
         if ($res_precompile["result"] != "success") {
@@ -517,10 +524,11 @@ error_log($head);
         }
         
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
+        $fail_text = "Failed to create app remotely";
         $status = ($result == "true") ? "created" : "create_failed";
         
         if (!is_null($window_uid)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "$status"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }
@@ -533,7 +541,7 @@ error_log($head);
             $em = $this->getDoctrine()->getManager();
             $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
             if (is_null($app)) {
-                return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to retrieve app database entry to verify upload: ' . $app_uid));
+                return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to retrieve app database entry to verify upload: ' . $app_uid, "platform" => $platform));
             }
 
             $app_path = $app->calculateFullPath($config['paths']['app']);
@@ -577,6 +585,7 @@ error_log($head);
             return new JsonResponse(array('result' => 'error', 'msg' => 'Passphrase not matching'));
         }
         
+        $fail_text = "Files failed to upload";
         $status = ($result != "true" ? "verification_failed" : "verification_ok" );
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
@@ -590,7 +599,7 @@ error_log($head);
                     $local_processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
                 }
             }
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . ', "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }
@@ -631,11 +640,12 @@ error_log($head);
             return new JsonResponse(array('result' => 'error', 'msg' => 'Passphrase not matching'));
         }
         
+        $fail_text = "App failed to compile";
         $status = ($result != "true" ? "compilation_failed" : "compilation_ok" );
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
         if (!is_null($window_uid)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . ', "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }
@@ -656,7 +666,7 @@ error_log($head);
                 
                 $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '", "platform": "' . $platform . '"}}', $config), true);
             } else {
-                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed", "platform": "' . $platform . '"}}', $config), true);
+                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed", "fail_text": "Downloaded app does not match app sent, check for connection errors and try again", "platform": "' . $platform . '"}}', $config), true);
             }
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
