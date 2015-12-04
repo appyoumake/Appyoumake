@@ -31,6 +31,7 @@
     };
     
     this.custom_indent = function (el) {
+        debugger;
         el.focus();
 		var curr_node = $(window.getSelection().focusNode);
         if (typeof curr_node.prop("tagName") == "undefined") {

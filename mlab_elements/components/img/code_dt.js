@@ -66,8 +66,8 @@
         fig.css({'float': 'none', 'margin-left': 'auto', 'margin-right': 'auto'});
     };
     
-    this.custom_upload_image = function (el) {
-        this.api.uploadMedia(el, this.config, "jpg,jpeg,png,gif", this.cbSetImageSource);
+    this.custom_upload_image = function (el, event) {
+        this.api.uploadMedia(el, this.config, "jpg,jpeg,png,gif", this.cbSetImageSource, event);
     };
     
 /**

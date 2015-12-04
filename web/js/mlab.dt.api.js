@@ -8,6 +8,7 @@
 function Mlab_dt_api () {
     this.storage = new Object();
     this.version = 0.9;
+    this.properties_tooltip = false;
 };
 
 /**
@@ -138,13 +139,22 @@ Mlab_dt_api.prototype = {
              }
          }
      },
+     
+     indicateWait : function (state) {
+         if (state) {
+            $("#mlab_editor").addClass("mlab_loading_info");
+         } else {
+             $("#mlab_editor").removeClass("mlab_loading_info");
+         }
+     },
 /**
  * 
  * @param {type} el: DIV surrounding the component HTML
  * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
  * @returns {undefined}
  */
-    uploadMedia : function (el, component_config, file_extensions, cb) {
+    uploadMedia : function (el, component_config, file_extensions, cb, event) {
+        this.indicateWait(true);
         content = $('<form />', {id: "mlab_dt_form_upload" } );
         content.append( $('<p />', { text: "Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde", class: "mlab_dt_text_info" }) );
         content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>...laster bilde...</option></select>') );
@@ -156,14 +166,20 @@ Mlab_dt_api.prototype = {
 
         var that = this;
         
-        $(el).qtip({
+        if (typeof event != "undefined") {
+            var owner_element = event.currentTarget;
+        } else {
+            var owner_element = el;
+        }
+        this.properties_tooltip = $(owner_element).qtip({
             solo: false,
-            content: {text: content, title: "Last opp bilde" },
+            content: {text: content, title: "Last opp media" },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
-            style: { classes: 'qtip-light' },
+            style: { classes: 'qtip-light mlab_zindex_top_tooltip' },
             events: { render: function(event, api) {
+                            that.indicateWait(true);
                             this.dt_component = el;
                             this.dt_component_id = component_config.name;
                             this.dt_config = component_config;
@@ -226,12 +242,13 @@ Mlab_dt_api.prototype = {
                             $('.info').addClass('mlab_dt_text_info');
                             $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
                             $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
-                            
+                            that.indicateWait(false);
                         },
-                        hide: function(event, api) { api.destroy(); }
+                        show: function(event, api) { api.focus(event); },
+                        hide: function(event, api) { api.destroy(); that.properties_tooltip = false; }
             }
         });
-                
+        this.indicateWait(false);
     },
 
 /**
@@ -333,7 +350,9 @@ Mlab_dt_api.prototype = {
  * @returns {undefined}
  */
     closeAllPropertyDialogs : function () {
-        $('.mlab_current_component').qtip('hide');
+        if (this.properties_tooltip) {
+            $(this.properties_tooltip).qtip('hide');
+        }
     },
     
     executeCallback : function (func, data) {
@@ -355,15 +374,21 @@ Mlab_dt_api.prototype = {
  * @param {function object} func_hide currently unused
  * @returns {undefined}
  */
-    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector, wide) {
-        this.closeAllPropertyDialogs()
+    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector, wide, event) {
+        this.indicateWait(true);
+        this.closeAllPropertyDialogs();
         that = this;
         if (wide == true) { 
-            var c = 'qtip-light mlab_dt_box_style mlab_dt_wide_qtip_box';
+            var c = 'qtip-light mlab_dt_box_style mlab_dt_wide_qtip_box mlab_zindex_top_tooltip';
         } else {
-            var c = 'qtip-light mlab_dt_box_style';
+            var c = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
         };
-        $(el).qtip({
+            if (typeof event != "undefined") {
+            var owner_element = event.currentTarget;
+        } else {
+            var owner_element = el;
+        }
+        that.properties_tooltip = $(owner_element).qtip({
             solo: false,
             content:    {text: content, title: title },
             position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
@@ -371,11 +396,11 @@ Mlab_dt_api.prototype = {
             hide:       false,
             style:      { classes: c },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
-                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy(); },
+                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy();  that.properties_tooltip = false; },
                             visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
                         }
         });
-    
+        this.indicateWait(false);
     },
 
 /**

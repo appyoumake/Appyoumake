@@ -88,7 +88,7 @@ Mlab_dt_design.prototype = {
             $(new_comp).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
         }
 
-        $('.mlab_current_component').qtip('hide'); //TODO use mlab dt api to hide qtip
+        $('.mlab_current_component').qtip('hide'); 
 
         this.component_highlight_selected(new_comp);
         window.scrollTo(0,document.body.scrollHeight);
@@ -189,9 +189,10 @@ Mlab_dt_design.prototype = {
     },
 
     component_highlight_selected : function (el) {
-         $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
-         $( el ).addClass("mlab_current_component");
-         this.component_menu_prepare();
+        $(".mlab_current_component").qtip('hide');
+        $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
+        $( el ).addClass("mlab_current_component");
+        this.component_menu_prepare();
     },
 
     component_delete : function () {
@@ -200,13 +201,11 @@ Mlab_dt_design.prototype = {
         if (sel_comp.length == 0) {
             sel_comp = $(".mlab_current_component").next();
         }
+        $(".mlab_current_component").qtip('hide'); 
         $(".mlab_current_component").remove();
         if (sel_comp.length > 0) {
             this.component_highlight_selected(sel_comp);
-        } else {
-            $(that.parent.qtip_tools).qtip('hide'); //$('#mlab_toolbar_for_components').hide();
-            //$('#mlab_toolbar_for_components').hide();
-        }
+        } 
         this.parent.flag_dirty = true;
     },
 
@@ -412,8 +411,6 @@ Mlab_dt_design.prototype = {
     component_menu_prepare: function () {
         var curr_comp = $(".mlab_current_component");
         if (curr_comp.length < 1) {
-            $(that.parent.qtip_tools).qtip('hide'); //$('#mlab_toolbar_for_components').hide();
-            //$('#mlab_toolbar_for_components').hide();
             return;
         }
         var conf = this.parent.components[curr_comp.data("mlab-type")].conf;
@@ -442,7 +439,8 @@ Mlab_dt_design.prototype = {
                     } else {
                         var cl = "";
                     }
-                    temp_menu[order] = "<img onclick='mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"));' " + 
+                    
+                    temp_menu[order] = "<img onclick='(function(e){ mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"), e);})(event)' " + 
                                      "title='" + tt + "' " + 
                                      "class='" + cl + "' " + 
                                      icon + " >";
@@ -490,26 +488,14 @@ Mlab_dt_design.prototype = {
        
         this.parent.qtip_tools = $(curr_comp).qtip({
             solo: false,
-            content:    { text: $('#mlab_toolbar_for_components') },
+            content:    { text: function() { return $('#mlab_toolbar_for_components').clone().removeAttr("id"); } },
             position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
             show: {ready: true, modal: { on: false, blur: false }},
             hide: false,
             events: {
-                show: function(event, api) {
-                    var oEvent = event.originalEvent;
-
-                    if(api.lastTarget && api.lastTarget !== oEvent.target) {
-                        console.log('hiding and saving stats')
-                    }
-
-                    api.lastTarget = oEvent.target;
-                },
-
-                visible: function(event, api) {
-                    console.log('show info', event.originalEvent.currentTarget)
-                    $('#mlab_toolbar_for_components').show();
-                }
-            }
+                hide: function(event, api) { $(mlab.dt.api.properties_tooltip).qtip('hide'); api.destroy(); },
+            },
+            style: { classes: 'qtip-light mlab_zindex_regular_tooltip' },
     
 /*            show:       { ready: true, modal: { on: false, blur: false } },
             hide:       false, */
