@@ -397,6 +397,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function showAction($id)
     {
         $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
 
@@ -418,6 +421,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
+
         $file_mgmt = $this->get('file_management');
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
 
@@ -478,8 +485,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      */
     public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+        
         $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
 
         if (!$entity) {
@@ -587,6 +598,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
 
         if (!$entity) {
             return new JsonResponse(array('db_table' => 'app',
@@ -650,7 +664,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id < 1) {
     		return new Response("No app id specified");
     	}
-        
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
+
         $em = $this->getDoctrine()->getManager();
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
         $request = $this->container->get('request');
@@ -671,7 +688,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  * @param type $page_num
  */
     public function buildAppAction($id, $page_num) {
-/*    	$em = $this->getDoctrine()->getManager();
+/*
     	
 // pick up config from parameters.yml, we use this mainly for paths
         $config = $this->container->parameters['mlab'];
@@ -680,10 +697,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
 //load all the components        
     	$file_mgmt = $this->get('file_management');
-    	$file_mgmt->setConfig('component');
-        
-    	$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
-*/        
+    	$file_mgmt->setConfig('component');*/
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
         
 //load translation for use in Javascript
         /*
@@ -710,6 +728,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $dumper = new JsonFileDumper();
         $dumper->dump($catalogue);        
 */
+        
         $yaml = new Parser();
         $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->parameters['locale'] . '.yml'));
 
@@ -731,6 +750,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  */
     public function loadBuilderVariablesAction($app_id, $page_num) {
     	$em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
+
     	
 // pick up config from parameters.yml, we use this mainly for paths
         $config = $this->container->parameters['mlab'];
@@ -813,6 +836,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  */
     public function loadBuilderComponentsAction($app_id) {
     	$em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
     	
 //load all the components        
         $config = $this->container->parameters['mlab'];
@@ -842,6 +868,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function getPageAction ($app_id, $page_num, $uid, $app_open_mode) {
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
     		
     	} else {
@@ -916,6 +945,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -997,6 +1029,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     		
     	} else {
     		return new JsonResponse(array(
@@ -1033,6 +1068,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -1066,6 +1104,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -1110,6 +1151,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'failure',
@@ -1200,6 +1244,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'failure',
@@ -1226,6 +1273,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -1262,6 +1312,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -1310,6 +1363,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -1349,6 +1405,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
@@ -1382,6 +1441,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
             $branches = $em->getRepository('SinettMLABBuilderBundle:App')->findByName($app->getName());
     	} else {
     		return new JsonResponse(array(
@@ -1430,6 +1492,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die("You have no access to this app");
+            }
             $branches = $em->getRepository('SinettMLABBuilderBundle:App')->findByName($app->getName());
     	} else {
     		return new JsonResponse(array(

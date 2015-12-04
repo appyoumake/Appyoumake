@@ -28,5 +28,22 @@ class AppRepository extends EntityRepository
 		}
 		return $apps;
 	}
+    
+  	/**
+	 * Returns an array of *paths* of all components that is allowed for the specified groups
+	 * This path = the internal component type/name which = the folder name of the component
+	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
+	 */
+	public function checkAccessByGroups ( $app_id, $groups ) {
+        foreach ($groups as $group) {
+			$temp_apps = $group->getApps();
+			foreach ($temp_apps as $temp_app) {
+                if ($temp_app->getEnabled() && $temp_app->getId() == $app_id) {
+                    return true;
+                }
+			}
+		}
+		return false;
+	}
 	
 }

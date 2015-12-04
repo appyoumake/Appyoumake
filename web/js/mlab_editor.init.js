@@ -242,6 +242,17 @@
                                .fadeIn("slow");
                         } );
                         
+//prepare qtip for the download of app buttons
+                        $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, platform) {
+                                $('#mlab_download_'+ platform + '_icon').qtip({
+                                    hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
+                                    content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
+                                             title: { text: "Download to " + platform } },
+                                    style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                                });
+                        });
+
+                        
 // finally we connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
                         var host = window.document.location.host.replace(/:.*/, '');
                         mlab.dt.services_web_socket = new WebSocket(mlab.dt.config.ws_socket.url_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);

@@ -441,6 +441,10 @@ error_log($head);
 //get the app database record
         $file_mgmt = $this->get('file_management');
         $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
+
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
         if (is_null($app)) {
             return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to retrieve app database entry: ' . $app_id));
@@ -459,10 +463,6 @@ error_log($head);
 //if it has been compiled we send a message via the websocket server
         $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
         
-$res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "platform": "' . $platform . '", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);        
-(!$res_socket || $res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
-return new JsonResponse($arr);
-
         if (file_exists($compiled_app_path . $app_filename)) {
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "platform": "' . $platform . '", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);
             (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');

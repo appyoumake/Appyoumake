@@ -45,12 +45,12 @@ Mlab_dt_management.prototype = {
                         $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
                         $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
 
-                        $('#mlab_download_'+ platform + '_icon').qtip({
+/*                        $('#mlab_download_'+ platform + '_icon').qtip({
                             hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                             content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
                                      title: { text: "Download to " + platform } },
                             style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
-                        });
+                        });*/
                     }
                 });
                 
