@@ -517,3 +517,7 @@ made smaler than the min width */
 #mlab_editor.mlab_loading_info {
     cursor: wait;
 }
+
+#mlab_editor #mlab_storage_plugin_list {
+    z-index: 600 !important;
+}

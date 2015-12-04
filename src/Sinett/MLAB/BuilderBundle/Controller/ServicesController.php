@@ -459,8 +459,12 @@ error_log($head);
 //if it has been compiled we send a message via the websocket server
         $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
         
+$res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "platform": "' . $platform . '", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);        
+(!$res_socket || $res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
+return new JsonResponse($arr);
+
         if (file_exists($compiled_app_path . $app_filename)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "platform": "' . $platform . '", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);
             (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => "Unable to update websocket messages") : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }
@@ -472,7 +476,7 @@ error_log($head);
         
         $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
         if ($res_precompile["result"] != "success") {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "error": "' . $res_precompile["msg"] . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation_failed", "platform": "' . $platform . '", "text": "' . $res_precompile["msg"] . '"}}', $config), true);
             return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
         }
         $processed_app_checksum = $res_precompile["checksum"];

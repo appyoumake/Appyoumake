@@ -35,7 +35,12 @@ mlabServicesCallbackServer.on('connection', function(ws) {
     ws.on('message', function(data, flags) {
         console.log("Message received: " + data);
         if (typeof data == "string") {
-            var objData = JSON.parse(data);
+            try {
+                var objData = JSON.parse(data);
+            } catch (error) {
+                console.log('Unable to parse JSON data ' + error);
+            }
+            
         } else if (typeof data == "undefined") {
             ws.send('{"data": {"status": "ERROR", "error": "received empty string"}}', function(error){console.log(error);});
             console.log('ERR: received empty string');

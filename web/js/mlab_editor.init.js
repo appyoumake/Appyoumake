@@ -280,15 +280,6 @@
                                     $("#mlab_statusbar_compiler").text("App created remotely");
                                     break;
 
-                                case "create_failed":
-                                    $("#mlab_statusbar_compiler").text("Failed to create app remotely");
-                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon');
-                                    $("#mlab_progressbar").hide();
-                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
-                                    //komme med en alert boks?
-                                    $("#mlab_statusbar_compiler").text(" ");
-                                    break;
-
                                 case "precompilation":
                                     $("#mlab_progressbar").val(20);
                                     $("#mlab_statusbar_compiler").text("Processing files...");
@@ -309,15 +300,6 @@
                                     $("#mlab_statusbar_compiler").text("Files uploaded OK...");
                                     break;
 
-                                case "verification_failed":
-                                    $("#mlab_statusbar_compiler").text("Files failed to upload");
-                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon');
-                                    $("#mlab_progressbar").hide();
-                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
-                                    //komme med en alert boks?
-                                    $("#mlab_statusbar_compiler").text("");
-                                    break;
-
                                 case "compiling":
                                     $("#mlab_progressbar").val(40);
                                     $("#mlab_statusbar_compiler").text("Waiting for compiler...");
@@ -328,13 +310,16 @@
                                     $("#mlab_statusbar_compiler").text("App compiled OK...");
                                     break;
 
+                                case "failed":
+                                case "precompilation_failed":
                                 case "compilation_failed":
-                                    $("#mlab_statusbar_compiler").text("App failed to compile");
-                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon');
-                                    $("#mlab_progressbar").hide();
-                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
-                                    //komme med en alert boks?
+                                case "verification_failed":
+                                case "create_failed":
                                     $("#mlab_statusbar_compiler").text("");
+                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
+                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
+                                    $("#mlab_progressbar").hide();
+                                    mlab.dt.utils.update_status("temporary", data.fail_text, false);
                                     break;
 
                                 case "receiving":
@@ -343,9 +328,12 @@
                                     break;
 
                                 case "ready":
+                                    debugger;
                                     $("#mlab_progressbar").val(100);
-                                    $("#mlab_progressbar").hide();
                                     $("#mlab_statusbar_compiler").text("");
+                                    $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
+                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
+                                    $("#mlab_progressbar").hide();
                                     
 //inserting the QR code and url to the compiled app in the menu
                                     if (typeof data.filename != "undefined" && data.filename != null && data.filename != "") {
@@ -360,9 +348,6 @@
                                     //hvor lenge skal teksten stå??
                                     break;
 
-                                case "failed":
-                                    $("#mlab_statusbar_compiler").text("Unable to get app: " + data.error);
-                                    $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                                     break;
                             }
                             

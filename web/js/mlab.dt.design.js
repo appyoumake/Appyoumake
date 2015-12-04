@@ -499,7 +499,7 @@ Mlab_dt_design.prototype = {
        
         this.parent.qtip_tools = $(curr_comp).qtip({
             solo: false,
-            content:    { text: function() { return $('#mlab_toolbar_for_components').clone().removeAttr("id"); } },
+            content:    { text: function() { return $('#mlab_toolbar_for_components').clone(true).removeAttr("id"); } },
             position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
             show: {ready: true, modal: { on: false, blur: false }},
             hide: false,
