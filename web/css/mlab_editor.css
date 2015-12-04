@@ -43,7 +43,7 @@ made smaler than the min width */
     position: fixed;
     z-index: 10;
     background-color: white;
-    padding-bottom: 20px;
+    padding-bottom: 25px;
     width: 100%;
 }
 
@@ -172,6 +172,12 @@ made smaler than the min width */
     margin-right: 7px;
     font-size: 12px;
     font-weight: normal;
+}
+
+#mlab_editor .mlab_align_menu_elements .mlab_gradient {
+  background: -webkit-linear-gradient(rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1), rgba(255,255,255,0));
+  background: -moz-linear-gradient(rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1), rgba(255,255,255,0));
+  background: linear-gradient(rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1), rgba(255,255,255,0));
 }
 
 #mlab_editor #mlab_page_control #mlab_page_control_pagelist {
@@ -481,6 +487,12 @@ made smaler than the min width */
     background-color: wheat;
     border: 1px solid gray;
 }
+
+#mlab_editor .mlab_current_component_invert {
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+}
+
 
 #mlab_editor .ui-state-active a, #mlab_editor .ui-state-active a:link, #mlab_editor .ui-state-active a:visited {
     color: white;

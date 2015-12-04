@@ -1,4 +1,6 @@
 //ordered list, provides basic editing facilities	
+    this.tagName ="ol";
+
     this.getHTMLElement = function(el)  {
         return $(el).find("ol");
     };
@@ -43,9 +45,9 @@
         if (prev_node.length == 0) {
             return;
         }
-        prev_node.append("<ol></ol>");
+        prev_node.append("<" + this.tagName + " class='mc_container mc_list'></" + this.tagName +">");
         var element = curr_node.detach();
-        prev_node.find("ol").append(element);
+        prev_node.find(this.tagName).append(element);
         this.api.dirty_flag = true;
     };
     

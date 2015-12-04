@@ -119,7 +119,7 @@
     <body id="mlab_editor">
     	<div class="mlab_min_page_width">
     		<div class="mlab_align_menu_elements">
-                <div class="mlab_permanent_top_menu">
+                <div class="mlab_permanent_top_menu mlab_gradient">
                     <ul id="mlab_menu">
                         <li>
                             <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='Tilbake til App liste' src="/img/logo_menu.png" alt="logo" /></div></a>
@@ -128,21 +128,124 @@
                         <li id="mlab_editor_menu_dropdown">    
                                 <img class="basic_menu_icon" title='{% trans %}app.builder.edit.menu.tooltip{% endtrans %}' src="/img/menu_icon.png" alt="logo" > 
                         </li>
+                         <div id="mlab_editor_menu_dropdown_content" class="dropdown_editor_menu"><!-- Editor menu container -->
+                            <div class="mlab_one_col"> <!-- Navigate col -->
+                                <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
+
+                                {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
+
+                                {% if app.user == null %} <!-- If not loged in -->
+                                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                                    </p>
+
+                                {% else %} <!-- If loged in -->
+                                    {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
+                                        <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
+                                    {% endif %} 
+
+                                    <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
+                                    <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+
+
+                                    {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
+                                        {%  if path('admin_apps') not in currentPath  %}
+                                            <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                                        {% endif %} 
+                                        {% if path('admin_users') not in currentPath %}
+                                            <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                                        {% endif %} 
+                                    {% endif %} 
+
+                                    {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
+                                        {% if path('system') not in currentPath %}
+                                                <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SUPER_ADMIN") %}
+                                                <br>
+                                    {% endif %}
+
+                                    {% if path('app_builder_index') in currentPath  %} <!-- If on app list page - show the info  -->
+                                                <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
+                                    {% endif %} 
+                                {% endif %}
+                            </div> <!-- End Navigate col -->
+
+                            <div class="mlab_one_col"> <!-- Feature col -->
+                                <img onclick='var temp; mlab.dt.management.page_save(temp, true);' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
+                                <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
+                                <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
+                                <div id="mlab_features_list"></div>
+                                <div class='mlab_sub_menu'>
+                                    <h4>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h4>
+                                    <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
+                                    <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
+                                                        <a href="javascript: mlab.dt.management.compiler.get_app_status();">Test connection to compiler </a>
+                                </div>
+                            </div> <!-- End Feature col -->
+
+                            <div class="mlab_one_col"> <!-- Testing col -->
+                                <div class="mlab_end_appbuilder">
+                                    <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
+                                    <h4>{% trans %}app.builder.edit.menu.heading.test.app.web{% endtrans %}</h4>
+                                    <p>{% trans %}app.builder.edit.menu.test.app.web.info{% endtrans %}</p>
+                                            <a href="javascript: mlab.dt.management.page_preview();">
+                                                <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                                            </a> 
+                                    <h4>{% trans %}app.builder.edit.menu.heading.test.app.mob{% endtrans %}</h4>
+                                    <p>{% trans %}app.builder.edit.menu.test.app.mob.info{% endtrans %}</p>
+                                    <div id="mlab_download_qr2"><p class="qr_wait_text">{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
+                                    </div>
+
+                {# 
+                    here we use a variable from the /app/config/config.yml file which points to the /app/config/parameters.yml entry mlab.compiler_service.supported_platforms 
+                    this variable is an array so we loop through it
+                #}
+                                    {% for platform in mlab_variables.compiler_service.supported_platforms %}
+                                        <a href="javascript: mlab.dt.management.compiler.get_app('{{ platform }}');">
+                                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon"></div> 
+                                        </a> 
+                                        <div data-mlab-download-link-info="{{ platform }}">
+                                            <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>
+                                            <div id='mlab_download_link_{{ platform }}'class='mlab_download_link'>&nbsp;</div>
+                                        </div>
+                                    {% endfor %}                             
+                                </div>
+                            </div> <!-- End Testing col -->
+
+                            <div class="mlab_three_col"> <!-- Developed by col -->
+                                <h3></h3>
+                                <p>Developed by the Sinett project at FFI.no</p>
+                            </div> <!-- End Developed by col -->
+                        </div><!-- End Editor menu container -->
+                        
                         <li  class="single"><div class='mlab_statusbar_permanent_label'>{% trans %}app.builder.statusbar.info.permanent.label{% endtrans %}:</div></li>
                         <li  class="single"><div id='mlab_statusbar_permanent'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
                         <li  class="single"><div id='mlab_statusbar_progress_spin'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_progressbar'><progress id='mlab_progressbar' class='mlab_progressbar' value="10" max="100"></progress></div></li>
-                        
-                        <li class="single menu_right">
-                            <img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" >
-                        </li>
+                        <li class="single menu_right"><img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" ></li>
                         
                         <li id="mlab_user_menu_dropdown" class="menu_right">
                             <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}app.builder.menu.user.info.main.tooltip{% endtrans %}' alt="logo" >
                         </li>
-                        
+                        <div id="mlab_user_menu_dropdown_content" class="dropdown_user_menu"><!-- User menu container -->
+                            <div class="mlab_one_user_col"> <!-- User col -->
+                                <h3>{% trans %}app.builder.menu.user.info.heading{% endtrans %}</h3>
+                                {% if app.user == null %} <!-- If not loged in -->
+                                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
+                                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                                    </p>
+                                {% else %} <!-- If loged in -->
+                                    <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
+                                        <b>{{ app.user.username }}</b><br><br>
+                                    <a target="_top" href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
+                                {% endif %}
+                            </div>
+                        </div><!-- End User menu container -->                       
                     </ul>
                     
                      <div id="mlab_page_control">
@@ -222,126 +325,10 @@
                         <div id="mlab_overlay"><div class="mlab_modal">{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
                         <div style="clear: both;">&nbsp;</div>
                     </div>
-               
 	        </div>
-	    </div>
+        </div>
         
-        <div id="mlab_editor_menu_dropdown_content" class="dropdown_editor_menu"><!-- Editor menu container -->
-
-            <div class="mlab_one_col"> <!-- Navigate col -->
-                <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
-
-                {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
-
-                {% if app.user == null %} <!-- If not loged in -->
-                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
-                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-                    </p>
-
-                {% else %} <!-- If loged in -->
-                    {% if app.user.roles[0] != "ROLE_USER" or path('app_builder_index') not in currentPath %} <!-- If no liks to show - hide the links info -->
-                        <p>{% trans %}app.builder.menu.links.info{% endtrans %}:</p>
-                    {% endif %} 
-
-                    <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
-                    <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
-
-
-                    {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
-                        {%  if path('admin_apps') not in currentPath  %}
-                            <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
-                        {% endif %} 
-                        {% if path('admin_users') not in currentPath %}
-                            <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
-                        {% endif %} 
-                    {% endif %} 
-
-                    {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
-                        {% if path('system') not in currentPath %}
-                                <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SUPER_ADMIN") %}
-                                <br>
-                    {% endif %}
-
-                    {% if path('app_builder_index') in currentPath  %} <!-- If on app list page - show the info  -->
-                                <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
-                    {% endif %} 
-                {% endif %}
-            </div> <!-- End Navigate col -->
-
-            <div class="mlab_one_col"> <!-- Feature col -->
-                <img onclick='var temp; mlab.dt.management.page_save(temp, true);' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
-                <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
-                <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
-                <div id="mlab_features_list"></div>
-                <div class='mlab_sub_menu'>
-                    <h4>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h4>
-                    <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
-                    <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
-                                        <a href="javascript: mlab.dt.management.compiler.get_app_status();">Test connection to compiler </a>
-                </div>
-            </div> <!-- End Feature col -->
-
-            <div class="mlab_one_col"> <!-- Testing col -->
-                <div class="mlab_end_appbuilder">
-                    <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
-                    <h4>{% trans %}app.builder.edit.menu.heading.test.app.web{% endtrans %}</h4>
-                    <p>{% trans %}app.builder.edit.menu.test.app.web.info{% endtrans %}</p>
-                            <a href="javascript: mlab.dt.management.page_preview();">
-                                <div title="Test app i nettleser" id="mlab_preview_icon"></div>
-                            </a> 
-                    <h4>{% trans %}app.builder.edit.menu.heading.test.app.mob{% endtrans %}</h4>
-                    <p>{% trans %}app.builder.edit.menu.test.app.mob.info{% endtrans %}</p>
-                    <div id="mlab_download_qr2"><p class="qr_wait_text">{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
-                    </div>
-                    
-{# 
-    here we use a variable from the /app/config/config.yml file which points to the /app/config/parameters.yml entry mlab.compiler_service.supported_platforms 
-    this variable is an array so we loop through it
-#}
-                    {% for platform in mlab_variables.compiler_service.supported_platforms %}
-                        <a href="javascript: mlab.dt.management.compiler.get_app('{{ platform }}');">
-                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon"></div> 
-                        </a> 
-                        <div data-mlab-download-link-info="{{ platform }}">
-                            <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>
-                            <div id='mlab_download_link_{{ platform }}'class='mlab_download_link'>&nbsp;</div>
-                        </div>
-                    {% endfor %}                             
-                </div>
-            </div> <!-- End Testing col -->
-
-            <div class="mlab_three_col"> <!-- Developed by col -->
-                <h3></h3>
-                <p>Developed by the Sinett project at FFI.no</p>
-            </div> <!-- Developed by col -->
-
-        </div><!-- End Editor menu container -->
-        
-        <div id="mlab_user_menu_dropdown_content" class="dropdown_user_menu"><!-- User menu container -->
-                        <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
-
-            <div class="mlab_one_user_col"> <!-- User col -->
-                <h3>{% trans %}app.builder.menu.user.info.heading{% endtrans %}</h3>
-                
-                {% if app.user == null %} <!-- If not loged in -->
-                    <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
-                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-                    </p>
-                {% else %} <!-- If loged in -->
-                    <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
-                        <b>{{ app.user.username }}</b><br><br>
-                    
-                    <a target="_top" href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
-                {% endif %}
-            </div>
-
-        </div><!-- End User menu container -->
-        
-         <script type="text/javascript">
+        <script type="text/javascript">
             $(document).ready(function() {
                 $("#mlab_statusbar_progress_spin").spin('small', '#fff');
             });
