@@ -189,10 +189,8 @@ Mlab_dt_design.prototype = {
     },
 
     component_highlight_selected : function (el) {
-        $(".mlab_current_component").qtip('hide');
+<<<<<<< HEAD
         $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
-        $( el ).addClass("mlab_current_component");
-
         //get the background color for the app page
         var pageBgColor = $("[data-role=page]").css( "background-color" );
         
@@ -203,6 +201,11 @@ Mlab_dt_design.prototype = {
         $( el ).addClass("mlab_current_component_invert mlab_current_component");
         //invert the color back on the next level element so the rest of the component get the right colors
         $(el).children().first().addClass("mlab_current_component_invert");
+=======
+        $(".mlab_current_component").qtip('hide');
+        $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
+        $( el ).addClass("mlab_current_component");
+>>>>>>> abh_posttest
         this.component_menu_prepare();
     },
 

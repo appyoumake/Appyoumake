@@ -16,7 +16,7 @@
    1. #mlab_editor #mlab_toolbar_components
    2. #mlab_editor #mlab_page_control
    2. #mlab_editor #mlab_page_management
-   3. #mlab_editor #mlab_toolbar_for_components 
+   3. #mlab_editor .mlab_toolbar_for_components 
    4. #mlab_editor #mlab_overlay
    5. #mlab_editor #mlab_template_warning
    6. #mlab_editor #mlab_container
@@ -270,7 +270,7 @@ made smaler than the min width */
    3. The toolbar that switches for each component 
    ========================================================================== */
 
-#mlab_editor #mlab_toolbar_for_components {
+#mlab_editor .mlab_toolbar_for_components {
     display: block;
     padding: 5px;
     max-width: 98px;
@@ -283,7 +283,7 @@ made smaler than the min width */
     left: 635px;*/
 }
 
-#mlab_editor #mlab_toolbar_for_components #mlab_component_toolbar_heading {
+#mlab_editor .mlab_toolbar_for_components #mlab_component_toolbar_heading {
     font-family: Verdana, Arial, sans-serif;
     font-size:14px;
     text-align: center;
@@ -295,37 +295,37 @@ made smaler than the min width */
     margin-bottom: 5px;
 }
 
-#mlab_editor #mlab_toolbar_for_components .mlab_tools {
+#mlab_editor .mlab_toolbar_for_components .mlab_tools {
     padding: 1px;
     width: 24px;
     height: 24px;
     cursor: pointer;
 }
 
-#mlab_editor #mlab_toolbar_for_components .mlab_tools_line {
+#mlab_editor .mlab_toolbar_for_components .mlab_tools_line {
     background-color: rgba(255,165,0,0.2);
     height: 1px;
     border: 0;
     margin: 5px 2px;
 }
 
-#mlab_editor #mlab_toolbar_for_components .mlab_newline {
+#mlab_editor .mlab_toolbar_for_components .mlab_newline {
     clear: both;
 }
 
 /* TODO - få inn en klasse så ikke bruker img? */
-#mlab_editor #mlab_toolbar_for_components #mlab_component_context_menu img {
+#mlab_editor .mlab_toolbar_for_components #mlab_component_context_menu img {
     padding: 2px;
     float: left;
 }
 
 /* makes the last clear div short */
-#mlab_editor #mlab_toolbar_for_components #mlab_component_context_menu .clear {
+#mlab_editor .mlab_toolbar_for_components #mlab_component_context_menu .clear {
     line-height: 2px;
 }
 
 /* TODO */
-#mlab_editor div#mlab_toolbar_for_components img.missing_icon { 
+#mlab_editor div.mlab_toolbar_for_components img.missing_icon { 
     width: 28px;
     height: 28px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==);
@@ -333,7 +333,7 @@ made smaler than the min width */
 }
 
 /* TODO */
-#mlab_editor div#mlab_toolbar_for_components img.select_storage {
+#mlab_editor div.mlab_toolbar_for_components img.select_storage {
     width: 24px;
     height: 24px;
     background-repeat: no-repeat;
@@ -506,3 +506,14 @@ made smaler than the min width */
     border: 1px white double !important;
 }
 
+.mlab_zindex_regular_tooltip {
+    z-index: 400 !important;
+}
+
+.mlab_zindex_top_tooltip {
+    z-index: 450 !important;
+}
+
+#mlab_editor.mlab_loading_info {
+    cursor: wait;
+}
