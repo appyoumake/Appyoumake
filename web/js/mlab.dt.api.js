@@ -628,16 +628,19 @@ Mlab_dt_api.prototype = {
   * @returns {Boolean|Array of strings}
  */
     getCredentials: function (credentials_required, cb_function, params) {
-        var dlg = $("<div id='mlab_dt_dialog_credentials' ></div>");
-        for (credential in credentials_required) {
-            dlg.append("<label for='mlab_dt_dialog_credentials_" + credentials_required[credential] + "' >" + credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) + "</label><input name='mlab_dt_dialog_credentials_" + credentials_required[credential] + "' id='mlab_dt_dialog_credentials_" + credentials_required[credential] + "' ><br>");
+        var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: "Credentials" } );
+        for (credential in credentials_required) {   
+            dlg.append( $('<p />', { text: 'Her skal credentials forklares.....' , class: 'mlab_dt_text_info' } ) );
+            dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , for: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_short_label' } ) );
+            dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , id: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_input' }) );      
+            dlg.append( $('<br />') );   
         }
         
         var that_dlg = $(dlg).dialog({
                 autoOpen: true,
                 modal: true,
                 closeOnEscape: true,
-                
+                             
                 buttons: {
                     'Save': function() {
                         

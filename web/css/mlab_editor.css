@@ -56,7 +56,7 @@ made smaler than the min width */
     display: block;
     float: left;
     width: 145px;
-    margin-top: 65px;
+    margin-top: 120px;
     overflow-y: auto;
     height: 75%;
     position: fixed;
@@ -295,10 +295,17 @@ made smaler than the min width */
     margin-bottom: 5px;
 }
 
-#mlab_editor .mlab_toolbar_for_components .mlab_tools {
+#mlab_editor .mlab_toolbar_for_components .mlab_tools_all {
     padding: 1px;
     width: 24px;
     height: 24px;
+    cursor: pointer;
+}
+
+#mlab_editor .mlab_toolbar_for_components .mlab_tools {
+    padding: 1px;
+    width: 28px;
+    height: 28px;
     cursor: pointer;
 }
 
@@ -317,6 +324,8 @@ made smaler than the min width */
 #mlab_editor .mlab_toolbar_for_components #mlab_component_context_menu img {
     padding: 2px;
     float: left;
+    width: 28px;
+    height: 28px;
 }
 
 /* makes the last clear div short */
@@ -349,10 +358,7 @@ made smaler than the min width */
 }
 
 #mlab_editor #mlab_dt_dialog_credentials{
-    background-color: white;
     color: black;
-    border: solid orange 2px;
-    box-shadow: 5px 5px 5px darkslategray;
     padding: 6px;
     line-height: 17px;
     font-family: Arial, Helvetica, sans-serif;
