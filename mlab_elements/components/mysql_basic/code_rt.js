@@ -69,15 +69,17 @@
     };
     
     this.setResult = function(func_fail, app_id, device_id, comp_id, key, value, callback) {
-        $.post(this.serverUrl, {action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)})
+        var save_data = {action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)};
+        $.post(this.serverUrl, save_data)
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
                         console.log( "Saved OK" );
+                        callback(save_data);
                     }
                   })
                 .fail(function() {
-                    func_fail({"type": "result", "app_id": app_id, "device_id": device_id, "component_id": comp_id, "key": key, value: JSON.stringify(value), "callback": callback.name});
+                    func_fail({"type": "result", "app_id": app_id, "device_uuid": device_id, "component_uuid": comp_id, "key": key, value: JSON.stringify(value), "callback": callback.name});
                   });
         return true;
     };

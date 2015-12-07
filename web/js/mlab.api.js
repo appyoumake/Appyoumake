@@ -522,11 +522,11 @@ Mlab_api.prototype = {
 
                     
                     if ($("#" + data.component_uuid).length > 0) {
-                        var cb = mlab.api.components[$("#" + data.component_uuid).data("mlab-type")];
+                        var cb = mlab.api.components[$("#" + data.component_uuid).data("mlab-type")][data.callback];
                     } else {
                         var cb = false;
                     }
-                    mlab.api.db.internal.dispatchToPlugin(data.component_id, data.type, data.device_uuid, data.component_uuid, data.key, data.value, data.callback, data.app_id);
+                    mlab.api.db.internal.dispatchToPlugin(data.component_id, data.type, data.device_uuid, data.component_uuid, data.key, data.value, cb, data.app_id);
                 }
             },
 
@@ -560,6 +560,11 @@ Mlab_api.prototype = {
 //always update locally
                 var SEP = this.parent.parent.data_divider;
                 window.localStorage.setItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key, JSON.stringify(value));
+                
+//if not managed to dispatch it (most commonly because we are offline) call the callback function now
+                if (!res) {
+                    callback(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key, JSON.stringify(value))
+                }
                 return true;
             },
             
