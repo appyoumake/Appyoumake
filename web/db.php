@@ -33,14 +33,14 @@ switch ($action) {
             $columns = rtrim($columns, ",");
             $values = rtrim($values, ",");
             
-            $sql = "SELECT * FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+            $sql = "SELECT * FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `dev` = '$dev' AND `type` = '$type' AND `key` = '$key'";
             
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
-                $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+                $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `dev` = '$dev' AND `type` = '$type' AND `key` = '$key'";
             } else {
                 $val = addslashes($value);
-                $sql = "INSERT INTO data (`app`, `comp`, `usr`, `type`, `key`, `value`) VALUES ('$app', '$comp', '$usr', '$type', '$key', '$val')" ;
+                $sql = "INSERT INTO data (`app`, `comp`, `dev`, `type`, `key`, `value`) VALUES ('$app', '$comp', '$dev', '$type', '$key', '$val')" ;
             }
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
@@ -54,7 +54,7 @@ switch ($action) {
 
     case "update":
         //if ($_SESSION[$token]) {
-            $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type' AND `key` = '$key'";
+            $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `dev` = '$dev' AND `type` = '$type' AND `key` = '$key'";
 
             if (mysqli_query($conn, $sql)) {
                 echo '{"status": "SUCCESS"}';
@@ -68,7 +68,7 @@ switch ($action) {
 
     case "get":
         //if ($_SESSION[$token]) {
-            $sql = "SELECT `key`, `value` FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `usr` = '$usr' AND `type` = '$type'";
+            $sql = "SELECT `key`, `value` FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `dev` = '$dev' AND `type` = '$type'";
             if (isset($key)) {
                  $sql .= " AND `key` = '$key'";
             }

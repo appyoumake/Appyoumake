@@ -258,7 +258,6 @@
                         mlab.dt.services_web_socket = new WebSocket(mlab.dt.config.ws_socket.url_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);
                         
                         mlab.dt.services_web_socket.onmessage = function (event) {
-                            console.log(event);
                             data = JSON.parse(event.data);
                             switch (data.status) {
                                 

@@ -38,7 +38,7 @@
         return true;
     };
     
-    this.setState = function(data_type, user_id, comp_id, key, value, callback) {
+    this.setState = function(func_fail, data_type, device_id, comp_id, key, value, callback) {
         
         return true;
     };
@@ -53,7 +53,7 @@
         return true;
     };
     
-    this.setConfig = function(data_type, user_id, comp_id, key, value, callback) {
+    this.setConfig = function(func_fail, data_type, device_id, comp_id, key, value, callback) {
         
         return true;
     };
@@ -68,8 +68,8 @@
         return true;
     };
     
-    this.setResult = function(app_id, user_id, comp_id, key, value, callback) {
-        $.post(this.serverUrl, {action: 'set', type: 'result', app: app_id, usr: user_id, comp: comp_id, key: key, value: JSON.stringify(value)})
+    this.setResult = function(func_fail, app_id, device_id, comp_id, key, value, callback) {
+        $.post(this.serverUrl, {action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -77,13 +77,13 @@
                     }
                   })
                 .fail(function() {
-                    alert( "error" );
+                    func_fail({"type": "result", "app_id": app_id, "device_id": device_id, "component_id": comp_id, "key": key, value: JSON.stringify(value), "callback": callback.name});
                   });
         return true;
     };
     
-    this.getResult = function(app_id, user_id, comp_id, key, callback) {
-        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, usr: user_id, comp: comp_id, key: key})
+    this.getResult = function(func_fail, app_id, device_id, comp_id, key, callback) {
+        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -95,13 +95,13 @@
                     }
                   })
                 .fail(function() {
-                    alert( "error" );
+                    alert("Unabel to get data from server");
                   });
         return true;
     };
 
-    this.getAllResults = function(app_id, user_id, comp_id, callback) {
-        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, usr: user_id, comp: comp_id})
+    this.getAllResults = function(func_fail, app_id, device_id, comp_id, callback) {
+        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -115,7 +115,7 @@
                     }
                   })
                 .fail(function() {
-                    alert( "error" );
+                    alert("Unabel to get data from server");
                   });
         return true;
     };
