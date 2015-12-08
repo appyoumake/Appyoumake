@@ -22,14 +22,14 @@ switch ($action) {
         if ($result->num_rows > 0) {
             $new_token = md5(rand());
             $_SESSION[$new_token] = true;
-            echo '{"status": "SUCCESS", "token": "$new_token"}';
+            echo '{"status": "SUCCESS", "token": "' . $new_token . '"}';
         } else {
             echo '{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", $conn->error) . '"}';
         }
         break;
 
     case "set":
-        //if ($_SESSION[$token]) {
+        if ($_SESSION[$token]) {
             $columns = rtrim($columns, ",");
             $values = rtrim($values, ",");
             
@@ -47,13 +47,13 @@ switch ($action) {
             } else {
                 echo '{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", $conn->error) . '", "sql": "' . $sql . '"}';
             }
-        /*} else {
-            echo '{"status": 'NOACCESS'}';
-        }*/
+        } else {
+            echo '{"status": "NOACCESS"}';
+        }
         break;
 
     case "update":
-        //if ($_SESSION[$token]) {
+        if ($_SESSION[$token]) {
             $sql = "UPDATE data SET `value` = '$value' WHERE `app` = '$app' AND `comp` = '$comp' AND `dev` = '$dev' AND `type` = '$type' AND `key` = '$key'";
 
             if (mysqli_query($conn, $sql)) {
@@ -61,13 +61,13 @@ switch ($action) {
             } else {
                 echo '{"status": "ERROR", "msg": "' . str_replace(array('"', "'"), "", $conn->error) . '"}';
             }
-        /*} else {
-            echo '{"status": 'NOACCESS'}';
-        }*/
+        } else {
+            echo '{"status": "NOACCESS"}';
+        }
         break;
 
     case "get":
-        //if ($_SESSION[$token]) {
+        if ($_SESSION[$token]) {
             $sql = "SELECT `key`, `value` FROM data WHERE `app` = '$app' AND `comp` = '$comp' AND `dev` = '$dev' AND `type` = '$type'";
             if (isset($key)) {
                  $sql .= " AND `key` = '$key'";
@@ -92,9 +92,9 @@ switch ($action) {
                 echo '{"status": "SUCCESS", "data": "[]"}';
                 
             }
-        /*} else {
-            echo '{"status": 'NOACCESS'}';
-        }*/
+        } else {
+            echo '{"status": "NOACCESS"}';
+        }
         break;
 
     default:

@@ -1,39 +1,32 @@
-    this.serverUrl = null;
-    this.serverUsername = null;
-    this.serverPassword = null;
-    this.ownerComponent = null;
 /**
  * called when this plugin is loaded by a component
  * @param {type} pwner
  * @returns {undefined}
  */
-    this.onPluginLoaded = function(owner) {
-        this.ownerComponent = owner;
-        var settings = this.api.getAllVariables(owner);
-        this.serverUrl = settings.storage_plugin.credentials.url;
-        this.serverUsername = settings.storage_plugin.credentials.username;
-        this.serverPassword = settings.storage_plugin.credentials.password;
+    this.onPluginLoaded = function(el, callback) {
+        this.loginRemotely($(el).attr("id"));
     }
     
-    this.loginRemotely = function(username, password, callback) {
-        $.post(this.serverUrl, {action: 'login', username: this.serverPassword, password: this.serverPassword})
+    this.loginRemotely = function(component_uuid, callback) {
+        var that = this;
+        var creds = that._data[component_uuid].settings.credentials;
+        
+        $.post(creds.url, {action: 'login', username: creds.username, password: creds.password})
                 .done(function( data ) {
+                    data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
                         alert( "Logged in remotely: " + data );
+                        that.api.db.loginToken(component_uuid, data.token);
                     }
                   })
                 .fail(function() {
                     alert( "Error loggin in remotely" );
                   });
+                  
         return true;
     };
     
-    this.logoffRemotely = function() {
-        
-        return true;
-    };
-    
-    this.loginToken = function(token) {
+    this.logoffRemotely = function(token, callback) {
         
         return true;
     };
@@ -68,24 +61,34 @@
         return true;
     };
     
-    this.setResult = function(func_fail, app_id, device_id, comp_id, key, value, callback) {
-        var save_data = {action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)};
-        $.post(this.serverUrl, save_data)
+    this.setResult = function(func_fail, callback, app_id, device_id, comp_id, key, value) {
+debugger;
+        var that = this;
+        var creds = that._data[comp_id].settings.credentials;
+        var save_data = {token: this.api.db.loginToken(comp_id), action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)};
+        
+        $.post(creds.url, save_data)
                 .done(function( data ) {
+debugger;
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
                         console.log( "Saved OK" );
-                        callback(save_data);
+                        if (callback) {
+                            callback(save_data);
+                        }
                     }
                   })
                 .fail(function() {
-                    func_fail({"type": "result", "app_id": app_id, "device_uuid": device_id, "component_uuid": comp_id, "key": key, value: JSON.stringify(value), "callback": callback.name});
+                    func_fail("result", app_id, device_id, comp_id, key);
                   });
         return true;
     };
     
-    this.getResult = function(func_fail, app_id, device_id, comp_id, key, callback) {
-        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key})
+    this.getResult = function(func_fail, callback, app_id, device_id, comp_id, key) {
+        var that = this;
+        var creds = that._data[comp_id].settings.credentials;
+
+        $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -94,16 +97,21 @@
                         callback(data);
                     } else {
                         console.log( "ERROR: " + data.msg );
+                        callback();
                     }
                   })
                 .fail(function() {
-                    alert("Unabel to get data from server");
+                    alert("Unable to get data from server");
+                    callback();
                   });
         return true;
     };
 
-    this.getAllResults = function(func_fail, app_id, device_id, comp_id, callback) {
-        $.post(this.serverUrl, {action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id})
+    this.getAllResults = function(func_fail, callback, app_id, device_id, comp_id) {
+        var that = this;
+        var creds = that._data[comp_id].settings.credentials;
+
+        $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id})
                 .done(function( data ) {
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
@@ -114,10 +122,12 @@
                         callback(data.data);
                     } else {
                         console.log( "ERROR: " + data.msg );
+                        callback();
                     }
                   })
                 .fail(function() {
-                    alert("Unabel to get data from server");
+                    alert("Unable to get data from server");
+                    callback();
                   });
         return true;
     };

@@ -664,11 +664,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($app_id < 1) {
     		return new Response("No app id specified");
     	}
+        $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
             die("You have no access to this app");
         }
 
-        $em = $this->getDoctrine()->getManager();
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
         $request = $this->container->get('request');
 

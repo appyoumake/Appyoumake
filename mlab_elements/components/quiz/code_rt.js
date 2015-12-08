@@ -23,14 +23,12 @@ this.onPageLoad = function(el) {
     
     $(el).find("div").first().show().addClass("mlab_cp_quiz_currentpage");
 
-    self.api.db.prepareDataObjects([self.api.getAppUid(), self.deviceId, this.domRoot.attr("id")]);
-    
 //we only set up the storage plugin if they want to "submit" the answers
     if (self.settings.submit) {
-        self.api.db.setupStoragePlugin(el);
+        self.api.db.setupStoragePlugin(el, self.loadAnswers());
     }
     
-    self.loadAnswers();
+    
     //TODO 
     $(".ui-btn.ui-icon-carat-d.ui-btn-icon-right.ui-corner-all.ui-shadow.ui-li-has-count").removeClass("ui-btn")
 /*    self.domRoot.on("change", ":input", function() { return self.storeAnswers($(this)); });
@@ -96,12 +94,14 @@ this.move = function(direction) {
 };
 
 this.loadAnswers = function() {
+    debugger;
     this.api.db.getAllResults(this.deviceId, this.domRoot.attr("id"), this.processAnswers);
 };
 
 //this function is used for callbacks from the API database functions, it will contain a list of data which is {id_of_question: selected_answers}
 //selected_answers can be a string (for text boxes), or an array of values for select, radio or check boxes.
 this.processAnswers = function (data) {
+    debugger;
     var q, q_type;
     for (id in data) {
         q = $("#" + id);
