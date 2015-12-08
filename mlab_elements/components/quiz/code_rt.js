@@ -94,7 +94,6 @@ this.move = function(direction) {
 };
 
 this.loadAnswers = function() {
-    debugger;
     this.api.db.getAllResults(this.deviceId, this.domRoot.attr("id"), this.processAnswers);
 };
 

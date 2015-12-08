@@ -320,7 +320,7 @@ Mlab_api.prototype = {
  * @param {any} value The state value to be stored. Required. Can be anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
         setState: function(device_uuid, component_uuid, key, value, callback) {
-            return this.internal.setData("states", device_uuid, component_uuid, key, value, callback);
+            return this.internal.setData("state", device_uuid, component_uuid, key, value, callback);
         },
 
 /**
@@ -330,7 +330,7 @@ Mlab_api.prototype = {
  * @return {Any} Value of state
  */
         getState: function(device_uuid, component_uuid, key, callback) {
-            return this.internal.getData("states", device_uuid, component_uuid, key, callback);
+            return this.internal.getData("state", device_uuid, component_uuid, key, callback);
         },
 
 /**
@@ -338,8 +338,8 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllStates: function(device_uuid, component_uuid, callback) {
-            return this.internal.getAllData("states", device_uuid, component_uuid, callback);
+        getAllState: function(device_uuid, component_uuid, callback) {
+            return this.internal.getAllData("state", device_uuid, component_uuid, callback);
         },
     
 /**
@@ -349,7 +349,7 @@ Mlab_api.prototype = {
  * @param {any} value The config value to be stored. Required. Anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
         setConfig: function(device_uuid, component_uuid, key, value, callback) {
-            return this.internal.setData("configs", device_uuid, component_uuid, key, value, callback);
+            return this.internal.setData("config", device_uuid, component_uuid, key, value, callback);
         },
     
 /**
@@ -359,7 +359,7 @@ Mlab_api.prototype = {
  * @return {any} The config value (any type), or null
  */
         getConfig: function(device_uuid, component_uuid, key, callback) {
-            return this.internal.getData("configs", device_uuid, component_uuid, key, callback);
+            return this.internal.getData("config", device_uuid, component_uuid, key, callback);
         },
 
 /**
@@ -368,7 +368,7 @@ Mlab_api.prototype = {
  * @return {Object} Object containing the configs
  */
         getAllConfig: function(device_uuid, component_uuid, callback) {
-            return this.internal.getAllData("configs", device_uuid, component_uuid, callback);
+            return this.internal.getAllData("config", device_uuid, component_uuid, callback);
         },
     
 /**
@@ -379,7 +379,7 @@ Mlab_api.prototype = {
  * @param {any} value The value to be stored.
  */
         setResult: function(device_uuid, component_uuid, key, value, callback) {
-            return this.internal.setData("results", device_uuid, component_uuid, key, value, callback);
+            return this.internal.setData("result", device_uuid, component_uuid, key, value, callback);
         },
     
 /**
@@ -390,7 +390,7 @@ Mlab_api.prototype = {
  * @return {any} The value that was saved. Normally an object, but any JSON-stringifiable value is allowed.
  */
         getResult: function(device_uuid, component_uuid, key, callback) {
-            return this.internal.getData("results", device_uuid, component_uuid, key, callback);
+            return this.internal.getData("result", device_uuid, component_uuid, key, callback);
         },
         
 /**
@@ -398,8 +398,8 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllResults: function(device_uuid, component_uuid, callback) {
-            return this.internal.getAllData("results", device_uuid, component_uuid, callback);
+        getAllResult: function(device_uuid, component_uuid, callback) {
+            return this.internal.getAllData("result", device_uuid, component_uuid, callback);
         },
 
 /* Network-functions */
@@ -616,6 +616,7 @@ Mlab_api.prototype = {
  * @returns {Boolean}
  */
             getAllData: function(data_type, device_uuid, comp_id, callback) {
+                debugger;
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin(callback, "getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), data_type, app_id, device_uuid, comp_id);
                 var len = 0;

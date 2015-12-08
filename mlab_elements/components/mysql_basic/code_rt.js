@@ -62,14 +62,12 @@
     };
     
     this.setResult = function(func_fail, callback, app_id, device_id, comp_id, key, value) {
-debugger;
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
         var save_data = {token: this.api.db.loginToken(comp_id), action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)};
         
         $.post(creds.url, save_data)
                 .done(function( data ) {
-debugger;
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
                         console.log( "Saved OK" );
@@ -87,10 +85,11 @@ debugger;
     this.getResult = function(func_fail, callback, app_id, device_id, comp_id, key) {
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
-
+debugger;
         $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key})
                 .done(function( data ) {
                     data = JSON.parse(data);
+debugger;
                     if (data.status == "SUCCESS") {
                         console.log( "Retrieved OK" );
                         data.data = JSON.parse(data.data[i]);
@@ -107,12 +106,13 @@ debugger;
         return true;
     };
 
-    this.getAllResults = function(func_fail, callback, app_id, device_id, comp_id) {
+    this.getAllResult = function(func_fail, callback, app_id, device_id, comp_id) {
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
-
+debugger;
         $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id})
                 .done(function( data ) {
+debugger;
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
                         console.log( "Retrieved OK" );
