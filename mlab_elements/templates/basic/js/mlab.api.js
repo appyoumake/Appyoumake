@@ -572,7 +572,7 @@ Mlab_api.prototype = {
                     data.key = temp[4];
                     mlab.api.db.process_save_queue_counter++ ;
                     
-                    res = mlab.api.db.internal.dispatchToPlugin(dummy_cb, "set" + data.data_type.charAt(0).toUpperCase() + data.data_type.slice(1, -1), data.data_type, data.app_uuid, data.device_uuid, data.component_uuid, data.key ,value);
+                    res = mlab.api.db.internal.dispatchToPlugin(dummy_cb, "set" + data.data_type.charAt(0).toUpperCase() + data.data_type.slice(1), data.data_type, data.app_uuid, data.device_uuid, data.component_uuid, data.key ,value);
                     if (!res) {
                         mlab.api.db.internal.cbPluginFailed(data_type, app_uuid, device_uuid, component_uuid, key);
                     }
@@ -588,7 +588,7 @@ Mlab_api.prototype = {
                 var SEP = this.parent.parent.data_divider;
                 window.localStorage.setItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key, JSON.stringify(value));
 
-                var res = this.dispatchToPlugin(callback, "set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), data_type, app_id, device_uuid, component_uuid, key, value);
+                var res = this.dispatchToPlugin(callback, "set" + data_type.charAt(0).toUpperCase() + data_type.slice(1), data_type, app_id, device_uuid, component_uuid, key, value);
                 
                 
 //if no plugin or plugin does not support function then this is saving locally only.
@@ -618,7 +618,7 @@ Mlab_api.prototype = {
  */
             getData: function(data_type, device_uuid, component_uuid, key, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin(callback, "get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), data_type, app_id, device_uuid, comp_id, key);
+                var res = this.dispatchToPlugin(callback, "get" + data_type.charAt(0).toUpperCase() + data_type.slice(1), data_type, app_id, device_uuid, comp_id, key);
 
 //If false, getResult is not implemented in plugin, and we should use the local storage.
                 var SEP = this.parent.parent.data_divider;
