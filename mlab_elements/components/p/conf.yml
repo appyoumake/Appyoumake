@@ -9,7 +9,6 @@ compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p class='mc_text mc_display mc_medium'>Enter your body text here</p>
 inherit: h1
 filterhtml: ["p"]
-paste_allowed: false
 custom:
     decrease_size:
         tooltip: Reduce the size of the text

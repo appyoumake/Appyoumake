@@ -1029,6 +1029,7 @@ class FileManagement {
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
         $doc->validateOnParse = true;
+
         $doc->loadHTML($frontpage_content);
         libxml_clear_errors();
         
@@ -1133,7 +1134,7 @@ class FileManagement {
                 ********/
                  
             } else {
-                $doc->loadHTMLFile($page);
+                $doc->loadHTML(file_get_contents($page));
                 libxml_clear_errors();
             }
             
@@ -1201,8 +1202,9 @@ class FileManagement {
                     } //end not blank component name
                 } //end page loop
             }// end if any mlab components
-            
             $doc->saveHTMLFile($cached_app_path . basename($page));
+            //file_put_contents($cached_app_path . basename($page), $tempy);
+            
         }
         
 //update the include.js file with common variables. These include

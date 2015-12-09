@@ -865,7 +865,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @param unknown $page_num
      * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel
      */
-    public function getPageAction ($app_id, $page_num, $uid, $app_open_mode) {
+    public function getPageAction ($app_id, $page_num, $uid, $app_open_mode = false) {
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
@@ -1055,7 +1055,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
          
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
 */
-    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
+    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
     }
 
     /**
@@ -1090,7 +1090,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $total_pages = $file_mgmt->getTotalPageNum($app);
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
 
-    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid)));
+    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
         
     }
     
@@ -1128,7 +1128,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //update file counter variable in JS
             $total_pages = $file_mgmt->getTotalPageNum($app);
             $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
-            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $res, 'uid' => $uid)));
+            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $res, 'uid' => $uid, 'app_open_mode' => 'false')));
             
         }
     }    
