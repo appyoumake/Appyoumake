@@ -70,8 +70,8 @@ this.onLoad = function (el) {
             var new_div = that.addQuizPage($(this).find("h2").text(), $(this).html());
             
 //code to prepare elements for DT interaction
-            $(new_div).find("p").attr('contenteditable','true').on("click", function(e){ that.selectItem(e); });
-            $(new_div).find("label").attr('contenteditable','true').on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+            $(new_div).find("p").on("click", function(e){ that.selectItem(e); });
+            $(new_div).find("label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
             $(new_div).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
             $(new_div).find("select option").on("click", function(e){ that.selectItem(e); });
         } else if (this.nodeName.toLowerCase() == "script") {
@@ -247,19 +247,21 @@ this.handleUserInput = function(input, e) {
 };
 
 this.selectItem = function (event) {
-    var page = this.getCurrentPage();
-    page.find(".mlab_current_component_grandchild").removeClass("mlab_current_component_grandchild");
-    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
-    $(event.currentTarget).addClass("mlab_current_component_grandchild");
-    $(event.currentTarget).parents("[data-mlab-cp-quiz-role='question']").addClass("mlab_current_component_child");
+    var curComp = $( "#" + mlab.dt.api.getEditorElement() + "> div.mlab_current_component" );     
+    var comp = $(event.currentTarget).parents("[data-mlab-type]");
+    if (comp[0] === curComp[0]) {
+        event.stopPropagation();
+        var editable_element = $(event.currentTarget);
+        var question_element = $(event.currentTarget).parents("[data-mlab-cp-quiz-role='question']");
+        mlab.dt.components.quiz.code.api.display.componentHighlightSelectedChildren(question_element, editable_element);
+    }
 };
 
 this.prepareQuestion = function (page, question) {
     var that = this;
     page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
-    $(question).find("p, label").attr('contenteditable','true').on("click", function(e){ that.selectItem(e); });
-    $(question).find("label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
-    $(question).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+    $(question).find("p, label").on("click", function(e){ that.selectItem(e); });
+    $(question).find("p, label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
 };
 
 //---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT, AS WELL AS SUPPORTING FUNCTIONS

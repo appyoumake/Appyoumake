@@ -56,7 +56,7 @@ made smaler than the min width */
     display: block;
     float: left;
     width: 145px;
-    margin-top: 120px;
+    margin-top: 125px;
     overflow-y: auto;
     height: 75%;
     position: fixed;
@@ -469,7 +469,7 @@ made smaler than the min width */
 
 /* Outlines the current selcted component */
 #mlab_editor #mlab_editable_area .mlab_current_component {
-    border: 3px dotted orange;
+    outline: 3px dotted orange;
 }
 
 /* Gives the current selcted component a move icone when hovering it */
@@ -484,8 +484,6 @@ made smaler than the min width */
     margin: 5px;
 }
 
-
-
 /* TEMP AV ARILD */
 
 #mlab_editor ul.ui-autocomplete {
@@ -494,22 +492,16 @@ made smaler than the min width */
     border: 1px solid gray;
 }
 
-#mlab_editor .mlab_current_component_invert {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
-
-
 #mlab_editor .ui-state-active a, #mlab_editor .ui-state-active a:link, #mlab_editor .ui-state-active a:visited {
     color: white;
 }
 
 #mlab_editor .mlab_current_component_child {
-    border: 1px greenyellow double !important;
+    outline: 2px dotted orange;
 }
 
-#mlab_editor .mlab_current_component_grandchild {
-    border: 1px white double !important;
+#mlab_editor .mlab_current_component_editable {
+    outline: 1px dotted orange;
 }
 
 .mlab_zindex_regular_tooltip {

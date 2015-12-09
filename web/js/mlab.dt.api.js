@@ -342,7 +342,7 @@ Mlab_dt_api.prototype = {
  * @returns {String: Mlab_dt_api.parent.config.content_id}
  */
     getEditorElement : function () {
-        return this.parent.config.content_id;
+        return this.parent.config.app.content_id;
     },
 
 /**
@@ -640,6 +640,7 @@ Mlab_dt_api.prototype = {
                 autoOpen: true,
                 modal: true,
                 closeOnEscape: true,
+                dialogClass: "mlab_dt_dialog_credentials",
                              
                 buttons: {
                     'Save': function() {
@@ -717,7 +718,127 @@ Mlab_dt_api.prototype = {
                 };
             });
         },
+    
+/**
+ * This function takes a rgb color as a prameter and use it to return the inverted color
+ *
+ * @param String rgb
+ * @returns String rgb
+*/
+        invertColor: function(rgbString) {
+            var parts = rgbString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/),
+                i;
+
+            parts.splice(0, 1);
+            for (i = 1; i < 3; ++i) {
+                parts[i] = parseInt(parts[i], 10);
+            }
+            var rgb = 'rgb(';
+            $.each(parts, function(i, item) {
+                rgb += (255 - item) + ',';
+            });
+            rgb = rgb.slice(0, -1);
+            rgb += ')';
+            return rgb;
+        },
+    
+/**
+ * This function gets the background-color or inherited background-color of an element using jQuery 
+ *
+ * @param jqueryElement
+ * @returns String rgb
+*/
+        getBackground: function(jqueryElement) {
+            // Is current element's background color set?
+            var color = jqueryElement.css("background-color");
+
+            if (color !== 'rgba(0, 0, 0, 0)') {
+                // if so then return that color
+                return color;
+            }
+
+            // if not: are you at the body element?
+            if (jqueryElement.is("body")) {
+                // return known 'false' value
+                return false;
+            } else {
+                // call getBackground with parent item
+                return this.getBackground(jqueryElement.parent());
+            }
+        },
         
+/**
+ * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * @param {type} el: Optional, the element to display. If not specified, then update all components
+ * @returns {true if selected different component, false otherwise}
+ */   
+        componentHighlightSelected : function (el) {
+            var curComp = $( "#" + this.parent.getEditorElement() + "> div.mlab_current_component" );
+
+            if (el[0] === curComp[0]) {
+                return false;
+            }          
+            
+            if (el[0] !== curComp[0]) {
+//Delete the outlines and tools for the last current component
+                curComp.qtip('hide');
+                curComp.removeClass("mlab_current_component");
+                curComp.find("mlab_current_component").css("outline-color", "").removeClass("mlab_current_component");
+                curComp.find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+                window.getSelection().removeAllRanges();
+                curComp.find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+                
+//Set the new current component
+                var pageBgColor = $("[data-role=page]").css( "background-color" );
+//inverts the background color
+                var pageBgColorInvert = this.invertColor(pageBgColor);
+//set the invert color of the background as the border-color for the current selected component
+                $( el ).css("outline-color", pageBgColorInvert);
+                $( el ).addClass("mlab_current_component");
+                return true;
+            }
+
+            return false;
+        },
+        
+/**
+ * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * @param {type} sub_el: Optional, the element to display. If not specified, then update all components
+ * @param {type} editable: Optional, the element to display. If not specified, then update all components
+ */   
+        componentHighlightSelectedChildren : function (sub_el, editable) {
+            $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+            $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+                  
+            sub_el = $( sub_el );
+//gets the childs background color
+            var bgColorC = this.getBackground(sub_el);
+//inverts the background color
+            var bgColorCInvert = this.invertColor(bgColorC);
+//set the invert color of the background as the outline-color for the current selected component
+            sub_el.css("outline-color", bgColorCInvert);
+//set the class to style the selected highlighted child             
+            sub_el.addClass("mlab_current_component_child");                
+                
+            if (typeof editable != "undefined") {   
+                editable = $( editable );
+//gets the grandchilds background color
+                var bgColorGC = this.getBackground(editable);
+//inverts the background color
+                var bgColorGCInvert = this.invertColor(bgColorGC);
+//set the invert color of the background as the outline-color for the current selected component
+                editable.css("outline-color", bgColorGCInvert);
+              
+                editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
+                
+                editable.focus();
+                var range = document.createRange();
+                var sel = window.getSelection();
+                range.selectNodeContents(editable[0]);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        },      
     },
 
 }

@@ -100,7 +100,7 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 #mlab_editor .mlab_dt_button_retry,
 #mlab_editor .mlab_dt_button_done,
 #mlab_editor .mlab_dt_button_upload_files,
-#mlab_editor #mlab_dt_dialog_credentials .ui-button {
+#mlab_editor .mlab_dt_dialog_credentials .ui-button {
     background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, #B4B4B4 100%) repeat scroll center center rgba(0, 0, 0, 0);
     border: 1px solid #AAAAAA;
     border-radius: 2px;
