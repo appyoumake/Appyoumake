@@ -262,6 +262,10 @@ Mlab_api.prototype = {
         processing_queue: false,
         process_save_queue_interval: 3000,
         process_save_queue_num_items: 3,
+        PLUGIN_NOT_USED: -1,
+        PLUGIN_OFFLINE: -2,
+        PLUGIN_NO_FUNCTION: -3,
+        PLUGIN_NO_DATA: -4,
 
 
 //we read the storage plugin information directly from the variables stored with the component that initialises the storage plugin
@@ -488,6 +492,11 @@ Mlab_api.prototype = {
  */
             dispatchToPlugin: function(callback, func, data_type, app_uuid, device_uuid, component_uuid, key, value) {
                 var opDone;
+                
+//if no plugin is loaded for this then only save locally
+                if (!component_uuid in this.parent.plugins) {
+                    return this.parent.PLUGIN_NOT_USED;
+                }
 
 //if we're not online, call the failed callback function and then return false
                 if (typeof navigator.connection == "undefined") {
@@ -497,7 +506,7 @@ Mlab_api.prototype = {
                 }
                 if (!networkState) {
                     this.cbPluginFailed(data_type, app_uuid, device_uuid, component_uuid, key);
-                    return false;
+                    return this.parent.PLUGIN_OFFLINE;
                 }
 /*
  * In setupStoragePlugin we should perhaps return a uuid, and then the componet can use that later to refer to it (or should it be uid of comp + comp name + plugin name? that way if already logged in, no need to do login again... when reload page would lose uuid)
@@ -507,9 +516,15 @@ Mlab_api.prototype = {
                 var cbFail = this.cbPluginFailed;
                 if (component_uuid in this.parent.plugins && typeof this.parent.plugins[component_uuid][func] == "function") {
                     opDone = this.parent.plugins[component_uuid][func](cbFail, callback, app_uuid, device_uuid, component_uuid, key, value);
-                    if (typeof opDone != "undefined") return opDone;
+                    if (typeof opDone != "undefined") {
+                        return opDone;
+                    } else {
+                        return this.parent.PLUGIN_NO_DATA;
+                    }
+                } else {
+                    return this.parent.PLUGIN_NO_FUNCTION;
                 }
-                return false;
+
             },
             
 /**
@@ -569,16 +584,25 @@ Mlab_api.prototype = {
                 if (typeof app_id == "undefined") {
                     var app_id = this.parent.parent.getAppUid();
                 }
-                var res = this.dispatchToPlugin(callback, "set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), data_type, app_id, device_uuid, component_uuid, key, value);
-                
 //always update locally
                 var SEP = this.parent.parent.data_divider;
                 window.localStorage.setItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key, JSON.stringify(value));
+
+                var res = this.dispatchToPlugin(callback, "set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), data_type, app_id, device_uuid, component_uuid, key, value);
                 
-//if not managed to dispatch it (most commonly because we are offline) call the callback function now
-                if (!res && callback) {
-                    var sKey = data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key;
-                    callback({data: {skey: value}, state: "stale"});
+                
+//if no plugin or plugin does not support function then this is saving locally only.
+//we call the callback with local data, and mark it as fresh
+                if (callback && (res == this.parent.PLUGIN_NOT_USED || res == this.parent.PLUGIN_NO_FUNCTION)) {
+                    var state = fresh;
+//otherwise data is marked as stale
+                } else if (callback && (res == this.parent.PLUGIN_OFFLINE || res == this.parent.PLUGIN_NO_DATA)) {
+                    var state = stale;
+                }
+                if (callback && res != true) {
+                    var data = {data: {}, state: state};
+                    data.data[key] = value;
+                    callback(data);
                 }
                 return true;
             },
@@ -599,10 +623,19 @@ Mlab_api.prototype = {
 //If false, getResult is not implemented in plugin, and we should use the local storage.
                 var SEP = this.parent.parent.data_divider;
                 
-                if (!res && callback) {
-                    var sKey = data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key;
-                    callback({data: {skey: JSON.parse(window.localStorage.getItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key)) }, state: "stale"});
-                    
+//if no plugin or plugin does not support function then this is saving locally only.
+//we call the callback with local data, and mark it as fresh
+                if (callback && (res == this.parent.PLUGIN_NOT_USED || res == this.parent.PLUGIN_NO_FUNCTION)) {
+                    var state = "fresh";
+//otherwise data is marked as stale
+                } else if (callback && (res == this.parent.PLUGIN_OFFLINE || res == this.parent.PLUGIN_NO_DATA)) {
+                    var state = "stale";
+                }
+                
+                if (callback && res != true) {
+                    var data = {state: state, data: {}};
+                    data.data[key] = JSON.parse(window.localStorage.getItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key)) 
+                    callback(data);
                 }
                 return true;
             },
@@ -616,12 +649,23 @@ Mlab_api.prototype = {
  * @returns {Boolean}
  */
             getAllData: function(data_type, device_uuid, comp_id, callback) {
-                debugger;
                 var app_id = this.parent.parent.getAppUid();
                 var res = this.dispatchToPlugin(callback, "getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), data_type, app_id, device_uuid, comp_id);
                 var len = 0;
                 
-                if (!res && callback) {
+                if (res === true) {
+                    return true;
+                }
+//if no plugin or plugin does not support function then this is saving locally only.
+//we call the callback with local data, and mark it as fresh
+                if (callback && (res == this.parent.PLUGIN_NOT_USED || res == this.parent.PLUGIN_NO_FUNCTION)) {
+                    var state = "fresh";
+//otherwise data is marked as stale
+                } else if (callback && (res == this.parent.PLUGIN_OFFLINE || res == this.parent.PLUGIN_NO_DATA)) {
+                    var state = "stale";
+                }
+                
+                if (callback && res != true) {
                     var i = 0;
                     var values = {};
                     var sKey;
@@ -633,7 +677,7 @@ Mlab_api.prototype = {
                             values[sKey] = JSON.parse(window.localStorage.getItem(sKey));
                         }
                     }
-                    callback({data: values, state: "stale"});
+                    callback({data: values, state: state});
                 }
                 
                 return true;

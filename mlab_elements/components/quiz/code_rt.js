@@ -25,7 +25,7 @@ this.onPageLoad = function(el) {
 
 //we only set up the storage plugin if they want to "submit" the answers
     if (self.settings.submit) {
-        self.api.db.setupStoragePlugin(el, self.loadAnswers());
+        self.api.db.setupStoragePlugin(el, self.loadAnswers);
     }
     
     
@@ -94,42 +94,44 @@ this.move = function(direction) {
 };
 
 this.loadAnswers = function() {
-    this.api.db.getAllResults(this.deviceId, this.domRoot.attr("id"), this.processAnswers);
+    
+    mlab.api.db.getAllResult(mlab.api.components.quiz.deviceId, mlab.api.components.quiz.domRoot.attr("id"), mlab.api.components.quiz.processAnswers);
 };
 
 //this function is used for callbacks from the API database functions, it will contain a list of data which is {id_of_question: selected_answers}
 //selected_answers can be a string (for text boxes), or an array of values for select, radio or check boxes.
 this.processAnswers = function (data) {
-    debugger;
+    
     var q, q_type;
-    for (id in data) {
+    var answers = data.data;
+    for (id in answers) {
         q = $("#" + id);
         q_type = q.data("mlab-cp-quiz-questiontype");
         
         switch (q_type) {
             case "checkbox": 
                 q.find('input').prop("checked", false);
-                q.find('input').filter('[value=' + data[id].join('], [value=') + ']').prop("checked", true);
+                q.find('input').filter('[value=' + answers[id].join('], [value=') + ']').prop("checked", true);
                 break;
 
             case "radio": 
                 q.find('input').prop("checked", false);
-                console.log( typeof data );
-                q.find('input[value="' + data[id] + '"]').prop("checked", true);
+                console.log( typeof answers );
+                q.find('input[value="' + answers[id] + '"]').prop("checked", true);
                 break;
 
             case "select": 
             case "multiselect": 
                 q.find('select > option').prop("selected", false);
-                if (typeof data[id] == "string") {
-                    q.find('select > option').filter('[value=' + data[id] + ']').prop("selected", true);
+                if (typeof answers[id] == "string") {
+                    q.find('select > option').filter('[value=' + answers[id] + ']').prop("selected", true);
                 } else {
-                    q.find('select > option').filter('[value=' + data[id].join('], [value=') + ']').prop("selected", true);
+                    q.find('select > option').filter('[value=' + answers[id].join('], [value=') + ']').prop("selected", true);
                 }
                 break;
 
             case "text": 
-                q.find('input').val(data[id])
+                q.find('input').val(answers[id])
                 break;
         }
     }

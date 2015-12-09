@@ -4,7 +4,7 @@
  * @returns {undefined}
  */
     this.onPluginLoaded = function(el, callback) {
-        this.loginRemotely($(el).attr("id"));
+        this.loginRemotely($(el).attr("id"), callback);
     }
     
     this.loginRemotely = function(component_uuid, callback) {
@@ -17,6 +17,7 @@
                     if (data.status == "SUCCESS") {
                         alert( "Logged in remotely: " + data );
                         that.api.db.loginToken(component_uuid, data.token);
+                        callback();
                     }
                   })
                 .fail(function() {
@@ -85,14 +86,15 @@
     this.getResult = function(func_fail, callback, app_id, device_id, comp_id, key) {
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
-debugger;
+
         $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key})
                 .done(function( data ) {
                     data = JSON.parse(data);
-debugger;
+
                     if (data.status == "SUCCESS") {
                         console.log( "Retrieved OK" );
                         data.data = JSON.parse(data.data[i]);
+                        data.state = "fresh";
                         callback(data);
                     } else {
                         console.log( "ERROR: " + data.msg );
@@ -109,17 +111,17 @@ debugger;
     this.getAllResult = function(func_fail, callback, app_id, device_id, comp_id) {
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
-debugger;
+
         $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id})
                 .done(function( data ) {
-debugger;
                     data = JSON.parse(data);
                     if (data.status == "SUCCESS") {
                         console.log( "Retrieved OK" );
                         for (i in data.data) {
                             data.data[i] = JSON.parse(data.data[i]);
                         }
-                        callback(data.data);
+                        data.state = "fresh";
+                        callback(data);
                     } else {
                         console.log( "ERROR: " + data.msg );
                         callback();

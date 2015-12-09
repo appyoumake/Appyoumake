@@ -1,6 +1,8 @@
-/* 
+/** 
  * API funksjoner som er tilgjengelige for runtime
- * 
+ * @author Arild Bergh (FFI) - rewrite/implementation of all functionality
+ * @author Morten Krane (Snapper) - first version
+ * @copyright FFI.no
  */
 
 
@@ -34,7 +36,9 @@ function Mlab_api () {
     this.db.internal.parent = this.db;
     this.mode = this.getMode();
 
-/* Object to hold components loaded */
+/* 
+ * Object to hold components loaded, this includes regular components, features and storage plugins
+*/
     this.components = {};
     
     
@@ -42,12 +46,6 @@ function Mlab_api () {
 
 /* Object to hold the plugins loaded */
     this.db.plugins = {};
-    
-/* Object to hold all states, results and configs. They are stored using localStorage, but kept locally in this object
-for ease of use and performance */
-    this.db.states = {};
-    this.db.results = {};
-    this.db.configs = {};
     
 //add storage for the app specific variables (generated in the pre-compile processing function)
 // to the object here
@@ -240,76 +238,84 @@ Mlab_api.prototype = {
     * @param {object} key, key to index, the component must itself ensure that this is unique, for instance by using "xxxx" + my_unique_id
     * @returns {Javascript variable}
  */
-        getAppVariable: function (comp, key) {
-            if (typeof document.mlab_dt_storage == "undefined") {
-                return;
-            }
-            if (typeof document.mlab_dt_storage[comp] == "undefined") {
-                return;
-            }
-            if (typeof document.mlab_dt_storage[comp][key] == "undefined") {
-                return;
-            }
+    getAppVariable: function (comp, key) {
+        if (typeof document.mlab_storage == "undefined") {
+            return;
+        }
+        if (typeof document.mlab_storage[comp] == "undefined") {
+            return;
+        }
+        if (typeof document.mlab_storage[comp][key] == "undefined") {
+            return;
+        }
 
-            return document.mlab_dt_storage[comp][key];
-        },
+        return document.mlab_storage[comp][key];
+    },
 
     
     db: {
 
 /* Pointer to main mlab object */
         parent: null,
+        retry_save_queue_counter: 0,
+        process_save_queue_counter: 0,
+        processing_queue: false,
+        process_save_queue_interval: 3000,
+        process_save_queue_num_items: 3,
+        PLUGIN_NOT_USED: -1,
+        PLUGIN_OFFLINE: -2,
+        PLUGIN_NO_FUNCTION: -3,
+        PLUGIN_NO_DATA: -4,
 
-        setupStoragePlugin: function(el) {
-            var variables = this.parent.getAllVariables(el);
-            var plugin,component;
-            if (variables && "storage_plugin" in variables) { 
-                plugin = variables["storage_plugin"];
+
+//we read the storage plugin information directly from the variables stored with the component that initialises the storage plugin
+//these are stored in a JSON format in a script inside the div, and the variable is always named storage_plugin
+/**
+ * 
+ * @param {type} el: HTML element that = component that wants to open a connection
+ * @param {type} callback: ptional callback to execute from the onPluginLoaded function
+ * @returns {Boolean}
+ */
+        setupStoragePlugin: function(el, callback) {
+            var plugin_component;
+            var owner_id = $(el).attr("id");
+            
+//pick up the settings stored for a storage_plugin this is save autoamtically by the mlab editor environment
+            var plugin_info = this.parent.getVariable(el, "storage_plugin");
+            
+            if (!plugin_info) { return false; }
+            
+            if ("name" in plugin_info && plugin_info["name"] in this.parent.components) {
+                plugin_component = this.parent.components[plugin_info["name"]];
             }
-            if (!plugin) {
-                return false;
+            
+            if (!plugin_component) { return false; }
+            
+//the plugins object holds a list of components (effectively pointers to components), this means all components share a single instance of the code
+//we therefore need to add a variable that holds unique values for each "instance" of this plugin
+            if (!("_data" in plugin_component)) {
+                plugin_component._data = {};
             }
-            if ("name" in plugin && plugin["name"] in this.parent.components) {
-                component = this.parent.components[plugin["name"]];
+            plugin_component._data[owner_id] = {};
+            plugin_component._data[owner_id].settings = plugin_info;
+            plugin_component._data[owner_id].html_element = el;
+            plugin_component._data[owner_id].owner_uuid = owner_id;
+
+            this.plugins[owner_id] = plugin_component;
+            
+// onpluginloaded isn't required for plugins, 
+            if ("onPluginLoaded" in plugin_component) {
+                plugin_component.onPluginLoaded(el, callback);
             }
-            if (!component) {
-                return false;
+            
+//last thing we do is to start a global timer which tries to save unsaved data (if this is not already done
+            if (!this.processing_queue) {
+                window.setInterval(mlab.api.db.internal.processFailedQueue(), this.process_save_queue_interval);
+                this.processing_queue = true;
             }
-// onpluginloaded isn't required for plugins
-            if ("onPluginLoaded" in component) {
-                component.onPluginLoaded(el);
-            }
-            this.plugins[plugin["name"]] = component;
             return true;
         },    
         
-/**
- *  Function that prepares one the variables used to store data locally in
- *  As it is objects within objects thay have to be appended before being filled
- *  The variables are divided in mlab.api.states/configs/results vairables. In the LOCAL database (which is key-value pairs only)
- *  state/config/result is used as a prefix, after this (with hyphen between) we have app id, component name and user id (which really is device ID from Cordova).
- *  App need not be stored, but makes it easier to load/send data to and from server...
- * @param {type} obj
- * @param {type} properties
- * @returns {undefined}
-*/
-        prepareDataObjects: function(properties) {
-            objects = [this.states, this.results, this.configs];
-            for (j in objects) {
-                obj = objects[j];
-                for (i in properties) {
-                    if (!(properties[i] in obj)) {
-                        obj[properties[i]] = {};
-                        obj = obj[properties[i]];
-                    }
-                }
-            }
-            this.parent.states = this.internal.fetchLocalData("states");
-            this.parent.results = this.internal.fetchLocalData("results");
-            this.parent.configs = this.internal.fetchLocalData("configs");
-            
-        },
-    
 /* ---- functions that are run locally if no plugin is loaded ---- */
 
 /* Sets state for user, also makes sure it is saved for later use.
@@ -317,8 +323,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @param {any} value The state value to be stored. Required. Can be anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setState: function(uuid, comp_id, key, value, callback) {
-            return this.internal.setData("states", uuid, comp_id, key, value, callback);
+        setState: function(device_uuid, component_uuid, key, value, callback) {
+            return this.internal.setData("state", device_uuid, component_uuid, key, value, callback);
         },
 
 /**
@@ -327,8 +333,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the state to be stored. Required.
  * @return {Any} Value of state
  */
-        getState: function(uuid, comp_id, key, callback) {
-            return this.internal.getData("states", uuid, comp_id, key, callback);
+        getState: function(device_uuid, component_uuid, key, callback) {
+            return this.internal.getData("state", device_uuid, component_uuid, key, callback);
         },
 
 /**
@@ -336,8 +342,8 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllStates: function(uuid, comp_id, callback) {
-            return this.internal.getAllData("states", uuid, comp_id, callback);
+        getAllState: function(device_uuid, component_uuid, callback) {
+            return this.internal.getAllData("state", device_uuid, component_uuid, callback);
         },
     
 /**
@@ -346,8 +352,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @param {any} value The config value to be stored. Required. Anything that is compatible with JSON.stringify. All basic Javascript types should be OK.
  */ 
-        setConfig: function(uuid, comp_id, key, value, callback) {
-            return this.internal.setData("configs", uuid, comp_id, key, value, callback);
+        setConfig: function(device_uuid, component_uuid, key, value, callback) {
+            return this.internal.setData("config", device_uuid, component_uuid, key, value, callback);
         },
     
 /**
@@ -356,8 +362,8 @@ Mlab_api.prototype = {
  * @param {String} key Key name for the config to be stored. Required.
  * @return {any} The config value (any type), or null
  */
-        getConfig: function(uuid, comp_id, key, callback) {
-            return this.internal.getData("configs", uuid, comp_id, key, callback);
+        getConfig: function(device_uuid, component_uuid, key, callback) {
+            return this.internal.getData("config", device_uuid, component_uuid, key, callback);
         },
 
 /**
@@ -365,8 +371,8 @@ Mlab_api.prototype = {
  * @param {String} user: User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the configs
  */
-        getAllConfig: function(uuid, comp_id, callback) {
-            return this.internal.getAllData("configs", uuid, comp_id, callback);
+        getAllConfig: function(device_uuid, component_uuid, callback) {
+            return this.internal.getAllData("config", device_uuid, component_uuid, callback);
         },
     
 /**
@@ -376,8 +382,8 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @param {any} value The value to be stored.
  */
-        setResult: function(uuid, comp_id, key, value, callback) {
-            return this.internal.setData("results", uuid, comp_id, key, value, callback);
+        setResult: function(device_uuid, component_uuid, key, value, callback) {
+            return this.internal.setData("result", device_uuid, component_uuid, key, value, callback);
         },
     
 /**
@@ -387,8 +393,8 @@ Mlab_api.prototype = {
  * @param {String} key The name of the question. Must be unique within the quiz. Required.
  * @return {any} The value that was saved. Normally an object, but any JSON-stringifiable value is allowed.
  */
-        getResult: function(uuid, comp_id, key, callback) {
-            return this.internal.getData("results", uuid, comp_id, key, callback);
+        getResult: function(device_uuid, component_uuid, key, callback) {
+            return this.internal.getData("result", device_uuid, component_uuid, key, callback);
         },
         
 /**
@@ -396,8 +402,8 @@ Mlab_api.prototype = {
  * @param {String} user User ID for the currently logged in user. Optional.
  * @return {Object} Object containing the states
  */
-        getAllResults: function(uuid, comp_id, callback) {
-            return this.internal.getAllData("results", uuid, comp_id, callback);
+        getAllResult: function(device_uuid, component_uuid, callback) {
+            return this.internal.getAllData("result", device_uuid, component_uuid, callback);
         },
 
 /* Network-functions */
@@ -410,13 +416,17 @@ Mlab_api.prototype = {
  * @return {boolean} or {String}. True if we have sent a login request, false if we haven't. Login token string
  * if it exists.
  */
-        loginRemotely: function(service, username, password) {
-            var token = this.loginToken(service)
-            if (token) return token;
+        loginRemotely: function(component_uuid, callback) {
+            var token = this.loginToken(component_uuid);
+            if (token) {
+                return token;
+            }
 
-            var pluginLogin = this.internal.dispatchToPlugin("loginRemotely", service, username, password);
-            if (!pluginLogin) console.log("No plugins have defined a login method, or no connection to perform log in");
-            return pluginLogin;
+            if (component_uuid in this.parent.plugins && typeof this.parent.plugins[component_uuid]["loginRemotely"] == "function") {
+                opDone = this.parent.plugins[component_uuid].loginRemotely(this.parent.plugins[component_uuid], callback);
+                if (typeof opDone != "undefined") return opDone;
+            }
+            return ;
         },
     
 /**
@@ -424,8 +434,18 @@ Mlab_api.prototype = {
  * @param {String} service The short_name of the service
  * @return {boolean} True if plugin has logged off, false if not.
  */
-        logoffRemotely: function(service) {
-            return this.internal.dispatchToPlugin("logoffRemotely", service);
+        logoffRemotely: function(component_uuid) {
+            var token = this.loginToken(component_uuid);
+            if (!token) {
+                return false;
+            }
+
+            if (component_uuid in this.parent.plugins && typeof this.parent.plugins[component_uuid]["logoffRemotely"] == "function") {
+                opDone = this.parent.plugins[component_uuid].logoffRemotely(this.parent.plugins[component_uuid], token, callback);
+                if (typeof opDone != "undefined") return opDone;
+            }
+            return false;
+
         },
     
 /**
@@ -434,15 +454,16 @@ Mlab_api.prototype = {
  * @param {String} token. Token to be set. Optional.
  * @return {String} or {false}. The currently set token, or false if not set.
  */
-        loginToken: function(service, token) {l
-            if (typeof service=="undefined") return false;
-            var loginTokens = this.internal.fetchTokens();
-            if (typeof token!="undefined") {
-                loginTokens[service] = token;
-                this.internal.saveTokens(loginTokens);
+        loginToken: function(component_uuid, token) {
+            if (typeof component_uuid == "undefined") return false;
+            
+// Saves the login tokens in session storage, under the key "loginTokens"
+            if (typeof token != "undefined") {
+                window.sessionStorage.setItem("_LOGIN_TOKENS_" + component_uuid, token);
             }
-            if (service in loginTokens) return loginTokens[service];
-            return false;
+            
+//always return the saved token, will autoamtically be null if can't find anything
+            return window.sessionStorage.getItem("_LOGIN_TOKENS_" + component_uuid);
         },
         
 /**
@@ -454,115 +475,211 @@ Mlab_api.prototype = {
 
 /**
  * Internal helper function that is a generic way of dispatching a call to plugin. In addition to
- * the named parameter "name", it is possible to pass any number of parameters, which are passed
+ * the named parameters "owner_id" and "name", it is possible to pass any number of parameters, which are passed
  * on to the plugin function.
- * @param {String} name The name of the functino to call
- * @return {boolean} True if plugin has successfully performed the operation, false if not
+ * 
+ * @param {type} func
+ * @param {type} data_type
+ * @param {type} app_id
+ * @param {type} device_uuid
+ * @param {type} component_uuid
+ * @param {type} key
+ * @param {type} value (undefined if this is calling a getXXX function)
+ * @param {type} callback
+ * 
+ * @return {boolean} Return value from plugin if it supports the function required, otherwise false.
+ * Typically the function in the plugin will run the code asynchronously and always return true
  */
-            dispatchToPlugin: function(name) {
-// Looks like webkit doesn't support the nifty, new REST arguments in ECMAScript ("...args"), so 
-// we have to slice the arguments manually.
-                var args = Array.prototype.slice.call(arguments).slice(1);
+            dispatchToPlugin: function(callback, func, data_type, app_uuid, device_uuid, component_uuid, key, value) {
                 var opDone;
-                // There are possibly (?) more than one plugin loaded, so loop through them all.
-                for (var pluginName in this.parent.plugins) {
-                    var plugin = this.parent.plugins[pluginName];
-                    if (name in plugin && typeof plugin[name] == "function") {
-                        opDone = plugin[name].apply(plugin, args);
-//TODO: support more than one... 
-//We only support ONE plugin implementing any specific function at the time, so break off here.
-                        if (typeof opDone != "undefined") return opDone;
-                    }
+                
+//if no plugin is loaded for this then only save locally
+                if (!component_uuid in this.parent.plugins) {
+                    return this.parent.PLUGIN_NOT_USED;
                 }
-                return false;
-            },
 
-/**
- * Gets the login tokens from session storage
- * @return {Object} The login tokens for the various services
- */
-            fetchTokens: function() {
-                var loginTokens = window.sessionStorage.getItem("loginTokens");
-                if (loginTokens) loginTokens = JSON.parse(loginTokens);
-                else loginTokens = {};
-                return loginTokens;
-            },
-
-/**
- * Saves the login tokens in session storage, under the key "loginTokens"
- * @param {Object} loginTokens
- */
-            saveTokens: function(loginTokens) {
-                window.sessionStorage.setItem("loginTokens", JSON.stringify(loginTokens));
-            },
-
-/* 
- * Internal function that fetches states, results or configs from localStorage and puts them into the relevant memory object
- * All data is stored as app_id/uuid/comp_id/key_id so we can easily synch it
- * However, as local data always will have the same app_id and uuid then we skip comparing that
- */
-            fetchLocalData: function(data_type) {
-                var path;
-                var data_idx = 0;
-                var app_idx = 1;
-                var uuidx = 2;
-                var comp_idx = 3;
-                var key_idx = 4;
-                var app_id = this.parent.parent.getAppUid(); //todo why get data from ther apps? DT only
-                for (key in window.localStorage) {
-                    path = key.split(this.parent.parent.data_divider);
-                    if (path[data_idx] == data_type && path[app_idx] == app_id) {
-                        if (typeof this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]] == "undefined") {
-                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]] = {};
-                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = {};
-                        } else if (typeof this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] == "undefined") {
-                            this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = {};
-                        }
-                        this.parent[path[data_idx]][path[app_idx]][path[uuidx]][path[comp_idx]][path[key_idx]] = JSON.parse(window.localStorage.getItem(key));
-                    }
+//if we're not online, call the failed callback function and then return false
+                if (typeof navigator.connection == "undefined") {
+                    var networkState = true;
+                } else {
+                    var networkState = (navigator.connection.type != Connection.NONE);
                 }
+                if (!networkState) {
+                    this.cbPluginFailed(data_type, app_uuid, device_uuid, component_uuid, key);
+                    return this.parent.PLUGIN_OFFLINE;
+                }
+/*
+ * In setupStoragePlugin we should perhaps return a uuid, and then the componet can use that later to refer to it (or should it be uid of comp + comp name + plugin name? that way if already logged in, no need to do login again... when reload page would lose uuid)
+ * Also, this should be a timer event that processes the queue... or perhaps queue just when fail, so first try here, and then
+ * have two callback, for fail and success, (the original callback is used for success!), in fail we add things to the queue which is processed again only when offline
+ */                
+                var cbFail = this.cbPluginFailed;
+                if (component_uuid in this.parent.plugins && typeof this.parent.plugins[component_uuid][func] == "function") {
+                    opDone = this.parent.plugins[component_uuid][func](cbFail, callback, app_uuid, device_uuid, component_uuid, key, value);
+                    if (typeof opDone != "undefined") {
+                        return opDone;
+                    } else {
+                        return this.parent.PLUGIN_NO_DATA;
+                    }
+                } else {
+                    return this.parent.PLUGIN_NO_FUNCTION;
+                }
+
             },
             
-//-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
-            setData: function(data_type, uuid, comp_id, key, value, callback) {
-                var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, uuid, comp_id, key, value, callback);
-                if (typeof this.parent[data_type][app_id][uuid][comp_id] == "undefined") {
-                    this.parent[data_type][app_id][uuid][comp_id] = {};
+/**
+ * If the remote save fails (or we were offline already when try to save) we add a record to the queue we use to retry saves
+ * @param {type} owner_id
+ * @param {type} func
+ * @returns {undefined}
+ */
+            cbPluginFailed: function(data_type, app_uuid, device_uuid, component_uuid, key) {
+                var counter = this.parent.retry_save_queue_counter++; //TODO could get a race condition here...
+                window.localStorage.setItem("_QUEUE_" + counter, data_type + SEP + app_uuid + SEP + device_uuid + SEP + component_uuid + SEP + key);
+            },
+            
+/**
+ * Simple first in, first out queue processing, reading entry by entry from the list of items that were not saved correctly
+ * Here we retry the save function by calling setData directly with all the relevant 
+ */
+            processFailedQueue: function () {
+// If we are still online we simply bail
+                if (typeof navigator.connection == "undefined") {
+                    var networkState = true;
+                } else {
+                    var networkState = (navigator.connection.type != Connection.NONE);
                 }
-                this.parent[data_type][app_id][uuid][comp_id][key] = value;
-                
+  
+//we store a pointer to the local storage of a value, this pointer = the key of the stored value
+                var dummy_cb, res;
+                var data = { data_type: null, app_uuid: null, device_uuid: null, component_uuid: null, key: null };
+                var counter = this.parent.process_save_queue_counter;
+                for (i = 0; i < this.parent.process_save_queue_num_items; i++) { 
+                    console.log("processing q");
+//if there's no data in the queue we quit
+                    var key = window.localStorage.getItem("_QUEUE_" + counter);
+                    if (!key) { console.log("nothing in q"); return; }
+                    
+//if we cannot obtain the value we quit, otherwise we move the pointer forward and process the retrieved data
+                    var value = window.localStorage.getItem(key);
+                    if (!value) { console.log("no value found for key: " + key); return; }
+                    
+                    var temp = key.split(mlab.api.data_divider);
+                    data.data_type = temp[0];
+                    data.app_uuid = temp[1];
+                    data.device_uuid = temp[2];
+                    data.component_uuid = temp[3];
+                    data.key = temp[4];
+                    mlab.api.db.process_save_queue_counter++ ;
+                    
+                    res = mlab.api.db.internal.dispatchToPlugin(dummy_cb, "set" + data.data_type.charAt(0).toUpperCase() + data.data_type.slice(1, -1), data.data_type, data.app_uuid, data.device_uuid, data.component_uuid, data.key ,value);
+                    if (!res) {
+                        mlab.api.db.internal.cbPluginFailed(data_type, app_uuid, device_uuid, component_uuid, key);
+                    }
+                }
+            },
+
+//-----------------------------GENERIC FUNCTIONS THAT ARE USED BY WRAPPER FUNCTIONS ABOVE
+            setData: function(data_type, device_uuid, component_uuid, key, value, callback, app_id) {
+                if (typeof app_id == "undefined") {
+                    var app_id = this.parent.parent.getAppUid();
+                }
 //always update locally
                 var SEP = this.parent.parent.data_divider;
-                window.localStorage.setItem(data_type + SEP + app_id + SEP + uuid + SEP + comp_id + SEP + key, JSON.stringify(value));
+                window.localStorage.setItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key, JSON.stringify(value));
+
+                var res = this.dispatchToPlugin(callback, "set" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), data_type, app_id, device_uuid, component_uuid, key, value);
+                
+                
+//if no plugin or plugin does not support function then this is saving locally only.
+//we call the callback with local data, and mark it as fresh
+                if (callback && (res == this.parent.PLUGIN_NOT_USED || res == this.parent.PLUGIN_NO_FUNCTION)) {
+                    var state = fresh;
+//otherwise data is marked as stale
+                } else if (callback && (res == this.parent.PLUGIN_OFFLINE || res == this.parent.PLUGIN_NO_DATA)) {
+                    var state = stale;
+                }
+                if (callback && res != true) {
+                    var data = {data: {}, state: state};
+                    data.data[key] = value;
+                    callback(data);
+                }
                 return true;
             },
             
-            getData: function(data_type, uuid, comp_id, key, callback) {
+/**
+ * Returns the value of a single, type specific, record. Returned as a json object
+ * @param {type} data_type
+ * @param {type} device_uuid
+ * @param {type} comp_id
+ * @param {type} key
+ * @param {type} callback
+ * @returns {Boolean}
+ */
+            getData: function(data_type, device_uuid, component_uuid, key, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), app_id, uuid, comp_id, key, callback);
+                var res = this.dispatchToPlugin(callback, "get" + data_type.charAt(0).toUpperCase() + data_type.slice(1, -1), data_type, app_id, device_uuid, comp_id, key);
 
 //If false, getResult is not implemented in plugin, and we should use the local storage.
-                if (!res) {
-                    if (app_id in this.parent[data_type] && uuid in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][uuid] && key in this.parent[data_type][app_id][uuid][comp_id] ) {
-                        callback(this.parent[data_type][app_id][uuid][comp_id][key]);
-                    } else {
-                        callback();
-                    }
+                var SEP = this.parent.parent.data_divider;
+                
+//if no plugin or plugin does not support function then this is saving locally only.
+//we call the callback with local data, and mark it as fresh
+                if (callback && (res == this.parent.PLUGIN_NOT_USED || res == this.parent.PLUGIN_NO_FUNCTION)) {
+                    var state = "fresh";
+//otherwise data is marked as stale
+                } else if (callback && (res == this.parent.PLUGIN_OFFLINE || res == this.parent.PLUGIN_NO_DATA)) {
+                    var state = "stale";
+                }
+                
+                if (callback && res != true) {
+                    var data = {state: state, data: {}};
+                    data.data[key] = JSON.parse(window.localStorage.getItem(data_type + SEP + app_id + SEP + device_uuid + SEP + component_uuid + SEP + key)) 
+                    callback(data);
                 }
                 return true;
             },
 
-            getAllData: function(data_type, uuid, comp_id, callback) {
+/**
+ * Returns all value of a single type for a specific app_id/device_uuid/component
+ * @param {type} data_type
+ * @param {type} device_uuid
+ * @param {type} comp_id
+ * @param {type} callback
+ * @returns {Boolean}
+ */
+            getAllData: function(data_type, device_uuid, comp_id, callback) {
                 var app_id = this.parent.parent.getAppUid();
-                var res = this.dispatchToPlugin("getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), app_id, uuid, comp_id, callback);
-                if (!res) {
-                    if (app_id in this.parent[data_type] && uuid in this.parent[data_type][app_id] && comp_id in this.parent[data_type][app_id][uuid] ) {
-                        callback(this.parent[data_type][app_id][uuid][comp_id]);
-                    } else {
-                        callback();
-                    }
+                var res = this.dispatchToPlugin(callback, "getAll" + data_type.charAt(0).toUpperCase() + data_type.slice(1), data_type, app_id, device_uuid, comp_id);
+                var len = 0;
+                
+                if (res === true) {
+                    return true;
                 }
+//if no plugin or plugin does not support function then this is saving locally only.
+//we call the callback with local data, and mark it as fresh
+                if (callback && (res == this.parent.PLUGIN_NOT_USED || res == this.parent.PLUGIN_NO_FUNCTION)) {
+                    var state = "fresh";
+//otherwise data is marked as stale
+                } else if (callback && (res == this.parent.PLUGIN_OFFLINE || res == this.parent.PLUGIN_NO_DATA)) {
+                    var state = "stale";
+                }
+                
+                if (callback && res != true) {
+                    var i = 0;
+                    var values = {};
+                    var sKey;
+                    var SEP = this.parent.parent.data_divider;
+                    var key = data_type + SEP + app_id + SEP + device_uuid + SEP + comp_id + SEP;
+                    for (; sKey = window.localStorage.key(i); i++) {
+                        len = key.length;
+                        if (sKey.substr(0, len) == key) {
+                            values[sKey] = JSON.parse(window.localStorage.getItem(sKey));
+                        }
+                    }
+                    callback({data: values, state: state});
+                }
+                
                 return true;
             },
 /**
