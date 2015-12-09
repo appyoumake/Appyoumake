@@ -80,7 +80,7 @@ Mlab_dt_design.prototype = {
 //add a DIV wrapper around all components, makes it easier to move it up/down later
         var new_comp = $("<div data-mlab-type='" + id + "' " + data_resize + " " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
-        new_comp.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
+        new_comp.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
         
 //process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
@@ -90,7 +90,10 @@ Mlab_dt_design.prototype = {
 
         $('.mlab_current_component').qtip('hide'); 
 
-        this.component_highlight_selected(new_comp);
+        if (this.parent.api.display.componentHighlightSelected(new_comp)) {
+            this.component_menu_prepare();
+        }
+        
         window.scrollTo(0,document.body.scrollHeight);
 //now we load the relevant CSS/JS files
         this.parent.api.getLibraries(id);
@@ -188,24 +191,12 @@ Mlab_dt_design.prototype = {
         this.parent.flag_dirty = true;
     },
 
-    component_highlight_selected : function (el) {
-        $(".mlab_current_component").qtip('hide');
-        $( "#" + this.parent.config["app"]["content_id"] + "> div" ).removeClass("mlab_current_component");
-        $( el ).addClass("mlab_current_component");
-
-        //get the background color for the app page
-        var pageBgColor = $("[data-role=page]").css( "background-color" );
-        
-        //set that as the border-color for the current selected component
-        $(el).css("border-color", pageBgColor);
-        //add invert color to the current component (virker i firefox 35 - som kom i januar2015)
-        //$(el).css({"-webkit-filter":"invert(100%)", "filter":"invert(100%)"});
-        $( el ).addClass("mlab_current_component_invert mlab_current_component");
-        //invert the color back on the next level element so the rest of the component get the right colors
-        $(el).children().first().addClass("mlab_current_component_invert");
-        this.component_menu_prepare();
+    invert_color : function (rgb) {
+     rgb = [].slice.call(arguments).join(",").replace(/rgb\(|\)|rgba\(|\)|\s/gi, '').split(',');
+            for (var i = 0; i < rgb.length; i++) rgb[i] = (i === 3 ? 1 : 255) - rgb[i];
+            return rgb.join(", ");
     },
-
+    
     component_delete : function () {
         mlab.dt.api.closeAllPropertyDialogs();
         var sel_comp = $(".mlab_current_component").prev();
@@ -215,7 +206,9 @@ Mlab_dt_design.prototype = {
         $(".mlab_current_component").qtip('hide'); 
         $(".mlab_current_component").remove();
         if (sel_comp.length > 0) {
-            this.component_highlight_selected(sel_comp);
+            if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
+                this.component_menu_prepare();
+            }
         } 
         this.parent.flag_dirty = true;
     },
@@ -240,9 +233,12 @@ Mlab_dt_design.prototype = {
         }
         $(".mlab_current_component").removeClass("mlab_current_component");
         $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
-        this.component_highlight_selected(mlab.dt.clipboard);
+        if (this.parent.api.display.componentHighlightSelected(mlab.dt.clipboard)) {
+            this.component_menu_prepare();
+        }
+
         window.scrollTo(0,document.body.scrollHeight);
-        mlab.dt.clipboard.on("click", function(){mlab.dt.design.component_highlight_selected(this);})
+        mlab.dt.clipboard.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
         mlab.dt.clipboard.on("input", function(){mlab.dt.flag_dirty = true;});
         
 //process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
@@ -397,7 +393,7 @@ Mlab_dt_design.prototype = {
         $( "#" + that.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
             $( this ).droppable(that.parent.droppable_options)
                      .sortable(that.parent.sortable_options)
-                     .on("click", function(){mlab.dt.design.component_highlight_selected(this);})
+                     .on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } })
                      .on("input", function(){mlab.dt.flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");

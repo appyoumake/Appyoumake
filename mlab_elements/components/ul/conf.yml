@@ -1,7 +1,7 @@
 # Configuration file for unordered list (UL) component
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-name: ul
+name: bullet list
 tooltip: Med denne knappen setter du en kulepunktliste inn i appen.
 extended_tooltip: Med denne knappen setter du en kulepunktliste inn i appen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
 inherit: ol

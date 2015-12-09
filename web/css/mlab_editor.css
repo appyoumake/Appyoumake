@@ -56,7 +56,7 @@ made smaler than the min width */
     display: block;
     float: left;
     width: 145px;
-    margin-top: 65px;
+    margin-top: 125px;
     overflow-y: auto;
     height: 75%;
     position: fixed;
@@ -295,10 +295,17 @@ made smaler than the min width */
     margin-bottom: 5px;
 }
 
-#mlab_editor .mlab_toolbar_for_components .mlab_tools {
+#mlab_editor .mlab_toolbar_for_components .mlab_tools_all {
     padding: 1px;
     width: 24px;
     height: 24px;
+    cursor: pointer;
+}
+
+#mlab_editor .mlab_toolbar_for_components .mlab_tools {
+    padding: 1px;
+    width: 28px;
+    height: 28px;
     cursor: pointer;
 }
 
@@ -317,6 +324,8 @@ made smaler than the min width */
 #mlab_editor .mlab_toolbar_for_components #mlab_component_context_menu img {
     padding: 2px;
     float: left;
+    width: 28px;
+    height: 28px;
 }
 
 /* makes the last clear div short */
@@ -349,10 +358,7 @@ made smaler than the min width */
 }
 
 #mlab_editor #mlab_dt_dialog_credentials{
-    background-color: white;
     color: black;
-    border: solid orange 2px;
-    box-shadow: 5px 5px 5px darkslategray;
     padding: 6px;
     line-height: 17px;
     font-family: Arial, Helvetica, sans-serif;
@@ -463,7 +469,7 @@ made smaler than the min width */
 
 /* Outlines the current selcted component */
 #mlab_editor #mlab_editable_area .mlab_current_component {
-    border: 3px dotted orange;
+    outline: 3px dotted orange;
 }
 
 /* Gives the current selcted component a move icone when hovering it */
@@ -478,8 +484,6 @@ made smaler than the min width */
     margin: 5px;
 }
 
-
-
 /* TEMP AV ARILD */
 
 #mlab_editor ul.ui-autocomplete {
@@ -488,22 +492,16 @@ made smaler than the min width */
     border: 1px solid gray;
 }
 
-#mlab_editor .mlab_current_component_invert {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
-
-
 #mlab_editor .ui-state-active a, #mlab_editor .ui-state-active a:link, #mlab_editor .ui-state-active a:visited {
     color: white;
 }
 
 #mlab_editor .mlab_current_component_child {
-    border: 1px greenyellow double !important;
+    outline: 2px dotted orange;
 }
 
-#mlab_editor .mlab_current_component_grandchild {
-    border: 1px white double !important;
+#mlab_editor .mlab_current_component_editable {
+    outline: 1px dotted orange;
 }
 
 .mlab_zindex_regular_tooltip {

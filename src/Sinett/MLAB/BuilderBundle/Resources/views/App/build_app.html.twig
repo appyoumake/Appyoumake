@@ -37,25 +37,6 @@
                 //get the list of components & the component menu to stick to the top when scrollin down
                 $(document).ready(function() {
 
-                    //get the list of components & the component menu to stick to the top when scrollin down
-                    if (!!$('#mlab_toolbar_components').offset()) { // make sure ".sticky" element exists
-                        var stickyComponentTop = $('#mlab_toolbar_components').offset().top;
-                        //var stickyComponentToolsTop = $('#mlab_toolbar_for_components').offset().top - 25;
-                        var stickyComponentToolsLeft = 635; //this is 345 when starting but when scrolling it shifts down and needs 290 more...
-
-                        $(document).scroll(function(){ // scroll event
-                            var windowTop = $(window).scrollTop(); // returns number
-
-                            if (stickyComponentTop + 1 < stickyComponentTop + windowTop) {
-                                $('#mlab_toolbar_components ').css({ top: stickyComponentTop, 'margin-top': '0px' });
-                                //$('#mlab_toolbar_for_components').css({ top: stickyComponentToolsTop, left: stickyComponentToolsLeft });
-                            }
-                            else {
-                                $('#mlab_toolbar_components ').css('position','static'); //#mlab_toolbar_for_components
-                            }
-                        });
-                    }
-
                     //Checkes if the editor menu icon is cliked
                     $("#mlab_editor_menu_dropdown").on("click",function(event) {   
                           if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
@@ -287,12 +268,12 @@
 
                         <div id="mlab_toolbar_for_components" class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style="display: none">
                             <div id='mlab_component_toolbar_heading'>Tools</div>
-                            <img onclick='mlab.dt.design.component_moveup();'    title='Move selected component up'     id='mlab_button_up'                     src='/img/tools/up.png'         class='mlab_tools' >
-                            <img onclick='mlab.dt.design.component_movedown();'  title='Move selected component down'   id='mlab_button_down'                   src='/img/tools/down.png'       class='mlab_tools' >
-                            <img onclick='mlab.dt.design.component_delete();'    title='Delete selected component'      id='mlab_button_delete'                 src='/img/tools/delete.png'     class='mlab_tools' >
-                            <img onclick='mlab.dt.design.component_cut();'       title='Cut selected component, you can paste it into another page in this app'     id='mlab_button_cut_comp'                     src='/img/tools/cut-icon.png'         class='mlab_tools' >
-                            <img onclick='mlab.dt.design.component_copy();'      title='Copy selected component, you can paste it into another page in this app'   id='mlab_button_copy_comp'                   src='/img/tools/copy-icon.png'       class='mlab_tools' >
-                            <img onclick='mlab.dt.design.component_paste();'     title='Paste component from Mlab clipboard'      id='mlab_button_paste_comp'                 src='/img/tools/paste-icon.png'     class='mlab_tools' >
+                            <img onclick='mlab.dt.design.component_moveup();'    title='Move selected component up'     id='mlab_button_up'                     src='/img/tools/up.png'         class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_movedown();'  title='Move selected component down'   id='mlab_button_down'                   src='/img/tools/down.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_delete();'    title='Delete selected component'      id='mlab_button_delete'                 src='/img/tools/delete.png'     class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_cut();'       title='Cut selected component, you can paste it into another page in this app'     id='mlab_button_cut_comp'                     src='/img/tools/cut-icon.png'         class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_copy();'      title='Copy selected component, you can paste it into another page in this app'   id='mlab_button_copy_comp'                   src='/img/tools/copy-icon.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_paste();'     title='Paste component from Mlab clipboard'      id='mlab_button_paste_comp'                 src='/img/tools/paste-icon.png'     class='mlab_tools_all' >
                             <hr class='mlab_tools_line' >
                              <!-- TODO bytte ut resize24.png med increase.png og decrease.png  -->
                             <img                                                 title='Resize component'               id='mlab_button_component_size'         src='/img/tools/resize24.png'       class='mlab_tools mlab_hidden' >
