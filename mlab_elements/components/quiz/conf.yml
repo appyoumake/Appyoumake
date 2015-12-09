@@ -1,8 +1,9 @@
 # Configuration file for quiz component
-name: quiz
-category: dataentry
 version: 0.3
 developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
+category: dataentry
+name: quiz
+extended_name: quiz
 storage_plugin: true
 tooltip: Build a quiz for users to answer
 required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}

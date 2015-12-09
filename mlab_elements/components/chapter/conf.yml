@@ -2,6 +2,7 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: chapter
+extended_name: chapter
 tooltip: Med denne knappen setter du inn en Kapitteloverskrift.
 extended_tooltip: Med denne knappen setter du inn en Kapitteloverskrift.</br></br>Kapitteloverskriften vil ha en linkfunksjon som tillater navigasjon fra en innholdsliste i appen. Ref. også knappen Innholdsliste.
 html: <h1 class="mlab_chapter mc_text mc_display mc_heading mc_large mc_chapter">Add your chapter title here</h1>

@@ -428,7 +428,7 @@ Mlab_dt_design.prototype = {
         var temp_menu = [];
         var loc = mlab.dt.api.getLocale();
         
-        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(comp_name);
+        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(conf.extended_name);
         menu.html("");
         
 

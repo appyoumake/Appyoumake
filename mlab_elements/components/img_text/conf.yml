@@ -3,6 +3,7 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: image
 name: img_text
+extended_name: image+text
 inherit: img
 tooltip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.
 extended_tooltip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.</br></br>Du velger et bilde lagret på din maskin og kan gi bildet en undertekst og skrive en tekst som vil omslutte bildet.

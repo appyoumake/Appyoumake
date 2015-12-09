@@ -2,7 +2,8 @@
 version: 1.2
 developer: Arild Bergh @ Sinett/FFI.no
 category: map
-name: google map
+name: googlemap
+extended_name: google map
 unique: true
 tooltip: Med denne knappen setter du inn et kartutsnitt fra Google Map.
 extended_tooltip: Med denne knappen setter du inn et kartutsnitt fra Google Map.</br></br> Du definere kartutsnittet i verktøymenyen til høyre.

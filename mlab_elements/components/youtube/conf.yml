@@ -3,6 +3,7 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: video
 name: youtube
+extended_name: youtube
 tooltip: {nb_NO: Klikk på denne knappen for å importere en video fra YouTube, en_GB: Click on this button to import a video}
 extended_tooltip: {no_NB: Klikk på denne knappen for å importere en video fra YouTube.</br></br>Du må ha INTERNET forbindelse for å kunne laste ned video!, default: You must have a working Internet connection to use this}
 required_libs: { designtime: ["youtube.css"] }

@@ -4,5 +4,6 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: feature
 name: twitter
+extended_name: twitter
 tooltip: This is a simple feature demonstrating how to show a Twitter feed on all pages
 html: <script></script>
