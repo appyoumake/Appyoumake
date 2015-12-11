@@ -4,8 +4,9 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: text
 name: h1
 extended_name: heading
-tooltip: Med denne knappen setter du inn en Tittel på innholdet ditt.
-extended_tooltip: Med denne knappen setter du inn en Tittel på innholdet ditt.</br></br>Dette er som i Word</br></br>Bruk bare en Tittel pr side!
+tooltip: Overskrift
+footer_tip: Overskrift gir en tittel til innholdet ditt. Det finnes tre ulike størrelser.
+extended_tip: Med denne knappen setter du inn en Tittel på innholdet ditt.</br></br>Dette er som i Word</br></br>Bruk bare en Tittel pr side!
 compatible: ["h1", "h2", "h3", "p", "chapter"]
 html: <h1 class='mc_text mc_display mc_heading mc_large'>Add your top level headline here</h1>
 process_keypress: true

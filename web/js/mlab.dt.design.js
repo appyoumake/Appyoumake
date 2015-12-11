@@ -72,7 +72,6 @@ Mlab_dt_design.prototype = {
             alert("You can only have one component of this type on a page");
             return;
         }
-        
         this.parent.flag_dirty = true;
         var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
@@ -94,6 +93,7 @@ Mlab_dt_design.prototype = {
             this.component_menu_prepare();
         }
         
+//scroll down where the component is added
         window.scrollTo(0,document.body.scrollHeight);
 //now we load the relevant CSS/JS files
         this.parent.api.getLibraries(id);
@@ -493,10 +493,19 @@ Mlab_dt_design.prototype = {
             $("#mlab_button_component_aspect").addClass("mlab_hidden");
         }
        
+//set the qTips posistion after where it is placed in the window 
+        var myPosQtip = 'leftTop';
+        var eTop = curr_comp.offset().top; //get the offset top of the element
+        eTop = eTop - $(window).scrollTop();
+        
+        if( eTop > 450 ){
+            myPosQtip = 'leftBottom';
+        }
+              
         this.parent.qtip_tools = $(curr_comp).qtip({
             solo: false,
             content:    { text: function() { return $('#mlab_toolbar_for_components').clone(true).removeAttr("id"); } },
-            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
+            position:   { my: myPosQtip, at: 'rightTop', adjust: { screen: true } },
             show: {ready: true, modal: { on: false, blur: false }},
             hide: false,
             events: {

@@ -155,20 +155,18 @@
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
                                 var temp_tt = c.conf.tooltip;
                                 var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
-                                var temp_tt = c.conf.extended_tooltip;
+                                var temp_tt = c.conf.footer_tip;
                                 var tte = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
                                 
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
+                                            "title='" + c.conf.tooltip + "' " +
                                             "class='mlab_button_components' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
-                                        "<div class='mlab_component_tooltip'>" +
-                                            tt + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
-                                            "<div class='mlab_component_extended_tooltip'>" +
+                                        "<div class='mlab_component_footer_tip'>" +
                                                 tte +
-                                            "</div>" +
                                          "</div>"
                                 );
                             } else if (c.accessible && c.is_feature) {
@@ -177,12 +175,6 @@
                                 storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
-                        
-//When the component tooltips link is clicked the exteded help tekst for the component will show in the tooltip box
-                        $( ".mlab_component_tooltip_more_link" ).on( "click", function() {
-                            var extendedText = $(this).parent().find('.mlab_component_extended_tooltip').html();
-                            mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', extendedText);
-                        });
                       
 //add the HTML generated in the component load loop above to their respecitve containers.
                         $("#mlab_features_list").html(feature_list);
@@ -199,20 +191,14 @@
                             }
                         }
 
-//set the component qTip tooltip
-//TODO use api.elements.tooltip
-                        $('.mlab_button_components').each(function() {
-                            $(this).qtip({
-                            content: { text: $(this).next('.mlab_component_tooltip') },
-                            position: { my: 'leftcenter', at: 'rightMiddle', adjust: { x: -14, y: -4, } },
-                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);}
-                            //,   hidden: function() { mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', "testy"); } 
-                                },
-                            hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
-                            style: { "background-color": "white", color: "blue", classes: "mlab_qtip_tooltip" } } ) ;         
-                        });
-                                
-
+//set the extended help text for the component in the footer
+                         $(".mlab_button_components").mouseover(function(e){
+                            $(".mlab_editor_footer_help").text(e.currentTarget.nextSibling.textContent);
+                         });
+                         
+                         $(".mlab_button_components").mouseout(function(e){
+                            $(".mlab_editor_footer_help").text("");
+                         });
             
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
@@ -338,7 +324,6 @@
                                     break;
 
                                 case "ready":
-                                    debugger;
                                     $("#mlab_progressbar").val(100);
                                     $("#mlab_statusbar_compiler").text("");
                                     $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
