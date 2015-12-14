@@ -5,8 +5,9 @@ category: image
 name: img_text
 extended_name: image+text
 inherit: img
-tooltip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.
-extended_tooltip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.</br></br>Du velger et bilde lagret på din maskin og kan gi bildet en undertekst og skrive en tekst som vil omslutte bildet.
+tooltip: Bilde og tekst
+footer_tip: Tekst som kan omslutte et bilde. Velg et bilde lagret på din maskin via verktøymenyen til høyre og gi eventuelt bildet en undertekst, og skriv inn teksten du ønsker.
+extended_tip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.</br></br>Du velger et bilde lagret på din maskin og kan gi bildet en undertekst og skrive en tekst som vil omslutte bildet.
 filterhtml: ["figcaption", "p"]
 html: |
     <figure class="mc_container mc_picture_and_text">

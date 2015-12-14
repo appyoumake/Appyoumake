@@ -40,6 +40,11 @@ made smaler than the min width */
     display: none;
 }
 
+/* Used to set the backgound to transparent for different elements with javascript */
+.mlab_transparent {
+    background: transparent;
+}
+
 /* Used to hide elements that comes from the template */
 .mlab_hide_in_app_builder {
     display: none !important;
@@ -80,8 +85,7 @@ made smaler than the min width */
     cursor: pointer;
 }
 
-#mlab_editor .mlab_component_tooltip,
-#mlab_editor .mlab_component_extended_tooltip,
+#mlab_editor .mlab_component_footer_tip,
 #mlab_editor [data-mlab-download-link-info] {
     display: none;
 }
@@ -113,11 +117,6 @@ made smaler than the min width */
 
 #mlab_editor .mlab_qtip_menu_tooltip.qtip{
     z-index: 20000 !important;
-}
-
-#mlab_editor .mlab_component_tooltip_link{
-    color: blue;
-    font-weight: bold;
 }
 
 #mlab_editor .mlab_qtip_tooltip.qtip p{

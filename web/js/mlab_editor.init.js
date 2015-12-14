@@ -161,7 +161,7 @@
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
-                                            "title='" + c.conf.tooltip + "' " +
+                                            "title='" + tt + "' " +
                                             "class='mlab_button_components' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 

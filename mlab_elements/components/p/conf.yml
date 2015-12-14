@@ -4,8 +4,9 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: text
 name: text
 extended_name: text
-tooltip: Klikker du på denne knappen kan du legge inn vanlig brødtekst i din App.
-extended_tooltip: Klikker du på denne knappen kan du legge inn vanlig brødtekst i din App.</br></br>Tenk på budskapet, korte setninger, du skriver ikke en avhandling
+tooltip: Tekst
+footer_tip: Setter inn vanlig brødtekst i appen.
+extended_tip: Klikker du på denne knappen kan du legge inn vanlig brødtekst i din App.</br></br>Tenk på budskapet, korte setninger, du skriver ikke en avhandling
 compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p class='mc_text mc_display mc_medium'>Enter your body text here</p>
 inherit: h1
