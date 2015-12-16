@@ -42,7 +42,7 @@ made smaler than the min width */
 
 /* Used to set the backgound to transparent for different elements with javascript */
 .mlab_transparent {
-    background: transparent;
+    background: transparent !important;
 }
 
 /* Used to hide elements that comes from the template */
@@ -278,7 +278,7 @@ made smaler than the min width */
 #mlab_editor .mlab_toolbar_for_components {
     display: block;
     padding: 5px;
-    max-width: 98px;
+    max-width: 128px;
     /*float: left;
     border: orange dotted 3px;
     margin-top: 25px;
@@ -512,7 +512,7 @@ made smaler than the min width */
     font-size: 12px;
 } 
 
-#mlab_editor .mlab_help_icon {
+#mlab_editor .mlab_editor_footer_help_icon {
     float: left;
     padding: 15px 5px 0 10px;
     width: 25px;

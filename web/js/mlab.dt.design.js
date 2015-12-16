@@ -212,6 +212,26 @@ Mlab_dt_design.prototype = {
         } 
         this.parent.flag_dirty = true;
     },
+    
+    component_help : function () {
+        var curr_comp = $(".mlab_current_component");
+        var comp_id = curr_comp.data("mlab-type");
+        if (typeof this.parent.components[comp_id].conf.extended_tip != "undefined"){
+           var help_text = this.parent.components[comp_id].conf.extended_tip;
+        }
+            
+        var content = $('<form />');
+        content.append( '<div class="mlab_component_extended_tip">' + 
+                        help_text +
+                        '</div>');
+                
+        content.append( $('<p />', {class: "mlab_dt_small_new_line" }));
+        content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
+        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall mlab_dt_button_ok mlab_dt_left" }) );
+        
+        this.parent.api.displayPropertyDialog(curr_comp, "Help info", content, null);
+            
+    },
 
 //cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard
     component_cut : function () {
@@ -518,6 +538,24 @@ Mlab_dt_design.prototype = {
         });
         
         //$('#mlab_toolbar_for_components').show();
+    },
+    
+/*
+ *
+ */
+    toggle_footer : function () {
+
+    var footer = $(".mlab_editor_footer");
+    var footer_image = $("mlab_button_help");
+    var footer_text = $(".mlab_editor_footer_help");
+        if (footer.hasClass("mlab_transparent")) {
+            footer.removeClass("mlab_transparent");
+            footer_text.removeClass("mlab_hidden");
+            //footer_image.t
+        } else {
+            footer.addClass("mlab_transparent");
+            footer_text.addClass("mlab_hidden");
+        }
     },
     
 } // end design.prototype
