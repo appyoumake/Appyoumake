@@ -33,7 +33,19 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     max-width: 500px;
 }
 
+#mlab_editor .qtip-close{
+    top: 0px;
+    right: 5px;
+    background-color: white;
+}
 
+#mlab_editor .mlab_help_qTip{
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-left: 15px;
+    margin-top: -15px;
+}
 
 
 /* ===  Information  === */
@@ -151,6 +163,10 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 
 #mlab_editor .mlab_dt_small_new_line {
     padding: 7px;
+}
+
+#mlab_editor .mlab_dt_tiny_new_line {
+    padding: 1px;
 }
 
 #mlab_editor .mlab_dt_new_row {

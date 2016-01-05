@@ -38,7 +38,6 @@ custom:
     decrease_size:
         tooltip: Reduce the size of the caption
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
-        newline: true
         order: 5
     increase_size:
         tooltip: Increase the size of the caption
@@ -62,3 +61,4 @@ custom:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
         tooltip: Upload an image from your PC or select an already uploaded image to use here
         order: 10
+        newline: true

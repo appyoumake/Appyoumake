@@ -493,7 +493,7 @@ made smaler than the min width */
 
 
 /* ==========================================================================
-   1. The footer with helptext
+   7. The footer with helptext
    ========================================================================== */
 
 #mlab_editor .mlab_editor_footer {
@@ -518,6 +518,12 @@ made smaler than the min width */
     width: 25px;
 }
 
+
+#mlab_editor .mlab_page_help_qTip {
+    width: 500px;
+    max-width: 800px;
+    z-index: 600 !important;
+}
 
 /* TEMP AV ARILD */
 
