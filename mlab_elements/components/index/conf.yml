@@ -7,7 +7,6 @@ name: index
 extended_name: index
 tooltip: Innholdsliste
 footer_tip: Innholdslisten gir en klikkbar liste med sidene og kapitteloverskriftene som er lagt til i appen. 
-extended_tip: Klikk på denne knappen for å legge til en klikkbar Innholdsliste over Kapitteloverskriftene.</br></br> Dette vil være hyperlinker som du tidligere har lagt inn med BILDE
 preprocessing: generate_index
 compatible: []
 process_keypress: true

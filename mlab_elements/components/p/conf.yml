@@ -6,7 +6,6 @@ name: text
 extended_name: text
 tooltip: Tekst
 footer_tip: Setter inn vanlig brødtekst i appen.
-extended_tip: Klikker du på denne knappen kan du legge inn vanlig brødtekst i din App.</br></br>Tenk på budskapet, korte setninger, du skriver ikke en avhandling
 compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p class='mc_text mc_display mc_medium'>Enter your body text here</p>
 inherit: h1
@@ -14,9 +13,9 @@ filterhtml: ["p"]
 paste_allowed: false
 custom:
     decrease_size:
-        tooltip: Reduce the size of the text
+        tooltip: Reduce the size of the selected text
     increase_size:
-        tooltip: Increase the size of the text
+        tooltip: Increase the size of the selected text
     add_link:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAddJREFUeNrsVr1SwkAQjoJjythRamcZOzuh0w7fADs79Q3CEzB2dqGjhDcIpVbQWsEbEDsYf+K3zt7M5sglx5mSnfkmP7d3393ut5t43t4q7OjY7wEzIBNYABEQ1EkUAGONSAdtJJTzDlzJcEmA0MJ9DnQ+N+uUHho1kg2BPvAGXAI+v28Bm5/vr6lrGPV8rYB2gd9K5tQppGLhgE94BTwhXPMC30dcBuoZPn9cTUfNUD4mWCQq8Vn+R5GRFiIp/65hTix9d8lZUiH9jMOXC71eHmrs0EKNbYu9DVR+ue7G2vhzKWGJ9En2Z8AF5VDLacpkCYtKGeV6aFSpgYwW7KiFVRFTp+EIdNhPJ8sV/dYJK8jIKBexGLvj01qRbXWaRrM50nKmyJa8IHWNc/iFwDv79ICR6CxGslxIqetru0950pwFkVhWkZEsd0LsOOYTKLvBpFe6QR9cYvwDt9cVZFOel9rUnKyb2ODT5WLPCvppZHN8GVLZDW6xy0nJ5kIpEPhafwlMhX9qIqLOg9uupkinfrnQQhQUtKtVwRd9J2IpmhNREiTxe7zbAD7wgOcXW+nb5tD5t8HphJD+GidRvwetkjkTFlXq1WH8SYoK5D/j5rC3UvsVYAD7ENo13pqynAAAAABJRU5ErkJggg==
         tooltip: Add a link to the currently highlighted text

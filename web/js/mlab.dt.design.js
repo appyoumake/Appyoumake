@@ -249,9 +249,17 @@ Mlab_dt_design.prototype = {
          
        var path = window.location.pathname;
        
-       //TODO one per page that has the help button
+       //TODO one per page that has the help button - switch?
        //apps - users - system - app/builder(hvordan skille på app liste siden og byggeren?
-       if (path.indexOf("builder") > -1){
+       if (path.indexOf("builder/*/") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("apps") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("users") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("system") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("builder") > -1){
            var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
        } else { // 
            var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';

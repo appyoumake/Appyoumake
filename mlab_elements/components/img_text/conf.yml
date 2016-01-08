@@ -7,7 +7,6 @@ extended_name: image+text
 inherit: img
 tooltip: Bilde og tekst
 footer_tip: Tekst som kan omslutte et bilde. Velg et bilde lagret på din maskin via verktøymenyen til høyre og gi eventuelt bildet en undertekst, og skriv inn teksten du ønsker.
-extended_tip: Klikk på denne knappen for å sette inn et bilde hvor du også kan legge inn tekst.</br></br>Du velger et bilde lagret på din maskin og kan gi bildet en undertekst og skrive en tekst som vil omslutte bildet.
 filterhtml: ["figcaption", "p"]
 html: |
     <figure class="mc_container mc_picture_and_text">
@@ -17,6 +16,10 @@ html: |
     <p class='mc_text mc_display mc_medium'>Your text goes here</p>
     <div style="clear: both;"></div>
 custom:
+    decrease_size:
+        tooltip: Reduce the size of the selected text
+    increase_size:
+        tooltip: Increase the size of the selected text
     upload_image:
         order: 12
         newline: true

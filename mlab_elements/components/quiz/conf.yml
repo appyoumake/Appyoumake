@@ -7,7 +7,6 @@ extended_name: quiz
 storage_plugin: true
 tooltip: Quiz
 footer_tip: Build a quiz for users to answer
-extended_tip: How to ...Build a quiz for users to answer
 required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
 # plugins: ["cordova-plugin-device"]
 html: ""

@@ -6,7 +6,6 @@ name: ol
 extended_name: no. list
 tooltip: Nummerert liste
 footer_tip: Setter inn en nummerert liste i appen. Klikk enter for å få et nytt punkt i listen.
-extended_tip: For å sette inn en nummerert liste i appen din skal du benytte denne knappen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |

@@ -5,7 +5,6 @@ name: ul
 extended_name: bullet list
 tooltip: Kulepunktliste
 footer_tip: Setter inn en kulepunktliste i appen. Klikk enter for å få et nytt punkt i listen.
-extended_tip: Med denne knappen setter du en kulepunktliste inn i appen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
 inherit: ol
 category: list
 html: |
