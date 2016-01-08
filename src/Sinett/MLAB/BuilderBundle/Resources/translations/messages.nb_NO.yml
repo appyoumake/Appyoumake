@@ -77,9 +77,11 @@ app.wizard.button.finished: Ferdig
 app.mlab.menu.tooltip: Menu
 app.builder.menu.welcome.info: Dette er hovedmenyen til Mlab
 app.builder.menu.heading.links: Naviger
-app.builder.menu.links.info: Liste over sider du har tilgang til
+app.builder.menu.links.info: Liste over sider i Mlab du har tilgang til
 app.builder.menu.links.app.info: For å komme til siden hvor du lager innhold til en app - klikk på navnet til appen du ønsker å jobbe med (evnt. lag en ny app først).
-
+app.builder.menu.heading.save: Lagre
+app.builder.menu.save.info: Appen blir lagret automatisk med jevne mellomrom. Om du ønsker å lagre nå klikk på lagre ikonet under.
+app.builder.menu.save.tooltip: Lagre appen
 app.builder.menu.link.app.builder: App liste
 app.builder.menu.link.admin.app: App admin
 app.builder.menu.link.admin.users: Bruker admin

@@ -366,7 +366,7 @@ Mlab_dt_api.prototype = {
  * Displays the property input dialog for the specified component. 
  * This uses the jQuery plugin qtip2 for the actual dialog, and fills it with the specified content.
  * The component is reponsible for adding buttons such as Cancel and OK with callback to relevant functions in the component.
- * @param {jQuery DOM element} el, the component that the dialog should be attached to
+ * @param {jQuery DOM element} el, the component that the dialdisplayPropertyDialogog should be attached to
  * @param {string} title
  * @param {HTML string} content, valid HTML5
  * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
@@ -400,6 +400,64 @@ Mlab_dt_api.prototype = {
                             visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
                         }
         });
+        this.indicateWait(false);
+    },
+    
+    
+    /**
+ * Displays the property input dialog for the specified component. 
+ * This uses the jQuery plugin qtip2 for the actual dialog, and fills it with the specified content.
+ * The component is reponsible for adding buttons such as Cancel and OK with callback to relevant functions in the component.
+ * @param {jQuery DOM element} el, the component that the dialdisplayPropertyDialogog should be attached to
+ * @param {string} title
+ * @param {HTML string} content, valid HTML5
+ * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
+ * @param {function object} func_visible, callback function when the property dialog is visible
+ * @param {function object} func_hide currently unused
+ * @returns {undefined}
+ */
+    displayHtmlPageInDialog : function (el, title, url_htmlpage, qTipClass, func_render, func_visible, func_hide, focus_selector) {
+  
+        this.indicateWait(true);
+        this.closeAllPropertyDialogs();
+        that = this;
+        
+        if (typeof qTipClass == "undefined" ||  qTipClass === null ||  qTipClass === ""){
+            var styleClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
+        } else {
+            var styleClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip ' + qTipClass;
+        }
+         
+        that.properties_tooltip = $(el).qtip({
+            solo: false,
+            content:    {
+                        text: function(event, api) {
+                            $.ajax({
+                                url: url_htmlpage // Use href attribute as URL
+                            })
+                            .then(function(content) {
+                                // Set the tooltip content upon successful retrieval
+                                api.set('content.text', content);
+                            }, function(xhr, status, error) {
+                                // Upon failure... set the tooltip content to error
+                                api.set('content.text', status + ': ' + error);
+                            });
+
+                            return 'Loading...'; // Set some initial text
+                            },
+                        title: title,
+                        button: true
+                        },
+            position:   { my: 'rightTop', at: 'leftBottom', adjust: { screen: true }, effect: false },
+            show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
+            hide:       false,
+            style:      { classes: styleClasses },
+            events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
+                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy();  that.properties_tooltip = false; },
+                            visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
+                        }
+        });
+        
         this.indicateWait(false);
     },
 

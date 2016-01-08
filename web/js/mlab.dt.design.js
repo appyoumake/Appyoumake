@@ -72,7 +72,6 @@ Mlab_dt_design.prototype = {
             alert("You can only have one component of this type on a page");
             return;
         }
-        
         this.parent.flag_dirty = true;
         var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
@@ -94,6 +93,7 @@ Mlab_dt_design.prototype = {
             this.component_menu_prepare();
         }
         
+//scroll down where the component is added
         window.scrollTo(0,document.body.scrollHeight);
 //now we load the relevant CSS/JS files
         this.parent.api.getLibraries(id);
@@ -212,7 +212,69 @@ Mlab_dt_design.prototype = {
         } 
         this.parent.flag_dirty = true;
     },
-
+    
+//gets a html page to show as help for making the component at dt
+    component_help : function () {
+        var curr_comp = $(".mlab_current_component");
+        var comp_id = curr_comp.data("mlab-type");
+        if (typeof this.parent.components[comp_id].conf.extended_name != "undefined"){
+           var extended_name = this.parent.components[comp_id].conf.extended_name;
+        }
+        
+        if (typeof event != "undefined") {
+            var owner_element = event.currentTarget;
+        } else {
+            var owner_element = curr_comp;
+        }
+        
+        /*TODO use the component url
+        var comp_url = window.location.origin + this.parent.urls.components_root_url;
+        var comp_path = this.parent.components[comp_id].conf.name;
+        var url = comp_url + comp_path + "/" + 'extended_tip.html';
+        */
+       
+        var qTipClass = 'mlab_help_qTip';
+       
+        //TODO temp placed here - will be in the component
+        var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'extended_tip.html';
+        var title = "Help - " + extended_name;
+       
+        this.parent.api.displayHtmlPageInDialog(owner_element, title, url, qTipClass);           
+    },
+    
+//TODO Should be placed in another js file....
+    page_help : function () {
+         
+       //TODO check if the help is allready open - if so close it and return  OR better not here but documentready? close qTip if click outside it
+         
+       var path = window.location.pathname;
+       
+       //TODO one per page that has the help button - switch?
+       //apps - users - system - app/builder(hvordan skille på app liste siden og byggeren?
+       if (path.indexOf("builder/*/") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("apps") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("users") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("system") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else if (path.indexOf("builder") > -1){
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       } else { // 
+           var url = window.location.origin + "/" + 'img' + "/" + 'comphelp' + "/" + 'builder_page_help.html';
+       }
+       
+        var placement = $(".mlab_help_icon");
+       
+        var qTipClass = 'mlab_page_help_qTip';
+        
+        //TODO temp placed here - will be in the component
+        var title = "Help";
+       
+        this.parent.api.displayHtmlPageInDialog(placement, title, url, qTipClass);           
+    },
+    
 //cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard
     component_cut : function () {
         mlab.dt.clipboard = $(".mlab_current_component").clone();
@@ -493,10 +555,19 @@ Mlab_dt_design.prototype = {
             $("#mlab_button_component_aspect").addClass("mlab_hidden");
         }
        
+//set the qTips posistion after where it is placed in the window 
+        var myPosQtip = 'leftTop';
+        var eTop = curr_comp.offset().top; //get the offset top of the element
+        eTop = eTop - $(window).scrollTop();
+        
+        if( eTop > 450 ){
+            myPosQtip = 'leftBottom';
+        }
+              
         this.parent.qtip_tools = $(curr_comp).qtip({
             solo: false,
             content:    { text: function() { return $('#mlab_toolbar_for_components').clone(true).removeAttr("id"); } },
-            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
+            position:   { my: myPosQtip, at: 'rightTop', adjust: { screen: true } },
             show: {ready: true, modal: { on: false, blur: false }},
             hide: false,
             events: {
@@ -509,6 +580,24 @@ Mlab_dt_design.prototype = {
         });
         
         //$('#mlab_toolbar_for_components').show();
+    },
+    
+/*
+ *
+ */
+    toggle_footer : function () {
+
+    var footer = $(".mlab_editor_footer");
+    var footer_image = $("mlab_button_help");
+    var footer_text = $(".mlab_editor_footer_help");
+        if (footer.hasClass("mlab_transparent")) {
+            footer.removeClass("mlab_transparent");
+            footer_text.removeClass("mlab_hidden");
+            //footer_image.t
+        } else {
+            footer.addClass("mlab_transparent");
+            footer_text.addClass("mlab_hidden");
+        }
     },
     
 } // end design.prototype

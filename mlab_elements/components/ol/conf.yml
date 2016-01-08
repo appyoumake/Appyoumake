@@ -4,8 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: list
 name: ol
 extended_name: no. list
-tooltip: For å sette inn en nummerert liste i appen din skal du benytte denne knappen.
-extended_tooltip: For å sette inn en nummerert liste i appen din skal du benytte denne knappen.</br></br>Se i verktøyboksen på høyre side for redigeringsalternativ.
+tooltip: Nummerert liste
+footer_tip: Setter inn en nummerert liste i appen. Klikk enter for å få et nytt punkt i listen.
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |

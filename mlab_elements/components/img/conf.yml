@@ -4,8 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: image
 name: img
 extended_name: image
-tooltip: Klikk på denne knappen for å laste inn et bilde.
-extended_tooltip: Klikk på denne knappen for å laste inn et bilde.</br></br>Du velger et bilde lagret på din maskin og kan gi bildet en undertekst.
+tooltip: Bilde
+footer_tip: Velg et bilde lagret på din maskin via verktøymenyen til høyre og gi bildet en undertekst.
 placeholder: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAWCAIAAADsC02XAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gMXCy44Qd6cWgAAAk1JREFUWMPtVtGtozAQ5J6ugC3B6cAlhAriDuBVkBJIBygVBCoIqQA6wB2EVIA74D6sjPawMSSxdDrpzU8cy+x6vbOzmyQ/+L/wy/4IIYQQ2B2GYRgG9/R+v8faGKO1xl8iklK6+6uQUhKRXXddt3SMu3axdOGkKIqJoSxL94xSip9p23bm2LsfBhFxm4HbT0GM42ifFfjyWlFKuZuHwyE6YfI853+zLHvPDhG1bctj++09J4SQUs4Y5Y32Q8wiUUp9f3+HPzmdTu7rCCFsbLvdzhjjoeL9fveyEUzDgc+pKKWEzb7v7XqWQ5eKYT6DzHMqNk3jzQ94iAMR01VVVV3XbxP+rxQt1Rg0zbLR5eHtdoteYHVd8weFSG7P/Hpg1s3sRaWUthlETBcC0FpbsUZJL7GRS8D+CaUUyK+1RsPwBOayERFGTBcodz6fZ4tVbcyyrH3ier3igdI0DWUMzQ5sRISxMkZESAtsYgGCvIS6rnmx+fsYfPDHa5rGW6bv8dC1aYyB3+PxGPj88Xh0T2DgKMvSw2HIfVEUMyFOkuRyuUCIl2T9Jbnn4g5fHNbvFrknIlibpgnC48+Y1to+pGWjLa1YPATDjTFVVXkrysrDRq3npQWF/Fr6gLOxaZqIPATNrAsi6hhAre3jVehiMyrykdeyAtX8ORUxu3hzAmaO47hx8sjzfHGMdgPjtngHXA0sANt5lqrIjZyLwbQBfd+vqGJAG2ONUYGKRUN7abxa72MA2nGsuZ6IYAq3D08IG8erruvSNI2lAj/4F/gD7ZXTYef4KooAAAAASUVORK5CYII=
 urls: {upload: app_builder_component_upload}
 filterhtml: ["figcaption"]
@@ -37,7 +37,6 @@ custom:
     decrease_size:
         tooltip: Reduce the size of the caption
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
-        newline: true
         order: 5
     increase_size:
         tooltip: Increase the size of the caption
@@ -61,3 +60,4 @@ custom:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
         tooltip: Upload an image from your PC or select an already uploaded image to use here
         order: 10
+        newline: true

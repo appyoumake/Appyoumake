@@ -4,8 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: text
 name: h1
 extended_name: heading
-tooltip: Med denne knappen setter du inn en Tittel på innholdet ditt.
-extended_tooltip: Med denne knappen setter du inn en Tittel på innholdet ditt.</br></br>Dette er som i Word</br></br>Bruk bare en Tittel pr side!
+tooltip: Overskrift
+footer_tip: Overskrift gir en tittel til innholdet ditt. Det finnes tre ulike størrelser.
 compatible: ["h1", "h2", "h3", "p", "chapter"]
 html: <h1 class='mc_text mc_display mc_heading mc_large'>Add your top level headline here</h1>
 process_keypress: true
@@ -25,7 +25,6 @@ custom:
         tooltip: Reduce the size of the headline
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
         order: 3
-        newline: true
     increase_size:
         tooltip: Increase the size of the headline
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASRJREFUeNrUltENgyAQhu1D0z46gt3AERzBERiBEdjAERjBETqC3YAR6AZXTI6EEE7wwIde8r8g+Am5/8eu+5OSTkNu0v3x1LtaAK2TysCkE6BkDUw4AUJ7AiYCmNfMBRoEAsJTQJsAWg5sCmCA8EvrHQF3zVfBhgQM8CMuKU0AocQirXbnpVsDVXB8FLRvBevRcyZhi1CqFVBEL1QE0LYCmihV/I5TUFELm4mmoDp2a2X04UTXTlyYj7GVeL4SwLXW6FNhrlYFQc7owA2CGzG+4K3+cfpmPDomxvc1r8xa0uglt39VEEhcIE/GHnDvSnP0+0CcCHCDQDJbW3N2GUaWYiZSSpKywRYF8RkvyQOgjTtZZyYvBGTE6NsKvVmds6z6CTAAwDrVj6+nmH8AAAAASUVORK5CYII=

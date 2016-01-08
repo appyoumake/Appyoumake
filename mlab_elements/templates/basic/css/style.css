@@ -13,7 +13,7 @@
     padding: 0;
     display: block;
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: #1e1e1e;  
 }
 

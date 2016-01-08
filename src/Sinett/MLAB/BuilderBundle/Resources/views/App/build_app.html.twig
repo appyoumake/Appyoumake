@@ -152,10 +152,15 @@
                                                 <p>{% trans %}app.builder.menu.links.app.info{% endtrans %}</p><br>
                                     {% endif %} 
                                 {% endif %}
-                            </div> <!-- End Navigate col -->
+                                                
+                                 <h3>{% trans %}app.builder.menu.heading.save{% endtrans %}</h3>   
+                                 <p>{% trans %}app.builder.menu.save.info{% endtrans %}</p>
+                                 <a href="javascript: var temp; mlab.dt.management.page_save(temp, true);">
+                                    <div title="{% trans %}app.builder.menu.save.tooltip{% endtrans %}" class="mlab_save_icon"></div>
+                                </a>  
+                            </div> <!-- End Navigate & Save col -->
 
                             <div class="mlab_one_col"> <!-- Feature col -->
-                                <img onclick='var temp; mlab.dt.management.page_save(temp, true);' title='Save' id='mlab_button_save' src='/img/tools/save.png' class='mlab_tools mlab_button_save' >
                                 <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
                                 <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
                                 <div id="mlab_features_list"></div>
@@ -175,6 +180,7 @@
                                             <a href="javascript: mlab.dt.management.page_preview();">
                                                 <div title="Test app i nettleser" id="mlab_preview_icon"></div>
                                             </a> 
+                                    </br>
                                     <h4>{% trans %}app.builder.edit.menu.heading.test.app.mob{% endtrans %}</h4>
                                     <p>{% trans %}app.builder.edit.menu.test.app.mob.info{% endtrans %}</p>
                                     <div id="mlab_download_qr2"><p class="qr_wait_text">{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
@@ -210,7 +216,7 @@
                         <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_progressbar'><progress id='mlab_progressbar' class='mlab_progressbar' value="10" max="100"></progress></div></li>
-                        <li class="single menu_right"><img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" ></li>
+                        <li class="single menu_right"><img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" onclick='mlab.dt.design.page_help();'></li>
                         
                         <li id="mlab_user_menu_dropdown" class="menu_right">
                             <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}app.builder.menu.user.info.main.tooltip{% endtrans %}' alt="logo" >
@@ -268,18 +274,19 @@
 
                         <div id="mlab_toolbar_for_components" class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style="display: none">
                             <div id='mlab_component_toolbar_heading'>Tools</div>
-                            <img onclick='mlab.dt.design.component_moveup();'    title='Move selected component up'     id='mlab_button_up'                     src='/img/tools/up.png'         class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_movedown();'  title='Move selected component down'   id='mlab_button_down'                   src='/img/tools/down.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_delete();'    title='Delete selected component'      id='mlab_button_delete'                 src='/img/tools/delete.png'     class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_cut();'       title='Cut selected component, you can paste it into another page in this app'     id='mlab_button_cut_comp'                     src='/img/tools/cut-icon.png'         class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_copy();'      title='Copy selected component, you can paste it into another page in this app'   id='mlab_button_copy_comp'                   src='/img/tools/copy-icon.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_paste();'     title='Paste component from Mlab clipboard'      id='mlab_button_paste_comp'                 src='/img/tools/paste-icon.png'     class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_moveup();'    title='Move selected component up'         id='mlab_button_up'                     src='/img/tools/up.png'         class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_movedown();'  title='Move selected component down'       id='mlab_button_down'                   src='/img/tools/down.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_delete();'    title='Delete selected component'          id='mlab_button_delete'                 src='/img/tools/delete.png'     class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_help();'      title='Get help about selected component'                   id='mlab_button_help'           src='/img/tools/help.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_cut();'       title='Cut selected component, you can paste it into another page in this app'         id='mlab_button_cut_comp'       src='/img/tools/cut-icon.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_copy();'      title='Copy selected component, you can paste it into another page in this app'        id='mlab_button_copy_comp'      src='/img/tools/copy-icon.png'      class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_paste();'     title='Paste component from Mlab clipboard'                                            id='mlab_button_paste_comp'     src='/img/tools/paste-icon.png'     class='mlab_tools_all' >
                             <hr class='mlab_tools_line' >
                              <!-- TODO bytte ut resize24.png med increase.png og decrease.png  -->
-                            <img                                                 title='Resize component'               id='mlab_button_component_size'         src='/img/tools/resize24.png'       class='mlab_tools mlab_hidden' >
-                            <img                                                 title='Select aspect ratio'            id='mlab_button_component_aspect'       src='/img/tools/aspect.png'     class='mlab_tools mlab_hidden' >
-                            <img                                                 title='Select storage mechanism'       id='mlab_button_select_storage_plugin'  src='/img/tools/storage.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
-                            <img onclick='mlab.dt.design.component_edit_credentials();'     title='Edit credentials'       id='mlab_button_get_credentials'  src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <img                                                            title='Resize component'               id='mlab_button_component_size'          src='/img/tools/resize24.png'       class='mlab_tools mlab_hidden' >
+                            <img                                                            title='Select aspect ratio'            id='mlab_button_component_aspect'        src='/img/tools/aspect.png'         class='mlab_tools mlab_hidden' >
+                            <img                                                            title='Select storage mechanism'       id='mlab_button_select_storage_plugin'   src='/img/tools/storage.png'        class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <img onclick='mlab.dt.design.component_edit_credentials();'     title='Edit credentials'               id='mlab_button_get_credentials'         src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
                             <div id='mlab_component_context_menu'></div>
                         </div>
 
@@ -308,12 +315,18 @@
                         <div id="mlab_overlay"><div class="mlab_modal">{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
                         <div style="clear: both;">&nbsp;</div>
                     </div>
+               
 	        </div>
         </div>
+         <div id="fotter" class="mlab_editor_footer">
+             <img onclick='mlab.dt.design.toggle_footer();' title='Turn help off' id='mlab_button_help' src='/img/helpIcon.png' class='mlab_editor_footer_help_icon' >
+             <div class="mlab_editor_footer_help">Hold musen over elementet du ønsker en beskrivelse av.</div>
+         </div>
+         
         
         <script type="text/javascript">
             $(document).ready(function() {
-                $("#mlab_statusbar_progress_spin").spin('small', '#fff');
+                $("#mlab_statusbar_progress_spin").spin('small', '#fff');        
             });
         </script>
     </body>

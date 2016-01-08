@@ -441,7 +441,7 @@ error_log($head);
 //get the app database record
         $file_mgmt = $this->get('file_management');
         $em = $this->getDoctrine()->getManager();
-        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
             die("You have no access to this app");
         }
 

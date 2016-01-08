@@ -362,6 +362,7 @@ progress::-moz-progress-bar {
 /* Icons used by the drop down menu */
 #mlab_editor  #mlab_editor_menu_dropdown_content #mlab_exit_icon, 
 #mlab_editor  #mlab_editor_menu_dropdown_content #mlab_preview_icon, 
+#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_save_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon,
@@ -374,7 +375,7 @@ progress::-moz-progress-bar {
     border: 0;
     cursor: pointer;
     height: 35px;
-    margin: auto;
+    margin: 0;
     padding: 0;
     width: 35px;
 }
@@ -383,7 +384,10 @@ progress::-moz-progress-bar {
     background-image: url("/img/menu_preview_icon.png");
 }
 
-/* Icons used by the drop down menu */ 
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_save_icon {
+    background-image: url("/img/menu_save_icon.png");
+}
+
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon,
