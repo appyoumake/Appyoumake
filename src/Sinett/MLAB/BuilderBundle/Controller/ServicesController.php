@@ -603,7 +603,7 @@ error_log($head);
                     $local_processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
                 }
             }
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . ', "platform": "' . $platform . '"}}', $config), true);
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . '", "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => 'Unable to update websocket messages'));
             }

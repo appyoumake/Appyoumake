@@ -67,6 +67,8 @@
         var creds = that._data[comp_id].settings.credentials;
         var save_data = {token: this.api.db.loginToken(comp_id), action: 'set', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key, value: JSON.stringify(value)};
         
+        func_fail("result", app_id, device_id, comp_id, key);
+        return -2;
         $.post(creds.url, save_data)
                 .done(function( data ) {
                     data = JSON.parse(data);
@@ -86,7 +88,7 @@
     this.getResult = function(func_fail, callback, app_id, device_id, comp_id, key) {
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
-
+        return -2;
         $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id, key: key})
                 .done(function( data ) {
                     data = JSON.parse(data);
@@ -111,7 +113,7 @@
     this.getAllResult = function(func_fail, callback, app_id, device_id, comp_id) {
         var that = this;
         var creds = that._data[comp_id].settings.credentials;
-
+        return -2;
         $.post(creds.url, {token: this.api.db.loginToken(comp_id), action: 'get', type: 'result', app: app_id, dev: device_id, comp: comp_id})
                 .done(function( data ) {
                     data = JSON.parse(data);
