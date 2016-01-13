@@ -209,23 +209,49 @@
 
 //prepare the menu popup for the storage plugin selector
                         $("#mlab_button_select_storage_plugin").click( function(event) {
-                            var div = $("#mlab_storage_plugin_list");
-                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow");
+                            mlab.dt.api.closeAllPropertyDialogs();
+                            var owner_element = event.currentTarget;
+                            mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                                solo: false,
+                                content:    {text: $("#mlab_storage_plugin_list").clone(), title: "Select component size" },
+                                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                                style:      { classes: "mlab_zindex_top_tooltip" }
+                            });
                         } );
                         
 //prepare the menu popup for the component resizer
                         $("#mlab_button_component_size").click( function(event) {
-                            var div = $("#mlab_component_size_list");
-                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow");
+                            mlab.dt.api.closeAllPropertyDialogs();
+                            var owner_element = event.currentTarget;
+                            mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                                solo: false,
+                                content:    {text: $("#mlab_component_size_list").clone(), title: "Select component size" },
+                                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                                style:      { classes: "mlab_zindex_top_tooltip" }
+                            });
+                            
                         } );
                         
 //prepare the menu popup for the component aspect ratio selector
                         $("#mlab_button_component_aspect").click( function(event) {
-                            var div = $("#mlab_component_aspect_list");
-                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow");
+                            mlab.dt.api.closeAllPropertyDialogs();
+                            var owner_element = event.currentTarget;
+                            mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                                solo: false,
+                                content:    {text: $("#mlab_component_aspect_list").clone(), title: "Select component size" },
+                                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                                style:      { classes: "mlab_zindex_top_tooltip" }
+                            });
+                            
                         } );
                         
 //prepare qtip for the download of app buttons

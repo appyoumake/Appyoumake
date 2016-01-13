@@ -39,15 +39,7 @@
 
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
             $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
-//need to wait until google maps files are downloaded, hence the loop with a timeout
-            var local_el = el;
-            window.setTimeout(function(){ mlab.dt.components.googlemap.code.local_edit_map(local_el); }, 2000)
-            
-        } else {
-            eval("mlab_cp_googlemap_" + trimmed_guid + "();");
-            this.custom_edit_map(el);
         }
-        
                 
         
     };
@@ -208,8 +200,8 @@
         this.api.setDirty();
     };
     
-    this.custom_edit_map = function (el) {
-        
+    this.custom_edit_map = function (el, event) {
+        debugger;
         var guid = $(el).find("div").attr("id");
         var options = "";
         var options_markers = "";
@@ -253,23 +245,15 @@
         content.append( '<br><select class="mlab_dt_select" id="mlab_cp_googlemap_markers" size="5">' + options_markers + '</select>');
         content.append( '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.removeMarker(\'' + guid + '\');">Remove Marker</button>');
         content.append( $('<p />', {class: "mlab_dt_button_new_line mlab_dt_left" }));
-        content.append( '<button class="mlab_dt_button_ok mlab_dt_left" onclick="$(\'.mlab_current_component\').qtip(\'hide\');">OK</button>');
+        content.append( '<button class="mlab_dt_button_ok mlab_dt_left" onclick="mlab.api.closeAllPropertyDialogs();">OK</button>');
 
         var component = el;
         var component_id = this.config.component_name;
         var component_config = this.config;
         
-        this.api.displayPropertyDialog(el, "Edit map", content);
+        this.api.displayPropertyDialog(el, "Edit map", content, null, null, null, null, false, event);
         
    };
    
-   this.local_edit_map = function (el) {
-       if (typeof google != "undefined" && typeof google.maps != "undefined") {
-           this.custom_edit_map(el);
-       } else {
-           local_el = el;
-           window.setTimeout(function(){ mlab.dt.components.googlemap.code.local_edit_map(local_el); }, 2000);
-       }
-   };
    
    

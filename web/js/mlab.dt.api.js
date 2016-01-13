@@ -190,7 +190,8 @@ Mlab_dt_api.prototype = {
                                                           .on("change", function() {
                                 that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_img_select_image").val()); 
                                 that.setDirty();
-                                $('.mlab_current_component').qtip('hide');
+                                
+                                that.closeAllPropertyDialogs();
                             }); 
 
 
@@ -378,12 +379,12 @@ Mlab_dt_api.prototype = {
         this.indicateWait(true);
         this.closeAllPropertyDialogs();
         that = this;
+        var c = 'mlab_property_dlg qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
         if (wide == true) { 
-            var c = 'qtip-light mlab_dt_box_style mlab_dt_wide_qtip_box mlab_zindex_top_tooltip';
-        } else {
-            var c = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
+            c = c + ' mlab_dt_wide_qtip_box ';
         };
-            if (typeof event != "undefined") {
+            
+        if (typeof event != "undefined") {
             var owner_element = event.currentTarget;
         } else {
             var owner_element = el;
@@ -391,12 +392,12 @@ Mlab_dt_api.prototype = {
         that.properties_tooltip = $(owner_element).qtip({
             solo: false,
             content:    {text: content, title: title },
-            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
+            position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
-                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy();  that.properties_tooltip = false; },
+                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy(); that.properties_tooltip = false; },
                             visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
                         }
         });
@@ -448,7 +449,7 @@ Mlab_dt_api.prototype = {
                         title: title,
                         button: true
                         },
-            position:   { my: 'rightTop', at: 'leftBottom', adjust: { screen: true }, effect: false },
+            position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true }, effect: false },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: styleClasses },
@@ -731,8 +732,10 @@ Mlab_dt_api.prototype = {
         setAspectRatio: function (el, aspect) {
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
                 $(el).attr("data-mlab-aspectratio", aspect);
+                this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
                 this.updateDisplay(el);
+                
             }
         },
         
@@ -746,6 +749,7 @@ Mlab_dt_api.prototype = {
         setSize: function (el, size) {
             if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
                 $(el).attr("data-mlab-size", size);
+                this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
                 this.updateDisplay(el);
             }

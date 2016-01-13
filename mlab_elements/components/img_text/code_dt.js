@@ -20,7 +20,7 @@
     };
     
     this.custom_add_link = function (el) {
-        link = this.api.getLink();
+        var link = this.api.getLink();
         if (link) {
             var newLink = document.execCommand('createlink', false, link);
             newLink.target = "_new";

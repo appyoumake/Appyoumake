@@ -9,7 +9,6 @@
     this.onCreate = function (el) {
         this.onLoad (el);
         this.getHTMLElement(el).html('<img src="' + this.config.placeholder + '" >');
-        this.custom_select_video(el);
     };
     
 //el = element this is initialising, config = global config from conf.yml
@@ -125,7 +124,7 @@
 
     };
     
-    this.custom_select_video = function (el) {
+    this.custom_select_video = function (el, event) {
         
         content = $('<form />');
         content.append( '<div class="arama">' + 
@@ -147,6 +146,6 @@
         var component_id = this.config.component_name;
         var component_config = this.config;
         
-        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube);
+        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube, null, null, false, event);
        
     };

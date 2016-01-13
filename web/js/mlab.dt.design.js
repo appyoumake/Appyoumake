@@ -392,7 +392,7 @@ Mlab_dt_design.prototype = {
  */
     storage_plugin_add: function(storage_plugin_id, component) {
         
-        $("#mlab_storage_plugin_list").fadeOut("slow");
+        this.parent.api.closeAllPropertyDialogs();
         
         var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
         url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);

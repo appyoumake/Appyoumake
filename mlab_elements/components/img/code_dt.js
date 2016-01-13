@@ -8,7 +8,6 @@
             comp.attr("src", this.config.placeholder);
         }
 
-        this.custom_upload_image(el);
     }
     
 //el = element this is initialising, config = global config from conf.yml

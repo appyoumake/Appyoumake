@@ -301,6 +301,7 @@ color: black;
 
 #mlab_editor #mlab_cp_img_select_image {
     min-width: 195px;
+    max-width: 95%;
 }
 
 

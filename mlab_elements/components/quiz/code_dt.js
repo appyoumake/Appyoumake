@@ -40,7 +40,6 @@ this.tabIdPrefix = 'mlab_dt_quiz_preview_tabs_';
  */
 this.onCreate = function (el) {
     this.onLoad(el);
-    this.custom_add_page(el);
 };
 
 /* Hook called when component is loaded into app.
@@ -732,13 +731,13 @@ this.updateTab = function(el) {
  * @param {type} el
  * @returns {undefined}
  */
-this.custom_add_page = function(el) {
+this.custom_add_page = function(el, event) {
     this.addQuizPage();
     var content = this.prepareDialogBox();
     if (typeof el == "undefined") { 
         el = $(".mlab_current_component");
     }
-    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, null, "[data-mlab-dt-quiz-input='pageTitle']", true);
+    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, null, "[data-mlab-dt-quiz-input='pageTitle']", true, event);
     
 };
 
@@ -747,7 +746,7 @@ this.custom_add_page = function(el) {
  * @param {type} el
  * @returns {undefined}
  */
-this.custom_add_question = function(el) {
+this.custom_add_question = function(el, event) {
     var page = this.getCurrentPage();
     page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
 
@@ -756,7 +755,7 @@ this.custom_add_question = function(el) {
     
     $(content).tabs("option", "active", 1);
     $(content).tabs("disable", 0);
-    this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']", true);
+    this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']", true, event);
 };
 
 this.custom_delete_question = function(el) {
@@ -823,9 +822,9 @@ this.custom_delete_question_element = function(el) {
     }
 };*/
 
-this.custom_set_options = function() {
+this.custom_set_options = function(el, event) {
     var content = this.getQuizPropertiesDialogHtml();
-    var el = $(".mlab_current_component");
+    //var el = $(".mlab_current_component");
     var settings = mlab.dt.api.getVariable(el, "settings");
     for (name in settings) {
         $(content).find("[data-mlab-dt-quiz-property='" + name + "']").prop("checked", settings[name]);
@@ -840,7 +839,7 @@ this.custom_set_options = function() {
         mlab.dt.api.setVariable(el, "settings", settings);
     });
     
-    this.api.displayPropertyDialog(el, "Set quiz options", content);
+    this.api.displayPropertyDialog(el, "Set quiz options", content, null, null, null, null, false, event);
     
 }
 //---------- VARIOUS HELPER FUNCTIONS USED BY CODE ABOVE
