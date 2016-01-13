@@ -99,7 +99,7 @@ class CategoryController extends Controller
         return new JsonResponse(array('db_table' => 'category',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
         
     }
 
@@ -159,7 +159,7 @@ class CategoryController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Category')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('categoryController.createNotFoundException'));
         }
 
         
@@ -232,7 +232,7 @@ class CategoryController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Category')->find($id);
         
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('categoryController.createNotFoundException'));
         }
 
         
@@ -252,7 +252,7 @@ class CategoryController extends Controller
         return new JsonResponse(array('db_table' => 'category',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => 'Unable to create new record'));
+        		'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
         
     }
 

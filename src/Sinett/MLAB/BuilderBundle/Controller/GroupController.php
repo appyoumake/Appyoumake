@@ -60,7 +60,7 @@ class GroupController extends Controller
         return new JsonResponse(array('db_table' => 'group',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
 
     /**
@@ -108,7 +108,7 @@ class GroupController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Group')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Group entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('groupController.createNotFoundException'));
         }
 
         
@@ -129,7 +129,7 @@ class GroupController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Group')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Group entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('groupController.createNotFoundException'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -171,7 +171,7 @@ class GroupController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Group')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Group entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('groupController.createNotFoundException'));
         }
 
 //remove all old groups from DB record
@@ -200,7 +200,7 @@ class GroupController extends Controller
         return new JsonResponse(array('db_table' => 'group',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => 'Unable to create new record'));
+        		'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
     
     /**
@@ -241,7 +241,7 @@ class GroupController extends Controller
             return new JsonResponse(array('db_table' => 'group',
                     'db_id' => 0,
                     'result' => 'FAILURE',
-                    'message' => 'Unable to locate user record'));
+                    'message' => $this->get('translator')->trans('controller.msg.unable.locate.record')));
             
         }
 
