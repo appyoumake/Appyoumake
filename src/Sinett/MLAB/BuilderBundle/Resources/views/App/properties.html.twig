@@ -42,7 +42,7 @@
                 </div>
                 
                 <div id="div_base_office_file" class="mlab_div_base">   
-                    {{ form_label(form.importFile, null, {'label': 'Import PPT or DOC file'|trans}) }}
+                    {{ form_label(form.importFile, null, {'label': 'properties.build.app.import.ppt.doc'|trans}) }}
                     {{ form_errors(form.importFile) }}
                     {{ form_widget(form.importFile) }}
                 </div>
@@ -81,7 +81,7 @@
             
             <fieldset id="mlab_make_icon" class="new_line">
                 {{ form_widget(form.iconFile) }}
-                <legend>Design icon:</legend>
+                <legend>{% trans %}properties.build.app.design.icon.legend{% endtrans %}:</legend>
                 <canvas id="app_icon_designer" height="256" width="256">
                 </canvas>                
                 <div class="left mlab_icon_design_input">
@@ -266,13 +266,13 @@
             var input, file, fr;
 
             if (typeof window.FileReader !== 'function') {
-                alert("This browser does not support local images, get your technical support to upload you images");
+                alert("{% trans %}properties.build.app.design.icon.foreground.img.error.1{% endtrans %}");
                 return false;
             }
 
             input = document.getElementById('mlab_local_iconfile');
             if (!input.files) {
-                alert("This browser doesn't seem to support the `files` property of file inputs.");
+                alert("{% trans %}properties.build.app.design.icon.foreground.img.error.2{% endtrans %}");
                 return false;
             } else if (!input.files[0]) {
                 return false;
@@ -376,10 +376,10 @@
             return; 
         }
         if (level == 1 ) {
-            $("#form_categoryTwo").html("<option>...loading...</option>");
-            $("#form_categoryThree").html("<option>...loading...</option>");
+            $("#form_categoryTwo").html("<option>{% trans %}properties.build.app.load.categories{% endtrans %}</option>");
+            $("#form_categoryThree").html("<option>{% trans %}properties.build.app.load.categories{% endtrans %}</option>");
         } else {
-            $("#form_categoryThree").html("<option>...loading...</option>");
+            $("#form_categoryThree").html("<option>{% trans %}properties.build.app.load.categories{% endtrans %}</option>");
         }
         var url = "{{ path('category_load_categories', {id: '_ID_', level: '_LEVEL_'}) }}";
         url = url.replace("_ID_", $(el).val());
@@ -429,7 +429,7 @@
                             $('#div_base_template').removeClass("hidden");
                         }
                     } else {
-                        msg = msg + "{% trans %}You must select what to base the new app on{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.base.on{% endtrans %}\n";
                     }
                     break;
                 
@@ -438,25 +438,25 @@
                     switch(action) {
                         case "office_file":
                             if ($("#form_importFile").val() == "") {
-                                msg = msg + "{% trans %}You must select a document to convert{% endtrans %}\n";
+                                msg = msg + "{% trans %}properties.build.app.fill.doc.convert{% endtrans %}\n";
                             } else {
                                 var file_name = $("#form_importFile").val();
                                 var file_type = file_name.substr(file_name.lastIndexOf('.') + 1).toLowerCase();
                                 var regex = /ppt|pptx|doc|docx/g;
                                 if (!regex.test(file_type)) {
-                                    msg = msg + "{% trans %}Document to convert must be PowerPoint or Word format{% endtrans %}\n";
+                                    msg = msg + "{% trans %}properties.build.app.fill.doc.convert.format{% endtrans %}\n";
                                 }
                             }
 
                         case "template":
                             if ($('#form_template').data('ddslick').selectedIndex == 0) {
-                                msg = msg + "{% trans %}You must select a template to use{% endtrans %}\n";
+                                msg = msg + "{% trans %}properties.build.app.fill.template{% endtrans %}\n";
                             }  
                             break;
                             
                         case "existing_app":
                             if ($('#form_copyApp').data('ddslick').selectedIndex == 0) {
-                                msg = msg + "{% trans %}You must select an app to copy{% endtrans %}\n";
+                                msg = msg + "{% trans %}properties.build.app.fill.app.copy{% endtrans %}\n";
                             } else {
                                 $("#form_copy_app").val($('#form_copyApp').data('ddslick').selectedData.value);
                             }
@@ -467,12 +467,12 @@
 
                 case 2:
                     if ($('#form_name').val().trim() == "") {
-                        msg = msg + "{% trans %}You must enter a name for this app{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.name{% endtrans %}\n";
                     }
                     
                     if (mlab_edit_mode == 'update') {
                         if ($('#form_active_version').val().trim() == "" || isNaN(parseFloat($('#form_active_version').val())) || parseFloat($('#form_active_version').val()) < 1 ) {
-                            msg = msg + "{% trans %}You must enter a version number that is 1 or higher.{% endtrans %}\n";
+                            msg = msg + "{% trans %}properties.build.app.fill.version{% endtrans %}\n";
                         }
                     }
 
@@ -487,31 +487,31 @@
                         var file_type = file_name.substr(file_name.lastIndexOf('.') + 1).toLowerCase();
                         var regex = /png|jpg|jpeg/g;
                         if (!regex.test(file_type)) {
-                            msg = msg + "{% trans %}Splash file must be in PNG or JPEG format{% endtrans %}\n";
+                            msg = msg + "{% trans %}properties.build.app.fill.splash.format{% endtrans %}\n";
                         }
                     }
                     break;
 
                 case 3:
                     if ($('#form_description').val().trim() == "") {
-                        msg = msg + "{% trans %}You must enter a description for this app{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.description{% endtrans %}\n";
                     }  
 
 
                     if ($('#form_keywords').val().trim() == "") {
-                        msg = msg + "{% trans %}You must enter one or more keywords for this app{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.keywords{% endtrans %}\n";
                     }
 
                     if ($('#form_categoryOne').val() == null || $('#form_categoryOne').val().trim() == "") {
-                        msg = msg + "{% trans %}You must select a main category for this app{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.main.category{% endtrans %}\n";
                     }  
 
                     if ($('#form_categoryTwo').val() == null || $('#form_categoryTwo').val().trim() == "") {
-                        msg = msg + "{% trans %}You must select a secondary category for this app{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.secondary.category{% endtrans %}\n";
                     }  
 
                     if ($('#form_categoryThree').val() == null || $('#form_categoryThree').val().trim() == "") {
-                        msg = msg + "{% trans %}You must select a final category for this app{% endtrans %}\n";
+                        msg = msg + "{% trans %}properties.build.app.fill.final.category{% endtrans %}\n";
                     } 
                 
 //moving to last page, display all info so they can check before committing
@@ -520,13 +520,13 @@
                         var based_on = "";
                         switch(action) {
                             case "template":
-                                based_on = "You are creating an empty app based on the " + $('#form_template').data('ddslick').selectedData.text + " template";
+                                based_on = "{% trans %}You are creating an empty app based on the{% endtrans %} " + $('#form_template').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.2{% endtrans %}";
                                 break;
                             case "existing_app":
-                                based_on = "You are creating a new app copied from the " + $('#form_copyApp').data('ddslick').selectedData.text + " app. All content will be copied across, but any changes will only apply to the new app.";
+                                based_on = "{% trans %}properties.build.app.summery.3{% endtrans %} " + $('#form_copyApp').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.4{% endtrans %}";
                                 break;
                             case "office_file":
-                                based_on = "You are creating a new app with content copied from the " + $("#form_importFile").val() + " file, with layout based on the " + $('#form_template').data('ddslick').selectedData.text + " template";
+                                based_on = "{% trans %}properties.build.app.summery.5{% endtrans %} " + $("#form_importFile").val() + " {% trans %}properties.build.app.summery.6{% endtrans %} " + $('#form_template').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.7{% endtrans %}";
                                 break;
                         } //end switch what they want to base app on                        
                         var summary = 
@@ -639,7 +639,7 @@
             },
             
             error: function(e) {
-                alert('An error occurred, see console log for more information'); 
+                alert('{% trans %}properties.build.app.error{% endtrans %}'); 
                 console.log(e);
                 $('#form_copyApp').ddslick({
                     width: 300,
