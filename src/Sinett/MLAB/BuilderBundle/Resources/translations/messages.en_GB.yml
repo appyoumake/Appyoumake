@@ -503,6 +503,7 @@ compController.msg.toggleStateAction: Unable to locate component record
 controller.msg.unable.create.record: Unable to create new record
 controller.msg.unable.locate.record: Unable to locate user record
 groupController.createNotFoundException: Unable to find Group entity.
+helpController.createNotFoundException: Unable to find Help entity.
 
 
 #-----------------------------------------------------
