@@ -103,7 +103,7 @@
                 <div class="mlab_permanent_top_menu mlab_gradient">
                     <ul id="mlab_menu">
                         <li>
-                            <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='Tilbake til App liste' src="/img/logo_menu.png" alt="logo" /></div></a>
+                            <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' src="/img/logo_menu.png" alt="logo" /></div></a>
                         </li>  <!-- The Mlab log -->
     
                         <li id="mlab_editor_menu_dropdown">    
@@ -167,8 +167,9 @@
                                 <div class='mlab_sub_menu'>
                                     <h4>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h4>
                                     <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
-                                    <a href="javascript: mlab.dt.management.app_remove_locks();">Fjern låser</a>
-                                                        <a href="javascript: mlab.dt.management.compiler.get_app_status();">Test connection to compiler </a>
+                                    <a href="javascript: mlab.dt.management.app_remove_locks();">{% trans %}build_app.menu.utilities.delete.locks{% endtrans %}</a>
+                                    <a href="javascript: mlab.dt.management.compiler.get_app_status();">{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}
+                                    </a>
                                 </div>
                             </div> <!-- End Feature col -->
 
@@ -178,7 +179,7 @@
                                     <h4>{% trans %}app.builder.edit.menu.heading.test.app.web{% endtrans %}</h4>
                                     <p>{% trans %}app.builder.edit.menu.test.app.web.info{% endtrans %}</p>
                                             <a href="javascript: mlab.dt.management.page_preview();">
-                                                <div title="Test app i nettleser" id="mlab_preview_icon"></div>
+                                                <div title="{% trans %}build_app.menu.tooltip.test.app.web{% endtrans %}" id="mlab_preview_icon"></div>
                                             </a> 
                                     </br>
                                     <h4>{% trans %}app.builder.edit.menu.heading.test.app.mob{% endtrans %}</h4>
@@ -245,8 +246,8 @@
                                 <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').hide(); $('#mlab_page_control_title').text(mlab.dt.app.curr_pagetitle);" class="mlab_dt_button_cancel_left" title="{% trans %}app.builder.page.tooltip.cancel{% endtrans %}">{% trans %}app.builder.page.cancel{% endtrans %}</button>
                             </div>
                             <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png" title="{% trans %}app.builder.page.tooltip.pagelist{% endtrans %}">
-                            <img onclick='document.execCommand("redo");' title='Redo' id='mlab_button_redo' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
-                            <img onclick='document.execCommand("undo");' title='Undo' id='mlab_button_undo' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
+                            <img id='mlab_button_redo' onclick='document.execCommand("redo");' title='{% trans %}build_app.page.tooltip.redo{% endtrans %}' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
+                            <img id='mlab_button_undo' onclick='document.execCommand("undo");' title='{% trans %}build_app.page.tooltip.undo{% endtrans %}' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
                             <img id="mlab_page_control_new" onclick="mlab.dt.management.page_new();" src="/img/menu_new_icon.png" title="{% trans %}app.builder.page.tooltip.new{% endtrans %}">
 
                         </div>
@@ -274,19 +275,19 @@
 
                         <div id="mlab_toolbar_for_components" class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style="display: none">
                             <div id='mlab_component_toolbar_heading'>Tools</div>
-                            <img onclick='mlab.dt.design.component_moveup();'    title='Move selected component up'         id='mlab_button_up'                     src='/img/tools/up.png'         class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_movedown();'  title='Move selected component down'       id='mlab_button_down'                   src='/img/tools/down.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_delete();'    title='Delete selected component'          id='mlab_button_delete'                 src='/img/tools/delete.png'     class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_help();'      title='Get help about selected component'                   id='mlab_button_help'           src='/img/tools/help.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_cut();'       title='Cut selected component, you can paste it into another page in this app'         id='mlab_button_cut_comp'       src='/img/tools/cut-icon.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_copy();'      title='Copy selected component, you can paste it into another page in this app'        id='mlab_button_copy_comp'      src='/img/tools/copy-icon.png'      class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_paste();'     title='Paste component from Mlab clipboard'                                            id='mlab_button_paste_comp'     src='/img/tools/paste-icon.png'     class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_moveup();'    title='{% trans %}build_app.components.toolbar.tooltip.move.up{% endtrans %}'      id='mlab_button_up'         src='/img/tools/up.png'         class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_movedown();'  title='{% trans %}build_app.components.toolbar.tooltip.move.down{% endtrans %}'    id='mlab_button_down'       src='/img/tools/down.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_delete();'    title='{% trans %}build_app.components.toolbar.tooltip.delete{% endtrans %}'       id='mlab_button_delete'     src='/img/tools/delete.png'     class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_help();'      title='{% trans %}build_app.components.toolbar.tooltip.help{% endtrans %}'         id='mlab_button_help'       src='/img/tools/help.png'       class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_cut();'       title='{% trans %}build_app.components.toolbar.tooltip.cut{% endtrans %}'          id='mlab_button_cut_comp'   src='/img/tools/cut-icon.png'   class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_copy();'      title='{% trans %}build_app.components.toolbar.tooltip.copy{% endtrans %}'         id='mlab_button_copy_comp'  src='/img/tools/copy-icon.png'  class='mlab_tools_all' >
+                            <img onclick='mlab.dt.design.component_paste();'     title='{% trans %}build_app.components.toolbar.tooltip.paste{% endtrans %}'        id='mlab_button_paste_comp' src='/img/tools/paste-icon.png' class='mlab_tools_all' >
                             <hr class='mlab_tools_line' >
                              <!-- TODO bytte ut resize24.png med increase.png og decrease.png  -->
-                            <img                                                            title='Resize component'               id='mlab_button_component_size'          src='/img/tools/resize24.png'       class='mlab_tools mlab_hidden' >
-                            <img                                                            title='Select aspect ratio'            id='mlab_button_component_aspect'        src='/img/tools/aspect.png'         class='mlab_tools mlab_hidden' >
-                            <img                                                            title='Select storage mechanism'       id='mlab_button_select_storage_plugin'   src='/img/tools/storage.png'        class='mlab_tools mlab_tools_space mlab_hidden' >
-                            <img onclick='mlab.dt.design.component_edit_credentials();'     title='Edit credentials'               id='mlab_button_get_credentials'         src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <img                                                        title='{% trans %}build_app.components.toolbar.tooltip.resize{% endtrans %}'        id='mlab_button_component_size'          src='/img/tools/resize24.png'       class='mlab_tools mlab_hidden' >
+                            <img                                                        title='{% trans %}build_app.components.toolbar.tooltip.aspect.ratio{% endtrans %}'  id='mlab_button_component_aspect'        src='/img/tools/aspect.png'         class='mlab_tools mlab_hidden' >
+                            <img                                                        title='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'       id='mlab_button_select_storage_plugin'   src='/img/tools/storage.png'        class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <img onclick='mlab.dt.design.component_edit_credentials();' title='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'   id='mlab_button_get_credentials'         src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
                             <div id='mlab_component_context_menu'></div>
                             <div class="mlab_newline">&nbsp;</div>
                         </div>
@@ -295,23 +296,23 @@
 
                         <div id="mlab_component_size_list" style="display: none;">
                             <ul>
-                                <li data-mlab-comp-size="small"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>Small</li>
-                                <li data-mlab-comp-size="medium"     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>Medium</li>
-                                <li data-mlab-comp-size="large"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>Large</li>
-                                <li data-mlab-comp-size="fullscreen" onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>Full Screen</li>
+                                <li data-mlab-comp-size="small"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.small{% endtrans %}</li>
+                                <li data-mlab-comp-size="medium"     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.medium{% endtrans %}</li>
+                                <li data-mlab-comp-size="large"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.large{% endtrans %}</li>
+                                <li data-mlab-comp-size="fullscreen" onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.full.screen{% endtrans %}</li>
                             </ul>
                         </div>
 
                         <div id="mlab_component_aspect_list" style="display: none;">
                             <ul>
-                                <li data-mlab-comp-aspect="4:3" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>4:3</li>
-                                <li data-mlab-comp-aspect="16:9" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>16:9</li>
-                                <li data-mlab-comp-aspect="1:1" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>1:1</li>
+                                <li data-mlab-comp-aspect="4:3" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.4.3{% endtrans %}</li>
+                                <li data-mlab-comp-aspect="16:9" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.16.9{% endtrans %}</li>
+                                <li data-mlab-comp-aspect="1:1" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.1.1{% endtrans %}</li>
                             </ul>
                         </div>
 
-                        <div id="mlab_dialog_confirm" title="Siste forandringer ble ikke lagret" style="display: none;">
-                            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?</p>
+                        <div id="mlab_dialog_confirm" title="{% trans %}build_app.tooltip.not.saved{% endtrans %}" style="display: none;">
+                            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>{% trans %}build_app.not.saved{% endtrans %}</p>
                         </div>
                         <div id="mlab_overlay"><div class="mlab_modal">{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
                         <div style="clear: both;">&nbsp;</div>
@@ -320,8 +321,8 @@
 	        </div>
         </div>
          <div id="fotter" class="mlab_editor_footer">
-             <img onclick='mlab.dt.design.toggle_footer();' title='Turn help off' id='mlab_button_help' src='/img/helpIcon.png' class='mlab_editor_footer_help_icon' >
-             <div class="mlab_editor_footer_help">Hold musen over elementet du ønsker en beskrivelse av.</div>
+             <img onclick='mlab.dt.design.toggle_footer();' title='{% trans %}build_app.footer.tooltip.help{% endtrans %}' id='mlab_button_help' src='/img/helpIcon.png' class='mlab_editor_footer_help_icon' >
+             <div class="mlab_editor_footer_help">{% trans %}build_app.footer.help{% endtrans %}</div>
          </div>
          
         

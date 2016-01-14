@@ -22,10 +22,10 @@
     	<a href="{{ path('app_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.app.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
         <ul>
             <li>
-                <a href="{{ path('app_remove_from_appstore', { 'id': entity.id }) }}">remove from app store</a>
+                <a href="{{ path('app_remove_from_appstore', { 'id': entity.id }) }}">{% trans %}show.remove.from.app.store{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ path('app_recall', { 'id': entity.id }) }}">recall</a>
+                <a href="{{ path('app_recall', { 'id': entity.id }) }}">{% trans %}show.recall.from.app.store{% endtrans %}</a>
             </li>
         </ul>
     </td>

@@ -137,11 +137,12 @@ class AppController extends Controller
                ->getQuery()
                ->execute();
             
+            
             if ($exists) {
 				return new JsonResponse(array(
 						'action' => 'ADD',
 						'result' => 'FAILURE',
-						'message' => 'App name already exists, chose a different name'));
+						'message' =>  $this->get('translator')->trans('appController.msg.createAction.1')));
         	}
         	
 //prepare file management service
@@ -189,7 +190,7 @@ class AppController extends Controller
                         return new JsonResponse(array(
                                 'action' => 'ADD',
                                 'result' => 'FAILURE',
-                                'message' => 'Unable to copy app files'));
+                                'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
                     } 
 
 //update the title of the app in the conf.json file
@@ -209,7 +210,7 @@ class AppController extends Controller
                         return new JsonResponse(array(
                                 'action' => 'ADD',
                                 'result' => 'FAILURE',
-                                'message' => 'Unable to create app from template'));
+                                'message' => $this->get('translator')->trans('appController.msg.createAction.2')));
                     }
                     break;
 
@@ -225,7 +226,7 @@ class AppController extends Controller
                        return new JsonResponse(array(
                                     'action' => 'ADD',
                                     'result' => 'FAILURE',
-                                    'message' => 'Invalid file uploaded'));
+                                    'message' => $this->get('translator')->trans('appController.msg.createAction.3')));
                     }
 
                     $py_pth = $config["convert"]["python_bin"];
@@ -254,7 +255,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     return new JsonResponse(array(
                             'action' => 'ADD',
                             'result' => 'FAILURE',
-                            'message' => 'Neither app to copy nor template specified'));
+                            'message' => $this->get('translator')->trans('appController.msg.createAction.4')));
         		        		
         	}
         	
@@ -266,7 +267,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     return new JsonResponse(array(
                             'action' => 'ADD',
                             'result' => 'FAILURE',
-                            'message' => 'Unable to store splash screen for app'));
+                            'message' => $this->get('translator')->trans('appController.msg.unable.store.splach.screen')));
                 }
             }
             
@@ -284,7 +285,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 return new JsonResponse(array(
                         'action' => 'ADD',
                         'result' => 'FAILURE',
-                        'message' => 'Unable to store icon for app'));
+                        'message' => $this->get('translator')->trans('appController.msg.unable.store.icon')));
             }
             
 //update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
@@ -309,7 +310,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         		'action' => 'ADD',
         		'result' => 'FAILURE',
                 'temp' => $form->getErrors(),
-        		'message' => 'Incorrect data submitted, may be a field missing'));
+        		'message' => $this->get('translator')->trans('appController.msg.createAction.5')));
                     
     }
 
@@ -398,13 +399,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     {
         $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find App entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
         }
 
         
@@ -422,14 +423,14 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     {
         $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
 
         $file_mgmt = $this->get('file_management');
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find App entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
         }
 
         $backgrounds = $file_mgmt->getBackgrounds();
@@ -486,7 +487,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
@@ -494,7 +495,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find App entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
         }
         
         $editForm = $this->createAppForm($entity, 'update');
@@ -526,12 +527,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     return new JsonResponse(array(
                         'action' => 'ADD',
                         'result' => 'FAILURE',
-                        'message' => 'An app with the name and version number specified already exists, chose a different name and/or version'));
+                        'message' => $this->get('translator')->trans('appController.msg.updateAction.1')));
                 } else if ($em->getRepository('SinettMLABBuilderBundle:App')->findOneByName($entity->getName())) {
                     return new JsonResponse(array(
                             'action' => 'ADD',
                             'result' => 'FAILURE',
-                            'message' => 'An app with the name and version number specified already exists, chose a different name and/or version'));
+                            'message' => $this->get('translator')->trans('appController.msg.updateAction.1')));
                 }
                 
 //todo move app
@@ -551,7 +552,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     return new JsonResponse(array(
                             'action' => 'ADD',
                             'result' => 'FAILURE',
-                            'message' => 'Unable to store splash screen for app'));
+                            'message' => $this->get('translator')->trans('appController.msg.unable.store.splach.screen')));
                 }
             }
             
@@ -569,7 +570,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 return new JsonResponse(array(
                         'action' => 'ADD',
                         'result' => 'FAILURE',
-                        'message' => 'Unable to store icon for app'));
+                        'message' => $this->get('translator')->trans('appController.msg.unable.store.icon')));
             }
             
                         
@@ -586,7 +587,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         return new JsonResponse(array('db_table' => 'app',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => 'Unable to update app'));
+        		'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
             
     }
     
@@ -599,21 +600,21 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
 
         if (!$entity) {
             return new JsonResponse(array('db_table' => 'app',
         							      'db_id' => $id,
         							  	  'result' => 'failure',
-        								  'message' => 'Unable to find record to delete'));
+        								  'message' => $this->get('translator')->trans('appController.msg.deleteAction.1')));
         }
 
         if ($entity->getPublished() != $entity::MARKET_NOT_PUBLISHED) {
             return new JsonResponse(array('db_table' => 'app',
         							      'db_id' => $id,
         							  	  'result' => 'failure',
-        								  'message' => 'Cannot delete apps that have been sent to the market'));
+        								  'message' => $this->get('translator')->trans('appController.msg.deleteAction.2')));
         }
         
         $app_path = $entity->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
@@ -666,7 +667,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
         $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
 
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -700,7 +701,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	$file_mgmt->setConfig('component');*/
         $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
         
 //load translation for use in Javascript
@@ -751,7 +752,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function loadBuilderVariablesAction($app_id, $page_num) {
     	$em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
 
     	
@@ -837,7 +838,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function loadBuilderComponentsAction($app_id) {
     	$em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-            die("You have no access to this app");
+            die($this->get('translator')->trans('appController.die.no.access'));
         }
     	
 //load all the components        
@@ -869,14 +870,14 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
     		
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     		
     	}
     	
@@ -890,7 +891,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if (!$doc) {
             return new JsonResponse(array(
     					'result' => 'error',
-    					'msg' => sprintf("Page not specified: %d", $page_num)));
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
 
     	if (file_exists("$app_path$doc")) {
@@ -931,7 +932,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	} else {
     		return new JsonResponse(array(
     				'result' => 'error',
-    				'msg' => sprintf("File does not exists, contact support: %s", "$app_path$doc")));
+    				'msg' => sprintf($this->get('translator')->trans('appController.msg.getPageAction') . ": %s", "$app_path$doc")));
     		 
     	}
     }
@@ -946,18 +947,18 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
         if (!$page_num) {
             return new JsonResponse(array(
     					'result' => 'error',
-    					'msg' => sprintf("Page not specified: %d", $page_num)));
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
 
 //create the path to the file to open
@@ -974,7 +975,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($res === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
-                'msg' => "Unable to save file, please try again"));
+                'msg' => $this->get('translator')->trans('appController.msg.putPageAction')));
         }
         
 /* Returns data about the app that may have been changed by another user working on the same app
@@ -1030,13 +1031,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     		
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
 //copy the template file to the app
@@ -1046,7 +1047,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
-                'msg' => "Unable to create a new file, maximum app size of 999 pages reached!"));
+                'msg' => $this->get('translator')->trans('appController.msg.app.id.not.specified')));
         }
         
 //update file counter variable in JS
@@ -1069,12 +1070,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
     	
 //create the name of the file to create
@@ -1083,7 +1084,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
-                'msg' => "Unable to copy the page, please try again"));
+                'msg' => $this->get('translator')->trans('appController.msg.copyPageAction')));
         }
         
 //update file counter variable in JS
@@ -1105,12 +1106,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
     	
 //get the name of the file to delete
@@ -1122,7 +1123,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($res === false) {
             return new JsonResponse(array(
                     'result' => 'error',
-                    'msg' => "Unable to delete page"));
+                    'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
         } else {
             
 //update file counter variable in JS
@@ -1152,18 +1153,18 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'failure',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
         if ( !isset($comp_id) ) {
     		return new JsonResponse(array(
     			'result' => 'failure',
-    			'msg' => sprintf("Component type not specified: %s", $comp_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
         }
 
         $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
@@ -1189,7 +1190,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             if ( !$sub_folder ) {
                 return new JsonResponse(array(
                     'result' => 'failure',
-                    'msg' => 'File type not allowed, please convert to another format'));
+                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')));
             }
             
             if ($sub_folder == "img") {
@@ -1205,13 +1206,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 if (!@(include($path_component . "server_code.php"))) {
                     return new JsonResponse(array(
                             'result' => 'failure',
-                            'msg' => "Unable to load server_code.php file"));
+                            'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
                 } else {
                     if (function_exists("onUpload")) {
                         if (!onUpload($path_app . $sub_folder . "/" . $file_name, $path_app, $path_component, $comp_id)) {
                             return new JsonResponse(array(
                                 'result' => 'failure',
-                                'msg' => "Unable to run application on server"));
+                                'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
                         }
                     }
                 }
@@ -1245,18 +1246,18 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'failure',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
         if ( !isset($comp_id) ) {
     		return new JsonResponse(array(
     			'result' => 'failure',
-    			'msg' => sprintf("Component type not specified: %s", $comp_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
         }
 
         $file_mgmt = $this->get('file_management');
@@ -1274,12 +1275,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
 //get config etc
@@ -1298,7 +1299,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	} else {
     		return new JsonResponse(array(
     				'result' => 'error',
-    				'msg' => sprintf("Unable to update app with feature " . $comp_id . ", please try again")));
+    				'msg' => sprintf($this->get('translator')->trans('appController.msg.featureAddAction.1') . $comp_id . $this->get('translator')->trans('appController.msg.featureAddAction.2'))));
     	}
     }
     
@@ -1313,18 +1314,18 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
         if (empty($storage_plugin_id)) {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => "Storage plugin not specified"));
+    			'msg' => get('translator')->trans('appController.msg.storagePluginAddAction.1')));
         }
 
 //get config etc
@@ -1342,7 +1343,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 if (!@copy($path_component . "code_rt.js", $path_app_js . $storage_plugin_id . "_code_rt.js")) {
                     return new JsonResponse(array(
                         'result' => 'failure',
-                        'msg' => sprintf("Unable to copy JavaScript file for this component: %s", $storage_plugin_id)));
+                        'msg' => sprintf($this->get('translator')->trans('appController.msg.storagePluginAddAction.2') . ": %s", $storage_plugin_id)));
                 }
 
                 $include_items = file($path_app_include_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -1364,12 +1365,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
 //get config etc
@@ -1406,12 +1407,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
         $app->setActiveVersion($version);
@@ -1434,7 +1435,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($version_increment != 0.1 && $version_increment != 1) {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => "Increment must be 0.1 or 1, value supplied was: " . $increment));
+    			'msg' => $this->get('translator')->trans('appController.msg.createNewVersionAction') . ": " . $increment));
             
         }
         
@@ -1442,13 +1443,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
             $branches = $em->getRepository('SinettMLABBuilderBundle:App')->findByName($app->getName());
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
 //get config values
@@ -1469,7 +1470,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             return new JsonResponse(array(
                     'action' => 'ADD',
                     'result' => 'FAILURE',
-                    'message' => 'Unable to copy app files'));
+                    'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
         } else {
 
             $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
@@ -1493,13 +1494,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die("You have no access to this app");
+                die($this->get('translator')->trans('appController.die.no.access'));
             }
             $branches = $em->getRepository('SinettMLABBuilderBundle:App')->findByName($app->getName());
     	} else {
     		return new JsonResponse(array(
     			'result' => 'error',
-    			'msg' => sprintf("Application ID not specified: %d", $app_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
 //now we calculate the new branch number
@@ -1535,7 +1536,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             return new JsonResponse(array(
                     'action' => 'ADD',
                     'result' => 'FAILURE',
-                    'message' => 'Unable to copy app files'));
+                    'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
         } else {
             $new_branch = new App;
             $new_branch->setTemplate($app->getTemplate());

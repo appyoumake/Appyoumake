@@ -557,10 +557,11 @@ Mlab_dt_design.prototype = {
         if (footer.hasClass("mlab_transparent")) {
             footer.removeClass("mlab_transparent");
             footer_text.removeClass("mlab_hidden");
-            //footer_image.t
+            //TODO toggle title as well
         } else {
             footer.addClass("mlab_transparent");
             footer_text.addClass("mlab_hidden");
+            //TODO toggle title as well
         }
     },
     

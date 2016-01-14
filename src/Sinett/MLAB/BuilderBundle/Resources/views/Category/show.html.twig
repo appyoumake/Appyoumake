@@ -1,5 +1,5 @@
 <div class='treeview {{ path('category_delete', { 'id': entity.id }) }}' id='row_category_{{entity.id}}'>
 	<a href="{{ path('category_edit', { 'id': entity.id }) }}">{{ entity.name }}</a> 
-	<a class="tree_add" href="{{ path('category_new', { 'id': entity.id }) }}">add</a>
-	<a class="tree_delete" href="{{ path('category_delete', { 'id': entity.id }) }}">delete</a>
+	<a class="tree_add" href="{{ path('category_new', { 'id': entity.id }) }}">{% trans %}category.show.add{% endtrans %}</a>
+	<a class="tree_delete" href="{{ path('category_delete', { 'id': entity.id }) }}">{% trans %}category.show.delete{% endtrans %}</a>
 </div>
