@@ -232,6 +232,30 @@ class HelpController extends Controller
         		'message' => ''));
         
     }
+    
+/**
+ * 
+ * @param \Symfony\Component\HttpFoundation\Request $request
+ * @param string $route = unique symfony name on the route, as found in /resources/config/routing files
+ */
+    public function getHtmlAction($route) {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->findOneByRoute($route);
+
+        if (!$entity) {
+        	return new JsonResponse(array('db_table' => 'help',
+        			'db_id' => $route,
+        			'result' => 'FAILURE',
+        			'html' => ''));
+        }
+        
+        return new JsonResponse(array('db_table' => 'help',
+        		'db_id' => $route,
+        		'result' => 'SUCCESS',
+        		'html' => $entity->getMessage()));
+        
+    }
+    
 
 
 }

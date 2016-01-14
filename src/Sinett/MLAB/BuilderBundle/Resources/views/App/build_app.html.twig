@@ -216,7 +216,7 @@
                         <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
                         <li  class="single"><div id='mlab_statusbar_progressbar'><progress id='mlab_progressbar' class='mlab_progressbar' value="10" max="100"></progress></div></li>
-                        <li class="single menu_right"><img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" onclick='mlab.dt.design.page_help();'></li>
+                        <li class="single menu_right"><img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" onclick='page_help(event);'></li>
                         
                         <li id="mlab_user_menu_dropdown" class="menu_right">
                             <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}app.builder.menu.user.info.main.tooltip{% endtrans %}' alt="logo" >
@@ -288,6 +288,7 @@
                             <img                                                            title='Select storage mechanism'       id='mlab_button_select_storage_plugin'   src='/img/tools/storage.png'        class='mlab_tools mlab_tools_space mlab_hidden' >
                             <img onclick='mlab.dt.design.component_edit_credentials();'     title='Edit credentials'               id='mlab_button_get_credentials'         src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
                             <div id='mlab_component_context_menu'></div>
+                            <div class="mlab_newline">&nbsp;</div>
                         </div>
 
                         <div id="mlab_storage_plugin_list" style="display: none;"></div>
@@ -328,6 +329,33 @@
             $(document).ready(function() {
                 $("#mlab_statusbar_progress_spin").spin('small', '#fff');        
             });
+            
+            function page_help(event) {
+                var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
+                var title = "Help";
+                var owner = event.currentTarget;
+                var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
+                $.getJSON(url, function(data) {
+                    if (data.result == "SUCCESS") {
+                         $(owner).qtip({
+                             solo: false,
+                             content:    {
+                                         text: data.html,
+                                         title: title,
+                                         button: true
+                                         },
+                             position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                             show:       { ready: true, modal: { on: true, blur: false } },
+                             hide:       false,
+                             style:      { classes: qTipClasses },
+                             events:     {   hide: function(event, api) { api.destroy(); } }
+                         });
+                    } else {
+                        alert("{% trans %}app.mlab.menu.help.notfound{% endtrans %}");
+                    }
+
+                });
+            }
         </script>
     </body>
 </html>

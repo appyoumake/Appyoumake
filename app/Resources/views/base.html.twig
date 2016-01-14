@@ -75,7 +75,7 @@
                 </div><!-- End Editor menu container -->
         
                 <li class="single menu_right">
-                    <img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" >
+                    <img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" onclick="page_help(event);">
                 </li>
 
                 <li id="mlab_user_menu_dropdown" class="menu_right">
@@ -154,6 +154,33 @@
 
                              });  
                        });
+
+                       function page_help(event) {
+                           var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
+                           var title = "Help";
+                           var owner = event.currentTarget;
+                           var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
+                           $.getJSON(url, function(data) {
+                               if (data.result == "SUCCESS") {
+                                    $(owner).qtip({
+                                        solo: false,
+                                        content:    {
+                                                    text: data.html,
+                                                    title: title,
+                                                    button: true
+                                                    },
+                                        position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                                        show:       { ready: true, modal: { on: true, blur: false } },
+                                        hide:       false,
+                                        style:      { classes: qTipClasses },
+                                        events:     {   hide: function(event, api) { api.destroy(); } }
+                                    });
+                               } else {
+                                   alert("{% trans %}app.mlab.menu.help.notfound{% endtrans %}");
+                               }
+                               
+                           });
+                       }
                     </script>
                       
                 {% endblock %}  
