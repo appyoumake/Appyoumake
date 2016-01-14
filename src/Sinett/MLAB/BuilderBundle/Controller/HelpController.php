@@ -56,7 +56,7 @@ class HelpController extends Controller
         return new JsonResponse(array('db_table' => 'help',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
 
     /**
@@ -121,7 +121,7 @@ class HelpController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Help entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('helpController.createNotFoundException'));
         }
 
         
@@ -142,7 +142,7 @@ class HelpController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Help entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('helpController.createNotFoundException'));
         }
         
         $routes = $this->getRoutes();
@@ -187,7 +187,7 @@ class HelpController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Help entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('helpController.createNotFoundException'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -206,7 +206,7 @@ class HelpController extends Controller
         return new JsonResponse(array('db_table' => 'help',
         			'db_id' => $id,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to update record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
     /**
      * Deletes a Help entity.
