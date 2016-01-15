@@ -582,7 +582,13 @@ this.questionClicked = function(question) {
             .find("*")
             .removeAttr("contenteditable")
             .removeClass("mlab_current_component_grandchild");
-    question.addClass("mlab_current_component_child").children();
+    question.addClass("mlab_current_component_child")
+            .find("p, label, h2")
+            .addAttr("contenteditable");
+    
+    question.find("p, label, h2, select, input").on("click", function() {
+        $(this).parents('data-mlab-cp-quiz-subrole="question"').addClass("mlab_current_component_grandchild").siblings(".mlab_current_component_grandchild").removeClass("mlab_current_component_grandchild").find();
+    });
 };
 
 this.alternativeClicked = function(alternative) {
