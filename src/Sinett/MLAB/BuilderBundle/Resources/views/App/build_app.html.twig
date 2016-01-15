@@ -155,7 +155,7 @@
                                                 
                                  <h3>{% trans %}app.builder.menu.heading.save{% endtrans %}</h3>   
                                  <p>{% trans %}app.builder.menu.save.info{% endtrans %}</p>
-                                 <a href="javascript: var temp; mlab.dt.management.page_save(temp, true);">
+                                 <a onclick="var temp; mlab.dt.management.page_save(temp, true); return false;">
                                     <div title="{% trans %}app.builder.menu.save.tooltip{% endtrans %}" class="mlab_save_icon"></div>
                                 </a>  
                             </div> <!-- End Navigate & Save col -->

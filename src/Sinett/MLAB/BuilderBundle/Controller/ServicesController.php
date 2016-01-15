@@ -167,7 +167,10 @@ class ServicesController extends Controller
                 'ignore_errors' => '1'
             )
         );
-        
+
+error_log("---getUrlContent---");
+error_log($opt);
+
         $context = stream_context_create($opt);
         return file_get_contents($url, false, $context);
     }
@@ -612,9 +615,14 @@ error_log($head);
 //this is called externally from compiler service, we reuse the app related variables and call the next step, compiling the app
         if ($action == "multistep" && $result == "true") {
 //files are verified, now we need to compile the app. The final step, download app, is called inside the callback from verify
+
+error_log("---cbCmpVerifiedAppAction 2---");
             $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $remote_processed_app_checksum, "platform" => $platform, "tag" => "multistep-$window_uid-$platform");
+error_log("---cbCmpVerifiedAppAction 3---");
             $res = $this->cmpCallRemoteFunction($config, $window_uid, "compiling", "compiler_service", $parameters, "compileApp");
+error_log("---cbCmpVerifiedAppAction 4---");
             (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "compileApp compiler service failed") : $arr = array('result' => 'success');
+error_log("---cbCmpVerifiedAppAction 5---");
             return new JsonResponse($arr);
 
         }        

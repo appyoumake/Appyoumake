@@ -24,10 +24,10 @@
    ========================================================================== */
 /* Added so that the elements of the container don't wrap if the screen is 
 made smaler than the min width */
-body#mlab_editor {
+/* body#mlab_editor {
     padding-bottom: 70px;
     margin-bottom: 70px;
-}
+}*/
 
 /* Added so that the elements of the container don't wrap if the screen is 
 made smaler than the min width */

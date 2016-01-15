@@ -22,7 +22,8 @@ this.editPrompts = {
     "explanatory": "You can enter some explanatory text here, or leave blank if not needed." + cont,
     "alternatives": "Enter the possible answers for this question."  + cont + " Leave it blank to continue to next step.",
     "correctResponse": "Enter the number(s) of the correct response(s) with a space or comma between each correct response. The correct responses will be highlighted. If you make a mistake you can redo the selection, or leave blank when done" + cont,
-    "mandatory": "Response required? Enter y or Y for yes. " + cont
+    "mandatory": "Response required? Enter y or Y for yes. " + cont,
+    "nextAction": "Do you want to add a new page or a new question? enter p for page or q for question. " + cont,
 };
 
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
@@ -98,10 +99,12 @@ this.onSave = function (el) {
         page.find(".mc_correct").removeClass("mc_correct");
         html.append( page );
     } );
+    
     $(el).children("script").each( function() { 
         html.append( $(this)[0].outerHTML ) ;
     });
     return html[0].outerHTML;
+    
 };
 
 /* Indicator of how much of a quiz is actually set up. Returns number of questions in quiz.
@@ -215,11 +218,8 @@ this.handleUserInput = function(input, e) {
                 this.addQuestionAlternative(question, value, questionType);
                 if (questionType == "text") {
                     input.val('');
-                    $("div.qtip input:text").val("").removeClass("mc_blurred");
-                    $("div.qtip textarea").val("").removeClass("mc_blurred");
-                    this.prepareQuestion(page, question);
-                    this.setPropertiesDialogTab(1);
-                    $("[data-mlab-dt-quiz-input='explanatory']").focus();
+                    this.setPropertiesDialogTab();
+                    $("[data-mlab-dt-quiz-input='nextAction']").focus();
                 }
             } else { //the user does not want to add more alternatives, move to select correct response BUT NOT IF TEXTBOX, that only has a single answer
                 input.addClass("mc_blurred");
@@ -233,11 +233,31 @@ this.handleUserInput = function(input, e) {
             this.markAlternativesAsCorrect(question, value, questionType);
             var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
             $("#"  + correct_response_id).html("");
+            this.setPropertiesDialogTab();
+            $("[data-mlab-dt-quiz-input='nextAction']").focus();
+            break;
+            
+        case "nextAction":
+            input.val('');
+            if (value.toLowerCase() == "p") {
+                this.addQuizPage();
+                $(content).tabs("enable", 0);
+                this.setPropertiesDialogTab(0);
+                $("[data-mlab-dt-quiz-input='pageTitle']").focus();
+            
+            } else if (value.toLowerCase() == "q") {
+                this.makeQuestionEditable(page, question);
+                this.setPropertiesDialogTab(1);
+                $("[data-mlab-dt-quiz-input='explanatory']").focus();
+            } else {
+                alert("Enter p or q");
+                return;
+            }
+            
+            page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
             $("div.qtip input:text").val("").removeClass("mc_blurred");
             $("div.qtip textarea").val("").removeClass("mc_blurred");
-            this.prepareQuestion(page, question);
-            this.setPropertiesDialogTab(1);
-            $("[data-mlab-dt-quiz-input='explanatory']").focus();
+
             break;
             
         default:
@@ -245,6 +265,17 @@ this.handleUserInput = function(input, e) {
     }
 };
 
+/**
+ * Function to make the different HTML elements that make up a question editable
+ * 
+ * @param {type} page = the page containing the question to modify
+ * @param {type} question = the current question
+ * @returns {undefined}
+ */
+this.makeQuestionEditable = function (page, question) {
+    var that = this;
+    $(question).find("p, label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+    
 this.selectItem = function (event) {
     var curComp = $( "#" + mlab.dt.api.getEditorElement() + "> div.mlab_current_component" );     
     var comp = $(event.currentTarget).parents("[data-mlab-type]");
@@ -255,12 +286,7 @@ this.selectItem = function (event) {
         mlab.dt.components.quiz.code.api.display.componentHighlightSelectedChildren(question_element, editable_element);
     }
 };
-
-this.prepareQuestion = function (page, question) {
-    var that = this;
-    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
-    $(question).find("p, label").on("click", function(e){ that.selectItem(e); });
-    $(question).find("p, label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+    
 };
 
 //---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT, AS WELL AS SUPPORTING FUNCTIONS
@@ -531,8 +557,7 @@ this.getCorrectResponse = function(question) {
             var response = parseInt(correctResponseRaw[i]);
             if (response) correctResponse.push(response);
         }
-    }
-    else if (questionType=="radio" || questionType=="select") {
+    } else if (questionType=="radio" || questionType=="select") {
         correctResponse = parseInt(correctResponse);
         if (!correctResponse) correctResponse = "";
     }
@@ -541,67 +566,27 @@ this.getCorrectResponse = function(question) {
 
 //---------- USER INTERACTION FUNCTIONS, RESPONDS TO CLICKS ON EXISTING QUIZ
 
+/**
+ * This will either be called as a result of propagation or when directly clicked on
+ * It will check to see if it already is the current question, if so it will bail
+ * @param {type} question
+ * @returns {undefined}
+ */
 this.questionClicked = function(question) {
-    this.api.closeAllPropertyDialogs();
-    this.markQuestionAsCurrent(question);
-    var type = question.data("questiontype");
-    var html = [];
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="delete">Slett spørsmål</a>');
-    html.push('</div>');
-    if (question.prev("." + this.classes.question).length) {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="moveup">Flytt opp</a>');
-        html.push('</div>');
+    if (question.is($(".mlab_current_component_child"))) {
+        return;
     }
-    if (question.next("." + this.classes.question).length) {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="movedown">Flytt ned</a>');
-        html.push('</div>');
-    }
-    if (type=="radio" || type=="select" || type=="checkbox") {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="addalternative">Legg til svaralternativ</a>');
-        html.push('</div>');
-    }
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changetype">Endre spørsmåltype</a>');
-    html.push('</div>');
-    var toggleMandatoryText = "Gjør spørsmålet obligatorisk";
-    if (question.data("mandatory")) toggleMandatoryText = "Gjør spørsmålet <i>ikke</i>-obligatorisk"
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="togglemandatory">' + toggleMandatoryText + '</a>');
-    html.push('</div>');
-    this.api.displayPropertyDialog(question, "Endre spørsmål", html);
+//remove current class settings on previous current elements
+    question.siblings(".mlab_current_component_child")
+            .removeClass("mlab_current_component_child")
+            .find("*")
+            .removeAttr("contenteditable")
+            .removeClass("mlab_current_component_grandchild");
+    question.addClass("mlab_current_component_child").children();
 };
 
 this.alternativeClicked = function(alternative) {
-    this.api.closeAllPropertyDialogs();
-    this.markAlternative(alternative);
-    var changeCorrectResponseText = "";
-    if (this.alternativeIsCorrect(alternative)) changeCorrectResponseText = "Sett alternativet som <i>ikke</i> korrekt";
-    else changeCorrectResponseText = "Sett alternativet som korrekt";
-    var html = [];
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="editalternative">Endre teksten</a>');
-    html.push('</div>');
-    if (alternative.prev("." + this.classes.questionAlternatives + " li").length) {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="alternativemoveup">Flytt opp</a>');
-        html.push('</div>');
-    }
-    if (alternative.next("." + this.classes.questionAlternatives + " li").length) {
-        html.push('<div>');
-        html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="alternativemovedown">Flytt ned</a>');
-        html.push('</div>');
-    }
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="changecorrectresponse">' + changeCorrectResponseText + '</a>');
-    html.push('</div>');
-    html.push('<div>');
-    html.push('<a href="#" class="' + this.classes.dialogLink + '" data-function="deletealternative">Slett svaralternativ</a>');
-    html.push('</div>');
-    this.api.displayPropertyDialog(alternative, "Redigér svaralternativ", html, null, null, null, null, true);
+
 };
 
 this.alternativeIsCorrect = function(alternative) {
@@ -617,10 +602,6 @@ this.markAlternative = function(alternative) {
     alternative.addClass(this.classes.markedAlternative);
 };
 
-this.markQuestionAsCurrent = function(question) {
-    question.siblings(".mlab_current_component_child").removeClass("mlab_current_component_child");
-    question.addClass("mlab_current_component_child");
-};
 
 /**
  * Reponds to user clicks on menus in dialog
@@ -881,49 +862,56 @@ this.setPropertiesDialogTab = function(tab_num) {
  * @returns {unresolved}
  */
 this.getDialogHtml = function(id) {
-    return $('<div id="mlab_dt_quiz_tabs_' + id + '">' + 
-                    '    <ul class="mlab_dt_tab_list">' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_4">Alternatives</a></li>' + 
-                    '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_5">Correct response(s)</a></li>' + 
-                    '    </ul>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.pageTitle + '</label>' + 
-                    '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="pageTitle">' + 
-                    '        <div class="mlab_dt_large_new_line"></div>' + 
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.explanatory + '</label>' + 
-                    '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="explanatory"></textarea>' + 
-                    '        <div class="mlab_dt_larger_new_line"></div>' +        
-                    '        <label class="mlab_dt_text">' + this.editPrompts.question + '</label>' + 
-                    '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="question"></textarea>' + 
-                    '        <div class="mlab_dt_larger_new_line"></div>' +                     
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.questionType + '</label>' + 
-                    '        <img class="mlab_dt_picture" id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
-                    '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="questionType">' + 
-                    '        <div class="mlab_dt_largest_new_line"></div>' +   
-                    '        <label class="mlab_dt_text">' + this.editPrompts.mandatory + '</label>' + 
-                    '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="mandatory">' + 
-                    '        <div class="mlab_dt_large_new_line"></div>' +
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
-                    '        <label class="mlab_dt_text">' + this.editPrompts.alternatives + '</label>' + 
-                    '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="alternatives"></textarea>' + 
-                    '    </div>' + 
-                    '    <div id="mlab_dt_quiz_tabs_' + id + '_5">' + 
-                    '        <p id="mlab_dt_quiz_select_response_' + id + '"></p>' +
-                    '        <label class="mlab_dt_text">' + this.editPrompts.correctResponse + '</label>' + 
-                    '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="correctResponse">' + 
-                    '        <div class="mlab_dt_large_new_line"></div>' +         
-                    '    </div>' + 
-                    '</div>' + 
-                    '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.components.quiz.code.cancelCurrentQuestion();">' 
-                    );
+   return $('<div id="mlab_dt_quiz_tabs_' + id + '">' + 
+            '    <ul class="mlab_dt_tab_list">' + 
+            '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_1">Page</a></li>' + 
+            '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_2">Question</a></li>' + 
+            '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_3">Type</a></li>' + 
+            '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_4">Alternatives</a></li>' + 
+            '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_5">Correct response(s)</a></li>' + 
+            '        <li class="mlab_dt_tab"><a href="#mlab_dt_quiz_tabs_' + id + '_6">Next action</a></li>' + 
+            '    </ul>' + 
+            '    <div id="mlab_dt_quiz_tabs_' + id + '_1">' + 
+            '        <label class="mlab_dt_text">' + this.editPrompts.pageTitle + '</label>' + 
+            '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="pageTitle">' + 
+            '        <div class="mlab_dt_large_new_line"></div>' + 
+            '    </div>' + 
+            '    <div id="mlab_dt_quiz_tabs_' + id + '_2">' + 
+            '        <label class="mlab_dt_text">' + this.editPrompts.explanatory + '</label>' + 
+            '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="explanatory"></textarea>' + 
+            '        <div class="mlab_dt_larger_new_line"></div>' +        
+            '        <label class="mlab_dt_text">' + this.editPrompts.question + '</label>' + 
+            '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="question"></textarea>' + 
+            '        <div class="mlab_dt_larger_new_line"></div>' +                     
+            '    </div>' + 
+            '    <div id="mlab_dt_quiz_tabs_' + id + '_3">' + 
+            '        <label class="mlab_dt_text">' + this.editPrompts.questionType + '</label>' + 
+            '        <img class="mlab_dt_picture" id="img_question_type" src="/img/quiz-type.png" style="display: inline-block;">' + 
+            '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="questionType">' + 
+            '        <div class="mlab_dt_largest_new_line"></div>' +   
+            '        <label class="mlab_dt_text">' + this.editPrompts.mandatory + '</label>' + 
+            '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="mandatory">' + 
+            '        <div class="mlab_dt_large_new_line"></div>' +
+            '    </div>' + 
+            '    <div id="mlab_dt_quiz_tabs_' + id + '_4">' + 
+            '        <label class="mlab_dt_text">' + this.editPrompts.alternatives + '</label>' + 
+            '        <textarea class="mlab_dt_medium_textarea " data-mlab-dt-quiz-input="alternatives"></textarea>' + 
+            '    </div>' + 
+            '    <div id="mlab_dt_quiz_tabs_' + id + '_5">' + 
+            '        <p id="mlab_dt_quiz_select_response_' + id + '"></p>' +
+            '        <label class="mlab_dt_text">' + this.editPrompts.correctResponse + '</label>' + 
+            '        <input class="mlab_dt_large_input " data-mlab-dt-quiz-input="correctResponse">' + 
+            '        <div class="mlab_dt_large_new_line"></div>' +         
+            '    </div>' + 
+            '    <div id="mlab_dt_quiz_tabs_' + id + '_6">' + 
+            '        <p id="mlab_dt_quiz_next_action_' + id + '"></p>' +
+            '        <label class="mlab_dt_text">' + this.editPrompts.nextAction + '</label>' + 
+            '        <input class="mlab_dt_small_input " data-mlab-dt-quiz-input="nextAction">' + 
+            '        <div class="mlab_dt_large_new_line"></div>' +         
+            '    </div>' + 
+            '</div>' + 
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.components.quiz.code.cancelCurrentQuestion();">' 
+            );
 };
 
 /**
