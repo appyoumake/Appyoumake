@@ -168,9 +168,6 @@ class ServicesController extends Controller
             )
         );
 
-error_log("---getUrlContent---");
-error_log($opt);
-
         $context = stream_context_create($opt);
         return file_get_contents($url, false, $context);
     }
@@ -206,8 +203,6 @@ error_log($opt);
                 "Sec-WebSocket-Version: 13"."\r\n".
                 "Sec-WebSocket-Key: asdasdaas76da7sd6asd6as7d"."\r\n".
                 "Content-Length: " . strlen($msg) . "\r\n" . "\r\n" ;
-
-error_log($head);
 
 //WebSocket handshake & data transmission
         try {
@@ -292,12 +287,15 @@ error_log($head);
         $params .= "passphrase=" . urlencode($config['compiler_service']["passphrase"]);
         $url = "$protocol://$url/$func_name?$params";
         
+        error_log(">> Calling remote function: " + $url);
+
         return $this->getUrlContent($url);
     }
     
 //run rsync, we need to "store" the password in the environment variable, then run the command using shell_exec
 //this is done in two rounds, first without the config file, icon file and splash screen, and then afterwards only with these files
     private function cmpUploadFiles($from_path, $window_uid, $app_uid, $app_version, $config) {
+        error_log("  > cmpUploadFiles");
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "uploading"}}', $config), true);
         if ($res_socket["data"]["status"] != "SUCCESS") {
             return new JsonResponse(array('result' => 'error'));
@@ -328,6 +326,7 @@ error_log($head);
  * @return type
  */
     private function cmpGetAppStatus($app_id = NULL, $app_version = NULL, $platform = NULL) {
+        error_log("  > cmpGetAppStatus");
         $config = $this->container->parameters['mlab'];
         $passphrase = urlencode($config["compiler_service"]["passphrase"]);
         $protocol = $config["compiler_service"]["protocol"];
@@ -369,6 +368,7 @@ error_log($head);
      * @return bool
      */
     private function cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $remote_compiled_app_checksum, $platform) {
+        error_log("  > cmpDownloadApp");
         $config = $this->container->parameters['mlab'];
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "receiving"}}', $config), true);
         if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.unable.update.websocket')); }
@@ -408,6 +408,7 @@ error_log($head);
  * @return \Symfony\Component\HttpFoundation\JsonResponse
  */
     public function cmpGetAppStatusAction($window_uid, $app_id = NULL, $app_version = NULL, $platform = NULL) {
+        error_log("  > cmpGetAppStatusAction");
         return new JsonResponse(array('result' => 'success', 'app_status' => $this->cmpGetAppStatus($app_id = NULL, $app_version = NULL, $platform = NULL)));
     }
 
@@ -423,7 +424,7 @@ error_log($head);
      * @param type $platform
      */
     public function cmpGetAppProcessAction($window_uid, $app_id, $app_version, $platform) {
-        
+        error_log("  > cmpGetAppProcessAction");
 //check for valid variables first
         $config = $this->container->parameters['mlab'];
 
@@ -514,7 +515,7 @@ error_log($head);
      * @param type $tag
      */
     public function cbCmpCreatedAppAction() {
-        error_log("cbCmpCreatedAppAction");
+        error_log("  > cbCmpCreatedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
 //we therefore need to read them from the request object
         $request = $this->getRequest();
@@ -574,7 +575,7 @@ error_log($head);
 //app verification (checksum) callback, if this is true all is well.
 //if this is called as a part of a complete getapp process, then we will ask for the app to be compiled if it verified OK
     public function cbCmpVerifiedAppAction() {
-        error_log("cbCmpVerifiedAppAction");
+        error_log("  > cbCmpVerifiedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
         $config = $this->container->parameters['mlab'];
         
@@ -615,25 +616,20 @@ error_log($head);
 //this is called externally from compiler service, we reuse the app related variables and call the next step, compiling the app
         if ($action == "multistep" && $result == "true") {
 //files are verified, now we need to compile the app. The final step, download app, is called inside the callback from verify
-
-error_log("---cbCmpVerifiedAppAction 2---");
             $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $remote_processed_app_checksum, "platform" => $platform, "tag" => "multistep-$window_uid-$platform");
-error_log("---cbCmpVerifiedAppAction 3---");
             $res = $this->cmpCallRemoteFunction($config, $window_uid, "compiling", "compiler_service", $parameters, "compileApp");
-error_log("---cbCmpVerifiedAppAction 4---");
             (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "compileApp compiler service failed") : $arr = array('result' => 'success');
-error_log("---cbCmpVerifiedAppAction 5---");
             return new JsonResponse($arr);
 
         }        
-        
+
         return new JsonResponse(array('result' => 'success'));
     }
 
 //app finished compiling callback, if this is true all is well.
 //if this is called as a part of a complete getapp process, then we will ask for the app to be downloaded
     public function cbCmpCompiledAppAction() {
-        error_log("cbCmpCompiledAppAction");
+        error_log("  > cbCmpCompiledAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
 //we therefore need to read them from the request object
         $request = $this->getRequest();
