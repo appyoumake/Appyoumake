@@ -502,9 +502,35 @@ compController.msg.toggleStateAction: Unable to locate component record
 
 controller.msg.unable.create.record: Unable to create new record
 controller.msg.unable.locate.record: Unable to locate user record
+
 groupController.createNotFoundException: Unable to find Group entity.
 
+helpController.createNotFoundException: Unable to find Help entity.
 
+menuController.createNotFoundException: Unable to find Menu entity.
+
+servicesController.msg.unable.update.websocket: Unable to update websocket messages
+servicesController.msg.unable.retrieve.db.entry: Unable to retrieve app database entry
+servicesController.msg.cmpDownloadApp: Unable to retrieve app database entry to download app
+servicesController.msg.cmpGetAppProcessAction.1: App ID not specified
+servicesController.msg.cmpGetAppProcessAction.2: App version not specified
+servicesController.msg.cmpGetAppProcessAction.3: Platform not specified
+servicesController.msg.cmpGetAppProcessAction.4: Platform not supported for compilation
+servicesController.msg.cmpGetAppProcessAction.5: createApp compiler service failed
+servicesController.msg.cmpGetAppProcessAction.6: verifyApp compiler service failed
+servicesController.msg.passphrase.not.matching: Passphrase not matching
+servicesController.msg.cbCmpCreatedAppAction.1: Failed to create app remotely
+servicesController.msg.cbCmpCreatedAppAction.2: Unable to retrieve app database entry to verify upload
+servicesController.msg.cbCmpCreatedAppAction.3: verifyApp compiler service failed
+servicesController.msg.cbCmpVerifiedAppAction.1: Files failed to upload
+servicesController.msg.cbCmpVerifiedAppAction.2: compileApp compiler service failed
+servicesController.msg.cbCmpCompiledAppAction: App failed to compile
+servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage: Downloaded app does not match app sent, check for connection errors and try again
+
+templateController.msg.createAction: Invalid data
+templateController.msg.createNotFoundException: Unable to find Template entity.
+templateController.msg.unable.upload.template: Unable to upload template
+templateController.msg.toggleStateAction: Unable to locate template record
 #-----------------------------------------------------
 # Mix - starts with file name - js files
 #-----------------------------------------------------

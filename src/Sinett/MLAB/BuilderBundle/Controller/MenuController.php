@@ -133,7 +133,7 @@ class MenuController extends Controller
         return new JsonResponse(array('db_table' => 'menu',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
 
     /**
@@ -181,7 +181,7 @@ class MenuController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Menu')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Menu entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('menuController.createNotFoundException'));
         }
 
         
@@ -202,7 +202,7 @@ class MenuController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Menu')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Menu entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('menuController.createNotFoundException'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -244,7 +244,7 @@ class MenuController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Menu')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Menu entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('menuController.createNotFoundException'));
         }
 
         
@@ -264,7 +264,7 @@ class MenuController extends Controller
         return new JsonResponse(array('db_table' => 'menu',
         			'db_id' => $id,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
            
     }
     /**

@@ -73,7 +73,7 @@ class TemplateController extends Controller
     	return new JsonResponse(array('db_table' => 'template',
 			'db_id' => 0,
 			'result' => 'FAILURE',
-			'message' => 'Invalid data',
+			'message' => $this->get('translator')->trans('templateController.msg.createAction'),
             'data_in' => $entity));
     }
 
@@ -122,7 +122,7 @@ class TemplateController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Template entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('templateController.msg.createNotFoundException'));
         }
 
         
@@ -143,7 +143,7 @@ class TemplateController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Template entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('templateController.msg.createNotFoundException'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -185,7 +185,7 @@ class TemplateController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Template entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('templateController.msg.createNotFoundException'));
         }
 
         
@@ -216,7 +216,7 @@ class TemplateController extends Controller
         		return new JsonResponse(array('db_table' => 'template',
         				'db_id' => 0,
         				'result' => 'FAILURE',
-        				'message' => 'Unable to upload template'));
+        				'message' => $this->get('translator')->trans('templateController.msg.unable.upload.template')));
         	
         	}
     	
@@ -225,7 +225,7 @@ class TemplateController extends Controller
     	return new JsonResponse(array('db_table' => 'template',
     			'db_id' => 0,
     			'result' => 'FAILURE',
-    			'message' => 'Unable to upload template'));
+    			'message' => $this->get('translator')->trans('templateController.msg.unable.upload.template')));
     }
     
     /**
@@ -272,7 +272,7 @@ class TemplateController extends Controller
             return new JsonResponse(array('db_table' => 'template',
                     'db_id' => 0,
                     'result' => 'FAILURE',
-                    'message' => 'Unable to locate template record'));
+                    'message' => $this->get('translator')->trans('templateController.msg.toggleStateAction')));
             
         }
 

@@ -620,9 +620,13 @@ error_log("---cbCmpVerifiedAppAction 2---");
             $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $remote_processed_app_checksum, "platform" => $platform, "tag" => "multistep-$window_uid-$platform");
 error_log("---cbCmpVerifiedAppAction 3---");
             $res = $this->cmpCallRemoteFunction($config, $window_uid, "compiling", "compiler_service", $parameters, "compileApp");
+<<<<<<< HEAD
 error_log("---cbCmpVerifiedAppAction 4---");
             (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "compileApp compiler service failed") : $arr = array('result' => 'success');
 error_log("---cbCmpVerifiedAppAction 5---");
+=======
+            (strtolower($res) != "true") ? $arr = array('result' => 'error', 'msg' => "$this->get('translator')->trans('servicesController.msg.cbCmpVerifiedAppAction.2')") : $arr = array('result' => 'success');
+>>>>>>> 7489e660eab6399eeab81d4752ce80bfac51e6ab
             return new JsonResponse($arr);
 
         }        
