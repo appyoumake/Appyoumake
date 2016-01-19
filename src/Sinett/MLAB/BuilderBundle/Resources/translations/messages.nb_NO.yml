@@ -147,16 +147,6 @@ app.builder.page.tooltip.new: Ny side
 
 
 #-----------------------------------------------------
-# App builder - javascript
-#-----------------------------------------------------
-app.builder.mlab.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
-app.builder.mlab.js.alert.unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?
-
-app.builder.mlab.statusbar.compiler.connected: Koblet til server 
-app.builder.mlab.statusbar.compiler.contacting.server: Kontakter server...
-
-
-#-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
 app.admin.users.welcome: Velkommen til Mlab Bruker Admin sidene
@@ -581,3 +571,41 @@ mlab.dt.management.js.compiler.get_app_status.prompt.version: version (leave bla
 mlab.dt.management.js.compiler.get_app_status.prompt.platform: platform (ios or android) (leave blank is OK)
 mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Unable to get app status
 mlab.dt.management.js.compiler.get_app.status.creating.app: Creating app...
+
+mlab_editor.init.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
+mlab_editor.init.js.alert.unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?
+
+mlab_editor.init.js.qtip.comp.storage.plugin.title: Storage plugin
+mlab_editor.init.js.qtip.comp.size.title: Component size
+mlab_editor.init.js.qtip.comp.aspect.title: Aspect ratio
+mlab_editor.init.js.qtip.download.app.title: Download to
+
+mlab_editor.init.js.compiling.connected: Creating app...connected to server
+mlab_editor.init.js.compiling.creating: Creating app remotely...
+mlab_editor.init.js.compiling.created: App created remotely
+mlab_editor.init.js.compiling.precompilation: Processing files...
+mlab_editor.init.js.compiling.uploading: Uploading files to compiler...
+mlab_editor.init.js.compiling.verifying: Verifying upload...
+mlab_editor.init.js.compiling.verification_ok: Files uploaded OK...
+mlab_editor.init.js.compiling.compiling: Waiting for compiler...
+mlab_editor.init.js.compiling.compilation_ok: App compiled OK...
+mlab_editor.init.js.compiling.receiving: Receiving app...
+mlab_editor.init.js.compiling.ready: App ready! Links are found in the menu
+mlab_editor.init.js.compiling.failed: App ready but there was a problem obtaining the links, please try again
+mlab_editor.init.js.compiling.failed.loading.comps: Unable to load components from the server, cannot continue, will return to front page
+mlab_editor.init.js.compiling.failed.loading.var: Unable to load variables from the server, cannot continue, will return to front page
+
+mlab.dt.api.js.getMedia.fail: Unable to obtain files
+
+mlab.dt.api.js.uploadMedia.qtip.content.1: Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde
+mlab.dt.api.js.uploadMedia.qtip.content.2: ...laster bilde...
+mlab.dt.api.js.uploadMedia.qtip.content.3: Velg fil
+mlab.dt.api.js.uploadMedia.qtip.content.4: Avbryt
+mlab.dt.api.js.uploadMedia.qtip.content.5: OK
+mlab.dt.api.js.uploadMedia.qtip.title: Last opp media
+
+mlab.dt.api.js.getLink.prompt: Please enter the URL or page number (for pages in this app) to link to
+mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
+
+mlab.dt.api.js.getCredentials.dlg.title: Credentials
+mlab.dt.api.js.getCredentials.dlg.text: Her skal credentials forklares.....

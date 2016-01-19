@@ -117,7 +117,7 @@ Mlab_dt_api.prototype = {
         if (data.result == "success") {
             return data.files;
         } else {
-            return "<option>Unable to obtain files</option>";
+            return "<option>" + _tr["mlab.dt.api.js.getMedia.fail"] + "</option>";
         }
     },
     
@@ -156,13 +156,13 @@ Mlab_dt_api.prototype = {
     uploadMedia : function (el, component_config, file_extensions, cb, event) {
         this.indicateWait(true);
         content = $('<form />', {id: "mlab_dt_form_upload" } );
-        content.append( $('<p />', { text: "Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde", class: "mlab_dt_text_info" }) );
-        content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>...laster bilde...</option></select>') );
-        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: 'Velg fil', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
+        content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], class: "mlab_dt_text_info" }) );
+        content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
+        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<div />', { class: "mlab_dt_large_new_line" }) );
-        content.append( $('<div />', { text: 'Avbryt', id: "mlab_cp_image_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
+        content.append( $('<div />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"], id: "mlab_cp_image_button_cancel", class: "pure-button pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
        // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_cp_image_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
+        content.append( $('<div />', { text:  _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"], id: "mlab_cp_image_button_ok", class: "pure-button pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
 
         var that = this;
         
@@ -173,7 +173,7 @@ Mlab_dt_api.prototype = {
         }
         this.properties_tooltip = $(owner_element).qtip({
             solo: false,
-            content: {text: content, title: "Last opp media" },
+            content: {text: content, title: _tr["mlab.dt.api.js.uploadMedia.qtip.title"] },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
@@ -634,7 +634,7 @@ Mlab_dt_api.prototype = {
  * @returns {Boolean|String}
  */
     getLink: function () {
-        var link = prompt("Please enter the URL or page number (for pages in this app) to link to");
+        var link = prompt(_tr["mlab.dt.api.js.getLink.prompt"]);
         var page_name = "";
         if (link != null && link != "") {
             var num = parseInt(link);
@@ -645,7 +645,7 @@ Mlab_dt_api.prototype = {
             }
         }
         if (page_name == "") {
-            alert("No URL/page specified, cannot add link");
+            alert(_tr["mlab.dt.api.js.getLink.alert"]);
             return false;
         }
         return page_name;
@@ -660,9 +660,9 @@ Mlab_dt_api.prototype = {
   * @returns {Boolean|Array of strings}
  */
     getCredentials: function (credentials_required, cb_function, params) {
-        var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: "Credentials" } );
+        var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
         for (credential in credentials_required) {   
-            dlg.append( $('<p />', { text: 'Her skal credentials forklares.....' , class: 'mlab_dt_text_info' } ) );
+            dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , class: 'mlab_dt_text_info' } ) );
             dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , for: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_short_label' } ) );
             dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , id: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_input' }) );      
             dlg.append( $('<br />') );   

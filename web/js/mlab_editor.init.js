@@ -19,7 +19,7 @@
 		if (bowser.gecko || bowser.chrome) {
 
         } else {
-            alert(_tr["app.builder.mlab.js.alert.browser.support"]);
+            alert(_tr["mlab_editor.init.js.alert.browser.support"]);
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
         }
         
@@ -126,7 +126,7 @@
                     var url = mlab.dt.urls.editor_closed.replace("_UID_", mlab.dt.uid);
                     $.ajax({ url: url, async: false });
 
-                    if (mlab.dt.flag_dirty) { return _tr["app.builder.mlab.js.alert.unsaved"] ; }
+                    if (mlab.dt.flag_dirty) { return _tr["mlab_editor.init.js.alert.unsaved"] ; }
                 };
 
 //now we load components, the go into a mlab object called components,
@@ -213,7 +213,7 @@
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                                 solo: false,
-                                content:    {text: $("#mlab_storage_plugin_list").clone(), title: "Select component size" },
+                                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"] },
                                 position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                                 show:       { ready: true, modal: { on: true, blur: false } },
                                 hide:       false,
@@ -228,7 +228,7 @@
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                                 solo: false,
-                                content:    {text: $("#mlab_component_size_list").clone(), title: "Select component size" },
+                                content:    {text: $("#mlab_component_size_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.size.title"] },
                                 position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                                 show:       { ready: true, modal: { on: true, blur: false } },
                                 hide:       false,
@@ -244,7 +244,7 @@
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                                 solo: false,
-                                content:    {text: $("#mlab_component_aspect_list").clone(), title: "Select component size" },
+                                content:    {text: $("#mlab_component_aspect_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.aspect.title"] },
                                 position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                                 show:       { ready: true, modal: { on: true, blur: false } },
                                 hide:       false,
@@ -259,7 +259,7 @@
                                 $('#mlab_download_'+ platform + '_icon').qtip({
                                     hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                                     content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
-                                             title: { text: "Download to " + platform } },
+                                             title: { text: _tr["mlab_editor.init.js.qtip.download.app.title"] + " " + platform } },
                                     style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
                                 });
                         });
@@ -288,48 +288,48 @@
 
                                 case "connected":
                                     $("#mlab_progressbar").val(5);
-                                    $("#mlab_statusbar_compiler").text("Creating app...connected to server");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.connected"]);
                                     break;
 
                                 case "creating":
                                     $("#mlab_progressbar").val(10);
-                                    $("#mlab_statusbar_compiler").text("Creating app remotely...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.creating"]);
                                     //createApp is called, this creates the empty app
                                     break;
 
                                 case "created":
                                     $("#mlab_progressbar").val(15);
-                                    $("#mlab_statusbar_compiler").text("App created remotely");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.created"]);
                                     break;
 
                                 case "precompilation":
                                     $("#mlab_progressbar").val(20);
-                                    $("#mlab_statusbar_compiler").text("Processing files...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.precompilation"]);
                                     break;
 
                                 case "uploading":
                                     $("#mlab_progressbar").val(25);
-                                    $("#mlab_statusbar_compiler").text("Uploading files to compiler...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.uploading"]);
                                     break;
 
                                 case "verifying":
                                     $("#mlab_progressbar").val(30);
-                                    $("#mlab_statusbar_compiler").text("Verifying upload...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verifying"]);
                                     break;
 
                                 case "verification_ok":
                                     $("#mlab_progressbar").val(35);
-                                    $("#mlab_statusbar_compiler").text("Files uploaded OK...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verification_ok"]);
                                     break;
 
                                 case "compiling":
                                     $("#mlab_progressbar").val(40);
-                                    $("#mlab_statusbar_compiler").text("Waiting for compiler...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compiling"]);
                                     break;
 
                                 case "compilation_ok":
                                     $("#mlab_progressbar").val(80);
-                                    $("#mlab_statusbar_compiler").text("App compiled OK...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compilation_ok"]);
                                     break;
 
                                 case "failed":
@@ -346,7 +346,7 @@
 
                                 case "receiving":
                                     $("#mlab_progressbar").val(90);
-                                    $("#mlab_statusbar_compiler").text("Receiving app...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.receiving"]);
                                     break;
 
                                 case "ready":
@@ -362,9 +362,9 @@
                                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                                         $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
                                         $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
-                                        mlab.dt.utils.update_status("temporary", "App ready! Links are found in the menu", false);
+                                        mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.ready"], false);
                                     } else {
-                                        mlab.dt.utils.update_status("temporary", "App ready but there was a problem obtaining the links, please try again", false);
+                                        mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.failed"], false);
                                     }
                                     //hvor lenge skal teksten stå??
                                     break;
@@ -375,13 +375,13 @@
                         };
 
                     } else {
-                        alert("Unable to load components from the server, cannot continue, will return to front page");
+                        alert(_tr["mlab_editor.init.js.compiling.failed.loading.comps"]);
                         document.location.href = document.mlab_temp_vars.appbuilder_root_url;
                     }
                 });
 
             } else {
-                alert("Unable to load variables from the server, cannot continue, will return to front page");
+                alert(_tr["mlab_editor.init.js.compiling.failed.loading.var"]);
                 document.location.href = document.mlab_temp_vars.appbuilder_root_url;
             }
 
