@@ -55,7 +55,7 @@ class UserController extends Controller
         return new JsonResponse(array('db_table' => 'user',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('userController.msg.unable.create.record')));
     }
 
     /**
@@ -106,7 +106,7 @@ class UserController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:User')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find User entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('userController.createNotFoundException'));
         }
 
         
@@ -126,7 +126,7 @@ class UserController extends Controller
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:User')->find($id);
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find User entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('userController.createNotFoundException'));
         }
         
         $temp_roles = $this->getUser()->getRoles();
@@ -138,7 +138,7 @@ class UserController extends Controller
         }
         
         if (!$can_edit) {
-            return new JsonResponse("You do not have the rights to edit this user, must be Super Admin");
+            return new JsonResponse($this->get('translator')->trans('userController.editAction.response'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -202,7 +202,7 @@ class UserController extends Controller
         return new JsonResponse(array('db_table' => 'user',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => 'Unable to create new record'));
+        		'message' => $this->get('translator')->trans('userController.msg.unable.create.record')));
             
     }
     /**
@@ -242,7 +242,7 @@ class UserController extends Controller
             return new JsonResponse(array('db_table' => 'user',
                     'db_id' => 0,
                     'result' => 'FAILURE',
-                    'message' => 'Unable to locate user record'));
+                    'message' => $this->get('translator')->trans('userController.msg.unable.find.record')));
             
         }
 

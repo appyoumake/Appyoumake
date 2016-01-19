@@ -524,6 +524,13 @@ templateController.msg.createNotFoundException: Unable to find Template entity.
 templateController.msg.unable.upload.template: Unable to upload template
 templateController.msg.toggleStateAction: Unable to locate template record
 
+trackingController.createNotFoundException: Unable to find Tracking entity.
+
+userController.msg.unable.create.record: Unable to create new record
+userController.msg.unable.find.record: Unable to locate user record
+userController.createNotFoundException: Unable to find User entity.
+userController.editAction.response: You do not have the rights to edit this user, must be Super Admin
+
 
 #-----------------------------------------------------
 # JS files - starts with file name 
