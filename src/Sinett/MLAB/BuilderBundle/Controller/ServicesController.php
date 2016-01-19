@@ -590,6 +590,7 @@ class ServicesController extends Controller
         
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
+            error_log("Passphrases not matching (local/remote): $local_passphrase / $passphrase ");
             return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.passphrase.not.matching'));
         }
         
