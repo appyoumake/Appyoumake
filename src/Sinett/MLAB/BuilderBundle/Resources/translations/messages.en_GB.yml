@@ -359,15 +359,15 @@ app.system.admin.help.edit.update.button: Update
 # HTML.TWIG files - starts with file name (and folder 
 #       for others than the app folder)
 #-----------------------------------------------------
-layout.menu.tooltip.back.app.list: Tilbake til App liste
+layout.menu.tooltip.back.app.list: Back to App list
 layout.menu.tooltip.editor.menu: Editor menu
-layout.menu.tooltip.help: Hjelp
-layout.menu.tooltip.user.info: Bruker info
+layout.menu.tooltip.help: Help
+layout.menu.tooltip.user.info: User info
 
-build_app.menu.tooltip.back.app.list: Tilbake til App liste
-build_app.menu.utilities.delete.locks: Fjern låser
+build_app.menu.tooltip.back.app.list: Back to App list
+build_app.menu.utilities.delete.locks: Delete locks
 build_app.menu.utilities.test.connection.compiler: Test connection to compiler
-build_app.menu.tooltip.test.app.web: Test app i nettleser
+build_app.menu.tooltip.test.app.web: Test app in browser
 
 build_app.page.tooltip.redo: Redo
 build_app.page.tooltip.undo: Undo
@@ -393,11 +393,10 @@ build_app.components.toolbar.component.aspect.4.3: 4:3
 build_app.components.toolbar.component.aspect.16.9: 16:9
 build_app.components.toolbar.component.aspect.1.1: 1:1
 
-build_app.tooltip.not.saved: Siste forandringer ble ikke lagret
-build_app.not.saved: MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
-
+build_app.tooltip.not.saved: The latest changes were not saved
+build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
 build_app.footer.tooltip.help: Turn help off
-build_app.footer.help: Hold musen over elementet du ønsker en beskrivelse av.
+build_app.footer.help: Hold the mouse over the item you wish to describe.
 
 builder.dialog.new.app.title: App details
 builder.popup.app.properties.title: Mlab app options
@@ -545,8 +544,8 @@ userController.editAction.response: You do not have the rights to edit this user
 # JS files - starts with file name 
 #-----------------------------------------------------
 mlab.dt.design.js.alert.only.one.comp: You can only have one component of this type on a page
-mlab.dt.design.js.alert.add.comp: Legg til komponenten igjen.
-mlab.dt.design.js.alert.error.occurred: En feil oppsto
+mlab.dt.design.js.alert.add.comp: Add the component again.
+mlab.dt.design.js.alert.error.occurred: An error occurred
 mlab.dt.design.js.alert.help.notfound: No help for you today
 mlab.dt.design.js.qtip.help.title: Help
 mlab.dt.design.js.update_status.adding.feature: Adding feature...
@@ -574,7 +573,7 @@ mlab.dt.management.js.app_download_process.3: Mail link
 mlab.dt.management.js.app_download_process.4: Error
 
 mlab.dt.management.js.app_submit_to_market: Not implemented yet
-mlab.dt.management.js.app_update_gui_metadata.copy.pages: Kopier side
+mlab.dt.management.js.app_update_gui_metadata.copy.pages: Copy page
 mlab.dt.management.js.index_page_process.alert.1: This app does not have an editable area called
 mlab.dt.management.js.index_page_process.alert.2: unable to open app. Check with the system administrator for further information.
 mlab.dt.management.js.page_update_title.alert.page.locked: Page is locked, you cannot update the title
@@ -614,15 +613,15 @@ mlab_editor.init.js.compiling.failed.loading.var: Unable to load variables from 
 
 mlab.dt.api.js.getMedia.fail: Unable to obtain files
 
-mlab.dt.api.js.uploadMedia.qtip.content.1: Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde
-mlab.dt.api.js.uploadMedia.qtip.content.2: ...laster bilde...
-mlab.dt.api.js.uploadMedia.qtip.content.3: Velg fil
-mlab.dt.api.js.uploadMedia.qtip.content.4: Avbryt
+mlab.dt.api.js.uploadMedia.qtip.content.1: Select an image from the list or click 'Add file' to upload an image
+mlab.dt.api.js.uploadMedia.qtip.content.2: ...loading image...
+mlab.dt.api.js.uploadMedia.qtip.content.3: Add file
+mlab.dt.api.js.uploadMedia.qtip.content.4: Cancel
 mlab.dt.api.js.uploadMedia.qtip.content.5: OK
-mlab.dt.api.js.uploadMedia.qtip.title: Last opp media
+mlab.dt.api.js.uploadMedia.qtip.title: Upload media
 
 mlab.dt.api.js.getLink.prompt: Please enter the URL or page number (for pages in this app) to link to
 mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
 
 mlab.dt.api.js.getCredentials.dlg.title: Credentials
-mlab.dt.api.js.getCredentials.dlg.text: Her skal credentials forklares.....
+mlab.dt.api.js.getCredentials.dlg.text: Here credentials are going to be explained .....
