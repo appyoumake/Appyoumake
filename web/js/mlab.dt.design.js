@@ -226,7 +226,7 @@ Mlab_dt_design.prototype = {
         var comp_url = window.location.origin + this.parent.urls.components_root_url;
         var comp_path = this.parent.components[comp_id].conf.name;
         var url = comp_url + comp_path + "/" + 'extended_tip.html';
-        var qTipClass = 'mlab_help_qTip';
+        var qTipClass = 'mlab_comp_help_qTip';
         var title = "Help - " + extended_name;
         var that = this;
 

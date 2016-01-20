@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{% trans %}mlab.page.title.app.bulider.editor{% endtrans %}{% endblock %}</title>
         {% block stylesheets %}
             <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
@@ -333,7 +333,7 @@
             
             function page_help(event) {
                 var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
-                var title = "Help";
+                var title = "{% trans %}mlab.dt.design.js.qtip.help.title{% endtrans %}";
                 var owner = event.currentTarget;
                 var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
                 $.getJSON(url, function(data) {
@@ -352,7 +352,7 @@
                              events:     {   hide: function(event, api) { api.destroy(); } }
                          });
                     } else {
-                        alert("{% trans %}app.mlab.menu.help.notfound{% endtrans %}");
+                        alert("{% trans %}mlab.dt.design.js.alert.help.notfound{% endtrans %}");
                     }
 
                 });

@@ -1,6 +1,15 @@
 %Users%: brukere
 
 #-----------------------------------------------------
+# Titel of the pages in Mlab
+#-----------------------------------------------------
+mlab.page.title.index: Velkommen til MLAB
+mlab.page.title.app.bulider.index: MLAB apper
+mlab.page.title.app.bulider.editor: MLAB app editor
+mlab.page.title.admin: MLAB admin
+
+
+#-----------------------------------------------------
 # Index info page
 #-----------------------------------------------------
 app.builder.index.page.heading: Mlab
@@ -535,10 +544,11 @@ userController.editAction.response: You do not have the rights to edit this user
 #-----------------------------------------------------
 # JS files - starts with file name 
 #-----------------------------------------------------
-mlab.dt.design.js.alert.only.one.comp: You can only have one component of this type on a page
+mlab.dt.design.js.alert.only.one.comp: En side kan bare ha en komponent av denne typen
 mlab.dt.design.js.alert.add.comp: Legg til komponenten igjen.
 mlab.dt.design.js.alert.error.occurred: En feil oppsto
-mlab.dt.design.js.alert.help.notfound: No help for you today
+mlab.dt.design.js.alert.help.notfound: Ikke noe hjelp å få i dag
+mlab.dt.design.js.qtip.help.title: Hjelp
 mlab.dt.design.js.update_status.adding.feature: Adding feature...
 mlab.dt.design.js.update_status.feature.added: Feature added
 mlab.dt.design.js.update_status.feature.already.added: Feature already added

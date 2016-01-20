@@ -417,7 +417,7 @@ Mlab_dt_api.prototype = {
     displayHtmlPageInDialog : function (el, title, htmlpage, qTipClass) {
         var styleClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
         if (typeof qTipClass != "undefined") { 
-            var styleClasses = styleClasses + qTipClass;
+            var styleClasses = styleClasses + " " + qTipClass;
         }
          
         $(el).qtip({
@@ -427,7 +427,7 @@ Mlab_dt_api.prototype = {
                         title: title,
                         button: true
                         },
-            position:   { my: 'topRight', at: 'bottomLeft', adjust: { screen: true }, effect: false },
+            position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
             show:       { ready: true, modal: { on: true, blur: false } },
             hide:       false,
             style:      { classes: styleClasses },

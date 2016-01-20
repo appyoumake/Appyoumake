@@ -518,12 +518,54 @@ made smaler than the min width */
     width: 25px;
 }
 
+/* ==========================================================================
+     Help qTip
+   ========================================================================== */
 
-#mlab_editor .mlab_page_help_qTip {
-    width: 500px;
-    max-width: 800px;
-    z-index: 600 !important;
+#mlab_editor .qtip.mlab_page_help_qTip,
+#mlab_editor .qtip.mlab_comp_help_qTip {
+    z-index: 601 !important;
+    box-shadow: none;
+    background-color: rgb(242,242,242) !important;
 }
+
+#mlab_editor .qtip.mlab_page_help_qTip {
+    width: 500px;
+    max-width: 800px !important;
+}
+
+#mlab_editor .mlab_comp_help_qTip{
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-left: -4px;
+    margin-top: -8px;
+    direction: rtl;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-titlebar,
+#mlab_editor .mlab_comp_help_qTip .qtip-titlebar{
+    background-color: rgb(210,210,210);
+    height: 25px;
+    padding-top: 6px;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-title,
+#mlab_editor .mlab_comp_help_qTip .qtip-title {
+    font-size: 15px;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-close,
+#mlab_editor .mlab_comp_help_qTip .qtip-close {
+    top: 3px;
+    right: 5px;
+    background-color: white;
+}
+
+
+
+
+
 
 /* TEMP AV ARILD */
 

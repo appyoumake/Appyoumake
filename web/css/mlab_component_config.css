@@ -26,25 +26,10 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     border: solid orange 2px; 
     box-shadow: 10px 10px 5px #888888;
     padding-bottom: 5px;
-    margin-bottom: 70px;
 }
 
 #mlab_editor .qtip.mlab_dt_wide_qtip_box{
     max-width: 500px;
-}
-
-#mlab_editor .qtip-close{
-    top: 0px;
-    right: 5px;
-    background-color: white;
-}
-
-#mlab_editor .mlab_help_qTip{
-    max-height: 500px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    margin-left: 15px;
-    margin-top: -15px;
 }
 
 
