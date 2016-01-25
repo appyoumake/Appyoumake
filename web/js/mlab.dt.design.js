@@ -69,7 +69,7 @@ Mlab_dt_design.prototype = {
 
 //if this control has to be unique we check here to see if one was already added
         if (this.parent.components[id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
-            alert("You can only have one component of this type on a page");
+            alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
         this.parent.flag_dirty = true;
@@ -131,13 +131,13 @@ Mlab_dt_design.prototype = {
                 }
                 
             } else {
-                alert(result.msg + "'\n\nLegg til komponenten igjen.");
+                alert(result.msg + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
                 $(new_comp).remove();
             }
         });
 
         request.fail(function( jqXHR, textStatus ) {
-            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen.");
+            alert(_tr["mlab.dt.design.js.alert.error.occurred"] + ": '" + jqXHR.responseText + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
             $(new_comp).remove();
             this.parent.flag_dirty = false;
         });
@@ -226,7 +226,7 @@ Mlab_dt_design.prototype = {
         var comp_url = window.location.origin + this.parent.urls.components_root_url;
         var comp_path = this.parent.components[comp_id].conf.name;
         var url = comp_url + comp_path + "/" + 'extended_tip.html';
-        var qTipClass = 'mlab_help_qTip';
+        var qTipClass = 'mlab_comp_help_qTip';
         var title = "Help - " + extended_name;
         var that = this;
 
@@ -234,7 +234,7 @@ Mlab_dt_design.prototype = {
             that.parent.api.displayHtmlPageInDialog(owner_element, title, html, qTipClass);           
         })
         .fail(function() {
-            alert( "app.mlab.menu.help.notfound" );
+            alert( _tr["mlab.dt.design.js.alert.help.notfound"] );
         })
     },
     
@@ -254,7 +254,7 @@ Mlab_dt_design.prototype = {
     component_paste : function() {
         var comp_id = mlab.dt.clipboard.data("mlab-type")
         if (this.parent.components[comp_id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + comp_id + "']").length > 0) {
-            alert("You can only have one component of this type on a page");
+            alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
         $(".mlab_current_component").removeClass("mlab_current_component");
@@ -297,7 +297,7 @@ Mlab_dt_design.prototype = {
 //make sure not duplicate it
             if ($(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']").length > 0) {
                 if (!silent) {
-                    this.parent.utils.update_status("temporary", "Feature already added", false);
+                    this.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.feature.already.added"], false);
                 }
                 return;
             }
@@ -328,13 +328,13 @@ Mlab_dt_design.prototype = {
             var url = this.parent.urls.feature_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
-                this.parent.utils.update_status("callback", 'Adding feature...', true);
+                this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.feature"], true);
             }
 
             var that = this;
             $.get( url, function( data ) {
                 if (data.result == "success") {
-                    that.parent.utils.update_status("temporary", "Feature added", false);
+                    that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.feature.added"], false);
                     $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_item_applied");
                     
 
@@ -360,11 +360,11 @@ Mlab_dt_design.prototype = {
         
         var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
         url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
-        this.parent.utils.update_status("callback", 'Adding storage plugin...', true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.storage.plugin"], true);
         var that = this;
         $.get( url, function( data ) {
             if (data.result == "success") {
-                that.parent.utils.update_status("temporary", "Storage plugin added", false);
+                that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
                 if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
                     that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
                 } else {

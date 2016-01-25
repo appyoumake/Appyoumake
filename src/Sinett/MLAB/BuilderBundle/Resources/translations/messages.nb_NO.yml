@@ -1,6 +1,15 @@
 %Users%: brukere
 
 #-----------------------------------------------------
+# Titel of the pages in Mlab
+#-----------------------------------------------------
+mlab.page.title.index: Velkommen til MLAB
+mlab.page.title.app.bulider.index: MLAB apper
+mlab.page.title.app.bulider.editor: MLAB app editor
+mlab.page.title.admin: MLAB admin
+
+
+#-----------------------------------------------------
 # Index info page
 #-----------------------------------------------------
 app.builder.index.page.heading: Mlab
@@ -144,16 +153,6 @@ app.builder.page.tooltip.save: Lagre endring av sidenavn
 app.builder.page.tooltip.cancel: Avbryt endring av sidenavn
 app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
 app.builder.page.tooltip.new: Ny side
-
-
-#-----------------------------------------------------
-# App builder - javascript
-#-----------------------------------------------------
-app.builder.mlab.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
-app.builder.mlab.js.alert.unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?
-
-app.builder.mlab.statusbar.compiler.connected: Koblet til server 
-app.builder.mlab.statusbar.compiler.contacting.server: Kontakter server...
 
 
 #-----------------------------------------------------
@@ -354,3 +353,276 @@ app.system.admin.help.edit.heading: Rediger hjelpetekst
 app.system.admin.help.edit.route: Side
 app.system.admin.help.edit.message: Hjelpetekst
 app.system.admin.help.edit.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# HTML.TWIG files - starts with file name (and folder 
+#       for others than the app folder)
+#-----------------------------------------------------
+layout.menu.tooltip.back.app.list: Tilbake til App liste
+layout.menu.tooltip.editor.menu: Editor menu
+layout.menu.tooltip.help: Hjelp
+layout.menu.tooltip.user.info: Bruker info
+
+build_app.menu.tooltip.back.app.list: Tilbake til App liste
+build_app.menu.utilities.delete.locks: Fjern låser
+build_app.menu.utilities.test.connection.compiler: Test connection to compiler
+build_app.menu.tooltip.test.app.web: Test app i nettleser
+
+build_app.page.tooltip.redo: Redo
+build_app.page.tooltip.undo: Undo
+
+build_app.components.toolbar.tooltip.move.up: Move selected component up
+build_app.components.toolbar.tooltip.move.down: Move selected component down
+build_app.components.toolbar.tooltip.delete: Delete selected component
+build_app.components.toolbar.tooltip.help: Get help about selected component
+build_app.components.toolbar.tooltip.cut: Cut selected component, you can paste it into another page in this app
+build_app.components.toolbar.tooltip.copy: Copy selected component, you can paste it into another page in this app
+build_app.components.toolbar.tooltip.paste: Paste component from Mlab clipboard
+build_app.components.toolbar.tooltip.resize: Resize component
+build_app.components.toolbar.tooltip.aspect.ratio: Select aspect ratio
+build_app.components.toolbar.tooltip.storage: Select storage mechanism
+build_app.components.toolbar.tooltip.credentials: Edit credentials
+
+build_app.components.toolbar.component.size.small: Small
+build_app.components.toolbar.component.size.medium: Medium
+build_app.components.toolbar.component.size.large: Large
+build_app.components.toolbar.component.size.full.screen: Full Screen
+
+build_app.components.toolbar.component.aspect.4.3: 4:3
+build_app.components.toolbar.component.aspect.16.9: 16:9
+build_app.components.toolbar.component.aspect.1.1: 1:1
+
+build_app.tooltip.not.saved: Siste forandringer ble ikke lagret
+build_app.not.saved: MLAb var ikke i stand til å lagre de siste forandringene på denne siden før den kunne gjøre det du ba om. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
+
+build_app.footer.tooltip.help: Turn help off
+build_app.footer.help: Hold musen over elementet du ønsker en beskrivelse av.
+
+builder.dialog.new.app.title: App details
+builder.popup.app.properties.title: Mlab app options
+builder.popup.app.properties.label.edit.content: Edit app content
+builder.popup.app.properties.label.edit.details: Edit app details
+builder.popup.app.properties.label.download: Download the app
+builder.popup.app.properties.label.copy.link: Copy link to the app
+builder.popup.app.properties.label.new.incremental: Create a new incremental version
+builder.popup.app.properties.label.new.major: Create a new major version
+builder.popup.app.properties.label.new.branch: Create a new branch
+builder.popup.app.properties.label.send.market: Send app to market
+builder.popup.app.properties.label.hide.market: Hide app from market
+builder.popup.app.properties.label.withdraw.market: Withdraw app from market/devices
+builder.popup.app.properties.label.delete: Delete app
+
+builder.create.new.version.confirm: Do you want to create a new version based on the active version of this app? \n\nThis version will be the active version that you can edit, and send to the market to replace the current version (if any).
+builder.create.new.branch.confirm: Do you want to create a new branch based on the active version of this app? \n\nThis branch will be a copy of the current active version that you can edit, and send to the market independently of the app you are copying.
+builder.create.active.version.confirm: Do you want to change the active version for this app? The version you activate will be the one you can edit, and will be the one you can send to the market to replace the current version (if any).
+builder.create.delete.confirm: Are you sure you want to delete this app? This will only work if it has not been sent to the market.
+
+properties.build.app.import.ppt.doc: Import PPT or DOC file
+properties.build.app.design.icon.legend: Design icon
+properties.build.app.design.icon.foreground.img.error.1: This browser does not support local images, get your technical support to upload your images
+properties.build.app.design.icon.foreground.img.error.2: This browser doesn't seem to support the `files` property of file inputs.
+
+properties.build.app.load.categories: ...loading...
+
+properties.build.app.fill.base.on: You must select what to base the new app on
+properties.build.app.fill.doc.convert: You must select a document to convert
+properties.build.app.fill.doc.convert.format: Document to convert must be PowerPoint or Word format
+properties.build.app.fill.template: You must select a template to use
+properties.build.app.fill.app.copy: You must select an app to copy
+properties.build.app.fill.name: You must enter a name for this app
+properties.build.app.fill.version: You must enter a version number that is 1 or higher.
+properties.build.app.fill.splash.format: Splash file must be in PNG or JPEG format
+properties.build.app.fill.description: You must enter a description for this app
+properties.build.app.fill.keywords: You must enter one or more keywords for this app
+properties.build.app.fill.main.category: You must select a main category for this app
+properties.build.app.fill.secondary.category: You must select a secondary category for this app
+properties.build.app.fill.final.category: You must select a final category for this app
+
+properties.build.app.summery.1: You are creating an empty app based on the
+properties.build.app.summery.2: template
+properties.build.app.summery.3: You are creating a new app copied from the
+properties.build.app.summery.4: app. All content will be copied across, but any changes will only apply to the new app.
+properties.build.app.summery.5: You are creating a new app with content copied from the
+properties.build.app.summery.6: file, with layout based on the
+properties.build.app.summery.7: template
+
+properties.build.app.error: An error occurred, see console log for more information
+
+show.remove.from.app.store: remove from app store
+show.recall.from.app.store: recall
+
+category.show.add: add
+category.show.delete: delete
+
+
+#-----------------------------------------------------
+# PHP files - starts with file name
+#-----------------------------------------------------
+appController.msg.createAction.1: App name already exists, chose a different name
+appController.msg.createAction.2: Unable to create app from template
+appController.msg.createAction.3: Invalid file uploaded
+appController.msg.createAction.4: Neither app to copy nor template specified
+appController.msg.createAction.5: Incorrect data submitted, may be a field missing
+
+appController.die.no.access: You have no access to this app
+appController.createNotFoundException.app: Unable to find App entity.
+appController.msg.unable.store.splach.screen: Unable to store splash screen for app
+appController.msg.unable.store.icon: Unable to store icon for app
+appController.msg.unable.copy.app.files: Unable to copy app files
+
+appController.msg.updateAction.1: An app with the name and version number specified already exists, chose a different name and/or version
+appController.msg.updateAction.2: Unable to update app
+
+appController.msg.deleteAction.1: Unable to find record to delete
+appController.msg.deleteAction.2: Cannot delete apps that have been sent to the market
+
+appController.msg.app.id.not.specified: Application ID not specified
+appController.msg.page.not.specified: Page not specified
+appController.msg.component.type.not.specified: Component type not specified
+
+appController.msg.getPageAction: File does not exists, contact support
+appController.msg.putPageAction: Unable to save file, please try again
+appController.msg.newPageAction: Unable to create a new file, maximum app size of 999 pages reached!
+appController.msg.copyPageAction: Unable to copy the page, please try again
+appController.msg.deletePageAction: Unable to delete page
+appController.msg.componentUploadAction.1: File type not allowed, please convert to another format
+appController.msg.componentUploadAction.2: Unable to load server_code.php file
+appController.msg.componentUploadAction.3: Unable to run application on server
+appController.msg.featureAddAction.1: Unable to update app with feature
+appController.msg.featureAddAction.2: , please try again
+appController.msg.storagePluginAddAction.1: Storage plugin not specified
+appController.msg.storagePluginAddAction.2: Unable to copy JavaScript file for this component
+appController.msg.createNewVersionAction: Increment must be 0.1 or 1, value supplied was
+
+categoryController.createNotFoundException: Unable to find Category entity.
+
+compController.msg.unable.upload.comp: Unable to upload component
+compController.createNotFoundException.comp: Unable to find Component entity.
+compController.msg.toggleStateAction: Unable to locate component record
+
+controller.msg.unable.create.record: Unable to create new record
+controller.msg.unable.locate.record: Unable to locate user record
+
+groupController.createNotFoundException: Unable to find Group entity.
+
+helpController.createNotFoundException: Unable to find Help entity.
+
+menuController.createNotFoundException: Unable to find Menu entity.
+
+servicesController.msg.unable.update.websocket: Unable to update websocket messages
+servicesController.msg.unable.retrieve.db.entry: Unable to retrieve app database entry
+servicesController.msg.cmpDownloadApp: Unable to retrieve app database entry to download app
+servicesController.msg.cmpGetAppProcessAction.1: App ID not specified
+servicesController.msg.cmpGetAppProcessAction.2: App version not specified
+servicesController.msg.cmpGetAppProcessAction.3: Platform not specified
+servicesController.msg.cmpGetAppProcessAction.4: Platform not supported for compilation
+servicesController.msg.cmpGetAppProcessAction.5: createApp compiler service failed
+servicesController.msg.cmpGetAppProcessAction.6: verifyApp compiler service failed
+servicesController.msg.passphrase.not.matching: Passphrase not matching
+servicesController.msg.cbCmpCreatedAppAction.1: Failed to create app remotely
+servicesController.msg.cbCmpCreatedAppAction.2: Unable to retrieve app database entry to verify upload
+servicesController.msg.cbCmpCreatedAppAction.3: verifyApp compiler service failed
+servicesController.msg.cbCmpVerifiedAppAction.1: Files failed to upload
+servicesController.msg.cbCmpVerifiedAppAction.2: compileApp compiler service failed
+servicesController.msg.cbCmpCompiledAppAction: App failed to compile
+servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage: Downloaded app does not match app sent, check for connection errors and try again
+
+templateController.msg.createAction: Invalid data
+templateController.msg.createNotFoundException: Unable to find Template entity.
+templateController.msg.unable.upload.template: Unable to upload template
+templateController.msg.toggleStateAction: Unable to locate template record
+
+trackingController.createNotFoundException: Unable to find Tracking entity.
+
+userController.msg.unable.create.record: Unable to create new record
+userController.msg.unable.find.record: Unable to locate user record
+userController.createNotFoundException: Unable to find User entity.
+userController.editAction.response: You do not have the rights to edit this user, must be Super Admin
+
+
+#-----------------------------------------------------
+# JS files - starts with file name 
+#-----------------------------------------------------
+mlab.dt.design.js.alert.only.one.comp: En side kan bare ha en komponent av denne typen
+mlab.dt.design.js.alert.add.comp: Legg til komponenten igjen.
+mlab.dt.design.js.alert.error.occurred: En feil oppsto
+mlab.dt.design.js.alert.help.notfound: Ikke noe hjelp å få i dag
+mlab.dt.design.js.qtip.help.title: Hjelp
+mlab.dt.design.js.update_status.adding.feature: Adding feature...
+mlab.dt.design.js.update_status.feature.added: Feature added
+mlab.dt.design.js.update_status.feature.already.added: Feature already added
+mlab.dt.design.js.update_status.adding.storage.plugin: Adding storage plugin...
+mlab.dt.design.js.update_status.storage.plugin.added: Storage plugin added
+
+mlab.dt.management.js.update_status.opening.app: Opening app
+mlab.dt.management.js.prompt.title.front.page: Please enter the title for the front page of this app
+mlab.dt.management.js.update_status.ready: Ready
+mlab.dt.management.js.update_status.retrieving.app: Retrieving app
+mlab.dt.management.js.update_status.unlocking.pages: Unlocking all pages...
+mlab.dt.management.js.update_status.opening.page: Opening page
+mlab.dt.management.js.update_status.storing.page: Storing page
+mlab.dt.management.js.update_status.saved.page: Saved page
+mlab.dt.management.js.update_status.unable.save.page: Unable to save page
+mlab.dt.management.js.update_status.copying.page: Copying page
+mlab.dt.management.js.update_status.deleting.page: Deleting page
+mlab.dt.management.js.update_status.unable.contact.server: Unable to contact server
+
+mlab.dt.management.js.app_download_process.1: Download
+mlab.dt.management.js.app_download_process.2: Download test app here
+mlab.dt.management.js.app_download_process.3: Mail link
+mlab.dt.management.js.app_download_process.4: Error
+
+mlab.dt.management.js.app_submit_to_market: Not implemented yet
+mlab.dt.management.js.app_update_gui_metadata.copy.pages: Kopier side
+mlab.dt.management.js.index_page_process.alert.1: This app does not have an editable area called
+mlab.dt.management.js.index_page_process.alert.2: unable to open app. Check with the system administrator for further information.
+mlab.dt.management.js.page_update_title.alert.page.locked: Page is locked, you cannot update the title
+mlab.dt.management.js.page_new.prompt.title.new.page: Please enter the title of the new page
+mlab.dt.management.js.page_copy.alert.not.copy.index.page: You can not copy the index page
+mlab.dt.management.js.page_copy.alert.not.delete.index.page: You can not delete the index page
+mlab.dt.management.js.page_copy.alert.sure.delete: Are you sure you want to delete this page? This cannot be undone!
+mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Cannot open new window, change your settings to allow popup windows
+mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (leave blank is OK)
+mlab.dt.management.js.compiler.get_app_status.prompt.version: version (leave blank is OK)
+mlab.dt.management.js.compiler.get_app_status.prompt.platform: platform (ios or android) (leave blank is OK)
+mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Unable to get app status
+mlab.dt.management.js.compiler.get_app.status.creating.app: Creating app...
+
+mlab_editor.init.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
+mlab_editor.init.js.alert.unsaved: Du har forandringer som ikke er lagret, er du sikker på at du vil forlate siden?
+
+mlab_editor.init.js.qtip.comp.storage.plugin.title: Storage plugin
+mlab_editor.init.js.qtip.comp.size.title: Component size
+mlab_editor.init.js.qtip.comp.aspect.title: Aspect ratio
+mlab_editor.init.js.qtip.download.app.title: Download to
+
+mlab_editor.init.js.compiling.connected: Creating app...connected to server
+mlab_editor.init.js.compiling.creating: Creating app remotely...
+mlab_editor.init.js.compiling.created: App created remotely
+mlab_editor.init.js.compiling.precompilation: Processing files...
+mlab_editor.init.js.compiling.uploading: Uploading files to compiler...
+mlab_editor.init.js.compiling.verifying: Verifying upload...
+mlab_editor.init.js.compiling.verification_ok: Files uploaded OK...
+mlab_editor.init.js.compiling.compiling: Waiting for compiler...
+mlab_editor.init.js.compiling.compilation_ok: App compiled OK...
+mlab_editor.init.js.compiling.receiving: Receiving app...
+mlab_editor.init.js.compiling.ready: App ready! Links are found in the menu
+mlab_editor.init.js.compiling.failed: App ready but there was a problem obtaining the links, please try again
+mlab_editor.init.js.compiling.failed.loading.comps: Unable to load components from the server, cannot continue, will return to front page
+mlab_editor.init.js.compiling.failed.loading.var: Unable to load variables from the server, cannot continue, will return to front page
+
+mlab.dt.api.js.getMedia.fail: Unable to obtain files
+
+mlab.dt.api.js.uploadMedia.qtip.content.1: Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde
+mlab.dt.api.js.uploadMedia.qtip.content.2: ...laster bilde...
+mlab.dt.api.js.uploadMedia.qtip.content.3: Velg fil
+mlab.dt.api.js.uploadMedia.qtip.content.4: Avbryt
+mlab.dt.api.js.uploadMedia.qtip.content.5: OK
+mlab.dt.api.js.uploadMedia.qtip.title: Last opp media
+
+mlab.dt.api.js.getLink.prompt: Please enter the URL or page number (for pages in this app) to link to
+mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
+
+mlab.dt.api.js.getCredentials.dlg.title: Credentials
+mlab.dt.api.js.getCredentials.dlg.text: Her skal credentials forklares.....
