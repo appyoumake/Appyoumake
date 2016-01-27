@@ -26,3 +26,23 @@
     this.custom_folding_style = function (el) {
         this.api.setAllVariables(el, {options: {style: "folding"}});
     };
+
+    this.custom_decrease_size = function (el) {
+        if ($(el).hasClass("mc_large")) {
+            $(el).removeClass("mc_large").addClass("mc_medium");
+        } else if ($(el).hasClass("mc_medium")) {
+            $(el).removeClass("mc_medium").addClass("mc_small");
+        } else {
+            $(el).addClass("mc_small");
+        }
+    };
+    
+    this.custom_increase_size = function (el) {
+        if ($(el).hasClass("mc_small")) {
+            $(el).removeClass("mc_small").addClass("mc_medium");
+        } else if ($(el).hasClass("mc_medium")) {
+            $(el).removeClass("mc_medium").addClass("mc_large");
+        } else {
+            $(el).addClass("mc_large");
+        }
+    };

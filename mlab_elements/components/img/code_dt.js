@@ -43,14 +43,30 @@
       
     this.custom_scale_decrease = function (el) {
         var fig = $('.mlab_current_component').find('figure');
-        fig.css('width', '25%');
-        this.centerFigureCaption(el);
+        var w = fig[0].style.width;
+        if (w == "" || w.slice(-1) != "%") {
+            var scale = 100;
+        } else {
+            var scale = parseInt(w);
+        }
+        if (scale >= 20) {
+            fig.css('width', (scale - 10).toString() + '%');
+            this.centerFigureCaption(el);
+        }
     };
     
     this.custom_scale_increase = function (el) {
         var fig = $('.mlab_current_component').find('figure');
-        fig.css('width', '100%');
-        this.centerFigureCaption(el);
+        var w = fig[0].style.width;
+        if (w == "" || w.slice(-1) != "%") {
+            var scale = 100;
+        } else {
+            var scale = parseInt(w);
+        }
+        if (scale <= 90) {
+            fig.css('width', (scale + 10).toString() + '%');
+            this.centerFigureCaption(el);
+        }
     };
     
     this.custom_position_left = function (el) {
@@ -81,22 +97,28 @@
     this.cbSetImageSource = function(el, img_url) {
         var img = $(el).find('img');
         img.attr('src', img_url);
+        $('.mlab_current_component').find('figure').css('width', '100%');
     };
 
     this.custom_decrease_size = function (el) {
-        var figcap = $('.mlab_current_component').find('figcaption');
-        if (figcap.hasClass("mc_large")) {
-            figcap.removeClass("mc_large").addClass("mc_medium");
-        } else if (figcap.hasClass("mc_medium")) {
-            figcap.removeClass("mc_medium").addClass("mc_small");
+        var text = $('.mlab_current_component').find('figcaption,p');
+        if (text.hasClass("mc_large")) {
+            text.removeClass("mc_large").addClass("mc_medium");
+            text
+        } else if (text.hasClass("mc_medium")) {
+            text.removeClass("mc_medium").addClass("mc_small");
+        } else {
+            text.addClass("mc_small");
         }
     };
     
     this.custom_increase_size = function (el) {
-		var figcap = $('.mlab_current_component').find('figcaption');
-        if (figcap.hasClass("mc_small")) {
-            figcap.removeClass("mc_small").addClass("mc_medium");
-        } else if (figcap.hasClass("mc_medium")) {
-            figcap.removeClass("mc_medium").addClass("mc_large");
+		var text = $('.mlab_current_component').find('figcaption');
+        if (text.hasClass("mc_small")) {
+            text.removeClass("mc_small").addClass("mc_medium");
+        } else if (text.hasClass("mc_medium")) {
+            text.removeClass("mc_medium").addClass("mc_large");
+        } else {
+            text.addClass("mc_large");
         }
     };

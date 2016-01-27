@@ -49,6 +49,8 @@
             content.removeClass("mc_large").addClass("mc_medium");
         } else if (content.hasClass("mc_medium")) {
             content.removeClass("mc_medium").addClass("mc_small");
+        } else {
+            content.addClass("mc_small");
         }
     };
     
@@ -58,6 +60,8 @@
             content.removeClass("mc_small").addClass("mc_medium");
         } else if (content.hasClass("mc_medium")) {
             content.removeClass("mc_medium").addClass("mc_large");
+        } else {
+            content.addClass("mc_large");
         }
     };
     
