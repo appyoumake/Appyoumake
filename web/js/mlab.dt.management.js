@@ -394,6 +394,9 @@ Mlab_dt_management.prototype = {
         var url = this.parent.urls.page_get.replace("_ID_", app_id);
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
+        
+        $(this.parent.qtip_tools).qtip('hide');
+        
         var that = this;
 
         $.get( url, function( data ) {
