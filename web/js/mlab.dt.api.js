@@ -100,6 +100,46 @@ Mlab_dt_api.prototype = {
     getUrlUploadRelative : function (comp_id) {
         return this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", comp_id);
     },
+    
+/**
+ * Wrapper function which calls the back end to load component help, 
+ * the backend checks for language selected and sees if there are language specific help file available, if not use generic one
+ * @param {type} component: component object
+ * @param {type} title: title of dlg box, string
+ * @param {type} owner: HTML element that will own this Qtip
+ * @returns {undefined}
+ */
+
+    displayExternalHelpfile: function (component_id, title, owner_element, qTipClass) {
+        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip ';
+        var url = this.parent.urls.component_helpfile.replace("_COMPID_", component_id);
+        if (typeof qTipClass != "undefined") { 
+            var styleClasses = styleClasses + " " + qTipClass;
+        }
+        $.getJSON(url, function(data) {
+            if (data.result == "SUCCESS") {
+                 $(owner_element).qtip({
+                     solo: false,
+                     content:    {
+                                 text: data.html,
+                                 title: title,
+                                 button: true
+                                 },
+                     position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                     show:       { ready: true, modal: { on: true, blur: false } },
+                     hide:       false,
+                     style:      { classes: qTipClasses },
+                     events:     {   hide: function(event, api) { api.destroy(); } }
+                 });
+            } else {
+                alert(data.message);
+            }
+
+        })
+        .fail(function() {
+            alert( _tr["mlab.dt.design.js.alert.help.notfound"] );
+        });
+    },
 
 /**
  * Returns a list of files already uploaded, non-async so we can return data to the calling function who may do any number of things with it.
@@ -451,12 +491,54 @@ Mlab_dt_api.prototype = {
     },
     
 /**
- * Returns the local (for instance nb_NO) as specified in the backend Symfony environment.
+ * Returns the locale (for instance nb_NO) as specified in the backend Symfony environment.
  * Loaded as a temporary variable on initial MLAB editor page load as it has to be passed from the backend.
  * @returns {Mlab_dt_api.parent.parent.locale}
  */
     getLocale: function() {
         return this.parent.parent.locale;
+    },
+
+/**
+ * Returns the string from a component as specified by the msg_key and msg_subkey 
+ * This is a string that is entered into the conf.yml, it can be a tooltip or generic messages
+ * If the key points to a string we just return the string, if it is an object, and it has an object named the same as the current locale,
+ * then it returns this locale string, otherwise looks for one called default. If neither found, return empty
+ * @param {type} comp_id
+ * @param {string array} keys
+ * @returns {string}
+ */
+    getLocaleComponentMessage: function(comp_id, keys) {
+        var loc = this.getLocale();
+        var obj = this.parent.components[comp_id].conf;
+        var found_at_all = false;
+        
+        for (i in keys) {
+            if (keys[i] in obj) {
+                found_at_all = true;
+                obj = obj[keys[i]];
+            } else {
+                found_at_all = false;
+                break;
+            }
+        }
+        
+//does key exist at all?
+        if (!found_at_all) {
+            return "";
+            
+//key was found, now ned to see if it is a string or array of strings, and if our locale is present in object
+        } else {
+            if (typeof obj != "object") {
+                return obj;
+            } else if (loc in obj) {
+                return obj[loc];
+            } else if ("default" in obj) {
+                return obj["default"];
+            } else {
+                return "";
+            }            
+        }
     },
 
     

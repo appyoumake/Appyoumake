@@ -626,3 +626,6 @@ mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
 
 mlab.dt.api.js.getCredentials.dlg.title: Credentials
 mlab.dt.api.js.getCredentials.dlg.text: Her skal credentials forklares.....
+
+controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet
+controller.help.msg.file.notfound: Komponent hjelpefil ikke funnet

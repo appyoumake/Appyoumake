@@ -3,26 +3,26 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: list
 name: ol
-extended_name: no. list
-tooltip: Nummerert liste
-footer_tip: Setter inn en nummerert liste i appen. Klikk enter for å få et nytt punkt i listen.
+extended_name: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
+tooltip: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
+footer_tip: { nb_NO: Setter inn en nummerert liste i appen. Trykk enter for å få et nytt punkt i listen, en_GB: Adds an ordered (numbered) list where you can enter information in numbered points, default: Adds an ordered (numbered) list where you can enter information in numbered points }
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |
     <ol class="mc_container mc_list mc_text mc_medium">
-        <li class="mc_text mc_display mc_list mc_numeric">Enter your numbered list here</li>
+        <li class="mc_text mc_display mc_list mc_numeric"></li>
     </ol>
 inherit: p
 filterhtml: ["li"]
 custom:
     indent:
-        tooltip: Indent selected line to a lower level
+        tooltip: { nb_NO: Sett innrykk for valgt linje til et lavere nivå, en_GB: Indent selected line to a lower level, default: Indent selected line to a lower level }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAI9JREFUeNpiYBgFVAaMMIayvMJ/Wlp09+EDsF1Mo2FOszgkBIBx3ACk6oduHLKyc/TT28L/QHweiBXoEocgC6HMD0Cc+Pvnjw30ikMBIF5PqyDG5kNkcAGIHYG+/UAtCwml0g/U9iELHrlGoM8aqB2HLDh8FQi07AC9soXAsMr4I6gsHW3TjLZpRgEMAAQYAL6oNNGM9XZ/AAAAAElFTkSuQmCC
         newline: true
         order: 7
     outdent:
-        tooltip: Remove indent
+        tooltip: { nb_NO: Sett innrykk for valgt linje til et høyere nivå, en_GB: Unindent selected line to a lower level, default: Unindent selected line to a lower level }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJVJREFUeNpiYBgFVAaMMIayvMJ/Wlp09+EDsF1Mo2FOszgkBIBx3ACk6odXHLKycyQAsQE9LBIA4vlA/B+IHahpNgsWy0A+mg/EBjSPQ1AQAqn96JbRKhhhQYiOqRqkyD78QI+ECI/D3z9/FAJ9cxAafwJ0yYdASzcAKUMgvjAQeZAm2YLuGX+El6WjbZrROByZACDAAKq2MS2WsGzbAAAAAElFTkSuQmCC
         order: 8
-    
-    
+messages:
+    list: { nb_NO: Legg inn listepunktene dine her, en_GB: Add your list items here, default: Add your list items here }

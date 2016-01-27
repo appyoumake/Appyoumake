@@ -7,6 +7,9 @@
         if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
             comp.attr("src", this.config.placeholder);
         }
+        
+        $(el).find('figcaption').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "caption"]));
+        $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
 
     }
     

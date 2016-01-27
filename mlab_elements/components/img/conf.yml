@@ -3,61 +3,63 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: image
 name: img
-extended_name: image
-tooltip: Bilde
-footer_tip: Velg et bilde lagret på din maskin via verktøymenyen til høyre og gi bildet en undertekst.
+extended_name: { nb_NO: Bilde med undertekst, en_GB: Image with caption, default: Image with caption }
+tooltip: { nb_NO: Bilde med undertekst, en_GB: Image with caption, default: Image with caption }
+footer_tip: { nb_NO: Bilde som kan lastes opp med undertekst, en_GB: Image that can be uploaded and have a caption, default: Image that can be uploaded and have a caption }
 placeholder: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAWCAIAAADsC02XAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gMXCy44Qd6cWgAAAk1JREFUWMPtVtGtozAQ5J6ugC3B6cAlhAriDuBVkBJIBygVBCoIqQA6wB2EVIA74D6sjPawMSSxdDrpzU8cy+x6vbOzmyQ/+L/wy/4IIYQQ2B2GYRgG9/R+v8faGKO1xl8iklK6+6uQUhKRXXddt3SMu3axdOGkKIqJoSxL94xSip9p23bm2LsfBhFxm4HbT0GM42ifFfjyWlFKuZuHwyE6YfI853+zLHvPDhG1bctj++09J4SQUs4Y5Y32Q8wiUUp9f3+HPzmdTu7rCCFsbLvdzhjjoeL9fveyEUzDgc+pKKWEzb7v7XqWQ5eKYT6DzHMqNk3jzQ94iAMR01VVVV3XbxP+rxQt1Rg0zbLR5eHtdoteYHVd8weFSG7P/Hpg1s3sRaWUthlETBcC0FpbsUZJL7GRS8D+CaUUyK+1RsPwBOayERFGTBcodz6fZ4tVbcyyrH3ier3igdI0DWUMzQ5sRISxMkZESAtsYgGCvIS6rnmx+fsYfPDHa5rGW6bv8dC1aYyB3+PxGPj88Xh0T2DgKMvSw2HIfVEUMyFOkuRyuUCIl2T9Jbnn4g5fHNbvFrknIlibpgnC48+Y1to+pGWjLa1YPATDjTFVVXkrysrDRq3npQWF/Fr6gLOxaZqIPATNrAsi6hhAre3jVehiMyrykdeyAtX8ORUxu3hzAmaO47hx8sjzfHGMdgPjtngHXA0sANt5lqrIjZyLwbQBfd+vqGJAG2ONUYGKRUN7abxa72MA2nGsuZ6IYAq3D08IG8erruvSNI2lAj/4F/gD7ZXTYef4KooAAAAASUVORK5CYII=
-urls: {upload: app_builder_component_upload}
 filterhtml: ["figcaption"]
 paste_allowed: true
 html: |
     <figure class="mc_container mc_picture_and_text">
       <img class='mc_figure mc_display mc_figure_with_caption' alt="sample image">
-      <figcaption class='mc_text mc_display mc_figure_text' contenteditable="true">Caption</figcaption>
+      <figcaption class='mc_text mc_display mc_figure_text' contenteditable="true">%%CAPTION%%</figcaption>
     </figure>
     <div style="clear: both;"></div>
 custom:
     bold:
-        tooltip: Add or remove bold font for current selection
+        tooltip: { nb_NO: Legg til eller fjern fet type for valgt tekst, en_GB: Add or remove bold font for current selection, default: Add or remove bold font for current selection }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP9JREFUeNpiYBhpIAGI9wPxeyD+TyI+D9VbAMQK5FjegMPg+UDsAMUNUIuwqWsgx1JiDSrA4ziaWMgANRybegdkRUxUjP+JOMTzaWXhBRziAbSykChATQsViPE5NS10IDFuKUqlBjgKC6pnCwFo6YRu2X2oOFUy/n1oEXYeh1wAPgOZiSjesCWCg0B8E8mXHEhsDyDWAOKPQPyA3kXbeqgjaFK0FeCpRWhiIQOeaq2BViXNARzi/rSy8CIOcYNhUZaCgDyh8pTaFuIqTxcOymwhQIIBuCzbT2zGN4CWEv/xGATyaT+0/PxPbOHNiKVdGk9BE+MhNC9eGDQtbYAAAwBvTbIy/k/mYwAAAABJRU5ErkJggg==
         order: 1
     italic:
-        tooltip: Add or remove italics font for current selection
+        tooltip: { nb_NO: Legg til eller fjern kursiv for valgt tekst, en_GB: Add or remove italics for current selection, default: Add or remove italics for current selection }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMlJREFUeNpiYBgFmEAAiPcD8X0g/o8Fv4fKG9DC8vlolu2HOohmIADNQoKWMVFoIXKwbQDiD7S20B6JvZEeiYek4KTUhw5I7AvEBCelFvrTMzgZoPkNFpwGtLbMAMmy+6RoZKIg/8HAAXoE53kkHwYMyuxASZCiB+cHWls4oNlBgdaWOZCbHcgNUn+02oHm4D49s4MCWjOCgdZBOqClSwI9U+d/tLqQJMBMhJoEaOuMA038IRC/INVCRgJNQGIydiCpxRtdAUCAAQBE0kOkYsGxTAAAAABJRU5ErkJggg==
         order: 2
     scale_decrease:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAdRJREFUeNpiZACC/0DAQEPw4eNHBgF+fjCbEUSwsLPT1EIY+P3jBwMTAx0ByKcMMB+CMDXBhYsX/4uKi/9nZef4j2w+C07vf3nB8OXRUYZ/v74ysPCIM/CruBPtk4uXLjG4urkxfPgAjDsBfob3Hz7A5VDiEBTGIPDz3V2GRzuKgJZ9gStkF1JmkPPoY2Bi4yHJst27djGYmJnhj8On++pQLIM54v21dSRbpq+nh6IGw0KQwaDgxAa+vbiAIWZqbs7w8OFDoiwDhyalKe/ixUsMLm7uDB8/fiBoGVYLQXHFyiOB1ZdcEgZYDQH5EAQIWYY1SEFA2qkJI3GAHCKoFYQidujQIRQ+P78AuEQBRcvNBc5gmqggBRmuHLKU4TMwW/z58hLM55GzJhi8oGBtbmllqA+GOPbVqakMssCUjQywZgtSSg5QcCIHISgq7q2JhvNBFvIrmMOzBYoPWTk4SC4bBdDi6+2FRSj8T3d2Eo5DSgAoGlCCGc1CFB+ePXWaKEONzUyxxyHQcPQCg6hUSi5ADz6aWghKLN9eXKSfhYTKWapb+JGI4KTYwhdHuohOLFQpvEEWcUroA4NzLdF6KK4tYL4kFtC1ETUgFg7vdumAAIAAAwCk9TQwvCbCGgAAAABJRU5ErkJggg==
-        tooltip: Scale image down 10%
+        tooltip: { nb_NO: Skaler bildet ned med 10%, en_GB: Scale image down by 10%, default: Scale image down by 10% }
         order: 3
         newline: true
     scale_increase:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXtJREFUeNpiYKAzYAQRFy9e+k8Py/T19RiZaG3J2XPnGD5//gzns1DbgpLSUobPX74wnD17Fi42c8YMBmMjIzCb6j708fFhuHXrFooYLw8PnE11C6UkJVGCEATU1NRoYyHIZ+mZmai+4+VF4bNQ2zKQ70CWzJw+neHZ8+cMy1esoH62wGYZcjBSNVsQaxlV4pBUyyiykBzLyLaQXMvgqdTYzJQsX/Lx8pFkGcVxSKplGPnw948fRGli5eDAKEHIs/DLC4YHm9IZ/v36wiCoFcwgZpZF9dqDCdXCl2DLQODLo6MoCkH8B5vSqGshK484AxMbpGTnkbNGUfjxzk6Gn+/uMnx7cZEiC1lQLZRgUA5ZCvYpu5AyXBzka5iPPwEtppqFYC8DfcguxIMi9hkpeD+jBTVFQYoMXhzpgsfn+2trUXxLVR/C4guEQalWwqYMHHc0SaUw8PbCIjANSiBP99XRLlvAfAfyGQxQ03eYqRRagtAS0LxdOuAAIMAAYTW6PTOxU0YAAAAASUVORK5CYII=
-        tooltip: Scale image up 10%
+        tooltip: { nb_NO: Skaler bildet opp med 10%, en_GB: Scale image up by 10%, default: Scale image up by 10% }
         order: 4
     decrease_size:
-        tooltip: Reduce the size of the caption
+        tooltip: { nb_NO: Reduser størrelsen på underteksten, en_GB: Decrease the size of the caption, default: Decrease the size of the caption }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
         order: 5
     increase_size:
-        tooltip: Increase the size of the caption
+        tooltip: { nb_NO: Øk størrelsen på underteksten, en_GB: Increase the size of the caption, default: Increase the size of the caption }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASRJREFUeNrUltENgyAQhu1D0z46gt3AERzBERiBEdjAERjBETqC3YAR6AZXTI6EEE7wwIde8r8g+Am5/8eu+5OSTkNu0v3x1LtaAK2TysCkE6BkDUw4AUJ7AiYCmNfMBRoEAsJTQJsAWg5sCmCA8EvrHQF3zVfBhgQM8CMuKU0AocQirXbnpVsDVXB8FLRvBevRcyZhi1CqFVBEL1QE0LYCmihV/I5TUFELm4mmoDp2a2X04UTXTlyYj7GVeL4SwLXW6FNhrlYFQc7owA2CGzG+4K3+cfpmPDomxvc1r8xa0uglt39VEEhcIE/GHnDvSnP0+0CcCHCDQDJbW3N2GUaWYiZSSpKywRYF8RkvyQOgjTtZZyYvBGTE6NsKvVmds6z6CTAAwDrVj6+nmH8AAAAASUVORK5CYII=
         order: 6
     position_left:
         newline: true
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OURCNzRCNDA5NDEyMTFFNUJERkVDRTI5N0NDNzBEODAiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OURCNzRCNDE5NDEyMTFFNUJERkVDRTI5N0NDNzBEODAiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5REI3NEIzRTk0MTIxMUU1QkRGRUNFMjk3Q0M3MEQ4MCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5REI3NEIzRjk0MTIxMUU1QkRGRUNFMjk3Q0M3MEQ4MCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnvxBIQAAABuSURBVHjaYvz//z8DPQETA53B8LeQBcZgZGTsB1IGNLLnAjCtFKJYCLXMgdY+ZBz2qZRacbgQiBfgUwALSWrF4cHROByB+RDoQ5paBLNn4OIQCGiaD7FZOJoPR/PhaBxStz4EhtRoPhyYOAQIMAAJijgYMay79AAAAABJRU5ErkJggg==
-        tooltip: Align image to the left
+        tooltip: { nb_NO: Juster bildet til venstre, en_GB: Align image to the left, default: Align image to the left }
         order: 7
         newline: true
     position_centre:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzEzQzQwNzg5NDEzMTFFNUFDNTRFQzdFQjlGQ0NDM0MiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzEzQzQwNzk5NDEzMTFFNUFDNTRFQzdFQjlGQ0NDM0MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozMTNDNDA3Njk0MTMxMUU1QUM1NEVDN0VCOUZDQ0MzQyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDozMTNDNDA3Nzk0MTMxMUU1QUM1NEVDN0VCOUZDQ0MzQyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PojE7p4AAAB1SURBVHjaYvz//z8DPQETA53B8LeQBcZgZGTsB1IGNLLnAjCtFKJYCLXMgdY+ZBz2qZQFp9cpi9OFQLwAWQAWkix4NFESpwdH43AE5EOgD2lqEcyegYtD9NRK7XxIMOOP5sPRfDgah1SvD4EhN5oP6QMAAgwABts7GFZDQNsAAAAASUVORK5CYII=
-        tooltip: Align image in the centre of the page
+        tooltip: { nb_NO: Juster bildet på midten av siden, en_GB: Align image in the centre of the page, default: Align image in the centre of the page }
         order: 8
     position_right:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTI0OTU1M0Q5NDEzMTFFNUIwQTdGRDgzNjIyRkI1MUQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTI0OTU1M0U5NDEzMTFFNUIwQTdGRDgzNjIyRkI1MUQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1MjQ5NTUzQjk0MTMxMUU1QjBBN0ZEODM2MjJGQjUxRCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1MjQ5NTUzQzk0MTMxMUU1QjBBN0ZEODM2MjJGQjUxRCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk56QQ8AAABsSURBVHjaYvz//z8DPQETA53B8LeQBcZgZGTsB1IGNLLnAjCtFKJYCLXMgdY+ZBz2qZSF6KCgLI4XAkNyAUkWUhjHB0dgHA7/fAj0IU0tgtkzcHFIKLVSmg+BeDQfjubD0fpwtD4crnEIEGAAPTw7GLSSmD4AAAAASUVORK5CYII=
-        tooltip: Align image to the right
+        tooltip: { nb_NO: Juster bildet til høyre, en_GB: Align image to the right, default: Align image to the right }
         order: 9
     upload_image:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
-        tooltip: Upload an image from your PC or select an already uploaded image to use here
+        tooltip: { nb_NO: Last opp et bilde eller velg et bilde allerede i denne appen, en_GB: Upload a picture or select one already in the app, default: Upload a picture or select one already in the app }
         order: 10
         newline: true
+messages:
+    caption: { nb_NO: Undertekst, en_GB: Caption, default: Caption }
+    text: { nb_NO: Legg inn brødteksten din her, en_GB: Add your body text here, default: Add your body text here }

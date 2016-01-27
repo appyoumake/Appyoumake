@@ -5,6 +5,7 @@
 
     this.onCreate = function (el) {
         this.onLoad (el);
+        $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
         this.highlight($(el).find("p"));
     };
 

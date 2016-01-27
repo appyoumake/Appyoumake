@@ -7,6 +7,7 @@
 
     this.onCreate = function (el) {
         this.onLoad (el);
+        this.getHTMLElement(el).text(this.api.getLocaleComponentMessage(this.config.name, ["placeholder"]));
         this.highlight(this.getHTMLElement(el));
     };
 
@@ -14,7 +15,7 @@
 	this.onLoad = function (el) {
         var that = this;
         this.getHTMLElement(el).attr("contenteditable", "true")
-                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.config.placeholder); } } ) ;
+                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.api.getLocaleComponentMessage(that.config.name, ["placeholder"])); } } ) ;
     };
     
 	this.onSave = function (el) {
