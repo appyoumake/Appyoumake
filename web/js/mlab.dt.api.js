@@ -100,6 +100,46 @@ Mlab_dt_api.prototype = {
     getUrlUploadRelative : function (comp_id) {
         return this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", comp_id);
     },
+    
+/**
+ * Wrapper function which calls the back end to load component help, 
+ * the backend checks for language selected and sees if there are language specific help file available, if not use generic one
+ * @param {type} component: component object
+ * @param {type} title: title of dlg box, string
+ * @param {type} owner: HTML element that will own this Qtip
+ * @returns {undefined}
+ */
+
+    displayExternalHelpfile: function (component_id, title, owner_element, qTipClass) {
+        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip ';
+        var url = this.parent.urls.component_helpfile.replace("_COMPID_", component_id);
+        if (typeof qTipClass != "undefined") { 
+            var styleClasses = styleClasses + " " + qTipClass;
+        }
+        $.getJSON(url, function(data) {
+            if (data.result == "SUCCESS") {
+                 $(owner_element).qtip({
+                     solo: false,
+                     content:    {
+                                 text: data.html,
+                                 title: title,
+                                 button: true
+                                 },
+                     position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                     show:       { ready: true, modal: { on: true, blur: false } },
+                     hide:       false,
+                     style:      { classes: qTipClasses },
+                     events:     {   hide: function(event, api) { api.destroy(); } }
+                 });
+            } else {
+                alert(data.message);
+            }
+
+        })
+        .fail(function() {
+            alert( _tr["mlab.dt.design.js.alert.help.notfound"] );
+        });
+    },
 
 /**
  * Returns a list of files already uploaded, non-async so we can return data to the calling function who may do any number of things with it.
@@ -451,12 +491,54 @@ Mlab_dt_api.prototype = {
     },
     
 /**
- * Returns the local (for instance nb_NO) as specified in the backend Symfony environment.
+ * Returns the locale (for instance nb_NO) as specified in the backend Symfony environment.
  * Loaded as a temporary variable on initial MLAB editor page load as it has to be passed from the backend.
  * @returns {Mlab_dt_api.parent.parent.locale}
  */
     getLocale: function() {
         return this.parent.parent.locale;
+    },
+
+/**
+ * Returns the string from a component as specified by the msg_key and msg_subkey 
+ * This is a string that is entered into the conf.yml, it can be a tooltip or generic messages
+ * If the key points to a string we just return the string, if it is an object, and it has an object named the same as the current locale,
+ * then it returns this locale string, otherwise looks for one called default. If neither found, return empty
+ * @param {type} comp_id
+ * @param {string array} keys
+ * @returns {string}
+ */
+    getLocaleComponentMessage: function(comp_id, keys) {
+        var loc = this.getLocale();
+        var obj = this.parent.components[comp_id].conf;
+        var found_at_all = false;
+        
+        for (i in keys) {
+            if (keys[i] in obj) {
+                found_at_all = true;
+                obj = obj[keys[i]];
+            } else {
+                found_at_all = false;
+                break;
+            }
+        }
+        
+//does key exist at all?
+        if (!found_at_all) {
+            return "";
+            
+//key was found, now ned to see if it is a string or array of strings, and if our locale is present in object
+        } else {
+            if (typeof obj != "object") {
+                return obj;
+            } else if (loc in obj) {
+                return obj[loc];
+            } else if ("default" in obj) {
+                return obj["default"];
+            } else {
+                return "";
+            }            
+        }
     },
 
     
@@ -626,29 +708,129 @@ Mlab_dt_api.prototype = {
         return true;
     },
     
-    
-/**
- * Creates the HTML5 code required for a link either to a external page or to a page in the current app.
- * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
- * TODO: Can be improved by listing existing pages instead of just requesting the page number.
- * @returns {Boolean|String}
+/***
+ * Utility function to get the A element parent of a selection area
+ * @returns {String|Boolean}
  */
-    getLink: function () {
-        var link = prompt(_tr["mlab.dt.api.js.getLink.prompt"]);
-        var page_name = "";
-        if (link != null && link != "") {
-            var num = parseInt(link);
-            if (parseInt(link) > 0 && num < 1000) {
-                var page_name = "onclick='mlab.api.navigation.pageDisplay(-1, " + num + "); return false;'";
-            } else if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
-                var page_name = link.trim();
+    getSelTextParentLinkElement: function () {
+        var el, sel, node;
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            el = sel.getRangeAt(0).commonAncestorContainer;
+            node = el.nodeName.toLowerCase();
+            while (node != 'a' && node != "body") {
+                el = el.parentNode;
+                node = el.nodeName.toLowerCase();
             }
         }
-        if (page_name == "") {
-            alert(_tr["mlab.dt.api.js.getLink.alert"]);
+        
+        if (node == 'a') {
+            return el;
+        } else {
             return false;
         }
-        return page_name;
+    },
+
+/***
+ * Utility function to check that the current selection is inside the current mlab component
+ * @returns {String|Boolean}
+ */
+    checkSelTextValid: function () {
+        var el, sel, node;
+        sel = window.getSelection();
+        if (sel.toString() != "") {
+            el = sel.getRangeAt(0).commonAncestorContainer;
+            if ($(el).parents("div.mlab_current_component").length > 0) {
+                return true;
+            }
+        }
+        
+        return false;
+    },
+
+/**
+ * 
+ * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
+ * @param {type} link
+ * @returns {Boolean}
+ */
+    updateLink: function (link) {
+        var link_type = $("input:radio[name=mlab_dt_getlink_choice]:checked").val();
+        var link = "";
+        var page_name;
+        debugger;
+        if (link_type == "page") {
+            link = $("#mlab_dt_link_app_pages").val();
+            var num = parseInt(link);
+            if (parseInt(link) >= 0 && num < 1000) {
+                page_name = " onclick='mlab.api.navigation.pageDisplay(-1, " + num + "); return false;' ";
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
+                return false;
+            }
+            
+        } else if (link_type == "url") {
+            link = $("#mlab_dt_link_app_url").val();
+            if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
+                page_name = link.trim();
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
+                return false;
+            }
+            
+        } else {
+            alert(_tr["mlab.dt.api.js.getLink.alert_choose_type"]);
+            return false;
+            
+        }
+        
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
+        return true;
+    },
+        
+/**
+ * Asks a user for a link either to a external page or to a page in the current app.
+ * The actual link is created in updateLink above
+ * @returns {Boolean|String}
+ */
+    setLink: function () {
+//we must first of all check that som text is chosen inside the current component
+        if (!this.checkSelTextValid()) {
+            alert(_tr["mlab.dt.api.js.getLink.no_selection"]);
+            return;
+        }
+
+//we need to create a temporary link straight away so that we can refer to it later, otherwise the selection wil disappear.
+        document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
+
+//we need to request the URL *OR* which page to link to
+        var opt = "<option value='-1'></option>";
+        for (page in mlab.dt.app.page_names) {
+            opt = opt + "<option value='" + page + "'>" + mlab.dt.app.page_names[page] + "</option>";
+        }
+        var that = this;
+        $('<div id="mlab_dt_link_dialog">' + 
+            '<label><input type="radio" name="mlab_dt_getlink_choice" value="page">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
+            '<select id="mlab_dt_link_app_pages">' + opt + '</select><br>' + 
+            '<label><input type="radio" name="mlab_dt_getlink_choice" value="url">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
+            '<input type="text" id="mlab_dt_link_app_url">' + _tr["mlab.dt.api.js.getLink.url"] + '<br>' + 
+          '</div>').dialog({
+                            title: _tr["mlab.dt.api.js.getLink.heading"],
+                            modal: true,
+                            buttons: [{ text: _tr["mlab.dt.api.js.getLink.ok"],     click: function () { if (that.updateLink()) { $(this).dialog('destroy').remove(); } } },
+                                      { text: _tr["mlab.dt.api.js.getLink.cancel"], click: function () { $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); $(this).dialog('destroy').remove(); } }]
+                        }).dialog( "moveToTop" );
+    },
+    
+    removeLink: function () {
+        //could use //document.execCommand("unlink", false, false);, but avoiding as does only remove links on selected area
+        var link = this.getSelTextParentLinkElement();
+        if (link) {
+            if ($(link).parents("#mlab_editable_area").length > 0) {
+                $(link).replaceWith( $(link).contents() );
+            }
+        }
     },
 
 /**

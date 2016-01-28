@@ -3,26 +3,37 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: list
 name: ol
-extended_name: no. list
-tooltip: Nummerert liste
-footer_tip: Setter inn en nummerert liste i appen. Klikk enter for å få et nytt punkt i listen.
+extended_name: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
+tooltip: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
+footer_tip: { nb_NO: Setter inn en nummerert liste i appen. Trykk enter for å få et nytt punkt i listen, en_GB: Adds an ordered (numbered) list where you can enter information in numbered points, default: Adds an ordered (numbered) list where you can enter information in numbered points }
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
 html: |
     <ol class="mc_container mc_list mc_text mc_medium">
-        <li class="mc_text mc_display mc_list mc_numeric">Enter your numbered list here</li>
+        <li class="mc_text mc_display mc_list mc_numeric"></li>
     </ol>
 inherit: p
 filterhtml: ["li"]
 custom:
     indent:
-        tooltip: Indent selected line to a lower level
+        tooltip: { nb_NO: Sett innrykk for valgt linje til et lavere nivå, en_GB: Indent selected line to a lower level, default: Indent selected line to a lower level }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAI9JREFUeNpiYBgFVAaMMIayvMJ/Wlp09+EDsF1Mo2FOszgkBIBx3ACk6oduHLKyc/TT28L/QHweiBXoEocgC6HMD0Cc+Pvnjw30ikMBIF5PqyDG5kNkcAGIHYG+/UAtCwml0g/U9iELHrlGoM8aqB2HLDh8FQi07AC9soXAsMr4I6gsHW3TjLZpRgEMAAQYAL6oNNGM9XZ/AAAAAElFTkSuQmCC
         newline: true
         order: 7
     outdent:
-        tooltip: Remove indent
+        tooltip: { nb_NO: Sett innrykk for valgt linje til et høyere nivå, en_GB: Unindent selected line to a lower level, default: Unindent selected line to a lower level }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJVJREFUeNpiYBgFVAaMMIayvMJ/Wlp09+EDsF1Mo2FOszgkBIBx3ACk6odXHLKycyQAsQE9LBIA4vlA/B+IHahpNgsWy0A+mg/EBjSPQ1AQAqn96JbRKhhhQYiOqRqkyD78QI+ECI/D3z9/FAJ9cxAafwJ0yYdASzcAKUMgvjAQeZAm2YLuGX+El6WjbZrROByZACDAAKq2MS2WsGzbAAAAAElFTkSuQmCC
         order: 8
-    
-    
+    add_link:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAddJREFUeNrsVr1SwkAQjoJjythRamcZOzuh0w7fADs79Q3CEzB2dqGjhDcIpVbQWsEbEDsYf+K3zt7M5sglx5mSnfkmP7d3393ut5t43t4q7OjY7wEzIBNYABEQ1EkUAGONSAdtJJTzDlzJcEmA0MJ9DnQ+N+uUHho1kg2BPvAGXAI+v28Bm5/vr6lrGPV8rYB2gd9K5tQppGLhgE94BTwhXPMC30dcBuoZPn9cTUfNUD4mWCQq8Vn+R5GRFiIp/65hTix9d8lZUiH9jMOXC71eHmrs0EKNbYu9DVR+ue7G2vhzKWGJ9En2Z8AF5VDLacpkCYtKGeV6aFSpgYwW7KiFVRFTp+EIdNhPJ8sV/dYJK8jIKBexGLvj01qRbXWaRrM50nKmyJa8IHWNc/iFwDv79ICR6CxGslxIqetru0950pwFkVhWkZEsd0LsOOYTKLvBpFe6QR9cYvwDt9cVZFOel9rUnKyb2ODT5WLPCvppZHN8GVLZDW6xy0nJ5kIpEPhafwlMhX9qIqLOg9uupkinfrnQQhQUtKtVwRd9J2IpmhNREiTxe7zbAD7wgOcXW+nb5tD5t8HphJD+GidRvwetkjkTFlXq1WH8SYoK5D/j5rC3UvsVYAD7ENo13pqynAAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Legg til en lenke på den valgte teksten, en_GB: Add a link to the currently highlighted text, default: Add a link to the currently highlighted text }
+        order: 9
+        newline: true
+    remove_link:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAalJREFUeNrsVt1NxDAMbhEI3igbdISyQdmgGxA26AaECWCD3k1QmKAwQcsE7QbAG4iHwz45komc1LlXsGT11LPz2Z9/0iz7lxU5OT2rQHvQHdM30A609O1z5aHoiDp9f32+s/cGHl3EFW2vwGdyL46UieChA2idAIZSoB/PVAv4wiIOgS2gd6APzo6B3qZSWsFjRHqIWh9sIupcQAgyE9g+UPjvQp0h1cBFfR0DI3v8vfGyTKI0I7qWNTAmH6puBMUiW6JRsnEjMBJ1kk0BOvNRCQHWwjy1no1VgI3eOb3YNHRI41G3AGWLsrkKGh+fnUs3i3nE2bAGwRq9gpM9AOwG/DZrkRqPkn3NYmACjTsKOjsILFQz8lGDHQs0dgmt7+SJ6u6C2oZozIVtkgomLXk+8M+iv3DFaFrfeu9bGiV+Th2KjhvNyjnrI3ekpSVSagCtshsH2k6tdj+Gdul5wpyV/PpJAeSFNZzSCNjWNUdo98YAH73uwjreE72jYoM0qR9DpdBhITXMr3H11ODkws0+8AtTkF+ZEd1VypKXMu2EbHttnf62/AgwAAga3aqyrm3FAAAAAElFTkSuQmCC
+        tooltip: { nb_NO: Fjern lenken ved tekstmarkøren, en_GB: Remove the link at the current cursor position, default: Remove the link at the current cursor position }
+        order: 10
+
+        
+messages:
+    list: { nb_NO: Legg inn listepunktene dine her, en_GB: Add your list items here, default: Add your list items here }

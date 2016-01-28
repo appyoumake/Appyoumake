@@ -33,3 +33,6 @@ help_getHtml:
     pattern:  /{route}/get_html
     defaults: { _controller: "SinettMLABBuilderBundle:Help:getHtml" }
     
+help_get_component_helpfile:
+    pattern:  /{comp_id}/get_component_helpfile
+    defaults: { _controller: "SinettMLABBuilderBundle:Help:getComponentHelpfile" }

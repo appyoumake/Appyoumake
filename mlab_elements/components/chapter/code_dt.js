@@ -12,6 +12,7 @@
 
     this.onCreate = function (el) {
         this.onLoad (el);
+        $(el).find('h1').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "headline"]));
         $(el).attr("data-mlab-chapter-id", this.api.getGUID());
         this.highlight(this.getHTMLElement(el));
     };

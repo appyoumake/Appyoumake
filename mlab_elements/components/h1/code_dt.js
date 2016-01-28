@@ -7,6 +7,7 @@
 
     this.onCreate = function (el) {
         this.onLoad (el);
+        this.getHTMLElement(el).text(this.api.getLocaleComponentMessage(this.config.name, ["placeholder"]));
         this.highlight(this.getHTMLElement(el));
     };
 
@@ -14,7 +15,7 @@
 	this.onLoad = function (el) {
         var that = this;
         this.getHTMLElement(el).attr("contenteditable", "true")
-                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.config.placeholder); } } ) ;
+                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.api.getLocaleComponentMessage(that.config.name, ["placeholder"])); } } ) ;
     };
     
 	this.onSave = function (el) {
@@ -48,6 +49,8 @@
             content.removeClass("mc_large").addClass("mc_medium");
         } else if (content.hasClass("mc_medium")) {
             content.removeClass("mc_medium").addClass("mc_small");
+        } else {
+            content.addClass("mc_small");
         }
     };
     
@@ -57,6 +60,8 @@
             content.removeClass("mc_small").addClass("mc_medium");
         } else if (content.hasClass("mc_medium")) {
             content.removeClass("mc_medium").addClass("mc_large");
+        } else {
+            content.addClass("mc_large");
         }
     };
     

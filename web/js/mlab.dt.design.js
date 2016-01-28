@@ -215,27 +215,12 @@ Mlab_dt_design.prototype = {
     
 //gets a html page to show as help for making the component at dt
     component_help : function () {
-        var curr_comp = $(".mlab_current_component");
-        var comp_id = curr_comp.data("mlab-type");
-        if (typeof this.parent.components[comp_id].conf.extended_name != "undefined"){
-           var extended_name = this.parent.components[comp_id].conf.extended_name;
-        }
-
+        var comp_id = $(".mlab_current_component").data("mlab-type");
+        var extended_name = this.parent.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
         var owner_element = $(".mlab_help_icon");
-        
-        var comp_url = window.location.origin + this.parent.urls.components_root_url;
-        var comp_path = this.parent.components[comp_id].conf.name;
-        var url = comp_url + comp_path + "/" + 'extended_tip.html';
         var qTipClass = 'mlab_comp_help_qTip';
-        var title = "Help - " + extended_name;
-        var that = this;
-
-        $.get(url, function(html) {
-            that.parent.api.displayHtmlPageInDialog(owner_element, title, html, qTipClass);           
-        })
-        .fail(function() {
-            alert( _tr["mlab.dt.design.js.alert.help.notfound"] );
-        })
+        var title = _tr["mlab.dt.design.js.qtip.help.title"] + extended_name;
+        this.parent.api.displayExternalHelpfile(comp_id, title, owner_element, qTipClass);           
     },
     
     
@@ -454,7 +439,7 @@ Mlab_dt_design.prototype = {
         var temp_menu = [];
         var loc = mlab.dt.api.getLocale();
         
-        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(conf.extended_name);
+        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(this.parent.api.getLocaleComponentMessage(comp_name, ["extended_name"]));
         menu.html("");
         
 
@@ -463,10 +448,9 @@ Mlab_dt_design.prototype = {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
                     var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
-                    var temp_tt = ( typeof conf.custom[title]["tooltip"] != "undefined" ) ? conf.custom[title]["tooltip"] : title;
-                    var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
-
+                    var tt = this.parent.api.getLocaleComponentMessage(comp_name, ["custom", title, "tooltip"]);
                     var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
+
                     if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
                         var cl = "mlab_newline";
                     } else {
