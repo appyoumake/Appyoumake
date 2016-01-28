@@ -225,12 +225,12 @@ made smaler than the min width */
     border: 2px solid orange;
     border-radius: 2px;
     padding: 12px;
-    padding-left: 30px;
 }
 
 #mlab_editor #mlab_page_management #mlab_page_management_info {
     padding: 15px;
     padding-left: 0;
+    padding-right: 5px;
     font-family:Arial, Helvetica, sans-serif;
     font-size:12px; 
     color: #000000;
