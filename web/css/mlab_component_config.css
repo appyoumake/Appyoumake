@@ -53,16 +53,21 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 #mlab_editor .qtip-titlebar,
 #mlab_editor .ui-dialog-titlebar {
     font-size: 13px;
-    line-height: 16px;
+    line-height: 20px;
     font-weight: bold;
     margin: 0;
     padding-left: 0.5em;
-    padding-right: 0.5em;
+    padding-right: 2.5em;
     background-color: rgba(255,165,0,0.2);
 }
 
 #mlab_editor .ui-dialog-titlebar {
     padding: 5px;
+}
+
+#mlab_editor .qtip-titlebar .qtip-close {
+    top: 1px;
+    background-color: white;
 }
 
 #mlab_editor .mlab_dt_text_headline {
