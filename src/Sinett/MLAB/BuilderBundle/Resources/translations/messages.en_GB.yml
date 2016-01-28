@@ -17,6 +17,12 @@ app.builder.index.page.text: Welcome to Mlab. With this tool you can create your
 app.builder.index.page.link.text.before: To get started go to the
 app.builder.index.page.link.app.list: App list
 app.builder.index.page.link.text.after: or chose a different action from the menu above.
+app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 steg
+app.builder.index.page.help.guide.text1: Start Ny App veiviseren
+app.builder.index.page.help.guide.text2: Klikk på en komponent for å legge den til på siden
+app.builder.index.page.help.guide.text3: Rediger innholdet og innstillingene til komponenten
+app.builder.index.page.help.guide.text4: Legg til flere komponenter og sider til appen er ferdig
+app.builder.index.page.help.guide.text5: Bygg appen og prøve den på mobil eller nettbrett
 
 
 #-----------------------------------------------------
@@ -395,6 +401,7 @@ build_app.components.toolbar.component.aspect.1.1: 1:1
 
 build_app.tooltip.not.saved: The latest changes were not saved
 build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
+
 build_app.footer.tooltip.help: Turn help off
 build_app.footer.help: Hold the mouse over the item you wish to describe.
 
