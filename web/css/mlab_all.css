@@ -733,3 +733,54 @@ body.mlab_base div.mlab_top_bar_back {
 #tabs_admin_apps.ui-tabs {
     position: absolute;
 }
+
+.mlab_frontpage {
+    max-width: 800px;
+    margin-top: 30px;
+}
+
+.mlab_frontpage a {
+  color: darkgoldenrod;     
+}
+
+.mlab_frontpage .help_guide_top {
+    padding: 25px 0px 70px 80px;
+    
+}
+
+.help_guide_top .help_guide_back,
+.help_guide_top .help_guide_heading,
+.help_guide_top .help_guide_next {
+    float: left;
+}
+.help_guide_top .help_guide_heading {
+    padding: 0 20px 0 20px;
+    margin-top: 13px;
+    font-weight: bold;
+    font-size: 21px;
+    color: #303030;
+    cursor: default;
+}
+
+.help_guide_top .help_guide_back,
+.help_guide_top .help_guide_next {
+    background-image: url("/img/frontpage_arrow_back.png");
+    background-repeat: no-repeat;
+    padding: 55px 80px 0px 0px;
+    cursor: pointer;
+}
+
+.help_guide_top .help_guide_next {
+    background-image: url("/img/frontpage_arrow_next.png");
+}
+
+.mlab_frontpage .help_guide_text {
+    color: #303030;
+    cursor: default;
+}
+
+.mlab_frontpage .help_guide_img {
+    background-image: url("/img/frontpage_step1.png");
+    background-repeat: no-repeat;
+    padding: 700px 535px 0px 0px;
+}

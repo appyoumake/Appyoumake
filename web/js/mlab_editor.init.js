@@ -213,7 +213,7 @@
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                                 solo: false,
-                                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"] },
+                                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
                                 position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                                 show:       { ready: true, modal: { on: true, blur: false } },
                                 hide:       false,
@@ -228,7 +228,7 @@
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                                 solo: false,
-                                content:    {text: $("#mlab_component_size_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.size.title"] },
+                                content:    {text: $("#mlab_component_size_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.size.title"], button: true },
                                 position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                                 show:       { ready: true, modal: { on: true, blur: false } },
                                 hide:       false,
@@ -244,7 +244,7 @@
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                                 solo: false,
-                                content:    {text: $("#mlab_component_aspect_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.aspect.title"] },
+                                content:    {text: $("#mlab_component_aspect_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.aspect.title"], button: true },
                                 position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                                 show:       { ready: true, modal: { on: true, blur: false } },
                                 hide:       false,
