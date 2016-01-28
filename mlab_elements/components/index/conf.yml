@@ -46,5 +46,6 @@ custom:
     
 messages:
     ph_title: { nb_NO: Innholdslisten vil bli vist her i den ferdige appen, en_GB: Your index will be displayed here, default: Your index will be displayed here }
+    ph_chapter: { nb_NO: Kapittel, en_GB: Chapter, default: Chapter }
     ph_page: { nb_NO: Side, en_GB: Page, default: Page }
     

@@ -288,6 +288,7 @@ Mlab_dt_management.prototype = {
         }
 
         this.parent.app.curr_indexpage_html = doc;
+        
 //Page name is picked up from title tag in head
         this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
         this.parent.app.curr_page_num = page_num;
@@ -406,6 +407,7 @@ Mlab_dt_management.prototype = {
                 $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                     that.index_page_process ( data.html, "index", true );
+                    $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
                     that.parent.utils.timer_start();
                     if ( $("#mlab_overlay").is(':visible') ) {
@@ -417,8 +419,7 @@ Mlab_dt_management.prototype = {
                     var path = window.location.pathname.split("/");
                     path[path.length - 3] = data.app_id;
                     path[path.length - 2] = data.page_num_real;
-                    // TODO
-                    //history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
+                    history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
                 }
 
                 if (data.lock_status == "locked") {
@@ -439,6 +440,9 @@ Mlab_dt_management.prototype = {
                 if ($("#" + mlab.dt.config["app"]["content_id"] + " .mlab_current_component").length == 0) {
                     $(that.parent.qtip_tools).qtip('hide');
                 }
+                
+//turn off clikability of links
+                $("#mlab_editable_area").find("a").click(function(e) { e.preventDefault(); });
 
                 that.parent.utils.timer_start();
 

@@ -75,6 +75,14 @@
         
     };
     
+    this.custom_add_link = function (el) {
+        this.api.setLink(el);
+    };
+
+    this.custom_remove_link = function (el) {
+        this.api.removeLink();
+    };
+    
     this.highlight = function (el) {
         el.focus();
         var range = document.createRange();
