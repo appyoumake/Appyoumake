@@ -153,10 +153,9 @@
                             if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
                                 
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
-                                var temp_tt = c.conf.tooltip;
-                                var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
-                                var temp_tt = c.conf.footer_tip;
-                                var tte = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                                tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
+                                tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
+                                eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
                                 
                                 $("#mlab_toolbar_components").append(
                                         "<div data-mlab-type='" + type + "' " +
@@ -170,9 +169,9 @@
                                          "</div>"
                                 );
                             } else if (c.accessible && c.is_feature) {
-                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             } else if (c.accessible && c.is_storage_plugin) {
-                                storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+                                storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
                       

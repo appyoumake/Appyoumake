@@ -26,8 +26,11 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     border: solid orange 2px; 
     box-shadow: 10px 10px 5px #888888;
     padding-bottom: 5px;
+<<<<<<< HEAD
     margin-bottom: 60px;
+=======
     z-index: 2001;
+>>>>>>> master
 }
 
 #mlab_editor .qtip.mlab_dt_wide_qtip_box{

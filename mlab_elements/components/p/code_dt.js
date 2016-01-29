@@ -5,6 +5,7 @@
 
     this.onCreate = function (el) {
         this.onLoad (el);
+        $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
         this.highlight($(el).find("p"));
     };
 
@@ -32,15 +33,11 @@
     };
 
     this.custom_add_link = function (el) {
-        link = this.api.getLink();
-        if (link) {
-            var newLink = document.execCommand('createlink', false, link);
-            newLink.target = "_new";
-        }
+        this.api.setLink(el);
     };
 
     this.custom_remove_link = function (el) {
-		document.execCommand("unlink", false, false);
+        this.api.removeLink();
     };
     
     this.onKeyPress = function (e) {

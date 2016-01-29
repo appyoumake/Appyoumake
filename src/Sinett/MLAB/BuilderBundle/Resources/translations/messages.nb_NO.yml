@@ -632,3 +632,16 @@ mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
 
 mlab.dt.api.js.getCredentials.dlg.title: Credentials
 mlab.dt.api.js.getCredentials.dlg.text: Her skal credentials forklares.....
+
+controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet
+controller.help.msg.file.notfound: Komponent hjelpefil ikke funnet
+
+mlab.dt.api.js.getLink.heading: Add link
+mlab.dt.api.js.getLink.app_page: I want to link to a page in my app
+mlab.dt.api.js.getLink.url: I want to link to an external website
+mlab.dt.api.js.getLink.ok: OK
+mlab.dt.api.js.getLink.cancel: Cancel
+mlab.dt.api.js.getLink.alert_url_wrong: The URL you entered is not a valid URL, please check and try again
+mlab.dt.api.js.getLink.alert_no_page: You must select a page to link to
+mlab.dt.api.js.getLink.alert_choose_type: Choose a link type to add
+mlab.dt.api.js.getLink.no_selection: Please select som text inside the current component to add link to
