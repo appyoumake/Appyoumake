@@ -429,10 +429,21 @@ Mlab_dt_api.prototype = {
         } else {
             var owner_element = el;
         }
+        
+        var curr_comp = $(".mlab_current_component");
+        //set the qTips posistion after where it is placed in the window 
+        var myPosQtip = 'leftMiddle';
+        //var eTop = curr_comp.top; //get the offset top of the element
+        var eTop = curr_comp.offset().top; //get the offset top of the element
+        //eTop = eTop - $(window).scrollTop();
+        if( eTop <= 145 ){
+            myPosQtip = 'leftTop';
+        }
+        
         that.properties_tooltip = $(owner_element).qtip({
             solo: false,
-            content:    {text: content, title: title },
-            position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+            content:    {text: content, title: title, button: true },
+            position:   { my: myPosQtip, at: 'rightMiddle', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c },
