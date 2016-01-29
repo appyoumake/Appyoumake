@@ -17,12 +17,12 @@ app.builder.index.page.text: Welcome to Mlab. With this tool you can create your
 app.builder.index.page.link.text.before: To get started go to the
 app.builder.index.page.link.app.list: App list
 app.builder.index.page.link.text.after: or chose a different action from the menu above.
-app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 steg
-app.builder.index.page.help.guide.text1: Start Ny App veiviseren
-app.builder.index.page.help.guide.text2: Klikk på en komponent for å legge den til på siden
-app.builder.index.page.help.guide.text3: Rediger innholdet og innstillingene til komponenten
-app.builder.index.page.help.guide.text4: Legg til flere komponenter og sider til appen er ferdig
-app.builder.index.page.help.guide.text5: Bygg appen og prøve den på mobil eller nettbrett
+app.builder.index.page.help.guide.heading: How to create an app in 5 steps
+app.builder.index.page.help.guide.text1: Start the New App wizard
+app.builder.index.page.help.guide.text2: Click on a component to add to page
+app.builder.index.page.help.guide.text3: Edit the component content and settings
+app.builder.index.page.help.guide.text4: Add more components and pages until the app is completed
+app.builder.index.page.help.guide.text5: Build the app and try it on a mobile or tablet 
 
 
 #-----------------------------------------------------
