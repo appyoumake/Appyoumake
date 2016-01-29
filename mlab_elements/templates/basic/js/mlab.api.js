@@ -534,6 +534,7 @@ Mlab_api.prototype = {
  * @returns {undefined}
  */
             cbPluginFailed: function(data_type, app_uuid, device_uuid, component_uuid, key) {
+                var SEP = this.parent.parent.data_divider;
                 var counter = this.parent.retry_save_queue_counter++; //TODO could get a race condition here...
                 window.localStorage.setItem("_QUEUE_" + counter, data_type + SEP + app_uuid + SEP + device_uuid + SEP + component_uuid + SEP + key);
             },
