@@ -396,7 +396,6 @@ Mlab_dt_api.prototype = {
         //var eTop = curr_comp.top; //get the offset top of the element
         var eTop = curr_comp.offset().top; //get the offset top of the element
         //eTop = eTop - $(window).scrollTop();
-        debugger;
         if( eTop <= 145 ){
             myPosQtip = 'leftTop';
         }
