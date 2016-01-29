@@ -878,6 +878,24 @@ Mlab_dt_api.prototype = {
 //object for display functionality, primarily for resizing 
     display: {
         
+        setEditableFocus: function (el) {
+            var sel = window.getSelection();
+            var range = document.createRange();
+            var html_el = el[0];
+            if (el.text() != "") {
+                range.setStart(html_el, 0);
+                range.setEnd(html_el, 0);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                html_el.innerHTML = '\u00a0';
+                range.selectNodeContents(html_el);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                document.execCommand('delete', false, null);
+            }
+        },
+        
 /**
  * Updates the aspect ratio setting for a component by updating the data-mlab-ratio setting
  * @param {type} el
@@ -886,11 +904,10 @@ Mlab_dt_api.prototype = {
  */
         setAspectRatio: function (el, aspect) {
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
-                $(el).attr("data-mlab-aspectratio", aspect);
+                el.attr("data-mlab-aspectratio", aspect);
                 this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
                 this.updateDisplay(el);
-                
             }
         },
         

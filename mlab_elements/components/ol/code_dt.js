@@ -51,7 +51,7 @@
         }
         var element = curr_node.detach();
         prev_node.find(this.tagName).append(element);
-        element.focus();
+        this.api.display.setEditableFocus(element);
         this.api.dirty_flag = true;
     };
     
@@ -70,7 +70,7 @@
         }
         var element = curr_node.detach();
         parent_node.after(element);
-        element.focus();
+        this.api.display.setEditableFocus(element);
         this.api.dirty_flag = true;
         
     };
@@ -94,13 +94,35 @@
   
 //we need to use tab to create indents/outdents
     this.onKeyPress = function (e) {
+        
+// tab, move right (indent)
         if (e.keyCode == 9 && e.shiftKey == false) {
             e.preventDefault();
             this.custom_indent($(e.target).parent());
+            
+// tab + shift, move left (outdent)
         } else if (e.keyCode == 9 && e.shiftKey == true) {
             e.preventDefault();
             this.custom_outdent($(e.target).parent());
-        } 
+            
+//up arrow + ctrl, move up witin current parent outline (i.e. not parent of parent)
+        } else if (e.keyCode == 38 && e.ctrlKey == true) {
+            e.preventDefault();
+            var $curr = $(this).closest('li')
+            var $prev = $curr.prev('li');
+            if($prev.length !== 0){
+                $curr.insertBefore($prev);
+            }
+
+//down arrow + ctrl, move down witin current parent outline (i.e. not parent of parent)
+        } else if (e.keyCode == 40 && e.ctrlKey == true) {
+            e.preventDefault();
+            var $curr = $(this).closest('li')
+            var $nxt = $curr.next('li');
+            if($nxt.length !== 0){
+                $curr.insertAfter($nxt);
+            }
+        }
     };
     
     
