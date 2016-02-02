@@ -1182,7 +1182,7 @@ class FileManagement {
                                     } 
 //plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page, together with the (optional) variables and code
                                     $temp_doc = new \DOMDocument("1.0", "utf-8");
-                                    $temp_doc->loadHTML($processed_html . $temp_variables . $temp_code);
+                                    $temp_doc->loadHTML('<?xml encoding="UTF-8">' . $processed_html . $temp_variables . $temp_code);
                                     $temp_comp = $temp_doc->getElementsByTagName('body')->item(0);
 
 //erase old nodes
@@ -1202,8 +1202,8 @@ class FileManagement {
                     } //end not blank component name
                 } //end page loop
             }// end if any mlab components
-            $doc->saveHTMLFile($cached_app_path . basename($page));
-            //file_put_contents($cached_app_path . basename($page), $tempy);
+            //$doc->saveHTMLFile($cached_app_path . basename($page));
+            file_put_contents($cached_app_path . basename($page), $doc->saveHTML());
             
         }
         
