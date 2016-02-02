@@ -3,6 +3,7 @@
 namespace Sinett\MLAB\BuilderBundle\FileManagement;
 use ZipArchive;
 use Symfony\Component\Yaml\Parser;
+use Sinett\MLAB\BuilderBundle\Entity\Component;
 
 //this class is used to store new functions that will process embedded variables in the index.html file
 //one example is a class to 
@@ -28,11 +29,13 @@ class FileManagement {
 	private $replace_chars;
 	private $paths;
 	private $entity_type;
-	
-    public function __construct($mlab, $router)
+	private $em;
+    
+    public function __construct($mlab, $router, \Doctrine\ORM\EntityManager $em)
     {
         $this->config = $mlab;
         $this->router = $router;
+        $this->em = $em;
     }
 	
     /**
@@ -219,12 +222,23 @@ class FileManagement {
                 $html = "";
             }
 
+            $component_record = $this->em->getRepository('SinettMLABBuilderBundle:Component')->findByPath($comp_id);
+            if (is_array($component_record) && sizeof($component_record) > 0) {
+                $ob = $component_record[0]->getOrderBy();
+                $nl = $component_record[0]->getNewLine();
+            } else {
+                $ob = 999 + rand(1, 10000); // make sure it comes at the end of the list and has a unique position
+                $nl = 0;
+            }
+
 //always add html, rest we add content or set bool values that will let us know what to do later
             $component = array("html" => $html,
                     "code" => @file_get_contents($comp_dir . $config["SCRIPTS"]),
                     "server_code" => file_exists($comp_dir . $config["PHP"]),
                     "conf" => $tmp_yaml,
-                    "is_feature" => false);
+                    "is_feature" => false,
+                    "order_by" => $ob,
+                    "new_line" => $nl);
             
             if ($check_access) {
                 $component["accessible"] = ($failed === true ? false : in_array($comp_id, $check_access)); //we hide the ones they are not allowed to see OR with failed config, but still load it for reference may exist in app...

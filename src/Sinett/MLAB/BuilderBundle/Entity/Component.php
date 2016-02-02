@@ -42,6 +42,16 @@ class Component
     private $version;
     
     /**
+     * @var integer
+     */
+    private $order_by;
+    
+    /**
+     * @var integer
+     */
+    private $new_line;
+    
+    /**
      * Not in DB, set to show if a component can be deleted
      */
     private $canDelete;
@@ -252,6 +262,52 @@ class Component
     public function getVersion()
     {
         return $this->version;
+    }
+    
+    /**
+     * Set version
+     *
+     * @param float $version
+     * @return Component
+     */
+    public function setOrderBy($order_by)
+    {
+        $this->order_by = $order_by;
+    
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return float 
+     */
+    public function getOrderBy()
+    {
+        return $this->order_by;
+    }
+    
+    /**
+     * Set version
+     *
+     * @param float $version
+     * @return Component
+     */
+    public function setNewLine($new_line)
+    {
+        $this->new_line = $new_line;
+    
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return float 
+     */
+    public function getNewLine()
+    {
+        return $this->new_line;
     }
     
     /**

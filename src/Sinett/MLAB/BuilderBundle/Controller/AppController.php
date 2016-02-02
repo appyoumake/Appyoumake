@@ -52,7 +52,7 @@ class AppController extends Controller
     public function builderAction()
     {
         $em = $this->getDoctrine()->getManager();
-    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
+    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
         return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
                 'app_url' => $this->container->parameters['mlab']["urls"]["app"],
@@ -492,8 +492,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
         
-        $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
-
         if (!$entity) {
             throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
         }
@@ -511,6 +509,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 		    $file_mgmt->setConfig('app');
         	 
 //store old name and version, if these are changed we will need to rename folders, etc
+            $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
             $old_version = $old_entity["version"];
             $old_path = $old_entity["path"];
         	$entity->generatePath($config["replace_in_filenames"]);

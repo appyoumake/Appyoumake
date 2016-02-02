@@ -4,7 +4,8 @@ parameters:
 services:
     file_management:
         class:        "%sinett_mlab_builder.file_management.class%"
-        arguments:    ["%mlab%", @router]
+        arguments:    ["%mlab%", @router, @doctrine.orm.entity_manager]
+        
         scope: request
 
     update_default:

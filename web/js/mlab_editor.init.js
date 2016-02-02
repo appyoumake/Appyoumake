@@ -138,6 +138,7 @@
                         var storage_plugin_list = $("<ul></ul>");
                         var loc = mlab.dt.api.getLocale();
                         mlab.dt.components = data.mlab_components;
+                        var all_components = [];
 
                         for (type in mlab.dt.components) {
                             
@@ -153,27 +154,33 @@
                             if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
                                 
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
-                                tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
-                                tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
-                                eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
+                                var tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
+                                var tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
+                                var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
+                                if (typeof c.new_line != "undefined" && c.new_line === 1) {
+                                    var cl = "mlab_newline";
+                                } else {
+                                    var cl = "";
+                                }                                
                                 
-                                $("#mlab_toolbar_components").append(
-                                        "<div data-mlab-type='" + type + "' " +
+                                all_components[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
                                             "title='" + tt + "' " +
-                                            "class='mlab_button_components' " +
+                                            "class='mlab_button_components " + cl + "' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
                                         "<div class='mlab_component_footer_tip'>" +
                                                 tte +
-                                         "</div>"
-                                );
+                                         "</div>";
+                                
                             } else if (c.accessible && c.is_feature) {
                                 feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             } else if (c.accessible && c.is_storage_plugin) {
                                 storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
+                        
+                        $("#mlab_toolbar_components").append(all_components.join(""));
                       
 //add the HTML generated in the component load loop above to their respecitve containers.
                         $("#mlab_features_list").html(feature_list);
