@@ -75,7 +75,7 @@ function Mlab_api () {
 // MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
                     $.each(components, function(i, component) {
 // MK: js/ was already part of the component name
-                        var name = component.replace("_code_rt.js", "").replace("/js/", "");
+                        var name = component.replace("_code_rt.js", "").replace("js/", "");
                         $.get(path + component, function(componentCode) {
 //we need to attach the code_rt.js content to an object so we can use it as JS code
                             eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
