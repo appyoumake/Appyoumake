@@ -276,8 +276,8 @@ class FileManagement {
                 } else {
                     $include_items = array();
                 }
-                if (!in_array("/js/" . $comp_id . "_code_rt.js", $include_items)) {
-                    $include_items[] = "/js/" . $comp_id . "_code_rt.js";
+                if (!in_array("js/" . $comp_id . "_code_rt.js", $include_items)) {
+                    $include_items[] = "js/" . $comp_id . "_code_rt.js";
                 }
                 file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
             }
