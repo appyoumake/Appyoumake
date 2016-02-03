@@ -297,7 +297,13 @@ Mlab_dt_management.prototype = {
         this.app_update_gui_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
-        $.mobile.initializePage();
+        try {
+            $.mobile.initializePage();
+        }
+        catch(err) {
+            console.log(err.message);
+        }
+        
         mlab.dt.api.display.updateDisplay();
 
 //JS to fix the toolbars in a jQuery mobile page
@@ -351,7 +357,12 @@ Mlab_dt_management.prototype = {
         $("#" + this.parent.config["app"]["content_id"]).html(body.innerHTML);
 
         this.parent.design.prepare_editable_area();
-        $.mobile.initializePage();
+        try {
+            $.mobile.initializePage();
+        }
+        catch(err) {
+            console.log(err.message);
+        }
         mlab.dt.api.display.updateDisplay()
     },
 
@@ -396,7 +407,16 @@ Mlab_dt_management.prototype = {
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
         
-        $(this.parent.qtip_tools).qtip('hide');
+//here we hide the tools for components until they select a control
+        if (typeof this.parent.qtip_tools != "undefined") {
+            $(this.parent.qtip_tools).qtip('hide');
+            this.parent.qtip_tools = undefined
+            if (typeof this.parent.api.properties_tooltip != "undefined") {
+                $(this.parent.api.properties_tooltip).qtip('hide');
+                this.parent.api.properties_tooltip = undefined;
+            }
+        }
+
         
         var that = this;
 
@@ -434,11 +454,6 @@ Mlab_dt_management.prototype = {
 
                 if ( $("#mlab_overlay").is(':visible') ) {
                     $("#mlab_overlay").slideUp();
-                }
-                
-//here we hide the tools for components until they select a control
-                if ($("#" + mlab.dt.config["app"]["content_id"] + " .mlab_current_component").length == 0) {
-                    $(that.parent.qtip_tools).qtip('hide');
                 }
                 
 //turn off clikability of links
@@ -685,6 +700,17 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
         var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
         url = url.replace("_UID_", this.parent.uid);
+
+//here we hide the tools for components until they select a control
+        if (typeof this.parent.qtip_tools != "undefined") {
+            $(this.parent.qtip_tools).qtip('hide');
+            this.parent.qtip_tools = undefined
+            if (typeof this.parent.api.properties_tooltip != "undefined") {
+                $(this.parent.api.properties_tooltip).qtip('hide');
+                this.parent.api.properties_tooltip = undefined;
+            }
+        }
+
         var that = this;
         $.post( url, {}, function( data ) {
             if (data.result == "success") {

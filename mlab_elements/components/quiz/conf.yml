@@ -9,6 +9,8 @@ tooltip: { nb_NO: Quiz, en_GB: Quiz, default: Quiz }
 footer_tip: { nb_NO: Lag en quiz for brukerne, en_GB: Build a quiz for users to answer, default: Build a quiz for users to answer }
 required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
 # plugins: ["cordova-plugin-device"]
+autorun_on_create: custom_add_page
+
 html: ""
 custom:
     add_page:

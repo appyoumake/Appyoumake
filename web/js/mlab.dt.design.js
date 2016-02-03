@@ -72,6 +72,7 @@ Mlab_dt_design.prototype = {
             alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
+        
         this.parent.flag_dirty = true;
         var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
@@ -158,6 +159,11 @@ Mlab_dt_design.prototype = {
 
         if (created && typeof this.parent.components[comp_id].code.onCreate != "undefined") {
             this.parent.components[comp_id].code.onCreate(el);
+//if the component has an autorun function efined we call it here, with the componet as the parameter
+            if (typeof this.parent.components[comp_id].conf.autorun_on_create == "string") {
+                var func = this.parent.components[comp_id].conf.autorun_on_create;
+                eval("this.parent.components[comp_id].code." + func + "(el, {currentTarget: mlab.dt.qtip_tools.qtip().tooltip.find('[data-mlab-comp-tool-id=\"" + func + "\"]')[0]});")
+            }
         } else if (typeof this.parent.components[comp_id].code.onLoad != "undefined") {
             this.parent.components[comp_id].code.onLoad(el);
         }
@@ -460,6 +466,7 @@ Mlab_dt_design.prototype = {
                     temp_menu[order] = "<img onclick='(function(e){ mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"), e);})(event)' " + 
                                      "title='" + tt + "' " + 
                                      "class='" + cl + "' " + 
+                                     "data-mlab-comp-tool-id='" + index + "' " + 
                                      icon + " >";
                 }
             }
