@@ -1,7 +1,6 @@
 //el = element this is initialising
     
     this.onPageLoad = function (el, vars) {
-        debugger;
         var guid = $(el).find("." + vars.config.class_identifier).attr("id");
         var trimmed_id = guid.replace(/-/g, "");
         vars.guid = guid;
@@ -18,7 +17,6 @@
     };
     
     this.initMap = function(mapOptions) {
-        debugger;
         curr_map = new google.maps.Map(document.getElementById(mapOptions.guid), mapOptions);
         if (typeof mapOptions.markers != 'undefined') { 
             for (i in mapOptions.markers) { 

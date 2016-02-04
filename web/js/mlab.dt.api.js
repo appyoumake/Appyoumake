@@ -769,7 +769,7 @@ Mlab_dt_api.prototype = {
         var link_type = $("input:radio[name=mlab_dt_getlink_choice]:checked").val();
         var link = "";
         var page_name;
-        debugger;
+
         if (link_type == "page") {
             link = $("#mlab_dt_link_app_pages").val();
             var num = parseInt(link);
@@ -915,10 +915,16 @@ Mlab_dt_api.prototype = {
  */
         setAspectRatio: function (el, aspect) {
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
-                el.attr("data-mlab-aspectratio", aspect);
+                var wrapper = $(el).children(":first");
+                if (typeof wrapper.data("mlab-sizer") == "undefined") {
+                    $(el).children().wrapAll("<div data-mlab-sizer='1' data-mlab-size='medium'></div>");
+                    wrapper = $(el).children(":first");
+                }
+
+                wrapper.attr("data-mlab-aspectratio", aspect);
                 this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
-                this.updateDisplay(el);
+                this.updateDisplay(wrapper);
             }
         },
         
@@ -931,20 +937,27 @@ Mlab_dt_api.prototype = {
  */
         setSize: function (el, size) {
             if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
-                $(el).attr("data-mlab-size", size);
+                var wrapper = $(el).children(":first");
+                if (typeof wrapper.data("mlab-sizer") == "undefined") {
+                    $(el).children().wrapAll("<div data-mlab-sizer='1' data-mlab-aspectratio='4:3'></div>");
+                    wrapper = $(el).children(":first");
+                }
+
+                $(wrapper).attr("data-mlab-size", size);
                 this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
-                this.updateDisplay(el);
+                this.updateDisplay(wrapper);
             }
         },
         
 /**
  * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * The DIV that is updated is an automatically inserted DIV with data-mlab-sizer='1'
  * @param {type} el: Optional, the element to display. If not specified, then update all components
  * @returns {undefined}
  */
-        updateDisplay: function (el) {
-            var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
+        updateDisplay: function (el) {                      //was '[data-mlab-size][data-mlab-aspectratio]'
+            var components = (typeof el == "undefined") ? $('[data-mlab-sizer]') : $(el);
             var that = this;
             
             components.each( function() {
@@ -952,7 +965,7 @@ Mlab_dt_api.prototype = {
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
-                var comp_id = $(this).data("mlab-type");
+                var comp_id = $(this).parent().data("mlab-type");
                 
                 var w = (device_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];

@@ -128,14 +128,12 @@
     };
     
     this.store_credentials = function (credentials, params) {
-        debugger;
         this.api.setVariable( params.component, "credentials", credentials );
         apiKey = credentials["apikey"];
         this.custom_select_video(params.component);
     };
             
     this.custom_select_video = function (el, event) {
-        debugger;
         if (apiKey == '') {
             alert("No API key specified, please enter one first. If you do not have one, or does not know what this is, please contact your Mlab administrator");
             var that = this;

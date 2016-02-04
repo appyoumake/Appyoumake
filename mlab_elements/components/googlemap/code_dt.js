@@ -146,9 +146,9 @@
         this.api.setDirty();
     };
     
-    this.moveToCentre = function (id, search_term) {
+    this.moveToCentre = function (guid, search_term) {
         var map_centre = this.api.getTempVariable(this.config.name, "map_centre" + guid);
-        that.api.getTempVariable(that.config.name, "maps" + id).setCenter(map_centre);
+        that.api.getTempVariable(that.config.name, "maps" + guid).setCenter(map_centre);
     };
     
     this.setMapCenter = function (id) {
@@ -226,10 +226,10 @@
     };
     
     this.custom_edit_map = function (el, event) {
-        var guid = $(el).find("div").attr("id");
+        var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
         var options = "";
         var options_markers = "";
-        debugger;
+        
         var curr_map = this.api.getTempVariable(this.config.name, "maps" + guid);
         var count_edit_attempts = parseInt(this.api.getTempVariable(this.config.name, "edit_counter" + guid));
         if (isNaN(count_edit_attempts)) {

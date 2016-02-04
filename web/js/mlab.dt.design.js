@@ -74,11 +74,16 @@ Mlab_dt_design.prototype = {
         }
         
         this.parent.flag_dirty = true;
-        var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
+        var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='4:3' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
 
 //add a DIV wrapper around all components, makes it easier to move it up/down later
-        var new_comp = $("<div data-mlab-type='" + id + "' " + data_resize + " " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
+//for resizable components we add a second div which is used for settin size of content. Doing this on the outer div messs things up at design time
+        if (data_resize != "") {
+            var new_comp = $("<div data-mlab-type='" + id + "' " + data_display_dependent + " style='display: block;'><div data-mlab-sizer='1' "+ data_resize + " >" + this.parent.components[id].html + "</div></div>");
+        } else {
+            var new_comp = $("<div data-mlab-type='" + id + "' " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
+        }
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
@@ -121,7 +126,10 @@ Mlab_dt_design.prototype = {
         request.done(function( result ) {
             if (result.result == "success") {
                 that.parent.drag_origin = 'sortable';
-                
+//if this is a resizable component we do the initial resizing here
+                if (data_resize != "") {
+                    that.parent.api.display.updateDisplay($(new_comp).children('[data-mlab-sizer]'));
+                }
 //if this component requires any credentials we request them here
                 var local_comp = new_comp;
                 var local_comp_id = comp_id;
