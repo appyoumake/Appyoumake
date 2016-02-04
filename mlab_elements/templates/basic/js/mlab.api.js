@@ -779,16 +779,16 @@ Mlab_api.prototype = {
                     break;
             }
 
+//Adds a differens between swipe and click
             if (typeof swipe == true){
-                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });
-                    this.current_page = new_location;
-                    return this.current_page;       
+                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
             } else {
- //have calculated the file name, now we need to try to load it
-                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
-                    this.current_page = new_location;
-                    return this.current_page;                     
+                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
             }
+            
+//have calculated the file name, now we need to try to load it
+            this.current_page = new_location;
+            return this.current_page;
         },
         
     },
@@ -935,6 +935,10 @@ $(document).ready(function() {
         $( document ).on( "pagecreate", function ( event ) {
             console.log("EVENT: pagecreate-general");
             mlab.api.display.prepareRegularComponents(event);
+//Swipe
+            $('div.ui-page')
+                .on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", true); console.log("right swipe"); })
+                .on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", true); console.log("left swipe");});
         });
 
 //general pagecontainerbeforeshow, run component code for components that require size information, ie. display is done

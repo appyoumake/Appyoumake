@@ -57,9 +57,6 @@
         $(".mlab_btn_color_toggle").on("vclick", function () { mlab.api.settings.pageColorToggle("mlab_page_body", "mc_text"); });
         //Toggles the text size between 100% and 130%       
         $(".mlab_btn_txsize_toggle").on("vclick", function () { mlab.api.settings.pageTextSizeToggle("mlab_main_body_content"); });
-        //Swipe
-        $('div.ui-page').on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", true); console.log("right swipe"); });
-        $( ".mlab_content_wrapper" ).on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", true); console.log("left swipe");});
 
     });
 </script>

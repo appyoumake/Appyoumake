@@ -154,39 +154,39 @@ part of a list */
 /*  */
 #mlab_editor .mc_text.mc_small,
 .mlab_main_body_content .mc_text.mc_small {
-    font-size: 0.8em;  
+    font-size: 0.8em !important;;  
 }
 
 /* */
 #mlab_editor .mc_text.mc_medium,
 .mlab_main_body_content .mc_text.mc_medium {
-    font-size: 1em;  
+    font-size: 1em !important;;  
 }
 
 /*  */
 #mlab_editor .mc_text.mc_large,
 .mlab_main_body_content .mc_text.mc_large {
-    font-size: 1.2em;
+    font-size: 1.2em !important;;
 }
 
 /*  */
 #mlab_editor .mc_text.mc_heading.mc_small,
 .mlab_main_body_content .mc_text.mc_heading.mc_small {
-    font-size: 1.12em;
+    font-size: 1.12em !important;;
     margin: 0.6em 0; 
 }
 
 /* */
 #mlab_editor .mc_text.mc_heading.mc_medium,
 .mlab_main_body_content .mc_text.mc_heading.mc_medium {
-    font-size: 1.27em; 
+    font-size: 1.27em !important;; 
     margin: 0.7em 0; 
 }
 
 /*  */
 #mlab_editor .mc_text.mc_heading.mc_large,
 .mlab_main_body_content .mc_text.mc_heading.mc_large {
-    font-size: 1.45em;
+    font-size: 1.45em !important;;
     margin: 0.8em 0; 
 }
 
