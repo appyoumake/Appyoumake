@@ -721,9 +721,10 @@ Mlab_api.prototype = {
  * current = page that is currently displayed
  * move_to can be index, first, last, next, previous or a number
  * @param {type} page
+ * @param {Boolean} swipe
  * @returns {undefined}
  */
-        pageDisplay: function (move_to) {
+        pageDisplay: function (move_to, swipe) {
             var filename = "";
             var new_location = 0;
             switch (move_to) {
@@ -778,15 +779,21 @@ Mlab_api.prototype = {
                     break;
             }
 
-//have calculated the file name, now we need to try to load it
-            $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
-            this.current_page = new_location;
-            return this.current_page;
+            if (typeof swipe == true){
+                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });
+                    this.current_page = new_location;
+                    return this.current_page;       
+            } else {
+ //have calculated the file name, now we need to try to load it
+                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
+                    this.current_page = new_location;
+                    return this.current_page;                     
+            }
         },
         
     },
     
-
+    
 /**
  * object for display functionality, primarily for resizing components
  */
