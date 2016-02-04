@@ -68,12 +68,8 @@ this.onLoad = function (el) {
             $(this).find("input[data-mlab-cp-quiz-alternative='correct']").parent().addClass("mc_correct");
             $(this).find("option[data-mlab-cp-quiz-alternative='correct']").addClass("mc_correct");
             var new_div = that.addQuizPage($(this).find("h2").text(), $(this).html());
-            
-//code to prepare elements for DT interaction
-            $(new_div).find("p").on("click", function(e){ that.selectItem(e); });
-            $(new_div).find("label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
-            $(new_div).find("input").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
-            $(new_div).find("select option").on("click", function(e){ that.selectItem(e); });
+            that.makeQuestionEditable(new_div);
+
         } else if (this.nodeName.toLowerCase() == "script") {
             $(el).append(this);
         }
@@ -126,6 +122,9 @@ this.handleUserInput = function(input, e) {
     var enterKey = 13, tabKey = 9;
     // Only proceed if we have hit enter
     if (e.which != enterKey && e.which != tabKey) return;
+    if (e.shiftKey) {
+        return;
+    }
     e.preventDefault();
     var editStage = input.data("mlab-dt-quiz-input");
     var value = input.val();
@@ -137,7 +136,6 @@ this.handleUserInput = function(input, e) {
         case "pageTitle":
             if (value) {
                 page.find("h2").text(value);
-                $('#' + this.getCurrentTabId() + ' ul:first li:eq(' + this.getCurrentTab() + ') a').text(value);
                 input.val("");
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='explanatory']").focus();
@@ -233,6 +231,7 @@ this.handleUserInput = function(input, e) {
             this.markAlternativesAsCorrect(question, value, questionType);
             var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
             $("#"  + correct_response_id).html("");
+            this.makeQuestionEditable(question);
             this.setPropertiesDialogTab();
             $("[data-mlab-dt-quiz-input='nextAction']").focus();
             break;
@@ -246,7 +245,6 @@ this.handleUserInput = function(input, e) {
                 $("[data-mlab-dt-quiz-input='pageTitle']").focus();
             
             } else if (value.toLowerCase() == "q") {
-                this.makeQuestionEditable(page, question);
                 this.setPropertiesDialogTab(1);
                 $("[data-mlab-dt-quiz-input='explanatory']").focus();
             } else {
@@ -272,9 +270,12 @@ this.handleUserInput = function(input, e) {
  * @param {type} question = the current question
  * @returns {undefined}
  */
-this.makeQuestionEditable = function (page, question) {
+this.makeQuestionEditable = function (container) {
+    debugger;
     var that = this;
-    $(question).find("p, label").on("click", function(e){ e.preventDefault(); that.selectItem(e); });
+    $(container).find("p, label, input, select, option").on("click", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectItem.call(mlab.dt.components.quiz.code, e); });
+//    $(container).find("p, label, input, select, option").on("click", function(e){ mlab.dt.components.quiz.code.selectItem.call(mlab.dt.components.quiz.code, e); });
+};
     
 this.selectItem = function (event) {
     var curComp = $( "#" + mlab.dt.api.getEditorElement() + "> div.mlab_current_component" );     
@@ -285,8 +286,6 @@ this.selectItem = function (event) {
         var question_element = $(event.currentTarget).parents("[data-mlab-cp-quiz-role='question']");
         mlab.dt.components.quiz.code.api.display.componentHighlightSelectedChildren(question_element, editable_element);
     }
-};
-    
 };
 
 //---------- SETUP FUNCTIONS, BOTH FOR COMPONENT AND QUIZ CONTENT, AS WELL AS SUPPORTING FUNCTIONS
@@ -324,11 +323,20 @@ this.initTabs = function(el) {
  * cancels current question, removes HTML and closes the qtip input dialog
  * @returns {undefined}
  */
-this.cancelCurrentQuestion = function() {
+this.cancelCurrentQuestion = function(call_close) {
     var page = this.getCurrentPage();
     var question = this.getCurrentQuestion(page);
-    $(question).remove();
-    this.api.closeAllPropertyDialogs();
+    
+    if ( typeof question != "undefined" && question.length > 0 ) {
+        if (confirm("Are you sure you want to cancel the current question? The question will be deleted.")) {
+            $(question).remove();
+        } else {
+            return;
+        }
+    }
+    if (call_close) {
+        this.api.closeAllPropertyDialogs();
+    }
 };
 
 /**
@@ -355,19 +363,16 @@ this.addQuizPage = function(title, content) {
     var tabs = $( "#" + tab_id );
     var num_tabs = $( "#" + tab_id + " >ul >li").size();
     var new_tab_id = tab_id + '_' + num_tabs; 
-    if (typeof title != "undefined") {
-        var label = title;
-    } else {
-        var label = "Page " + num_tabs;
-    }
+
     if (typeof content == "undefined") {
         content = '<h2 class="mc_text mc_display mc_heading mc_medium">{title}</h2>';
     }
-    var li = $( this.tabTemplate.replace( /\{href\}/g, location.href.toString() + "#" + new_tab_id ).replace( /\{label\}/g, label ) );
-    var div = this.tabContentTemplate.replace( /\{id\}/g, new_tab_id ).replace( /\{content\}/g, content ).replace( /\{title\}/g, label );
+    var li = $( this.tabTemplate.replace( /\{href\}/g, location.href.toString() + "#" + new_tab_id ).replace( /\{label\}/g, "Page " + (num_tabs + 1) ) );
+    var div = this.tabContentTemplate.replace( /\{id\}/g, new_tab_id ).replace( /\{content\}/g, content ).replace( /\{title\}/g, title );
     
     tabs.find( ".ui-tabs-nav" ).append( li );
     var new_div = $(div).appendTo( tabs );
+    $(new_div).find("h2").attr("contenteditable", true);
     tabs.tabs( "refresh" );
     tabs.tabs( "option", "active", num_tabs );
     this.api.setDirty();
@@ -724,7 +729,7 @@ this.custom_add_page = function(el, event) {
     if (typeof el == "undefined") { 
         el = $(".mlab_current_component");
     }
-    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, null, "[data-mlab-dt-quiz-input='pageTitle']", true, event);
+    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, function () {mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code, false);}, "[data-mlab-dt-quiz-input='pageTitle']", true, event);
     
 };
 
@@ -742,8 +747,13 @@ this.custom_add_question = function(el, event) {
     
     $(content).tabs("option", "active", 1);
     $(content).tabs("disable", 0);
-    this.api.displayPropertyDialog(el, "Add questions", content, null, null, null, "[data-mlab-dt-quiz-input='explanatory']", true, event);
+    this.api.displayPropertyDialog(el, "Add questions", content, null, null, function () {mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code, false);}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
 };
+
+this.custom_delete_response = function(el) {
+    var page = this.getCurrentPage();
+    page.find(".mlab_current_component_editable").remove();
+}
 
 this.custom_delete_question = function(el) {
     var page = this.getCurrentPage();
@@ -758,14 +768,14 @@ this.custom_delete_question_element = function(el) {
 /* Removes a page from the component. 
  * @param {jQuery} button The button that was clicked to remove the page.
  */
-/*this.custom_removeQuizPage = function() {
+this.custom_delete_page = function() {
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id ).tabs();
     var activeTab = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
     $( "#" + activeTab).remove();
     tabs.tabs( "refresh" );
     this.api.setDirty();
-};*/
+};
 
 /**
  * Removes an entire question
@@ -913,10 +923,12 @@ this.getDialogHtml = function(id) {
             '        <p id="mlab_dt_quiz_next_action_' + id + '"></p>' +
             '        <label class="mlab_dt_text">' + this.editPrompts.nextAction + '</label>' + 
             '        <input class="mlab_dt_small_input " data-mlab-dt-quiz-input="nextAction">' + 
-            '        <div class="mlab_dt_large_new_line"></div>' +         
+            '        <div class="mlab_dt_large_new_line"></div>' + 
             '    </div>' + 
             '</div>' + 
-            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.components.quiz.code.cancelCurrentQuestion();">' 
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.components.quiz.code.cancelCurrentQuestion(true);">' +
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="close" value="Close" onclick="mlab.dt.api.closeAllPropertyDialogs();">' 
+            
             );
 };
 

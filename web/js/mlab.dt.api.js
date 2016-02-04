@@ -1060,7 +1060,7 @@ Mlab_dt_api.prototype = {
         },
         
 /**
- * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * Highlights controls that have child contols inside them
  * @param {type} sub_el: Optional, the element to display. If not specified, then update all components
  * @param {type} editable: Optional, the element to display. If not specified, then update all components
  */   
