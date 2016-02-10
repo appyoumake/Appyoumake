@@ -7,7 +7,7 @@ extended_name: { nb_NO: Interaktiv quiz, en_GB: Interactive quiz, default: Inter
 storage_plugin: true
 tooltip: { nb_NO: Quiz, en_GB: Quiz, default: Quiz }
 footer_tip: { nb_NO: Lag en quiz for brukerne, en_GB: Build a quiz for users to answer, default: Build a quiz for users to answer }
-required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
+required_libs: {"designtime": ["quiz.css", "quiz_dt.css"], "runtime": ["quiz.css"]}
 # plugins: ["cordova-plugin-device"]
 autorun_on_create: custom_add_page
 
@@ -37,10 +37,18 @@ custom:
     delete_response:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAkdJREFUeNrsVT1PG0EQ3TMmhqRBqdJxAtI7FUhBMi4oQBQYiqAIFOcHBGggRSJhKaRIGgx/4FxBBfgfuARXcQNNhESDRJPYlkLiUwybeedZs6zPju6ClMbPGu/H7N7bfbOzK0QXXXTxv9HTyRmNxVYj0Wjt5vr68r4Io/jrjfVlqEjoDkk/wgRZiqx0X4QWE+LrWbIq9yeIEGT5uuum2k2WUsapmMWCLMvK+/jhw5g8+W8XDUKSD5Yhi5OVuT3QiYysLG8xa5JpvjIvriEpAyvYYKOtW+K3W6ugPjxob/FKPYyOjQlu6wtyXr5YWCkeH+t+BYwrEGlS3+EA2RfemcMyCyYskEnYzNS0rFar3rJ/rK3Lb0MjXgmcnpzIxPNxr/TzY6dNQrItNtRNwjRZ5tXi0qFJpuzqw6bUgbbuV6Tq0Kwa8gAVkjRrxCWjJP8+/LQlro8+fxKx+Tnh7h+Iq/W3Lf7HZ18bMTQ/3AHNk6Y+rAMkNxcX4tf2TstEjCfkrKB5xKfRgSI/Nz+KmpP765y+12nx8P07LDZphUlePuIgjbeTz5SZ8Ay5GAl1WzSSOKWk6l9Z9h2HfiZTqSEiIXeIyYeoY4d+MQPQr8V5o3m1hZATZHbAGKKa7AlIZlNxRPYEcXN393xlrBeLd/rqpZJ3eh9MTtpBJU2rWJgpoQ5I//IbrzTB4yeCEkK/ipZXd2RTfSjR9snDcCmhXgmfu9KB7Fy2v0v/hZRRUM+PMaZgPlGWEOF3yo/vOeVlrsM4aGurR/iPAAMA0/ep+S4jW1QAAAAASUVORK5CYII=
         tooltip: { nb_NO: Fjern nåværende spørsmål element, en_GB: Delete current question element, default: Delete current question element } 
-        order: 5
+        order: 6
+    move_down:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUpJREFUeNpiZMADWNk5BIDUfCAWwKHkARAX/v754wMuM1gY8AMDIA4goGYjEG/AJcnEQDn4gE+SkAUPKLWdkZACYDz8J6BEEF8cMFEaBPgMJ9aCC5QEEaWRfIAaFhykxAUsSJFZAA3vA8BwJTb1PMCSKBygcXMAbgFQMAFI9SMp+gD1/kUiUhlIrz00UxogiYNy+ASYD9CLAgFoDiaUixOgGH8+gJY554FYgYE6ABQCiqAkzISUlgMJpXkSQCIsfzDDRP79/fOCmYXlJRHBQghMABo+EcZhRpYBWnIBaAkouCzINPwC0PBAZAFmdBVAS3YCLVFAThEkhLshUP8PYjJaIYlFBMhwR2zlEhOeAsyRBEtAaf4CycU1MPmCgmk/nioTlmIWkJ0kQJYA8XtQvYAFz6dKosZhyXwGagJQmUMzw9F80k+KHoAAAwC1CHn+j0676QAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Flytt spørsmål ned, en_GB: Move question down, default: Move question down }
+        order: 7
+        newline: true
+    move_up:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNpiZiABsLJz9DOzsLz89/fPCwZqA6Dh84H4PxC/B2IDWhn+n+qWYDGcJEuYCBheAKQScEgLAPF+oBoFfGYw4jEcZPB8Ijx5AYgdf//88YFoC6Be3w91JTHgAtACQ2wSzFgMBxl6ngTDQUACmHwVgMl3I0ELgAqPAykFMtKDAVAvI9CSAzgtAKUYIOVBQaJzAFryEGjJBYw4ABoeAKTWUyFlf4BG+gW4BdBwv09iuOMDD4DYEJSyYPmggIqGM0DjEJx/WJC8hZ62QfggENvjyWyFUIeB1BigOfID3AKgVyYAg+kClH0ALeL98bhUAKi+AUktyOUOUHMWIPsAw2C0IoEoADQDFPYLiC6LiAD6FBV2sLSNL4ioYQGh1EJRca1AUwuIMQCaSWkWRAzQ9E87HxACLATkN0BzqQKegu0CPgMAAgwA4EZhMyPooVEAAAAASUVORK5CYII=
+        tooltip: { nb_NO: Flytt spørsmål opp, en_GB: Move question up, default: Move question up }
+        order: 8
     set_options:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Rediger alternativer, en_GB: Edit options, default: Edit options }
-        order: 6
-        newline: true
+        order: 9
     

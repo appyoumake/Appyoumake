@@ -282,10 +282,12 @@ this.handleUserInput = function(input, e) {
  * @returns {undefined}
  */
 this.makeQuestionEditable = function (container) {
-    $(container).find("p").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e, true); });
-    $(container).find("label > span").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e, true); });
-    $(container).find("select, option").off(".start_edit").on("focus.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e, false); mlab.dt.components.quiz.code.editResponse.call(mlab.dt.components.quiz.code, e); });
-    $(container).find("input[type=text]").off(".start_edit").on("focus.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e, false); mlab.dt.components.quiz.code.editResponse.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("div[data-mlab-cp-quiz-role='question'] label").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("div[data-mlab-cp-quiz-role='question']").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("p").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("label > span").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("select, option").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("input[type=text]").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
 };
 
 /**
@@ -295,25 +297,77 @@ this.makeQuestionEditable = function (container) {
  * @param {type} event
  * @returns {undefined}
  */
-this.selectElement = function (event, make_editable) {
+this.selectElement = function (event) {
     var curComp = $( "#" + mlab.dt.api.getEditorElement() + "> div.mlab_current_component" );     
     var comp = $(event.currentTarget).parents("[data-mlab-type]");
+
+//select element inside the component, as the component is already set to be current
     if (comp[0] === curComp[0]) {
         event.stopPropagation();
         
 //first highlight the selected element and the parent
         var editable_element = $(event.currentTarget);
+        var tag = editable_element.prop("tagName").toLowerCase();
+        if (tag == "label") {
+            var editable_element = $(event.currentTarget).find("span");
+            tag = "span";
+        }
         var question_element = $(event.currentTarget).parents("[data-mlab-cp-quiz-role='question']");
-        this.api.display.componentHighlightSelectedChildren(question_element, editable_element);
+
+        if (tag == "div")  {
+            this.api.display.componentHighlightSelectedChildren(question_element);
+        } else {
+            this.api.display.componentHighlightSelectedChildren(question_element, editable_element);
+        }
         
 //now prepare the editing facility
-        if (make_editable) {
-            editable_element.focus();
-            var range = document.createRange();
-            var sel = window.getSelection();
-            range.selectNodeContents(editable_element[0]);
-            sel.removeAllRanges();
-            sel.addRange(range);
+        switch(tag) {
+            case "div": //used to just select current question
+                
+                break;
+
+            case "fieldset": //fake select box
+                
+                break;
+
+            case "span":
+            case "h2":
+            case "p":
+                editable_element.focus();
+                var range = document.createRange();
+                var sel = window.getSelection();
+                range.selectNodeContents(editable_element[0]);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                
+//SPANs are used inside labels for radio buttons / check boxes. When they are edited we must update the value of the matching input
+                if (tag == "span") {
+                    editable_element.off('.editResponse').on('keypress.editResponse blur.editResponse', function(e) {
+                            var label = $(e.currentTarget);
+                            var input = label.siblings("input");
+                            input.attr("value", label.text());
+                            mlab.dt.api.setDirty();
+                            if (e.type == "blur") {
+                                label.off('.editResponse');
+                            }
+                        });
+                }
+                break;
+                
+            case "input":
+                if (editable_element.attr("type").toLowerCase() == "text") {
+                    editable_element.focus();
+                    editable_element.off('.editResponse').on('keypress.editResponse blur.editResponse', function(e) {
+                        var text_element = $(e.currentTarget);
+                        text_element.attr("placeholder", text_element.val()).attr("data-mlab-cp-quiz-textvalue", text_element.val());
+                        mlab.dt.api.setDirty();
+                        if (e.type == "blur") {
+                            text_element.off('.editResponse');
+                            text_element.val("");
+                        }
+                    });
+              }
+              break;
         }
 
     }
@@ -448,8 +502,8 @@ this.addQuestion = function(text, editMode) {
  */
 this.addQuestionAlternative = function(question, value, questionType) {
     value = this.escape(value);
-    var set_selected = false;
     var alternatives_container = question.find('[data-mlab-cp-quiz-subrole="alternatives"]');
+    var display_value = false;
     if (alternatives_container.length == 0) {
         question.append(this.alternativesTemplate);
         alternatives_container = question.find('[data-mlab-cp-quiz-subrole="alternatives"]');
@@ -470,35 +524,37 @@ this.addQuestionAlternative = function(question, value, questionType) {
             break;
 
         case "select":
-            var current_select_box = question.find("select");
+            var current_select_box = question.find("fieldset > ul"); //using a fieldset to create a fake list box for easier manipulation
             if (current_select_box.length == 0) {
-                var html = "<select class='mc_text mc_entry mc_input' ><option class='mc_text mc_entry mc_input' ></option><option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
+                var html = "<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li>" + value + "</li></ul></fieldset>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option>";
+                var html = "<li>" + value + "</li>";
             }
-            set_selected = true;
+            display_value = true;
             break;
 
         case "multiselect": 
-            var current_select_box = question.find("select");
+            var current_select_box = question.find("fieldset > ul");
             if (current_select_box.length == 0) {
-                var html = "<select class='mc_text mc_entry mc_input' multiple size='7'><option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option></select>";
+                var html = "<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li class='mc_text mc_entry mc_input' >" + value + "</li></ul></fieldset>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option>";
+                var html = "<li class='mc_text mc_entry mc_input' >" + value + "</li>";
             }
             break;
     }
     alternatives_container.append(html);
     var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
     var num = $("#" + correct_response_id).find("span").length + 1;
-
-    if (set_selected) {
-        question.find("select :nth-child(" + (num + 1).toString() +  ")").prop('selected', true); 
+    $("#"  + correct_response_id).append("<span data-mlab-cp-quiz-correct-response='" + num + "'>" + num + " - " + value + "<br></span>");
+    
+//to ensure that the user sees that the new value is added for drop down boxes, 
+// we display it in the LEGEND element of the fake dropdown list
+    if (display_value) { 
+        question.find("fieldset > legend").text(value);
     }
     
-    $("#"  + correct_response_id).append("<span data-mlab-cp-quiz-correct-response='" + num + "'>" + num + " - " + value + "<br></span>");
     this.api.setDirty();
     return true;
 };
@@ -531,7 +587,7 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
         case "select": 
         case "multiselect": 
             var i = 1;
-            $(question).find('select > option').each(function() {
+            $(question).find('fieldset li').each(function() {
                     if (correctResponses.indexOf(i.toString()) >= 0) {
                         $(this).addClass("mc_correct").attr("data-mlab-cp-quiz-alternative", "correct");
                     } else {
@@ -553,82 +609,8 @@ this.setMandatory = function(question, value) {
     else question.removeClass("mc_required");
 };
 
-/**
- * After user has added a question they may want to change this to another type, that is done here.
- * @param {type} page
- * @param {type} question
- * @param {type} type
- * @returns {undefined}
- */
-this.changeQuestionType = function(page, question, type) {
-    var self = this;
-    var typeOb = this.questionTypes[type-1];
-    var typeType = typeOb["type"];
-    var oldQuestionType = question.data("questiontype");
-    if (typeType==oldQuestionType) return;
-    var questionText = question.find("." + self.classes.questionText).html();
-    var alternatives = question.find("." + self.classes.questionAlternatives + " li");
-    var correctResponse = self.getCorrectResponse(question);
-    if (oldQuestionType=="checkbox" || oldQuestionType=="text" || typeType=="text") correctResponse = "";
-    var mandatory = question.data("mandatory");
-    
-//TODO     var newQuestion = self.makeQuestion(page, type, questionText);
-    question.replaceWith(newQuestion);
-    if (typeType!="text") {
-        alternatives.each(function() {
-            var alternative = $(this);
-            self.addQuestionAlternative(newQuestion, alternative.text(), typeType);
-        });
-    }
-    this.addCorrectResponse(newQuestion, correctResponse, typeType);
-    this.setMandatory(newQuestion, mandatory);
-};
-
-/**
- * Updates what is the correct repsponse(s) based on user input
- * @param {type} question
- * @returns {getCorrectResponse.correctResponse|String|Array}
- */
-this.getCorrectResponse = function(question) {
-    var questionType = question.data("questiontype");
-    var correctResponse = question.data("correctResponse");
-    if (questionType=="checkbox") {
-        correctResponseRaw = correctResponse.split(" ");
-        correctResponse = [];
-        for (var i=0, ii=correctResponseRaw.length; i<ii; i++) {
-            var response = parseInt(correctResponseRaw[i]);
-            if (response) correctResponse.push(response);
-        }
-    } else if (questionType=="radio" || questionType=="select") {
-        correctResponse = parseInt(correctResponse);
-        if (!correctResponse) correctResponse = "";
-    }
-    return correctResponse;
-};
-
 //---------- USER INTERACTION FUNCTIONS, RESPONDS TO CLICKS ON EXISTING QUIZ
 
-
-/**
- * Code to edit responses directly on page, different code for select boxes, text boxes and check/radio buttons
- * @param {type} event
- * @returns {undefined}
- */
-this.editResponse = function (event) {
-    console.log("editResponse");
-    var response_element = $(event.currentTarget);
-    if (response_element.attr("type") == "text") {
-        console.log("editResponse2");
-        response_element.off('.editResponse').on('keypress.editResponse blur.editResponse', function(e) {
-            console.log("editResponse3");
-            var text_element = $(e.currentTarget);
-            text_element.attr("placeholder", text_element.val()).attr("data-mlab-cp-quiz-textvalue", text_element.val());
-            if (e.type == "blur") {
-                response_element.off('.editResponse');
-            }
-        });
-    }
-};
 
 this.editAlternativeText = function(alternative) {
     var self = this;
@@ -733,30 +715,32 @@ this.custom_delete_page = function() {
  * @param {type} el
  * @returns {undefined}
  */
-/*this.custom_move_down = function() {
+this.custom_move_down = function() {
     var q = this.getCurrentQuestion();
-    var a = this.domRoot.find("li." + this.classes.markedAlternative);    
-    if (q) {
-        this.move_question_down(q);
-    } else {
-        this.move_alternative_down(a);
+    if (q && q.next('[data-mlab-cp-quiz-role="question"]').length > 0) {
+        q.fadeOut(500, function(){
+            q.insertAfter(q.next('[data-mlab-cp-quiz-role="question"]'));
+            q.fadeIn(500);
+        });
+        this.api.setDirty();
     }
-};*/
+};
 
 /**
  * Wrapper function to move currently selected question OR alternative up
  * @param {type} el
  * @returns {undefined}
  */
-/*this.custom_move_up = function(el) {
+this.custom_move_up = function(el) {
     var q = this.getCurrentQuestion();
-    var a = this.domRoot.find("li." + this.classes.markedAlternative);    
-    if (q) {
-        this.move_question_up(q);
-    } else {
-        this.move_alternative_up(a);
+    if (q && q.prev('[data-mlab-cp-quiz-role="question"]').length > 0) {
+        q.fadeOut(500, function(){
+            q.insertBefore(q.prev('[data-mlab-cp-quiz-role="question"]'));
+            q.fadeIn(500);
+        });
+        this.api.setDirty();
     }
-};*/
+};
 
 this.custom_set_options = function(el, event) {
     var content = this.getQuizPropertiesDialogHtml();

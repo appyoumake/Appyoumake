@@ -984,6 +984,9 @@ Mlab_dt_api.prototype = {
  * @returns String rgb
 */
         invertColor: function(rgbString) {
+            if (typeof rgbString == "undefined") {
+                return "rgb(255, 255, 255);";
+            }
             var parts = rgbString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/),
                 i;
 
