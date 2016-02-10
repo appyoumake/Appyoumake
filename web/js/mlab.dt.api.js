@@ -984,6 +984,9 @@ Mlab_dt_api.prototype = {
  * @returns String rgb
 */
         invertColor: function(rgbString) {
+            if (typeof rgbString == "undefined") {
+                return "rgb(255, 255, 255);";
+            }
             var parts = rgbString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/),
                 i;
 
@@ -1060,42 +1063,42 @@ Mlab_dt_api.prototype = {
         },
         
 /**
- * Updates either a single component, or all components on a page, using data attributes to determine the display
- * @param {type} sub_el: Optional, the element to display. If not specified, then update all components
+ * Highlights controls that have child contols inside them
+ * @param {type} sub_el: The element to display. If not specified, then update all components
  * @param {type} editable: Optional, the element to display. If not specified, then update all components
  */   
         componentHighlightSelectedChildren : function (sub_el, editable) {
-            $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
-            $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
-                  
             sub_el = $( sub_el );
+            editable = $( editable );
+            if (!$(".mlab_current_component").find(".mlab_current_component_child").is(sub_el)) {
+                $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+
 //gets the childs background color
-            var bgColorC = this.getBackground(sub_el);
+                var bgColorC = this.getBackground(sub_el);
 //inverts the background color
-            var bgColorCInvert = this.invertColor(bgColorC);
+                var bgColorCInvert = this.invertColor(bgColorC);
 //set the invert color of the background as the outline-color for the current selected component
-            sub_el.css("outline-color", bgColorCInvert);
+                sub_el.css("outline-color", bgColorCInvert);
 //set the class to style the selected highlighted child             
-            sub_el.addClass("mlab_current_component_child");                
-                
-            if (typeof editable != "undefined") {   
-                editable = $( editable );
-//gets the grandchilds background color
-                var bgColorGC = this.getBackground(editable);
-//inverts the background color
-                var bgColorGCInvert = this.invertColor(bgColorGC);
-//set the invert color of the background as the outline-color for the current selected component
-                editable.css("outline-color", bgColorGCInvert);
-              
-                editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
-                
-                editable.focus();
-                var range = document.createRange();
-                var sel = window.getSelection();
-                range.selectNodeContents(editable[0]);
-                sel.removeAllRanges();
-                sel.addRange(range);
+                sub_el.addClass("mlab_current_component_child");   
             }
+                
+//if they have not re-clicked the current ditable element then we deselect old one and select new one
+            if (!$(".mlab_current_component").find(".mlab_current_component_editable").is(editable)) {
+                $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+                if (typeof editable != "undefined" && $(editable).prop("tagName").toLowerCase() != "input") {   
+//gets the grandchilds background color
+                    var bgColorGC = this.getBackground(editable);
+//inverts the background color
+                    var bgColorGCInvert = this.invertColor(bgColorGC);
+//set the invert color of the background as the outline-color for the current selected component
+                    editable.css("outline-color", bgColorGCInvert);
+
+                    editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
+
+                }                
+            }
+
         },      
     },
 
