@@ -59,6 +59,29 @@
         $(".mlab_btn_txsize_toggle").on("vclick", function () { mlab.api.settings.pageTextSizeToggle("mlab_main_body_content"); });
 
     });
+    
+     //general pagecreate, run component code for components that do not care about display
+        $( document ).on( "pagecreate", ":not(#mlab_index_page)" ,function ( event ) {
+            console.log("EVENT: pagecreate - for basic mal");
+       
+        var curr_page = mlab.api.navigation.current_page;
+       
+       if (curr_page == 0) {
+            if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
+               // do nothing
+            }
+            //hide the previous button on first page
+            $(".mlab_nav_previous_page").addClass('mlab_hide');
+           
+        } else if (curr_page == "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%"){
+            if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
+               // do nothing
+            }
+            //hide the next button on last page
+            $(".mlab_nav_next_page").addClass('mlab_hide');
+                   
+       } 
+    });
 </script>
 
 
