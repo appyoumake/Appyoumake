@@ -305,6 +305,24 @@ Mlab_dt_api.prototype = {
     },
 
 /**
+ * Goes through a newly loaded page and checks if any of the components on the page requires a library (CSS/JS) to be loaded
+ * calls getLibraries for the actual hard lifting, this is just a wrapper
+ * @returns {Number}
+ */
+    getAllLibraries : function () {
+        var processed_component = [];
+        var comp_id;
+        var that = this;
+        $( "#" + this.getEditorElement()).children("[data-mlab-type]").each( function() {
+            comp_id = $(this).data("mlab-type") ;
+            if (processed_component.indexOf(comp_id) < 0) {
+                that.getLibraries(comp_id);
+                processed_component.push(comp_id)
+            }
+        });
+    },
+
+/**
  * Loads all js/css files required by a component at design time.
  * Files loaded are specified in the conf.yml parameter required_libs.
  * @param {string} comp_id, the unique ID for the component that needs to load the files
@@ -1086,7 +1104,7 @@ Mlab_dt_api.prototype = {
 //if they have not re-clicked the current ditable element then we deselect old one and select new one
             if (!$(".mlab_current_component").find(".mlab_current_component_editable").is(editable)) {
                 $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
-                if (typeof editable != "undefined" && $(editable).prop("tagName").toLowerCase() != "input") {   
+                if (typeof editable != "undefined" && editable.length > 0 && $(editable).prop("tagName").toLowerCase() != "input") {   
 //gets the grandchilds background color
                     var bgColorGC = this.getBackground(editable);
 //inverts the background color

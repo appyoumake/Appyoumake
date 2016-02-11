@@ -178,6 +178,10 @@
     margin-left:0.5em;
 }
 
+#mlab_editor [data-mlab-type="quiz"] [data-mlab-cp-quiz-subrole="alternatives"] li.mc_correct { 
+    color: #3bbe41;
+}
+
 .mlab_main_body_content  [data-mlab-type="quiz"] [data-mlab-cp-quiz-subrole="alternatives"] input[type="radio"]{
     position: absolute;
     left: 0;
