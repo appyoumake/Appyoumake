@@ -793,7 +793,7 @@ Mlab_api.prototype = {
         
     },
     
-    
+
 /**
  * object for display functionality, primarily for resizing components
  */

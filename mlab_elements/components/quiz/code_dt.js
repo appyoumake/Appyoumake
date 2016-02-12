@@ -122,7 +122,12 @@ this.onSave = function (el) {
 
 //convert the fake select boxes (if any
         page.find("fieldset.mlab_cp_quiz_select").each(function() {
-            var select_html = $("<select class='mc_text mc_entry mc_input' ><option class='mc_text mc_entry mc_input' ></option></select>");
+            if ( $(this).hasClass("mlab_cp_quiz_multiselect") ) {
+                var select_html = $("<select class='mc_text mc_entry mc_input' size='7'><option class='mc_text mc_entry mc_input' ></option></select>");
+            } else {
+                var select_html = $("<select class='mc_text mc_entry mc_input' ><option class='mc_text mc_entry mc_input' ></option></select>");
+            }
+            
             $(this).find("li").each(function() {
                 var value = $(this).text();
 //need to carry across correct flag
@@ -381,7 +386,7 @@ this.selectElement = function (event) {
                     list_item.parent().removeClass("editing_mode");
                     list_item.off('.editResponse');
                 });
-
+//no break here as we need the remaining code in the next section
             case "span":
             case "h2":
             case "p":
@@ -589,7 +594,7 @@ this.addQuestionAlternative = function(question, value, questionType) {
         case "multiselect": 
             var current_select_box = question.find("fieldset > ul");
             if (current_select_box.length == 0) {
-                var html = "<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li class='mc_text mc_entry mc_input' >" + value + "</li></ul></fieldset>";
+                var html = "<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul><li class='mc_text mc_entry mc_input' >" + value + "</li></ul></fieldset>";
             } else {
                 alternatives_container = current_select_box;
                 var html = "<li class='mc_text mc_entry mc_input' >" + value + "</li>";
