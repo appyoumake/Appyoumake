@@ -204,7 +204,7 @@
 }
 
 #mlab_page_body .mlab_hide {
-    display: none !important;
+    visibility:hidden !important;
 }
 
 /* ==========================================================================
