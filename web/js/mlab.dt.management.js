@@ -78,7 +78,6 @@ Mlab_dt_management.prototype = {
                 if (local_page_num != "0" && local_page_num != "index" && !data.only_index) {
                     that.page_open_process(data.app_id, local_page_num);
                 } else {
-                    
                     if (data.lock_status == "locked") {
                         that.parent.app.locked = true;
                         $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
@@ -284,6 +283,7 @@ Mlab_dt_management.prototype = {
 //now we need to make the internal code editable, but only if they actually want to edit this page
         if (is_final_destination) {
             $("#" + this.parent.config["app"]["content_id"]).html(divs);
+            this.parent.api.getAllLibraries();
             this.parent.design.prepare_editable_area();
         }
 
@@ -355,8 +355,9 @@ Mlab_dt_management.prototype = {
 
 //add body content
         $("#" + this.parent.config["app"]["content_id"]).html(body.innerHTML);
-
+        this.parent.api.getAllLibraries();
         this.parent.design.prepare_editable_area();
+        
         try {
             $.mobile.initializePage();
         }

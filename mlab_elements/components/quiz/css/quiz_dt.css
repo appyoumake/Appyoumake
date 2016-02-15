@@ -44,7 +44,7 @@
 	overflow: hidden;
 }
 
-#mlab_editor fieldset.mlab_cp_quiz_select:hover ul {
+#mlab_editor fieldset.mlab_cp_quiz_select:hover ul, #mlab_editor fieldset.mlab_cp_quiz_select ul.editing_mode {
 	background-color: white;
 	border: 1px gray solid;
 	left: 2px;
@@ -54,16 +54,22 @@
 #mlab_editor fieldset.mlab_cp_quiz_select ul > li {
 	list-style-type: none;
 	background-color: transparent;
-}
-
-#mlab_editor fieldset.mlab_cp_quiz_select li {
 	display: none;
 	width: 100%;
 	height: 30px;
 	line-height: 30px;
 	border: none;
-	background-color: transparent;
 	border-radius: 0;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select ul.editing_mode > li, #mlab_editor fieldset.mlab_cp_quiz_multiselect ul > li {
+	display: block !important;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_multiselect ul {
+    height: 200px;
+    background-color: white;
+    overflow-y: scroll;
 }
 
 #mlab_editor fieldset.mlab_cp_quiz_select > legend {
@@ -108,10 +114,19 @@
 	background-color: graytext !important;
 }
 
+#mlab_editor fieldset.mlab_cp_quiz_multiselect:hover li {
+	display: block;
+	height: 30px;
+}
+
+/*#mlab_editor fieldset.mlab_cp_quiz_multiselect li:hover {
+	background-color: white !important;
+}*/
+
 #mlab_editor fieldset.mlab_cp_quiz_select li {
     width: 100%;
-    height: 30px;
-    line-height: 30px;
+    height: auto;
+    line-height: auto;
     border: medium none;
     background-color: transparent;
 }
