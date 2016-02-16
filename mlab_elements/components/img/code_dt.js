@@ -113,7 +113,7 @@
     };
     
     this.custom_increase_size = function (el) {
-		var text = $('.mlab_current_component').find('figcaption');
+		var text = $('.mlab_current_component').find('figcaption,p');
         if (text.hasClass("mc_small")) {
             text.removeClass("mc_small").addClass("mc_medium");
         } else if (text.hasClass("mc_medium")) {

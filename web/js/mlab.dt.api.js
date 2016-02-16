@@ -414,11 +414,11 @@ Mlab_dt_api.prototype = {
         }
     },
     
-    executeCallback : function (func, data) {
+    executeCallback : function (func, el, event, api) {
         if (typeof func == "undefined" || func == null) {
             return;
         }
-        func(data);
+        func(el, event, api);
     },
 
 /**
@@ -465,9 +465,9 @@ Mlab_dt_api.prototype = {
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c },
-            events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
-                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy(); that.properties_tooltip = false; },
-                            visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
+            events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el, event, api) } },
+                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el, event, api) }; api.destroy(); that.properties_tooltip = false; },
+                            visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el, event, api) } } 
                         }
         });
         this.indicateWait(false);
