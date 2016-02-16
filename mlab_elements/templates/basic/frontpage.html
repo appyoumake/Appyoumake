@@ -112,5 +112,62 @@
         </div><!-- /Content -->
 
     </div>   
+        
+    <script>
+        $( document ).on( "pagecreate",function ( event ) {
+            
+            if (mlab.api == null) 
+               var curr_page = 0;
+            } else {
+                var curr_page = mlab.api.navigation.current_page;
+            }
+
+            var last_page = Number("%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
+
+            switch (curr_page) {
+
+                case 0:
+                    console.log("case 0 - curr_page == " + curr_page + " last_page == " + last_page);
+                    //First page in the app
+                    if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
+                        // do nothing
+                    } else {
+                        //hide the previous button on the first page
+                        $(".mlab_nav_previous_page").addClass('mlab_hide'); 
+                    }
+                    if (last_page == 0) {
+                        //the app only has one page - hide the next button
+                        $(".mlab_nav_next_page").addClass('mlab_hide');  
+                    }
+                    break;
+
+                case last_page:
+                    //Last page in the app and the app has more than one page
+                    console.log("curr_page == LAST PAGE -  gggggggggg" + "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%" + "side");
+                    if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
+                       // do nothing
+                    } else {
+                         //hide the next button on the last page
+                        $(".mlab_nav_next_page").addClass('mlab_hide');
+                    }
+                    
+                     if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_previous_page").removeClass('mlab_hide');
+                    }
+                    break;
+
+                default:
+                    if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_next_page").removeClass('mlab_hide');
+                    }
+                    if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_previous_page").removeClass('mlab_hide');
+                    }
+                    break;
+            }
+       
+    });
+         
+</script>
 </body>
 </html>

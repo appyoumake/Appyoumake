@@ -780,7 +780,7 @@ Mlab_api.prototype = {
             }
 
 //Adds a differens between swipe and click
-            if (typeof swipe == true){
+            if (swipe){
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
             } else {
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
