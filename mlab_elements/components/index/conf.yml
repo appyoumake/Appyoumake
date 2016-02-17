@@ -10,6 +10,7 @@ footer_tip: { nb_NO: Innholdslisten gir en klikkbar liste med sidene og kapittel
 preprocessing: generate_index
 compatible: []
 process_keypress: true
+required_libs: {"designtime": ["index.css"], "runtime": ["index.css"]}
 
 html: 
     designtime: |
