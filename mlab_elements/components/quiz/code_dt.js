@@ -715,7 +715,6 @@ this.editAlternativeText = function(alternative) {
  * @returns {undefined}
  */
 this.custom_add_page = function(el, event) {
-    debugger;
     this.addQuizPage();
     var content = this.prepareDialogBox();
     if (typeof el == "undefined") { 
@@ -752,7 +751,7 @@ this.custom_edit_question = function(el, event) {
     $(content).tabs("option", "active", 1);
     $(content).tabs("disable", this.TABS_ADD_PAGE);
 //display the dialog box, we populate the content in a callback function from the show
-    this.api.displayPropertyDialog(el, "Add questions", content, null, function (){mlab.dt.components.quiz.code.loadExistingQuestion.call(mlab.dt.components.quiz.code);}, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
+    this.api.displayPropertyDialog(el, "Edit question", content, null, function (){mlab.dt.components.quiz.code.loadExistingQuestion.call(mlab.dt.components.quiz.code);}, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
     
     
 };
@@ -761,6 +760,7 @@ this.loadExistingQuestion = function() {
     var page = this.getCurrentPage();
     page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
     var q = this.getCurrentQuestion();
+    alert("HI");
 }
 
 this.custom_delete_question = function(el) {
@@ -777,7 +777,6 @@ this.custom_delete_question = function(el) {
  * @returns {undefined}
  */
 this.custom_delete_question_element = function(el) {
-    debugger;
     var page = this.getCurrentPage();
     var el = page.find(".mlab_current_component_editable");
     var tagName = el.prop("tagName").toLowerCase();
@@ -795,7 +794,6 @@ this.custom_delete_question_element = function(el) {
  * @param {jQuery} button The button that was clicked to remove the page.
  */
 this.custom_delete_page = function() {
-    debugger;
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id ).tabs();
     var activeTab = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
