@@ -47,12 +47,12 @@
     
     this.custom_folding_style = function (el) {
         var html =  "<h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>%%TITLE%%</h1>" + 
-                    "<h3><a onclick='return false;'>%%CHAPTER%% 1</a></h3>\n" + 
-                    "<p><a onclick='return false;'>%%PAGE%% 1</a></p>\n" + 
-                    "<p><a onclick='return false;'>%%PAGE%% 2</a></p>\n" + 
-                    "<h3><a onclick='return false;'>%%CHAPTER%% 2</a></h3>\n" + 
-                    "<p><a onclick='return false;'>%%PAGE%% 3</a></p>\n" +
-                    "<p><a onclick='return false;'>%%PAGE%% 4</a></p>\n";
+                    "<h3><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%CHAPTER%% 1</a></h3>\n" + 
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 1</a></p>\n" + 
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 2</a></p>\n" + 
+                    "<h3><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%CHAPTER%% 2</a></h3>\n" + 
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 3</a></p>\n" +
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 4</a></p>\n";
         this.api.setAllVariables(el, {options: {style: "folding"}});
         this.updatePreview(el, html);
     };

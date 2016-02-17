@@ -1,0 +1,42 @@
+/* Style Sheet for the Basic template
+   Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
+*/
+
+/*  */
+#mlab_editor [data-mlab-type="index"].mc_small li.mc_text,
+.mlab_main_body_content [data-mlab-type="index"].mc_small li.mc_text {
+    font-size: 0.8em !important;  
+}
+
+/* */
+#mlab_editor [data-mlab-type="index"].mc_medium li.mc_text,
+.mlab_main_body_content [data-mlab-type="index"].mc_medium li.mc_text {
+    font-size: 1em !important;
+}
+
+/*  */
+#mlab_editor [data-mlab-type="index"].mc_large li.mc_text,
+.mlab_main_body_content [data-mlab-type="index"].mc_large li.mc_text {
+    font-size: 1.2em !important;
+}
+
+/*  */
+#mlab_editor [data-mlab-type="index"].mc_small h1.mc_text.mc_heading,
+.mlab_main_body_content [data-mlab-type="index"].mc_small h1.mc_text.mc_heading {
+    font-size: 1.12em !important;
+    margin: 0.6em 0; 
+}
+
+/* */
+#mlab_editor [data-mlab-type="index"].mc_medium h1.mc_text.mc_heading,
+.mlab_main_body_content [data-mlab-type="index"].mc_medium h1.mc_text.mc_heading {
+    font-size: 1.27em !important;
+    margin: 0.7em 0; 
+}
+
+/*  */
+#mlab_editor [data-mlab-type="index"].mc_large h1.mc_text.mc_heading,
+.mlab_main_body_content [data-mlab-type="index"].mc_large h1.mc_text.mc_heading {
+    font-size: 1.45em !important;
+    margin: 0.8em 0; 
+}
