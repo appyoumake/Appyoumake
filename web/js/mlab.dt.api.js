@@ -686,10 +686,10 @@ Mlab_dt_api.prototype = {
         
         var scrpt = $(el).find("script.mlab_storage");
         if (scrpt.length < 1) {
-            scrpt = $(el).append("<script type='application/json' class='mlab_storage' />");
+            $(el).append("<script type='application/json' class='mlab_storage' />");
         }         
 
-        scrpt.html(JSON.stringify(values));
+        $(el).find("script.mlab_storage").html(JSON.stringify(values));
         this.setDirty();
         return true;
     },

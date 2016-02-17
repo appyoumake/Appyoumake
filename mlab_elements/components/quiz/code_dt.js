@@ -742,6 +742,27 @@ this.custom_add_question = function(el, event) {
     this.api.displayPropertyDialog(el, "Add questions", content, null, null, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
 };
 
+/**
+ * Edit currently selected question
+ * @param {type} el
+ * @returns {undefined}
+ */
+this.custom_edit_question = function(el, event) {
+    var content = this.prepareDialogBox();
+    $(content).tabs("option", "active", 1);
+    $(content).tabs("disable", this.TABS_ADD_PAGE);
+//display the dialog box, we populate the content in a callback function from the show
+    this.api.displayPropertyDialog(el, "Add questions", content, null, function (){mlab.dt.components.quiz.code.loadExistingQuestion.call(mlab.dt.components.quiz.code);}, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
+    
+    
+};
+
+this.loadExistingQuestion = function() {
+    var page = this.getCurrentPage();
+    page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
+    var q = this.getCurrentQuestion();
+}
+
 this.custom_delete_question = function(el) {
     var page = this.getCurrentPage();
     page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
@@ -786,6 +807,8 @@ this.custom_delete_page = function() {
         $(this).text('Page ' + tab_counter);
         tab_counter++;
     });
+    
+    tabs.tabs( "option", "active", 0 );
     tabs.tabs( "refresh" );
     
     this.api.setDirty();
