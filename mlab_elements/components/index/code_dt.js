@@ -22,57 +22,59 @@
     }
 
     this.custom_summary_style = function (el) {
-        var html = "<h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>%%TITLE%%</h1>" + 
+        var html = "<h1 class='mc_text mc_display mc_heading mc_medium mc_index_heading'>%%TITLE%%</h1>" + 
                     "<ul class='mc_container mc_index mc_list'>" + 
-                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%CHAPTER%% 1</li>" + 
-                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%CHAPTER%% 2</li>" + 
+                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%CHAPTER%% 1</li>" + 
+                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%CHAPTER%% 2</li>" + 
                     "</ul>";
         this.api.setAllVariables(el, {options: {style: "summary"}});
         this.updatePreview(el, html);
     };
     
     this.custom_detailed_style = function (el) {
-        var html = "<h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>%%TITLE%%</h1>" + 
+        var html = "<h1 class='mc_text mc_display mc_heading mc_medium mc_index_heading'>%%TITLE%%</h1>" + 
                     "<ul class='mc_container mc_index mc_list'>" + 
-                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%CHAPTER%% 1" + 
-                        "<ul><li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE%% 1</li>" + 
-                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE%% 2</li></ul></li>" + 
-                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%CHAPTER%% 2" + 
-                        "<ul><li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE%% 3</li>" + 
-                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE%% 4</li></ul></li>" + 
+                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%CHAPTER%% 1" + 
+                        "<ul><li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%PAGE%% 1</li>" + 
+                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%PAGE%% 2</li></ul></li>" + 
+                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%CHAPTER%% 2" + 
+                        "<ul><li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%PAGE%% 3</li>" + 
+                        "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal mc_medium'>%%PAGE%% 4</li></ul></li>" + 
                     "</ul>";
         this.api.setAllVariables(el, {options: {style: "detailed"}});
         this.updatePreview(el, html);
     };
     
     this.custom_folding_style = function (el) {
-        var html =  "<h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>%%TITLE%%</h1>" + 
-                    "<h3><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%CHAPTER%% 1</a></h3>\n" + 
-                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 1</a></p>\n" + 
-                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 2</a></p>\n" + 
-                    "<h3><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%CHAPTER%% 2</a></h3>\n" + 
-                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 3</a></p>\n" +
-                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='return false;'>%%PAGE%% 4</a></p>\n";
+        var html =  "<h1 class='mc_text mc_display mc_heading mc_medium mc_index_heading'>%%TITLE%%</h1>" + 
+                    "<h3><a class='mc_text mc_display mc_list mc_link mc_internal mc_medium' onclick='return false;'>%%CHAPTER%% 1</a></h3>\n" + 
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal mc_medium' onclick='return false;'>%%PAGE%% 1</a></p>\n" + 
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal mc_medium' onclick='return false;'>%%PAGE%% 2</a></p>\n" + 
+                    "<h3><a class='mc_text mc_display mc_list mc_link mc_internal mc_medium' onclick='return false;'>%%CHAPTER%% 2</a></h3>\n" + 
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal mc_medium' onclick='return false;'>%%PAGE%% 3</a></p>\n" +
+                    "<p><a class='mc_text mc_display mc_list mc_link mc_internal mc_medium' onclick='return false;'>%%PAGE%% 4</a></p>\n";
         this.api.setAllVariables(el, {options: {style: "folding"}});
         this.updatePreview(el, html);
     };
 
-    this.custom_decrease_size = function (el) {
-        if ($(el).hasClass("mc_large")) {
-            $(el).removeClass("mc_large").addClass("mc_medium");
-        } else if ($(el).hasClass("mc_medium")) {
-            $(el).removeClass("mc_medium").addClass("mc_small");
+     this.custom_decrease_size = function (el) {
+        var text = $('.mlab_current_component').find('h1,a,li');
+        if (text.hasClass("mc_large")) {
+            text.removeClass("mc_large").addClass("mc_medium");
+        } else if (text.hasClass("mc_medium")) {
+            text.removeClass("mc_medium").addClass("mc_small");
         } else {
-            $(el).addClass("mc_small");
+            text.addClass("mc_small");
         }
     };
-    
+
     this.custom_increase_size = function (el) {
-        if ($(el).hasClass("mc_small")) {
-            $(el).removeClass("mc_small").addClass("mc_medium");
-        } else if ($(el).hasClass("mc_medium")) {
-            $(el).removeClass("mc_medium").addClass("mc_large");
+		var text = $('.mlab_current_component').find('h1,a,li');
+        if (text.hasClass("mc_small")) {
+            text.removeClass("mc_small").addClass("mc_medium");
+        } else if (text.hasClass("mc_medium")) {
+            text.removeClass("mc_medium").addClass("mc_large");
         } else {
-            $(el).addClass("mc_large");
+            text.addClass("mc_large");
         }
     };
