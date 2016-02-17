@@ -316,7 +316,7 @@ this.handleUserInput = function(input, e) {
                 return;
             }
             
-            page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+            page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
             $("div.qtip input:text").val("").removeClass("mc_blurred");
             $("div.qtip textarea").val("").removeClass("mc_blurred");
 
@@ -337,7 +337,7 @@ this.handleUserInput = function(input, e) {
 this.makeQuestionEditable = function (container) {
     $(container).find("div[data-mlab-cp-quiz-role='question'] label").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
     $(container).find("div[data-mlab-cp-quiz-role='question']").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
-    $(container).find("p, li").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
+    $(container).find("p, li, h2").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
     $(container).find("label > span").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
     $(container).find("select, option").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
     $(container).find("input[type=text]").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
@@ -512,13 +512,19 @@ this.addQuizPage = function(title, content) {
     
 //turn off any current questions on current page
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+    page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
     
 // tabs require the use of IDs
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id );
     var num_tabs = $( "#" + tab_id + " >ul >li").size();
     var new_tab_id = tab_id + '_' + num_tabs; 
+    var i = num_tabs + 1;
+//if we have deleted a page (i.e tab) in the middle we'll end up with an ID that is identical to one of the reamining pages, so need to check for this
+    while ($("#" + new_tab_id).length > 0) {
+        new_tab_id = tab_id + '_' + i; 
+        i++;
+    }
 
     if (typeof content == "undefined") {
         content = '<h2 class="mc_text mc_display mc_heading mc_medium">{title}</h2>';
@@ -545,7 +551,7 @@ this.addQuizPage = function(title, content) {
  */
 this.addQuestion = function(text, editMode) {
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+    page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
     if (editMode == "explanatory") {
         var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionExplanatoryTemplate.replace("{content}", text));
     } else if (editMode == "question") {
@@ -709,6 +715,7 @@ this.editAlternativeText = function(alternative) {
  * @returns {undefined}
  */
 this.custom_add_page = function(el, event) {
+    debugger;
     this.addQuizPage();
     var content = this.prepareDialogBox();
     if (typeof el == "undefined") { 
@@ -725,7 +732,7 @@ this.custom_add_page = function(el, event) {
  */
 this.custom_add_question = function(el, event) {
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child").removeClass("mlab_current_component_child");
+    page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
 
     var content = this.prepareDialogBox();
     var el = $(".mlab_current_component");
@@ -735,31 +742,52 @@ this.custom_add_question = function(el, event) {
     this.api.displayPropertyDialog(el, "Add questions", content, null, null, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
 };
 
-this.custom_delete_response = function(el) {
-    var page = this.getCurrentPage();
-    debugger;
-    page.find(".mlab_current_component_editable").remove();
-}
-
 this.custom_delete_question = function(el) {
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child").remove();
+    page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
 }
 
+/**
+ * deletes part of a question. Not everything can be deleted, the allowed items are:
+ *      options for select boxes, they are in LI elements as we fake the select boxes
+ *      individual radio buttons and check boxes, they are in labels that surrounds both the radio/check box and the span with the text
+ *      explanatory text
+ * @param {type} el
+ * @returns {undefined}
+ */
 this.custom_delete_question_element = function(el) {
+    debugger;
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_grandchild").remove();
+    var el = page.find(".mlab_current_component_editable");
+    var tagName = el.prop("tagName").toLowerCase();
+    
+    if (tagName == "span") { //these are used inside labels for radio buttons and check boxes
+        el.parent().remove();
+    } else if (tagName == "li") { //fake select boxes, just delete element directly
+        el.parent().remove();
+    } else if (el.data("mlab-cp-quiz-subrole") == "explanatory") { //ok to delete explanatory text
+        el.remove();
+    }
 }
 
 /* Removes a page from the component. 
  * @param {jQuery} button The button that was clicked to remove the page.
  */
 this.custom_delete_page = function() {
+    debugger;
     var tab_id = this.getCurrentTabId();
     var tabs = $( "#" + tab_id ).tabs();
     var activeTab = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
     $( "#" + activeTab).remove();
+
+//rename remaining tabs
+    var tab_counter = 1;
+    $('#' + tab_id + ' .ui-tabs-nav a').each(function () {
+        $(this).text('Page ' + tab_counter);
+        tab_counter++;
+    });
     tabs.tabs( "refresh" );
+    
     this.api.setDirty();
 };
 

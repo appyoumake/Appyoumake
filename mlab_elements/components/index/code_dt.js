@@ -27,8 +27,8 @@
                         "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%CHAPTER%% 1</li>" + 
                         "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%CHAPTER%% 2</li>" + 
                     "</ul>";
-        this.api.setAllVariables(el, {options: {style: "summary"}});
         this.updatePreview(el, html);
+        this.api.setAllVariables(el, {options: {style: "summary"}});
     };
     
     this.custom_detailed_style = function (el) {
@@ -41,8 +41,8 @@
                         "<ul><li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE%% 3</li>" + 
                         "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE%% 4</li></ul></li>" + 
                     "</ul>";
-        this.api.setAllVariables(el, {options: {style: "detailed"}});
         this.updatePreview(el, html);
+        this.api.setAllVariables(el, {options: {style: "detailed"}});
     };
     
     this.custom_folding_style = function (el) {
@@ -53,8 +53,8 @@
                     "<h3><a onclick='return false;'>%%CHAPTER%% 2</a></h3>\n" + 
                     "<p><a onclick='return false;'>%%PAGE%% 3</a></p>\n" +
                     "<p><a onclick='return false;'>%%PAGE%% 4</a></p>\n";
-        this.api.setAllVariables(el, {options: {style: "folding"}});
         this.updatePreview(el, html);
+        this.api.setAllVariables(el, {options: {style: "folding"}});
     };
 
     this.custom_decrease_size = function (el) {
