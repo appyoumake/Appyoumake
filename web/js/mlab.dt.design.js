@@ -186,7 +186,13 @@ Mlab_dt_design.prototype = {
         }
         el.fadeOut(500, function(){
             el.insertBefore(el.prev());
-            el.fadeIn(500);
+            var local_el = el;
+            el.fadeIn(500, function(){
+                local_el.qtip("api").reposition(null, false);
+                if (mlab.dt.api.properties_tooltip) {
+                    $(mlab.dt.api.properties_tooltip).qtip("api").reposition(null, false);
+                }
+            });
         });
         this.parent.flag_dirty = true;
     },
@@ -200,7 +206,13 @@ Mlab_dt_design.prototype = {
         }
         el.fadeOut(500, function(){
             el.insertAfter(el.next());
-            el.fadeIn(500);
+            var local_el = el;
+            el.fadeIn(500, function(){
+                local_el.qtip("api").reposition(null, false);
+                if (mlab.dt.api.properties_tooltip) {
+                    $(mlab.dt.api.properties_tooltip).qtip("api").reposition(null, false);
+                }
+            });
         });
         this.parent.flag_dirty = true;
     },

@@ -455,7 +455,15 @@ this.initTabs = function(el) {
                 '    </ul>' + 
                 '</div>');
 
-    $(el).append($(html).tabs());    
+    $(el).append($(html).tabs().on( "tabsbeforeactivate", function( event, ui ) { 
+        var page = ui.oldPanel;
+        page.find("[contenteditable]").removeAttr("contenteditable");
+        page.find(".mc_correct, .mlab_current_component_child, .mlab_current_component_editable").removeClass("mc_correct mlab_current_component_child mlab_current_component_editable");
+        var range = document.createRange();
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+
+    } ));
 
 };
 
@@ -465,7 +473,7 @@ this.initTabs = function(el) {
  * cancels current question, removes HTML and closes the qtip input dialog
  * @returns {undefined}
  */
-this.cancelCurrentQuestion = function(call_close) {
+this.cancelCurrentQuestion = function() {
     var page = this.getCurrentPage();
     var question = this.getCurrentQuestion(page);
     var id = "#mlab_dt_quiz_tabs_" + this.domRoot.attr("id");
@@ -475,15 +483,15 @@ this.cancelCurrentQuestion = function(call_close) {
         if ( typeof question != "undefined" && question.length > 0 ) {
             if (confirm("Are you sure you want to cancel the current question? The question will be deleted.")) {
                 $(question).remove();
+                return true;
             } else {
-                return;
+                return false;
             }
-        }
-        if (call_close) {
-            this.api.closeAllPropertyDialogs();
+        } else {
+            return true;
         }
     } else {
-        this.api.closeAllPropertyDialogs();
+        return true;
     }
 };
 
@@ -520,7 +528,7 @@ this.addQuizPage = function(title, content) {
     
     tabs.find( ".ui-tabs-nav" ).append( li );
     var new_div = $(div).appendTo( tabs );
-    $(new_div).find("h2").attr("contenteditable", true);
+    $(new_div).find("h2").off(".start_edit").on("click.start_edit", function(e){ e.preventDefault(); mlab.dt.components.quiz.code.selectElement.call(mlab.dt.components.quiz.code, e); });
     tabs.tabs( "refresh" );
     tabs.tabs( "option", "active", num_tabs );
     this.api.setDirty();
@@ -706,7 +714,7 @@ this.custom_add_page = function(el, event) {
     if (typeof el == "undefined") { 
         el = $(".mlab_current_component");
     }
-    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, function () {mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code, false);}, "[data-mlab-dt-quiz-input='pageTitle']", true, event);
+    this.api.displayPropertyDialog(el, "Add quiz page & questions", content, null, null, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='pageTitle']", true, event);
     
 };
 
@@ -724,7 +732,7 @@ this.custom_add_question = function(el, event) {
     
     $(content).tabs("option", "active", 1);
     $(content).tabs("disable", this.TABS_ADD_PAGE);
-    this.api.displayPropertyDialog(el, "Add questions", content, null, null, function () {mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code, false);}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
+    this.api.displayPropertyDialog(el, "Add questions", content, null, null, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
 };
 
 this.custom_delete_response = function(el) {
@@ -913,8 +921,7 @@ this.getDialogHtml = function(id) {
             '        <div class="mlab_dt_large_new_line"></div>' + 
             '    </div>' + 
             '</div>' + 
-            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.components.quiz.code.cancelCurrentQuestion(true);">' +
-            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="close" value="Close" onclick="mlab.dt.api.closeAllPropertyDialogs();">' 
+            '<input type="button" class="mlab_dt_button_cancel mlab_dt_right" data-mlab-dt-quiz-button="cancel" value="Cancel" onclick="mlab.dt.api.closeAllPropertyDialogs();">'
             
             );
 };
