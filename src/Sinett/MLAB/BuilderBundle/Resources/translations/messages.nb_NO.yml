@@ -561,14 +561,14 @@ mlab.dt.design.js.update_status.feature.already.added: Funksjon er allerede lagt
 mlab.dt.design.js.update_status.adding.storage.plugin: Legger til lagringsenhetÉ
 mlab.dt.design.js.update_status.storage.plugin.added: Lagringsenhet lagt til
 
-mlab.dt.management.js.update_status.opening.app: pner appen
+mlab.dt.management.js.update_status.opening.app: Åpner appen
 mlab.dt.management.js.prompt.title.front.page: Vennligst skriv tittel for førstesiden i denne appen
 mlab.dt.management.js.update_status.ready: Klar
 mlab.dt.management.js.update_status.retrieving.app: Henter appen
 mlab.dt.management.js.update_status.unlocking.pages: Låser opp alt innhold
-mlab.dt.management.js.update_status.opening.page: pner side
+mlab.dt.management.js.update_status.opening.page: Åpner side
 mlab.dt.management.js.update_status.storing.page: Lagrer side
-mlab.dt.management.js.update_status.saved.page: Side laret
+mlab.dt.management.js.update_status.saved.page: Side lagret
 mlab.dt.management.js.update_status.unable.save.page: Kan ikke lagre side
 mlab.dt.management.js.update_status.copying.page: Kopierer side
 mlab.dt.management.js.update_status.deleting.page: Sletter side
