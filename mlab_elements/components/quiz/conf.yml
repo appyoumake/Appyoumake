@@ -3,32 +3,52 @@ version: 0.3
 developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
 category: dataentry
 name: quiz
-extended_name: quiz
+extended_name: { nb_NO: Interaktiv quiz, en_GB: Interactive quiz, default: Interactive quiz }
 storage_plugin: true
-tooltip: Build a quiz for users to answer
-required_libs: {"designtime": ["quiz.css"], "runtime": ["quiz.css"]}
+tooltip: { nb_NO: Quiz, en_GB: Quiz, default: Quiz }
+footer_tip: { nb_NO: Lag en quiz for brukerne, en_GB: Build a quiz for users to answer, default: Build a quiz for users to answer }
+required_libs: {"designtime": ["quiz.css", "quiz_dt.css"], "runtime": ["quiz.css"]}
 # plugins: ["cordova-plugin-device"]
+autorun_on_create: custom_add_page
+
 html: ""
 custom:
     add_page:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAc9JREFUeNpiYICC////N/ynA2CB2qcwa9YseTU1NQZigYKCAhiTCxpAniQFCwgI/N+/fz/ZPiTJ1QcOHGD48OEDg6OjI8P8+fMZEhISyPNhQwNx0YjsSxANtJRoHzIxUACAQQoOkcTERIYJEyYQpYciCw0MDBjOnz8PpgsLC8EWEwIslFjY2NgIph0cHBguXLjAsGDBAjAfFK80iUNcOCAg4P/79+8Jp1KiU1hDA94UvGHDBob8/Hywz6kSpPX19QSzDU0SDTZgb28PDgFc+ZmF2haCghFbUFLdwusv7zA075kKZvOx8zB0+ZQz8HHw0M7C3beOMpx8eAHhgFfBDOZyBrSPQ5qWNMhAU1wZlS+mQlsL0eMLW/yRHYdPPr5g8J2byvDpxxcwX4ZfgoEXzYKopYXghARToymuwrAleTZ5Fj4FWggzCOYAho+oapATECwVD0iiIcuHoOQerOcB9pkFNOmD2Gsv7YCrybeFtAJAIXHt1R24OrLzIShjowThowsoFubZxtM2lT758AJrnOENUnylPKEa4+nHlyj8Tz+/EGchsZYSqqIIJZoDZOhFsTHBNBiYF7kZPv/4yiDNL461HAUBRnLjDNrUIBkABBgAaybcGYPk8GMAAAAASUVORK5CYII=
-        tooltip: Add a new page
+        tooltip: { nb_NO: Legg til en side, en_GB: Add a new page, default: Add a new page }
         order: 1
     add_question:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAbZJREFUeNrMVktOwzAQTdsg2JEbYFixJDfIEdoT0JwAdYfEigXr0hM0nIDcIOkJyAkg3MBLEN9naSK5lsfEDj9LI+fjyfPMvHlOFP312Nndm8JuYR+GVerd0O+PNKAE0xr21UdLWP7y/CRDAGPtug9YpK2ZhQBOKLo5pnMPv+NJHD++v702QSkF4AMm4enbIq2HvoBjgJ04wBoy2xDk6wcI45wKRJAqU9fMmiBALrob5noryhDA0vJcGqk84+ro3RZIWYNapBrdFVjZ9RkxeOqocVjjM6qjanT3rSx1gCnlqRy+i6FKYw6lPAknb4huq/ZHV5nKxlIrS35/UctegJRKV91yRvIy7X4Fq/um9JR5rnY8CxVuFyDX0AuAtT0Z23iRxhYdwArXe/3GVj8XaSRzDnYEEdQuiSYA0iBRRZnq1jTYRBo7KC816WqNNhAGg20Sl9nKZAWkOuU/8QsTO5p+aUbYsROpqZGygt5vaM0BbK595pLmfYpuw0obANeGc3dcsVFjA5muTNjUyIelIuAoEhblGdQWkQ8gJ4vj6JcH1xYro4ckPXONa1qnfFpFrOg/jE8BBgCue46yLQJlEgAAAABJRU5ErkJggg==
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAn9JREFUeNpiYKAzYAQRrOwc74GUAJrch98/fwhS20ImKA2yTBBoASMIg9hYHEA9APThf2LEqAFYiFGkLK+wH0g5UGDPgbsPHzgiBynIRwLY2EM+0dAdMOONYHb2AiYWlh///v59QdVEAwzSBiBljyzxnwGcSEEJJRCIL1A7DkGmTwDij1Bxe6CFIMs2/Pn5M5Am+RAYfCDcAMQGQPweyhegVSr9D/QRKNgMEBKMDNBSB5QP+5Hl0IG5hQXD0hXLMcRzs7MZtm/dBmJeAObDQvSMD8qY+6EGLwDiBCQ5A3wZH2Thk48vGMq2dMLFunzKGWJiY2EWYpY0QB/Vg0oEHD5ZCMQHcVmoqqpqv/vWEYeTDxFpC8hncJIweQDV+wA9SAtwZPwJxMTL////G04+ulAftaQQLrYspp/BXM7gACMjoyOGD4k1mG6FN5pvQCFxHogVQKEAzaMKfOw8KOqgfAOg+n5odgOpPQAL0vNY4u4C0OeGWCwEJZ79hn2+DJ9+fAGLyfBLMEgLSDAgx6G5vAHD0w8vwIkJ7AAOHobzRZvhPjSAligfkCrk9fh8CrMMBECGwgyGAWTLkdXDgxTomw1ohcHAxSFyBRwdEQnO5MF6HmBfaYmpgIML5IP5p9fA9SSahsDFr726Aw52UBySnGiuX7vG8OnTJ3DGRgnCRxdQLHRVtwZlC9w+hCYc5DiEA1jzAJ4C+fgE0BIZiN1PhHsPwiw0xJbxcRbAjIwfoKUSLOUqEGFZIlDfAljGp7S+U7j28g6KAIgPDFKQw0CJsRFo2QOyMj4uEKzrAaY///jKwMvBzeCv7QIKgUBoaKBWT5QCaOlTgCa8AOYrZAAQYAARIe5RmbB3sgAAAABJRU5ErkJggg==
         tooltip: Add a new question
         order: 2
-    delete_question:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAc9JREFUeNrEVktOwzAQTdMgWBaxhEVALFjSG8AN2hPgnIBmx45ygnCDhBOQG/QI5AAIyo4NapcgPmUGOWhqZuzEVOpII6eesZ/mzacOgnXLxubWAPQWdGHoBG3/vb9DgHqw5KCuS0vQ5P3tde4DGJHvJmAB8Rn6AHZ1dAqWixbnjrpR9PT1+VF5UQqAj7DELc9Ogdb9toAhgB1bwCqtnMT6bDtAUOlQARH0UfFb8PEClKK7Eb6XovQBLJn9uUHluZTH1m0BlFWQiz4pdwQr6z7TFTyw5Niv8YWpgzm6W2mVWsBw8kwsZ1Ofxg8tNpw8PWm8QXTly8FhDrrAlXPi7B0PKjFvp8+7exmsiuxf7zzcpwQM7SPaZmBPpAjPhH0spKEuKGXYRgCiNJgywILaP2zZ0CmA1a3ADQOkcKzT8WeQ2CjFYjkxowOwbSNHGRMJJ790hxbquP/BJdGXJA6whOY2spT8nIyuqdQGcFkBkaLfJWO+Qnvjxm8iukByR4SFqy2w/zIzQvNZ4ZNDCTBnyh7/rhLa1IzPD40CvdY+jBvsKYG+sVBIyjXaXFIwtBV1IeFvzt8bEOkhoAUtfdIy1J64HsMz8giereIRvBb5FmAAWx27Ys9L1QIAAAAASUVORK5CYII=
-        tooltip: Delete question
+    edit_question:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AIRCxMNW/4AdgAAAo1JREFUSMfFlctPE1EUxs8M096pEmdq7YM2MVOtaEBafEAxNtSFYQcLnxiCK000Af8B48K2btxp3btADRRMXBMSdUgQXOh00IEE6Q5D6aIzhMQCTY+LNm3TUKfSGr/MYu5J5jf3y/3OuRQiQqPFAIDV7tA0rVjiOC6VXK+LiogGwqbTaURExHQ6bSAs1icKEY2saSfzq/ibiuU+7VfT0ODgwvxC7Sx/j//1+DgA0Pm1qqoVL/WIQsSGHxT1LyJF71l9Fo1K8XhdBxUKR8RZsRQyAFEUp2KxTp9v//aNrGl0ZITjOAAQZ8WPojjQ3/92crLe8DOEPA6FvkqSxWZjCCn2Ql3h93o74rJc2DxQ+fBHQqElRdHdlvlwpqVlazdLG5jOh4+elsI/Mz19ua8vLsu3h4fHxl7li0uKoht+p5PNZtnmZkJRAKyUSiWs1mMFaDjyJNgblOVFquyDK1evdft7/kDM5X7STSu5HA/YTNFrhBjmP73sHwhTiPg8GlXVUvh5nnswOqrrenn5w6I8hZgDAIulleNdidX3dkdHMHh/n+EvJ+Z1iDvqFi4I7vOEHGQaQgQAo+HAidYATTcVOqqr229kTcWnq9v/t0S7/XRv8F6eWAr/ZGyC53gAUDX1+o2b1eZpNeLFwB2GMVZ2VC1DWlFmvn97p0usOlCKQ9ojuD2Ce2jw1ubmRnJ9uRaiDrSoJUWZm3vDGIjD4dMlluz7vF6O5wBAU7W4LFfY397OxCZeALXmOX52Z3crub5os7cHAnf3JBba9PPCvFYW/jy9XMnkxkaKIuTIj9UvbqG9rW3g5KlL1YgFqO7cTCQSNE2bzYJbOOd02QXhTAOuE0mSGIZxuVxms/m/3VG/AYlysemrfGXtAAAAAElFTkSuQmCC
+        tooltip: { nb_NO: Rediger nåværende spørsmål, en_GB: Edit current question, default: Edit current question } 
         order: 3
-    delete_question_element:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAANBJREFUeNpiYBjugBFEKMsr7AdSDkDcePfhgwY0MXLBAaBZjuiCTAyjYDQOR8FoHA5q8FZJZT4Q/wfRxMozUWIZkEqAchOA/H40+X40+fnwREOmhf+xCCcK37uzACgHsgjD10A5RkoSzQIsYqAgbMBmGUw9I4VxCAq2AiKUTgD6rpBiC6GWJuDwEUowUy0fQg1rxCHdiGzZ0PMhNA7nE1A2HznLUJoPsSUYbMFbAMuHlPgwAUfwgbJFIi711MyHE2BxBaUnEJFvaV+WDn8AEGAA8jl0+akKNtwAAAAASUVORK5CYII=
-        tooltip: Delete question element
+    delete_page:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AIECTcQrVP+ygAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAGbSURBVEjHzVY7jsIwEHUiJH4NPY21H9FyA3IEBBdIDrCkIilAwohQQMVuR5VcIBE3CEfgEpS7aQhLGmaLkSJvYE3MR9pRpNgj+/nNzBsnCgCQe1sBX8vlstFoiJdSSimluVABICfZWq0WhiHkMAURFUURE1mv1zhwXVfX9bxMGWOCw1OyiCtmqkpVIAxDSqlhGIvF4m5MASCKomazSQjRdf2vxQUppuPxmBCiadpms/E8D1NxK9NTa7fbURRdyZQxdlYSq9XKNE1N086I/6KNRiOx1HhTb2nHVqvFGDtVt0oeYP8ANLbsr+fX2LIv+HNKCgB2fevz6QWfeOKk/njipP5d35Jr08QP0vHB9XCa+MHB9TJrJDqq2O3wuLFlH7fb7/ePzBq5nFbns5Lx69LLIJYMvTqfSReqMhzgtrNHVoaDKyVV7HbKZi/jLJs9DPxK0MQPMlFjHvh0y4HunempSNO67Z2pNGhs2bx6MGp+enA9PLIgvm94e+MCxMoUux21Xue5J35Qnc8kPtH5O4qAjCEu7hT4lUf89vwA/Z0U7cd2pBsAAAAASUVORK5CYII=
+        tooltip: { nb_NO: Fjern nåværende side, en_GB: Delete current page, default: Delete current page }
         order: 4
+        newline: true
+    delete_question:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAlJJREFUeNrcVc1OGlEUvgM0+JMQ2heA+LMf1m1SWJSkxgUqD6Av0K7EhSbtQhe23dQ+ADxAFWKiW3TnTjbKwhinC5cWIf4wsXh7vum9eBmGQUfQpCc5HObeM/eb+50/xp5YNPy8CA5UyJRse/qNWX/ZF1QCLN5nrRfie2pKA/dxGo1Ecdv4I3B2jn8ZiWe54fMkzX8t/o7ZFAzqvkCgTGreNhp7Pc1ShxiGOeM62XPSQj/qsEQAu6RTlCgJsoZYn/tjmobTi5xznfQzacoNAPvCT1e7SoUo5KSwefGfuxwCsAq/k2wHv6ziU2mCoo0RwKwEAjCt7auFT8qhk+8neLVatU64mM/ws5Exyx4eHPC3r99YPrB4VvclaLPwibocKJRUivi1ybtkkoVCIXaZWWDm+oa1BhvZyLPN7S02k05bFs/qPvyRGw8ufBGz/O/R8baPGf6yyoIz0ypAi7w6PvqXpQ/pKJqmFQi0QAen5A2kAOT29JRdf19rew8fQpLTvKQ2AYbJnFwtr4Tr2VxX/4G5WTa0tAgGE5JSZE/Y5ndONy+5pTuo7USfnWaSGLFTkkkjx4+qxW7UkjFw2ODHD44+WBdgrOVCXia+KGhe/7lupX4nxb6QoucBjLKo1WossPaDdYsh6G6Uy4hhnEDjngbw6revzL+84gjmRC/8RJw/yaTZpwSJ2ShtW+tFHfoUAK6qywV1pa5aUl+uweLZoQ491WCzcTv0SjTrqGzaTr300aAyA1vGz51P0T4tNK+DVAAgngbVZM7FD9xGMchR+H8FGACPTs9xYv9aAAAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Fjern nåværende spørsmål, en_GB: Delete current question, default: Delete current question } 
+        order: 5
+    delete_question_element:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAkdJREFUeNrsVT1PG0EQ3TMmhqRBqdJxAtI7FUhBMi4oQBQYiqAIFOcHBGggRSJhKaRIGgx/4FxBBfgfuARXcQNNhESDRJPYlkLiUwybeedZs6zPju6ClMbPGu/H7N7bfbOzK0QXXXTxv9HTyRmNxVYj0Wjt5vr68r4Io/jrjfVlqEjoDkk/wgRZiqx0X4QWE+LrWbIq9yeIEGT5uuum2k2WUsapmMWCLMvK+/jhw5g8+W8XDUKSD5Yhi5OVuT3QiYysLG8xa5JpvjIvriEpAyvYYKOtW+K3W6ugPjxob/FKPYyOjQlu6wtyXr5YWCkeH+t+BYwrEGlS3+EA2RfemcMyCyYskEnYzNS0rFar3rJ/rK3Lb0MjXgmcnpzIxPNxr/TzY6dNQrItNtRNwjRZ5tXi0qFJpuzqw6bUgbbuV6Tq0Kwa8gAVkjRrxCWjJP8+/LQlro8+fxKx+Tnh7h+Iq/W3Lf7HZ18bMTQ/3AHNk6Y+rAMkNxcX4tf2TstEjCfkrKB5xKfRgSI/Nz+KmpP765y+12nx8P07LDZphUlePuIgjbeTz5SZ8Ay5GAl1WzSSOKWk6l9Z9h2HfiZTqSEiIXeIyYeoY4d+MQPQr8V5o3m1hZATZHbAGKKa7AlIZlNxRPYEcXN393xlrBeLd/rqpZJ3eh9MTtpBJU2rWJgpoQ5I//IbrzTB4yeCEkK/ipZXd2RTfSjR9snDcCmhXgmfu9KB7Fy2v0v/hZRRUM+PMaZgPlGWEOF3yo/vOeVlrsM4aGurR/iPAAMA0/ep+S4jW1QAAAAASUVORK5CYII=
+        tooltip: { nb_NO: Fjern nåværende spørsmål element, en_GB: Delete current question element, default: Delete current question element } 
+        order: 6
+    move_down:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUpJREFUeNpiZMADWNk5BIDUfCAWwKHkARAX/v754wMuM1gY8AMDIA4goGYjEG/AJcnEQDn4gE+SkAUPKLWdkZACYDz8J6BEEF8cMFEaBPgMJ9aCC5QEEaWRfIAaFhykxAUsSJFZAA3vA8BwJTb1PMCSKBygcXMAbgFQMAFI9SMp+gD1/kUiUhlIrz00UxogiYNy+ASYD9CLAgFoDiaUixOgGH8+gJY554FYgYE6ABQCiqAkzISUlgMJpXkSQCIsfzDDRP79/fOCmYXlJRHBQghMABo+EcZhRpYBWnIBaAkouCzINPwC0PBAZAFmdBVAS3YCLVFAThEkhLshUP8PYjJaIYlFBMhwR2zlEhOeAsyRBEtAaf4CycU1MPmCgmk/nioTlmIWkJ0kQJYA8XtQvYAFz6dKosZhyXwGagJQmUMzw9F80k+KHoAAAwC1CHn+j0676QAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Flytt spørsmål ned, en_GB: Move question down, default: Move question down }
+        order: 7
+        newline: true
+    move_up:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNpiZiABsLJz9DOzsLz89/fPCwZqA6Dh84H4PxC/B2IDWhn+n+qWYDGcJEuYCBheAKQScEgLAPF+oBoFfGYw4jEcZPB8Ijx5AYgdf//88YFoC6Be3w91JTHgAtACQ2wSzFgMBxl6ngTDQUACmHwVgMl3I0ELgAqPAykFMtKDAVAvI9CSAzgtAKUYIOVBQaJzAFryEGjJBYw4ABoeAKTWUyFlf4BG+gW4BdBwv09iuOMDD4DYEJSyYPmggIqGM0DjEJx/WJC8hZ62QfggENvjyWyFUIeB1BigOfID3AKgVyYAg+kClH0ALeL98bhUAKi+AUktyOUOUHMWIPsAw2C0IoEoADQDFPYLiC6LiAD6FBV2sLSNL4ioYQGh1EJRca1AUwuIMQCaSWkWRAzQ9E87HxACLATkN0BzqQKegu0CPgMAAgwA4EZhMyPooVEAAAAASUVORK5CYII=
+        tooltip: { nb_NO: Flytt spørsmål opp, en_GB: Move question up, default: Move question up }
+        order: 8
     set_options:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
-        tooltip: Edit options
-        order: 5
-        newline: true
+        tooltip: { nb_NO: Rediger alternativer, en_GB: Edit options, default: Edit options }
+        order: 9
     

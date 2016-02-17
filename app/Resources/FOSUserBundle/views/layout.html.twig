@@ -12,18 +12,18 @@
         
         <ul id="mlab_menu">
             <li>
-                    <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='Tilbake til App liste' src="/img/logo_menu.png" alt="logo" /></div></a>
+                    <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='{% trans %}layout.menu.tooltip.back.app.list{% endtrans %}' src="/img/logo_menu.png" alt="logo" /></div></a>
                 </li>  <!-- The Mlab log -->
 
                 <li id="mlab_editor_menu_dropdown">    
-                        <img class="basic_menu_icon" title='Editor menu' src="/img/menu_icon.png" alt="logo" > 
+                        <img class="basic_menu_icon" title='{% trans %}layout.menu.tooltip.editor.menu{% endtrans %}' src="/img/menu_icon.png" alt="logo" > 
                 </li>
                 <li class="single menu_right">
-                    <img class="mlab_help_icon" src="/img/help.png" title='Hjelp' alt="logo" >
+                    <img class="mlab_help_icon" src="/img/help.png" title='{% trans %}layout.menu.tooltip.help{% endtrans %}' alt="logo" >
                 </li>
 
                 <li id="mlab_user_menu_dropdown" class="menu_right">
-                    <img class="mlab_user_info_icon" src="/img/user.png" title='Bruker info' alt="logo" >
+                    <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}layout.menu.tooltip.user.info{% endtrans %}Bruker info' alt="logo" >
                 </li>
         </ul>
             

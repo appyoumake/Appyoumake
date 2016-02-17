@@ -1,0 +1,139 @@
+
+/* Generic form fields */
+
+#mlab_editor fieldset.mlab_cp_quiz_select, #mlab_editor fieldset.mlab_cp_quiz_select ul, #mlab_editor fieldset.mlab_cp_quiz_select > legend, #mlab_editor fieldset.mlab_cp_quiz_select li, #mlab_editor fieldset.mlab_cp_quiz_select > legend:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select ul, #mlab_editor fieldset.mlab_cp_quiz_select > legend {
+	border: 1px black solid;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select, #mlab_editor fieldset.mlab_cp_quiz_select > legend {
+	height: 32px;
+/*	font-family: Tahoma;
+	font-size: 14px;*/
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select > legend:after, #mlab_editor fieldset.mlab_cp_quiz_select label {
+	height: 28px;
+}
+
+/* Editable [pseudo]select (i.e. #mlab_editor fieldsets with [class=elist]) */
+
+#mlab_editor fieldset.mlab_cp_quiz_select {
+	border: 1px black solid;
+	width: 316px;
+	display: inline-block;
+	position: relative;
+	vertical-align: middle;
+	overflow: visible;
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select ul {
+	position: absolute;
+	width: 100%;
+	max-height: 320px;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select:hover ul, #mlab_editor fieldset.mlab_cp_quiz_select ul.editing_mode {
+	background-color: white;
+	border: 1px gray solid;
+	left: 2px;
+	overflow: auto;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select ul > li {
+	list-style-type: none;
+	background-color: transparent;
+	display: none;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	border: none;
+	border-radius: 0;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select ul.editing_mode > li, #mlab_editor fieldset.mlab_cp_quiz_multiselect ul > li {
+	display: block !important;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_multiselect ul {
+    height: 200px;
+    background-color: white;
+    overflow-y: scroll;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select > legend {
+	border: 1px gray solid;
+	display: block;
+	margin: 0;
+	padding: 0 0 0 5px;
+	position: absolute;
+	width: 100%;
+	cursor: default;
+	background-color: white;
+	line-height: 30px;
+	font-style: italic;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select:hover > legend {
+	background-color: grey;
+	position: relative;
+	overflow: hidden;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select > legend:after {
+	width: 20px;
+	content: "\2335";
+	float: right;
+	text-align: center;
+	border-left: 2px #cccccc solid;
+	font-style: normal;
+	cursor: default;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select:hover > legend:after {
+	background-color: white;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select:hover li {
+	display: block;
+	height: 100%;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_select li:hover {
+	background-color: graytext !important;
+}
+
+#mlab_editor fieldset.mlab_cp_quiz_multiselect:hover li {
+	display: block;
+	height: 30px;
+}
+
+/*#mlab_editor fieldset.mlab_cp_quiz_multiselect li:hover {
+	background-color: white !important;
+}*/
+
+#mlab_editor fieldset.mlab_cp_quiz_select li {
+    width: 100%;
+    height: auto;
+    line-height: auto;
+    border: medium none;
+    background-color: transparent;
+}
+
+/*
+
+<#mlab_editor fieldset class="mlab_cp_quiz_select"><legend></legend><ul></ul></#mlab_editor fieldset>
+
+<select class='mc_text mc_entry mc_input' ><option class='mc_text mc_entry mc_input' ></option><option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option></select>
+*/

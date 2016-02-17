@@ -56,7 +56,7 @@ class HelpController extends Controller
         return new JsonResponse(array('db_table' => 'help',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to create new record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
 
     /**
@@ -121,7 +121,7 @@ class HelpController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Help entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('helpController.createNotFoundException'));
         }
 
         
@@ -142,7 +142,7 @@ class HelpController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Help entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('helpController.createNotFoundException'));
         }
         
         $routes = $this->getRoutes();
@@ -187,7 +187,7 @@ class HelpController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Help entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('helpController.createNotFoundException'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -206,7 +206,7 @@ class HelpController extends Controller
         return new JsonResponse(array('db_table' => 'help',
         			'db_id' => $id,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to update record'));
+        			'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
     }
     /**
      * Deletes a Help entity.
@@ -232,6 +232,57 @@ class HelpController extends Controller
         		'message' => ''));
         
     }
+    
+/**
+ * 
+ * @param \Symfony\Component\HttpFoundation\Request $request
+ * @param string $route = unique symfony name on the route, as found in /resources/config/routing files
+ */
+    public function getHtmlAction($route) {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('SinettMLABBuilderBundle:Help')->findOneByRoute($route);
 
+        if (!$entity) {
+        	return new JsonResponse(array('db_table' => 'help',
+        			'db_id' => $route,
+        			'result' => 'FAILURE',
+        			'html' => ''));
+        }
+        
+        return new JsonResponse(array('db_table' => 'help',
+        		'db_id' => $route,
+        		'result' => 'SUCCESS',
+        		'html' => $entity->getMessage()));
+        
+    }
+    
+    public function getComponentHelpfileAction($comp_id) {
+        if ($comp_id == "") {
+            return new JsonResponse(array(
+        			'result' => 'FAILURE',
+        			'message' => $this->get('translator')->trans('controller.help.msg.comp_id.empty')));
+        }
+        
+        $config = $this->container->parameters['mlab'];
+        $help_basename = $config["paths"]["component"] . "/" . $comp_id . "/extended_tip";
+        $help_generic = $help_basename . ".html";
+        $help_locale = $help_basename . "_" . $this->container->parameters['locale'] . ".html";
+        
+        if (file_exists($help_locale)) {
+            $html = file_get_contents($help_locale);
+        } else if (file_exists($help_generic)) {
+            $html = file_get_contents($help_generic);
+        } else {
+            return new JsonResponse(array(
+        			'result' => 'FAILURE',
+        			'message' => $this->get('translator')->trans('controller.help.msg.file.notfound') . " [" . $help_locale . "]"));
+        }
+        
+                
+        return new JsonResponse(array(
+        		'result' => 'SUCCESS',
+        		'html' => $html));
+        
+    }
 
 }

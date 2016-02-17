@@ -75,7 +75,7 @@ function Mlab_api () {
 // MK: Converted for() to $.each(), because "name" variable was overwritten before XHR was finished. $.each provides closure to the variables.
                     $.each(components, function(i, component) {
 // MK: js/ was already part of the component name
-                        var name = component.replace("_code_rt.js", "").replace("/js/", "");
+                        var name = component.replace("_code_rt.js", "").replace("js/", "");
                         $.get(path + component, function(componentCode) {
 //we need to attach the code_rt.js content to an object so we can use it as JS code
                             eval("mlab.api.components['" + name + "'] = new function() {" + componentCode + "}();");
@@ -534,6 +534,7 @@ Mlab_api.prototype = {
  * @returns {undefined}
  */
             cbPluginFailed: function(data_type, app_uuid, device_uuid, component_uuid, key) {
+                var SEP = this.parent.parent.data_divider;
                 var counter = this.parent.retry_save_queue_counter++; //TODO could get a race condition here...
                 window.localStorage.setItem("_QUEUE_" + counter, data_type + SEP + app_uuid + SEP + device_uuid + SEP + component_uuid + SEP + key);
             },
@@ -720,9 +721,10 @@ Mlab_api.prototype = {
  * current = page that is currently displayed
  * move_to can be index, first, last, next, previous or a number
  * @param {type} page
+ * @param {Boolean} swipe
  * @returns {undefined}
  */
-        pageDisplay: function (move_to) {
+        pageDisplay: function (move_to, swipe) {
             var filename = "";
             var new_location = 0;
             switch (move_to) {
@@ -777,8 +779,14 @@ Mlab_api.prototype = {
                     break;
             }
 
+//Adds a differens between swipe and click
+            if (swipe){
+                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
+            } else {
+                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
+            }
+            
 //have calculated the file name, now we need to try to load it
-            $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });
             this.current_page = new_location;
             return this.current_page;
         },
@@ -927,6 +935,10 @@ $(document).ready(function() {
         $( document ).on( "pagecreate", function ( event ) {
             console.log("EVENT: pagecreate-general");
             mlab.api.display.prepareRegularComponents(event);
+//Swipe
+            $('div.ui-page')
+                .on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", true); console.log("right swipe"); })
+                .on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", true); console.log("left swipe");});
         });
 
 //general pagecontainerbeforeshow, run component code for components that require size information, ie. display is done

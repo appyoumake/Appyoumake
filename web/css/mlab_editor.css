@@ -22,6 +22,12 @@
    6. #mlab_editor #mlab_container
 
    ========================================================================== */
+/* Added so that the elements of the container don't wrap if the screen is 
+made smaler than the min width */
+/* body#mlab_editor {
+    padding-bottom: 70px;
+    margin-bottom: 70px;
+}*/
 
 /* Added so that the elements of the container don't wrap if the screen is 
 made smaler than the min width */
@@ -34,6 +40,11 @@ made smaler than the min width */
     display: none;
 }
 
+/* Used to set the backgound to transparent for different elements with javascript */
+.mlab_transparent {
+    background: transparent !important;
+}
+
 /* Used to hide elements that comes from the template */
 .mlab_hide_in_app_builder {
     display: none !important;
@@ -41,7 +52,7 @@ made smaler than the min width */
 
 #mlab_editor .mlab_align_menu_elements .mlab_permanent_top_menu {
     position: fixed;
-    z-index: 10;
+    z-index: 500;
     background-color: white;
     padding-bottom: 25px;
     width: 100%;
@@ -74,8 +85,11 @@ made smaler than the min width */
     cursor: pointer;
 }
 
-#mlab_editor .mlab_component_tooltip,
-#mlab_editor .mlab_component_extended_tooltip,
+#mlab_editor #mlab_toolbar_components .mlab_button_components.mlab_newline {
+     clear: both;
+}
+
+#mlab_editor .mlab_component_footer_tip,
 #mlab_editor [data-mlab-download-link-info] {
     display: none;
 }
@@ -107,11 +121,6 @@ made smaler than the min width */
 
 #mlab_editor .mlab_qtip_menu_tooltip.qtip{
     z-index: 20000 !important;
-}
-
-#mlab_editor .mlab_component_tooltip_link{
-    color: blue;
-    font-weight: bold;
 }
 
 #mlab_editor .mlab_qtip_tooltip.qtip p{
@@ -211,24 +220,30 @@ made smaler than the min width */
     display: none;
     position: absolute;
     left: 220px;
-    top: 104px;
+    top: 103px;
     z-index: 980;
     min-width: 250px;
     max-width: 350px;
     background: #FFFFFF;
-    height: 200px;
-    border: 1px solid #777777;
+    min-height: 100px;
+    border: 2px solid orange;
     border-radius: 2px;
     padding: 12px;
-    padding-left: 30px;
 }
 
 #mlab_editor #mlab_page_management #mlab_page_management_info {
     padding: 15px;
     padding-left: 0;
+    padding-right: 5px;
     font-family:Arial, Helvetica, sans-serif;
     font-size:12px; 
     color: #000000;
+}
+
+#mlab_editor #mlab_page_management #mlab_existing_pages {
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 /* The current page */
@@ -273,7 +288,7 @@ made smaler than the min width */
 #mlab_editor .mlab_toolbar_for_components {
     display: block;
     padding: 5px;
-    max-width: 98px;
+    max-width: 128px;
     /*float: left;
     border: orange dotted 3px;
     margin-top: 25px;
@@ -465,6 +480,8 @@ made smaler than the min width */
                 orange 0px 0px 0px 4px inset;
     clear: both;
     height: auto !important;
+    min-height: 200px !important;
+    margin-bottom: 70px !important;
 }
 
 /* Outlines the current selcted component */
@@ -483,6 +500,82 @@ made smaler than the min width */
 #mlab_editor #mlab_editable_area div[data-mlab-type] {
     margin: 5px;
 }
+
+
+/* ==========================================================================
+   7. The footer with helptext
+   ========================================================================== */
+
+#mlab_editor .mlab_editor_footer {
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1));
+    z-index: 500;
+} 
+
+#mlab_editor .mlab_editor_footer_help {
+    padding: 23px 0 10px 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+} 
+
+#mlab_editor .mlab_editor_footer_help_icon {
+    float: left;
+    padding: 15px 5px 0 10px;
+    width: 25px;
+}
+
+/* ==========================================================================
+     Help qTip
+   ========================================================================== */
+
+#mlab_editor .qtip.mlab_page_help_qTip,
+#mlab_editor .qtip.mlab_comp_help_qTip {
+    z-index: 601 !important;
+    box-shadow: none;
+    background-color: rgb(242,242,242) !important;
+}
+
+#mlab_editor .qtip.mlab_page_help_qTip {
+    width: 500px;
+    max-width: 800px !important;
+}
+
+#mlab_editor .mlab_comp_help_qTip{
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-left: -4px;
+    margin-top: -8px;
+    direction: rtl;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-titlebar,
+#mlab_editor .mlab_comp_help_qTip .qtip-titlebar{
+    background-color: rgb(210,210,210);
+    height: 25px;
+    padding-top: 6px;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-title,
+#mlab_editor .mlab_comp_help_qTip .qtip-title {
+    font-size: 15px;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-close,
+#mlab_editor .mlab_comp_help_qTip .qtip-close {
+    top: 3px;
+    right: 5px;
+    background-color: white;
+}
+
+
+
+
+
 
 /* TEMP AV ARILD */
 

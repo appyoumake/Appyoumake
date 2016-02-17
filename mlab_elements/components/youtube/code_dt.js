@@ -9,7 +9,9 @@
     this.onCreate = function (el) {
         this.onLoad (el);
         this.getHTMLElement(el).html('<img src="' + this.config.placeholder + '" >');
-        this.custom_select_video(el);
+        if (apiKey != "") {
+            this.api.setVariable( el, "credentials", {"apikey": apiKey} );
+        }
     };
     
 //el = element this is initialising, config = global config from conf.yml
@@ -125,8 +127,19 @@
 
     };
     
-    this.custom_select_video = function (el) {
-        
+    this.store_credentials = function (credentials, params) {
+        this.api.setVariable( params.component, "credentials", credentials );
+        apiKey = credentials["apikey"];
+        this.custom_select_video(params.component);
+    };
+            
+    this.custom_select_video = function (el, event) {
+        if (apiKey == '') {
+            alert("No API key specified, please enter one first. If you do not have one, or does not know what this is, please contact your Mlab administrator");
+            var that = this;
+            this.api.getCredentials(this.config.credentials, function (credentials, params) { that.store_credentials(credentials, params); }, { component: el });
+            return;
+        }
         content = $('<form />');
         content.append( '<div class="arama">' + 
                         '    <form action="" onsubmit="return false">' + 
@@ -147,6 +160,6 @@
         var component_id = this.config.component_name;
         var component_config = this.config;
         
-        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube);
+        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube, null, null, false, event);
        
     };

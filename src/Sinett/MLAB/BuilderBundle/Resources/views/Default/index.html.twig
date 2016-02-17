@@ -1,12 +1,50 @@
 {% extends '::base.html.twig' %}
-
+{% block title %}{% trans %}mlab.page.title.index{% endtrans %}{% endblock %}
 {% block body -%}
 
-    <h1 onclick='$("li").css("color", "red")'>{% trans %}app.builder.index.page.heading{% endtrans %}</h1> 
-    <p style="width: 1024px;">
-       {% trans %}app.builder.index.page.text{% endtrans %} {% trans %}app.builder.index.page.link.text.before{% endtrans %} <a href="{{ path('app_builder_index')}}">{% trans %}app.builder.index.page.link.app.list{% endtrans %}</a> {% trans %}app.builder.index.page.link.text.after{% endtrans %}
-        <br><br>
-        <img src="{{ asset('/img/frontpage_six_steps.png') }}" >
-    </p>
-
+    
+    <div class="mlab_frontpage">
+        <p class="frontpage_info">{% trans %}app.builder.index.page.text{% endtrans %} {% trans %}app.builder.index.page.link.text.before{% endtrans %} <a href="{{ path('app_builder_index')}}">{% trans %}app.builder.index.page.link.app.list{% endtrans %}</a> {% trans %}app.builder.index.page.link.text.after{% endtrans %}</p>
+        <div class="help_guide">
+            <br>
+            <div class="help_guide_top">
+                <div class="help_guide_back" onclick="help_guide_back();"></div>
+                <p class="help_guide_heading">{% trans %}app.builder.index.page.help.guide.heading{% endtrans %}</p>
+                <div class="help_guide_next" onclick="help_guide_next();"></div>
+            </div>
+            <p class="help_guide_text">1. {% trans %}app.builder.index.page.help.guide.text1{% endtrans %}</p> 
+            <div class="help_guide_img"></div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        
+        var step = 1;
+        help_text = [];
+        
+        {% for i in 1..5 %}
+            help_text[{{i}}] = '{{('app.builder.index.page.help.guide.text'~i)|trans}}';
+        {% endfor %}
+            
+            function help_guide_next() {
+                
+                if (step >= 5){
+                    step = 1;
+                } else {
+                    step++;
+                };
+                $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
+                $('.help_guide_text').text(step + ". " + help_text[step]);
+            };
+            
+            function help_guide_back() {
+               if (step <= 1){
+                   step = 5;
+               } else {
+                   step--;
+               }
+              $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
+              $('.help_guide_text').text(step + ". " + help_text[step]);
+            };
+    
+    </script>
 {% endblock %}

@@ -17,7 +17,7 @@ class AppRepository extends EntityRepository
 	 * Returns a list of all apps that is allowed for the specified groups
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
-	public function findAllByGroups ( $groups) {
+	public function findAllByGroups ( $groups ) {
 		$apps = array();
 		foreach ($groups as $group) {
 			$temp_apps = $group->getApps();
@@ -29,7 +29,32 @@ class AppRepository extends EntityRepository
 		return $apps;
 	}
     
-  	/**
+	/**
+	 * Returns a list of all apps that is allowed for the specified groups
+     * In addition it sorts by the update field
+	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
+	 */
+	public function findAllByGroupsSortUpdated ( $groups ) {
+		$apps = array();
+		foreach ($groups as $group) {
+			$temp_apps = $group->getApps();
+			foreach ($temp_apps as $temp_app) {
+                $temp_app->getAppVersions();
+				$apps[$temp_app->getId()] = $temp_app->getArray();
+			}
+		}
+        
+//here we sort it, we need to have this AFTER the code above as we use the ID to avoid duplicates
+        $sorted_apps = array();
+        foreach ($apps as $app) {
+            $sorted_apps[$app["updated"]->format('Y-m-d H:i:s')] = $app;
+        }
+        krsort($sorted_apps);
+        
+		return $sorted_apps;
+	}
+
+    /**
 	 * Returns an array of *paths* of all components that is allowed for the specified groups
 	 * This path = the internal component type/name which = the folder name of the component
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
@@ -45,5 +70,10 @@ class AppRepository extends EntityRepository
 		}
 		return false;
 	}
+    
+    public function findAllSortLastModified()
+    {
+        return $this->findBy(array(), array('updated' => 'ASC'));
+    }
 	
 }

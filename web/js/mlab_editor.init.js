@@ -19,7 +19,7 @@
 		if (bowser.gecko || bowser.chrome) {
 
         } else {
-            alert(_tr["app.builder.mlab.js.alert.browser.support"]);
+            alert(_tr["mlab_editor.init.js.alert.browser.support"]);
             $("body").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
         }
         
@@ -126,7 +126,7 @@
                     var url = mlab.dt.urls.editor_closed.replace("_UID_", mlab.dt.uid);
                     $.ajax({ url: url, async: false });
 
-                    if (mlab.dt.flag_dirty) { return _tr["app.builder.mlab.js.alert.unsaved"] ; }
+                    if (mlab.dt.flag_dirty) { return _tr["mlab_editor.init.js.alert.unsaved"] ; }
                 };
 
 //now we load components, the go into a mlab object called components,
@@ -138,6 +138,7 @@
                         var storage_plugin_list = $("<ul></ul>");
                         var loc = mlab.dt.api.getLocale();
                         mlab.dt.components = data.mlab_components;
+                        var all_components = [];
 
                         for (type in mlab.dt.components) {
                             
@@ -153,36 +154,33 @@
                             if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
                                 
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
-                                var temp_tt = c.conf.tooltip;
-                                var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
-                                var temp_tt = c.conf.extended_tooltip;
-                                var tte = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                                var tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
+                                var tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
+                                var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
+                                if (typeof c.new_line != "undefined" && c.new_line === 1) {
+                                    var cl = "mlab_newline";
+                                } else {
+                                    var cl = "";
+                                }                                
                                 
-                                $("#mlab_toolbar_components").append(
-                                        "<div data-mlab-type='" + type + "' " +
+                                all_components[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
-                                            "class='mlab_button_components' " +
+                                            "title='" + tt + "' " +
+                                            "class='mlab_button_components " + cl + "' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
-                                        "<div class='mlab_component_tooltip'>" +
-                                            tt + " <a class='mlab_component_tooltip_more_link' href='#'>Mer...</a>" +
-                                            "<div class='mlab_component_extended_tooltip'>" +
+                                        "<div class='mlab_component_footer_tip'>" +
                                                 tte +
-                                            "</div>" +
-                                         "</div>"
-                                );
+                                         "</div>";
+                                
                             } else if (c.accessible && c.is_feature) {
-                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             } else if (c.accessible && c.is_storage_plugin) {
-                                storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(c.conf.tooltip).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+                                storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             }
                         }
                         
-//When the component tooltips link is clicked the exteded help tekst for the component will show in the tooltip box
-                        $( ".mlab_component_tooltip_more_link" ).on( "click", function() {
-                            var extendedText = $(this).parent().find('.mlab_component_extended_tooltip').html();
-                            mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', extendedText);
-                        });
+                        $("#mlab_toolbar_components").append(all_components.join(""));
                       
 //add the HTML generated in the component load loop above to their respecitve containers.
                         $("#mlab_features_list").html(feature_list);
@@ -199,20 +197,14 @@
                             }
                         }
 
-//set the component qTip tooltip
-//TODO use api.elements.tooltip
-                        $('.mlab_button_components').each(function() {
-                            $(this).qtip({
-                            content: { text: $(this).next('.mlab_component_tooltip') },
-                            position: { my: 'leftcenter', at: 'rightMiddle', adjust: { x: -14, y: -4, } },
-                            events: {show: function(){ mlab.dt.mlab_component_cur_tooltip =  $(this);}
-                            //,   hidden: function() { mlab.dt.mlab_component_cur_tooltip.qtip('option', 'content.text', "testy"); } 
-                                },
-                            hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
-                            style: { "background-color": "white", color: "blue", classes: "mlab_qtip_tooltip" } } ) ;         
-                        });
-                                
-
+//set the extended help text for the component in the footer
+                         $(".mlab_button_components").mouseover(function(e){
+                            $(".mlab_editor_footer_help").text(e.currentTarget.nextSibling.textContent);
+                         });
+                         
+                         $(".mlab_button_components").mouseout(function(e){
+                            $(".mlab_editor_footer_help").text("");
+                         });
             
 //we always load pages using AJAX, this takes the parameters passed from the controller
                         mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
@@ -223,23 +215,49 @@
 
 //prepare the menu popup for the storage plugin selector
                         $("#mlab_button_select_storage_plugin").click( function(event) {
-                            var div = $("#mlab_storage_plugin_list");
-                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow");
+                            mlab.dt.api.closeAllPropertyDialogs();
+                            var owner_element = event.currentTarget;
+                            mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                                solo: false,
+                                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
+                                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                                style:      { classes: "mlab_zindex_top_tooltip" }
+                            });
                         } );
                         
 //prepare the menu popup for the component resizer
                         $("#mlab_button_component_size").click( function(event) {
-                            var div = $("#mlab_component_size_list");
-                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow");
+                            mlab.dt.api.closeAllPropertyDialogs();
+                            var owner_element = event.currentTarget;
+                            mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                                solo: false,
+                                content:    {text: $("#mlab_component_size_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.size.title"], button: true },
+                                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                                style:      { classes: "mlab_zindex_top_tooltip" }
+                            });
+                            
                         } );
                         
 //prepare the menu popup for the component aspect ratio selector
                         $("#mlab_button_component_aspect").click( function(event) {
-                            var div = $("#mlab_component_aspect_list");
-                            div.css({ position: "absolute", top: event.pageY, left: event.pageX })
-                               .fadeIn("slow");
+                            mlab.dt.api.closeAllPropertyDialogs();
+                            var owner_element = event.currentTarget;
+                            mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                                solo: false,
+                                content:    {text: $("#mlab_component_aspect_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.aspect.title"], button: true },
+                                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                                style:      { classes: "mlab_zindex_top_tooltip" }
+                            });
+                            
                         } );
                         
 //prepare qtip for the download of app buttons
@@ -247,7 +265,7 @@
                                 $('#mlab_download_'+ platform + '_icon').qtip({
                                     hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                                     content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
-                                             title: { text: "Download to " + platform } },
+                                             title: { text: _tr["mlab_editor.init.js.qtip.download.app.title"] + " " + platform } },
                                     style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
                                 });
                         });
@@ -276,48 +294,48 @@
 
                                 case "connected":
                                     $("#mlab_progressbar").val(5);
-                                    $("#mlab_statusbar_compiler").text("Creating app...connected to server");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.connected"]);
                                     break;
 
                                 case "creating":
                                     $("#mlab_progressbar").val(10);
-                                    $("#mlab_statusbar_compiler").text("Creating app remotely...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.creating"]);
                                     //createApp is called, this creates the empty app
                                     break;
 
                                 case "created":
                                     $("#mlab_progressbar").val(15);
-                                    $("#mlab_statusbar_compiler").text("App created remotely");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.created"]);
                                     break;
 
                                 case "precompilation":
                                     $("#mlab_progressbar").val(20);
-                                    $("#mlab_statusbar_compiler").text("Processing files...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.precompilation"]);
                                     break;
 
                                 case "uploading":
                                     $("#mlab_progressbar").val(25);
-                                    $("#mlab_statusbar_compiler").text("Uploading files to compiler...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.uploading"]);
                                     break;
 
                                 case "verifying":
                                     $("#mlab_progressbar").val(30);
-                                    $("#mlab_statusbar_compiler").text("Verifying upload...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verifying"]);
                                     break;
 
                                 case "verification_ok":
                                     $("#mlab_progressbar").val(35);
-                                    $("#mlab_statusbar_compiler").text("Files uploaded OK...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verification_ok"]);
                                     break;
 
                                 case "compiling":
                                     $("#mlab_progressbar").val(40);
-                                    $("#mlab_statusbar_compiler").text("Waiting for compiler...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compiling"]);
                                     break;
 
                                 case "compilation_ok":
                                     $("#mlab_progressbar").val(80);
-                                    $("#mlab_statusbar_compiler").text("App compiled OK...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compilation_ok"]);
                                     break;
 
                                 case "failed":
@@ -334,11 +352,10 @@
 
                                 case "receiving":
                                     $("#mlab_progressbar").val(90);
-                                    $("#mlab_statusbar_compiler").text("Receiving app...");
+                                    $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.receiving"]);
                                     break;
 
                                 case "ready":
-                                    debugger;
                                     $("#mlab_progressbar").val(100);
                                     $("#mlab_statusbar_compiler").text("");
                                     $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
@@ -351,9 +368,9 @@
                                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                                         $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
                                         $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
-                                        mlab.dt.utils.update_status("temporary", "App ready! Links are found in the menu", false);
+                                        mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.ready"], false);
                                     } else {
-                                        mlab.dt.utils.update_status("temporary", "App ready but there was a problem obtaining the links, please try again", false);
+                                        mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.failed"], false);
                                     }
                                     //hvor lenge skal teksten stå??
                                     break;
@@ -364,13 +381,13 @@
                         };
 
                     } else {
-                        alert("Unable to load components from the server, cannot continue, will return to front page");
+                        alert(_tr["mlab_editor.init.js.compiling.failed.loading.comps"]);
                         document.location.href = document.mlab_temp_vars.appbuilder_root_url;
                     }
                 });
 
             } else {
-                alert("Unable to load variables from the server, cannot continue, will return to front page");
+                alert(_tr["mlab_editor.init.js.compiling.failed.loading.var"]);
                 document.location.href = document.mlab_temp_vars.appbuilder_root_url;
             }
 
@@ -378,4 +395,6 @@
                                             
         });
         
-});
+    });
+    
+    

@@ -43,6 +43,18 @@ Sinett\MLAB\BuilderBundle\Entity\Component:
         options:
           default: true
 
+    order_by:
+        type: integer
+        nullable: true
+        options:
+          default: 0
+
+    new_line:
+        type: integer
+        nullable: true
+        options:
+          default: 0
+
 # components can be limited by group membership
   manyToMany:
     groups:

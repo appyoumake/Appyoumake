@@ -99,7 +99,7 @@ class TrackingController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Tracking')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Tracking entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('trackingController.createNotFoundException'));
         }
 
         
@@ -120,7 +120,7 @@ class TrackingController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Tracking')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Tracking entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('trackingController.createNotFoundException'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -162,7 +162,7 @@ class TrackingController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Tracking')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Tracking entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('trackingController.createNotFoundException'));
         }
 
         

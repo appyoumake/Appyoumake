@@ -124,9 +124,9 @@ this.processAnswers = function (data) {
             case "multiselect": 
                 q.find('select > option').prop("selected", false);
                 if (typeof answers[id] == "string") {
-                    q.find('select > option').filter('[value=' + answers[id] + ']').prop("selected", true);
+                    q.find('select > option').filter('[value="' + answers[id] + '"]').prop("selected", true);
                 } else {
-                    q.find('select > option').filter('[value=' + answers[id].join('], [value=') + ']').prop("selected", true);
+                    q.find('select > option').filter('[value="' + answers[id].join('"], [value="') + '"]').prop("selected", true);
                 }
                 break;
 

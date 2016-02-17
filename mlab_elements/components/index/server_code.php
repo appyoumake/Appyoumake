@@ -22,6 +22,7 @@ class mlab_ct_index {
         $xpath = new DOMXPath($doc);
         $chapter = $xpath->query("//div[@data-mlab-type='chapter']");
         if ($chapter->length > 0 ) {
+            error_log($chapter->item(0)->nodeValue);
             return $chapter->item(0)->nodeValue;
         } else {
             return 0;
@@ -49,6 +50,7 @@ class mlab_ct_index {
         $index[$current_chapter] = array();
         
         if (preg_match('/<title>(.+)<\/title>/', $page_content, $matches) && isset($matches[1])) {
+            error_log($matches[1]);
             $index[$current_chapter][0] = $matches[1];
         } else {
             $index[$current_chapter][0] = "Front page";
@@ -69,6 +71,7 @@ class mlab_ct_index {
             $pnum = intval(basename($file));
             
             if (preg_match('/<title>(.+)<\/title>/', $page_content, $matches) && isset($matches[1])) {
+                error_log($matches[1]);
                 $index[$current_chapter][$pnum] = $matches[1];
             } else {
                 $index[$current_chapter][$pnum] = "Page " . $pnum;

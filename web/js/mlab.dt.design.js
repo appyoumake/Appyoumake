@@ -69,16 +69,21 @@ Mlab_dt_design.prototype = {
 
 //if this control has to be unique we check here to see if one was already added
         if (this.parent.components[id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + id + "']").length > 0) {
-            alert("You can only have one component of this type on a page");
+            alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
         
         this.parent.flag_dirty = true;
-        var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='1:1' data-mlab-size='medium'" : "";
+        var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='4:3' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
 
 //add a DIV wrapper around all components, makes it easier to move it up/down later
-        var new_comp = $("<div data-mlab-type='" + id + "' " + data_resize + " " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
+//for resizable components we add a second div which is used for settin size of content. Doing this on the outer div messs things up at design time
+        if (data_resize != "") {
+            var new_comp = $("<div data-mlab-type='" + id + "' " + data_display_dependent + " style='display: block;'><div data-mlab-sizer='1' "+ data_resize + " >" + this.parent.components[id].html + "</div></div>");
+        } else {
+            var new_comp = $("<div data-mlab-type='" + id + "' " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
+        }
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
@@ -94,6 +99,7 @@ Mlab_dt_design.prototype = {
             this.component_menu_prepare();
         }
         
+//scroll down where the component is added
         window.scrollTo(0,document.body.scrollHeight);
 //now we load the relevant CSS/JS files
         this.parent.api.getLibraries(id);
@@ -120,7 +126,10 @@ Mlab_dt_design.prototype = {
         request.done(function( result ) {
             if (result.result == "success") {
                 that.parent.drag_origin = 'sortable';
-                
+//if this is a resizable component we do the initial resizing here
+                if (data_resize != "") {
+                    that.parent.api.display.updateDisplay($(new_comp).children('[data-mlab-sizer]'));
+                }
 //if this component requires any credentials we request them here
                 var local_comp = new_comp;
                 var local_comp_id = comp_id;
@@ -131,13 +140,13 @@ Mlab_dt_design.prototype = {
                 }
                 
             } else {
-                alert(result.msg + "'\n\nLegg til komponenten igjen.");
+                alert(result.msg + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
                 $(new_comp).remove();
             }
         });
 
         request.fail(function( jqXHR, textStatus ) {
-            alert("En feil oppsto: '" + jqXHR.responseText + "'\n\nLegg til komponenten igjen.");
+            alert(_tr["mlab.dt.design.js.alert.error.occurred"] + ": '" + jqXHR.responseText + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
             $(new_comp).remove();
             this.parent.flag_dirty = false;
         });
@@ -158,6 +167,11 @@ Mlab_dt_design.prototype = {
 
         if (created && typeof this.parent.components[comp_id].code.onCreate != "undefined") {
             this.parent.components[comp_id].code.onCreate(el);
+//if the component has an autorun function efined we call it here, with the componet as the parameter
+            if (typeof this.parent.components[comp_id].conf.autorun_on_create == "string") {
+                var func = this.parent.components[comp_id].conf.autorun_on_create;
+                eval("this.parent.components[comp_id].code." + func + "(el, {currentTarget: mlab.dt.qtip_tools.qtip().tooltip.find('[data-mlab-comp-tool-id=\"" + func + "\"]')[0]});")
+            }
         } else if (typeof this.parent.components[comp_id].code.onLoad != "undefined") {
             this.parent.components[comp_id].code.onLoad(el);
         }
@@ -172,7 +186,13 @@ Mlab_dt_design.prototype = {
         }
         el.fadeOut(500, function(){
             el.insertBefore(el.prev());
-            el.fadeIn(500);
+            var local_el = el;
+            el.fadeIn(500, function(){
+                local_el.qtip("api").reposition(null, false);
+                if (mlab.dt.api.properties_tooltip) {
+                    $(mlab.dt.api.properties_tooltip).qtip("api").reposition(null, false);
+                }
+            });
         });
         this.parent.flag_dirty = true;
     },
@@ -186,7 +206,13 @@ Mlab_dt_design.prototype = {
         }
         el.fadeOut(500, function(){
             el.insertAfter(el.next());
-            el.fadeIn(500);
+            var local_el = el;
+            el.fadeIn(500, function(){
+                local_el.qtip("api").reposition(null, false);
+                if (mlab.dt.api.properties_tooltip) {
+                    $(mlab.dt.api.properties_tooltip).qtip("api").reposition(null, false);
+                }
+            });
         });
         this.parent.flag_dirty = true;
     },
@@ -212,7 +238,18 @@ Mlab_dt_design.prototype = {
         } 
         this.parent.flag_dirty = true;
     },
-
+    
+//gets a html page to show as help for making the component at dt
+    component_help : function () {
+        var comp_id = $(".mlab_current_component").data("mlab-type");
+        var extended_name = this.parent.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
+        var owner_element = $(".mlab_help_icon");
+        var qTipClass = 'mlab_comp_help_qTip';
+        var title = _tr["mlab.dt.design.js.qtip.help.title"] + extended_name;
+        this.parent.api.displayExternalHelpfile(comp_id, title, owner_element, qTipClass);           
+    },
+    
+    
 //cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard
     component_cut : function () {
         mlab.dt.clipboard = $(".mlab_current_component").clone();
@@ -228,7 +265,7 @@ Mlab_dt_design.prototype = {
     component_paste : function() {
         var comp_id = mlab.dt.clipboard.data("mlab-type")
         if (this.parent.components[comp_id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + comp_id + "']").length > 0) {
-            alert("You can only have one component of this type on a page");
+            alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
         $(".mlab_current_component").removeClass("mlab_current_component");
@@ -271,7 +308,7 @@ Mlab_dt_design.prototype = {
 //make sure not duplicate it
             if ($(this.parent.app.curr_indexpage_html).find("#mlab_features_content [data-mlab-type='" + comp_id + "']").length > 0) {
                 if (!silent) {
-                    this.parent.utils.update_status("temporary", "Feature already added", false);
+                    this.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.feature.already.added"], false);
                 }
                 return;
             }
@@ -302,13 +339,13 @@ Mlab_dt_design.prototype = {
             var url = this.parent.urls.feature_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
-                this.parent.utils.update_status("callback", 'Adding feature...', true);
+                this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.feature"], true);
             }
 
             var that = this;
             $.get( url, function( data ) {
                 if (data.result == "success") {
-                    that.parent.utils.update_status("temporary", "Feature added", false);
+                    that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.feature.added"], false);
                     $("#mlab_features_list [data-mlab-feature-type='" + data.component_id + "']").addClass("mlab_item_applied");
                     
 
@@ -330,15 +367,15 @@ Mlab_dt_design.prototype = {
  */
     storage_plugin_add: function(storage_plugin_id, component) {
         
-        $("#mlab_storage_plugin_list").fadeOut("slow");
+        this.parent.api.closeAllPropertyDialogs();
         
         var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
         url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
-        this.parent.utils.update_status("callback", 'Adding storage plugin...', true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.storage.plugin"], true);
         var that = this;
         $.get( url, function( data ) {
             if (data.result == "success") {
-                that.parent.utils.update_status("temporary", "Storage plugin added", false);
+                that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
                 if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
                     that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
                 } else {
@@ -428,7 +465,7 @@ Mlab_dt_design.prototype = {
         var temp_menu = [];
         var loc = mlab.dt.api.getLocale();
         
-        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(conf.extended_name);
+        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(this.parent.api.getLocaleComponentMessage(comp_name, ["extended_name"]));
         menu.html("");
         
 
@@ -436,21 +473,23 @@ Mlab_dt_design.prototype = {
             for(var index in this.parent.components[comp_name].code) {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
-                    var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
-                    var temp_tt = ( typeof conf.custom[title]["tooltip"] != "undefined" ) ? conf.custom[title]["tooltip"] : title;
-                    var tt = (typeof temp_tt == "object" ? (typeof temp_tt[loc] == "string" ? temp_tt[loc] : (typeof temp_tt["default"] == "string" ? temp_tt["default"] : "") ) : temp_tt );
+                    if (typeof conf.custom[title] != "undefined") {
+                        var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
+                        var tt = this.parent.api.getLocaleComponentMessage(comp_name, ["custom", title, "tooltip"]);
+                        var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
 
-                    var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
-                    if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
-                        var cl = "mlab_newline";
-                    } else {
-                        var cl = "";
+                        if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
+                            var cl = "mlab_newline";
+                        } else {
+                            var cl = "";
+                        }
+
+                        temp_menu[order] = "<img onclick='(function(e){ mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"), e);})(event)' " + 
+                                         "title='" + tt + "' " + 
+                                         "class='" + cl + "' " + 
+                                         "data-mlab-comp-tool-id='" + index + "' " + 
+                                         icon + " >";
                     }
-                    
-                    temp_menu[order] = "<img onclick='(function(e){ mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"), e);})(event)' " + 
-                                     "title='" + tt + "' " + 
-                                     "class='" + cl + "' " + 
-                                     icon + " >";
                 }
             }
             menu.append(temp_menu.join(""));
@@ -493,10 +532,19 @@ Mlab_dt_design.prototype = {
             $("#mlab_button_component_aspect").addClass("mlab_hidden");
         }
        
+//set the qTips posistion after where it is placed in the window 
+        var myPosQtip = 'leftTop';
+        var eTop = curr_comp.offset().top; //get the offset top of the element
+        eTop = eTop - $(window).scrollTop();
+        
+        if( eTop > 450 ){
+            myPosQtip = 'leftBottom';
+        }
+              
         this.parent.qtip_tools = $(curr_comp).qtip({
             solo: false,
             content:    { text: function() { return $('#mlab_toolbar_for_components').clone(true).removeAttr("id"); } },
-            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
+            position:   { my: myPosQtip, at: 'rightTop', adjust: { screen: true } },
             show: {ready: true, modal: { on: false, blur: false }},
             hide: false,
             events: {
@@ -509,6 +557,25 @@ Mlab_dt_design.prototype = {
         });
         
         //$('#mlab_toolbar_for_components').show();
+    },
+    
+/*
+ *
+ */
+    toggle_footer : function () {
+
+    var footer = $(".mlab_editor_footer");
+    var footer_image = $("mlab_button_help");
+    var footer_text = $(".mlab_editor_footer_help");
+        if (footer.hasClass("mlab_transparent")) {
+            footer.removeClass("mlab_transparent");
+            footer_text.removeClass("mlab_hidden");
+            //TODO toggle title as well
+        } else {
+            footer.addClass("mlab_transparent");
+            footer_text.addClass("mlab_hidden");
+            //TODO toggle title as well
+        }
     },
     
 } // end design.prototype

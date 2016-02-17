@@ -3,8 +3,8 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: storage_plugin
 name: mysql_basic
-extended_name: mysql eksempel
-tooltip: Store data on an MySQL server
+extended_name: { nb_NO: Enkelt MySQL eksempel, en_GB: Simple MySQL example, default: Simple MySQL example }
+tooltip: { nb_NO: Lagre data fra nåværende komponent på en MySQL server, en_GB: Store data from the current component on a MySQL server, default: Store data from the current component on a MySQL server }
 credentials: ["url", "username", "password"]
 custom:
     table: mlab_

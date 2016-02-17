@@ -100,6 +100,46 @@ Mlab_dt_api.prototype = {
     getUrlUploadRelative : function (comp_id) {
         return this.parent.urls.component_upload_file.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", comp_id);
     },
+    
+/**
+ * Wrapper function which calls the back end to load component help, 
+ * the backend checks for language selected and sees if there are language specific help file available, if not use generic one
+ * @param {type} component: component object
+ * @param {type} title: title of dlg box, string
+ * @param {type} owner: HTML element that will own this Qtip
+ * @returns {undefined}
+ */
+
+    displayExternalHelpfile: function (component_id, title, owner_element, qTipClass) {
+        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip ';
+        var url = this.parent.urls.component_helpfile.replace("_COMPID_", component_id);
+        if (typeof qTipClass != "undefined") { 
+            var styleClasses = styleClasses + " " + qTipClass;
+        }
+        $.getJSON(url, function(data) {
+            if (data.result == "SUCCESS") {
+                 $(owner_element).qtip({
+                     solo: false,
+                     content:    {
+                                 text: data.html,
+                                 title: title,
+                                 button: true
+                                 },
+                     position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                     show:       { ready: true, modal: { on: true, blur: false } },
+                     hide:       false,
+                     style:      { classes: qTipClasses },
+                     events:     {   hide: function(event, api) { api.destroy(); } }
+                 });
+            } else {
+                alert(data.message);
+            }
+
+        })
+        .fail(function() {
+            alert( _tr["mlab.dt.design.js.alert.help.notfound"] );
+        });
+    },
 
 /**
  * Returns a list of files already uploaded, non-async so we can return data to the calling function who may do any number of things with it.
@@ -117,7 +157,7 @@ Mlab_dt_api.prototype = {
         if (data.result == "success") {
             return data.files;
         } else {
-            return "<option>Unable to obtain files</option>";
+            return "<option>" + _tr["mlab.dt.api.js.getMedia.fail"] + "</option>";
         }
     },
     
@@ -156,13 +196,13 @@ Mlab_dt_api.prototype = {
     uploadMedia : function (el, component_config, file_extensions, cb, event) {
         this.indicateWait(true);
         content = $('<form />', {id: "mlab_dt_form_upload" } );
-        content.append( $('<p />', { text: "Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde", class: "mlab_dt_text_info" }) );
-        content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>...laster bilde...</option></select>') );
-        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: 'Velg fil', data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
+        content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], class: "mlab_dt_text_info" }) );
+        content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
+        content.append( $('<div />', { id: "mlab_cp_image_uploadfiles", class: "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
         content.append( $('<div />', { class: "mlab_dt_large_new_line" }) );
-        content.append( $('<div />', { text: 'Avbryt', id: "mlab_cp_image_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
+        content.append( $('<div />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"], id: "mlab_cp_image_button_cancel", class: "pure-button pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
        // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_cp_image_button_ok", class: "pure-button  pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
+        content.append( $('<div />', { text:  _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"], id: "mlab_cp_image_button_ok", class: "pure-button pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
 
         var that = this;
         
@@ -173,7 +213,7 @@ Mlab_dt_api.prototype = {
         }
         this.properties_tooltip = $(owner_element).qtip({
             solo: false,
-            content: {text: content, title: "Last opp media" },
+            content: {text: content, title: _tr["mlab.dt.api.js.uploadMedia.qtip.title"] },
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
@@ -190,7 +230,8 @@ Mlab_dt_api.prototype = {
                                                           .on("change", function() {
                                 that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_img_select_image").val()); 
                                 that.setDirty();
-                                $('.mlab_current_component').qtip('hide');
+                                
+                                that.closeAllPropertyDialogs();
                             }); 
 
 
@@ -260,6 +301,24 @@ Mlab_dt_api.prototype = {
         return 'mlab_' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
+        });
+    },
+
+/**
+ * Goes through a newly loaded page and checks if any of the components on the page requires a library (CSS/JS) to be loaded
+ * calls getLibraries for the actual hard lifting, this is just a wrapper
+ * @returns {Number}
+ */
+    getAllLibraries : function () {
+        var processed_component = [];
+        var comp_id;
+        var that = this;
+        $( "#" + this.getEditorElement()).children("[data-mlab-type]").each( function() {
+            comp_id = $(this).data("mlab-type") ;
+            if (processed_component.indexOf(comp_id) < 0) {
+                that.getLibraries(comp_id);
+                processed_component.push(comp_id)
+            }
         });
     },
 
@@ -355,18 +414,18 @@ Mlab_dt_api.prototype = {
         }
     },
     
-    executeCallback : function (func, data) {
+    executeCallback : function (func, el, event, api) {
         if (typeof func == "undefined" || func == null) {
             return;
         }
-        func(data);
+        func(el, event, api);
     },
 
 /**
  * Displays the property input dialog for the specified component. 
  * This uses the jQuery plugin qtip2 for the actual dialog, and fills it with the specified content.
  * The component is reponsible for adding buttons such as Cancel and OK with callback to relevant functions in the component.
- * @param {jQuery DOM element} el, the component that the dialog should be attached to
+ * @param {jQuery DOM element} el, the component that the dialdisplayPropertyDialogog should be attached to
  * @param {string} title
  * @param {HTML string} content, valid HTML5
  * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
@@ -378,29 +437,71 @@ Mlab_dt_api.prototype = {
         this.indicateWait(true);
         this.closeAllPropertyDialogs();
         that = this;
+        var c = 'mlab_property_dlg qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
         if (wide == true) { 
-            var c = 'qtip-light mlab_dt_box_style mlab_dt_wide_qtip_box mlab_zindex_top_tooltip';
-        } else {
-            var c = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
+            c = c + ' mlab_dt_wide_qtip_box ';
         };
-            if (typeof event != "undefined") {
+            
+        if (typeof event != "undefined") {
             var owner_element = event.currentTarget;
         } else {
             var owner_element = el;
         }
+        
+        var curr_comp = $(".mlab_current_component");
+        //set the qTips posistion after where it is placed in the window 
+        var myPosQtip = 'leftMiddle';
+        //var eTop = curr_comp.top; //get the offset top of the element
+        var eTop = curr_comp.offset().top; //get the offset top of the element
+        //eTop = eTop - $(window).scrollTop();
+        if( eTop <= 145 ){
+            myPosQtip = 'leftTop';
+        }
+        
         that.properties_tooltip = $(owner_element).qtip({
             solo: false,
-            content:    {text: content, title: title },
-            position:   { my: 'leftTop', at: 'rightTop', adjust: { screen: true } },
+            content:    {text: content, title: title, button: true },
+            position:   { my: myPosQtip, at: 'rightMiddle', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c },
-            events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el) } },
-                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el) }; api.destroy();  that.properties_tooltip = false; },
-                            visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el) } } 
+            events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el, event, api) } },
+                            hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el, event, api) }; api.destroy(); that.properties_tooltip = false; },
+                            visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el, event, api) } } 
                         }
         });
         this.indicateWait(false);
+    },
+    
+    
+/**
+ * Displays the help text, loaded via AJAX from 
+ * @param {string} title
+ * @param {HTML string} content, valid HTML5
+ * @param {function object} func_render, callback function when the property dialog is created, can be used to manipulate dialog, add content, etc.
+ * @param {function object} func_visible, callback function when the property dialog is visible
+ * @param {function object} func_hide currently unused
+ * @returns {undefined}
+ */
+    displayHtmlPageInDialog : function (el, title, htmlpage, qTipClass) {
+        var styleClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
+        if (typeof qTipClass != "undefined") { 
+            var styleClasses = styleClasses + " " + qTipClass;
+        }
+         
+        $(el).qtip({
+            solo: false,
+            content:    {
+                        text: htmlpage,
+                        title: title,
+                        button: true
+                        },
+            position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+            show:       { ready: true, modal: { on: true, blur: false } },
+            hide:       false,
+            style:      { classes: styleClasses },
+            events:     { hide: function(event, api) { api.destroy(); }, render: function() { $(".mlab_help_icon").qtip().elements.tooltip.draggable(); } }
+        });
     },
 
 /**
@@ -419,12 +520,54 @@ Mlab_dt_api.prototype = {
     },
     
 /**
- * Returns the local (for instance nb_NO) as specified in the backend Symfony environment.
+ * Returns the locale (for instance nb_NO) as specified in the backend Symfony environment.
  * Loaded as a temporary variable on initial MLAB editor page load as it has to be passed from the backend.
  * @returns {Mlab_dt_api.parent.parent.locale}
  */
     getLocale: function() {
         return this.parent.parent.locale;
+    },
+
+/**
+ * Returns the string from a component as specified by the msg_key and msg_subkey 
+ * This is a string that is entered into the conf.yml, it can be a tooltip or generic messages
+ * If the key points to a string we just return the string, if it is an object, and it has an object named the same as the current locale,
+ * then it returns this locale string, otherwise looks for one called default. If neither found, return empty
+ * @param {type} comp_id
+ * @param {string array} keys
+ * @returns {string}
+ */
+    getLocaleComponentMessage: function(comp_id, keys) {
+        var loc = this.getLocale();
+        var obj = this.parent.components[comp_id].conf;
+        var found_at_all = false;
+        
+        for (i in keys) {
+            if (keys[i] in obj) {
+                found_at_all = true;
+                obj = obj[keys[i]];
+            } else {
+                found_at_all = false;
+                break;
+            }
+        }
+        
+//does key exist at all?
+        if (!found_at_all) {
+            return "";
+            
+//key was found, now ned to see if it is a string or array of strings, and if our locale is present in object
+        } else {
+            if (typeof obj != "object") {
+                return obj;
+            } else if (loc in obj) {
+                return obj[loc];
+            } else if ("default" in obj) {
+                return obj["default"];
+            } else {
+                return "";
+            }            
+        }
     },
 
     
@@ -594,29 +737,129 @@ Mlab_dt_api.prototype = {
         return true;
     },
     
-    
-/**
- * Creates the HTML5 code required for a link either to a external page or to a page in the current app.
- * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
- * TODO: Can be improved by listing existing pages instead of just requesting the page number.
- * @returns {Boolean|String}
+/***
+ * Utility function to get the A element parent of a selection area
+ * @returns {String|Boolean}
  */
-    getLink: function () {
-        var link = prompt("Please enter the URL or page number (for pages in this app) to link to");
-        var page_name = "";
-        if (link != null && link != "") {
-            var num = parseInt(link);
-            if (parseInt(link) > 0 && num < 1000) {
-                var page_name = "onclick='mlab.api.navigation.pageDisplay(-1, " + num + "); return false;'";
-            } else if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
-                var page_name = link.trim();
+    getSelTextParentLinkElement: function () {
+        var el, sel, node;
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            el = sel.getRangeAt(0).commonAncestorContainer;
+            node = el.nodeName.toLowerCase();
+            while (node != 'a' && node != "body") {
+                el = el.parentNode;
+                node = el.nodeName.toLowerCase();
             }
         }
-        if (page_name == "") {
-            alert("No URL/page specified, cannot add link");
+        
+        if (node == 'a') {
+            return el;
+        } else {
             return false;
         }
-        return page_name;
+    },
+
+/***
+ * Utility function to check that the current selection is inside the current mlab component
+ * @returns {String|Boolean}
+ */
+    checkSelTextValid: function () {
+        var el, sel, node;
+        sel = window.getSelection();
+        if (sel.toString() != "") {
+            el = sel.getRangeAt(0).commonAncestorContainer;
+            if ($(el).parents("div.mlab_current_component").length > 0) {
+                return true;
+            }
+        }
+        
+        return false;
+    },
+
+/**
+ * 
+ * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
+ * @param {type} link
+ * @returns {Boolean}
+ */
+    updateLink: function (link) {
+        var link_type = $("input:radio[name=mlab_dt_getlink_choice]:checked").val();
+        var link = "";
+        var page_name;
+
+        if (link_type == "page") {
+            link = $("#mlab_dt_link_app_pages").val();
+            var num = parseInt(link);
+            if (parseInt(link) >= 0 && num < 1000) {
+                page_name = " onclick='mlab.api.navigation.pageDisplay(-1, " + num + "); return false;' ";
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
+                return false;
+            }
+            
+        } else if (link_type == "url") {
+            link = $("#mlab_dt_link_app_url").val();
+            if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
+                page_name = link.trim();
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
+                return false;
+            }
+            
+        } else {
+            alert(_tr["mlab.dt.api.js.getLink.alert_choose_type"]);
+            return false;
+            
+        }
+        
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
+        return true;
+    },
+        
+/**
+ * Asks a user for a link either to a external page or to a page in the current app.
+ * The actual link is created in updateLink above
+ * @returns {Boolean|String}
+ */
+    setLink: function () {
+//we must first of all check that som text is chosen inside the current component
+        if (!this.checkSelTextValid()) {
+            alert(_tr["mlab.dt.api.js.getLink.no_selection"]);
+            return;
+        }
+
+//we need to create a temporary link straight away so that we can refer to it later, otherwise the selection wil disappear.
+        document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
+
+//we need to request the URL *OR* which page to link to
+        var opt = "<option value='-1'></option>";
+        for (page in mlab.dt.app.page_names) {
+            opt = opt + "<option value='" + page + "'>" + mlab.dt.app.page_names[page] + "</option>";
+        }
+        var that = this;
+        $('<div id="mlab_dt_link_dialog">' + 
+            '<label><input type="radio" name="mlab_dt_getlink_choice" value="page">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
+            '<select id="mlab_dt_link_app_pages">' + opt + '</select><br>' + 
+            '<label><input type="radio" name="mlab_dt_getlink_choice" value="url">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
+            '<input type="text" id="mlab_dt_link_app_url">' + _tr["mlab.dt.api.js.getLink.url"] + '<br>' + 
+          '</div>').dialog({
+                            title: _tr["mlab.dt.api.js.getLink.heading"],
+                            modal: true,
+                            buttons: [{ text: _tr["mlab.dt.api.js.getLink.ok"],     click: function () { if (that.updateLink()) { $(this).dialog('destroy').remove(); } } },
+                                      { text: _tr["mlab.dt.api.js.getLink.cancel"], click: function () { $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); $(this).dialog('destroy').remove(); } }]
+                        }).dialog( "moveToTop" );
+    },
+    
+    removeLink: function () {
+        //could use //document.execCommand("unlink", false, false);, but avoiding as does only remove links on selected area
+        var link = this.getSelTextParentLinkElement();
+        if (link) {
+            if ($(link).parents("#mlab_editable_area").length > 0) {
+                $(link).replaceWith( $(link).contents() );
+            }
+        }
     },
 
 /**
@@ -628,9 +871,9 @@ Mlab_dt_api.prototype = {
   * @returns {Boolean|Array of strings}
  */
     getCredentials: function (credentials_required, cb_function, params) {
-        var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: "Credentials" } );
+        var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
         for (credential in credentials_required) {   
-            dlg.append( $('<p />', { text: 'Her skal credentials forklares.....' , class: 'mlab_dt_text_info' } ) );
+            dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , class: 'mlab_dt_text_info' } ) );
             dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , for: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_short_label' } ) );
             dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , id: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_input' }) );      
             dlg.append( $('<br />') );   
@@ -664,6 +907,24 @@ Mlab_dt_api.prototype = {
 //object for display functionality, primarily for resizing 
     display: {
         
+        setEditableFocus: function (el) {
+            var sel = window.getSelection();
+            var range = document.createRange();
+            var html_el = el[0];
+            if (el.text() != "") {
+                range.setStart(html_el, 0);
+                range.setEnd(html_el, 0);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                html_el.innerHTML = '\u00a0';
+                range.selectNodeContents(html_el);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                document.execCommand('delete', false, null);
+            }
+        },
+        
 /**
  * Updates the aspect ratio setting for a component by updating the data-mlab-ratio setting
  * @param {type} el
@@ -672,9 +933,16 @@ Mlab_dt_api.prototype = {
  */
         setAspectRatio: function (el, aspect) {
             if (["4:3", "16:9", "1:1"].indexOf(aspect) > -1) {
-                $(el).attr("data-mlab-aspectratio", aspect);
+                var wrapper = $(el).children(":first");
+                if (typeof wrapper.data("mlab-sizer") == "undefined") {
+                    $(el).children().wrapAll("<div data-mlab-sizer='1' data-mlab-size='medium'></div>");
+                    wrapper = $(el).children(":first");
+                }
+
+                wrapper.attr("data-mlab-aspectratio", aspect);
+                this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
-                this.updateDisplay(el);
+                this.updateDisplay(wrapper);
             }
         },
         
@@ -687,19 +955,27 @@ Mlab_dt_api.prototype = {
  */
         setSize: function (el, size) {
             if (["small", "medium", "large", "fullscreen"].indexOf(size) > -1) {
-                $(el).attr("data-mlab-size", size);
+                var wrapper = $(el).children(":first");
+                if (typeof wrapper.data("mlab-sizer") == "undefined") {
+                    $(el).children().wrapAll("<div data-mlab-sizer='1' data-mlab-aspectratio='4:3'></div>");
+                    wrapper = $(el).children(":first");
+                }
+
+                $(wrapper).attr("data-mlab-size", size);
+                this.parent.closeAllPropertyDialogs();
                 this.parent.setDirty();
-                this.updateDisplay(el);
+                this.updateDisplay(wrapper);
             }
         },
         
 /**
  * Updates either a single component, or all components on a page, using data attributes to determine the display
+ * The DIV that is updated is an automatically inserted DIV with data-mlab-sizer='1'
  * @param {type} el: Optional, the element to display. If not specified, then update all components
  * @returns {undefined}
  */
-        updateDisplay: function (el) {
-            var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
+        updateDisplay: function (el) {                      //was '[data-mlab-size][data-mlab-aspectratio]'
+            var components = (typeof el == "undefined") ? $('[data-mlab-sizer]') : $(el);
             var that = this;
             
             components.each( function() {
@@ -707,7 +983,7 @@ Mlab_dt_api.prototype = {
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
-                var comp_id = $(this).data("mlab-type");
+                var comp_id = $(this).parent().data("mlab-type");
                 
                 var w = (device_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
@@ -726,6 +1002,9 @@ Mlab_dt_api.prototype = {
  * @returns String rgb
 */
         invertColor: function(rgbString) {
+            if (typeof rgbString == "undefined") {
+                return "rgb(255, 255, 255);";
+            }
             var parts = rgbString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/),
                 i;
 
@@ -802,42 +1081,42 @@ Mlab_dt_api.prototype = {
         },
         
 /**
- * Updates either a single component, or all components on a page, using data attributes to determine the display
- * @param {type} sub_el: Optional, the element to display. If not specified, then update all components
+ * Highlights controls that have child contols inside them
+ * @param {type} sub_el: The element to display. If not specified, then update all components
  * @param {type} editable: Optional, the element to display. If not specified, then update all components
  */   
         componentHighlightSelectedChildren : function (sub_el, editable) {
-            $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
-            $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
-                  
             sub_el = $( sub_el );
+            editable = $( editable );
+            if (!$(".mlab_current_component").find(".mlab_current_component_child").is(sub_el)) {
+                $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+
 //gets the childs background color
-            var bgColorC = this.getBackground(sub_el);
+                var bgColorC = this.getBackground(sub_el);
 //inverts the background color
-            var bgColorCInvert = this.invertColor(bgColorC);
+                var bgColorCInvert = this.invertColor(bgColorC);
 //set the invert color of the background as the outline-color for the current selected component
-            sub_el.css("outline-color", bgColorCInvert);
+                sub_el.css("outline-color", bgColorCInvert);
 //set the class to style the selected highlighted child             
-            sub_el.addClass("mlab_current_component_child");                
-                
-            if (typeof editable != "undefined") {   
-                editable = $( editable );
-//gets the grandchilds background color
-                var bgColorGC = this.getBackground(editable);
-//inverts the background color
-                var bgColorGCInvert = this.invertColor(bgColorGC);
-//set the invert color of the background as the outline-color for the current selected component
-                editable.css("outline-color", bgColorGCInvert);
-              
-                editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
-                
-                editable.focus();
-                var range = document.createRange();
-                var sel = window.getSelection();
-                range.selectNodeContents(editable[0]);
-                sel.removeAllRanges();
-                sel.addRange(range);
+                sub_el.addClass("mlab_current_component_child");   
             }
+                
+//if they have not re-clicked the current ditable element then we deselect old one and select new one
+            if (!$(".mlab_current_component").find(".mlab_current_component_editable").is(editable)) {
+                $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+                if (typeof editable != "undefined" && editable.length > 0 && $(editable).prop("tagName").toLowerCase() != "input") {   
+//gets the grandchilds background color
+                    var bgColorGC = this.getBackground(editable);
+//inverts the background color
+                    var bgColorGCInvert = this.invertColor(bgColorGC);
+//set the invert color of the background as the outline-color for the current selected component
+                    editable.css("outline-color", bgColorGCInvert);
+
+                    editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
+
+                }                
+            }
+
         },      
     },
 

@@ -4,24 +4,49 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: generated
 name: index
-extended_name: index
-tooltip: Klikk på denne knappen for å legge til en klikkbar Innholdsliste over Kapitteloverskriftene. 
-extended_tooltip: Klikk på denne knappen for å legge til en klikkbar Innholdsliste over Kapitteloverskriftene.</br></br> Dette vil være hyperlinker som du tidligere har lagt inn med BILDE
+extended_name: { nb_NO: Innholdsliste, en_GB: App page index, default: App page index }
+tooltip: { nb_NO: Innholdsliste over sidene i appen, en_GB: Index of the pages in this app, default: Index of the pages in this app }
+footer_tip: { nb_NO: Innholdslisten gir en klikkbar liste med sidene og kapitteloverskriftene som er lagt til i appen, en_GB: The index presents a clickable list of all the pages in this app for the user to navigate, default: The index presents a clickable list of all the pages in this app for the user to navigate }
 preprocessing: generate_index
 compatible: []
 process_keypress: true
+required_libs: {"designtime": ["index.css"], "runtime": ["index.css"]}
+
 html: 
     designtime: |
-        <h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>Your index will be displayed here</h1>
+        <h1 class='mc_text mc_display mc_heading mc_large mc_index_heading'>%%TITLE%%</h1>
         <ul class='mc_container mc_index mc_list'>
-            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>Page x</li>
-            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>Page y</li>
-            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>Page z</li>
+            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE1%%</li>
+            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE2%%</li>
+            <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>%%PAGE3%%</li>
         </ul>
     runtime: |
         %%MLAB_CT_INDEX_LIST%%
 custom:
-    summary_style: Display chapter headlines only
-    detailed_style: Display chapter and page headlines
-    folding_style: Display chapter and page headlines in a outline style
+    summary_style: 
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAB6UlEQVRIS63VDVHDQBAFYFAAEuoAJAQHOKA4wAFFATggOAAFFAWAg+IAFMB+mVsI6TVpGXZmJ/f73tt3l2R/7yeaaH72+prHkS+DsX73Y2J+bz8WnEYuIt9HgEwdRh5V1rwVjKoQBMvI+8ibCYJN08QBh7EWCNhyUohqa5qyZjj3VAbaeK4iEU0SXJRygfL/eaSqFLUs4rYiqOHxfux8JgmUNx+xaKSIbmqSwALleSI6i7yLdHDXPXR9lRAk3J4ET4w1MXmL2piRfGdJgunPeuP6Gc7LuiRZrKHHQBJsVFDbNBibJHD/lU5BE8miqzLGIhVkRbD1pTUJvlGgCrI0T/bk5wEpwgQEnhauok0YYl8Ca5FkJEZnUZ+gt+bPzTZ2cqF7T/6TQPWPka+lojkHEGBUclbyF+ksuY30+YAl3LL3XW8Rv5V/XlQCAk65QweuEmK789yFALiN95FNpD7wtrSNOXRrjHf9bQlscGuWJbUPIu1nBbWIEAjgbtbWL1oCIJj1lM6LWsDOIH8+HXifYFGU5XjtyRJqkSAEmhY5g4dIhL8iLdqGwEb+ZzUIkVxGOvS2pmpXglTOAucgqUZcjXwP/My/fSsru2tW2sqnWDRF7SqeLMuD3UiQE7NoyFosB4OIEQxFre39AsftlTkOvNpoAAAAAElFTkSuQmCC
+        tooltip: { nb_NO: Vis kun kapitteloverskrifter, en_GB: Display chapter headlines only, default: Display chapter headlines only }
+        order: 1
+    detailed_style: 
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAyklEQVRIS2NkYGD4D8Q0A4yjFhAKW1gQXQQq/EBIMYnyAkD1+jALHIGcAyQaQEi5A1DBfnQL5IGCkoR0EpB/DpR/CMRYLZgElMil0ILJQP15A2aBFNBmEQp98Aao/xkuH4Ai24hCC86BInfAgqgLaHMmhT6YDtRfhssHFJqNoh1rMk0CKvGm0JatQP3zBiwOMoA2B1Dogw1A/TMGLA5agDanUOiDOUD9NQMWBx5Am80p9MFJoP4ddI+DAqCNFyh0Obp2A6DABJq3KgCFp1gBkgvttgAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Vis kapitteloverskrifter og sidenavn, en_GB: Display chapter and page names, default: Display chapter and page names }
+        order: 2
+    folding_style: 
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA70lEQVRIS2NkoDFghJqfAKT9gViASvZ9AJqzAYgXgixoAOJ6KhmMbkwjyAKQbfw0suADyIIHQCxPIwsegiwoAOJ+GllQCIvkAKAFIKxAJYtAoQKK5A0wC6hkLqYxdLMAlA/syQiiC0A9E6EJBWsoUCMfgJK5IS5LqJVMG6EZFsMX1MpoeC1oAFpLSVHxEajfAF8QgbwFimQHMiN5AqFIplkeABlMt3wAKiZA9YECFu8cAIotxBcM+IKA2MIOb1onZMEDoAJiimucSZGQBcRWOGRbQEw+wJvWCfkAlg9AEY2t0gcFISitgwo2kgHNkykA5/0s2EmcrngAAAAASUVORK5CYII=
+        tooltip: { nb_NO: Vis kapitteloverskrifter og sidenavn som en outline, en_GB: Display chapter and page headlines in an outline style, default: Display chapter and page headlines in an outline style }
+        order: 3
+    decrease_size:
+        tooltip: { nb_NO: Reduser størrelsen på innholdslisten, en_GB: Decrease the size of the index, default: Decrease the size of the index }
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
+        order: 4
+    increase_size:
+        tooltip: { nb_NO: Øk størrelsen på overskriften, en_GB: Increase the size of the headline, default: Increase the size of the headline }
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASRJREFUeNrUltENgyAQhu1D0z46gt3AERzBERiBEdjAERjBETqC3YAR6AZXTI6EEE7wwIde8r8g+Am5/8eu+5OSTkNu0v3x1LtaAK2TysCkE6BkDUw4AUJ7AiYCmNfMBRoEAsJTQJsAWg5sCmCA8EvrHQF3zVfBhgQM8CMuKU0AocQirXbnpVsDVXB8FLRvBevRcyZhi1CqFVBEL1QE0LYCmihV/I5TUFELm4mmoDp2a2X04UTXTlyYj7GVeL4SwLXW6FNhrlYFQc7owA2CGzG+4K3+cfpmPDomxvc1r8xa0uglt39VEEhcIE/GHnDvSnP0+0CcCHCDQDJbW3N2GUaWYiZSSpKywRYF8RkvyQOgjTtZZyYvBGTE6NsKvVmds6z6CTAAwDrVj6+nmH8AAAAASUVORK5CYII=
+        order: 5
+        
+    
+messages:
+    ph_title: { nb_NO: Innholdslisten vil bli vist her i den ferdige appen, en_GB: Your index will be displayed here, default: Your index will be displayed here }
+    ph_chapter: { nb_NO: Kapittel, en_GB: Chapter, default: Chapter }
+    ph_page: { nb_NO: Side, en_GB: Page, default: Page }
     

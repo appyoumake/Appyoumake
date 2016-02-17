@@ -80,7 +80,7 @@ class ComponentController extends Controller
 	        	return new JsonResponse(array('db_table' => 'component',
 	        			'db_id' => 0,
 	        			'result' => 'FAILURE',
-	        			'message' => 'Unable to upload component'));
+	        			'message' => $this->get('translator')->trans('compController.msg.unable.upload.comp')));
 	        }
 	             
         }
@@ -88,7 +88,7 @@ class ComponentController extends Controller
         return new JsonResponse(array('db_table' => 'component',
         			'db_id' => 0,
         			'result' => 'FAILURE',
-        			'message' => 'Unable to upload component'));
+        			'message' => $this->get('translator')->trans('compController.msg.unable.upload.comp')));
     }
 
     /**
@@ -136,7 +136,7 @@ class ComponentController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Component entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('compController.createNotFoundException.comp'));
         }
 
         
@@ -157,7 +157,7 @@ class ComponentController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Component entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('compController.createNotFoundException.comp'));
         }
 
         $editForm = $this->createEditForm($entity);
@@ -199,7 +199,7 @@ class ComponentController extends Controller
         $entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Component entity.');
+            throw $this->createNotFoundException($this->get('translator')->trans('compController.createNotFoundException.comp'));
         }
 
         
@@ -229,7 +229,7 @@ class ComponentController extends Controller
         		return new JsonResponse(array('db_table' => 'component',
         				'db_id' => $id,
         				'result' => 'FAILURE',
-        				'message' => 'Unable to upload component'));
+        				'message' => $this->get('translator')->trans('compController.msg.unable.upload.comp')));
         		
         	}
         	
@@ -238,7 +238,7 @@ class ComponentController extends Controller
         return new JsonResponse(array('db_table' => 'component',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => 'Unable to upload component'));
+        		'message' => $this->get('translator')->trans('compController.msg.unable.upload.comp')));
         	 
     }
     /**
@@ -284,7 +284,7 @@ class ComponentController extends Controller
             return new JsonResponse(array('db_table' => 'component',
                     'db_id' => 0,
                     'result' => 'FAILURE',
-                    'message' => 'Unable to locate component record'));   
+                    'message' => $this->get('translator')->trans('compController.msg.toggleStateAction')));   
         }
 
         $entity->setEnabled(!$entity->getEnabled());

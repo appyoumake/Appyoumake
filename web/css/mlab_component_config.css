@@ -26,13 +26,13 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     border: solid orange 2px; 
     box-shadow: 10px 10px 5px #888888;
     padding-bottom: 5px;
+    margin-bottom: 60px;
+    z-index: 2001;
 }
 
 #mlab_editor .qtip.mlab_dt_wide_qtip_box{
     max-width: 500px;
 }
-
-
 
 
 /* ===  Information  === */
@@ -55,15 +55,21 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 #mlab_editor .qtip-titlebar,
 #mlab_editor .ui-dialog-titlebar {
     font-size: 13px;
-    line-height: 16px;
+    line-height: 20px;
     font-weight: bold;
     margin: 0;
     padding-left: 0.5em;
+    padding-right: 2.5em;
     background-color: rgba(255,165,0,0.2);
 }
 
 #mlab_editor .ui-dialog-titlebar {
     padding: 5px;
+}
+
+#mlab_editor .qtip-titlebar .qtip-close {
+    top: 1px;
+    background-color: white;
 }
 
 #mlab_editor .mlab_dt_text_headline {
@@ -150,6 +156,10 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 
 #mlab_editor .mlab_dt_small_new_line {
     padding: 7px;
+}
+
+#mlab_editor .mlab_dt_tiny_new_line {
+    padding: 1px;
 }
 
 #mlab_editor .mlab_dt_new_row {
@@ -258,7 +268,7 @@ color: black;
 #mlab_editor #mlab_component_aspect_list ul, 
 #mlab_editor #mlab_storage_plugin_list ul {
     background-color: white;
-    border: 1px orange solid;
+    border: 0px orange solid;
     padding: 8px;
     padding-left:25px;
     margin: 0;    
@@ -284,6 +294,7 @@ color: black;
 
 #mlab_editor #mlab_cp_img_select_image {
     min-width: 195px;
+    max-width: 95%;
 }
 
 

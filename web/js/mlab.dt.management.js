@@ -22,7 +22,7 @@ Mlab_dt_management.prototype = {
         url = url.replace("_PAGE_NUM_", 'index');
         url = url.replace("_UID_", this.parent.uid);
         url = url.replace("_OPEN_MODE_", "true");
-        this.parent.utils.update_status("callback", 'Opening app', true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.app"], true);
         var that = this;
         var local_app_id = app_id;
         
@@ -66,7 +66,7 @@ Mlab_dt_management.prototype = {
 
 //if they are opening the app with a blank page and no components on the index page, let's assume they are opening a new app, and we'll ask for the title of the page
                 if (data.only_index && $("#" + that.parent.config["app"]["content_id"]).children().length == 0) {
-                    var title = prompt("Please enter the title for the front page of this app", that.parent.app.curr_pagetitle);
+                    var title = prompt(_tr["mlab.dt.management.js.prompt.title.front.page"], that.parent.app.curr_pagetitle);
                     if (title != null) {
                         that.parent.app.curr_pagetitle = title;
                         $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle); 
@@ -78,7 +78,6 @@ Mlab_dt_management.prototype = {
                 if (local_page_num != "0" && local_page_num != "index" && !data.only_index) {
                     that.page_open_process(data.app_id, local_page_num);
                 } else {
-                    
                     if (data.lock_status == "locked") {
                         that.parent.app.locked = true;
                         $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
@@ -90,7 +89,7 @@ Mlab_dt_management.prototype = {
                     }
 
                     
-                    that.parent.utils.update_status("temporary", "Ready", false);
+                    that.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.ready"], false);
                     $("#mlab_overlay").slideUp();
                     that.parent.app.locked = (data.lock_status == "locked");
                     that.parent.utils.timer_start();
@@ -136,7 +135,7 @@ Mlab_dt_management.prototype = {
     },
 
     app_download_process  : function () {
-        this.parent.utils.update_status("callback", 'Retrieving app', true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.retrieving.app"], true);
         var url = this.parent.urls.app_download.replace("_ID_", this.parent.app.id);
         var that = this;
         $.get( url, function( data ) {
@@ -145,12 +144,12 @@ Mlab_dt_management.prototype = {
                 full_url = window.location.origin + data.url;
                 $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "table"}).show()
                         .append("<br>")
-                        .append("<a href='" + full_url + "'>Download: " + full_url +"</a>")
+                        .append("<a href='" + full_url + "'>" + _tr["mlab.dt.management.js.app_download_process.1"] + ": " + full_url +"</a>")
                         .append("<br>")
-                        .append("<a href='mailto:" + that.parent.user_email + "?subject=Link&body=Download test app here: " + encodeURI(full_url) + "'>Mail link</a>");
+                        .append("<a href='mailto:" + that.parent.user_email + "?subject=Link&body=" + _tr["mlab.dt.management.js.app_download_process.2"] + ": " + encodeURI(full_url) + "'>" + _tr["mlab.dt.management.js.app_download_process.3"] + "</a>");
 
             } else {
-                $("#mlab_download_qr2").empty().append("<p>Error: " + data.msg + "</p>").show();
+                $("#mlab_download_qr2").empty().append("<p>" + _tr["mlab.dt.management.js.app_download_process.4"] + ": " + data.msg + "</p>").show();
 
             }
      /*       $("#mlab_download_qr_field").qtip({
@@ -166,12 +165,12 @@ Mlab_dt_management.prototype = {
     },
 
     app_submit_to_market  : function () {
-        alert('Not implemented yet');
+        alert(_tr["mlab.dt.management.js.app_submit_to_market"]);
     },
 
 //remove locks, just a backup if something goes wrong
     app_remove_locks : function () {
-        this.parent.utils.update_status("temporary", "Unlocking all pages...", true);
+        this.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.unlocking.pages"], true);
         $.get( this.parent.urls.app_unlock );
         $("#mlab_editor_disabled").remove();
         this.parent.app.locked = false;
@@ -193,7 +192,7 @@ Mlab_dt_management.prototype = {
         
         for (i in this.parent.app.page_names) {
             if (i > 0) {
-                span = "<span class='mlab_copy_file' title='Kopier side " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
+                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
             }
 
             if (i == 0){ //index
@@ -243,7 +242,7 @@ Mlab_dt_management.prototype = {
 
 //check if it has editable area, if not we cannot continue
         if (doc.getElementById(this.parent.config["app"]["content_id"]) == null) {
-            alert("This app does not have an editable area called " + this.parent.config["app"]["content_id"] + ", unable to open app. Check with the system administrator for further information.")
+            alert(_tr["mlab.dt.management.js.index_page_process.alert.1"] + " " + this.parent.config["app"]["content_id"] + ", " + _tr["mlab.dt.management.js.index_page_process.alert.2"]);
             return;
         }
 
@@ -284,10 +283,12 @@ Mlab_dt_management.prototype = {
 //now we need to make the internal code editable, but only if they actually want to edit this page
         if (is_final_destination) {
             $("#" + this.parent.config["app"]["content_id"]).html(divs);
+            this.parent.api.getAllLibraries();
             this.parent.design.prepare_editable_area();
         }
 
         this.parent.app.curr_indexpage_html = doc;
+        
 //Page name is picked up from title tag in head
         this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
         this.parent.app.curr_page_num = page_num;
@@ -296,8 +297,14 @@ Mlab_dt_management.prototype = {
         this.app_update_gui_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
-        $.mobile.initializePage();
-        mlab.dt.api.display.updateDisplay()
+        try {
+            $.mobile.initializePage();
+        }
+        catch(err) {
+            console.log(err.message);
+        }
+        
+        mlab.dt.api.display.updateDisplay();
 
 //JS to fix the toolbars in a jQuery mobile page
         var border_width = (parseInt($("#mlab_editor_chrome").css("margin-bottom")) * 2) + parseInt($("#mlab_editor_chrome").css("border-bottom-width"));
@@ -348,9 +355,15 @@ Mlab_dt_management.prototype = {
 
 //add body content
         $("#" + this.parent.config["app"]["content_id"]).html(body.innerHTML);
-
+        this.parent.api.getAllLibraries();
         this.parent.design.prepare_editable_area();
-        $.mobile.initializePage();
+        
+        try {
+            $.mobile.initializePage();
+        }
+        catch(err) {
+            console.log(err.message);
+        }
         mlab.dt.api.display.updateDisplay()
     },
 
@@ -389,11 +402,23 @@ Mlab_dt_management.prototype = {
 
     page_open_process : function (app_id, page_num) {
 
-        this.parent.utils.update_status("callback", 'Opening page', true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.page"], true);
 
         var url = this.parent.urls.page_get.replace("_ID_", app_id);
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
+        
+//here we hide the tools for components until they select a control
+        if (typeof this.parent.qtip_tools != "undefined") {
+            $(this.parent.qtip_tools).qtip('hide');
+            this.parent.qtip_tools = undefined
+            if (typeof this.parent.api.properties_tooltip != "undefined") {
+                $(this.parent.api.properties_tooltip).qtip('hide');
+                this.parent.api.properties_tooltip = undefined;
+            }
+        }
+
+        
         var that = this;
 
         $.get( url, function( data ) {
@@ -403,6 +428,7 @@ Mlab_dt_management.prototype = {
                 $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                     that.index_page_process ( data.html, "index", true );
+                    $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
                     that.parent.utils.timer_start();
                     if ( $("#mlab_overlay").is(':visible') ) {
@@ -414,8 +440,7 @@ Mlab_dt_management.prototype = {
                     var path = window.location.pathname.split("/");
                     path[path.length - 3] = data.app_id;
                     path[path.length - 2] = data.page_num_real;
-                    // TODO
-                    //history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
+                    history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
                 }
 
                 if (data.lock_status == "locked") {
@@ -432,10 +457,8 @@ Mlab_dt_management.prototype = {
                     $("#mlab_overlay").slideUp();
                 }
                 
-//here we hide the tools for components until they select a control
-                if ($("#" + mlab.dt.config["app"]["content_id"] + " .mlab_current_component").length == 0) {
-                    $(that.parent.qtip_tools).qtip('hide');
-                }
+//turn off clikability of links
+                $("#mlab_editable_area").find("a").click(function(e) { e.preventDefault(); });
 
                 that.parent.utils.timer_start();
 
@@ -453,7 +476,7 @@ Mlab_dt_management.prototype = {
  */
     page_update_title : function () {
         if (this.parent.app.locked) {
-            alert("Page is locked, you cannot update the title");
+            alert(_tr["mlab.dt.management.js.page_update_title.alert.page.locked"]);
             return;
         }
 
@@ -518,7 +541,7 @@ Mlab_dt_management.prototype = {
         }
 
 //prepare various variables
-        this.parent.utils.update_status("callback", "Storing page", true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
         var curr_el = $("#" + this.parent.config["app"]["content_id"] + " .mlab_current_component");
         curr_el.removeClass("mlab_current_component");
         var app_id = this.parent.app.id;
@@ -568,7 +591,7 @@ Mlab_dt_management.prototype = {
             that.parent.counter_saving_page--;
 
             if (data.result == "success") {
-                that.parent.utils.update_status("temporary", "Saved page", false);
+                that.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.saved.page"], false);
                 that.parent.flag_dirty = false;
 
 //if a function was specified we now execute it, inisde this function the this.parent.utils.timer_save timer will be restarted
@@ -607,7 +630,7 @@ Mlab_dt_management.prototype = {
                 };
 
             } else { //failed
-                that.parent.utils.update_status("temporary", "Unable to save page: " + data.msg, false);
+                that.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.unable.save.page"] + ": " + data.msg, false);
                 if (typeof fnc != 'undefined') {
 //if this save attempt was a part of another operation we will ask if they want to try again, cancel or continue without saving
 //(the change may have been minimal and they want to start a new app let's say)
@@ -666,7 +689,7 @@ Mlab_dt_management.prototype = {
 * Creates a new file on the server and opens it
 */
     page_new : function () {
-        var title = prompt("Please enter the title of the new page");
+        var title = prompt(_tr["mlab.dt.management.js.page_new.prompt.title.new.page"]);
         if (title != null) {
             that = this;
             this.page_save( function() { that.page_new_process( title ); } );
@@ -675,9 +698,20 @@ Mlab_dt_management.prototype = {
 
     page_new_process : function (title) {
         $("body").css("cursor", "wait");
-        this.parent.utils.update_status("callback", "Storing page", true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
         var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
         url = url.replace("_UID_", this.parent.uid);
+
+//here we hide the tools for components until they select a control
+        if (typeof this.parent.qtip_tools != "undefined") {
+            $(this.parent.qtip_tools).qtip('hide');
+            this.parent.qtip_tools = undefined
+            if (typeof this.parent.api.properties_tooltip != "undefined") {
+                $(this.parent.api.properties_tooltip).qtip('hide');
+                this.parent.api.properties_tooltip = undefined;
+            }
+        }
+
         var that = this;
         $.post( url, {}, function( data ) {
             if (data.result == "success") {
@@ -707,7 +741,7 @@ Mlab_dt_management.prototype = {
  */
     page_copy : function (page_num) {
         if (page_num == "0" || page_num == "index") {
-            alert("You can not copy the index page");
+            alert(_tr["mlab.dt.management.js.page_copy.alert.not.copy.index.page"]);
             return;
         }
         that = this;
@@ -719,7 +753,7 @@ Mlab_dt_management.prototype = {
         var url = this.parent.urls.page_copy.replace("_ID_", this.parent.app.id);
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
-        this.parent.utils.update_status("callback", "Copying page", true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.copying.page"], true);
         var that = this;
 
         $.get( url, function( data ) {
@@ -738,16 +772,16 @@ Mlab_dt_management.prototype = {
 
     page_delete  : function () {
         if (this.parent.app.curr_page_num == "0" || this.parent.app.curr_page_num == "index") {
-            alert("You can not delete the index page");
+            alert(_tr["mlab.dt.management.js.page_copy.alert.not.delete.index.page"]);
             return;
         }
 
-        if (!confirm("Are you sure you want to delete this page? This cannot be undone!")) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
             return;
         }
 
         this.parent.utils.timer_stop();
-        this.parent.utils.update_status("callback", "Deleting page", true);
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.deleting.page"], true);
 
         var url = this.parent.urls.page_delete.replace("_ID_", this.parent.app.id);
         url = url.replace("_PAGE_NUM_", this.parent.app.curr_page_num);
@@ -795,7 +829,7 @@ Mlab_dt_management.prototype = {
         var h = $(window).height() * 0.75;
         var res = window.open(url,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' + w + ',height=' + h + ',left=' + w);
         if (res == undefined) {
-            alert("Cannot open new window, change your settings to allow popup windows");
+            alert(_tr["mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window"]);
         }
         
     },
@@ -830,11 +864,11 @@ Mlab_dt_management.prototype = {
 
         get_app_status : function () {
             var url = mlab.dt.urls.cmp_get_app_status.replace("_WINDOW_UID_", mlab.dt.uid);
-            var i = prompt("app database ID (leave blank is OK)");
+            var i = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.db.id"]);
             url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
-            var v = prompt("version (leave blank is OK)");
+            var v = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.version"]);
             url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
-            var p = prompt("platform (ios or android) (leave blank is OK)");
+            var p = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.platform"]);
             url = url.replace("/_PLATFORM_", ((p != null && p != "") ? "/" + p : ""));
 
             $.getJSON(url, function( json ) {
@@ -842,7 +876,7 @@ Mlab_dt_management.prototype = {
                     console.log("Status returned: ");
                     console.log(json.app_status);
                 } else {
-                    alert("Unable to get app status");
+                    alert(_tr["mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status"]);
                 }
             });
             
@@ -853,7 +887,7 @@ Mlab_dt_management.prototype = {
             url = url.replace("_ID_", mlab.dt.app.id);
             url = url.replace("_VERSION_", mlab.dt.app.active_version);
             url = url.replace("_PLATFORM_", platform);
-            var caption_finished = "Creating app...";
+            var caption_finished = _tr["mlab.dt.management.js.compiler.get_app.status.creating.app"];
             $("#mlab_statusbar_compiler").text(caption_finished);
             $("#mlab_download_" + platform + "_icon").find('img').show();
             $("#mlab_download_" + platform + "_icon").addClass("mlab_download_" + platform + "_icon_grey");
@@ -863,7 +897,7 @@ Mlab_dt_management.prototype = {
                 if (json.result != "success") {
                     $("#mlab_statusbar_compiler").text("");
                     $("#mlab_progressbar").hide();
-                    mlab.dt.utils.update_status("temporary", "Unable to contact server", false);
+                    mlab.dt.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.unable.contact.server"], false);
                     $("#mlab_download_" + platform + "_icon").find('img').hide();
                     $("#mlab_download_" + platform + "_icon").removeClass("mlab_download_" + platform + "_icon_grey");
                     

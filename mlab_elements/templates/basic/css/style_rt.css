@@ -203,6 +203,10 @@
     font-size: 130%;
 }
 
+#mlab_page_body .mlab_hide {
+    visibility:hidden !important;
+}
+
 /* ==========================================================================
   To hide an element from the app builder - add the class "mlab_hide_in_app_builder"
   to the element - the App Builder will have a stylesheet with the syntax:
