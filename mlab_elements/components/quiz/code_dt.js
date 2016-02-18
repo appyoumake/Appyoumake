@@ -40,6 +40,8 @@ this.questionExplanatoryTemplate = '<p class="mc_text mc_display mc_medium" data
 this.questionQuestionTemplate = '<p class="mc_text mc_display mc_medium" data-mlab-cp-quiz-subrole="question">{content}</p>';
 this.alternativesTemplate = '<div data-mlab-cp-quiz-subrole="alternatives"></div>';
 this.tabIdPrefix = 'mlab_dt_quiz_preview_tabs_';
+this.STR_RADIO_ONLY_ONE_CORRECT = "When using radio buttons to select an answer you can only select one correct answer.";
+this.STR_SELECT_ONLY_ONE_CORRECT = "When using a drop down box to select an answer you can only select one correct answer.";
 
 //---------- STANDARD COMPONENT FUNCTIONS 
 
@@ -132,7 +134,7 @@ this.onSave = function (el) {
                 var value = $(this).text();
 //need to carry across correct flag
                 if (value != "") {
-                    if ($(this).data("mlab-cp-quiz-correct-response" == 'true')) {
+                    if ($(this).attr("mlab-cp-quiz-correct-response") == 'true') {
                         select_html.append("<option class='mc_text mc_entry mc_input mc_correct' value='" + value + "' data-mlab-cp-quiz-correct-response='true' >" + value + "</option>");
                     } else {
                         select_html.append("<option class='mc_text mc_entry mc_input' value='" + value + "' >" + value + "</option>");
@@ -185,7 +187,7 @@ this.handleUserInput = function(input, e) {
     var value = input.val();
     var page = this.getCurrentPage();
     var question = this.getCurrentQuestion(page);
-    var questionType = question.data("mlab-cp-quiz-questiontype");
+    var questionType = question.attr("data-mlab-cp-quiz-questiontype");
     
     switch (editStage) {
         case "pageTitle":
@@ -237,6 +239,9 @@ this.handleUserInput = function(input, e) {
             }
             break;
 
+//here we set the question type. If we are in edit mode, and the question type is changed,
+//then we call this.convertQuestion to modify the HTML to match the new type they want
+
         case "questionType":
             value = parseInt(value);
             var minValue = 1;
@@ -246,6 +251,9 @@ this.handleUserInput = function(input, e) {
                 alert("Valid selections from: " + minValue + " - " + maxValue);
             } else {
                 input.addClass("mc_blurred");
+                if (questionType != "" && questionType != this.questionTypes[value - 1].type) {
+                    this.convertQuestion(question, questionType, this.questionTypes[value - 1].type);
+                }
                 question.attr("data-mlab-cp-quiz-questiontype", this.questionTypes[value - 1].type);
                 this.setMandatory(question, value);
                 $("[data-mlab-dt-quiz-input='mandatory']").focus();
@@ -287,17 +295,20 @@ this.handleUserInput = function(input, e) {
             break;
             
         case "correctResponse":
+            var cont = true;
             input.val('');
             if (questionType == "text") { //we set the textbox here, different from other controls
                 this.addQuestionAlternative(question, value, questionType);
             } else {
-                this.markAlternativesAsCorrect(question, value, questionType);
+                cont = this.markAlternativesAsCorrect(question, value, questionType);
                 var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
                 $("#"  + correct_response_id).html("");
             }
-            this.makeQuestionEditable(question);
-            this.setPropertiesDialogTab();
-            $("[data-mlab-dt-quiz-input='nextAction']").focus();
+            if (cont) {
+                this.makeQuestionEditable(question);
+                this.setPropertiesDialogTab();
+                $("[data-mlab-dt-quiz-input='nextAction']").focus();
+            } 
             break;
             
         case "nextAction":
@@ -647,8 +658,12 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
     var correctResponses = value.trim().split(/[\s,]+/);
 
     switch (questionType) {
-        case "checkbox": 
         case "radio": 
+            if (correctResponses.length > 1) {
+                alert(this.STR_RADIO_ONLY_ONE_CORRECT);
+                return false;
+            }
+        case "checkbox": 
             var i = 1;
             $(question).find('input[type=' + questionType + ']').each(function() {
                     if (correctResponses.indexOf(i.toString()) >= 0) {
@@ -661,6 +676,10 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
             break;
             
         case "select": 
+            if (correctResponses.length > 1) {
+                alert(this.STR_SELECT_ONLY_ONE_CORRECT);
+                return false;
+            }
         case "multiselect": 
             var i = 1;
             $(question).find('fieldset li').each(function() {
@@ -677,6 +696,7 @@ this.markAlternativesAsCorrect = function(question, value, questionType) {
             break;
     }
     
+    return true;
 };
 
 this.setMandatory = function(question, value) {
@@ -938,70 +958,101 @@ this.custom_set_options = function(el, event) {
  * @returns {undefined}
  */
 this.convertQuestion = function(question, from, to) {
+    var html = "";
+    var value;
+    if (!confirm('You have specified a different question type than what the question currently is. Do you want to change from ' + from + ' to ' + to + '?')) {
+        return true;
+    }
     switch(from + "_to_" + to) {
+        
+//switching between radio/checbox is simple, just change type of input
         case "radio_to_checkbox" :
-            question.find("input").attr("type", "checkbox")
+        case "checkbox_to_radio" :
+            question.find("input").attr("type", to);
             break;
              
         case "radio_to_select" :
-            break;
-             
-        case "radio_to_multiselect" :
-            break;
-             
-        case "radio_to_text" :
-            break;
-             
-        case "checkbox_to_radio" :
-            question.find("input").attr("type", "radio")
-            break;
-             
         case "checkbox_to_select" :
-            break;
-             
+            html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul></ul></fieldset>");
         case "checkbox_to_multiselect" :
-            break;
-             
-        case "checkbox_to_text" :
+        case "radio_to_multiselect" :
+            if (html == "") {
+                html = $("<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul></ul></fieldset>");
+            }
+            var ul = html.children("ul");
+            $(question).find("input").each(function() {
+                value = $(this).attr("value");
+                if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
+                    ul.append("<li data-mlab-cp-quiz-correct-response='true'>" + value + "</li>");
+                } else {
+                    ul.append("<li>" + value + "</li>");
+                }
+            });
             break;
              
         case "select_to_radio" :
-            break;
-             
         case "select_to_checkbox" :
+            var name = question.attr("id");
+            var attr = "";
+            html = "<div></div>";
+            $(question).find("li").each(function() {
+                value = $(this).text();
+                if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
+                    attr = " data-mlab-cp-quiz-correct-response='true' ";
+                } else {
+                    attr = "";
+                }
+                html.append("<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "' " + attr + " ><span>" + value + "</span></label>");
+            });
+            
+            if (to == "checkbox") {
+                html.find("input").attr("type", to).removeAttr("name");
+            }
+            html = html.html();
+
             break;
              
         case "select_to_multiselect" :
+            question.find(".mlab_cp_quiz_select").addClass(".mlab_cp_quiz_multiselect").prependTo("<legend></legend>");
             break;
              
+        case "multiselect_to_select" :
+            question.find(".mlab_cp_quiz_select").removeClass(".mlab_cp_quiz_multiselect").find("legend").remove();
+            break;
+
+        case "radio_to_text" :
+        case "checkbox_to_text" :
+        case "multiselect_to_text" :
         case "select_to_text" :
             break;
              
         case "multiselect_to_radio" :
-            break;
-             
         case "multiselect_to_checkbox" :
             break;
              
-        case "multiselect_to_select" :
-            break;
-             
-        case "multiselect_to_text" :
-            break;
-             
         case "text_to_radio" :
-            break;
-             
         case "text_to_checkbox" :
+            var name = question.attr("id");
+            value = question.find("input").attr("data-mlab-cp-quiz-correct-response");
+            html = $("<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "' " + attr + " ><span>" + value + "</span></label>");
+            if (to == "checkbox") {
+                html.find("input").attr("type", to).removeAttr("name");
+            }
             break;
 
         case "text_to_select" :
-            break;
-             
+            html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul></ul></fieldset>");
         case "text_to_multiselect" :
+            if (html == "") {
+                html = $("<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul></ul></fieldset>");
+            }
+            value = question.find("input").attr("data-mlab-cp-quiz-correct-response");
+            html.children("ul").append("<li>" + value + "</li>");
             break;
              
     }
+    
+    question.children('[data-mlab-cp-quiz-subrole="alternatives"]').html(html);
 }
 
 this.prepareDialogBox = function() {

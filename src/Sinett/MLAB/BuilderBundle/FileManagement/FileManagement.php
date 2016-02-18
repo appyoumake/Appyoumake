@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
+ * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
+ * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
+ *
+ * Library that contains all code related to file and app page management, for instance copying a page or processing pages for compilation.
+ */
 
 namespace Sinett\MLAB\BuilderBundle\FileManagement;
 use ZipArchive;
