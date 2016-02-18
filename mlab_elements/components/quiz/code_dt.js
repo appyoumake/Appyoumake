@@ -30,7 +30,7 @@ this.editPrompts = {
     "alternatives": "Enter the possible answers for this question. Leave it blank to continue to next step.",
     "correctResponse": "Enter the number(s) of the correct response(s) with a space or comma between each correct response. The correct responses will be highlighted. If you make a mistake you can redo the selection, or leave blank when done.",
     "mandatory": "Response required? Enter y or Y for yes. ",
-    "nextAction": "Do you want to add a new page <em>(type P below)</em> or a new question <em>(type Q below)</em> ?",
+    "nextAction": "You can add a new page <em>(type P below)</em> or a new question <em>(type Q below)</em> or stop adding questions (leave blank). ",
 };
 
 this.tabTemplate = "<li><a href='{href}'>{label}</a></li>";
@@ -79,7 +79,7 @@ this.onLoad = function (el) {
                 $(this).find("option").each(function() {
                     var value = $(this).text();
 //need to carry across correct flag
-                    if ($(this).data("mlab-cp-quiz-correct-response") == "true") {
+                    if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
                         fieldset_html.children("ul").append("<li data-mlab-cp-quiz-correct-response='true'>" + value + "</li>");
                     } else {
                         fieldset_html.children("ul").append("<li>" + value + "</li>");
@@ -311,6 +311,9 @@ this.handleUserInput = function(input, e) {
             } else if (value.toLowerCase() == "q") {
                 this.setPropertiesDialogTab(this.TABS_ADD_QUESTION);
                 $("[data-mlab-dt-quiz-input='explanatory']").focus();
+            } else if (value.toLowerCase() == "") {
+                this.finishAddingQuestions(page);
+                return;
             } else {
                 alert("Enter P or Q");
                 return;
@@ -752,9 +755,9 @@ this.custom_edit_question = function(el, event) {
     var content = this.prepareDialogBox();
     $(content).tabs("option", "active", 1);
     $(content).tabs("disable", this.TABS_ADD_PAGE);
-//display the dialog box, we populate the content in a callback function from the show
-    this.api.displayPropertyDialog(el, "Edit question", content, function (){mlab.dt.components.quiz.code.loadExistingQuestion.call(mlab.dt.components.quiz.code);}, null, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
     
+//display the dialog box, we populate the content in a callback function from the render events
+    this.api.displayPropertyDialog(el, "Edit question", content, function (){mlab.dt.components.quiz.code.loadExistingQuestion.call(mlab.dt.components.quiz.code);}, function() { $("[data-mlab-dt-quiz-input='explanatory']").focus(); }, function (el, event, api) { if (!mlab.dt.components.quiz.code.cancelCurrentQuestion.call(mlab.dt.components.quiz.code)){event.preventDefault();};}, "[data-mlab-dt-quiz-input='explanatory']", true, event);
     
 };
 
@@ -763,57 +766,64 @@ this.custom_edit_question = function(el, event) {
  * The user can then edit questions, as for response alternatives, they can add to them, if they want to replace something they must first delete it
  */
 this.loadExistingQuestion = function() {
-    debugger;
     var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
     var q = this.getCurrentQuestion();
     var dlg = $("#mlab_dt_quiz_tabs_" + this.domRoot.attr("id"));
     
 //here we add the common values    
-    dlg.find('[data-mlab-dt-quiz-input="explanatory"]').text(q.find('[data-mlab-cp-quiz-subrole="explanatory"]').text());
-    dlg.find('[data-mlab-dt-quiz-input="question"]').text(q.find('[data-mlab-cp-quiz-subrole="question"]').text());
+    dlg.find('[data-mlab-dt-quiz-input="explanatory"]').val(q.find('[data-mlab-cp-quiz-subrole="explanatory"]').text());
+    dlg.find('[data-mlab-dt-quiz-input="question"]').val(q.find('[data-mlab-cp-quiz-subrole="question"]').text());
     var qtype = q.data("mlab-cp-quiz-questiontype");
-    for (i in this.questionTypes) {
+    for (var i in this.questionTypes) {
         if (this.questionTypes[i].type == qtype) {
-            dlg.find('[data-mlab-dt-quiz-input="questionType"]').text((i + 1).toStr());
+            var qt = parseInt(i) + 1;
+            dlg.find('[data-mlab-dt-quiz-input="questionType"]').val(qt.toString());
             break;
         }
     }
     
     if (q.attr('data-mlab-cp-quiz-mandatory') == "true") {
-        dlg.find('[data-mlab-dt-quiz-input="mandatory"]').text("Y");
+        dlg.find('[data-mlab-dt-quiz-input="mandatory"]').val("Y");
     }
-    var cr_list = "";
+    var cr_list = alt_list = "";
     
     switch (q.attr("data-mlab-cp-quiz-questiontype")) {
         case "checkbox":
         case "radio":
-            var i = 1;
+            var j = 1;
             q.find("input").each(function() {
-                if ($(this).data("mlab-cp-quiz-correct-response") == "true") { 
-                    cr_list = cr_list + " " + i; 
+                alt_list = alt_list + "<span data-mlab-cp-quiz-correct-response='" + j + "'>" + j + " - " + $(this).siblings("span").text() + "<br></span>"
+                if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") { 
+                    cr_list = cr_list + " " + j; 
                 } 
-                i++; 
+                j++; 
             });
-            dlg.find('[data-mlab-dt-quiz-input="correctResponse"]').text(cr_list);
+            dlg.find('[data-mlab-dt-quiz-input="correctResponse"]').val(cr_list);
             break;
             
         case "select":
         case "multiselect":
+            var j = 1;
             q.find("li").each(function() {
-                if ($(this).data("mlab-cp-quiz-correct-response") == "true") { 
-                    cr_list = cr_list + " " + i; 
+                alt_list = alt_list + "<span data-mlab-cp-quiz-correct-response='" + j + "'>" + j + " - " + $(this).text() + "<br></span>"
+                if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") { 
+                    cr_list = cr_list + " " + j; 
                 } 
-                i++; 
+                j++; 
             });
-            dlg.find('[data-mlab-dt-quiz-input="correctResponse"]').text(cr_list);
+            dlg.find('[data-mlab-dt-quiz-input="correctResponse"]').val(cr_list);
             break;
             
         case "text":
-            dlg.find('[data-mlab-dt-quiz-input="correctResponse"]').text(q.data('mlab-cp-quiz-correct-response'));
+            dlg.find('[data-mlab-dt-quiz-input="correctResponse"]').val(q.data('mlab-cp-quiz-correct-response'));
             break;
 
     }
+    
+//add alternatives to the list that is displayed when they chose what to set as the correct response
+    var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
+    $("#"  + correct_response_id).append(alt_list);
+
 }
 
 this.custom_delete_question = function(el) {
@@ -918,6 +928,81 @@ this.custom_set_options = function(el, event) {
     
 }
 //---------- VARIOUS HELPER FUNCTIONS USED BY CODE ABOVE
+
+/**
+ * This function uses jQuery to change type attribute or in other ways manipulate the HTML of the 
+ * alternatives so people can change the question type in retrospect
+ * @param {type} question
+ * @param {type} from
+ * @param {type} to
+ * @returns {undefined}
+ */
+this.convertQuestion = function(question, from, to) {
+    switch(from + "_to_" + to) {
+        case "radio_to_checkbox" :
+            question.find("input").attr("type", "checkbox")
+            break;
+             
+        case "radio_to_select" :
+            break;
+             
+        case "radio_to_multiselect" :
+            break;
+             
+        case "radio_to_text" :
+            break;
+             
+        case "checkbox_to_radio" :
+            question.find("input").attr("type", "radio")
+            break;
+             
+        case "checkbox_to_select" :
+            break;
+             
+        case "checkbox_to_multiselect" :
+            break;
+             
+        case "checkbox_to_text" :
+            break;
+             
+        case "select_to_radio" :
+            break;
+             
+        case "select_to_checkbox" :
+            break;
+             
+        case "select_to_multiselect" :
+            break;
+             
+        case "select_to_text" :
+            break;
+             
+        case "multiselect_to_radio" :
+            break;
+             
+        case "multiselect_to_checkbox" :
+            break;
+             
+        case "multiselect_to_select" :
+            break;
+             
+        case "multiselect_to_text" :
+            break;
+             
+        case "text_to_radio" :
+            break;
+             
+        case "text_to_checkbox" :
+            break;
+
+        case "text_to_select" :
+            break;
+             
+        case "text_to_multiselect" :
+            break;
+             
+    }
+}
 
 this.prepareDialogBox = function() {
     var el = $(".mlab_current_component");
