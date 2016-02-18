@@ -116,7 +116,9 @@ class mlab_ct_index {
                             $html .= "<ul>\n";
                             $added_chapter = true;
                         }
-                        $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
+                        if ($style == "summary") {
+                            $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
+                        } 
                     }
                     $html .= "  </ul></li>\n";
                 }
