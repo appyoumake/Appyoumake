@@ -1085,10 +1085,10 @@ Mlab_dt_api.prototype = {
  * @param {type} sub_el: The element to display. If not specified, then update all components
  * @param {type} editable: Optional, the element to display. If not specified, then update all components
  */   
-        componentHighlightSelectedChildren : function (sub_el, editable) {
+        componentHighlightSelectedChildren : function (sub_el, editable, override) {
             sub_el = $( sub_el );
             
-            if (!$(".mlab_current_component").find(".mlab_current_component_child").is(sub_el)) {
+            if (!$(".mlab_current_component").find(".mlab_current_component_child").is(sub_el) || override) {
                 $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
 
 //gets the childs background color

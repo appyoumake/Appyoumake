@@ -233,7 +233,7 @@ this.handleUserInput = function(input, e) {
                     question = this.addQuestion(value, editStage);
                 }
                 
-                this.api.display.componentHighlightSelectedChildren(question, question.find("p"));
+                this.api.display.componentHighlightSelectedChildren(question, question.find("[data-mlab-cp-quiz-subrole='question']"), true);
 
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='questionType']").focus();
@@ -956,8 +956,23 @@ this.custom_set_options = function(el, event) {
         if (typeof settings == "undefined") {
             settings = {};
         }
-        settings[$(this).attr("data-mlab-dt-quiz-property")] = $(this).prop("checked");
+        var name = $(this).attr("data-mlab-dt-quiz-property");
+        settings[name] = $(this).prop("checked");
         mlab.dt.api.setVariable(el, "settings", settings);
+        
+//if they say that they want to store this remotely, ask which DB they want to use
+        if (name == "submit" && $(this).prop("checked")) {
+            mlab.dt.api.properties_tooltip = $(this).qtip({
+                solo: false,
+                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
+                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                show:       { ready: true, modal: { on: true, blur: false } },
+                hide:       false,
+                events:     { hide: function(event, api) { api.destroy(); } },
+                style:      { classes: "mlab_zindex_top_tooltip" }
+            });
+            
+        }
     });
     
     this.api.displayPropertyDialog(el, "Set quiz options", content, null, null, null, null, false, event);
