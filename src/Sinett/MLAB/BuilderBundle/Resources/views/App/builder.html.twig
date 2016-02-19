@@ -146,7 +146,7 @@
             $.get( url, function( data ) {
                 
                 if (data.result == "success") {
-                    $(data.html).appendTo("#table_app");
+                    $(data.html).prependTo("#table_app");
                     
                 } else {
                     alert(data.msg);

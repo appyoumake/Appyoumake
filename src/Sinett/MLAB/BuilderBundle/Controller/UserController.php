@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
+ * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
+ * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
+ *
+ * Basi user management, most of the user stuf is done by the FOSUserBundle library.
+ */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
