@@ -932,7 +932,7 @@ class FileManagement {
     }
     
 //this scans through a javascript file and if it finds a parameter match it will replace the value, it not add it to the end of the file 
-    public function updateAppParameter($app, $param, $value) {
+/*    public function updateAppParameter($app, $param, $value) {
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $file = $app_path . "/js/mlab_parameters.js";
 
@@ -949,7 +949,7 @@ class FileManagement {
         }
 
         file_put_contents($file, $lines);
-    }
+    }*/
  
 /**
  * Using PHP function to generate an MD5 sum for an app, looks in the root folder, excluding lock files
