@@ -111,7 +111,7 @@ Mlab_dt_design.prototype = {
             }
         }
 
-//execute backend javascript and perform tasks like adding the permissions required to the manifest file and so on
+//execute backend code which performs tasks like adding the permissions required to the manifest file, copying include files and so on
         var url = this.parent.urls.component_added.replace("_APPID_", this.parent.app.id);
         url = url.replace("_COMPID_", id);
         var that = this;
@@ -123,22 +123,25 @@ Mlab_dt_design.prototype = {
             dataType: "json"
         });
 
+//was where XXXX is now:
+        this.parent.drag_origin = 'sortable';
+//if this is a resizable component we do the initial resizing here
+        if (data_resize != "") {
+            this.parent.api.display.updateDisplay($(new_comp).children('[data-mlab-sizer]'));
+        }
+//if this component requires any credentials we request them here
+        var local_comp = new_comp;
+        var local_comp_id = comp_id;
+        if (Object.prototype.toString.call( this.parent.components[comp_id].conf.credentials ) === "[object Array]") {
+            this.parent.api.getCredentials(this.parent.components[comp_id].conf.credentials, function (credentials, params) { mlab.dt.design.component_store_credentials(credentials, params); that.component_run_code(local_comp, local_comp_id, true); }, { component: new_comp });
+        } else {
+            this.component_run_code(local_comp, local_comp_id, true);
+        }
+//end XXXX
+
         request.done(function( result ) {
             if (result.result == "success") {
-                that.parent.drag_origin = 'sortable';
-//if this is a resizable component we do the initial resizing here
-                if (data_resize != "") {
-                    that.parent.api.display.updateDisplay($(new_comp).children('[data-mlab-sizer]'));
-                }
-//if this component requires any credentials we request them here
-                var local_comp = new_comp;
-                var local_comp_id = comp_id;
-                if (Object.prototype.toString.call( that.parent.components[comp_id].conf.credentials ) === "[object Array]") {
-                    that.parent.api.getCredentials(that.parent.components[comp_id].conf.credentials, function (credentials, params) { mlab.dt.design.component_store_credentials(credentials, params); that.component_run_code(local_comp, local_comp_id, true); }, { component: new_comp });
-                } else {
-                    that.component_run_code(local_comp, local_comp_id, true);
-                }
-                
+//XXXX                
             } else {
                 alert(result.msg + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
                 $(new_comp).remove();
@@ -165,9 +168,18 @@ Mlab_dt_design.prototype = {
             return;
         }
 
-        if (created && typeof this.parent.components[comp_id].code.onCreate != "undefined") {
-            this.parent.components[comp_id].code.onCreate(el);
-//if the component has an autorun function efined we call it here, with the componet as the parameter
+/*        if (!mlab.dt.qtip_tools) {
+            var that = this;
+            window.setTimeout(function() { that.component_run_code(el, comp_id, created) }, 500 );
+            return;
+        }
+*/
+        
+        if (created) {
+            if (typeof this.parent.components[comp_id].code.onCreate != "undefined") {
+                this.parent.components[comp_id].code.onCreate(el);
+            }
+            //if the component has an autorun function efined we call it here, with the componet as the parameter
             if (typeof this.parent.components[comp_id].conf.autorun_on_create == "string") {
                 var func = this.parent.components[comp_id].conf.autorun_on_create;
                 eval("this.parent.components[comp_id].code." + func + "(el, {currentTarget: mlab.dt.qtip_tools.qtip().tooltip.find('[data-mlab-comp-tool-id=\"" + func + "\"]')[0]});")
@@ -556,7 +568,7 @@ Mlab_dt_design.prototype = {
             hide:       false, */
         });
         
-        //$('#mlab_toolbar_for_components').show();
+        $(curr_comp).qtip("show");
     },
     
 /*
