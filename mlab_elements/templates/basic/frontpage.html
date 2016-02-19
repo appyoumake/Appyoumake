@@ -123,7 +123,7 @@
             }
 
             var last_page = Number("%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
-
+debugger;
             switch (curr_page) {
 
                 case 0:
@@ -137,7 +137,9 @@
                     }
                     if (last_page == 0) {
                         //the app only has one page - hide the next button
-                        $(".mlab_nav_next_page").addClass('mlab_hide');  
+                        $(".mlab_nav_next_page").addClass('mlab_hide'); 
+                    } else if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_next_page").removeClass('mlab_hide');
                     }
                     break;
 

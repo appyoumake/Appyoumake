@@ -25,7 +25,7 @@ class mlab_ct_index {
             error_log($chapter->item(0)->nodeValue);
             return $chapter->item(0)->nodeValue;
         } else {
-            return 0;
+            return false;
         }
     }
 /**
@@ -35,10 +35,16 @@ class mlab_ct_index {
  * They all rely on the user having used the chapter component, if this is not found in any of the files we list pages on a single level
  */
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
-        if (!isset($variables) || !isset($variables["options"]) || !isset($variables["options"]["style"])) {
+        if (!isset($variables) || !isset($variables["style"])) {
             $style = "detailed";
         } else {
-            $style = $variables["options"]["style"];
+            $style = $variables["style"];
+        }
+        
+        if (!isset($variables) || !isset($variables["textsize"])) {
+            $textsize = "mc_medium";
+        } else {
+            $textsize = $variables["textsize"];
         }
         
         $index = array();
@@ -46,8 +52,10 @@ class mlab_ct_index {
 //first process index.html file, first we see if thsi starts a new chapter through the chapter component, 
 //then we add the page title to the chapter element in the index array. 0 = no chapter specified
         $page_content = file_get_contents("$app_path/index.html");
-        $current_chapter = $chapter = $this->findChapterHeading($page_content);
-        $index[$current_chapter] = array();
+        $current_chapter = $this->findChapterHeading($page_content);
+        if (!$current_chapter) {
+            $current_chapter = "___";
+        } 
         
         if (preg_match('/<title>(.+)<\/title>/', $page_content, $matches) && isset($matches[1])) {
             error_log($matches[1]);
@@ -60,16 +68,16 @@ class mlab_ct_index {
         $files = glob ( $app_path . "/???.html" );
         foreach ($files as $file) {
             $page_content = file_get_contents($file);
+            
+//here we check if the chapter has changed, only update aray if a new chapter is found in the current page HTML
             $chapter = $this->findChapterHeading($page_content);
             if ($chapter) {
                 $current_chapter = $chapter;
-            } 
-            if (!isset($index[$current_chapter])) {
                 $index[$current_chapter] = array();
             }
             
+//ALWAYS process page to list with page number
             $pnum = intval(basename($file));
-            
             if (preg_match('/<title>(.+)<\/title>/', $page_content, $matches) && isset($matches[1])) {
                 error_log($matches[1]);
                 $index[$current_chapter][$pnum] = $matches[1];
@@ -78,51 +86,49 @@ class mlab_ct_index {
             }
         }
         
-
+//add app title as top level and link to first page ALWAYS
+        $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
+        
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
         if ($style == "folding" && sizeof($index) > 1) {
-                $html = "<div data-role='collapsibleset' data-theme='a' data-content-theme='a' data-mini='true'>\n";
-                foreach ($index as $chapter => $titles) {
-                    $html .= "  <div data-role='collapsible'>\n";
-                    $added_chapter = false;
-                    foreach ($titles as $page_num => $title) {
-                        if (!$added_chapter) {
-                            if ($chapter === 0) {
-                                $head = trim($app_config["title"]);
-                            } else {
-                                $head = trim($chapter);
-                            }
-                            $html .= "    <h3><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$head</a></h3>\n";
-                            $added_chapter = true;
-                        }
-                        $html .= "    <p><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></p>\n";
-                    }
-                    $html .= "  </div>\n";
+            $html .= "<div data-role='collapsibleset' data-theme='a' data-content-theme='a' data-mini='true'>\n";
+
+//outer loop for chapter
+            foreach ($index as $chapter => $titles) {
+                if ($chapter === "___") {
+                    $head = "Start...";
+                } else {
+                    $head = trim($chapter);
                 }
-                $html .= "</div>\n";
+                $html .= "  <div data-role='collapsible'>\n";
+                $html .= "    <h3><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(" . reset($titles) . "); return false;'>$head</a></h3>\n";
+                foreach ($titles as $page_num => $title) {
+                    $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></p>\n";
+                }
+                $html .= "  </div>\n";
+            }
+            $html .= "</div>\n";
                 
         } else {
-                $html = "<ul class='mc_container mc_list'>\n";
-                foreach ($index as $chapter => $titles) {
-                    $added_chapter = false;
-                    foreach ($titles as $page_num => $title) {
-                        if (!$added_chapter) {
-                            if ($chapter === 0) {
-                                $head = trim($app_config["title"]);
-                            } else {
-                                $head = trim($chapter);
-                            }
-                            $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$head\n";
-                            $html .= "<ul>\n";
-                            $added_chapter = true;
-                        }
-                        if ($style == "summary") {
-                            $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
-                        } 
-                    }
-                    $html .= "  </ul></li>\n";
+            $html .= "<ul class='mc_container mc_list'>\n";
+
+            foreach ($index as $chapter => $titles) {
+                if ($chapter === "___") {
+                    $head = "Start...";
+                } else {
+                    $head = trim($chapter);
                 }
-                $html .= "</ul>\n";
+                $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal " . $textsize . "'><a onclick='mlab.api.navigation.pageDisplay(" . reset($titles) . "); return false;'>$head\n";
+                $html .= "<ul>\n";
+                if ($style == "detailed") {
+                    foreach ($titles as $page_num => $title) {
+//adds page names for detailed index
+                        $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal " . $textsize . "'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
+                    } 
+                }
+                $html .= "  </ul></li>\n";
+            }
+            $html .= "</ul>\n";
             
         }
 
