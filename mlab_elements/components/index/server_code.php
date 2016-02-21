@@ -91,7 +91,7 @@ class mlab_ct_index {
         
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
         if ($style == "folding" && sizeof($index) > 1) {
-            $html .= "<div data-role='collapsibleset' data-theme='a' data-content-theme='a' data-mini='true'>\n";
+            $html .= "<div data-role='collapsible-set' data-theme='a' data-content-theme='a' data-mini='true'>\n";
 
 //outer loop for chapter
             foreach ($index as $chapter => $titles) {
@@ -100,8 +100,9 @@ class mlab_ct_index {
                 } else {
                     $head = trim($chapter);
                 }
+                reset($titles);
                 $html .= "  <div data-role='collapsible'>\n";
-                $html .= "    <h3><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(" . reset($titles) . "); return false;'>$head</a></h3>\n";
+                $html .= "    <h3>$head</h3>\n";
                 foreach ($titles as $page_num => $title) {
                     $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></p>\n";
                 }
@@ -114,19 +115,21 @@ class mlab_ct_index {
 
             foreach ($index as $chapter => $titles) {
                 if ($chapter === "___") {
-                    $head = "Start...";
+                    $head = "Frontpage";
                 } else {
                     $head = trim($chapter);
                 }
-                $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal " . $textsize . "'><a onclick='mlab.api.navigation.pageDisplay(" . reset($titles) . "); return false;'>$head\n";
-                $html .= "<ul>\n";
+                reset($titles);
+                $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal " . $textsize . "'><a onclick='mlab.api.navigation.pageDisplay(" . key($titles) . "); return false;'>$head</a>\n";
                 if ($style == "detailed") {
+                    $html .= "    <ul>\n";
                     foreach ($titles as $page_num => $title) {
 //adds page names for detailed index
-                        $html .= "    <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal " . $textsize . "'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
+                        $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal " . $textsize . "'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
                     } 
+                    $html .= "    </ul>\n";
                 }
-                $html .= "  </ul></li>\n";
+                $html .= "  </li>\n";
             }
             $html .= "</ul>\n";
             

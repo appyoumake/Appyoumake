@@ -486,7 +486,7 @@ made smaler than the min width */
 
 /* Outlines the current selcted component */
 #mlab_editor #mlab_editable_area .mlab_current_component {
-    outline: 3px dotted orange;
+    outline: 3px dotted ;
 }
 
 /* Gives the current selcted component a move icone when hovering it */
@@ -590,11 +590,11 @@ made smaler than the min width */
 }
 
 #mlab_editor .mlab_current_component_child {
-    outline: 2px dotted orange;
+    outline: 2px dotted ;
 }
 
 #mlab_editor .mlab_current_component_editable {
-    outline: 1px dotted orange;
+    outline: 1px dotted ;
 }
 
 .mlab_zindex_regular_tooltip {

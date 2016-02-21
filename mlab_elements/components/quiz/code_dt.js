@@ -49,7 +49,7 @@ this.STR_SELECT_ONLY_ONE_CORRECT = "When using a drop down box to select an answ
  * @param {jQuery} el Main element for component. 
  */
 this.onCreate = function (el) {
-    this.onLoad(el);
+    this.initQuizVars(el);
 };
 
 /* Hook called when component is loaded into app.
@@ -59,7 +59,7 @@ this.onCreate = function (el) {
 this.onLoad = function (el) {
 
     var that = this;
-    this.generateId(el);
+    this.initQuizVars(el);
     if (!this.domRoot.length) return;
     if (this.initialized) return;
 
@@ -77,14 +77,19 @@ this.onLoad = function (el) {
 
 //here we convert the SELECT box back to the fake FIELDSET one
             $(this).find("select").each( function() { 
-                var fieldset_html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul></ul></fieldset>");
+                if ($(this).attr("size")) {
+                    var fieldset_html = $("<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul></ul></fieldset>");
+                } else {
+                    var fieldset_html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul></ul></fieldset>");
+                    $(this).find("option").first().remove();
+                }
                 $(this).find("option").each(function() {
                     var value = $(this).text();
 //need to carry across correct flag
                     if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
-                        fieldset_html.children("ul").append("<li data-mlab-cp-quiz-correct-response='true'>" + value + "</li>");
+                        fieldset_html.children("ul").append("<li class='mc_input' data-mlab-cp-quiz-correct-response='true'>" + value + "</li>");
                     } else {
-                        fieldset_html.children("ul").append("<li>" + value + "</li>");
+                        fieldset_html.children("ul").append("<li class='mc_input' >" + value + "</li>");
                     }
                 });
                 this.outerHTML = fieldset_html[0].outerHTML;
@@ -125,7 +130,7 @@ this.onSave = function (el) {
 //convert the fake select boxes (if any
         page.find("fieldset.mlab_cp_quiz_select").each(function() {
             if ( $(this).hasClass("mlab_cp_quiz_multiselect") ) {
-                var select_html = $("<select class='mc_text mc_entry mc_input' size='7'><option class='mc_text mc_entry mc_input' ></option></select>");
+                var select_html = $("<select class='mc_text mc_entry mc_input' size='7'></select>");
             } else {
                 var select_html = $("<select class='mc_text mc_entry mc_input' ><option class='mc_text mc_entry mc_input' ></option></select>");
             }
@@ -230,8 +235,11 @@ this.handleUserInput = function(input, e) {
                         question.append(div);
                     }
                 } else {
-                    this.addQuestion(value, editStage);
+                    question = this.addQuestion(value, editStage);
                 }
+                
+                this.api.display.componentHighlightSelectedChildren(question, question.find("[data-mlab-cp-quiz-subrole='question']"), true);
+
                 this.setPropertiesDialogTab();
                 $("[data-mlab-dt-quiz-input='questionType']").focus();
             } else {
@@ -251,8 +259,18 @@ this.handleUserInput = function(input, e) {
                 alert("Valid selections from: " + minValue + " - " + maxValue);
             } else {
                 input.addClass("mc_blurred");
-                if (questionType != "" && questionType != this.questionTypes[value - 1].type) {
-                    this.convertQuestion(question, questionType, this.questionTypes[value - 1].type);
+                if ( (typeof questionType != "undefined") && questionType != "" && questionType != this.questionTypes[value - 1].type ) {
+                    if (!confirm('You have specified a different question type than what the question currently is. Do you want to change from ' + questionType + ' to ' + this.questionTypes[value - 1].type + '?')) {
+                        for (var i in this.questionTypes) {
+                            if (this.questionTypes[i].type == qtype) {
+                                var qt = parseInt(i) + 1;
+                                $("[data-mlab-dt-quiz-input='questionType']").val(qt);
+                                break;
+                            }
+                        }
+                    } else {
+                        this.convertQuestion(question, questionType, this.questionTypes[value - 1].type);
+                    }
                 }
                 question.attr("data-mlab-cp-quiz-questiontype", this.questionTypes[value - 1].type);
                 this.setMandatory(question, value);
@@ -301,8 +319,10 @@ this.handleUserInput = function(input, e) {
                 this.addQuestionAlternative(question, value, questionType);
             } else {
                 cont = this.markAlternativesAsCorrect(question, value, questionType);
-                var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
-                $("#"  + correct_response_id).html("");
+                if (cont) {
+                    var correct_response_id = "mlab_dt_quiz_select_response_" + this.domRoot.attr("id");
+                    $("#"  + correct_response_id).html("");
+                }
             }
             if (cont) {
                 this.makeQuestionEditable(question);
@@ -449,7 +469,7 @@ this.selectElement = function (event) {
 /* Helper function that sets up basic stuff.
  * @param {jQuery} el Main element for component.
  */
-this.generateId = function(el) {
+this.initQuizVars = function(el) {
     this.domRoot = el;
     var id = this.domRoot.attr("id");
     if (!id) {
@@ -611,10 +631,10 @@ this.addQuestionAlternative = function(question, value, questionType) {
         case "select":
             var current_select_box = question.find("fieldset > ul"); //using a fieldset to create a fake list box for easier manipulation
             if (current_select_box.length == 0) {
-                var html = "<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li>" + value + "</li></ul></fieldset>";
+                var html = "<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li class='mc_input' >" + value + "</li></ul></fieldset>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<li>" + value + "</li>";
+                var html = "<li class='mc_input' >" + value + "</li>";
             }
             display_value = true;
             break;
@@ -622,10 +642,10 @@ this.addQuestionAlternative = function(question, value, questionType) {
         case "multiselect": 
             var current_select_box = question.find("fieldset > ul");
             if (current_select_box.length == 0) {
-                var html = "<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul><li class='mc_text mc_entry mc_input' >" + value + "</li></ul></fieldset>";
+                var html = "<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul><li class='mc_input' >" + value + "</li></ul></fieldset>";
             } else {
                 alternatives_container = current_select_box;
-                var html = "<li class='mc_text mc_entry mc_input' >" + value + "</li>";
+                var html = "<li class='mc_input' >" + value + "</li>";
             }
             break;
     }
@@ -940,8 +960,23 @@ this.custom_set_options = function(el, event) {
         if (typeof settings == "undefined") {
             settings = {};
         }
-        settings[$(this).attr("data-mlab-dt-quiz-property")] = $(this).prop("checked");
+        var name = $(this).attr("data-mlab-dt-quiz-property");
+        settings[name] = $(this).prop("checked");
         mlab.dt.api.setVariable(el, "settings", settings);
+        
+//if they say that they want to store this remotely, ask which DB they want to use
+        if (name == "submit" && $(this).prop("checked")) {
+            mlab.dt.api.properties_tooltip = $(this).qtip({
+                solo: false,
+                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
+                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                show:       { ready: true, modal: { on: true, blur: false } },
+                hide:       false,
+                events:     { hide: function(event, api) { api.destroy(); } },
+                style:      { classes: "mlab_zindex_top_tooltip" }
+            });
+            
+        }
     });
     
     this.api.displayPropertyDialog(el, "Set quiz options", content, null, null, null, null, false, event);
@@ -958,51 +993,61 @@ this.custom_set_options = function(el, event) {
  * @returns {undefined}
  */
 this.convertQuestion = function(question, from, to) {
-    var html = "";
-    var value;
-    if (!confirm('You have specified a different question type than what the question currently is. Do you want to change from ' + from + ' to ' + to + '?')) {
-        return true;
-    }
+    var html, value;
+    
     switch(from + "_to_" + to) {
-        
 //switching between radio/checbox is simple, just change type of input
         case "radio_to_checkbox" :
         case "checkbox_to_radio" :
             question.find("input").attr("type", to);
+            if (to == "checkbox") {
+//a radio button list can only have one correct choice, remove additional correct alternatives 
+                question.find("input:not(:first-child)").removeAttr("data-mlab-cp-quiz-correct-response").parent().removeClass("mc_correct");
+            }
             break;
              
         case "radio_to_select" :
         case "checkbox_to_select" :
-            html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul></ul></fieldset>");
+            html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li class='mc_input' ></li></ul></fieldset>");
         case "checkbox_to_multiselect" :
         case "radio_to_multiselect" :
-            if (html == "") {
+            if (typeof html == "undefined") {
                 html = $("<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul></ul></fieldset>");
             }
             var ul = html.children("ul");
+            var correct_set = false;
             $(question).find("input").each(function() {
                 value = $(this).attr("value");
-                if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
-                    ul.append("<li data-mlab-cp-quiz-correct-response='true'>" + value + "</li>");
+                if ( (to == "multiselect" || (!correct_set && to == "select")) && $(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
+                    ul.append("<li data-mlab-cp-quiz-correct-response='true' class='mc_input mc_correct'>" + value + "</li>");
+                    correct_set = true;
                 } else {
-                    ul.append("<li>" + value + "</li>");
+                    ul.append("<li class='mc_input' >" + value + "</li>");
                 }
             });
             break;
              
+        case "multiselect_to_radio" :
+//a radio button list can only have one correct choice, remove additional correct alternatives before converting
+            question.find("li:not(:first-child)").removeClass("mc_correct").removeAttr("data-mlab-cp-quiz-correct-response");
         case "select_to_radio" :
         case "select_to_checkbox" :
+        case "multiselect_to_checkbox" :
             var name = question.attr("id");
-            var attr = "";
-            html = "<div></div>";
+            var cl = attr = "";
+            var correct_set = false;
+            html = $("<div></div>");
             $(question).find("li").each(function() {
                 value = $(this).text();
-                if ($(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
+                if ( (to == "checkbox" || (!correct_set && to == "radio")) && $(this).attr("data-mlab-cp-quiz-correct-response") == "true") {
                     attr = " data-mlab-cp-quiz-correct-response='true' ";
+                    cl =  'mc_correct';
+                    correct_set = true;
                 } else {
                     attr = "";
+                    cl =  '';
                 }
-                html.append("<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "' " + attr + " ><span>" + value + "</span></label>");
+                html.append("<label class='mc_text mc_entry mc_info " + cl + "'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "' " + attr + " ><span>" + value + "</span></label>");
             });
             
             if (to == "checkbox") {
@@ -1013,41 +1058,52 @@ this.convertQuestion = function(question, from, to) {
             break;
              
         case "select_to_multiselect" :
-            question.find(".mlab_cp_quiz_select").addClass(".mlab_cp_quiz_multiselect").prependTo("<legend></legend>");
+            question.find(".mlab_cp_quiz_select").addClass("mlab_cp_quiz_multiselect").find("legend").remove();
             break;
              
         case "multiselect_to_select" :
-            question.find(".mlab_cp_quiz_select").removeClass(".mlab_cp_quiz_multiselect").find("legend").remove();
+            debugger;
+            question.find(".mlab_cp_quiz_multiselect").removeClass("mlab_cp_quiz_multiselect").prepend("<legend></legend>");
+//a select box can only have one correct choice
+            question.find("li.mc_correct:not(:first-child)").removeClass("mc_correct").removeAttr("data-mlab-cp-quiz-correct-response");
             break;
 
+//for inputs like checkbox and radio the value is stored as the value attribute
         case "radio_to_text" :
         case "checkbox_to_text" :
+            value = question.find("[data-mlab-cp-quiz-correct-response='true']").first().attr('value');
+            
+//whereas the fake select boxes store it as text inside the LI nodes.
         case "multiselect_to_text" :
         case "select_to_text" :
-            break;
-             
-        case "multiselect_to_radio" :
-        case "multiselect_to_checkbox" :
+            if (typeof value == "undefined") {
+                value = question.find("[data-mlab-cp-quiz-correct-response='true']").first().text();
+            }
+            if (!confirm('Converting to a list box will only preserve the first entry marked as a correct answer, are you sure you want to continue?')) {
+                return true;
+            }
+            html = "<input class='mc_text mc_entry mc_input' type='text' data-mlab-cp-quiz-correct-response='" + value + "' placeholder='" + value + "'>";
             break;
              
         case "text_to_radio" :
         case "text_to_checkbox" :
-            var name = question.attr("id");
             value = question.find("input").attr("data-mlab-cp-quiz-correct-response");
-            html = $("<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "' " + attr + " ><span>" + value + "</span></label>");
             if (to == "checkbox") {
-                html.find("input").attr("type", to).removeAttr("name");
+                html = $("<label class='mc_text mc_entry mc_info mc_correct'><input value='" + value + "' class='mc_text mc_entry mc_input' data-mlab-cp-quiz-correct-response='true' type='checkbox' " + attr + " ><span>" + value + "</span></label>");
+            } else {
+                var name = question.attr("id");
+                html = $("<label class='mc_text mc_entry mc_info mc_correct'><input value='" + value + "' class='mc_text mc_entry mc_input' data-mlab-cp-quiz-correct-response='true' type='radio' name='" + name + "' " + attr + " ><span>" + value + "</span></label>");
             }
             break;
 
         case "text_to_select" :
-            html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul></ul></fieldset>");
+            html = $("<fieldset class='mlab_cp_quiz_select'><legend></legend><ul><li class='mc_input' ></li></ul></fieldset>");
         case "text_to_multiselect" :
-            if (html == "") {
-                html = $("<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul></ul></fieldset>");
+            if (typeof html == "undefined") {
+                html = $("<fieldset class='mlab_cp_quiz_select mlab_cp_quiz_multiselect'><ul><li class='mc_input' ></li></ul></fieldset>");
             }
             value = question.find("input").attr("data-mlab-cp-quiz-correct-response");
-            html.children("ul").append("<li>" + value + "</li>");
+            html.children("ul").append("<li data-mlab-cp-quiz-correct-response='true' class='mc_input mc_correct'>" + value + "</li>");
             break;
              
     }

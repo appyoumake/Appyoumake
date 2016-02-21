@@ -901,6 +901,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
 
+//if a page does not eist, then go to last
+        if (!file_exists("$app_path$doc")) {
+            $doc = $file_mgmt->getPageFileName($app_path, "last");
+        }
+        
     	if (file_exists("$app_path$doc")) {
             $page = $file_mgmt->getPageContent("$app_path$doc", $uid);
             if (preg_match('/<title>(.+)<\/title>/', $page["html"], $matches)) {
@@ -1096,7 +1101,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         
 //update file counter variable in JS
         $total_pages = $file_mgmt->getTotalPageNum($app);
-        $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
+        /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
 
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
         
@@ -1135,7 +1140,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             
 //update file counter variable in JS
             $total_pages = $file_mgmt->getTotalPageNum($app);
-            $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
+            /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
             return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $res, 'uid' => $uid, 'app_open_mode' => 'false')));
             
         }

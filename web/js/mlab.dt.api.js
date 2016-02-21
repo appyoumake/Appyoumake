@@ -1085,10 +1085,10 @@ Mlab_dt_api.prototype = {
  * @param {type} sub_el: The element to display. If not specified, then update all components
  * @param {type} editable: Optional, the element to display. If not specified, then update all components
  */   
-        componentHighlightSelectedChildren : function (sub_el, editable) {
+        componentHighlightSelectedChildren : function (sub_el, editable, override) {
             sub_el = $( sub_el );
-            editable = $( editable );
-            if (!$(".mlab_current_component").find(".mlab_current_component_child").is(sub_el)) {
+            
+            if (!$(".mlab_current_component").find(".mlab_current_component_child").is(sub_el) || override) {
                 $(".mlab_current_component").find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
 
 //gets the childs background color
@@ -1101,22 +1101,23 @@ Mlab_dt_api.prototype = {
                 sub_el.addClass("mlab_current_component_child");   
             }
                 
+            if (typeof editable != "undefined") {
+                editable = $( editable );
 //if they have not re-clicked the current ditable element then we deselect old one and select new one
-            if (!$(".mlab_current_component").find(".mlab_current_component_editable").is(editable)) {
-                $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
-                if (typeof editable != "undefined" && editable.length > 0 && $(editable).prop("tagName").toLowerCase() != "input") {   
+                if (!$(".mlab_current_component").find(".mlab_current_component_editable").is(editable)) {
+                    $(".mlab_current_component").find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+                    if (typeof editable != "undefined" && editable.length > 0 && $(editable).prop("tagName").toLowerCase() != "input") {   
 //gets the grandchilds background color
-                    var bgColorGC = this.getBackground(editable);
+                        var bgColorGC = this.getBackground(editable);
 //inverts the background color
-                    var bgColorGCInvert = this.invertColor(bgColorGC);
+                        var bgColorGCInvert = this.invertColor(bgColorGC);
 //set the invert color of the background as the outline-color for the current selected component
-                    editable.css("outline-color", bgColorGCInvert);
+                        editable.css("outline-color", bgColorGCInvert);
 
-                    editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
-
+                        editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
+                    }
                 }                
             }
-
         },      
     },
 
