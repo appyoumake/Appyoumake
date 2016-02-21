@@ -249,6 +249,13 @@ outline: none;
 color: black;
 }
 
+/* ===  Fieldset - group  === */
+#mlab_editor .mlab_dt_group {
+    border: solid 1px lightgrey;
+    padding-bottom: 4px;
+    margin: 5px;
+    margin-top: 10px;
+}
 
 /* ===  list for component size and aspect and storage plugin...   === */
 #mlab_editor #mlab_component_size_list li, 

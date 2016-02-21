@@ -268,28 +268,24 @@
         }
 
         content = $('<div />');
-        content.append( $('<p />', {class: "mlab_dt_small_new_line" }));
         
-        content.append( '<fieldset><legend>' + 'Search map' + '</legend>' +
+        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Search map' + '</legend>' +
                         '<label class="mlab_dt_label" for="mlab_cp_googlemap_center">Search map:</label>' + 
                         '<input class="mlab_dt_input" id="mlab_cp_googlemap_center" type="text" onkeyup="mlab.dt.components.googlemap.code.searchMap(\'' + guid + '\', $(this).val());" >' + 
                         '</fieldset>' );
                 
-        content.append( '<fieldset><legend>' + 'Centre map' + '</legend>' +
+        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Centre map' + '</legend>' +
                         '<label class="mlab_dt_label" data-mlab-cp-googlemap-info="centre" onclick="mlab.dt.components.googlemap.code.moveToCentre(\'' + guid + '\');">Current centre: Not selected</label>' + 
                         '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.setMapCenter(\'' + guid + '\');">Centre at current location</button>' + 
                         '</fieldset>' );
 
-        content.append( '<fieldset><legend>' + 'Markers' + '</legend>' +
+        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Markers' + '</legend>' +
                         '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.setMarker(\'' + guid + '\');">Add marker here</button>' + 
                         '<br><select class="mlab_dt_select" id="mlab_cp_googlemap_markers" size="5">' + options_markers + '</select>' +
                         '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.removeMarker(\'' + guid + '\');">Remove Marker</button>' + 
                         '</fieldset>' );
-
-        content.append( $('<p />', {class: "mlab_dt_button_new_line mlab_dt_left" }));
-
         
-        content.append( '<fieldset><legend>' + 'Map attributes' + '</legend>' +
+        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Map attributes' + '</legend>' +
                         '<label class="mlab_dt_label" for="mlab_cp_googlemap_zoom_control">Show zoom control</label>' + 
                         '<input class="mlab_dt_input" id="mlab_cp_googlemap_zoom_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl(\'' + guid + '\', \'zoomControl\', $(this).is(\':checked\'));" ' + ((curr_map.zoomControl) ? "checked" : "") + '>' + 
                         '<label class="mlab_dt_label" for="mlab_cp_googlemap_zoom_level">Choose zoom level</label>' + 
@@ -302,9 +298,7 @@
                         '<input class="mlab_dt_input" id="mlab_cp_googlemap_type_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl(\'' + guid + '\', \'scaleControl\', $(this).is(\':checked\'));" ' + ((curr_map.scaleControl) ? "checked" : "") + '>' +
                         '</fieldset>' );
 
-        content.append( $('<p />', {class: "mlab_dt_button_new_line mlab_dt_left" }));
-
-        content.append( '<button class="mlab_dt_button_ok mlab_dt_left" onclick="mlab.dt.api.closeAllPropertyDialogs();">OK</button>');
+        content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">OK</button>');
 
         var component = el;
         var component_id = this.config.component_name;
