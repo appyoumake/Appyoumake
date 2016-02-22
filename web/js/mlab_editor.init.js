@@ -134,12 +134,13 @@
                 $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                     if (data.result === "success") {
 
-                        var feature_list = $("<ul></ul>");
+//FLFL                        var feature_list = $("<ul></ul>");
 /*SPSP                        var storage_plugin_list = $("<ul></ul>");*/
                         var loc = mlab.dt.api.getLocale();
                         mlab.dt.components = data.mlab_components;
                         mlab.dt.storage_plugins = {};
-                        var components_html = [];
+                        var components_html = {};
+                        var features_html = [];
                         var additional_html = "";
 
                         for (type in mlab.dt.components) {
@@ -161,15 +162,11 @@
                                 var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
                                 
 //the newline setting in the database 
-                                if (components_html.length == 0) {
-                                    additional_html = "<h3>" + c.conf.category + "</h3><div>";
-                                } else if (typeof c.new_line != "undefined" && c.new_line === 1) {
-                                    additional_html = "</div><h3>" + c.conf.category + "</h3><div>";
-                                } else {
-                                    additional_html = "";
+                                if (typeof components_html[c.conf.category] == "undefined") {
+                                    components_html[c.conf.category] = [];
                                 }                                
                                 
-                                components_html[parseInt(c.order_by)] = additional_html + "<div data-mlab-type='" + type + "' " +
+                                components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
                                             "title='" + tt + "' " +
                                             "class='mlab_button_components' " +
@@ -180,18 +177,36 @@
                                          "</div>";
                                 
                             } else if (c.accessible && c.is_feature) {
-                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+
+//all features are in a single div
+                                
+                                features_html[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
+                                            "onclick='mlab.dt.design.feature_add(\"" + type + "\");' " +
+                                            "title='" + tt + "' " +
+                                            "class='mlab_button_components' " +
+                                            "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
+                                        "</div>" + 
+                                        "<div class='mlab_component_footer_tip'>" +
+                                                tte +
+                                         "</div>";
+                                
+/*FLFL                                feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>"); */
                             } else if (c.accessible && c.is_storage_plugin) {
                                 mlab.dt.storage_plugins[type] = eName;
 /*SPSP                                mlab.dt.storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");*/
                             }
                         }
+
+                        var components_flat_html = "";
+                        for  (category in components_html) {
+                            components_flat_html = components_flat_html + "<h3>" + category + "</h3><div>" + components_html[category].join("") + "</div>"; 
+                        } 
                         
-                        $("#mlab_toolbar_components").append(components_html.join("") + "</div>");
+                        $("#mlab_toolbar_components").append(components_flat_html + "<h3>Features</h3><div>" + features_html.join("") + "</div>");
                         $("#mlab_toolbar_components").accordion({ heightStyle: "content" });
                         
 //add the HTML generated in the component load loop above to their respecitve containers.
-                        $("#mlab_features_list").html(feature_list);
+//FLFL                        $("#mlab_features_list").html(feature_list);
 //SPSP                        $("#mlab_storage_plugin_list").html(storage_plugin_list);
                         
 //now loop through all components and for those that inherit another we transfer properties

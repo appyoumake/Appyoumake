@@ -64,6 +64,7 @@ made smaler than the min width */
    ========================================================================== */
 
 #mlab_editor #mlab_toolbar_components {
+    padding-left: 10px;
     display: block;
     float: left;
     width: 145px;
@@ -624,5 +625,24 @@ made smaler than the min width */
 
 #mlab_editor .ui-accordion-header-active {
     background-color: orange;
+}
+
+#mlab_editor [data-mlab-get-info="credentials"] label {
+    line-height: 90%;
+    margin: 0;
+    padding: 0;
+}
+
+#mlab_editor [data-mlab-get-info="credentials"] input {
+    width: 90%;
+    margin-top: 0;
+}
+
+#mlab_editor [data-mlab-get-info="credentials"] button {
+    float: right;
+}
+
+#mlab_editor [data-mlab-get-info="storage_plugins"] {
+    margin: 10px 0;
 }
 

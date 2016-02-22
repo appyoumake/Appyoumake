@@ -953,8 +953,8 @@ this.custom_set_options = function(el, event) {
     for (name in settings) {
         $(content).find("[data-mlab-dt-quiz-property='" + name + "']").prop("checked", settings[name]);
     }
-            
-/*SPSP    $(content).on("click", "[data-mlab-dt-quiz-property]", function() {
+          
+    $(content).on("click", "[data-mlab-dt-quiz-property]", function() {
         var settings = mlab.dt.api.getVariable(el, "settings");
         if (typeof settings == "undefined") {
             settings = {};
@@ -965,18 +965,9 @@ this.custom_set_options = function(el, event) {
         
 //if they say that they want to store this remotely, ask which DB they want to use
         if (name == "submit" && $(this).prop("checked")) {
-            mlab.dt.api.properties_tooltip = $(this).qtip({
-                solo: false,
-                content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
-                position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
-                show:       { ready: true, modal: { on: true, blur: false } },
-                hide:       false,
-                events:     { hide: function(event, api) { api.destroy(); } },
-                style:      { classes: "mlab_zindex_top_tooltip" }
-            });
-            
+            $(mlab.dt.qtip_tools).qtip().elements.content.find('[data-mlab-tool-name="select_storage_plugin"]').trigger("click")
         }
-    }); */
+    }); 
     
     this.api.displayPropertyDialog(el, "Set quiz options", content, null, null, null, null, false, event);
     

@@ -260,7 +260,8 @@ color: black;
 /* ===  list for component size and aspect and storage plugin...   === */
 #mlab_editor #mlab_component_size_list li, 
 #mlab_editor #mlab_component_aspect_list li, 
-#mlab_editor #mlab_storage_plugin_list li {
+#mlab_editor #mlab_storage_plugin_list li,
+[data-mlab-get-info="storage_plugins"] li {
     cursor: pointer;
     list-style-type: square; 
     padding-right: 10px;

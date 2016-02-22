@@ -631,7 +631,7 @@ mlab.dt.api.js.getLink.prompt: Please enter the URL or page number (for pages in
 mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
 
 mlab.dt.api.js.getCredentials.dlg.title: Credentials
-mlab.dt.api.js.getCredentials.dlg.text: Here credentials are going to be explained .....
+mlab.dt.api.js.getCredentials.dlg.text: Credentials are items such as URLs or passwords that Mlab require to connect to a cloud service
 
 controller.help.msg.comp_id.empty: No component ID specified when trying to retrieve component help file
 controller.help.msg.file.notfound: Component help file not found

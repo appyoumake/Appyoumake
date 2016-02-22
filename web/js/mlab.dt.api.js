@@ -899,31 +899,29 @@ Mlab_dt_api.prototype = {
     getStorageCredentials: function (credentials_required, cb_function, params) {
         
         var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
+        dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , class: 'mlab_dt_text_info' } ) );
         for (credential in credentials_required) {   
-            dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , class: 'mlab_dt_text_info' } ) );
             dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , for: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_short_label' } ) );
             dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , id: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_input' }) );      
-            dlg.append( $('<br />') );   
         }
-        dlg.append( $('<button>Save</button>') );   
+        dlg.append( $('<button>Save</button><div class="mlab_newline">&nbsp;</div>') );   
         
         dlg.find("button").on("click", function() {
-            debugger;
+            //TODO verify input here
             var credentials = {};
             for (credential in credentials_required) {
                 credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
             }
 
-            $(this).dialog("close");
-            dlg.remove();
             cb_function(credentials, params);
-            dlg.parent
+            
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='storage_plugins']").slideUp();
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").slideUp();
+            $(mlab.dt.qtip_tools).qtip().elements.content.find('[data-mlab-tool-name="select_storage_plugin"]').attr("src", "/img/tools/storage_selected.png");
             
         })
         
-        $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").append(dlg).slideDown();
+        $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").html("").append(dlg).slideDown();
         
 /*SPSP        var that_dlg = $(dlg).dialog({
                 autoOpen: true,
