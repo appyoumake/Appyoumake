@@ -612,3 +612,17 @@ made smaler than the min width */
 #mlab_editor #mlab_storage_plugin_list {
     z-index: 600 !important;
 }
+
+#mlab_editor ui-accordion-content {
+    border: 1px solid grey;
+}
+
+#mlab_editor .ui-accordion-header {
+    background-color: #ffcc66;
+    text-transform: capitalize;
+}
+
+#mlab_editor .ui-accordion-header-active {
+    background-color: orange;
+}
+

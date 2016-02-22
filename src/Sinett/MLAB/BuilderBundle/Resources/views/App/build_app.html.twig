@@ -275,23 +275,25 @@
 
                         <div id="mlab_toolbar_for_components" class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style="display: none">
                             <div id='mlab_component_toolbar_heading'>Tools</div>
-                            <img onclick='mlab.dt.design.component_moveup();'    title='{% trans %}build_app.components.toolbar.tooltip.move.up{% endtrans %}'      id='mlab_button_up'         src='/img/tools/up.png'         class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_movedown();'  title='{% trans %}build_app.components.toolbar.tooltip.move.down{% endtrans %}'    id='mlab_button_down'       src='/img/tools/down.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_delete();'    title='{% trans %}build_app.components.toolbar.tooltip.delete{% endtrans %}'       id='mlab_button_delete'     src='/img/tools/delete.png'     class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_help();'      title='{% trans %}build_app.components.toolbar.tooltip.help{% endtrans %}'         id='mlab_button_help'       src='/img/tools/help.png'       class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_cut();'       title='{% trans %}build_app.components.toolbar.tooltip.cut{% endtrans %}'          id='mlab_button_cut_comp'   src='/img/tools/cut-icon.png'   class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_copy();'      title='{% trans %}build_app.components.toolbar.tooltip.copy{% endtrans %}'         id='mlab_button_copy_comp'  src='/img/tools/copy-icon.png'  class='mlab_tools_all' >
-                            <img onclick='mlab.dt.design.component_paste();'     title='{% trans %}build_app.components.toolbar.tooltip.paste{% endtrans %}'        id='mlab_button_paste_comp' src='/img/tools/paste-icon.png' class='mlab_tools_all' >
-                            <hr class='mlab_tools_line' >
-                            <img                                                        title='{% trans %}build_app.components.toolbar.tooltip.resize{% endtrans %}'        id='mlab_button_component_size'          src='/img/tools/resize.png'       class='mlab_tools mlab_hidden' >
-                            <img                                                        title='{% trans %}build_app.components.toolbar.tooltip.aspect.ratio{% endtrans %}'  id='mlab_button_component_aspect'        src='/img/tools/aspect.png'         class='mlab_tools mlab_hidden' >
-                            <img                                                        title='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'       id='mlab_button_select_storage_plugin'   src='/img/tools/storage.png'        class='mlab_tools mlab_tools_space mlab_hidden' >
-                            <img onclick='mlab.dt.design.component_edit_credentials();' title='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'   id='mlab_button_get_credentials'         src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <img id='mlab_button_up'         title='{% trans %}build_app.components.toolbar.tooltip.move.up{% endtrans %}'      src='/img/tools/up.png'         class='mlab_tools_all' >
+                            <img id='mlab_button_down'       title='{% trans %}build_app.components.toolbar.tooltip.move.down{% endtrans %}'    src='/img/tools/down.png'       class='mlab_tools_all' >
+                            <img id='mlab_button_delete'     title='{% trans %}build_app.components.toolbar.tooltip.delete{% endtrans %}'       src='/img/tools/delete.png'     class='mlab_tools_all' >
+                            <img id='mlab_button_help'       title='{% trans %}build_app.components.toolbar.tooltip.help{% endtrans %}'         src='/img/tools/help.png'       class='mlab_tools_all' >
+                            <img id='mlab_button_cut_comp'   title='{% trans %}build_app.components.toolbar.tooltip.cut{% endtrans %}'          src='/img/tools/cut-icon.png'   class='mlab_tools_all' >
+                            <img id='mlab_button_copy_comp'  title='{% trans %}build_app.components.toolbar.tooltip.copy{% endtrans %}'         src='/img/tools/copy-icon.png'  class='mlab_tools_all' >
+                            <img id='mlab_button_paste_comp' title='{% trans %}build_app.components.toolbar.tooltip.paste{% endtrans %}'        src='/img/tools/paste-icon.png' class='mlab_tools_all' >
+                            <hr  class='mlab_tools_line' >
+                            <img id='mlab_button_component_size'    title='{% trans %}build_app.components.toolbar.tooltip.resize{% endtrans %}'        src='/img/tools/resize.png'  class='mlab_tools mlab_hidden' >
+                            <img id='mlab_button_component_aspect'  title='{% trans %}build_app.components.toolbar.tooltip.aspect.ratio{% endtrans %}'  src='/img/tools/aspect.png'  class='mlab_tools mlab_hidden' >
+                            <img id='mlab_button_select_storage_plugin'   title='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'       src='/img/tools/storage.png' class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <img id='mlab_button_get_credentials'   title='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'   src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
+                            <div id="mlab_storage_plugin_list" data-mlab-get-info="storage_plugins" class='mlab_hidden'></div>
+                            <div id="mlab_storage_credentials" data-mlab-get-info="credentials" class='mlab_hidden'></div>
                             <div id='mlab_component_context_menu'></div>
                             <div class="mlab_newline">&nbsp;</div>
                         </div>
 
-                        <div id="mlab_storage_plugin_list" style="display: none;"></div>
+<!--SPSP                        <div id="mlab_storage_plugin_list" style="display: none;"></div> -->
 
                         <div id="mlab_component_size_list" style="display: none;">
                             <ul>
@@ -328,6 +330,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $("#mlab_statusbar_progress_spin").spin('small', '#fff');        
+
             });
             
             function page_help(event) {

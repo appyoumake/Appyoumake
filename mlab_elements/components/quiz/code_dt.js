@@ -49,7 +49,7 @@ this.STR_SELECT_ONLY_ONE_CORRECT = "When using a drop down box to select an answ
  * @param {jQuery} el Main element for component. 
  */
 this.onCreate = function (el) {
-    this.initQuizVars(el);
+    this.onLoad(el);
 };
 
 /* Hook called when component is loaded into app.
@@ -273,7 +273,6 @@ this.handleUserInput = function(input, e) {
                     }
                 }
                 question.attr("data-mlab-cp-quiz-questiontype", this.questionTypes[value - 1].type);
-                this.setMandatory(question, value);
                 $("[data-mlab-dt-quiz-input='mandatory']").focus();
             }
             break;
@@ -587,15 +586,15 @@ this.addQuestion = function(text, editMode) {
     var page = this.getCurrentPage();
     page.find(".mlab_current_component_child, .mlab_current_component_editable").removeClass("mlab_current_component_child mlab_current_component_editable");
     if (editMode == "explanatory") {
-        var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionExplanatoryTemplate.replace("{content}", text));
+        var div = $(this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionExplanatoryTemplate.replace("{content}", text)));
     } else if (editMode == "question") {
-        var div = this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionQuestionTemplate.replace("{content}", text));
+        var div = $(this.questionTemplate.replace("{id}", this.api.getGUID()).replace("{content}", this.questionQuestionTemplate.replace("{content}", text)));
     } else {
         var div = "";
     }
     question = page.append(div);
     this.api.setDirty();
-    return question;
+    return div;
 };
 
 /**
@@ -955,7 +954,7 @@ this.custom_set_options = function(el, event) {
         $(content).find("[data-mlab-dt-quiz-property='" + name + "']").prop("checked", settings[name]);
     }
             
-    $(content).on("click", "[data-mlab-dt-quiz-property]", function() {
+/*SPSP    $(content).on("click", "[data-mlab-dt-quiz-property]", function() {
         var settings = mlab.dt.api.getVariable(el, "settings");
         if (typeof settings == "undefined") {
             settings = {};
@@ -977,7 +976,7 @@ this.custom_set_options = function(el, event) {
             });
             
         }
-    });
+    }); */
     
     this.api.displayPropertyDialog(el, "Set quiz options", content, null, null, null, null, false, event);
     
@@ -1062,7 +1061,6 @@ this.convertQuestion = function(question, from, to) {
             break;
              
         case "multiselect_to_select" :
-            debugger;
             question.find(".mlab_cp_quiz_multiselect").removeClass("mlab_cp_quiz_multiselect").prepend("<legend></legend>");
 //a select box can only have one correct choice
             question.find("li.mc_correct:not(:first-child)").removeClass("mc_correct").removeAttr("data-mlab-cp-quiz-correct-response");
@@ -1217,7 +1215,7 @@ this.getQuizPropertiesDialogHtml = function() {
     return $('<div>' + 
             '    <p class="mlab_dt_text">The correct answers to a quiz can be checked and/or saved to a database. Choose your options below.</p>' + 
             '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="allow_check">Allow check of answers on device?</label>' + 
-            '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="allow_check_on_page">Allow check of answers on each page?</label>' + 
+            '    <label class="mlab_dt_label" style="margin-left: 2em;"><input type="checkbox" data-mlab-dt-quiz-property="allow_check_on_page">Allow check of answers on each page?</label>' + 
             '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="display_correct">Show correct answers when check</label>' + 
             '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="lock_checked">Lock checked questions for further editing</label>' + 
             '    <label class="mlab_dt_label"><input type="checkbox" data-mlab-dt-quiz-property="submit">Submit answers to remote database?</label>' + 

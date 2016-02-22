@@ -135,10 +135,12 @@
                     if (data.result === "success") {
 
                         var feature_list = $("<ul></ul>");
-                        var storage_plugin_list = $("<ul></ul>");
+/*SPSP                        var storage_plugin_list = $("<ul></ul>");*/
                         var loc = mlab.dt.api.getLocale();
                         mlab.dt.components = data.mlab_components;
-                        var all_components = [];
+                        mlab.dt.storage_plugins = {};
+                        var components_html = [];
+                        var additional_html = "";
 
                         for (type in mlab.dt.components) {
                             
@@ -157,16 +159,20 @@
                                 var tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
                                 var tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
                                 var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
-                                if (typeof c.new_line != "undefined" && c.new_line === 1) {
-                                    var cl = "mlab_newline";
+                                
+//the newline setting in the database 
+                                if (components_html.length == 0) {
+                                    additional_html = "<h3>" + c.conf.category + "</h3><div>";
+                                } else if (typeof c.new_line != "undefined" && c.new_line === 1) {
+                                    additional_html = "</div><h3>" + c.conf.category + "</h3><div>";
                                 } else {
-                                    var cl = "";
+                                    additional_html = "";
                                 }                                
                                 
-                                all_components[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
+                                components_html[parseInt(c.order_by)] = additional_html + "<div data-mlab-type='" + type + "' " +
                                             "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
                                             "title='" + tt + "' " +
-                                            "class='mlab_button_components " + cl + "' " +
+                                            "class='mlab_button_components' " +
                                             "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                         "</div>" + 
                                         "<div class='mlab_component_footer_tip'>" +
@@ -176,15 +182,17 @@
                             } else if (c.accessible && c.is_feature) {
                                 feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
                             } else if (c.accessible && c.is_storage_plugin) {
-                                storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+                                mlab.dt.storage_plugins[type] = eName;
+/*SPSP                                mlab.dt.storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");*/
                             }
                         }
                         
-                        $("#mlab_toolbar_components").append(all_components.join(""));
-                      
+                        $("#mlab_toolbar_components").append(components_html.join("") + "</div>");
+                        $("#mlab_toolbar_components").accordion({ heightStyle: "content" });
+                        
 //add the HTML generated in the component load loop above to their respecitve containers.
                         $("#mlab_features_list").html(feature_list);
-                        $("#mlab_storage_plugin_list").html(storage_plugin_list);
+//SPSP                        $("#mlab_storage_plugin_list").html(storage_plugin_list);
                         
 //now loop through all components and for those that inherit another we transfer properties
                         mlab.dt.utils.process_inheritance(mlab.dt.components);
@@ -214,7 +222,7 @@
 
 
 //prepare the menu popup for the storage plugin selector
-                        $("#mlab_button_select_storage_plugin").click( function(event) {
+/*SPSP                        $("#mlab_button_select_storage_plugin").click( function(event) {
                             mlab.dt.api.closeAllPropertyDialogs();
                             var owner_element = event.currentTarget;
                             mlab.dt.api.properties_tooltip = $(owner_element).qtip({
@@ -226,8 +234,26 @@
                                 events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
                                 style:      { classes: "mlab_zindex_top_tooltip" }
                             });
-                        } );
+                        } );*/
                         
+//assign click functions to tools
+                        $("#mlab_button_up").on("click", function () { mlab.dt.design.component_moveup(); });
+                        $("#mlab_button_down").on("click", function () { mlab.dt.design.component_movedown(); });
+                        $("#mlab_button_delete").on("click", function () { mlab.dt.design.component_delete(); });
+                        $("#mlab_button_help").on("click", function () { mlab.dt.design.component_help(); });
+                        $("#mlab_button_cut_comp").on("click", function () { mlab.dt.design.component_cut(); });
+                        $("#mlab_button_copy_comp").on("click", function () { mlab.dt.design.component_copy(); });
+                        $("#mlab_button_paste_comp").on("click", function () { mlab.dt.design.component_paste(); });
+                        $("#mlab_button_select_storage_plugin").on("click", function () { 
+                            
+                            var el = $(this).siblings("[data-mlab-get-info='storage_plugins']");
+                            if( !el.is(":visible")) { 
+                                el.html(mlab.dt.api.getStoragePluginList(mlab.dt.api.getSelectedComponent()));
+                            }
+                            el.slideToggle();
+                        });
+                        $("#mlab_button_get_credentials").on("click", function () { mlab.dt.design.component_edit_credentials(); });
+
 //prepare the menu popup for the component resizer
                         $("#mlab_button_component_size").click( function(event) {
                             mlab.dt.api.closeAllPropertyDialogs();

@@ -102,6 +102,32 @@ Mlab_dt_api.prototype = {
     },
     
 /**
+ * This will return a list in HTML format of all the available storage plugins
+ * Each plugin will have an onclick event
+ */
+    getStoragePluginList: function (component) {
+        var storage_plugin_list = $("<ul></ul>");
+        var sel_class = "";
+        var selected_plugin;
+        
+//find out if the component has a currently selected storage plugin
+        var existing_storage_plugin = mlab.dt.api.getVariable(component, "storage_plugin");
+        if (existing_storage_plugin && existing_storage_plugin.name) {
+            selected_plugin = existing_storage_plugin.name;
+        }
+    
+        for (type in this.parent.storage_plugins) {
+            if (type == selected_plugin) {
+                sel_class = " class='mlab_item_applied' "; 
+            } else {
+                sel_class = "";
+            }
+            storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' " + sel_class + " title='" + $('<div/>').text(this.parent.storage_plugins[type]).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");
+        }
+        storage_plugin_list.find("li").on("click", function () { mlab.dt.design.storage_plugin_add( $(this).data("mlab-storage-plugin-type"),  mlab.dt.api.getSelectedComponent() ); });
+        return storage_plugin_list;
+    },
+/**
  * Wrapper function which calls the back end to load component help, 
  * the backend checks for language selected and sees if there are language specific help file available, if not use generic one
  * @param {type} component: component object
@@ -860,6 +886,68 @@ Mlab_dt_api.prototype = {
                 $(link).replaceWith( $(link).contents() );
             }
         }
+    },
+    
+
+/**
+  * Displays a previously hidden DIV to request credentials for a storage plugin. This is done by sliding down a previously hidden DIV with the credentials HTML. 
+  * @param {type} credentials_required
+  * @param {type} cb_function
+  * @param {type} params
+  * @returns {Boolean|Array of strings}
+ */
+    getStorageCredentials: function (credentials_required, cb_function, params) {
+        
+        var dlg = $('<div />', {id: "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
+        for (credential in credentials_required) {   
+            dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , class: 'mlab_dt_text_info' } ) );
+            dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , for: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_short_label' } ) );
+            dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , id: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , class: 'mlab_dt_input' }) );      
+            dlg.append( $('<br />') );   
+        }
+        dlg.append( $('<button>Save</button>') );   
+        
+        dlg.find("button").on("click", function() {
+            debugger;
+            var credentials = {};
+            for (credential in credentials_required) {
+                credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
+            }
+
+            $(this).dialog("close");
+            dlg.remove();
+            cb_function(credentials, params);
+            dlg.parent
+            $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='storage_plugins']").slideUp();
+            $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").slideUp();
+            
+        })
+        
+        $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").append(dlg).slideDown();
+        
+/*SPSP        var that_dlg = $(dlg).dialog({
+                autoOpen: true,
+                modal: true,
+                closeOnEscape: true,
+                dialogClass: "mlab_dt_dialog_credentials",
+                             
+                buttons: {
+                    'Save': function() {
+                        
+                        var credentials = {};
+                        for (credential in credentials_required) {
+                            credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
+                        }
+                        
+                        $(this).dialog("close");
+                        dlg.remove();
+                        cb_function(credentials, params);
+                        
+                    },
+                   
+                }
+            }).dialog("open");*/
+            
     },
 
 /**
