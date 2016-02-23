@@ -299,7 +299,7 @@ made smaler than the min width */
     left: 635px;*/
 }
 
-#mlab_editor .mlab_toolbar_for_components #mlab_component_toolbar_heading {
+#mlab_editor .mlab_toolbar_for_components .mlab_component_toolbar_heading {
     font-family: Verdana, Arial, sans-serif;
     font-size:14px;
     text-align: center;
@@ -337,7 +337,7 @@ made smaler than the min width */
 }
 
 /* TODO - få inn en klasse så ikke bruker img? */
-#mlab_editor .mlab_toolbar_for_components #mlab_component_context_menu img {
+#mlab_editor .mlab_toolbar_for_components .mlab_component_context_menu img {
     padding: 2px;
     float: left;
     width: 28px;
@@ -345,7 +345,7 @@ made smaler than the min width */
 }
 
 /* makes the last clear div short */
-#mlab_editor .mlab_toolbar_for_components #mlab_component_context_menu .clear {
+#mlab_editor .mlab_toolbar_for_components .mlab_component_context_menu .clear {
     line-height: 2px;
 }
 
@@ -366,7 +366,7 @@ made smaler than the min width */
 }
 
 /* TODO */
-#mlab_editor div#mlab_component_context_menu img.edit_quiz { 
+#mlab_editor div.mlab_component_context_menu img.edit_quiz { 
     width: 24px;
     height: 24px;
     background-repeat: no-repeat;

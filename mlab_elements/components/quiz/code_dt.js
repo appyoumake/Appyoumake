@@ -623,8 +623,15 @@ this.addQuestionAlternative = function(question, value, questionType) {
             var html = "<label class='mc_text mc_entry mc_info'><input value='" + value + "' class='mc_text mc_entry mc_input' type='radio' name='" + name + "'><span>" + value + "</span></label>";
             break;
 
-        case "text":
-            var html = "<input class='mc_text mc_entry mc_input' type='text' data-mlab-cp-quiz-correct-response='" + value + "' placeholder='" + value + "'>";
+//this is a bit different as it is always one item only, the text box, so we need to update values whn an alternative is added in edit mode.
+        case "text": 
+            var text_box = alternatives_container.find("text");
+            if (text_box.length > 0) {
+                text_box.attr({ "data-mlab-cp-quiz-correct-response": value, "placeholder": value });
+                return true;
+            } else {
+                var html = "<input class='mc_text mc_entry mc_input' type='text' data-mlab-cp-quiz-correct-response='" + value + "' placeholder='" + value + "'>";
+            }
             break;
 
         case "select":

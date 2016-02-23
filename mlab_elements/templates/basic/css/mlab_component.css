@@ -68,7 +68,7 @@ part of a list */
     margin-top: 0.3em;
     margin-bottom: 0.3em;
     width: 100% !important;
-    height: auto; /* !important;*/
+    /* height: auto; /* !important;*/
     display: block;
 }
 

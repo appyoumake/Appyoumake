@@ -3,6 +3,7 @@
     @param {DOM object} el Component element
 */
 this.onPageLoad = function(el) {
+    debugger;
     var self = this;
     self.domRoot = $(el);
     self.deviceId = self.api.getDeviceId(); 
@@ -139,6 +140,7 @@ this.processAnswers = function (data) {
 
 //the answer check utilises the "data-mlab-cp-quiz-correct-response=true" we use for checkboxes, radio boxes and options to 
 this.checkPageAnswers = function(page) {
+    debugger;
     if (typeof page == "undefined") {
         return;
     }
@@ -149,8 +151,8 @@ this.checkPageAnswers = function(page) {
     $(page).find("input[type='text']").css("background-color", "");
 
 
-    $(page).find("input[data-mlab-cp-quiz-correct-response='correct']").filter(":checked").parent().css("background-color", "orange");
-    $(page).find("option[data-mlab-cp-quiz-correct-response='correct']").filter(":selected").css("background-color", "orange");
+    $(page).find("input[data-mlab-cp-quiz-correct-response='true']").filter(":checked").parent().css("background-color", "orange");
+    $(page).find("option[data-mlab-cp-quiz-correct-response='true']").filter(":selected").css("background-color", "orange");
     $(page).find(":text").each( function () {
         if ($(this).attr("data-mlab-cp-quiz-correct-response").toLowerCase().trim() == $(this).val().toLowerCase().trim()) {
             $(this).css("background-color", "orange");
@@ -175,7 +177,7 @@ this.checkAllAnswers = function() {
             switch (q_type) {
                 case "checkbox": 
                     $(this).find("input").each( function() {
-                        if ( $(this).data("mlab-cp-quiz-correct-response") == "correct" ) {
+                        if ( $(this).data("mlab-cp-quiz-correct-response") == true ) {
                             if ( $(this).prop("checked") ) {
                                 result_page.append("<p class='mc_entry mc_info mc_correct'>" + $(this).parent().text() + "</p>");
                             } else if (mlab.api.components['quiz'].settings.display_correct) {
@@ -190,7 +192,7 @@ this.checkAllAnswers = function() {
 
                 case "radio": 
                     var sel = $(this).find("input:checked");
-                    var corr = $(this).find("input[data-mlab-cp-quiz-correct-response='correct']");
+                    var corr = $(this).find("input[data-mlab-cp-quiz-correct-response='true']");
                     if (sel.val() == corr.val()) {
                         result_page.append("<p class='mc_entry mc_info mc_correct'>" + sel.parent().text() + "</p>");
                     } else {
@@ -203,7 +205,7 @@ this.checkAllAnswers = function() {
 
                 case "multiselect": 
                     $(this).find("select option").each( function() {
-                        if ( $(this).data("mlab-cp-quiz-correct-response") == "correct" ) {
+                        if ( $(this).data("mlab-cp-quiz-correct-response") == true ) {
                             if ( $(this).prop("selected") ) {
                                 result_page.append("<p class='mc_entry mc_info mc_correct'>" + $(this).text() + "</p>");
                             } else if (mlab.api.components['quiz'].settings.display_correct) {
@@ -218,7 +220,7 @@ this.checkAllAnswers = function() {
 
                 case "select": 
                     var sel = $(this).find("select option:selected");
-                    var corr = $(this).find("select option[data-mlab-cp-quiz-correct-response='correct']");
+                    var corr = $(this).find("select option[data-mlab-cp-quiz-correct-response='true']");
                     if (sel.val() == corr.val()) {
                         result_page.append("<p class='mc_entry mc_info mc_correct'>" + sel.text() + "</p>");
                     } else {

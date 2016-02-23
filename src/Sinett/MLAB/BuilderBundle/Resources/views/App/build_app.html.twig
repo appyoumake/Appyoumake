@@ -161,11 +161,8 @@
                             </div> <!-- End Navigate & Save col -->
 
                             <div class="mlab_one_col"> <!-- Feature col -->
-                                <h3>{% trans %}app.builder.edit.menu.heading.feature{% endtrans %}</h3>
-                                <p>{% trans %}app.builder.edit.menu.feature.info{% endtrans %}</p>
-                                <div id="mlab_features_list"></div>
                                 <div class='mlab_sub_menu'>
-                                    <h4>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h4>
+                                    <h3>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h3>
                                     <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
                                     <a href="javascript: mlab.dt.management.app_remove_locks();">{% trans %}build_app.menu.utilities.delete.locks{% endtrans %}</a>
                                     <a href="javascript: mlab.dt.management.compiler.get_app_status();">{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}
@@ -274,7 +271,7 @@
                         </div>
 
                         <div id="mlab_toolbar_for_components" class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style="display: none">
-                            <div id='mlab_component_toolbar_heading'>Tools</div>
+                            <div id='mlab_component_toolbar_heading' class="mlab_component_toolbar_heading">Tools</div>
                             <img id='mlab_button_up'         title='{% trans %}build_app.components.toolbar.tooltip.move.up{% endtrans %}'      src='/img/tools/up.png'         class='mlab_tools_all' >
                             <img id='mlab_button_down'       title='{% trans %}build_app.components.toolbar.tooltip.move.down{% endtrans %}'    src='/img/tools/down.png'       class='mlab_tools_all' >
                             <img id='mlab_button_delete'     title='{% trans %}build_app.components.toolbar.tooltip.delete{% endtrans %}'       src='/img/tools/delete.png'     class='mlab_tools_all' >
@@ -289,7 +286,7 @@
                             <img id='mlab_button_get_credentials'   title='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'   src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
                             <div id="mlab_storage_plugin_list" data-mlab-get-info="storage_plugins" class='mlab_hidden'></div>
                             <div id="mlab_storage_credentials" data-mlab-get-info="credentials" class='mlab_hidden'></div>
-                            <div id='mlab_component_context_menu'></div>
+                            <div class='mlab_component_context_menu'></div>
                             <div class="mlab_newline">&nbsp;</div>
                         </div>
 

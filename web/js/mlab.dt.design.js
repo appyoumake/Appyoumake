@@ -473,11 +473,11 @@ Mlab_dt_design.prototype = {
         var comp_name = curr_comp.data("mlab-type");
         var items = new Object();
         var title = "";
-        var menu = $("#mlab_component_context_menu");
+        var menu = $("#mlab_toolbar_for_components .mlab_component_context_menu");
         var temp_menu = [];
         var loc = mlab.dt.api.getLocale();
         
-        $("#mlab_toolbar_for_components #mlab_component_toolbar_heading").text(this.parent.api.getLocaleComponentMessage(comp_name, ["extended_name"]));
+        $("#mlab_toolbar_for_components .mlab_component_toolbar_heading").text(this.parent.api.getLocaleComponentMessage(comp_name, ["extended_name"]));
         menu.html("");
         
 
