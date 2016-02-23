@@ -1,0 +1,9 @@
+# Configuration file for combatlog component
+version: 1.1
+developer: Arild Bergh @ Sinett/FFI.no
+category: serviceconnections
+name: dsb
+tooltip: { nb_NO: DSB Instrukser, en_GB: DSB instructions, default: DSB instructions }
+extended_name: { nb_NO: DSB Instrukser ang. farlige stoffer instrukser, en_GB: DSB instructions re dangerous goods, default: DSB instructions re dangerous goods }
+
+html: <h3 class='mc_text mc_display '>Data om transport av farlige stoffer vil bli lagt inn her</h3>
