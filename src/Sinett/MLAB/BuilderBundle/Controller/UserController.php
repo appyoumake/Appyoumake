@@ -46,9 +46,10 @@ class UserController extends Controller
         $entity = new User();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
+        
+        $existing_user = $em->getRepository('SinettMLABBuilderBundle:User')->findByEmail($entity->getEmail());
+        if (!$existing_user && $form->isValid()) {
             $em->persist($entity);
             $em->flush();
 
@@ -59,10 +60,17 @@ class UserController extends Controller
             		'record' => $this->renderView('SinettMLABBuilderBundle:User:show.html.twig', array('entity' => $entity))));
         }
 
-        return new JsonResponse(array('db_table' => 'user',
-        			'db_id' => 0,
-        			'result' => 'FAILURE',
-        			'message' => $this->get('translator')->trans('userController.msg.unable.create.record')));
+        if ($existing_user) {
+            return new JsonResponse(array('db_table' => 'user',
+                        'db_id' => 0,
+                        'result' => 'FAILURE',
+                        'message' => $this->get('translator')->trans('userController.msg.email.exists')));
+        } else {
+            return new JsonResponse(array('db_table' => 'user',
+                        'db_id' => 0,
+                        'result' => 'FAILURE',
+                        'message' => $this->get('translator')->trans('userController.msg.unable.create.record')));
+        }
     }
 
     /**
@@ -197,8 +205,9 @@ class UserController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $this->get('fos_user.user_manager')->updateUser($entity, false);
             $em->flush();
-
+            
             return new JsonResponse(array('db_table' => 'user',
             		'action' => 'UPDATE',
             		'db_id' => $id,

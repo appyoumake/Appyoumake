@@ -543,6 +543,7 @@ trackingController.createNotFoundException: Unable to find Tracking entity.
 
 userController.msg.unable.create.record: Unable to create new record
 userController.msg.unable.find.record: Unable to locate user record
+userController.msg.email.exists: A user with this email is already registered, email addresses must be unique
 userController.createNotFoundException: Unable to find User entity.
 userController.editAction.response: You do not have the rights to edit this user, must be Super Admin
 
