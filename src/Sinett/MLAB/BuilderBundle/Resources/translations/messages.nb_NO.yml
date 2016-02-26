@@ -543,6 +543,7 @@ trackingController.createNotFoundException: Finner ikke Tracking database oppfø
 
 userController.msg.unable.create.record: Kan ikke lage ny forekomst
 userController.msg.unable.find.record: Finner ikke brukerinfo
+userController.msg.email.exists: En bruker med denne eposten er allerede registrert, epost addresser må være unike
 userController.createNotFoundException: Finner ikke brukerinfo.
 userController.editAction.response: Du har ikke tilgang til å redigere denne brukeren, bare en superbruker eller Admin har denne rettigheten
 

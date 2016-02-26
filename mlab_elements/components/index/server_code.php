@@ -90,7 +90,7 @@ class mlab_ct_index {
         $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
         
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
-        if ($style == "folding" && sizeof($index) > 1) {
+        if ($style == "folding") {
             $html .= "<div data-role='collapsible-set' data-theme='a' data-content-theme='a' data-mini='true'>\n";
 
 //outer loop for chapter

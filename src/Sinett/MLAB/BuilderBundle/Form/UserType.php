@@ -24,7 +24,7 @@ class UserType extends AbstractType
             ->add('email', null, array('label' => 'app.admin.users.new.or.edit.email', 'attr' => array('autocomplete' => 'off')))
             ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username', 'attr' => array('autocomplete' => 'off')))
             ->add('plainPassword', 'password', array('label' => 'app.admin.users.new.or.edit.plain.password', 'attr' => array('autocomplete' => 'off')))
-    		->add('categoryOne', 
+/*    		->add('categoryOne', 
                     null, 
                     array('query_builder' => function(EntityRepository $er) {
                               return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
@@ -39,7 +39,7 @@ class UserType extends AbstractType
     		->add('categoryThree', 
                     null, 
                     array('label' => 'app.admin.users.new.or.edit.categoryThree')
-                 )
+                 )*/
             ->add('groups', null, array('label' => 'app.admin.users.new.or.edit.groups'))
             ->add('roles', 'choice', array('choices' => $role_choices, 'multiple' => true, 'label' => 'app.admin.users.new.or.edit.roles'))
             ->add('enabled', null, array('label' => 'app.admin.users.new.or.edit.enabled'))
