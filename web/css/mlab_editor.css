@@ -68,7 +68,7 @@ made smaler than the min width */
     display: block;
     float: left;
     width: 145px;
-    margin-top: 125px;
+    margin-top: 120px;
     overflow-y: auto;
     height: 75%;
     position: fixed;
@@ -145,6 +145,50 @@ made smaler than the min width */
 
 #mlab_editor .mlab_qtip_tooltip.qtip p.note{
     font-weight: 700;
+}
+
+ 
+
+#mlab_editor .ui-accordion-content {
+    border: 1px solid grey;
+}
+
+#mlab_editor .ui-accordion-header {
+    background-color: #ffcc66;
+    text-transform: capitalize;
+    padding-left: 3px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+#mlab_editor .ui-accordion-header-active {
+    background-color: orange;
+}
+
+/*The accordion is closed*/
+#mlab_editor .ui-accordion-header:after {
+    font-family: Arial, Helvetica, sans-serif;
+    content: "+";
+    float: right;
+    padding-right: 5px;
+}
+/*The accordion is open*/
+#mlab_editor .ui-accordion-header-active:after {
+    content: "-";
+ }
+ 
+ .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 0;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 0;
+}
+#mlab_toolbar_components .ui-corner-all, #mlab_toolbar_components .ui-corner-top, #mlab_toolbar_components .ui-corner-right, #mlab_toolbar_components .ui-corner-tr {
+    border-top-right-radius: 0;
+    margin-top: 10px;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 0;
 }
 
 
@@ -575,9 +619,6 @@ made smaler than the min width */
 
 
 
-
-
-
 /* TEMP AV ARILD */
 
 #mlab_editor ul.ui-autocomplete {
@@ -612,19 +653,6 @@ made smaler than the min width */
 
 #mlab_editor #mlab_storage_plugin_list {
     z-index: 600 !important;
-}
-
-#mlab_editor ui-accordion-content {
-    border: 1px solid grey;
-}
-
-#mlab_editor .ui-accordion-header {
-    background-color: #ffcc66;
-    text-transform: capitalize;
-}
-
-#mlab_editor .ui-accordion-header-active {
-    background-color: orange;
 }
 
 #mlab_editor [data-mlab-get-info="credentials"] label {
