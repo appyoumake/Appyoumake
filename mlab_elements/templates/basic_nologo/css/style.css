@@ -1,0 +1,23 @@
+/* Style Sheet for the Basic template
+   Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
+*/
+
+
+/* ==========================================================================
+   Page
+   ========================================================================== */
+
+#mlab_editor_chrome [data-role="page"],
+#mlab_page_body {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    overflow-y: auto;
+    background-color: #1e1e1e;  
+}
+
+#mlab_page_body .mlab_main_body_content,
+#mlab_editor_chrome .mlab_main_body_content {
+    padding: 0.6em;
+}
