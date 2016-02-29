@@ -25,8 +25,8 @@
                 <input type="radio" name="select_base" id="select_base_template" value="template">
                 <label for="select_base_existing_app">{% trans %}builder.new.app.select_base.existing_app{% endtrans %}</label> 
                 <input type="radio" name="select_base" id="select_base_existing_app" value="existing_app">
-                <label for="select_base_office_file">{% trans %}builder.new.app.select_base.office_file{% endtrans %}</label> 
-                <input type="radio" name="select_base" id="select_base_office_file" value="office_file">
+<!--                <label for="select_base_office_file">{% trans %}builder.new.app.select_base.office_file{% endtrans %}</label> 
+                <input type="radio" name="select_base" id="select_base_office_file" value="office_file"> -->
             </div>
 
             <div class="mlab_form_tab" id="builder_app_property_tabs-2">
@@ -38,7 +38,7 @@
                 </div>
                 
                 <div id="div_base_template" class="mlab_div_base">
-                    {{ form_row(form.template, {'url_templates': url_templates}) }}
+                    {{ form_row(form.template, {'url_templates': url_templates, 'templates': templates}) }}
                 </div>
                 
                 <div id="div_base_office_file" class="mlab_div_base">   

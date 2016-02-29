@@ -84,7 +84,7 @@ class AppController extends Controller
         $url_apps = $this->container->parameters['mlab']['urls']['app'];
     	$url_templates = $this->container->parameters['mlab']['urls']['template'];
     	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
-    	
+
         $form = $this->createAppForm($entity, 'create');
         
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(

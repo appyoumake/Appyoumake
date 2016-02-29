@@ -13,14 +13,42 @@
             {% if preferred_choices|length > 0 %}
                 {% set options = preferred_choices %}
                 {{ block('choice_widget_options') }}
-                {% if choices|length > 0 and separator is not none %}
+                {% if templates|length > 0 and separator is not none %}
                     <option disabled="disabled">{{ separator }}</option>
                 {% endif %}
             {% endif %}
-            {% set options = choices %}
+            {% set options = templates %}
             {% for group_label, choice in options %}
-                <option data-imagesrc="{{ url_templates ~ choice.data.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.data.description }}" value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %}>{{ choice.label|trans({}, translation_domain) }}</option>
+                <option data-imagesrc="{{ url_templates ~ choice.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.description }}" value="{{ choice.id }}">{{ choice.description }}</option>
             {% endfor %}
         </select>
     {% endspaceless %}
 {% endblock choice_widget %}
+
+{#
+
+{% block choice_widget %}
+    {% spaceless %}
+        {% if required and empty_value is none and not empty_value_in_choices %}
+            {% set required = false %}
+        {% endif %}
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none %}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {% endif %}
+            {% if preferred_choices|length > 0 %}
+                {% set options = preferred_choices %}
+                {{ block('choice_widget_options') }}
+                {% if templates|length > 0 and separator is not none %}
+                    <option disabled="disabled">{{ separator }}</option>
+                {% endif %}
+            {% endif %}
+            {% set options = templates %}
+            {% for group_label, choice in options %}
+                <option data-imagesrc="{{ url_templates ~ choice.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.description }}" value="{{ choice.id }}">{{ choice.description }}</option>
+            {% endfor %}
+        </select>
+    {% endspaceless %}
+{% endblock choice_widget %}
+
+#}
