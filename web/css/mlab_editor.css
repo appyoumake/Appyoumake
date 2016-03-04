@@ -65,12 +65,13 @@ made smaler than the min width */
 
 #mlab_editor #mlab_toolbar_components {
     padding-left: 10px;
+    padding-right: 4px;
     display: block;
     float: left;
     width: 145px;
-    margin-top: 120px;
+    margin-top: 130px;
     overflow-y: auto;
-    height: 75%;
+    height: 70%;
     position: fixed;
 } 
 
@@ -185,7 +186,11 @@ made smaler than the min width */
 }
 #mlab_toolbar_components .ui-corner-all, #mlab_toolbar_components .ui-corner-top, #mlab_toolbar_components .ui-corner-right, #mlab_toolbar_components .ui-corner-tr {
     border-top-right-radius: 0;
-    margin-top: 10px;
+    //margin-bottom: 10px;
+}
+
+#mlab_toolbar_components .ui-accordion.ui-widget{
+    margin-bottom: 10px;
 }
 .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
     border-top-left-radius: 0;

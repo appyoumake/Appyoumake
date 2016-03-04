@@ -121,12 +121,26 @@
 
 
 
-//check if the doc is modified, if so warn user, also unlock file
+//check if the doc is modified before closeing it, if so warn user, also unlock file and save component accordion expand collaps state
                 window.onbeforeunload = function() {
                     var url = mlab.dt.urls.editor_closed.replace("_UID_", mlab.dt.uid);
                     $.ajax({ url: url, async: false });
 
                     if (mlab.dt.flag_dirty) { return _tr["mlab_editor.init.js.alert.unsaved"] ; }
+                    //Loop trough the Component categories/accordians to se if they are expand or collapsed. 
+                    var compcat = $("#mlab_toolbar_components h3");
+                            if (typeof compcat != "undefined"){
+                                compcat.each(function(){
+                                    var cat = $(this).data("mlab-category");
+                                    if ($(this).hasClass("ui-state-active")){
+                                        //Set coockie to save expand state of the accordians of the componentgroup
+                                        document.cookie="mlabCompCat" + cat + "=0; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
+                                    } else {
+                                        //Set coockie to save collapsed state of the accordians of the componentgroup
+                                        document.cookie="mlabCompCat" + cat + "=1; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
+                                    }
+                                })
+                            }
                 };
 
 //now we load components, the go into a mlab object called components,
@@ -196,14 +210,47 @@
 /*SPSP                                mlab.dt.storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");*/
                             }
                         }
+//gets a cookie by name/key                        
+                       function getCookie(cname) {
+                            var name = cname + "=";
+                            var ca = document.cookie.split(';');
+                            for(var i=0; i<ca.length; i++) {
+                                var c = ca[i];
+                                while (c.charAt(0)==' ') c = c.substring(1);
+                                if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+                            }
+                            return 1;
+                        }
 
-                        var components_flat_html = "";
-                        for  (category in components_html) {
-                            components_flat_html = components_flat_html + "<h3>" + category + "</h3><div>" + components_html[category].join("") + "</div>"; 
-                        } 
+//TODO now first category is hardcoded to be text...
+//If the first category of components does not have a cookie it moste likely that none of the mlabCompCatxxx cookies are made (first time users or deleted cookies) - so set the first categroy to expand 
+                        var cookieExsists = getCookie("mlabCompCattext");
+                        if (cookieExsists === 1){
+//Cookie for first category not found - set cookie so it will be expanded
+                            document.cookie="mlabCompCattext=0; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
+                        }
                         
-                        $("#mlab_toolbar_components").append(components_flat_html + "<h3>Features</h3><div>" + features_html.join("") + "</div>");
-                        $("#mlab_toolbar_components").accordion({ heightStyle: "content" });
+//Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
+                        for  (category in components_html) {
+                            var activeCat = Number(getCookie("mlabCompCat" + category));
+                            $("<div><h3 data-mlab-category='" + category + "'>" + category + "</h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
+                                heightStyle: "content",
+                                active: activeCat,
+                                collapsible: true
+                            });
+                        } 
+
+                        if (features_html.length != 0) {
+//Adds Features as a category (with all the features - if there is any) under the component toolbar and and adds an accordion to the categroy                            
+                           var activeCat = Number(getCookie("mlabCompCat" + "Features")); 
+                           $("<div><h3 data-mlab-category='Features'>Features</h3><div>" + features_html.join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
+                                heightStyle: "content",
+                                active: activeCat,
+                                collapsible: true
+                            });
+                        }
+                        
+                        //$("#mlab_toolbar_components h3").accordion({ heightStyle: "content" });
                         
 //add the HTML generated in the component load loop above to their respecitve containers.
 //FLFL                        $("#mlab_features_list").html(feature_list);
