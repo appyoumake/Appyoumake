@@ -75,6 +75,11 @@ made smaler than the min width */
     position: fixed;
 } 
 
+#mlab_editor #mlab_toolbar_components h3{
+    text-overflow: ellipsis;
+    overflow: hidden;
+} 
+
 #mlab_editor #mlab_toolbar_components .mlab_button_components {
     background-image: url(/Users/cjg/GitHub/nyeMLAB/mlab_elements/components/h1/icon.png);
     background-position: 50% 50%;
