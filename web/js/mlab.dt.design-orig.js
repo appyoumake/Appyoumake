@@ -573,12 +573,11 @@ Mlab_dt_design.prototype = {
     },
     
 /*
- *
+ * Turn the help in the footer and the footer on and off
  */
     toggle_footer : function () {
 
     var footer = $(".mlab_editor_footer");
-    var footer_image = $("mlab_button_help");
     var footer_text = $(".mlab_editor_footer_help");
         if (footer.hasClass("mlab_transparent")) {
             footer.removeClass("mlab_transparent");
@@ -587,7 +586,6 @@ Mlab_dt_design.prototype = {
         } else {
             footer.addClass("mlab_transparent");
             footer_text.addClass("mlab_hidden");
-            //TODO toggle title as well
         }
     },
     

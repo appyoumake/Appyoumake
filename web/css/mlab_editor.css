@@ -416,22 +416,6 @@ made smaler than the min width */
     background-repeat: no-repeat;
 }
 
-/* TODO */
-#mlab_editor div.mlab_toolbar_for_components img.select_storage {
-    width: 24px;
-    height: 24px;
-    background-repeat: no-repeat;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXFJREFUeNrcVd1NwzAQNiGIPnqEbEDYoGzQDdps0EyAmCDdIHnkkQ1SJog7AWEC+ljET/gOXeAwdpQmkZA46eTcKb7/76zUv6Wz89kaXIIbwSSvjrFz4jCscZTguOPeBrwDRyxvX54P274OMhzrAUkXcJLYytNfijC8xTEb4CDG3cf3t1cjlYEV/RyHHtG6pa0ILLmeelgCET01LB9pb86TFv9oMk9OJaZiLFElLtH0fZvBYkLjim0tZIl8xmkirsA3A52osKO5n8YpTQISyliLHhGo7vn7oo3WOzDUA3AlVkLFuliuBzpJdoAzt1bKA/f1G8liijSXJeKV0eIiQTYFX4xE1IbXyjXLd+AU/9Zdi44if7KiakQmcgmWvXBgUeZBdD4YaBYlXCZJKc32JA6ofo71a6Azjn2lWdfvPbB60QixzchXc2rspm+JlCczyqrwYMal/wKaj1JRDsNOEmRGnysHICd9szMeV63+kj4EGAC1FXiWIdnqPQAAAABJRU5ErkJggg==);
-}
-
-/* TODO */
-#mlab_editor div.mlab_component_context_menu img.edit_quiz { 
-    width: 24px;
-    height: 24px;
-    background-repeat: no-repeat;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXFJREFUeNrcVd1NwzAQNiGIPnqEbEDYoGzQDdps0EyAmCDdIHnkkQ1SJog7AWEC+ljET/gOXeAwdpQmkZA46eTcKb7/76zUv6Wz89kaXIIbwSSvjrFz4jCscZTguOPeBrwDRyxvX54P274OMhzrAUkXcJLYytNfijC8xTEb4CDG3cf3t1cjlYEV/RyHHtG6pa0ILLmeelgCET01LB9pb86TFv9oMk9OJaZiLFElLtH0fZvBYkLjim0tZIl8xmkirsA3A52osKO5n8YpTQISyliLHhGo7vn7oo3WOzDUA3AlVkLFuliuBzpJdoAzt1bKA/f1G8liijSXJeKV0eIiQTYFX4xE1IbXyjXLd+AU/9Zdi44if7KiakQmcgmWvXBgUeZBdD4YaBYlXCZJKc32JA6ofo71a6Azjn2lWdfvPbB60QixzchXc2rspm+JlCczyqrwYMal/wKaj1JRDsNOEmRGnysHICd9szMeV63+kj4EGAC1FXiWIdnqPQAAAABJRU5ErkJggg==);
-}
-
 #mlab_editor #mlab_dt_dialog_credentials{
     color: black;
     padding: 6px;
