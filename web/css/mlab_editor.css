@@ -40,6 +40,11 @@ made smaler than the min width */
     display: none;
 }
 
+/* Used to show different elements with javascript */
+.mlab_show {
+    display: block !important;
+}
+
 /* Used to set the backgound to transparent for different elements with javascript */
 .mlab_transparent {
     background: transparent !important;

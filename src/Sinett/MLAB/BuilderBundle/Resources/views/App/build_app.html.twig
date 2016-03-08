@@ -1,123 +1,107 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
+        <meta charset='UTF-8' />
         <title>{% block title %}{% trans %}mlab.page.title.app.bulider.editor{% endtrans %}{% endblock %}</title>
         {% block stylesheets %}
-            <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_reset_editor.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_menu.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_editor.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/jquery.contextMenu.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_component_config.css") }}" rel="stylesheet" />
+            <link href='{{ asset("/css/jquery-ui.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/jquery-qtip.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/jquery.uploadfile.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/mlab_reset_editor.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/mlab_menu.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/mlab_editor.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/jquery.contextMenu.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/mlab_component_config.css") }}' rel='stylesheet' />
             
         {% endblock %}
             
         {% block javascripts %}
-            <script src="{{ asset('/js/jquery-2.1.4.js') }}"></script>
-            <script src="{{ asset('/js/jquery.mobile-1.4.5.js') }}"></script>
-            <script src="{{ asset('/js/jquery.ui-1.11.4.js') }}"></script>
-            <script src="{{ asset('/js/jquery.uploadfile-1.9.0.js') }}"></script>
-            <script src="{{ asset('/js/jquery.qtip-2.2.0.js') }}"></script>
-            <script src="{{ asset('/js/jquery.ddslick-1.0.0.js') }}"></script>
-            <script src="{{ asset('/js/jquery.qrcode-0.12.0.js') }}"></script>
-            <script src="{{ asset('/js/jquery.contextMenu-1.0.0.js') }}"></script>
-            <script src="{{ asset('/js/jquery.spin.js') }}"></script>
-            <!-- not required, part of main jquery ui file now <script src="{{ asset('/js/jquery.ui.position.js') }}"></script> -->
+            <script src='{{ asset('/js/jquery-2.1.4.js') }}'></script>
+            <script src='{{ asset('/js/jquery.mobile-1.4.5.js') }}'></script>
+            <script src='{{ asset('/js/jquery.ui-1.11.4.js') }}'></script>
+            <script src='{{ asset('/js/jquery.uploadfile-1.9.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.qtip-2.2.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.ddslick-1.0.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.qrcode-0.12.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.contextMenu-1.0.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.spin.js') }}'></script>
+            <!-- not required, part of main jquery ui file now <script src='{{ asset('/js/jquery.ui.position.js') }}'></script> -->
             
-            <script src="{{ asset('/js/bowser.js') }}"></script>
+            <script src='{{ asset('/js/bowser.js') }}'></script>
 
-            <script type="text/javascript">
+            <script type='text/javascript'>
                 //these vars are generated from backend and are required for the initialisation of the mlab object later
                 document.mlab_temp_vars = {locale: '{{ app.request.locale }}', app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
                 _tr = {{ mlab_translations|raw }};
-
-                //get the list of components & the component menu to stick to the top when scrollin down
-                $(document).ready(function() {
-
-                    //Checkes if the editor menu icon is cliked
-                    $("#mlab_editor_menu_dropdown").on("click",function(event) {   
-                          if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
-                              //User menu is open and needs to be closed 
-                              $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
-                              $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
-                          } 
-                          //Toggles the Editor menu on and off
-                          $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
-                          $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
-                          event.stopPropagation(); 
-                     });
-
-                    //Checkes if the user menu icon is cliked
-                    $("#mlab_user_menu_dropdown").on("click",function(event) { 
-                        if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
-                              //Editor menu is open and needs to be closed 
-                              $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
-                              $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
-                          } 
-                         //Toggles the User menu on and off
-                          $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
-                          $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
-                          event.stopPropagation(); 
-                     });
-
-                    //Listens for any click
-                     $(document).on('click', function (event) {
-                          // Checks if editor menu is open
-                          if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
-                              //Editor menu is open - close it
-                              $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
-                              $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
-                          } 
-                          // Checks if user menu is open
-                          if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
-                              //User menu is open - close it
-                              $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
-                              $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
-                          } 
-
-                     });  
-               });
+                
+                //opens page help from a url and displays it in a qtip
+                function page_help(event) {
+                    var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
+                    var title = "{% trans %}mlab.dt.design.js.qtip.help.title{% endtrans %}";
+                    var owner = event.currentTarget;
+                    var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
+                    $.getJSON(url, function(data) {
+                        if (data.result == "SUCCESS") {
+                            $(owner).qtip({
+                                solo: false,
+                                content:    {
+                                              text: data.html,
+                                              title: title,
+                                              button: true
+                                            },
+                                position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                style:      { classes: qTipClasses },
+                                events:     {   hide: function(event, api) { api.destroy(); } }
+                            });
+                        } else {
+                            alert("{% trans %}mlab.dt.design.js.alert.help.notfound{% endtrans %}");
+                        }
+                    });
+                }
             </script>
 
-            <script src="{{ asset('/js/mlab.api.js') }}"></script>
-            <script src="{{ asset('/js/mlab.dt.api.js') }}"></script>
-            <script src="{{ asset('/js/mlab.dt.management.js') }}"></script>
-            <script src="{{ asset('/js/mlab.dt.bestpractice.js') }}"></script>
-            <script src="{{ asset('/js/mlab.dt.design.js') }}"></script>
-            <script src="{{ asset('/js/mlab.dt.utils.js') }}"></script>
-            <script src="{{ asset('/js/mlab_editor.init.js') }}"></script>
+            <script src='{{ asset('/js/mlab.api.js') }}'></script>
+            <script src='{{ asset('/js/mlab.dt.api.js') }}'></script>
+            <script src='{{ asset('/js/mlab.dt.management.js') }}'></script>
+            <script src='{{ asset('/js/mlab.dt.bestpractice.js') }}'></script>
+            <script src='{{ asset('/js/mlab.dt.design.js') }}'></script>
+            <script src='{{ asset('/js/mlab.dt.utils.js') }}'></script>
+            <script src='{{ asset('/js/mlab_editor.init.js') }}'></script>
         {% endblock %}
             
             
             
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
+        <link rel='icon' type='image/x-icon' href='{{ asset('favicon.png') }}' />
     </head>
     
 
-    <body id="mlab_editor">
-    	<div class="mlab_min_page_width">
-    		<div class="mlab_align_menu_elements">
-                <div class="mlab_permanent_top_menu mlab_gradient">
-                    <ul id="mlab_menu">
+    <body id='mlab_editor'>
+    	<div class='mlab_min_page_width'>
+    		<div class='mlab_align_menu_elements'>
+                <div class='mlab_permanent_top_menu mlab_gradient'>
+                    <ul id='mlab_menu'>
                         <li>
-                            <a target="_top" href="{{ path('app_builder_index')}}"><div id='mlab_menu_dropdown'><img class="mlab_basic_menu_drop" title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' src="/img/logo_menu.png" alt="logo" /></div></a>
+                            <a target='_top' href='{{ path('app_builder_index')}}'>
+                                <div id='mlab_menu_dropdown'>
+                                    <img class='mlab_basic_menu_drop' title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' src='/img/logo_menu.png' alt='logo' />
+                                </div>
+                            </a>
                         </li>  <!-- The Mlab log -->
     
-                        <li id="mlab_editor_menu_dropdown">    
-                                <img class="basic_menu_icon" title='{% trans %}app.builder.edit.menu.tooltip{% endtrans %}' src="/img/menu_icon.png" alt="logo" > 
+                        <li id='mlab_editor_menu_dropdown'>    
+                            <img class='basic_menu_icon' title='{% trans %}app.builder.edit.menu.tooltip{% endtrans %}' src='/img/menu_icon.png' alt='logo' > 
                         </li>
-                         <div id="mlab_editor_menu_dropdown_content" class="dropdown_editor_menu"><!-- Editor menu container -->
-                            <div class="mlab_one_col"> <!-- Navigate col -->
+                         <div id='mlab_editor_menu_dropdown_content' class='dropdown_editor_menu'><!-- Editor menu container -->
+                            <div class='mlab_one_col'> <!-- Navigate col -->
                                 <h3>{% trans %}app.builder.menu.heading.links{% endtrans %}</h3>
 
                                 {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} <!-- Finds the page you are on -->
 
                                 {% if app.user == null %} <!-- If not loged in -->
                                     <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
-                                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                                        <a target='_top' href='{{ path('fos_user_security_login') }}'>{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
                                     </p>
 
                                 {% else %} <!-- If loged in -->
@@ -126,21 +110,21 @@
                                     {% endif %} 
 
                                     <!-- if path('app_builder_index') not in currentPath  %} If on app list page - don't show the link to this page  -->
-                                    <a target="_top" href="{{ path('app_builder_index')}}">{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
+                                    <a target='_top' href='{{ path('app_builder_index')}}'>{% trans %}app.builder.menu.link.app.builder{% endtrans %}</a>
 
 
                                     {% if is_granted("ROLE_ADMIN") %} <!-- Show this links if not on the page and have the role ROLE_ADMIN or higher  -->
                                         {%  if path('admin_apps') not in currentPath  %}
-                                            <a target="_top" href="{{ path('admin_apps')}}">{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
+                                            <a target='_top' href='{{ path('admin_apps')}}'>{% trans %}app.builder.menu.link.admin.app{% endtrans %}</a>
                                         {% endif %} 
                                         {% if path('admin_users') not in currentPath %}
-                                            <a target="_top" href="{{ path('admin_users')}}">{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
+                                            <a target='_top' href='{{ path('admin_users')}}'>{% trans %}app.builder.menu.link.admin.users{% endtrans %}</a>
                                         {% endif %} 
                                     {% endif %} 
 
                                     {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this link if not on the page and have the role ROLE_SUPER_ADMIN  -->
                                         {% if path('system') not in currentPath %}
-                                                <a target="_top" href="{{ path('system')}}">{% trans %}app.builder.menu.link.system{% endtrans %}</a>
+                                                <a target='_top' href='{{ path('system')}}'>{% trans %}app.builder.menu.link.system{% endtrans %}</a>
                                         {% endif %}
                                     {% endif %}
 
@@ -155,33 +139,33 @@
                                                 
                                  <h3>{% trans %}app.builder.menu.heading.save{% endtrans %}</h3>   
                                  <p>{% trans %}app.builder.menu.save.info{% endtrans %}</p>
-                                 <a onclick="var temp; mlab.dt.management.page_save(temp, true); return false;">
-                                    <div title="{% trans %}app.builder.menu.save.tooltip{% endtrans %}" class="mlab_save_icon"></div>
+                                 <a id='mlab_page_save_all'>
+                                    <div class='mlab_save_icon' title='{% trans %}app.builder.menu.save.tooltip{% endtrans %}'></div>
                                 </a>  
                             </div> <!-- End Navigate & Save col -->
 
-                            <div class="mlab_one_col"> <!-- Feature col -->
+                            <div class='mlab_one_col'> <!-- Feature col -->
                                 <div class='mlab_sub_menu'>
                                     <h3>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h3>
                                     <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
-                                    <a href="javascript: mlab.dt.management.app_remove_locks();">{% trans %}build_app.menu.utilities.delete.locks{% endtrans %}</a>
-                                    <a href="javascript: mlab.dt.management.compiler.get_app_status();">{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}
+                                    <a href='javascript: mlab.dt.management.app_remove_locks();'>{% trans %}build_app.menu.utilities.delete.locks{% endtrans %}</a>
+                                    <a href='javascript: mlab.dt.management.compiler.get_app_status();'>{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}
                                     </a>
                                 </div>
                             </div> <!-- End Feature col -->
 
-                            <div class="mlab_one_col"> <!-- Testing col -->
-                                <div class="mlab_end_appbuilder">
+                            <div class='mlab_one_col'> <!-- Testing col -->
+                                <div class='mlab_end_appbuilder'>
                                     <h3>{% trans %}app.builder.edit.menu.heading.test.app{% endtrans %}</h3>
                                     <h4>{% trans %}app.builder.edit.menu.heading.test.app.web{% endtrans %}</h4>
                                     <p>{% trans %}app.builder.edit.menu.test.app.web.info{% endtrans %}</p>
-                                            <a href="javascript: mlab.dt.management.page_preview();">
-                                                <div title="{% trans %}build_app.menu.tooltip.test.app.web{% endtrans %}" id="mlab_preview_icon"></div>
+                                            <a href='javascript: mlab.dt.management.page_preview();'>
+                                                <div id='mlab_preview_icon' title='{% trans %}build_app.menu.tooltip.test.app.web{% endtrans %}'></div>
                                             </a> 
                                     </br>
                                     <h4>{% trans %}app.builder.edit.menu.heading.test.app.mob{% endtrans %}</h4>
                                     <p>{% trans %}app.builder.edit.menu.test.app.mob.info{% endtrans %}</p>
-                                    <div id="mlab_download_qr2"><p class="qr_wait_text">{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
+                                    <div id='mlab_download_qr2'><p class='qr_wait_text'>{% trans %}app.builder.edit.menu.test.app.mob.qr.wait.text{% endtrans %}</p>
                                     </div>
 
                 {# 
@@ -189,12 +173,12 @@
                     this variable is an array so we loop through it
                 #}
                                     {% for platform in mlab_variables.compiler_service.supported_platforms %}
-                                        <a href="javascript: mlab.dt.management.compiler.get_app('{{ platform }}');">
-                                            <div title="{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}" class="mlab_compile_button mlab_download_{{ platform }}_icon" id="mlab_download_{{ platform }}_icon">
-                                                <img src="/img/spinner.gif" class="mlab_hidden">
+                                        <a href='javascript: mlab.dt.management.compiler.get_app("{{ platform }}");'>
+                                            <div id='mlab_download_{{ platform }}_icon' class='mlab_compile_button mlab_download_{{ platform }}_icon' title='{{ 'app.builder.edit.menu.test.app.mob.tooltip'|trans({'%platform%': platform}) }}'>
+                                                <img class='mlab_hidden' src='/img/spinner.gif'>
                                             </div> 
                                         </a> 
-                                        <div data-mlab-download-link-info="{{ platform }}">
+                                        <div data-mlab-download-link-info='{{ platform }}'>
                                             <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>
                                             <div id='mlab_download_link_{{ platform }}'class='mlab_download_link'>&nbsp;</div>
                                         </div>
@@ -202,160 +186,125 @@
                                 </div>
                             </div> <!-- End Testing col -->
 
-                            <div class="mlab_three_col"> <!-- Developed by col -->
+                            <div class='mlab_three_col'> <!-- Developed by col -->
                                 <h3></h3>
                                 <p>Developed by the Sinett project at FFI.no</p>
                             </div> <!-- End Developed by col -->
                         </div><!-- End Editor menu container -->
                         
-                        <li  class="single"><div class='mlab_statusbar_permanent_label'>{% trans %}app.builder.statusbar.info.permanent.label{% endtrans %}:</div></li>
-                        <li  class="single"><div id='mlab_statusbar_permanent'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
-                        <li  class="single"><div id='mlab_statusbar_progress_spin'>&nbsp;</div></li>
-                        <li  class="single"><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
-                        <li  class="single"><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
-                        <li  class="single"><div id='mlab_statusbar_progressbar'><progress id='mlab_progressbar' class='mlab_progressbar' value="10" max="100"></progress></div></li>
-                        <li class="single menu_right"><img class="mlab_help_icon" src="/img/help.png" title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt="logo" onclick='page_help(event);'></li>
+                        <li class='single'><div class='mlab_statusbar_permanent_label'>{% trans %}app.builder.statusbar.info.permanent.label{% endtrans %}:</div></li>
+                        <li class='single'><div id='mlab_statusbar_permanent'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
+                        <li class='single'><div id='mlab_statusbar_progress_spin'>&nbsp;</div></li>
+                        <li class='single'><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
+                        <li class='single'><div id='mlab_statusbar_compiler'>&nbsp;</div></li>
+                        <li class='single'><div id='mlab_statusbar_progressbar'><progress id='mlab_progressbar' class='mlab_progressbar' value='10' max='100'></progress></div></li>
+                        <li class='single menu_right'><img id='mlab_page_help' class='mlab_help_icon' src='/img/help.png' title='{% trans %}app.builder.help.menu.tooltip{% endtrans %}' alt='logo'></li>
                         
-                        <li id="mlab_user_menu_dropdown" class="menu_right">
-                            <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}app.builder.menu.user.info.main.tooltip{% endtrans %}' alt="logo" >
+                        <li id='mlab_user_menu_dropdown' class='menu_right'>
+                            <img class='mlab_user_info_icon' src='/img/user.png' title='{% trans %}app.builder.menu.user.info.main.tooltip{% endtrans %}' alt='logo' >
                         </li>
-                        <div id="mlab_user_menu_dropdown_content" class="dropdown_user_menu"><!-- User menu container -->
-                            <div class="mlab_one_user_col"> <!-- User col -->
+                        <div id='mlab_user_menu_dropdown_content' class='dropdown_user_menu'><!-- User menu container -->
+                            <div class='mlab_one_user_col'> <!-- User col -->
                                 <h3>{% trans %}app.builder.menu.user.info.heading{% endtrans %}</h3>
                                 {% if app.user == null %} <!-- If not loged in -->
                                     <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
-                                        <a target="_top" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                                        <a target='_top' href='{{ path('fos_user_security_login') }}'>{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
                                     </p>
                                 {% else %} <!-- If loged in -->
                                     <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
                                         <b>{{ app.user.username }}</b><br><br>
-                                    <a target="_top" href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
+                                    <a target='_top' href='{{ path('fos_user_security_logout') }}'>{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
                                 {% endif %}
                             </div>
                         </div><!-- End User menu container -->                       
                     </ul>
                     
-                     <div id="mlab_page_control">
-                            <div class="mlab_page_control_label">{% trans %}app.builder.page.heading{% endtrans %}:</div>
-                            <h3 id="mlab_page_control_title" onclick="mlab.dt.api.editContent(this);$('#mlab_page_control_title_actions').show();"></h3>
-                            <div id="mlab_page_control_title_actions" class="mlab_hidden">
-                                <button id="mlab_page_control_save_title" onclick="$('#mlab_page_control_title_actions').hide(); mlab.dt.management.page_update_title();" class="mlab_dt_button_ok_left" title="{% trans %}app.builder.page.tooltip.save{% endtrans %}">{% trans %}app.builder.page.save{% endtrans %}</button>
-                                <button id="mlab_page_control_cancel_title" onclick="$('#mlab_page_control_title_actions').hide(); $('#mlab_page_control_title').text(mlab.dt.app.curr_pagetitle);" class="mlab_dt_button_cancel_left" title="{% trans %}app.builder.page.tooltip.cancel{% endtrans %}">{% trans %}app.builder.page.cancel{% endtrans %}</button>
+                     <div id='mlab_page_control'>
+                            <div class='mlab_page_control_label'>{% trans %}app.builder.page.heading{% endtrans %}:</div>
+                            <h3 id='mlab_page_control_title' title='{% trans %}app.builder.page.tooltip.page.name{% endtrans %}'></h3>
+                            <div id='mlab_page_control_title_actions' class='mlab_hidden'>
+                                <button id='mlab_page_control_save_title' class='mlab_dt_button_ok_left' title='{% trans %}app.builder.page.tooltip.save{% endtrans %}'>{% trans %}app.builder.page.save{% endtrans %}</button>
+                                <button id='mlab_page_control_cancel_title' class='mlab_dt_button_cancel_left' title='{% trans %}app.builder.page.tooltip.cancel{% endtrans %}'>{% trans %}app.builder.page.cancel{% endtrans %}</button>
                             </div>
-                            <img id="mlab_page_control_pagelist" onclick="$('#mlab_page_management').slideToggle();" src="/img/tools/dropdown.png" title="{% trans %}app.builder.page.tooltip.pagelist{% endtrans %}">
-                            <img id='mlab_button_redo' onclick='document.execCommand("redo");' title='{% trans %}build_app.page.tooltip.redo{% endtrans %}' src='/img/tools/redo.png' class='mlab_tools mlab_button_redo' >
-                            <img id='mlab_button_undo' onclick='document.execCommand("undo");' title='{% trans %}build_app.page.tooltip.undo{% endtrans %}' src='/img/tools/undo.png' class='mlab_tools mlab_tools_space mlab_button_undo' >
-                            <img id="mlab_page_control_new" onclick="mlab.dt.management.page_new();" src="/img/menu_new_icon.png" title="{% trans %}app.builder.page.tooltip.new{% endtrans %}">
+                            <img id='mlab_page_control_pagelist' src='/img/tools/dropdown.png' title='{% trans %}app.builder.page.tooltip.pagelist{% endtrans %}'>
+                            <img id='mlab_button_redo' class='mlab_tools mlab_button_redo' src='/img/tools/redo.png' title='{% trans %}build_app.page.tooltip.redo{% endtrans %}'>
+                            <img id='mlab_button_undo' class='mlab_tools mlab_tools_space mlab_button_undo' src='/img/tools/undo.png' title='{% trans %}build_app.page.tooltip.undo{% endtrans %}'> 
+                            <img id='mlab_page_control_new' src='/img/menu_new_icon.png' title='{% trans %}app.builder.page.tooltip.new{% endtrans %}'>
 
                         </div>
 
-                        <div id="mlab_page_management" class="mlab_hidden" onclick="$('#mlab_page_management').slideUp();">
-                            <div id="mlab_existing_pages">
+                        <div id='mlab_page_management'>
+                            <div id='mlab_existing_pages'>
                             </div>
-                            <div id="mlab_page_management_info">
+                            <div id='mlab_page_management_info'>
                                 {% trans %}app.builder.page.menu.delete.info{% endtrans %}:
-                                <img id="mlab_page_control_delete" onclick="mlab.dt.management.page_delete();" src="/img/delete_page.png" title="{% trans %}app.builder.page.menu.delete{% endtrans %}">
+                                <img id='mlab_page_control_delete' src='/img/delete_page.png' title='{% trans %}app.builder.page.menu.delete{% endtrans %}'>
                             </div>
                         </div>
                 </div>
                 
-                    <div class="container">
+                    <div class='container'>
                          <!-- This is the actual content of the page, very little is required as it is loaded from external files -->
-                        <div id="mlab_template_warning"></div>
+                        <div id='mlab_template_warning'></div>
 
-                        <div id="mlab_toolbar_components"></div>
+                        <div id='mlab_toolbar_components'></div>
 
-                        <div id="mlab_editor_chrome">
-                        <div id="mlab_editable_area_placeholder"></div>
+                        <div id='mlab_editor_chrome'>
+                        <div id='mlab_editable_area_placeholder'></div>
                         <p />
                         </div>
 
-                        <div id="mlab_toolbar_for_components" class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style="display: none">
-                            <div id='mlab_component_toolbar_heading' class="mlab_component_toolbar_heading">Tools</div>
-                            <img id='mlab_button_up'         title='{% trans %}build_app.components.toolbar.tooltip.move.up{% endtrans %}'      src='/img/tools/up.png'         class='mlab_tools_all' >
-                            <img id='mlab_button_down'       title='{% trans %}build_app.components.toolbar.tooltip.move.down{% endtrans %}'    src='/img/tools/down.png'       class='mlab_tools_all' >
-                            <img id='mlab_button_delete'     title='{% trans %}build_app.components.toolbar.tooltip.delete{% endtrans %}'       src='/img/tools/delete.png'     class='mlab_tools_all' >
-                            <img id='mlab_button_help'       title='{% trans %}build_app.components.toolbar.tooltip.help{% endtrans %}'         src='/img/tools/help.png'       class='mlab_tools_all' >
-                            <img id='mlab_button_cut_comp'   title='{% trans %}build_app.components.toolbar.tooltip.cut{% endtrans %}'          src='/img/tools/cut-icon.png'   class='mlab_tools_all' >
-                            <img id='mlab_button_copy_comp'  title='{% trans %}build_app.components.toolbar.tooltip.copy{% endtrans %}'         src='/img/tools/copy-icon.png'  class='mlab_tools_all' >
-                            <img id='mlab_button_paste_comp' title='{% trans %}build_app.components.toolbar.tooltip.paste{% endtrans %}'        src='/img/tools/paste-icon.png' class='mlab_tools_all' >
+                        <div id='mlab_toolbar_for_components' class='mlab_toolbar_for_components mlab_buttons_item_manipulation_list single mlab_hidden' style='display: none'>
+                            <div id='mlab_component_toolbar_heading'    class='mlab_component_toolbar_heading'>Tools</div>
+                            <img id='mlab_button_up'                    class='mlab_tools_all' src='/img/tools/up.png'         title='{% trans %}build_app.components.toolbar.tooltip.move.up{% endtrans %}'>
+                            <img id='mlab_button_down'                  class='mlab_tools_all' src='/img/tools/down.png'       title='{% trans %}build_app.components.toolbar.tooltip.move.down{% endtrans %}'>
+                            <img id='mlab_button_delete'                class='mlab_tools_all' src='/img/tools/delete.png'     title='{% trans %}build_app.components.toolbar.tooltip.delete{% endtrans %}'>
+                            <img id='mlab_button_help'                  class='mlab_tools_all' src='/img/tools/help.png'       title='{% trans %}build_app.components.toolbar.tooltip.help{% endtrans %}'>
+                            <img id='mlab_button_cut_comp'              class='mlab_tools_all' src='/img/tools/cut-icon.png'   title='{% trans %}build_app.components.toolbar.tooltip.cut{% endtrans %}'>
+                            <img id='mlab_button_copy_comp'             class='mlab_tools_all' src='/img/tools/copy-icon.png'  title='{% trans %}build_app.components.toolbar.tooltip.copy{% endtrans %}'>
+                            <img id='mlab_button_paste_comp'            class='mlab_tools_all' src='/img/tools/paste-icon.png' title='{% trans %}build_app.components.toolbar.tooltip.paste{% endtrans %}'>
                             <hr  class='mlab_tools_line' >
-                            <img id='mlab_button_component_size'    title='{% trans %}build_app.components.toolbar.tooltip.resize{% endtrans %}'        src='/img/tools/resize.png'  class='mlab_tools mlab_hidden' >
-                            <img id='mlab_button_component_aspect'  title='{% trans %}build_app.components.toolbar.tooltip.aspect.ratio{% endtrans %}'  src='/img/tools/aspect.png'  class='mlab_tools mlab_hidden' >
-                            <img id='mlab_button_select_storage_plugin'  data-mlab-tool-name='select_storage_plugin' title='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'       src='/img/tools/storage.png' class='mlab_tools mlab_tools_space mlab_hidden' >
-                            <img id='mlab_button_get_credentials'   title='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'   src='/img/tools/credentials.png'    class='mlab_tools mlab_tools_space mlab_hidden' >
-                            <div id="mlab_storage_plugin_list" data-mlab-get-info="storage_plugins" class='mlab_hidden'></div>
-                            <div id="mlab_storage_credentials" data-mlab-get-info="credentials" class='mlab_hidden'></div>
+                            <img id='mlab_button_component_size'        class='mlab_tools mlab_hidden' src='/img/tools/resize.png' title='{% trans %}build_app.components.toolbar.tooltip.resize{% endtrans %}'>
+                            <img id='mlab_button_component_aspect'      class='mlab_tools mlab_hidden' src='/img/tools/aspect.png' title='{% trans %}build_app.components.toolbar.tooltip.aspect.ratio{% endtrans %}'>
+                            <img id='mlab_button_select_storage_plugin' class='mlab_tools mlab_tools_space mlab_hidden' data-mlab-tool-name='select_storage_plugin' src='/img/tools/storage.png' title='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'>
+                            <img id='mlab_button_get_credentials'       class='mlab_tools mlab_tools_space mlab_hidden' src='/img/tools/credentials.png' title='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'>
+                            <div id='mlab_storage_plugin_list'          class='mlab_hidden' data-mlab-get-info='storage_plugins'></div>
+                            <div id='mlab_storage_credentials'          class='mlab_hidden' data-mlab-get-info='credentials'></div>
                             <div class='mlab_component_context_menu'></div>
-                            <div class="mlab_newline">&nbsp;</div>
+                            <div class='mlab_newline'>&nbsp;</div>
                         </div>
 
-<!--SPSP                        <div id="mlab_storage_plugin_list" style="display: none;"></div> -->
+<!--SPSP                        <div id='mlab_storage_plugin_list' style='display: none;'></div> -->
 
-                        <div id="mlab_component_size_list" style="display: none;">
+                        <div id='mlab_component_size_list' style='display: none;'>
                             <ul>
-                                <li data-mlab-comp-size="small"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.small{% endtrans %}</li>
-                                <li data-mlab-comp-size="medium"     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.medium{% endtrans %}</li>
-                                <li data-mlab-comp-size="large"      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.large{% endtrans %}</li>
-                                <li data-mlab-comp-size="fullscreen" onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.full.screen{% endtrans %}</li>
+                                <li data-mlab-comp-size='small'      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "small");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.small{% endtrans %}</li>
+                                <li data-mlab-comp-size='medium'     onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.medium{% endtrans %}</li>
+                                <li data-mlab-comp-size='large'      onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "large");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.large{% endtrans %}</li>
+                                <li data-mlab-comp-size='fullscreen' onclick='mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");$("#mlab_component_size_list").hide();'>{% trans %}build_app.components.toolbar.component.size.full.screen{% endtrans %}</li>
                             </ul>
                         </div>
 
-                        <div id="mlab_component_aspect_list" style="display: none;">
+                        <div id='mlab_component_aspect_list' style='display: none;'>
                             <ul>
-                                <li data-mlab-comp-aspect="4:3" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.4.3{% endtrans %}</li>
-                                <li data-mlab-comp-aspect="16:9" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.16.9{% endtrans %}</li>
-                                <li data-mlab-comp-aspect="1:1" onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.1.1{% endtrans %}</li>
+                                <li data-mlab-comp-aspect='4:3' onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.4.3{% endtrans %}</li>
+                                <li data-mlab-comp-aspect='16:9' onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.16.9{% endtrans %}</li>
+                                <li data-mlab-comp-aspect='1:1' onclick='mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");$("#mlab_component_aspect_list").hide();'>{% trans %}build_app.components.toolbar.component.aspect.1.1{% endtrans %}</li>
                             </ul>
                         </div>
 
-                        <div id="mlab_dialog_confirm" title="{% trans %}build_app.tooltip.not.saved{% endtrans %}" style="display: none;">
-                            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>{% trans %}build_app.not.saved{% endtrans %}</p>
+                        <div id='mlab_dialog_confirm' title='{% trans %}build_app.tooltip.not.saved{% endtrans %}' style='display: none;'>
+                            <p><span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 20px 0;'></span>{% trans %}build_app.not.saved{% endtrans %}</p>
                         </div>
-                        <div id="mlab_overlay"><div class="mlab_modal">{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
-                        <div style="clear: both;">&nbsp;</div>
+                        <div id='mlab_overlay'><div class='mlab_modal'>{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
+                        <div style='clear: both;'>&nbsp;</div>
                     </div>
                
 	        </div>
         </div>
-         <div id="fotter" class="mlab_editor_footer">
-             <img onclick='mlab.dt.design.toggle_footer();' title='{% trans %}build_app.footer.tooltip.help{% endtrans %}' id='mlab_button_help' src='/img/helpIcon.png' class='mlab_editor_footer_help_icon' >
-             <div class="mlab_editor_footer_help">{% trans %}build_app.footer.help{% endtrans %}</div>
-         </div>
-         
-        
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#mlab_statusbar_progress_spin").spin('small', '#fff');        
-
-            });
-            
-            function page_help(event) {
-                var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
-                var title = "{% trans %}mlab.dt.design.js.qtip.help.title{% endtrans %}";
-                var owner = event.currentTarget;
-                var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
-                $.getJSON(url, function(data) {
-                    if (data.result == "SUCCESS") {
-                         $(owner).qtip({
-                             solo: false,
-                             content:    {
-                                         text: data.html,
-                                         title: title,
-                                         button: true
-                                         },
-                             position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
-                             show:       { ready: true, modal: { on: true, blur: false } },
-                             hide:       false,
-                             style:      { classes: qTipClasses },
-                             events:     {   hide: function(event, api) { api.destroy(); } }
-                         });
-                    } else {
-                        alert("{% trans %}mlab.dt.design.js.alert.help.notfound{% endtrans %}");
-                    }
-
-                });
-            }
-        </script>
+        <div class='mlab_editor_footer'>
+             <img id='mlab_button_help' class='mlab_editor_footer_help_icon mlab_button_help' src='/img/helpIcon.png' title='{% trans %}build_app.footer.tooltip.help{% endtrans %}'>
+             <div class='mlab_editor_footer_help'>{% trans %}build_app.footer.help{% endtrans %}</div>
+        </div>
     </body>
 </html>

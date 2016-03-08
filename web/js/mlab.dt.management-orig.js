@@ -172,6 +172,7 @@ Mlab_dt_management.prototype = {
     app_remove_locks : function () {
         this.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.unlocking.pages"], true);
         $.get( this.parent.urls.app_unlock );
+        $("#" + this.parent.config["app"]["content_id"]).fadeTo('slow',1);
         $("#mlab_editor_disabled").remove();
         this.parent.app.locked = false;
     },
@@ -450,7 +451,7 @@ Mlab_dt_management.prototype = {
                 } else {
                     that.parent.app.locked = false;
                     $("#mlab_editor_disabled").remove();
-                    $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);
+                    $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);                  
                 }
 
                 if ( $("#mlab_overlay").is(':visible') ) {
