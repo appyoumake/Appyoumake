@@ -146,8 +146,7 @@ $(document).ready(function() {
 //and for each component we need to turn the text of the
             $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                 if (data.result === "success") {
-//FLFL              var feature_list = $("<ul></ul>");
-/*SPSP              var storage_plugin_list = $("<ul></ul>");*/
+
                     var loc = mlab.dt.api.getLocale();
                     mlab.dt.components = data.mlab_components;
                     mlab.dt.storage_plugins = {};
@@ -159,10 +158,16 @@ $(document).ready(function() {
 //we need to attach the code_dt.js content to an object so we can use it as JS code
                         if (mlab.dt.components[type].code !== false) {
                             eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].code + "};");
-
-//here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
-                            mlab.dt.components[type].code.config = mlab.dt.components[type].conf;
                         }
+                    }
+
+//now loop through all components and for those that inherit another we transfer properties
+                    mlab.dt.utils.process_inheritance(mlab.dt.components);
+
+//second loop which is for displaying the tools loaded & prepared above in the editor page
+                    for (type in mlab.dt.components) {
+//here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
+                        mlab.dt.components[type].code.config = mlab.dt.components[type].conf;
                         var c = mlab.dt.components[type];
                         if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
 
@@ -177,58 +182,43 @@ $(document).ready(function() {
                             }                                
 
                             components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
-                                "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
-                                "title='" + tt + "' " +
-                                "class='mlab_button_components' " +
-                                "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
-                                "</div>" + 
-                                "<div class='mlab_component_footer_tip'>" +
-                                        tte +
-                                 "</div>";
+                                        "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
+                                        "title='" + tt + "' " +
+                                        "class='mlab_button_components' " +
+                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
+                                    "</div>" + 
+                                    "<div class='mlab_component_footer_tip'>" +
+                                            tte +
+                                     "</div>";
 
                         } else if (c.accessible && c.is_feature) {
 
 //all features are in a single div
-
                             features_html[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
-                                "onclick='mlab.dt.design.feature_add(\"" + type + "\");' " +
-                                "title='" + tt + "' " +
-                                "class='mlab_button_components' " +
-                                "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
-                                "</div>" + 
-                                "<div class='mlab_component_footer_tip'>" +
-                                        tte +
-                                 "</div>";
-
-/*FLFL                      feature_list.append("<li data-mlab-feature-type='" + type + "' onclick='mlab.dt.design.feature_add(\"" + type + "\", false);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>"); */
+                                        "onclick='mlab.dt.design.feature_add(\"" + type + "\");' " +
+                                        "title='" + tt + "' " +
+                                        "class='mlab_button_components' " +
+                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
+                                    "</div>" + 
+                                    "<div class='mlab_component_footer_tip'>" +
+                                            tte +
+                                     "</div>";
                         } else if (c.accessible && c.is_storage_plugin) {
                             mlab.dt.storage_plugins[type] = eName;
-/*SPSP                      mlab.dt.storage_plugin_list.append("<li data-mlab-storage-plugin-type='" + type + "' onclick='mlab.dt.design.storage_plugin_add(\"" + type + "\", $(\".mlab_current_component\")[0]);' title='" + $('<div/>').text(eName).html() + "'>" + type.charAt(0).toUpperCase() + type.slice(1) + "</li>");*/
                         }
-                    }
-//gets a cookie by name/key                        
-                   function getCookie(cname) {
-                        var name = cname + "=";
-                        var ca = document.cookie.split(';');
-                        for(var i=0; i<ca.length; i++) {
-                            var c = ca[i];
-                            while (c.charAt(0)==' ') c = c.substring(1);
-                            if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-                        }
-                        return 1;
                     }
 
 //TODO now first category is hardcoded to be text...
 //If the first category of components does not have a cookie it moste likely that none of the mlabCompCatxxx cookies are made (first time users or deleted cookies) - so set the first categroy to expand 
-                    var cookieExsists = getCookie("mlabCompCattext");
-                    if (cookieExsists === 1){
+                    var cookieExists = mlab.dt.utils.getCookie("mlabCompCattext");
+                    if (cookieExists === 1){
 //Cookie for first category not found - set cookie so it will be expanded
                         document.cookie="mlabCompCattext=0; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
                     }
 
 //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
                     for  (category in components_html) {
-                        var activeCat = Number(getCookie("mlabCompCat" + category));
+                        var activeCat = Number(mlab.dt.utils.getCookie("mlabCompCat" + category));
                         $("<div><h3 data-mlab-category='" + category + "'>" + category + "</h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
                             heightStyle: "content",
                             active: activeCat,
@@ -238,7 +228,7 @@ $(document).ready(function() {
 
                     if (features_html.length != 0) {
 //Adds Features as a category (with all the features - if there is any) under the component toolbar and and adds an accordion to the categroy                            
-                       var activeCat = Number(getCookie("mlabCompCat" + "Features")); 
+                       var activeCat = Number(mlab.dt.utils.getCookie("mlabCompCat" + "Features")); 
                        $("<div><h3 data-mlab-category='Features'>Features</h3><div>" + features_html.join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
                             heightStyle: "content",
                             active: activeCat,
@@ -246,11 +236,6 @@ $(document).ready(function() {
                         });
                     }
 
-                    //$("#mlab_toolbar_components h3").accordion({ heightStyle: "content" });
-
-//add the HTML generated in the component load loop above to their respecitve containers.
-//FLFL                        $("#mlab_features_list").html(feature_list);
-//SPSP                        $("#mlab_storage_plugin_list").html(storage_plugin_list);
 
 //now loop through all components and for those that inherit another we transfer properties
                     mlab.dt.utils.process_inheritance(mlab.dt.components);
