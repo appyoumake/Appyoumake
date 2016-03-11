@@ -6,7 +6,6 @@ extended_name: { nb_NO: Kulepunktliste, en_GB: Bullet point list, default: Bulle
 tooltip: { nb_NO: Kulepunktliste, en_GB: Bullet point list, default: Bullet point list }
 footer_tip: { nb_NO: Setter inn en kulepunktliste i appen. Trykk enter for å få et nytt punkt i listen, en_GB: "Adds an unordered (bullet point) list, add items by pressing enter", default: "Adds an unordered (bullet point) list, add items by pressing enter" }
 inherit: ol
-category: list
 html: |
     <ul class="mc_container mc_list mc_text mc_medium">
         <li class="mc_text mc_display mc_list mc_bullet"></li>

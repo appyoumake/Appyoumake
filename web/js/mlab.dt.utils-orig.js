@@ -73,7 +73,10 @@ Mlab_dt_utils.prototype = {
     merge_objects : function (from_obj, to_obj) {
         for (var p in from_obj) {
 // Property in destination object set; update its value.
-            if ( typeof from_obj[p] == "object" && typeof to_obj[p] != "undefined") {
+            if ( typeof from_obj[p] == "object") {
+                if (typeof to_obj[p] == "undefined") {
+                    to_obj[p] = new Object();
+                }
                 to_obj[p] = this.merge_objects(from_obj[p], to_obj[p]);
             } else if (typeof to_obj[p] == "undefined") {
                 to_obj[p] = from_obj[p];
@@ -92,20 +95,15 @@ Mlab_dt_utils.prototype = {
 //does the component to inherit from exist?
                 if (typeof components[from] != "undefined") {
                     
-//is it of the same type?
-                    if (components[from].is_component === components[index].is_component && components[from].is_feature === components[index].is_feature && components[from].is_storage_plugin === components[index].is_storage_plugin) {
-                        
-//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first first
-                        if (!components[from].inheritance_processed && components[from].conf["inherit"] != "undefined") {
-                            this.process_inheritance_helper(components, from);
-                        }
-//we copy top level objects and objects within the code and and code.config objects
-                        components[index] = this.merge_objects(components[from], components[index]); 
-                        components[index].inheritance_processed = true;
 
-                    } else {
-                        console.log("Parent object for " + index + " does not match type:" + from);
+//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first first
+                    if (!components[from].inheritance_processed && components[from].conf["inherit"] != "undefined") {
+                        this.process_inheritance_helper(components, from);
                     }
+//we copy top level objects and objects within the code and and code.config objects
+                    components[index] = this.merge_objects(components[from], components[index]); 
+                    components[index].inheritance_processed = true;
+
                 } else {
                     console.log("Parent object for " + index + " does not exist:" + from);
                 }
@@ -122,5 +120,18 @@ Mlab_dt_utils.prototype = {
             this.process_inheritance_helper(components, index);
         }
         
-    }
+    },
+    
+//gets a cookie by name/key                        
+    getCookie: function (cname) {
+         var name = cname + "=";
+         var ca = document.cookie.split(';');
+         for(var i=0; i<ca.length; i++) {
+             var c = ca[i];
+             while (c.charAt(0)==' ') c = c.substring(1);
+             if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+         }
+         return 1;
+     }
+
 }
