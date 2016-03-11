@@ -40,6 +40,11 @@ made smaler than the min width */
     display: none;
 }
 
+/* Used to show different elements with javascript */
+.mlab_show {
+    display: block !important;
+}
+
 /* Used to set the backgound to transparent for different elements with javascript */
 .mlab_transparent {
     background: transparent !important;
@@ -409,22 +414,6 @@ made smaler than the min width */
     height: 28px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==);
     background-repeat: no-repeat;
-}
-
-/* TODO */
-#mlab_editor div.mlab_toolbar_for_components img.select_storage {
-    width: 24px;
-    height: 24px;
-    background-repeat: no-repeat;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXFJREFUeNrcVd1NwzAQNiGIPnqEbEDYoGzQDdps0EyAmCDdIHnkkQ1SJog7AWEC+ljET/gOXeAwdpQmkZA46eTcKb7/76zUv6Wz89kaXIIbwSSvjrFz4jCscZTguOPeBrwDRyxvX54P274OMhzrAUkXcJLYytNfijC8xTEb4CDG3cf3t1cjlYEV/RyHHtG6pa0ILLmeelgCET01LB9pb86TFv9oMk9OJaZiLFElLtH0fZvBYkLjim0tZIl8xmkirsA3A52osKO5n8YpTQISyliLHhGo7vn7oo3WOzDUA3AlVkLFuliuBzpJdoAzt1bKA/f1G8liijSXJeKV0eIiQTYFX4xE1IbXyjXLd+AU/9Zdi44if7KiakQmcgmWvXBgUeZBdD4YaBYlXCZJKc32JA6ofo71a6Azjn2lWdfvPbB60QixzchXc2rspm+JlCczyqrwYMal/wKaj1JRDsNOEmRGnysHICd9szMeV63+kj4EGAC1FXiWIdnqPQAAAABJRU5ErkJggg==);
-}
-
-/* TODO */
-#mlab_editor div.mlab_component_context_menu img.edit_quiz { 
-    width: 24px;
-    height: 24px;
-    background-repeat: no-repeat;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXFJREFUeNrcVd1NwzAQNiGIPnqEbEDYoGzQDdps0EyAmCDdIHnkkQ1SJog7AWEC+ljET/gOXeAwdpQmkZA46eTcKb7/76zUv6Wz89kaXIIbwSSvjrFz4jCscZTguOPeBrwDRyxvX54P274OMhzrAUkXcJLYytNfijC8xTEb4CDG3cf3t1cjlYEV/RyHHtG6pa0ILLmeelgCET01LB9pb86TFv9oMk9OJaZiLFElLtH0fZvBYkLjim0tZIl8xmkirsA3A52osKO5n8YpTQISyliLHhGo7vn7oo3WOzDUA3AlVkLFuliuBzpJdoAzt1bKA/f1G8liijSXJeKV0eIiQTYFX4xE1IbXyjXLd+AU/9Zdi44if7KiakQmcgmWvXBgUeZBdD4YaBYlXCZJKc32JA6ofo71a6Azjn2lWdfvPbB60QixzchXc2rspm+JlCczyqrwYMal/wKaj1JRDsNOEmRGnysHICd9szMeV63+kj4EGAC1FXiWIdnqPQAAAABJRU5ErkJggg==);
 }
 
 #mlab_editor #mlab_dt_dialog_credentials{

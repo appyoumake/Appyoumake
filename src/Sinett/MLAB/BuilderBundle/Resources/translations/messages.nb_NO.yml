@@ -157,6 +157,8 @@ app.builder.page.menu.delete: Slett siden som er åpen
 
 app.builder.page.tooltip.save: Lagre endring av sidenavn
 app.builder.page.tooltip.cancel: Avbryt endring av sidenavn
+app.builder.page.tooltip.page.name: Klikk for å endre sidenavn
+app.builder.page.tooltip.page.name.edit: Skriv inn nytt sidenavn
 app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
 app.builder.page.tooltip.new: Ny side
 
@@ -375,8 +377,8 @@ build_app.menu.utilities.delete.locks: Fjern lås
 build_app.menu.utilities.test.connection.compiler: Test kompilator forbindelsen
 build_app.menu.tooltip.test.app.web: Test appen i nettleser
 
-build_app.page.tooltip.redo: Gjør om innsetting
-build_app.page.tooltip.undo: Angre
+build_app.page.tooltip.redo: Gjør om tekst endringer
+build_app.page.tooltip.undo: Angre tekst endringer
 
 build_app.components.toolbar.tooltip.move.up: Flytt valgt element opp
 build_app.components.toolbar.tooltip.move.down: Flytt valgt element ned
