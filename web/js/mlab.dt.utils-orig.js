@@ -81,9 +81,7 @@ Mlab_dt_utils.prototype = {
             } else if (typeof to_obj[p] == "undefined") {
                 to_obj[p] = from_obj[p];
             }
-
         }
-
         return to_obj;        
     },
     
