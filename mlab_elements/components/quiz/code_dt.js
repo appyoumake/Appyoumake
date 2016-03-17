@@ -873,8 +873,31 @@ this.loadExistingQuestion = function() {
 }
 
 this.custom_delete_question = function(el) {
-    var page = this.getCurrentPage();
-    page.find(".mlab_current_component_child").remove();
+    var thisPage = this;
+    var title =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_question_title"]);
+    var button_ok =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_button_ok"]);
+    var button_cancel =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_button_cancel"]);
+    
+    $("#mlab_dialog_delete").dialog({
+        title: title,
+        dialogClass: "no-close",
+        modal: true,
+        buttons: [ {    text: button_ok,     
+                        click:function () { 
+                            $(this).dialog('destroy'); 
+                            
+                            var page = thisPage.getCurrentPage();
+                            page.find(".mlab_current_component_child").remove();
+                        } 
+                    },
+                    {   text: button_cancel, 
+                        click: function () { 
+                                        $(this).dialog('destroy'); 
+                                        return false;  
+                        }
+                    }
+                ],
+    });
 }
 
 /**
@@ -886,39 +909,84 @@ this.custom_delete_question = function(el) {
  * @returns {undefined}
  */
 this.custom_delete_question_element = function(el) {
-    var page = this.getCurrentPage();
-    var el = page.find(".mlab_current_component_editable");
-    var tagName = el.prop("tagName").toLowerCase();
+    var thisPage = this;
+    var title =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_question_element_title"]);
+    var button_ok =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_button_ok"]);
+    var button_cancel =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_button_cancel"]);
     
-    if (tagName == "span") { //these are used inside labels for radio buttons and check boxes
-        el.parent().remove();
-    } else if (tagName == "li") { //fake select boxes, just delete element directly
-        el.parent().remove();
-    } else if (el.data("mlab-cp-quiz-subrole") == "explanatory") { //ok to delete explanatory text
-        el.remove();
-    }
+    $("#mlab_dialog_delete").dialog({
+        title: title,
+        dialogClass: "no-close",
+        modal: true,
+        buttons: [ {    text: button_ok,     
+                        click:function () { 
+                            $(this).dialog('destroy'); 
+                            var page = thisPage.getCurrentPage();
+                            var el = page.find(".mlab_current_component_editable");
+                            var tagName = el.prop("tagName").toLowerCase();
+
+                            if (tagName == "span") { //these are used inside labels for radio buttons and check boxes
+                                el.parent().remove();
+                            } else if (tagName == "li") { //fake select boxes, just delete element directly
+                                el.parent().remove();
+                            } else if (el.data("mlab-cp-quiz-subrole") == "explanatory") { //ok to delete explanatory text
+                                el.remove();
+                            }
+                        } 
+                    },
+                    {   text: button_cancel, 
+                        click: function () { 
+                                        $(this).dialog('destroy'); 
+                                        return false;  
+                        }
+                    }
+                ],
+    });
 }
 
-/* Removes a page from the component. 
+/* Removes a page from the component if confirmed. 
  * @param {jQuery} button The button that was clicked to remove the page.
  */
 this.custom_delete_page = function() {
-    var tab_id = this.getCurrentTabId();
-    var tabs = $( "#" + tab_id ).tabs();
-    var activeTab = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
-    $( "#" + activeTab).remove();
+    var thisPage = this;
+    var title =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_page_title"]);
+    var button_ok =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_button_ok"]);
+    var button_cancel =  this.api.getLocaleComponentMessage(this.config.name, ["messages", "dlg_delete_button_cancel"]);
+    
+    $("#mlab_dialog_delete").dialog({
+        title: title,
+        dialogClass: "no-close",
+        modal: true,
+        buttons: [ {    text: button_ok,     
+                        click:function () { 
+                            $(this).dialog('destroy'); 
+                            var tab_id = thisPage.getCurrentTabId();
+                            var tabs = $( "#" + tab_id ).tabs();
+                            var activeTab = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
+                            $( "#" + activeTab).remove();
 
-//rename remaining tabs
-    var tab_counter = 1;
-    $('#' + tab_id + ' .ui-tabs-nav a').each(function () {
-        $(this).text('Page ' + tab_counter);
-        tab_counter++;
+                            //rename remaining tabs
+                            var tab_counter = 1;
+                            $('#' + tab_id + ' .ui-tabs-nav a').each(function () {
+                                $(thisPage).text('Page ' + tab_counter);
+                                tab_counter++;
+                            });
+
+                            tabs.tabs( "option", "active", 0 );
+                            tabs.tabs( "refresh" );
+
+                            thisPage.api.setDirty();
+                        } 
+                    },
+                    {   text: button_cancel, 
+                        click: function () { 
+                                        $(this).dialog('destroy'); 
+                                        return false;  
+                        }
+                    }
+                ],
     });
-    
-    tabs.tabs( "option", "active", 0 );
-    tabs.tabs( "refresh" );
-    
-    this.api.setDirty();
+  
 };
 
 /**

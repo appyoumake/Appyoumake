@@ -137,13 +137,14 @@ Mlab_dt_api.prototype = {
  */
 
     displayExternalHelpfile: function (component_id, title, owner_element, qTipClass) {
-        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip ';
+        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
         var url = this.parent.urls.component_helpfile.replace("_COMPID_", component_id);
-        if (typeof qTipClass != "undefined") { 
-            var styleClasses = styleClasses + " " + qTipClass;
+        
+        if (typeof qTipClass !== "undefined") { 
+            qTipClasses = qTipClasses + " " + qTipClass;
         }
         $.getJSON(url, function(data) {
-            if (data.result == "SUCCESS") {
+            if (data.result === "SUCCESS") {
                  $(owner_element).qtip({
                      solo: false,
                      content:    {

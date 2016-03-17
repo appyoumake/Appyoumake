@@ -51,4 +51,10 @@ custom:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Rediger alternativer, en_GB: Edit options, default: Edit options }
         order: 9
-    
+        
+messages:
+    dlg_delete_page_title: { nb_NO: Slette side?, en_GB: Delete page?, default: Delete page? }
+    dlg_delete_question_title: { nb_NO: Slette spørsmål?, en_GB: Delete question?, default: Delete question? }
+    dlg_delete_question_element_title: { nb_NO: Slette del av spørsmål?, en_GB: Delete question element?, default: Delete question element? }
+    dlg_delete_button_ok: { nb_NO: OK, en_GB: OK, default: OK }
+    dlg_delete_button_cancel: { nb_NO: Avbryt, en_GB: Cancel, default: Cancel }

@@ -194,7 +194,7 @@ $(document).ready(function() {
                         } else if (c.accessible && c.is_feature) {
 
 //all features are in a single div
-                            features_html[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
+                            features_html[parseInt(c.data.statusorder_by)] = "<div data-mlab-type='" + type + "' " +
                                         "onclick='mlab.dt.design.feature_add(\"" + type + "\");' " +
                                         "title='" + tt + "' " +
                                         "class='mlab_button_components' " +
@@ -283,16 +283,16 @@ $(document).ready(function() {
                     $("#mlab_statusbar_progress_spin").spin('small', '#fff');
 
 //assign click functions to tools
-                    $("#mlab_button_up").on("click", function () { mlab.dt.design.component_moveup(); });
-                    $("#mlab_button_down").on("click", function () { mlab.dt.design.component_movedown(); });
-                    $("#mlab_button_delete").on("click", function () { mlab.dt.design.component_delete(); });
-                    $("#mlab_button_help").on("click", function () { mlab.dt.design.component_help(); });
-                    $("#mlab_button_cut_comp").on("click", function () { mlab.dt.design.component_cut(); });
-                    $("#mlab_button_copy_comp").on("click", function () { mlab.dt.design.component_copy(); });
-                    $("#mlab_button_paste_comp").on("click", function () { mlab.dt.design.component_paste(); });
+                    $("[data-mlab-comp-tool='move_up']").on("click", function () { mlab.dt.design.component_moveup(); });
+                    $("[data-mlab-comp-tool='move_down']").on("click", function () { mlab.dt.design.component_movedown(); });
+                    $("[data-mlab-comp-tool='delete']").on("click", function () { mlab.dt.design.component_delete(); });
+                    $("[data-mlab-comp-tool='help']").on("click", function () { mlab.dt.design.component_help(); });
+                    $("[data-mlab-comp-tool='cut']").on("click", function () { mlab.dt.design.component_cut(); });
+                    $("[data-mlab-comp-tool='copy']").on("click", function () { mlab.dt.design.component_copy(); });
+                    $("[data-mlab-comp-tool='paste']").on("click", function () { mlab.dt.design.component_paste(); });
 
-                    $("#mlab_button_redo").on("click", function () { document.execCommand("redo"); });
-                    $("#mlab_button_undo").on("click", function () { document.execCommand("undo"); });
+                    $("[data-mlab-comp-tool='redo']").on("click", function () { document.execCommand("redo"); });
+                    $("[data-mlab-comp-tool='undo']").on("click", function () { document.execCommand("undo"); });
                     
                     $("#mlab_page_control_title").on("click", function () {
                         mlab.dt.api.editContent(this);

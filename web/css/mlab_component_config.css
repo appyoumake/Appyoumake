@@ -64,12 +64,40 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 }
 
 #mlab_editor .ui-dialog-titlebar {
-    padding: 5px;
+    padding: 3px;
 }
 
 #mlab_editor .qtip-titlebar .qtip-close {
     top: 1px;
     background-color: white;
+}
+
+#mlab_editor .ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
+#mlab_editor .ui-state-default .ui-icon {
+    background-image: url(images/ui-icons_888888_256x240.png);
+    margin-top: -8px;
+    margin-left: -8px;
+}
+
+#mlab_editor .ui-icon-alert {
+    background-position: 0 -145px;
+    background-image: url(images/ui-icons_222222_256x240.png);
+    float: left;
+    margin-right: 5px;
+}
+
+#mlab_editor .ui-dialog #mlab_dialog_delete {
+    min-height: 10px;
+    padding: 30px;
+    font-size: 13px;
+}
+
+#mlab_editor .ui-dialog .ui-button-text{
+   padding: 2px 5px;
+    font-size: 13px; 
 }
 
 #mlab_editor .mlab_dt_text_headline {
