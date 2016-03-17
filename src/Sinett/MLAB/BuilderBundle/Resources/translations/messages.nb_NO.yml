@@ -403,7 +403,9 @@ build_app.components.toolbar.component.aspect.1.1: 1:1
 
 build_app.tooltip.not.saved: Siste endringer ble ikke lagret
 build_app.not.saved: Mlab var ikke i stand til å lagre de siste enndringene på denne siden. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
-
+build_app.dialog.delete.title: Slette?
+build_app.dialog.delete.text: Er du sikker på at du vil slette?
+    
 build_app.footer.tooltip.help: Slå av hjelp
 build_app.footer.help: Hold musepekeren over elementet du ønsker en beskrivelse av.
 

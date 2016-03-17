@@ -646,6 +646,10 @@ made smaler than the min width */
     z-index: 450 !important;
 }
 
+.mlab_zindex_top_helptip {
+    z-index: 550 !important;
+}
+
 #mlab_editor.mlab_loading_info {
     cursor: wait;
 }
@@ -671,5 +675,9 @@ made smaler than the min width */
 
 #mlab_editor [data-mlab-get-info="storage_plugins"] {
     margin: 10px 0;
+}
+
+#mlab_editor .container .ui-loader {
+   display: none; 
 }
 

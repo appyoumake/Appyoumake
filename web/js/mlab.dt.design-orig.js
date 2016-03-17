@@ -235,20 +235,58 @@ Mlab_dt_design.prototype = {
             return rgb.join(", ");
     },
     
-    component_delete : function () {
-        mlab.dt.api.closeAllPropertyDialogs();
-        var sel_comp = $(".mlab_current_component").prev();
-        if (sel_comp.length == 0) {
-            sel_comp = $(".mlab_current_component").next();
-        }
-        $(".mlab_current_component").qtip('hide'); 
-        $(".mlab_current_component").remove();
-        if (sel_comp.length > 0) {
-            if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
-                this.component_menu_prepare();
+    component_delete : function (cut) {
+        
+        if (cut){
+            mlab.dt.api.closeAllPropertyDialogs();
+            var sel_comp = $(".mlab_current_component").prev();
+            if (sel_comp.length == 0) {
+                sel_comp = $(".mlab_current_component").next();
             }
-        } 
-        this.parent.flag_dirty = true;
+            $(".mlab_current_component").qtip('hide'); 
+            $(".mlab_current_component").remove();
+            if (sel_comp.length > 0) {
+                if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
+                    this.component_menu_prepare();
+                }
+            } 
+            this.parent.flag_dirty = true;
+            return true; 
+        }
+        
+        $("#mlab_dialog_delete").dialog({
+            title: _tr["build_app.dialog.delete.title"],
+            dialogClass: "no-close",
+            modal: true,
+            buttons: [ {    text: _tr["mlab.dt.api.js.getLink.ok"],     
+                            click:function () { 
+                                $(this).dialog('destroy'); 
+                                //Deletes
+                                mlab.dt.api.closeAllPropertyDialogs();
+                                var sel_comp = $(".mlab_current_component").prev();
+                                if (sel_comp.length == 0) {
+                                    sel_comp = $(".mlab_current_component").next();
+                                }
+                                $(".mlab_current_component").qtip('hide'); 
+                                $(".mlab_current_component").remove();
+                                if (sel_comp.length > 0) {
+                                    if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
+                                        this.component_menu_prepare();
+                                    }
+                                } 
+                                this.parent.flag_dirty = true;
+                            } 
+                        },
+                        {   text: _tr["mlab.dt.api.js.getLink.cancel"], 
+                            click: function () { 
+                                            $(this).dialog('destroy'); 
+                                            return false;  
+                            }
+                        }
+                    ],
+        });
+                        
+        
     },
     
 //gets a html page to show as help for making the component at dt
@@ -264,8 +302,9 @@ Mlab_dt_design.prototype = {
     
 //cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard
     component_cut : function () {
+        var cut = true;
         mlab.dt.clipboard = $(".mlab_current_component").clone();
-        this.component_delete();
+        this.component_delete(cut);
     },
 
     component_copy : function () {
