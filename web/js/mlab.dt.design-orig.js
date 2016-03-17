@@ -295,7 +295,7 @@ Mlab_dt_design.prototype = {
         var extended_name = this.parent.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
         var owner_element = $(".mlab_help_icon");
         var qTipClass = 'mlab_comp_help_qTip';
-        var title = _tr["mlab.dt.design.js.qtip.help.title"] + extended_name;
+        var title = _tr["mlab.dt.design.js.qtip.help.title"] + " - " + extended_name;
         this.parent.api.displayExternalHelpfile(comp_id, title, owner_element, qTipClass);           
     },
     
@@ -319,9 +319,13 @@ Mlab_dt_design.prototype = {
             alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
+        $(".mlab_current_component").qtip('hide');
         $(".mlab_current_component").removeClass("mlab_current_component");
         $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
         if (this.parent.api.display.componentHighlightSelected(mlab.dt.clipboard)) {
+            this.component_menu_prepare();
+        } else {
+            //TODO - the check does not work.....
             this.component_menu_prepare();
         }
 
