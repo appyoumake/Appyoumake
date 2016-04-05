@@ -294,7 +294,7 @@ color: black;
 /* ===  list for component size and aspect and storage plugin...   === */
 #mlab_editor #mlab_component_size_list li, 
 #mlab_editor #mlab_component_aspect_list li, 
-#mlab_editor #mlab_storage_plugin_list li,
+#mlab_editor [data-mlab-get-info='storage_plugins'] li,
 [data-mlab-get-info="storage_plugins"] li {
     cursor: pointer;
     list-style-type: square; 
@@ -308,7 +308,7 @@ color: black;
 
 #mlab_editor #mlab_component_size_list ul, 
 #mlab_editor #mlab_component_aspect_list ul, 
-#mlab_editor #mlab_storage_plugin_list ul {
+#mlab_editor [data-mlab-get-info='storage_plugins'] ul {
     background-color: white;
     border: 0px orange solid;
     padding: 8px;

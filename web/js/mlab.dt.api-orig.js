@@ -222,7 +222,7 @@ Mlab_dt_api.prototype = {
  */
     uploadMedia : function (el, component_config, file_extensions, cb, event) {
         this.indicateWait(true);
-        //content = $('<form />', {"id": "mlab_dt_form_upload" } );
+        content = $('<form />', {"id": "mlab_dt_form_upload" } );
         content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], "class": "mlab_dt_text_info" }) );
         content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
         content.append( $('<div />', { "id": "mlab_cp_image_uploadfiles", "class": "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
@@ -918,7 +918,7 @@ Mlab_dt_api.prototype = {
             
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='storage_plugins']").slideUp();
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").slideUp();
-            $(mlab.dt.qtip_tools).qtip().elements.content.find('[data-mlab-tool-name="select_storage_plugin"]').attr("src", "/img/tools/storage_selected.png");
+            $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-comp-tool='storage_plugin']").attr("src", "/img/tools/storage_selected.png");
             
         })
         

@@ -236,7 +236,7 @@ Mlab_dt_design.prototype = {
     },
     
     component_delete : function (cut) {
-        
+        var that = this;
         if (cut){
             mlab.dt.api.closeAllPropertyDialogs();
             var sel_comp = $(".mlab_current_component").prev();
@@ -270,11 +270,11 @@ Mlab_dt_design.prototype = {
                                 $(".mlab_current_component").qtip('hide'); 
                                 $(".mlab_current_component").remove();
                                 if (sel_comp.length > 0) {
-                                    if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
-                                        this.component_menu_prepare();
+                                    if (that.parent.api.display.componentHighlightSelected(sel_comp)) {
+                                        that.component_menu_prepare();
                                     }
                                 } 
-                                this.parent.flag_dirty = true;
+                                that.parent.flag_dirty = true;
                             } 
                         },
                         {   text: _tr["mlab.dt.api.js.getLink.cancel"], 
@@ -431,7 +431,7 @@ Mlab_dt_design.prototype = {
         $.get( url, function( data ) {
             if (data.result == "success") {
                 that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
-                $("#mlab_storage_plugin_list [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");
+                $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");
 
                 if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
                     that.parent.api.getStorageCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
@@ -555,36 +555,36 @@ Mlab_dt_design.prototype = {
         
 //display storage selection list button, if this supports storage
         if (typeof conf.credentials != "undefined" && Object.prototype.toString.call( conf.credentials ) === "[object Array]") {
-            $("#mlab_button_get_credentials").removeClass("mlab_hidden");
+            $("[data-mlab-comp-tool='credentials']").removeClass("mlab_hidden");
         } else {
-            $("#mlab_button_get_credentials").addClass("mlab_hidden");
+            $("[data-mlab-comp-tool='credentials']").addClass("mlab_hidden");
         }
 
 //display storage selection list button, if this supports storage
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
-            $("#mlab_button_select_storage_plugin").removeClass("mlab_hidden");
-            $("#mlab_storage_plugin_list li").removeClass("mlab_item_applied");
+            $("[data-mlab-comp-tool='storage_plugin']").removeClass("mlab_hidden");
+            $("[data-mlab-get-info='storage_plugins'] li").removeClass("mlab_item_applied");
 //update the menu with the existing selection, if any
             var current_storage = this.parent.api.getVariable(curr_comp[0], "storage_plugin");
             if (typeof current_storage != "undefined" && typeof current_storage.name != "undefined") {
-                $("#mlab_storage_plugin_list [data-mlab-storage-plugin-type='" + current_storage.name + "']").addClass("mlab_item_applied");
+                $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + current_storage.name + "']").addClass("mlab_item_applied");
             }
         } else {
-            $("#mlab_button_select_storage_plugin").addClass("mlab_hidden");
+            $("[data-mlab-comp-tool='storage_plugin']").addClass("mlab_hidden");
         }
         
 //display size and aspect ratio selection list buttons, if this supports resizing
         if (typeof conf.resizeable != "undefined" && conf.resizeable == true) {
-            $("#mlab_button_component_size").removeClass("mlab_hidden");
-            $("#mlab_button_component_aspect").removeClass("mlab_hidden");
+            $("[data-mlab-comp-tool='comp_size']").removeClass("mlab_hidden");
+            $("[data-mlab-comp-tool='comp_aspect']").removeClass("mlab_hidden");
             $("#mlab_component_size_list li").removeClass("mlab_item_applied");
             $("#mlab_component_aspect_list li").removeClass("mlab_item_applied");
 //update the menus with the existing selection, if any
             $("#mlab_component_size_list [data-data-mlab-comp-size='" + curr_comp.data("mlab-comp-size") + "']").addClass("mlab_item_applied");
             $("#mlab_component_aspect_list [data-data-mlab-comp-aspect='" + curr_comp.data("mlab-comp-aspect") + "']").addClass("mlab_item_applied");
         } else {
-            $("#mlab_button_component_size").addClass("mlab_hidden");
-            $("#mlab_button_component_aspect").addClass("mlab_hidden");
+            $("[data-mlab-comp-tool='comp_size']").addClass("mlab_hidden");
+            $("[data-mlab-comp-tool='comp_aspect']").addClass("mlab_hidden");
         }
        
 //set the qTips posistion after where it is placed in the window 

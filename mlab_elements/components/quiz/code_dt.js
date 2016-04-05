@@ -892,8 +892,8 @@ this.custom_delete_question = function(el) {
                     },
                     {   text: button_cancel, 
                         click: function () { 
-                                        $(this).dialog('destroy'); 
-                                        return false;  
+                            $(this).dialog('destroy'); 
+                            return false;  
                         }
                     }
                 ],
@@ -1040,7 +1040,7 @@ this.custom_set_options = function(el, event) {
         
 //if they say that they want to store this remotely, ask which DB they want to use
         if (name == "submit" && $(this).prop("checked")) {
-            $(mlab.dt.qtip_tools).qtip().elements.content.find('[data-mlab-tool-name="select_storage_plugin"]').trigger("click")
+            $(mlab.dt.qtip_tools).qtip().elements.content.find('[data-mlab-comp-tool="storage_plugin"]').trigger("click")
         }
     }); 
     

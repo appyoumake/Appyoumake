@@ -654,7 +654,7 @@ made smaler than the min width */
     cursor: wait;
 }
 
-#mlab_editor #mlab_storage_plugin_list {
+#mlab_editor [data-mlab-get-info='storage_plugins'] {
     z-index: 600 !important;
 }
 
@@ -681,3 +681,7 @@ made smaler than the min width */
    display: none; 
 }
 
+#mlab_editor #mlab_dialog_confirm .mlab_dialog_confirm_text {
+    float:left; 
+    margin:0 7px 20px 0;
+}
