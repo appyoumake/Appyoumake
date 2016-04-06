@@ -238,13 +238,13 @@ Mlab_dt_design.prototype = {
     component_delete : function (cut) {
         var that = this;
         if (cut){
-        if (el.length == 0) {
-            return;
-        }
-        var comp_id = el.data("mlab-type");
-        if (typeof this.parent.components[comp_id].code.onDelete != "undefined") {
-            this.parent.components[comp_id].code.onDelete(el);
-        }
+            if (el.length == 0) {
+                return;
+            }
+            var comp_id = el.data("mlab-type");
+            if (typeof this.parent.components[comp_id].code.onDelete != "undefined") {
+                this.parent.components[comp_id].code.onDelete(el);
+            }
             mlab.dt.api.closeAllPropertyDialogs();
             var sel_comp = $(".mlab_current_component").prev();
             if (sel_comp.length == 0) {
@@ -268,14 +268,25 @@ Mlab_dt_design.prototype = {
             buttons: [ {    text: _tr["mlab.dt.api.js.getLink.ok"],     
                             click:function () { 
                                 $(this).dialog('destroy'); 
-                                //Deletes
-                                mlab.dt.api.closeAllPropertyDialogs();
-                                var sel_comp = $(".mlab_current_component").prev();
-                                if (sel_comp.length == 0) {
-                                    sel_comp = $(".mlab_current_component").next();
+//Deletes
+                                var el = $(".mlab_current_component");
+                                if (el.length == 0) {
+                                    return;
                                 }
-                                $(".mlab_current_component").qtip('hide'); 
-                                $(".mlab_current_component").remove();
+                                mlab.dt.api.closeAllPropertyDialogs();
+                                var sel_comp = el.prev();
+                                if (sel_comp.length == 0) {
+                                    sel_comp = el.next();
+                                }
+                                el.qtip('hide'); 
+                                
+//call ondelete in component if it exists
+                                var comp_id = el.data("mlab-type");
+                                if (typeof that.parent.components[comp_id].code.onDelete != "undefined") {
+                                    that.parent.components[comp_id].code.onDelete(el);
+                                }
+
+                                el.remove();
                                 if (sel_comp.length > 0) {
                                     if (that.parent.api.display.componentHighlightSelected(sel_comp)) {
                                         that.component_menu_prepare();
