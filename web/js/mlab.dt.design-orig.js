@@ -236,6 +236,15 @@ Mlab_dt_design.prototype = {
     },
     
     component_delete : function () {
+//first check if this component has a ondelete function specified
+        var el = $(".mlab_current_component");
+        if (el.length == 0) {
+            return;
+        }
+        var comp_id = el.data("mlab-type");
+        if (typeof this.parent.components[comp_id].code.onDelete != "undefined") {
+            this.parent.components[comp_id].code.onDelete(el);
+        }
         mlab.dt.api.closeAllPropertyDialogs();
         var sel_comp = $(".mlab_current_component").prev();
         if (sel_comp.length == 0) {

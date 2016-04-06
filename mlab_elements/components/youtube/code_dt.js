@@ -137,7 +137,7 @@
         if (apiKey == '') {
             alert("No API key specified, please enter one first. If you do not have one, or does not know what this is, please contact your Mlab administrator");
             var that = this;
-            this.api.getCredentials(this.config.credentials, function (credentials, params) { that.store_credentials(credentials, params); }, { component: el });
+            this.api.getCredentials(this, function (credentials, params) { that.store_credentials(credentials, params); }, { component: el });
             return;
         }
         content = $('<form />');

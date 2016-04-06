@@ -891,13 +891,18 @@ Mlab_dt_api.prototype = {
 
 /**
   * Displays a previously hidden DIV to request credentials for a storage plugin. This is done by sliding down a previously hidden DIV with the credentials HTML. 
-  * @param {type} credentials_required
+  * @param {array of strings OR a javascript element object that is the component requesting it} credentials_or_component
   * @param {type} cb_function
   * @param {type} params
   * @returns {Boolean|Array of strings}
  */
-    getStorageCredentials: function (credentials_required, cb_function, params) {
+    getStorageCredentials: function (credentials_or_component, cb_function, params) {
         
+        if (credentials_or_component.constructor !== Array ) {
+            var credentials_required = credentials_or_component.config.credentials;
+        } else {
+            var credentials_required = credentials_or_component;
+        }
         var dlg = $('<div />', {"id": "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
         dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , "class": 'mlab_dt_text_info' } ) );
         for (credential in credentials_required) {   
@@ -951,12 +956,18 @@ Mlab_dt_api.prototype = {
 /**
   * Requests credentials such as login name and password (for instance, can also be URL to use, database name, etc)
   * These are all just treated as strings and returned as an array of strings. 
-  * @param {type} credentials_required
+  * @param {array of strings OR a javascript element object that is the component requesting it} credentials_or_component
   * @param {type} cb_function
   * @param {type} params
   * @returns {Boolean|Array of strings}
  */
-    getCredentials: function (credentials_required, cb_function, params) {
+    getCredentials: function (credentials_or_component, cb_function, params) {
+        
+        if (credentials_or_component.constructor !== Array ) {
+            var credentials_required = credentials_or_component.config.credentials;
+        } else {
+            var credentials_required = credentials_or_component;
+        }
         var dlg = $('<div />', {'id': "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
         for (credential in credentials_required) {   
             dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , 'class': 'mlab_dt_text_info' } ) );

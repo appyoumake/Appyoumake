@@ -148,7 +148,7 @@ class FileManagement {
                     $yaml = new Parser();
 					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.yml"));
                     if (isset($temp["tooltip"])) {
-                        $entity->setDescription($temp["tooltip"]);
+                        $entity->setDescription($temp["tooltip"]); //TODO: need to parse this as object with language...
                     } 
                     if (isset($temp["compatible_with"])) {
                         $entity->setCompatibleWith(substr(trim($line), 16));
@@ -156,7 +156,7 @@ class FileManagement {
                     if (isset($temp["version"])) {
                         $entity->setVersion(substr(trim($line), 8));
                     }
-				}
+				} //TODO: bail here if no yaml file
 				
 				$entity->setPath($dir_name);
 				$entity->setName($object_name);
@@ -253,7 +253,7 @@ class FileManagement {
 
 
             if (isset($component["conf"]) && isset($component["conf"]["feature"])) {
-                $component["is_feature"] = $component["conf"]["feature"];
+                $component["is_feature"] = $component["conf"]["feature"] == "true";
             }
             
             if (isset($component["conf"]) && isset($component["conf"]["category"])) {
@@ -1125,23 +1125,14 @@ class FileManagement {
                 error_log("Placeholder $placeholder was not processed");
             }
         }
-/*****   FRIDAY     
-//no more processing of index.html, can save it now
-        $doc = new \DOMDocument("1.0", "utf-8");
-        libxml_use_internal_errors(true);
-        $doc->validateOnParse = true;
-        $doc->loadHTML($frontpage_content);
-        libxml_clear_errors();
-        $content = $doc->getElementById($config["app"]["content_id"]);
-        $content->parentNode->removeChild($content);
-        $doc->saveHTMLFile($cached_app_path . "index.html");
-*****/
+
 //loop through all pages to process the components that have a matching onCompile function
         $pages = glob ( $app_path . "???.html" );
         array_unshift($pages, $cached_app_path . "000.html"); //fake placeholder to make loop below work neater
         array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
 
         foreach ($pages as $page) {
+            
 //parse pages and loop through the components for each page
             $doc = new \DOMDocument("1.0", "utf-8");
             libxml_use_internal_errors(true);
@@ -1151,11 +1142,6 @@ class FileManagement {
                 libxml_clear_errors();
                 $content = $doc->getElementById($config["app"]["content_id"]);
                 $content->parentNode->removeChild($content);
-                /*******
-                $doc->loadHTML($frontpage_content);
-                libxml_clear_errors();
-                $page_components = $doc->getElementById($config["app"]["content_id"])->childNodes;
-                ********/
                  
             } else {
                 $doc->loadHTML(file_get_contents($page));
