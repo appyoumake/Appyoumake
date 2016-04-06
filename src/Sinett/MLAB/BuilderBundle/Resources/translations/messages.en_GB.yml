@@ -403,6 +403,8 @@ build_app.components.toolbar.component.aspect.1.1: 1:1
 
 build_app.tooltip.not.saved: The latest changes were not saved
 build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
+build_app.dialog.delete.title: Delete?
+build_app.dialog.delete.text: Are you sure you want to delete?
 
 build_app.footer.tooltip.help: Turn help off
 build_app.footer.help: Hold the mouse over the item you wish to describe.

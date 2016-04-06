@@ -64,12 +64,46 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 }
 
 #mlab_editor .ui-dialog-titlebar {
-    padding: 5px;
+    background-color: rgba(255,165,0,0.5);
+    padding: 3px;
 }
 
 #mlab_editor .qtip-titlebar .qtip-close {
     top: 1px;
     background-color: white;
+}
+
+#mlab_editor .ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
+#mlab_editor .ui-state-default .ui-icon {
+    background-image: url(images/ui-icons_888888_256x240.png);
+    margin-top: -8px;
+    margin-left: -8px;
+}
+
+#mlab_editor .ui-accordion .ui-state-default .ui-icon {
+    background-image: none;
+}
+
+#mlab_editor .ui-icon-alert {
+    background-position: 0 -145px;
+    background-image: url(images/ui-icons_222222_256x240.png);
+    float: left;
+    margin-right: 5px;
+}
+
+#mlab_editor .ui-dialog #mlab_dialog_delete {
+    min-height: 10px !important;
+    padding: 10px;
+    padding-top: 20px;
+    font-size: 13px;
+}
+
+#mlab_editor .ui-dialog .ui-button-text{
+   padding: 2px 5px;
+    font-size: 13px; 
 }
 
 #mlab_editor .mlab_dt_text_headline {
@@ -260,7 +294,7 @@ color: black;
 /* ===  list for component size and aspect and storage plugin...   === */
 #mlab_editor #mlab_component_size_list li, 
 #mlab_editor #mlab_component_aspect_list li, 
-#mlab_editor #mlab_storage_plugin_list li,
+#mlab_editor [data-mlab-get-info='storage_plugins'] li,
 [data-mlab-get-info="storage_plugins"] li {
     cursor: pointer;
     list-style-type: square; 
@@ -274,7 +308,7 @@ color: black;
 
 #mlab_editor #mlab_component_size_list ul, 
 #mlab_editor #mlab_component_aspect_list ul, 
-#mlab_editor #mlab_storage_plugin_list ul {
+#mlab_editor [data-mlab-get-info='storage_plugins'] ul {
     background-color: white;
     border: 0px orange solid;
     padding: 8px;

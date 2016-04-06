@@ -235,9 +235,10 @@ Mlab_dt_design.prototype = {
             return rgb.join(", ");
     },
     
-    component_delete : function (cut) {
-        var that = this;
-        if (cut){
+<<<<<<< HEAD
+    component_delete : function () {
+//first check if this component has a ondelete function specified
+        var el = $(".mlab_current_component");
         if (el.length == 0) {
             return;
         }
@@ -245,10 +246,25 @@ Mlab_dt_design.prototype = {
         if (typeof this.parent.components[comp_id].code.onDelete != "undefined") {
             this.parent.components[comp_id].code.onDelete(el);
         }
+        mlab.dt.api.closeAllPropertyDialogs();
+        var sel_comp = $(".mlab_current_component").prev();
+        if (sel_comp.length == 0) {
+            sel_comp = $(".mlab_current_component").next();
+        }
+        $(".mlab_current_component").qtip('hide'); 
+        $(".mlab_current_component").remove();
+        if (sel_comp.length > 0) {
+            if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
+                this.component_menu_prepare();
+=======
+    component_delete : function (cut) {
+        var that = this;
+        if (cut){
             mlab.dt.api.closeAllPropertyDialogs();
             var sel_comp = $(".mlab_current_component").prev();
             if (sel_comp.length == 0) {
                 sel_comp = $(".mlab_current_component").next();
+>>>>>>> ced88ed05161f5d45940a4c49a21028c8e39c8fd
             }
             $(".mlab_current_component").qtip('hide'); 
             $(".mlab_current_component").remove();

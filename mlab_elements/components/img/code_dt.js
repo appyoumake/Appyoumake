@@ -34,12 +34,6 @@
         return { "width": ctrl.width(), "height": ctrl.height() }
     };
     
-    this.centerFigureCaption = function (el) {
-        var img = $('.mlab_current_component').find('img');
-        var figcap = $('.mlab_current_component').find('figcaption');
-        var imgWidth = img.width();
-        figcap.css('width', imgWidth);
-    };
       
     this.custom_scale_decrease = function (el) {
         var fig = $('.mlab_current_component').find('figure');
@@ -51,7 +45,6 @@
         }
         if (scale >= 20) {
             fig.css('width', (scale - 10).toString() + '%');
-            this.centerFigureCaption(el);
         }
     };
     
@@ -65,7 +58,6 @@
         }
         if (scale <= 90) {
             fig.css('width', (scale + 10).toString() + '%');
-            this.centerFigureCaption(el);
         }
     };
     

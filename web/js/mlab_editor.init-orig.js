@@ -194,7 +194,7 @@ $(document).ready(function() {
                         } else if (c.accessible && c.is_feature) {
 
 //all features are in a single div
-                            features_html[parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
+                            features_html[parseInt(c.data.statusorder_by)] = "<div data-mlab-type='" + type + "' " +
                                         "onclick='mlab.dt.design.feature_add(\"" + type + "\");' " +
                                         "title='" + tt + "' " +
                                         "class='mlab_button_components' " +
@@ -265,12 +265,12 @@ $(document).ready(function() {
 
 
 //prepare the menu popup for the storage plugin selector
-/*SPSP                        $("#mlab_button_select_storage_plugin").click( function(event) {
+/*SPSP                        $("[data-mlab-comp-tool='storage_plugin']").click( function(event) {
                         mlab.dt.api.closeAllPropertyDialogs();
                         var owner_element = event.currentTarget;
                         mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                             solo: false,
-                            content:    {text: $("#mlab_storage_plugin_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
+                            content:    {text: $("data-mlab-get-info='storage_plugins'").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
                             position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                             show:       { ready: true, modal: { on: true, blur: false } },
                             hide:       false,
@@ -283,16 +283,16 @@ $(document).ready(function() {
                     $("#mlab_statusbar_progress_spin").spin('small', '#fff');
 
 //assign click functions to tools
-                    $("#mlab_button_up").on("click", function () { mlab.dt.design.component_moveup(); });
-                    $("#mlab_button_down").on("click", function () { mlab.dt.design.component_movedown(); });
-                    $("#mlab_button_delete").on("click", function () { mlab.dt.design.component_delete(); });
-                    $("#mlab_button_help").on("click", function () { mlab.dt.design.component_help(); });
-                    $("#mlab_button_cut_comp").on("click", function () { mlab.dt.design.component_cut(); });
-                    $("#mlab_button_copy_comp").on("click", function () { mlab.dt.design.component_copy(); });
-                    $("#mlab_button_paste_comp").on("click", function () { mlab.dt.design.component_paste(); });
+                    $("[data-mlab-comp-tool='move_up']").on("click", function () { mlab.dt.design.component_moveup(); });
+                    $("[data-mlab-comp-tool='move_down']").on("click", function () { mlab.dt.design.component_movedown(); });
+                    $("[data-mlab-comp-tool='delete']").on("click", function () { mlab.dt.design.component_delete(); });
+                    $("[data-mlab-comp-tool='help']").on("click", function () { mlab.dt.design.component_help(); });
+                    $("[data-mlab-comp-tool='cut']").on("click", function () { mlab.dt.design.component_cut(); });
+                    $("[data-mlab-comp-tool='copy']").on("click", function () { mlab.dt.design.component_copy(); });
+                    $("[data-mlab-comp-tool='paste']").on("click", function () { mlab.dt.design.component_paste(); });
 
-                    $("#mlab_button_redo").on("click", function () { document.execCommand("redo"); });
-                    $("#mlab_button_undo").on("click", function () { document.execCommand("undo"); });
+                    $("[data-mlab-comp-tool='redo']").on("click", function () { document.execCommand("redo"); });
+                    $("[data-mlab-comp-tool='undo']").on("click", function () { document.execCommand("undo"); });
                     
                     $("#mlab_page_control_title").on("click", function () {
                         mlab.dt.api.editContent(this);
@@ -389,7 +389,7 @@ $(document).ready(function() {
                     });
 
 
-                    $("#mlab_button_select_storage_plugin").on("click", function () { 
+                    $("[data-mlab-comp-tool='storage_plugin']").on("click", function () { 
                         var el = $(this).siblings("[data-mlab-get-info='storage_plugins']");
                         if( !el.is(":visible")) { 
                             el.html(mlab.dt.api.getStoragePluginList(mlab.dt.api.getSelectedComponent()));
@@ -397,10 +397,10 @@ $(document).ready(function() {
                         el.slideToggle();
                     });
                     
-                    $("#mlab_button_get_credentials").on("click", function () { mlab.dt.design.component_edit_credentials(); });
-
+                    $("[data-mlab-comp-tool='credentials']").on("click", function () { mlab.dt.design.component_edit_credentials(); });
+                    
 //prepare the menu popup for the component resizer
-                    $("#mlab_button_component_size").click( function(event) {
+                    $("[data-mlab-comp-tool='comp_size']").on("click", function (event) { 
                         mlab.dt.api.closeAllPropertyDialogs();
                         var owner_element = event.currentTarget;
                         mlab.dt.api.properties_tooltip = $(owner_element).qtip({
@@ -409,14 +409,37 @@ $(document).ready(function() {
                             position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                             show:       { ready: true, modal: { on: true, blur: false } },
                             hide:       false,
-                            events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
-                            style:      { classes: "mlab_zindex_top_tooltip" }
-                        });
+                            style:      { classes: "mlab_zindex_top_tooltip" },
+                            events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; },
+                                          visible: function() {  
+                                            $("[data-mlab-comp-size='small']").on("click", function () { 
+                                                mlab.dt.api.display.setSize($(".mlab_current_component"), "small");
+                                                $("[data-mlab-get-info='comp_sizes']").hide();
+                                            });
 
+                                            $("[data-mlab-comp-size='medium']").on("click", function () { 
+                                                mlab.dt.api.display.setSize($(".mlab_current_component"), "medium");
+                                                $("[data-mlab-get-info='comp_sizes']").hide();
+                                            });
+
+                                            $("[data-mlab-comp-size='large']").on("click", function () { 
+                                                mlab.dt.api.display.setSize($(".mlab_current_component"), "large");
+                                                $("[data-mlab-get-info='comp_sizes']").hide();
+                                            });
+
+                                            $("[data-mlab-comp-size='fullscreen']").on("click", function () { 
+                                                mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");
+                                                $("[data-mlab-get-info='comp_sizes']").hide();
+                                            }); 
+                                          }
+                                        }
+                        });
                     } );
+                    
+                   
 
 //prepare the menu popup for the component aspect ratio selector
-                    $("#mlab_button_component_aspect").click( function(event) {
+                    $("[data-mlab-comp-tool='comp_aspect']").on("click", function (event) {
                         mlab.dt.api.closeAllPropertyDialogs();
                         var owner_element = event.currentTarget;
                         mlab.dt.api.properties_tooltip = $(owner_element).qtip({
@@ -425,10 +448,26 @@ $(document).ready(function() {
                             position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
                             show:       { ready: true, modal: { on: true, blur: false } },
                             hide:       false,
-                            events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
-                            style:      { classes: "mlab_zindex_top_tooltip" }
-                        });
+                            style:      { classes: "mlab_zindex_top_tooltip" },
+                            events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; }, 
+                                          visible: function() {  
+                                            $("[data-mlab-comp-aspect='4:3']").on("click", function () { 
+                                                mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "4:3");
+                                                $("[data-mlab-get-info='comp_aspects']").hide();
+                                            });
 
+                                            $("[data-mlab-comp-aspect='16:9']").on("click", function () { 
+                                               mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "16:9");
+                                                $("[data-mlab-get-info='comp_aspects']").hide();
+                                            });
+
+                                            $("[data-mlab-comp-aspect='1:1']").on("click", function () { 
+                                                mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), "1:1");
+                                                $("[data-mlab-get-info='comp_aspects']").hide();
+                                            });
+                                          }
+                                        }
+                        });
                     });
 
 //prepare qtip for the download of app buttons

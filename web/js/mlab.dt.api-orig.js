@@ -137,13 +137,14 @@ Mlab_dt_api.prototype = {
  */
 
     displayExternalHelpfile: function (component_id, title, owner_element, qTipClass) {
-        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip ';
+        var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip';
         var url = this.parent.urls.component_helpfile.replace("_COMPID_", component_id);
-        if (typeof qTipClass != "undefined") { 
-            var styleClasses = styleClasses + " " + qTipClass;
+        
+        if (typeof qTipClass !== "undefined") { 
+            qTipClasses = qTipClasses + " " + qTipClass;
         }
         $.getJSON(url, function(data) {
-            if (data.result == "SUCCESS") {
+            if (data.result === "SUCCESS") {
                  $(owner_element).qtip({
                      solo: false,
                      content:    {
@@ -221,7 +222,7 @@ Mlab_dt_api.prototype = {
  */
     uploadMedia : function (el, component_config, file_extensions, cb, event) {
         this.indicateWait(true);
-        //content = $('<form />', {"id": "mlab_dt_form_upload" } );
+        content = $('<form />', {"id": "mlab_dt_form_upload" } );
         content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], "class": "mlab_dt_text_info" }) );
         content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
         content.append( $('<div />', { "id": "mlab_cp_image_uploadfiles", "class": "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
@@ -922,7 +923,7 @@ Mlab_dt_api.prototype = {
             
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='storage_plugins']").slideUp();
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").slideUp();
-            $(mlab.dt.qtip_tools).qtip().elements.content.find('[data-mlab-tool-name="select_storage_plugin"]').attr("src", "/img/tools/storage_selected.png");
+            $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-comp-tool='storage_plugin']").attr("src", "/img/tools/storage_selected.png");
             
         })
         
