@@ -637,6 +637,7 @@ mlab.dt.api.js.getLink.alert: Ingen URL/webside spesifisert, kan ikke legge til 
 
 mlab.dt.api.js.getCredentials.dlg.title: Akkreditering
 mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Mlab skal lagre/hente data på en skytjeneste
+mlab.dt.api.js.getCredentials.dlg.save: Lagre
 
 controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet
 controller.help.msg.file.notfound: Komponent hjelpefil ikke funnet

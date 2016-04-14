@@ -171,6 +171,11 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     padding-right: 50%;
 }
 
+#mlab_editor .mlab_dt_button_small_new_line {
+    padding: 1px;
+    padding-right: 50%;
+}
+
 #mlab_editor .mlab_dt_large_new_line {
     padding: 22px;
 }

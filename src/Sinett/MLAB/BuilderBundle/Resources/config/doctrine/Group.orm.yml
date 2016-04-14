@@ -56,8 +56,12 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
       targetEntity: Template
       mappedBy: groups      
       
-    components:
-      targetEntity: Component
-      mappedBy: groups      
+#    components:
+#      targetEntity: Component
+#      mappedBy: groups      
 
-  
+  oneToMany:
+    componentGroups:
+      targetEntity: ComponentGroup
+      mappedBy: group
+      cascade: [persist]

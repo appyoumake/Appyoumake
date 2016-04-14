@@ -134,12 +134,11 @@
     };
             
     this.custom_select_video = function (el, event) {
-        if (apiKey == '') {
-            alert("No API key specified, please enter one first. If you do not have one, or does not know what this is, please contact your Mlab administrator");
-            var that = this;
-            this.api.getCredentials(this.config.credentials, function (credentials, params) { that.store_credentials(credentials, params); }, { component: el });
-            return;
-        }
+        
+        var component = el;
+        var component_id = this.config.component_name;
+        var component_config = this.config;
+        
         content = $('<form />');
         content.append( '<div class="arama">' + 
                         '    <form action="" onsubmit="return false">' + 
@@ -153,13 +152,14 @@
                         '<div id="mlab_cp_youtube_results"></div>');
                 
         content.append( $('<p />', {class: "mlab_dt_small_new_line" }));
-        content.append( $('<div />', { text: 'Avbryt', id: "mlab_property_button_cancel", class: "pure-button  pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
-        content.append( $('<div />', { text: 'OK', id: "mlab_property_button_ok", class: "pure-button  pure-button-xsmall mlab_dt_button_ok mlab_dt_left" }) );
-
-        var component = el;
-        var component_id = this.config.component_name;
-        var component_config = this.config;
-        
-        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube, null, null, false, event);
        
+        this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube, null, null, false, event);
+        
+        if (apiKey == '') {
+            alert("No API key specified, please enter one first. If you do not have one, or does not know what this is, please contact your Mlab administrator");
+            var that = this;
+            this.api.getCredentials(this.config.credentials, function (credentials, params) { that.store_credentials(credentials, params); }, { component: el });
+            return;
+        }
+         
     };

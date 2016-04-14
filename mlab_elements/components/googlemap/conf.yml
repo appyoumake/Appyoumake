@@ -2,6 +2,7 @@
 version: 1.2
 developer: Arild Bergh @ Sinett/FFI.no
 category: map
+category_name: {nb_NO: Kart, en_GB: Map}
 name: googlemap
 extended_name: { nb_NO: Enkelt Google kart, en_GB: Basic Google map, default: Basic Google map }
 unique: true

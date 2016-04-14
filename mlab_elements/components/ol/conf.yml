@@ -2,6 +2,7 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: list
+category_name: {nb_NO: Liste, en_GB: List}
 name: ol
 extended_name: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
 tooltip: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }

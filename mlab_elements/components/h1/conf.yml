@@ -2,6 +2,7 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: text
+category_name: {nb_NO: Tekst, en_GB: Text}
 name: h1
 extended_name: { nb_NO: Overskrift, en_GB: Headline, default: Headline }
 tooltip: { nb_NO: Overskrift for innhold, en_GB: Headlines for your content, default: Headlines for your content }

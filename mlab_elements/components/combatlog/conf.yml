@@ -2,6 +2,7 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: dataentry
+category_name: {nb_NO: Dataentry, en_GB: Dataentry}
 name: combatlog
 tooltip: Combat log updates
 required_libs: {"runtime": ["socket.io.js"]}

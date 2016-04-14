@@ -421,20 +421,19 @@ Mlab_dt_design.prototype = {
  * @param {type} component: the component that wants to use this storage plugin
  */
     storage_plugin_add: function(storage_plugin_id, component) {
-        
         // SPSP this.parent.api.closeAllPropertyDialogs();
-        
         var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
         url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
         this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.storage.plugin"], true);
         var that = this;
         $.get( url, function( data ) {
+            var el = $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']");
             if (data.result == "success") {
                 that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
-                $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");
+                el.addClass("mlab_item_applied");
 
                 if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
-                    that.parent.api.getStorageCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
+                    that.parent.api.getStorageCredentials(el, that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
                 } else {
                     mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
                     $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-storage-plugin-type='storage_plugins']").slideUp();
@@ -444,9 +443,7 @@ Mlab_dt_design.prototype = {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }
 
-        });
-        
-        
+        });  
     },
     
 /**

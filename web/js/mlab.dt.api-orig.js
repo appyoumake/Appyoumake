@@ -115,7 +115,8 @@ Mlab_dt_api.prototype = {
         if (existing_storage_plugin && existing_storage_plugin.name) {
             selected_plugin = existing_storage_plugin.name;
         }
-    
+    //component.conf.storage_plugins 
+    //Hvis ture så skal alle pluggins lastes - ellers skal de som er listet lastes
         for (type in this.parent.storage_plugins) {
             if (type == selected_plugin) {
                 sel_class = " class='mlab_item_applied' "; 
@@ -897,15 +898,15 @@ Mlab_dt_api.prototype = {
   * @param {type} params
   * @returns {Boolean|Array of strings}
  */
-    getStorageCredentials: function (credentials_required, cb_function, params) {
-        
+    getStorageCredentials: function (el, credentials_required, cb_function, params) {
         var dlg = $('<div />', {"id": "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
         dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , "class": 'mlab_dt_text_info' } ) );
         for (credential in credentials_required) {   
             dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , 'for': 'mlab_dt_dialog_credentials_' + credentials_required[credential] , "class": 'mlab_dt_short_label' } ) );
             dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , 'id': 'mlab_dt_dialog_credentials_' + credentials_required[credential] , "class": 'mlab_dt_input' }) );      
         }
-        dlg.append( $('<button>Save</button><div class="mlab_newline">&nbsp;</div>') );   
+        dlg.append( $('<div class="mlab_dt_button_small_new_line">&nbsp;</div>') );
+        dlg.append( $('<button class="mlab_dt_button mlab_dt_right">' + _tr["mlab.dt.api.js.getCredentials.dlg.save"] + '</button>') );   
         
         dlg.find("button").on("click", function() {
             //TODO verify input here
@@ -913,7 +914,7 @@ Mlab_dt_api.prototype = {
             for (credential in credentials_required) {
                 credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
             }
-
+            el.qtip('hide');
             cb_function(credentials, params);
             
             $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='storage_plugins']").slideUp();
@@ -922,30 +923,7 @@ Mlab_dt_api.prototype = {
             
         })
         
-        $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").html("").append(dlg).slideDown();
-        
-/*SPSP        var that_dlg = $(dlg).dialog({
-                autoOpen: true,
-                modal: true,
-                closeOnEscape: true,
-                dialogClass: "mlab_dt_dialog_credentials",
-                             
-                buttons: {
-                    'Save': function() {
-                        
-                        var credentials = {};
-                        for (credential in credentials_required) {
-                            credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
-                        }
-                        
-                        $(this).dialog("close");
-                        dlg.remove();
-                        cb_function(credentials, params);
-                        
-                    },
-                   
-                }
-            }).dialog("open");*/
+        this.displayPropertyDialog(el, _tr["mlab.dt.api.js.getCredentials.dlg.title"], dlg);
             
     },
 
@@ -958,37 +936,29 @@ Mlab_dt_api.prototype = {
   * @returns {Boolean|Array of strings}
  */
     getCredentials: function (credentials_required, cb_function, params) {
+        var el = $("[data-mlab-comp-tool='credentials']");
         var dlg = $('<div />', {'id': "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
         for (credential in credentials_required) {   
             dlg.append( $('<p />', { text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , 'class': 'mlab_dt_text_info' } ) );
             dlg.append( $('<label />', { text: credentials_required[credential].charAt(0).toUpperCase() + credentials_required[credential].slice(1) , 'for': 'mlab_dt_dialog_credentials_' + credentials_required[credential] , 'class': 'mlab_dt_short_label' } ) );
-            dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , 'id': 'mlab_dt_dialog_credentials_' + credentials_required[credential] , 'class': 'mlab_dt_input' }) );      
-            dlg.append( $('<br />') );   
+            dlg.append( $('<input />', { name: 'mlab_dt_dialog_credentials_' + credentials_required[credential] , 'id': 'mlab_dt_dialog_credentials_' + credentials_required[credential] , 'class': 'mlab_dt_input' }) );       
         }
         
-        var that_dlg = $(dlg).dialog({
-                autoOpen: true,
-                modal: true,
-                closeOnEscape: true,
-                dialogClass: "mlab_dt_dialog_credentials",
-                             
-                buttons: {
-                    'Save': function() {
-                        
-                        var credentials = {};
-                        for (credential in credentials_required) {
-                            credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
-                        }
-                        
-                        $(this).dialog("close");
-                        dlg.remove();
-                        cb_function(credentials, params);
-                        
-                    },
-                   
-                }
-            }).dialog("open");
-            
+        dlg.append( $('<div class="mlab_dt_button_small_new_line">&nbsp;</div>') );
+        dlg.append( $('<button class="mlab_dt_button mlab_dt_right">' + _tr["mlab.dt.api.js.getCredentials.dlg.save"] + '</button>') );
+        dlg.find("button").on("click", function() {
+            //TODO verify input here
+            var credentials = {};
+            for (credential in credentials_required) {
+                credentials[credentials_required[credential]] = $( "#mlab_dt_dialog_credentials_" + credentials_required[credential] ).val() ;
+            }
+
+            el.qtip('hide');
+            cb_function(credentials, params);
+        })
+        
+        this.displayPropertyDialog(el, _tr["mlab.dt.api.js.getCredentials.dlg.title"], dlg);
+           
     },
     
 //object for display functionality, primarily for resizing 
