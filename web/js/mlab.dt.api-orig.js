@@ -1002,7 +1002,10 @@ Mlab_dt_api.prototype = {
             
     },
     
-//object for display functionality, primarily for resizing 
+/**
+ * object with display functionality, primarily used for resizing and highlighting components
+ * @type object
+ */
     display: {
         
         setEditableFocus: function (el) {

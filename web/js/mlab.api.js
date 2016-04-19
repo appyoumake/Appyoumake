@@ -253,6 +253,12 @@ Mlab_api.prototype = {
     },
 
     
+/**
+ * Object that deals with all database related activity. 
+ * Internally it has code for storing data using HTML5 we storage, 
+ * all functions check to see if a storage plugin is loaded, if so it will call the matching function in the plugin to store data remotely.
+ * @type object
+ */
     db: {
 
 /* Pointer to main mlab object */
@@ -912,11 +918,9 @@ if (typeof mlab == "undefined") {
 }
 
 
-/*$( document ).on( "mobileinit" , function () {
-    console.log("EVENT: mobileinit");
-    $.mobile.ignoreContentEnabled = true;
-});*/
-  
+/**
+ * Function called when document is ready, prepares the jQuery mobile callbacks, initialises diaplsy and database functions
+ */  
 $(document).ready(function() {
     
     console.log("EVENT: ready");
