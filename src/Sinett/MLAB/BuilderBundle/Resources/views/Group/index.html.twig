@@ -1,47 +1,23 @@
-{% extends '::base.html.twig' %}
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Group list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="table_group">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Isdefault</th>
-                <th>Enabled</th>
-                <th>Actions</th>
+                <th>{% trans %}app.admin.groups.name{% endtrans %}</th>
+                <th>{% trans %}app.admin.groups.description{% endtrans %}</th>
+                <th>{% trans %}app.admin.groups.enabled{% endtrans %}</th>
+                <th> 
+                	<a class="mlab_button_new_group" href="{{ path('group_new') }}" title="{% trans %}app.admin.groups.tooltip.new{% endtrans %}"></a>
+                </th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('group_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.isDefault }}</td>
-                <td>{{ entity.enabled }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('group_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('group_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
+        	{{ include( 'SinettMLABBuilderBundle:Group:show.html.twig', { 'entity': entity } ) }}
         {% endfor %}
         </tbody>
     </table>
 
-        <ul>
-        <li>
-            <a href="{{ path('group_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+{% endblock %}

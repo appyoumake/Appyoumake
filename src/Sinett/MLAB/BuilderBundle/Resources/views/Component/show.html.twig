@@ -1,56 +1,24 @@
-{% extends '::base.html.twig' %}
+<tr id="row_component_{{ entity.id }}">
 
-{% block body -%}
-    <h1>Component</h1>
-
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ entity.name }}</td>
-            </tr>
-            <tr>
-                <th>Path</th>
-                <td>{{ entity.path }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ entity.description }}</td>
-            </tr>
-            <tr>
-                <th>Version</th>
-                <td>{{ entity.version }}</td>
-            </tr>
-            <tr>
-                <th>Enabled</th>
-                <td>{{ entity.enabled }}</td>
-            </tr>
-            <tr>
-                <th>Order_by</th>
-                <td>{{ entity.orderby }}</td>
-            </tr>
-            <tr>
-                <th>New_line</th>
-                <td>{{ entity.newline }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('component') }}">
-            Back to the list
+	<td>{{ entity.name }}</td>
+    <td class="mlab_align_center">{{ entity.version }}</td>
+    <td class="mlab_max_width_long">{{ entity.description }}</td>
+    <td class="mlab_max_width_medium">
+        <a href="{{ path('component_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
+            {% if entity.groups is empty %} <!-- If no group -->
+               {% trans %}app.admin.components.no.group{% endtrans %}
+            {% else %} <!-- If have groups -->
+                {{ entity.groups|join(", ") }}
+            {% endif %}  
         </a>
-    </li>
-    <li>
-        <a href="{{ path('component_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
-{% endblock %}
+    </td>
+    <td>
+        <a href="{{ path('component_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_{{ entity.enabled == true ? "enabled" : "disabled" }}" ></a>
+    </td>
+    <td>
+        {% if entity.canDelete %}
+            <a href="{{ path('component_delete', { 'id': entity.id }) }}" class="mlab_icon_delete" title="{% trans %}app.admin.components.tooltip.delete{% endtrans %}: {{ entity.name }}"></a>
+        {% endif %}
+	</td>
+
+</tr>
