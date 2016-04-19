@@ -15,19 +15,19 @@ class ComponentGroup
     private $id;
 
     /**
+     * @var string
+     */
+    private $credential;
+
+    /**
      * @var \Sinett\MLAB\BuilderBundle\Entity\Component
      */
     private $component;
-    
+
     /**
      * @var \Sinett\MLAB\BuilderBundle\Entity\Group
      */
     private $group;
-
-    /**
-     * @var string
-     */
-    private $credential;
 
 
     /**
@@ -38,52 +38,6 @@ class ComponentGroup
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set component
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Component $component
-     * @return this
-     */
-    public function setComponent(\Sinett\MLAB\BuilderBundle\Entity\Component $component = null)
-    {
-        $this->component = $component;
-    
-        return $this;
-    }
-
-    /**
-     * Get component
-     *
-     * @return \Sinett\MLAB\BuilderBundle\Entity\Component 
-     */
-    public function getComponent()
-    {
-        return $this->component;
-    }
-
-    /**
-     * Set group
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
-     * @return this
-     */
-    public function setGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group = null)
-    {
-        $this->group = $group;
-    
-        return $this;
-    }
-
-    /**
-     * Get group
-     *
-     * @return \Sinett\MLAB\BuilderBundle\Entity\Group 
-     */
-    public function getGroup()
-    {
-        return $this->group;
     }
 
     /**
@@ -108,5 +62,50 @@ class ComponentGroup
     {
         return $this->credential;
     }
+
+    /**
+     * Set component
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Component $component
+     * @return ComponentGroup
+     */
+    public function setComponent(\Sinett\MLAB\BuilderBundle\Entity\Component $component = null)
+    {
+        $this->component = $component;
     
+        return $this;
+    }
+
+    /**
+     * Get component
+     *
+     * @return \Sinett\MLAB\BuilderBundle\Entity\Component 
+     */
+    public function getComponent()
+    {
+        return $this->component;
+    }
+
+    /**
+     * Set group
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+     * @return ComponentGroup
+     */
+    public function setGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+    
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Sinett\MLAB\BuilderBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
 }

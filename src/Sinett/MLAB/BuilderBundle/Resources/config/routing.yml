@@ -42,6 +42,10 @@ SinettMLABBuilderBundle_user:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/user.yml"
     prefix:   /user
 
+SinettMLABBuilderBundle_componentgroup:
+    resource: "@SinettMLABBuilderBundle/Resources/config/routing/componentgroup.yml"
+    prefix:   /componentgroup
+
 admin_apps:
     path:   /admin/apps
     defaults: { _controller: SinettMLABBuilderBundle:Admin:apps }

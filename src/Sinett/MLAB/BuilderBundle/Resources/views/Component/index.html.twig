@@ -1,24 +1,53 @@
-{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+{% extends '::base.html.twig' %}
 
 {% block body -%}
+    <h1>Component list</h1>
 
-    <table class="records_list" id="table_component">
+    <table class="records_list">
         <thead>
             <tr>
-            	<th>{% trans %}app.admin.components.name{% endtrans %}</th>
-                <th>{% trans %}app.admin.components.version{% endtrans %}</th>
-                <th>{% trans %}app.admin.components.description{% endtrans %}</th>
-                <th>{% trans %}app.admin.components.groups{% endtrans %}</th>
-                <th>{% trans %}app.admin.components.enabled{% endtrans %}</th>
-                <th> 
-                	<a class="mlab_button_new_component" href="{{ path('component_new') }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
-                </th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Path</th>
+                <th>Description</th>
+                <th>Version</th>
+                <th>Enabled</th>
+                <th>Order_by</th>
+                <th>New_line</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
-            {{ include( 'SinettMLABBuilderBundle:Component:show.html.twig', { 'entity': entity } ) }}
+            <tr>
+                <td><a href="{{ path('component_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.path }}</td>
+                <td>{{ entity.description }}</td>
+                <td>{{ entity.version }}</td>
+                <td>{{ entity.enabled }}</td>
+                <td>{{ entity.orderby }}</td>
+                <td>{{ entity.newline }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('component_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('component_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('component_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
     {% endblock %}

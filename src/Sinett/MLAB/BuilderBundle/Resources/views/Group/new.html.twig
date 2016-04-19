@@ -1,8 +1,15 @@
-{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+{% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h4>{% trans %}app.admin.groups.new.heading{% endtrans %}</h4>
+    <h1>Group creation</h1>
 
     {{ form(form) }}
 
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('group') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
 {% endblock %}

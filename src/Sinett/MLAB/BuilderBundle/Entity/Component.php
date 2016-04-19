@@ -178,6 +178,31 @@ class Component
         ));
     }
     
+   /**
+    * Add group, wrapper function for addComponentGroup
+    *
+    * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+    * @return Component
+    
+    public function addGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
+    {
+        /*$temp = new \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
+        $temp->setGroup($group)->setComponent($this);
+        $this->addComponentGroup($group);
+        return $this;
+    }
+    
+    /**
+     * Remove group, wrapper function for removeComponentGroup
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+     
+    public function removeGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
+    {
+        //$this->removeComponentGroup($group);
+        return $this;
+    }*/
+    
     
     /**
      * Get display value

@@ -1,0 +1,30 @@
+componentgroup:
+    path:     /
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:index" }
+
+componentgroup_show:
+    path:     /{id}/show
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:show" }
+
+componentgroup_new:
+    path:     /new
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:new" }
+
+componentgroup_create:
+    path:     /create
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:create" }
+    requirements: { _method: post }
+
+componentgroup_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:edit" }
+
+componentgroup_update:
+    path:     /{id}/update
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:update" }
+    requirements: { _method: post|put }
+
+componentgroup_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:delete" }
+    requirements: { _method: post|delete }
