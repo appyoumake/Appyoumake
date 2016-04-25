@@ -11,6 +11,7 @@ parameters:
     mailer_user: null
     mailer_password: null
     locale: nb_NO
+    supported_locales: {en_GB: 'English', nb_NO: 'Norsk'}
     secret: flurkysnarkish
     security.authentication.success_handler.class: Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
     

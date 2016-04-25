@@ -650,3 +650,5 @@ mlab.dt.api.js.getLink.alert_url_wrong: Nettadressen du skrev inn er ikke en gyl
 mlab.dt.api.js.getLink.alert_no_page: Du må velge en side å linke til
 mlab.dt.api.js.getLink.alert_choose_type: Velg en link type du vil legge til
 mlab.dt.api.js.getLink.no_selection: Vennligst velg noe tekst i den gjeldende komponenten som linken skal legges til
+
+select.locale: Velg språk

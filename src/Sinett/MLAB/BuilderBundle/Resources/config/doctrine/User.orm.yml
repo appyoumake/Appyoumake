@@ -33,6 +33,12 @@ Sinett\MLAB\BuilderBundle\Entity\User:
       gedmo:
         timestampable:
           on: update
+    
+    locale:
+      type: string
+      length: 6
+      fixed: false
+      nullable: true
 
 #the branch they belong to, if any, used to define categories for apps
           

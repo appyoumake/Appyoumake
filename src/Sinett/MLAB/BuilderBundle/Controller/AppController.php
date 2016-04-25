@@ -47,6 +47,7 @@ class AppController extends Controller
         return $this->render('SinettMLABBuilderBundle:App:index.html.twig', array(
             'entities' => $entities,
         ));
+        
     }
     
     

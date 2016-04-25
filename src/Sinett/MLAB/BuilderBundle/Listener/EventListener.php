@@ -1,5 +1,5 @@
 <?php
-namespace Sinett\MLab\BuilderBundle\Listener;
+namespace Sinett\MLAB\BuilderBundle\Listener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Sinett\MLAB\BuilderBundle\Entity\Group;

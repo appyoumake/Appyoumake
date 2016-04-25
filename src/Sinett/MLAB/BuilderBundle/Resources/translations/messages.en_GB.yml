@@ -650,3 +650,5 @@ mlab.dt.api.js.getLink.alert_url_wrong: The URL you entered is not a valid URL, 
 mlab.dt.api.js.getLink.alert_no_page: You must select a page to link to
 mlab.dt.api.js.getLink.alert_choose_type: Choose a link type to add
 mlab.dt.api.js.getLink.no_selection: Please select som text inside the current component to add link to
+
+select.locale: Select language

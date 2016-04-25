@@ -14,6 +14,13 @@
     <label for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
     <input type="password" id="password" name="_password" required="required" />
  
+    <label for="locale">{% trans %}select.locale{% endtrans %}</label>
+    <select id="locale" name="_locale" >
+        {% for code, name in supported_locales %}
+            <option value="{{ code }}" {% if code == app.request.cookies.get('mlab_persistent_locale') %}  selected="selected"{% endif %}>{{ name }}</li>
+        {% endfor %}
+    </select>
+ 
     <label for="submit"></label>
     <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
     

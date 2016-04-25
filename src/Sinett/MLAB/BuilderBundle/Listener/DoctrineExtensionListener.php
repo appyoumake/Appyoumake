@@ -2,7 +2,7 @@
 
 // file: src/Sinett/MLAB/BuilderBundle/Listener/DoctrineExtensionListener.php
 
-namespace Sinett\MLab\BuilderBundle\Listener;
+namespace Sinett\MLAB\BuilderBundle\Listener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

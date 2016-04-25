@@ -89,6 +89,10 @@ class User extends BaseUser
      */
     private $appsUpdatedBy;
     
+    /**
+     * @var string
+     */
+    private $locale;
 
     /**
      * Constructor
@@ -453,6 +457,24 @@ class User extends BaseUser
             $this->roles[] = $role;
         }
 
+        return $this;
+    }
+    
+/**
+ * Returns the locale variable, stored in the database between sessions
+ * @return type
+ */
+    public function getLocale() {
+        return $this->locale;
+    }
+ 
+/**
+ * Sets the locale for the user, will be stored in DB to survive between sessions
+ * @param type $locale
+ * @return \Sinett\MLAB\BuilderBundle\Entity\User
+ */
+    public function setLocale($locale) {
+        $this->locale = $locale;
         return $this;
     }
     
