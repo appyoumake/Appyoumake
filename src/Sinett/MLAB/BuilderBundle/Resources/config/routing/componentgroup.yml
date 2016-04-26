@@ -16,9 +16,14 @@ componentgroup_create:
     requirements: { _method: post }
 
 componentgroup_edit:
-    path:     /{id}/edit
+    path:     /{component_id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:edit" }
 
+componentgroup_update_groups:
+    path:     /{component_id}/update_groups
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:updateGroups" }
+    requirements: { _method: post|put }
+    
 componentgroup_update:
     path:     /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:update" }

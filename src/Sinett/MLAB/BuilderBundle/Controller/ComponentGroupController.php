@@ -4,6 +4,8 @@ namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Yaml\Parser;
 
 use Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
 use Sinett\MLAB\BuilderBundle\Form\ComponentGroupType;
@@ -113,26 +115,57 @@ class ComponentGroupController extends Controller
      * Displays a form to edit an existing ComponentGroup entity.
      *
      */
-    public function editAction($id)
+    public function editAction($component_id)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->find($id);
-
-        if (!$entity) {
+        $yaml = new Parser();
+        $comp_entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
+        $entities = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findBy(array('component' => $component_id));
+        
+        $config = $this->container->parameters['mlab'];
+        $comp_config_path = $config["paths"]["component"] . $comp_entity->getPath() . "/conf.yml";
+        
+         if (!$entities) {
             throw $this->createNotFoundException('Unable to find ComponentGroup entity.');
         }
+        $groups = $em->getRepository('SinettMLABBuilderBundle:Group')->findAll();
+    
+//set group to enabled if it is in the componentGroup enteties
+        foreach ($groups as $group) {
+            $group_id = $group->getId();
+            $group->isEnabled = "false";
+            $group->credential = array();
+            foreach ($entities as $entity) {
+                $entity_group_id = $entity->getGroup()->getId();
+                if ($group_id == $entity_group_id){
+                    $group->isEnabled = "true";
+                    $group->credential = $entity->getCredential();
+                    if ( empty( $group->credential ) ){
+                        try {
+                            $tmp_yaml = $yaml->parse(@file_get_contents($comp_config_path));
+                            if (array_key_exists( 'credentials', $tmp_yaml)) {
+                                $group->credential = array_fill_keys($tmp_yaml['credentials'], "");
+                            } else {
+                                $group->credential = array();
+                            }
+                        } catch (\Exception $e) {
+                            $group->credential = array();
+                        }  
+                    } 
+                }
+            }
+        }
 
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+       
+        $component_entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
+        
 
         return $this->render('SinettMLABBuilderBundle:ComponentGroup:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'component_id'     => $component_id,
+            'component_entity' => $component_entity,
+            'groups'           => $groups,
         ));
     }
-
     /**
     * Creates a form to edit a ComponentGroup entity.
     *
@@ -180,6 +213,51 @@ class ComponentGroupController extends Controller
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
+    }
+     /**
+     * Updates the ComponentGroup enteties for a component.
+     *
+     */
+    public function updateGroupsAction(Request $request, $component_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $groups = $em->getRepository('SinettMLABBuilderBundle:Group')->findAll();
+        $updated_groups = $request->get('sinett_mlab_builderbundle_componentgroup');
+        $component = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
+        
+        foreach ($groups as $group) {
+             
+            $group_id = $group->getId();
+            $isEnabled = array_key_exists('group_id', $updated_groups[$group_id]);
+            $entity = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component_id, 'group' => $group_id));
+die(print_r($updated_groups[$group_id]['credential'], true));
+            if (empty($isEnabled) && $entity) {
+                //the group has been unchecked and the stored componentgroup record should be deleted
+                $em->remove($entity);
+                $em->flush();
+            } elseif ($isEnabled && $entity && array_key_exists('credentials',$updated_groups[$group_id] )) {
+                //update
+                $entity->setCredential($updated_groups[$group_id]['credential']);
+                $em->flush();
+            } elseif ($isEnabled && !$entity) {
+                //new
+                $new_entity = new ComponentGroup();
+                $new_entity->setGroup($group);
+                $new_entity->setComponent($component);
+                
+                if (array_key_exists('credentials',$updated_groups[$group_id] )) {
+                    $new_entity->setCredential($updated_groups[$group_id]['credential']);
+                }
+                $em->persist($new_entity);
+                $em->flush();
+            }  
+        }
+        
+        return new JsonResponse(array('db_table' => 'component',
+                    'action' => 'UPDATE',
+                    'db_id' => $component_id,
+                    'result' => 'SUCCESS',
+                    'record' => $this->renderView('SinettMLABBuilderBundle:Component:show_admin.html.twig', array('entity' => $component))));
     }
     /**
      * Deletes a ComponentGroup entity.

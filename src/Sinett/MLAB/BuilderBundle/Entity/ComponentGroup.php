@@ -1,6 +1,7 @@
 <?php
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
+use Symfony\Component\Yaml\Parser;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,8 +49,9 @@ class ComponentGroup
      */
     public function setCredential($credential)
     {
-        $this->credential = $credential;
-    
+        $dumper = new Dumper();
+        $this->credential = $dumper->dump( $credential, 1 );
+
         return $this;
     }
 
@@ -60,7 +62,14 @@ class ComponentGroup
      */
     public function getCredential()
     {
-        return $this->credential;
+        $yaml = new Parser();
+        
+        if ( strlen( trim( $this->credential ) ) == 0 ) {
+            $temp = array();
+        } else {
+            $temp = $yaml->parse( $this->credential );
+        }
+        return $temp;
     }
 
     /**
