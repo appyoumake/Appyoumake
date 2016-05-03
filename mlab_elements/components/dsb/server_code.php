@@ -17,10 +17,13 @@ function outputHtml(DOMNode $node) {
     return $html;
 } 
 
+
 class mlab_ct_dsb {
+    
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
+        $url = "http://www.dsb.no/no/Ansvarsomrader/Farlige-stoffer/Transport/ADR-sjafor/";
         $html = "<div class='mc_text mc_display '>";
-        $frontpage_content = file_get_contents("http://www.dsb.no/no/Ansvarsomrader/Farlige-stoffer/Transport/ADR-sjafor/");
+        $frontpage_content = file_get_contents($url);
 
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
@@ -41,8 +44,8 @@ class mlab_ct_dsb {
 
         }
 
-        /*$articles = $xpath->query("//*[contains(@class, 'article')]");
-        $xpath = new DOMXpath($articles);*/
+        //$articles = $xpath->query("//*[contains(@class, 'article')]");
+        //$xpath = new DOMXpath($articles);
 
         $contents = $xpath->query('//*[contains(@class, "article")]//*[contains(@class, "content")]');
         foreach ($contents as $content) {

@@ -3,7 +3,7 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: serviceconnections
 name: dsb
-tooltip: { nb_NO: DSB Instrukser, en_GB: DSB instructions, default: DSB instructions }
-extended_name: { nb_NO: DSB Instrukser ang. farlige stoffer instrukser, en_GB: DSB instructions re dangerous goods, default: DSB instructions re dangerous goods }
+tooltip: { nb_NO: Ernæringsinformasjon, en_GB: Nutrition information, default: Nutrition information }
+extended_name: { nb_NO: Ernæringsinformasjon for soldater, en_GB: Nutrition information for soldiers, default: Nutrition information for soldiers }
 
-html: <h3 class='mc_text mc_display '>Data om transport av farlige stoffer vil bli lagt inn her</h3>
+html: <h3 class='mc_text mc_display '>Ernæringsinformasjon vil bli lagt inn her</h3>

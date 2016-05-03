@@ -148,13 +148,18 @@ class FileManagement {
                     $yaml = new Parser();
 					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.yml"));
                     if (isset($temp["tooltip"])) {
-                        $entity->setDescription($temp["tooltip"]); //TODO: need to parse this as object with language...
+                        $entity->setDescription($temp["tooltip"]["nb_NO"]); //TODO: need to parse this as object with language...
                     } 
                     if (isset($temp["compatible_with"])) {
-                        $entity->setCompatibleWith(substr(trim($line), 16));
+                        $entity->setCompatibleWith($temp["compatible_with"]);
                     } 
                     if (isset($temp["version"])) {
-                        $entity->setVersion(substr(trim($line), 8));
+                        $entity->setVersion($temp["version"]);
+                    }
+                    if (isset($temp["newline"])) {
+                        $entity->setNewLine($temp["newline"]);
+                    } else {
+                        $entity->setNewLine(0);
                     }
 				} //TODO: bail here if no yaml file
 				
