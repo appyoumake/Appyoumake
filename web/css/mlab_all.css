@@ -787,11 +787,23 @@ body.mlab_base div.mlab_top_bar_back {
 
 .mlab_base .mlab_edit_compgroup_checkbox {
     margin-top: 8px;
-    margin-left: -3px;  
+    margin-left: -3px;
+    float: none;
 }
 
 .mlab_base .mlab_edit_compgroup_checkbox_label {
     float: none;
+}
+
+.mlab_base .mlab_edit_compgroup_fieldset {
+    float: none;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.mlab_base .mlab_edit_compgroup_legend {
+    font-size: 14px;
+    color: gray;
 }
 
 

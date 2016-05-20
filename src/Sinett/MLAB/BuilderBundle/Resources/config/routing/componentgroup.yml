@@ -23,6 +23,10 @@ componentgroup_update_groups:
     path:     /{component_id}/update_groups
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:updateGroups" }
     requirements: { _method: post|put }
+
+componentgroup_admin_new:
+    path:     /{component_id}/admin_new
+    defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:adminNew" }
     
 componentgroup_update:
     path:     /{id}/update

@@ -88,7 +88,22 @@ class ComponentGroupController extends Controller
             'form'   => $form->createView(),
         ));
     }
+    
+    /**
+     * Displays a form to create a new ComponentGroup entity.
+     *
+     */
+    public function adminNewAction()
+    {
+        $entity = new ComponentGroup();
+        $form   = $this->createCreateForm($entity);
 
+        return $this->render('SinettMLABBuilderBundle:ComponentGroup:new.html.twig', array(
+            'entity' => $entity,
+            'form'   => $form->createView(),
+        ));
+    }
+    
     /**
      * Finds and displays a ComponentGroup entity.
      *
@@ -120,14 +135,11 @@ class ComponentGroupController extends Controller
         $em = $this->getDoctrine()->getManager();
         $yaml = new Parser();
         $comp_entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
-        $entities = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findBy(array('component' => $component_id));
+        
         
         $config = $this->container->parameters['mlab'];
         $comp_config_path = $config["paths"]["component"] . $comp_entity->getPath() . "/conf.yml";
         
-         if (!$entities) {
-            throw $this->createNotFoundException('Unable to find ComponentGroup entity.');
-        }
         $groups = $em->getRepository('SinettMLABBuilderBundle:Group')->findAll();
     
 //set group to enabled if it is in the componentGroup enteties
@@ -135,25 +147,35 @@ class ComponentGroupController extends Controller
             $group_id = $group->getId();
             $group->isEnabled = "false";
             $group->credential = array();
-            foreach ($entities as $entity) {
-                $entity_group_id = $entity->getGroup()->getId();
-                if ($group_id == $entity_group_id){
+            $entity = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component_id, 'group' => $group_id));
+            if ($entity) {
+                //$entity_group_id = $entity->getGroup()->getId();
+                
+//check if group is enabled, this is done by checking if a record exists for this group in the componentgroup table
+               
                     $group->isEnabled = "true";
-                    $group->credential = $entity->getCredential();
-                    if ( empty( $group->credential ) ){
-                        try {
-                            $tmp_yaml = $yaml->parse(@file_get_contents($comp_config_path));
-                            if (array_key_exists( 'credentials', $tmp_yaml)) {
-                                $group->credential = array_fill_keys($tmp_yaml['credentials'], "");
-                            } else {
-                                $group->credential = array();
-                            }
-                        } catch (\Exception $e) {
-                            $group->credential = array();
-                        }  
-                    } 
-                }
+                    $cred = $entity->getCredential();
+            } else {
+                 $cred = array();
             }
+                
+//next load credentials either from databse record OR from original YAML config file for component
+
+                $group->credential = $cred;
+                if ( empty( $group->credential ) ){
+                    try {
+                        $tmp_yaml = $yaml->parse(@file_get_contents($comp_config_path));
+                        if (is_array($tmp_yaml) && array_key_exists( 'credentials', $tmp_yaml)) {
+                            $group->credential = array_fill_keys($tmp_yaml['credentials'], "");
+                        } else {
+                            $group->credential = array();
+                        }
+                    } catch (\Exception $e) {
+                        $group->credential = array();
+                    }  
+                } 
+                 
+            
         }
 
        
@@ -228,24 +250,28 @@ class ComponentGroupController extends Controller
         foreach ($groups as $group) {
              
             $group_id = $group->getId();
-            $isEnabled = array_key_exists('group_id', $updated_groups[$group_id]);
+            $isEnabled = array_key_exists('enabled', $updated_groups[$group_id]);
             $entity = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component_id, 'group' => $group_id));
-die(print_r($updated_groups[$group_id]['credential'], true));
+
+            
+//the group has been unchecked and the stored componentgroup record should be deleted
             if (empty($isEnabled) && $entity) {
-                //the group has been unchecked and the stored componentgroup record should be deleted
                 $em->remove($entity);
                 $em->flush();
-            } elseif ($isEnabled && $entity && array_key_exists('credentials',$updated_groups[$group_id] )) {
-                //update
+                
+//group alread has access, and still has access (i.e. checkbox checked), so only need to update credentials
+            } elseif ($isEnabled && $entity && array_key_exists('credential', $updated_groups[$group_id] )) {
+                
                 $entity->setCredential($updated_groups[$group_id]['credential']);
                 $em->flush();
+                
+//did not have access before, got it now, need to create new record
             } elseif ($isEnabled && !$entity) {
-                //new
                 $new_entity = new ComponentGroup();
                 $new_entity->setGroup($group);
                 $new_entity->setComponent($component);
                 
-                if (array_key_exists('credentials',$updated_groups[$group_id] )) {
+                if (array_key_exists('credential' ,$updated_groups[$group_id] )) {
                     $new_entity->setCredential($updated_groups[$group_id]['credential']);
                 }
                 $em->persist($new_entity);

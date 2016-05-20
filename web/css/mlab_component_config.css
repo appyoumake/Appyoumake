@@ -296,11 +296,18 @@ color: black;
     margin-top: 10px;
 }
 
-/* ===  list for component size and aspect and storage plugin...   === */
+/* ===  list for component size and aspect   === */
+#mlab_editor #mlab_component_size_list ul, 
+#mlab_editor #mlab_component_aspect_list ul {
+    background-color: white;
+    border: 0px orange solid;
+    padding: 8px;
+    padding-left:25px;
+    margin: 0;    
+}
+
 #mlab_editor #mlab_component_size_list li, 
-#mlab_editor #mlab_component_aspect_list li, 
-#mlab_editor [data-mlab-get-info='storage_plugins'] li,
-[data-mlab-get-info="storage_plugins"] li {
+#mlab_editor #mlab_component_aspect_list li {
     cursor: pointer;
     list-style-type: square; 
     padding-right: 10px;
@@ -311,14 +318,48 @@ color: black;
     font-family:Arial, Helvetica, sans-serif;
 }
 
-#mlab_editor #mlab_component_size_list ul, 
-#mlab_editor #mlab_component_aspect_list ul, 
-#mlab_editor [data-mlab-get-info='storage_plugins'] ul {
+#mlab_editor #mlab_component_size_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_component_aspect_list li.mlab_item_applied:before {
+    content: "\2713 ";
+    margin-left: -1em;
+    margin-right: .100em;
+}
+
+/* ===  list for component storage plugin   === */
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] ul {
     background-color: white;
     border: 0px orange solid;
-    padding: 8px;
-    padding-left:25px;
+    padding-top: 0px;
+    padding-right: 8px;
+    padding-left: 2px;
+    padding-bottom: 12px;
     margin: 0;    
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li {
+    cursor: pointer;
+    list-style-type: none; 
+    padding-right: 10px;
+    color: black;
+    font-size:13px; 
+    line-height: 16px;
+    text-decoration: underline; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li.mlab_item_applied:after {
+    content: "\2713 ";
+    color: darkgreen;
+    padding-left: 2px;
+    font-weight: bold;
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] img[data-mlab-comp-tool='credentials'] {
+    width: 15px;
+    height: 15px;
+    margin-bottom: -4px;
+    margin-right: 2px;
 }
 
 /* ===  Placement  === */

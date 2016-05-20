@@ -1,17 +1,17 @@
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
-    <h3>Edit groups for {{ component_entity.name }}</h3>
+    <h5>{% trans %}app.admin.components.edit.groups.heading{% endtrans %} {{ component_entity.name }}</h5>
 
     <form action="{{ path('componentgroup_update_groups',  { 'component_id': component_id }) }}" method="post">
         
         {% for group in groups %}
-            <input type="checkbox" class="mlab_edit_compgroup_checkbox" id="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_group_id" name="sinett_mlab_builderbundle_componentgroup[{{ group.id }}][group_id]" value="{{ group.id }}" {% if group.isEnabled == "true" %} checked {% endif %}>
-            <label class="mlab_edit_compgroup_checkbox_label" for="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_group_id">{{ group.name }}</label> 
+            <input type="checkbox" class="mlab_edit_compgroup_checkbox" id="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_enabled" name="sinett_mlab_builderbundle_componentgroup[{{ group.id }}][enabled]" value="{{ group.id }}" {% if group.isEnabled == "true" %} checked {% endif %}>
+            <label class="mlab_edit_compgroup_checkbox_label" for="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_enabled">{{ group.name }}</label> 
             
             {% if group.credential %}
-                <fieldset>
-                    <legend>Personalia:</legend> 
+                <fieldset class="mlab_edit_compgroup_fieldset">
+                    <legend class="mlab_edit_compgroup_legend">{% trans %}app.admin.components.edit.groups.credential{% endtrans %}:</legend> 
 
                     {% for cred_name, cred_value in group.credential %}   
                         <label for="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_credential_{{ cred_name }}">{{ cred_name }}</label> 
@@ -21,9 +21,10 @@
                 </fieldset>
             
             {% endif %} 
+            <br>
         {% endfor %}
-            
-            <input type="submit">
+            <br>
+            <input type="submit" value="{% trans %}app.admin.components.new.create.button{% endtrans %}">
     </form>
    
 

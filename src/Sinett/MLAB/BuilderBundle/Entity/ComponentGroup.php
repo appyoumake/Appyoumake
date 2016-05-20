@@ -2,6 +2,7 @@
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Dumper;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -42,15 +43,19 @@ class ComponentGroup
     }
 
     /**
-     * Set credential
+     * Set credential, we expect an associative array as the param, use YAML library dump function to convert to string
      *
-     * @param string $credential
+     * @param array $credential
      * @return ComponentGroup
      */
     public function setCredential($credential)
     {
-        $dumper = new Dumper();
-        $this->credential = $dumper->dump( $credential, 1 );
+        if (is_array($credential)) {
+            $dumper = new Dumper();
+            $this->credential = $dumper->dump( $credential, 1 );
+        } else {
+            $this->credential = "";
+        }
 
         return $this;
     }
@@ -58,7 +63,7 @@ class ComponentGroup
     /**
      * Get credential
      *
-     * @return string 
+     * @return array 
      */
     public function getCredential()
     {

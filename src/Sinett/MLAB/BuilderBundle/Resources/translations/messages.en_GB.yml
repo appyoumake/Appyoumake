@@ -304,7 +304,8 @@ app.admin.components.new.groups: Groups
 app.admin.components.new.file: Zip file
 app.admin.components.new.create.button: Save
 
-app.admin.components.edit.groups.heading: Edit groups
+app.admin.components.edit.groups.heading: Edit groups for
+app.admin.components.edit.groups.credential: Credential
 app.admin.components.edit.groups.groups: Groups
 app.admin.components.edit.groups.update.button: Update
 

@@ -304,7 +304,8 @@ app.admin.components.new.groups: Grupper
 app.admin.components.new.file: Zip-fil
 app.admin.components.new.create.button: Lagre
 
-app.admin.components.edit.groups.heading: Rediger grupper
+app.admin.components.edit.groups.heading: Rediger grupper for
+app.admin.components.edit.groups.credential: Tilgangsinformasjon
 app.admin.components.edit.groups.groups: Grupper
 app.admin.components.edit.groups.update.button: Oppdater
 
@@ -636,7 +637,7 @@ mlab.dt.api.js.getLink.prompt: Vennligst skriv in URL-adressen (for denne appen)
 mlab.dt.api.js.getLink.alert: Ingen URL/webside spesifisert, kan ikke legge til lenke
 
 mlab.dt.api.js.getCredentials.dlg.title: Akkreditering
-mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Mlab skal lagre/hente data på en skytjeneste
+mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Mlab skal lagre data på eller hente data fra en skytjeneste
 mlab.dt.api.js.getCredentials.dlg.save: Lagre
 
 controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet

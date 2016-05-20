@@ -5,7 +5,7 @@
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
         {% if entity.groups is empty %} <!-- If no group -->
-            <a href="{{ path('componentgroup_new', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
+            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
             {% trans %}app.admin.components.no.group{% endtrans %}
         {% else %} <!-- If have groups -->
             <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  

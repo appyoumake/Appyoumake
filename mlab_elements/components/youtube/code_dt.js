@@ -1,6 +1,3 @@
-//TODO: Change to use input
-    apiKey = '';
-    
 
     this.getHTMLElement = function(el)  {
         return $(el).find("." + this.config.custom.class_identifier);
@@ -9,19 +6,10 @@
     this.onCreate = function (el) {
         this.onLoad (el);
         this.getHTMLElement(el).html('<img src="' + this.config.placeholder + '" >');
-        if (apiKey != "") {
-            this.api.setVariable( el, "credentials", {"apikey": apiKey} );
-        }
     };
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
-        var temp = this.api.getVariable(el, "credentials");
-        if (typeof temp != "undefined" && typeof temp["apikey"] != "undefined") {
-            apiKey = temp["apikey"];
-        } else {
-            alert("No YouTube API key specified, will not be able to request videos. Contact the Mlab administrator to obtain a YouTube API key");
-        }
+	this.onLoad = function (el) { 
         this.getHTMLElement(el).css("pointer-events", "none");
     };
 
@@ -48,6 +36,15 @@
         return this.getHTMLElement(el).duration;
     };
     
+    this.getApiKey = function (el) {
+        var temp = this.api.getVariable(el, "credentials");
+        if (typeof temp != "undefined" && typeof temp["apikey"] != "undefined") {
+            return temp["apikey"];
+        } else {
+            alert("No YouTube API key specified, will not be able to request videos. Contact the Mlab administrator to obtain a YouTube API key");
+        }
+    }
+    
     
 /* 
 * The following section is Copyright (c) 2014 by Tayfun Erbilen (http://codepen.io/tayfunerbilen/pen/rIHvD)
@@ -58,10 +55,11 @@
     this.initYoutube = function (el) {
 /* Set up autoComplete */
         var local_el = el;
-
+        var apiKey = mlab.dt.components.youtube.code.getApiKey(el);   
         $("#mlab_cp_youtube_search").autocomplete({
             source: function(request, response){
                 var query = request.term;
+                
                 $.ajax({
                     url: location.protocol + "//suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q=" + query + "&key=" + apiKey + "&format=5&alt=json&callback=?",  
                     dataType: 'jsonp',
@@ -129,7 +127,6 @@
     
     this.store_credentials = function (credentials, params) {
         this.api.setVariable( params.component, "credentials", credentials );
-        apiKey = credentials["apikey"];
         this.custom_select_video(params.component);
     };
             
@@ -155,10 +152,9 @@
        
         this.api.displayPropertyDialog(el, "Select YouTube video", content, null, this.initYoutube, null, null, false, event);
         
-        if (apiKey == '') {
-            alert("No API key specified, please enter one first. If you do not have one, or does not know what this is, please contact your Mlab administrator");
+        if (this.getApiKey(el) == '') {
             var that = this;
-            this.api.getCredentials(this.config.credentials, function (credentials, params) { that.store_credentials(credentials, params); }, { component: el });
+            this.api.getCredentials(el, this.config.name, this.config.credentials, function (credentials, params) { that.store_credentials(credentials, params); }, true, { component: el });
             return;
         }
          
