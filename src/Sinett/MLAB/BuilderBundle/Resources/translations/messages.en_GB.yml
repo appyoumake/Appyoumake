@@ -304,7 +304,8 @@ app.admin.components.new.groups: Groups
 app.admin.components.new.file: Zip file
 app.admin.components.new.create.button: Save
 
-app.admin.components.edit.groups.heading: Edit groups
+app.admin.components.edit.groups.heading: Edit groups for
+app.admin.components.edit.groups.credential: Credential
 app.admin.components.edit.groups.groups: Groups
 app.admin.components.edit.groups.update.button: Update
 
@@ -637,6 +638,7 @@ mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
 
 mlab.dt.api.js.getCredentials.dlg.title: Credentials
 mlab.dt.api.js.getCredentials.dlg.text: Credentials are items such as URLs or passwords that Mlab require to connect to a cloud service
+mlab.dt.api.js.getCredentials.dlg.save: Save
 
 controller.help.msg.comp_id.empty: No component ID specified when trying to retrieve component help file
 controller.help.msg.file.notfound: Component help file not found

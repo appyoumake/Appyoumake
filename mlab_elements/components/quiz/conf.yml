@@ -2,6 +2,7 @@
 version: 0.3
 developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
 category: dataentry
+category_name: {nb_NO: Dataentry, en_GB: Dataentry}
 name: quiz
 extended_name: { nb_NO: Interaktiv quiz, en_GB: Interactive quiz, default: Interactive quiz }
 storage_plugin: true

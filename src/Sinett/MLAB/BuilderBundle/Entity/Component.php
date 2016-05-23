@@ -29,7 +29,7 @@ class Component
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $groups;
+    private $componentGroups;
     
     /**
      * zip file that is uploaded
@@ -62,7 +62,7 @@ class Component
      */
     public function __construct()
     {
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->componentGroups = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -122,28 +122,47 @@ class Component
     }
 
     /**
-     * Add groups
+     * Add componentGroups
      *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $groups
+     * @param \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup
      * @return Component
      */
-    public function addGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $groups)
+    public function addComponentGroup(\Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup)
     {
-        $this->groups[] = $groups;
-    
+        if (!$this->componentGroups->contains($componentGroup)) {
+            $this->componentGroups->add($componentGroup);
+            $componentGroup->setComponent($this);
+        }
+
         return $this;
     }
 
     /**
-     * Remove groups
+     * Remove componentGroups
      *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $groups
+     * @param \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup
      */
-    public function removeGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $groups)
+    public function removeComponentGroup(\Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup)
     {
-        $this->groups->removeElement($groups);
+        if ($this->componentGroups->contains($componentGroup)) {
+            $this->componentGroups->removeElement($componentGroup);
+            $job->setComponent(null);
+        }
+
+        return $this;
     }
 
+    /**
+     * Get componentGroups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getComponentGroups()
+    {
+        return $this->componentGroups;
+        //return $this->componentGroups->toArray();
+    }
+    
     /**
      * Get groups
      *
@@ -151,8 +170,39 @@ class Component
      */
     public function getGroups()
     {
-        return $this->groups;
+        return new \Doctrine\Common\Collections\ArrayCollection(array_map(
+            function ($componentGroups) {
+                return $componentGroups->getGroup();
+            },
+            $this->componentGroups->toArray()
+        ));
     }
+    
+   /**
+    * Add group, wrapper function for addComponentGroup
+    *
+    * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+    * @return Component
+    
+    public function addGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
+    {
+        /*$temp = new \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
+        $temp->setGroup($group)->setComponent($this);
+        $this->addComponentGroup($group);
+        return $this;
+    }
+    
+    /**
+     * Remove group, wrapper function for removeComponentGroup
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+     
+    public function removeGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
+    {
+        //$this->removeComponentGroup($group);
+        return $this;
+    }*/
+    
     
     /**
      * Get display value

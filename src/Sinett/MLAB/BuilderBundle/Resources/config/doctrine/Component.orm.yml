@@ -56,17 +56,23 @@ Sinett\MLAB\BuilderBundle\Entity\Component:
           default: 0
 
 # components can be limited by group membership
-  manyToMany:
-    groups:
-      targetEntity: Group
-      inversedBy: components
-      joinTable:
-        name: components_groups
-        joinColumns:
-          component_id:
-            referencedColumnName: id
-        inverseJoinColumns:
-          group_id:
-            referencedColumnName: id
+#  manyToMany:
+#    groups:
+#      targetEntity: Group
+#      inversedBy: components
+#      joinTable:
+#        name: components_groups
+#        joinColumns:
+#          component_id:
+#            referencedColumnName: id
+#        inverseJoinColumns:
+#          group_id:
+#            referencedColumnName: id
+
+  oneToMany:
+    componentGroups:
+      targetEntity: ComponentGroup
+      mappedBy: component
+      cascade: [persist]
     
   lifecycleCallbacks: {  }

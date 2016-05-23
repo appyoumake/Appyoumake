@@ -132,8 +132,9 @@ Mlab_dt_design.prototype = {
 //if this component requires any credentials we request them here
         var local_comp = new_comp;
         var local_comp_id = comp_id;
+        var cred_el = $("[data-mlab-comp-tool='credentials']");
         if (Object.prototype.toString.call( this.parent.components[comp_id].conf.credentials ) === "[object Array]") {
-            this.parent.api.getCredentials(this.parent.components[comp_id].conf.credentials, function (credentials, params) { mlab.dt.design.component_store_credentials(credentials, params); that.component_run_code(local_comp, local_comp_id, true); }, { component: new_comp });
+            this.parent.api.getCredentials(cred_el, comp_id, this.parent.components[comp_id].conf.credentials, function (credentials, params) { mlab.dt.design.component_store_credentials(credentials, params); that.component_run_code(local_comp, local_comp_id, true); }, false, { component: new_comp });
         } else {
             this.component_run_code(local_comp, local_comp_id, true);
         }
@@ -361,9 +362,10 @@ Mlab_dt_design.prototype = {
     
     component_edit_credentials : function () {
         var curr_comp = $(".mlab_current_component");
+        var cred_el = $("[data-mlab-comp-tool='credentials']");
         var comp_id = curr_comp.data("mlab-type");
         if (Object.prototype.toString.call( this.parent.components[comp_id].conf.credentials ) === "[object Array]") {
-            this.parent.api.getCredentials(this.parent.components[comp_id].conf.credentials, this.component_store_credentials, { component: curr_comp });
+            this.parent.api.getCredentials(cred_el, comp_id, this.parent.components[comp_id].conf.credentials, this.component_store_credentials, true, { component: curr_comp });
         }        
     },
 
@@ -397,15 +399,6 @@ Mlab_dt_design.prototype = {
             this.parent.components[comp_id].code.onCreate(new_feature[0]);
         }
 
-
-//here we request any credentials that are required
-/*                    if (typeof that.parent.components[data.component_id].conf.credentials != "undefined") {
-                        if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
-                            that.parent.api.getCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
-                        }
-                    }
-*/
-
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
         if (this.parent.app.curr_page_num != "0" && this.parent.app.curr_page_num != "index") {
@@ -438,33 +431,35 @@ Mlab_dt_design.prototype = {
  * @param {type} storage_plugin_id: unique ID of the storage plugin
  * @param {type} component: the component that wants to use this storage plugin
  */
-    storage_plugin_add: function(storage_plugin_id, component) {
-        
+    storage_plugin_add: function(el, storage_plugin_id, component) {
         // SPSP this.parent.api.closeAllPropertyDialogs();
-        
-        var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
-        url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
-        this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.storage.plugin"], true);
-        var that = this;
-        $.get( url, function( data ) {
-            if (data.result == "success") {
-                that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
-                $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']").addClass("mlab_item_applied");
+        if (el.data("mlab-selected-storage")) {
+            mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
+            el.removeClass("mlab_item_applied").removeAttr("data-mlab-selected-storage");      
+        } else {
+            var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
+            url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
+            this.parent.utils.update_status("callback", _tr["mlab.dt.design.js.update_status.adding.storage.plugin"], true);
+            var that = this;
+            $.get( url, function( data ) {
+                var el = $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']");
+                if (data.result == "success") {
+                    that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
+                    el.addClass("mlab_item_applied").attr("data-mlab-selected-storage", "true");
 
-                if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
-                    that.parent.api.getStorageCredentials(that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, { storage_plugin_id: storage_plugin_id, component: component });
+                    if (Object.prototype.toString.call( that.parent.components[storage_plugin_id].conf.credentials ) === "[object Array]") {
+                        that.parent.api.getCredentials(el, storage_plugin_id, that.parent.components[storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, false, { storage_plugin_id: storage_plugin_id, component: component });
+                    } else {
+                        mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
+                        $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-storage-plugin-type='storage_plugins']").slideUp();
+                    }
+
                 } else {
-                    mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
-                    $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-storage-plugin-type='storage_plugins']").slideUp();
+                    that.parent.utils.update_status("temporary", data.msg, false);
                 }
-                
-            } else {
-                that.parent.utils.update_status("temporary", data.msg, false);
-            }
 
-        });
-        
-        
+            });   
+        }
     },
     
 /**
@@ -571,7 +566,7 @@ Mlab_dt_design.prototype = {
         }
         
         
-//display storage selection list button, if this supports storage
+//display credentials selection button, if this supports credentials
         if (typeof conf.credentials != "undefined" && Object.prototype.toString.call( conf.credentials ) === "[object Array]") {
             $("[data-mlab-comp-tool='credentials']").removeClass("mlab_hidden");
         } else {

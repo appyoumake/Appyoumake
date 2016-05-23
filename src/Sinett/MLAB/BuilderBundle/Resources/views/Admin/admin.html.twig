@@ -128,6 +128,7 @@
 		    });
 		});
 		
+//makes all the regular a href links into ajax links by stopping default action and loading manually into a dlg box
         function prepare_links(element, ui_id) {
             var temp_url_elements = element.href.split("/");
             var this_link = temp_url_elements[temp_url_elements.length - 1];
@@ -186,6 +187,7 @@
                                         $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
 
         // in all other cases just re-display dialog box, usually for new record
+        // remember: new can be both new and adminNew if change this to use specific event.data.link if clause
                                     } else { 
                                         if ($("#" + event.data.dialog_id + ' form').length > 0) {
                                             $("#" + event.data.dialog_id + ' form')[0].reset();

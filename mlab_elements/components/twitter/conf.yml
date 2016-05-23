@@ -2,6 +2,7 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: feature
+category_name: {nb_NO: Feature, en_GB: Feature}
 name: twitter
 extended_name: Twitter feed for single user/
 tooltip: This is a simple feature demonstrating how to show a Twitter feed on all pages

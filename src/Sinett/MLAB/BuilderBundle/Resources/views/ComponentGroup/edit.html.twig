@@ -1,0 +1,31 @@
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+
+{% block body -%}
+    <h5>{% trans %}app.admin.components.edit.groups.heading{% endtrans %} {{ component_entity.name }}</h5>
+
+    <form action="{{ path('componentgroup_update_groups',  { 'component_id': component_id }) }}" method="post">
+        
+        {% for group in groups %}
+            <input type="checkbox" class="mlab_edit_compgroup_checkbox" id="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_enabled" name="sinett_mlab_builderbundle_componentgroup[{{ group.id }}][enabled]" value="{{ group.id }}" {% if group.isEnabled == "true" %} checked {% endif %}>
+            <label class="mlab_edit_compgroup_checkbox_label" for="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_enabled">{{ group.name }}</label> 
+            
+            {% if group.credential %}
+                <fieldset class="mlab_edit_compgroup_fieldset">
+                    <legend class="mlab_edit_compgroup_legend">{% trans %}app.admin.components.edit.groups.credential{% endtrans %}:</legend> 
+
+                    {% for cred_name, cred_value in group.credential %}   
+                        <label for="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_credential_{{ cred_name }}">{{ cred_name }}</label> 
+                        <input type="text" id="sinett_mlab_builderbundle_componentgroup_{{ group.id }}_credential_{{ cred_name }}" name="sinett_mlab_builderbundle_componentgroup[{{ group.id }}][credential][{{ cred_name }}]" value="{{ cred_value }}"><br>
+                    {% endfor %}
+                    
+                </fieldset>
+            
+            {% endif %} 
+            <br>
+        {% endfor %}
+            <br>
+            <input type="submit" value="{% trans %}app.admin.components.new.create.button{% endtrans %}">
+    </form>
+   
+
+{% endblock %}

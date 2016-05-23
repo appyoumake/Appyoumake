@@ -238,9 +238,18 @@ class FileManagement {
             if (is_array($component_record) && sizeof($component_record) > 0) {
                 $ob = $component_record[0]->getOrderBy();
                 $nl = $component_record[0]->getNewLine();
+//add credentials if the component has gotten it saved in the database
+                $comp_groups = $component_record[0]->getComponentGroups();
+                if (sizeof($comp_groups) > 0){
+                    $comp_group = $comp_groups[0];
+                    $credential = $comp_group->getCredential();
+                } else {
+                    $credential = "";
+                }
             } else {
                 $ob = 999 + rand(1, 10000); // make sure it comes at the end of the list and has a unique position
                 $nl = 0;
+                $credential = "";
             }
 
 //always add html, rest we add content or set bool values that will let us know what to do later
@@ -251,6 +260,8 @@ class FileManagement {
                     "is_feature" => false,
                     "order_by" => $ob,
                     "new_line" => $nl);
+            
+            $component["conf"]["credential_values"] = $credential;
             
             if ($check_access) {
                 $component["accessible"] = ($failed === true ? false : in_array($comp_id, $check_access)); //we hide the ones they are not allowed to see OR with failed config, but still load it for reference may exist in app...
@@ -272,7 +283,7 @@ class FileManagement {
                     $component["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $comp_id));
                 }
             }
-
+              
 //tooltips are in the conf file (or not!), so add it here, or blank if none
             $component["tooltip"] = isset($component["conf"]["tooltip"]) ? $component["conf"]["tooltip"] : "";
         } else {

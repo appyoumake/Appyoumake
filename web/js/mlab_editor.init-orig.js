@@ -591,13 +591,13 @@ $(document).ready(function() {
 
                 } else {
                     alert(_tr["mlab_editor.init.js.compiling.failed.loading.comps"]);
-                    document.location.href = document.mlab_temp_vars.appbuilder_root_url;
+                    //document.location.href = document.mlab_temp_vars.appbuilder_root_url;
                 }
             });
 
         } else {
             alert(_tr["mlab_editor.init.js.compiling.failed.loading.var"]);
-            document.location.href = document.mlab_temp_vars.appbuilder_root_url;
+            //document.location.href = document.mlab_temp_vars.appbuilder_root_url;
         }
     });
 

@@ -51,7 +51,8 @@ class ComponentController extends Controller
         } else {
             $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAll();
         }
-        return $this->render('SinettMLABBuilderBundle:Component:index.html.twig', array(
+//using alternative TWIG as this is called from the admin pages, and we need to use a link to the componentgroup class to edit group access & credentials
+        return $this->render('SinettMLABBuilderBundle:Component:index_admin.html.twig', array(
             'entities' => $entities
         ));
     }

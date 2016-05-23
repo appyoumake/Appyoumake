@@ -1,0 +1,38 @@
+Sinett\MLAB\BuilderBundle\Entity\ComponentGroup:
+  type: entity
+  table: components_groups
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\ComponentGroupRepository
+  
+  indexes:
+    component_index:
+      columns: [ component_id ]
+    group_index:
+      columns: [ group_id ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+    credential:
+      type: text
+      nullable: true
+         
+# link to apps for a version
+  manyToOne:
+    component:
+      targetEntity: Component
+      inversedBy: componentGroups
+      joinColumn:
+        name: component_id
+        referencedColumnName: id
+        
+    group:
+      targetEntity: Group
+      inversedBy: componentGroups
+      joinColumn:
+        name: group_id
+        referencedColumnName: id
+      

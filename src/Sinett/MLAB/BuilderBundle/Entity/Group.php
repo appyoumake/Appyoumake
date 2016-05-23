@@ -52,7 +52,7 @@ class Group extends \FOS\UserBundle\Model\Group
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $components;
+    private $componentGroups;
     
     /**
      * @var boolean
@@ -69,7 +69,7 @@ class Group extends \FOS\UserBundle\Model\Group
         $this->menus = new \Doctrine\Common\Collections\ArrayCollection();
         $this->apps = new \Doctrine\Common\Collections\ArrayCollection();
         $this->templates = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->components = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->componentGroups = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -284,28 +284,48 @@ class Group extends \FOS\UserBundle\Model\Group
     }
 
     /**
-     * Add components
+     * Add componentGroups
      *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Component $components
+     * @param \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup
      * @return Group
      */
-    public function addComponent(\Sinett\MLAB\BuilderBundle\Entity\Component $components)
+    public function addComponentGroup(\Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup)
     {
-        $this->components[] = $components;
+        if (!$this->componentGroups->contains($componentGroup)) {
+            $this->componentGroups->add($componentGroup);
+            $componentGroup->setGroup($this);
+        }
     
         return $this;
     }
 
     /**
-     * Remove components
+     * Remove componentGroups
      *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Component $components
+     * @param \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup
      */
-    public function removeComponent(\Sinett\MLAB\BuilderBundle\Entity\Component $components)
+    public function removeComponentGroup(\Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup)
     {
-        $this->components->removeElement($components);
+
+        if ($this->componentGroups->contains($componentGroup)) {
+            $this->componentGroups->removeElement($componentGroup);
+            $job->setGroup(null);
+        }
+
+        return $this;
     }
 
+    /**
+     * Get componentGroups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getComponentGroups()
+    {
+        return $this->componentGroups;
+        //return $this->componentGroups->toArray();
+    }
+    
     /**
      * Get components
      *
@@ -313,7 +333,12 @@ class Group extends \FOS\UserBundle\Model\Group
      */
     public function getComponents()
     {
-        return $this->components;
+        return new \Doctrine\Common\Collections\ArrayCollection(array_map(
+            function ($componentGroups) {
+                return $componentGroups->getComponent();
+            },
+            $this->componentGroups->toArray()
+        ));
     }
     
     /**
