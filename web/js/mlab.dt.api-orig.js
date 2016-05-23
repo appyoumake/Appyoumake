@@ -919,9 +919,6 @@ Mlab_dt_api.prototype = {
         var cred_values = mlab.dt.components[component_id].conf.credential_values;
         var needinfo = false;
         if (cred_values) {
-        } else {
-            var credentials_required = credentials_or_component;
-        }
             for (credential in credentials_required) {
                 if (!cred_values[credentials_required[credential]]) {
                     needinfo = true;
@@ -932,13 +929,6 @@ Mlab_dt_api.prototype = {
             cred_values = new Array();
         }
         if (needinfo || edit) {
-            //var el = $("[data-mlab-comp-tool='credentials']");
-        
-        if (credentials_or_component.constructor !== Array ) {
-            var credentials_required = credentials_or_component.config.credentials;
-        } else {
-            var credentials_required = credentials_or_component;
-        }
             var dlg = $('<div />', {'id': "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
             dlg.append( $('<p />', {     text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , 
                                           'class': 'mlab_dt_text_info' } ) );
