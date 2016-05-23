@@ -3,7 +3,6 @@
     @param {DOM object} el Component element
 */
 this.onPageLoad = function(el) {
-    debugger;
     var self = this;
     self.domRoot = $(el);
     self.deviceId = self.api.getDeviceId(); 
@@ -140,7 +139,6 @@ this.processAnswers = function (data) {
 
 //the answer check utilises the "data-mlab-cp-quiz-correct-response=true" we use for checkboxes, radio boxes and options to 
 this.checkPageAnswers = function(page) {
-    debugger;
     if (typeof page == "undefined") {
         return;
     }

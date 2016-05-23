@@ -109,6 +109,7 @@ Mlab_dt_api.prototype = {
         var storage_plugin_list = $("<ul></ul>");
         var sel_class = "";
         var selected_plugin;
+        var that = this;
 
 //find out if the component has a currently selected storage plugin
         var existing_storage_plugin = mlab.dt.api.getVariable(component, "storage_plugin");
@@ -131,15 +132,14 @@ Mlab_dt_api.prototype = {
         }
         
         storage_plugin_list.find("img").on("click", function () { 
-                    debugger;
                 this_storage_plugin_id = $(this).parent().data("mlab-storage-plugin-type");
                 var selected_comp = mlab.dt.api.getSelectedComponent();
                 var el = $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + this_storage_plugin_id + "']");
-                this.getCredentials(el, this_storage_plugin_id, this.parent.components[this_storage_plugin_id].conf.credentials, this.storage_plugin_store_credentials, true, { storage_plugin_id: this_storage_plugin_id, component: selected_comp });
+                this.getCredentials(el, this_storage_plugin_id, that.parent.components[this_storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, true, { storage_plugin_id: this_storage_plugin_id, component: selected_comp });
          });
         storage_plugin_list.find("span").on("click", function () { 
-                    debugger;
-                mlab.dt.design.storage_plugin_add( $(this).parent().data("mlab-storage-plugin-type"),  mlab.dt.api.getSelectedComponent() ); });
+                mlab.dt.design.storage_plugin_add( $(this), $(this).parent().data("mlab-storage-plugin-type"),  mlab.dt.api.getSelectedComponent() ); 
+        });
         return storage_plugin_list;
     },
 /**

@@ -413,7 +413,7 @@ Mlab_dt_design.prototype = {
  * @param {type} storage_plugin_id: unique ID of the storage plugin
  * @param {type} component: the component that wants to use this storage plugin
  */
-    storage_plugin_add: function(storage_plugin_id, component) {
+    storage_plugin_add: function(el, storage_plugin_id, component) {
         // SPSP this.parent.api.closeAllPropertyDialogs();
         if (el.data("mlab-selected-storage")) {
             mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
