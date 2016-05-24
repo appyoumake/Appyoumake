@@ -5,7 +5,7 @@
     <div>{{ error|trans({}, 'FOSUserBundle') }}</div>
 {% endif %}
     <div style="width:250px">   
-<form action="{{ path("fos_user_security_check") }}" method="post">
+<form id="fos_user_security_check" action="{{ path("fos_user_security_check") }}" method="post" style="display: none">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
 
     <label for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
