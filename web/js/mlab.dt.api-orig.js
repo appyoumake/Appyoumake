@@ -104,6 +104,7 @@ Mlab_dt_api.prototype = {
 /**
  * This will return a list in HTML format of all the available storage plugins
  * Each plugin will have an onclick event
+ * @param {component} jquery element, the current selected component
  */
     getStoragePluginList: function (component) {
         var storage_plugin_list = $("<ul></ul>");
@@ -117,10 +118,10 @@ Mlab_dt_api.prototype = {
             selected_plugin = existing_storage_plugin.name;
         }
     //component.conf.storage_plugins 
-    //Hvis ture så skal alle pluggins lastes - ellers skal de som er listet lastes
+    //Hvis true så skal alle pluggins lastes - ellers skal de som er listet lastes
         for (type in this.parent.storage_plugins) {
             if (type == selected_plugin) {
-                sel_class = " class='mlab_item_applied' "; 
+                sel_class = " class='mlab_item_applied' data-mlab-selected-storage='true' "; 
             } else {
                 sel_class = "";
             }
@@ -132,15 +133,17 @@ Mlab_dt_api.prototype = {
         }
         
         storage_plugin_list.find("img").on("click", function () { 
-                this_storage_plugin_id = $(this).parent().data("mlab-storage-plugin-type");
-                var selected_comp = mlab.dt.api.getSelectedComponent();
+                var this_storage_plugin_id = $(this).parent().data("mlab-storage-plugin-type");
                 var el = $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + this_storage_plugin_id + "']");
-                this.getCredentials(el, this_storage_plugin_id, that.parent.components[this_storage_plugin_id].conf.credentials, that.storage_plugin_store_credentials, true, { storage_plugin_id: this_storage_plugin_id, component: selected_comp });
-         });
-        storage_plugin_list.find("span").on("click", function () { 
-                mlab.dt.design.storage_plugin_add( $(this), $(this).parent().data("mlab-storage-plugin-type"),  mlab.dt.api.getSelectedComponent() ); 
+                that.getCredentials(el, this_storage_plugin_id, that.parent.components[this_storage_plugin_id].conf.credentials, that.parent.design.storage_plugin_store_credentials, true, { storage_plugin_id: this_storage_plugin_id, component: component });
         });
+        
+        storage_plugin_list.find("span").on("click", function () { 
+                mlab.dt.design.storage_plugin_setup( $(this), $(this).parent().data("mlab-storage-plugin-type"),  mlab.dt.api.getSelectedComponent() ); 
+        });
+        
         return storage_plugin_list;
+        
     },
 /**
  * Wrapper function which calls the back end to load component help, 
@@ -911,22 +914,37 @@ Mlab_dt_api.prototype = {
   * @param {String} component_id
   * @param {type} credentials_required
   * @param {type} cb_function
-  * @param {Boolean} edit - if ture shows the credential dialogue
-  * @param {type} params
+  * @param {Boolean} edit - if true shows the credential dialogue
+  * @param {type} params: this is a js object with key:value pairs, it will ALWAYS contain a paameter called component which is the Mlab component being worked on
   * @returns {Boolean|Array of strings}
  */
     getCredentials: function (el, component_id, credentials_required, cb_function, edit, params) {
-        var cred_values = mlab.dt.components[component_id].conf.credential_values;
+        var default_cred_values = mlab.dt.components[component_id].conf.credential_values;
         var needinfo = false;
-        if (cred_values) {
+        var saved_cred_values = this.getVariable(params.component, "storage_plugin") ; //params.component is always set to the active Mlab component
+        if (saved_cred_values) {
+            saved_cred_values = saved_cred_values["credentials"];
+        }
+        
+//if the values are already saved, either because the default was stored when adding storage plugin, 
+//or because they since been edited or they are missing altogether then we need to request them
+        if (saved_cred_values) {
+            var cred_values = saved_cred_values;
+            
+//nothing saved, and default values exist, so we just save it
+        } else if (default_cred_values) {
             for (credential in credentials_required) {
-                if (!cred_values[credentials_required[credential]]) {
+                if (!default_cred_values[credentials_required[credential]]) {
                     needinfo = true;
                 }
             }
+            var cred_values = default_cred_values;
+                    
+//have no data at all, need to request
         } else {
             needinfo = true;
-            cred_values = new Array();
+            var cred_values = new Array();
+            
         }
         if (needinfo || edit) {
             var dlg = $('<div />', {'id': "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
@@ -956,11 +974,6 @@ Mlab_dt_api.prototype = {
 
                 el.qtip('hide');
                 cb_function(credentials, params);
-                
-                //if storage plugin....
-               // $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='storage_plugins']").slideUp();
-                // $(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-get-info='credentials']").slideUp();
-                //$(mlab.dt.qtip_tools).qtip().elements.content.find("[data-mlab-comp-tool='storage_plugin']").attr("src", "/img/tools/storage_selected.png");
             
             })
             this.displayPropertyDialog(el, _tr["mlab.dt.api.js.getCredentials.dlg.title"], dlg);

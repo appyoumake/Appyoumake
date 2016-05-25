@@ -424,18 +424,23 @@ Mlab_dt_design.prototype = {
     },
     
 /**
+ * Function to add or remove storageplugin for a component. 
+ * Add plugin:
  * storage_plugins are similar to features, except they are linked to individual components and not app as whole
  * They do nothing at design time so here we just call the back end to copy and add the code_rt.js file to the app
  * If credentials = true, we request credentials and store them for the component that this plugin was added to
  * 
+ * Remove plugin:
+ * Just need to set the storage_plugin variable that is stored with the omponent to ""
+ * 
+ * @param {type} el: list item showing name of storage plugin = currently clicked HTML element
  * @param {type} storage_plugin_id: unique ID of the storage plugin
  * @param {type} component: the component that wants to use this storage plugin
  */
-    storage_plugin_add: function(el, storage_plugin_id, component) {
-        // SPSP this.parent.api.closeAllPropertyDialogs();
-        if (el.data("mlab-selected-storage")) {
-            mlab.dt.api.setVariable(component, "storage_plugin", {name: storage_plugin_id});
-            el.removeClass("mlab_item_applied").removeAttr("data-mlab-selected-storage");      
+    storage_plugin_setup: function(el, storage_plugin_id, component) {
+        if (el.parent().attr("data-mlab-selected-storage")) {
+            mlab.dt.api.setVariable(component, "storage_plugin", "");
+            el.parent().removeClass("mlab_item_applied").removeAttr("data-mlab-selected-storage");      
         } else {
             var url = this.parent.urls.storage_plugin_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_STORAGE_PLUGIN_ID_", storage_plugin_id);
@@ -444,6 +449,10 @@ Mlab_dt_design.prototype = {
             $.get( url, function( data ) {
                 var el = $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + data.storage_plugin_id + "']");
                 if (data.result == "success") {
+                    
+//first remove data and classes from currently selected plugin, if any
+                    el.parent().siblings().removeClass("mlab_item_applied").removeAttr("data-mlab-selected-storage");
+                    
                     that.parent.utils.update_status("temporary", _tr["mlab.dt.design.js.update_status.storage.plugin.added"], false);
                     el.addClass("mlab_item_applied").attr("data-mlab-selected-storage", "true");
 
@@ -481,7 +490,6 @@ Mlab_dt_design.prototype = {
  * 
  */
     storage_plugin_store_credentials: function (credentials, params) {
-        
         mlab.dt.api.setVariable( params.component, "storage_plugin", { name: params.storage_plugin_id, credentials: credentials } );
 
     },
@@ -576,12 +584,6 @@ Mlab_dt_design.prototype = {
 //display storage selection list button, if this supports storage
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
             $("[data-mlab-comp-tool='storage_plugin']").removeClass("mlab_hidden");
-            $("[data-mlab-get-info='storage_plugins'] li").removeClass("mlab_item_applied");
-//update the menu with the existing selection, if any
-            var current_storage = this.parent.api.getVariable(curr_comp[0], "storage_plugin");
-            if (typeof current_storage != "undefined" && typeof current_storage.name != "undefined") {
-                $("[data-mlab-get-info='storage_plugins'] [data-mlab-storage-plugin-type='" + current_storage.name + "']").addClass("mlab_item_applied");
-            }
         } else {
             $("[data-mlab-comp-tool='storage_plugin']").addClass("mlab_hidden");
         }

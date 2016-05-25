@@ -348,7 +348,7 @@ color: black;
     font-family:Arial, Helvetica, sans-serif;
 }
 
-#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li.mlab_item_applied:after {
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li.mlab_item_applied span:after {
     content: "\2713 ";
     color: darkgreen;
     padding-left: 2px;
