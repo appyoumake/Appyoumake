@@ -6,6 +6,7 @@
         var comp = $(el).find('img');
         if (typeof comp.attr("src") == "undefined" || comp.attr("src") == "") {
             comp.attr("src", this.config.placeholder);
+            el.find('figure').css('width', '50%');
         }
         
         $(el).find('figcaption').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "caption"]));
