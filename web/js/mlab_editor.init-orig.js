@@ -426,11 +426,7 @@ $(document).ready(function() {
                                                 mlab.dt.api.display.setSize($(".mlab_current_component"), "large");
                                                 $("[data-mlab-get-info='comp_sizes']").hide();
                                             });
-
-                                            $("[data-mlab-comp-size='fullscreen']").on("click", function () { 
-                                                mlab.dt.api.display.setSize($(".mlab_current_component"), "fullscreen");
-                                                $("[data-mlab-get-info='comp_sizes']").hide();
-                                            }); 
+                                            
                                           }
                                         }
                         });
