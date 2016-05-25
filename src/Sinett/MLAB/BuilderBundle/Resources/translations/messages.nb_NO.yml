@@ -654,3 +654,4 @@ mlab.dt.api.js.getLink.alert_choose_type: Velg en link type du vil legge til
 mlab.dt.api.js.getLink.no_selection: Vennligst velg noe tekst i den gjeldende komponenten som linken skal legges til
 
 select.locale: Velg språk
+mlab.dt.management.js.websocket.error.connect: Tilkobling til meldingsserver mislyktes, kan ikke fortsette. Sjekk Internett-tilkobling og prøv igjen.

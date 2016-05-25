@@ -654,3 +654,4 @@ mlab.dt.api.js.getLink.alert_choose_type: Choose a link type to add
 mlab.dt.api.js.getLink.no_selection: Please select som text inside the current component to add link to
 
 select.locale: Select language
+mlab.dt.management.js.websocket.error.connect: Connection to message server failed, cannot continue. Check Internet connection and try again.
