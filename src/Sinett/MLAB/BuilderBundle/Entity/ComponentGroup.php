@@ -122,4 +122,14 @@ class ComponentGroup
     {
         return $this->group;
     }
+    
+    /**
+     * Get display value
+     *
+     * @return \String
+     */
+    public function __toString()
+    {
+    	return $this->group->getName();
+    }
 }

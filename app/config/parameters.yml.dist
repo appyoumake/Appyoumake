@@ -90,15 +90,15 @@ parameters:
                 - css/mlab_component.css
                 - css/jquery-ui.css
                 - css/jquery-mobile.css
-            template_conf_required: name, tooltip
+            template_conf_required: [name, tooltip]
             component:
                 - code_dt.js
                 - conf.yml
                 - icon.png
-            component_conf_required: category, html, name, tooltip
+            component_conf_required: [category, html, name, tooltip]
             app:
                 - www
-            template_strings:
+            template_required_strings:
                 frontpage.html: '/\<div .*id\=.mlab_editable_area.*?\>/'
             
         component_files: { ICON: icon.png, CONFIG: conf.yml, SCRIPTS: code_dt.js, PHP: server_code.php }

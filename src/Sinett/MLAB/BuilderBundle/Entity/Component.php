@@ -47,11 +47,6 @@ class Component
     private $order_by;
     
     /**
-     * @var integer
-     */
-    private $new_line;
-    
-    /**
      * Not in DB, set to show if a component can be deleted
      */
     private $canDelete;
@@ -183,12 +178,12 @@ class Component
     *
     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
     * @return Component
-    
+    */
     public function addGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
     {
-        /*$temp = new \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
+        $temp = new \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
         $temp->setGroup($group)->setComponent($this);
-        $this->addComponentGroup($group);
+        $this->addComponentGroup($temp);
         return $this;
     }
     
@@ -196,12 +191,12 @@ class Component
      * Remove group, wrapper function for removeComponentGroup
      *
      * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
-     
+     */
     public function removeGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
     {
-        //$this->removeComponentGroup($group);
+        $this->removeComponentGroup($group);
         return $this;
-    }*/
+    }
     
     
     /**
@@ -315,7 +310,7 @@ class Component
     }
     
     /**
-     * Set version
+     * Set order
      *
      * @param float $version
      * @return Component
@@ -328,7 +323,7 @@ class Component
     }
 
     /**
-     * Get version
+     * Get order
      *
      * @return float 
      */
@@ -337,28 +332,6 @@ class Component
         return $this->order_by;
     }
     
-    /**
-     * Set version
-     *
-     * @param float $version
-     * @return Component
-     */
-    public function setNewLine($new_line)
-    {
-        $this->new_line = $new_line;
-    
-        return $this;
-    }
-
-    /**
-     * Get version
-     *
-     * @return float 
-     */
-    public function getNewLine()
-    {
-        return $this->new_line;
-    }
     
     /**
      * Returns all properties as an array, it also has a placeholder for the pages that are locked

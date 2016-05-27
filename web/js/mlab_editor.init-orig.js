@@ -176,7 +176,7 @@ $(document).ready(function() {
                             var tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
                             var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
 
-//the newline setting in the database 
+//the category setting in the conf.yml files
                             if (typeof components_html[c.conf.category] == "undefined") {
                                 components_html[c.conf.category] = [];
                             }                                
