@@ -58,9 +58,9 @@
 
 
     this.onResize = function (el) {
-        var w = $(el).innerWidth();
-        var h = $(el).innerHeight();
-        var aspectratio = $(el).attr("data-mlab-aspectratio").split(":");
+        var w = $(el).width();
+        var h = $(el).height();
+        
         $(el).find(".mlab_cp_googlemap_canvas").css({"width": w + "px", "height": h + "px"});
         if (typeof (google) != "undefined" && typeof (google.maps) != "undefined") {
             var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");

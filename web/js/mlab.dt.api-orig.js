@@ -1059,14 +1059,13 @@ Mlab_dt_api.prototype = {
         updateDisplay: function (el) {                      //was '[data-mlab-size][data-mlab-aspectratio]'
             var components = (typeof el == "undefined") ? $('[data-mlab-sizer]') : $(el);
             var that = this;
-            
-            components.each( function() {
-                var device_width = $('[data-role="page"]').first().innerWidth();
+            components.each( function() {  
+                var device_width = ($('[data-mlab-sizer="1"]').parent().width());
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
                 var comp_id = $(this).parent().data("mlab-type");
-                
+     
                 var w = (device_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
                 $(this).css( {"width": w + "px", "height": h + "px"} );
