@@ -18,6 +18,8 @@ class ComponentType extends AbstractType
     	$action = array_pop($action);
     	if ($action == "create") {
 	    	$builder->add('enabled', null, array('label' => 'app.admin.components.new.enabled'))
+                    ->add('new_line', 'checkbox', array('label' => 'app.admin.components.new.new_line'))
+                    ->add('order_by', null, array('label' => 'app.admin.components.new.order_by'))
 	    			->add('groups', 'entity', array('class' => 'SinettMLABBuilderBundle:Group', 'multiple' => true, 'label' => 'app.admin.components.new.groups'))
                     ->add('zip_file', 'file', array('label' => 'app.admin.components.new.file'));
 	    } else {

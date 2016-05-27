@@ -94,6 +94,7 @@ parameters:
             component:
                 - code_dt.js
                 - conf.yml
+                - icon.png
             component_conf_required: category, html, name, tooltip
             app:
                 - www
