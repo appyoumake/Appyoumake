@@ -40,8 +40,7 @@ class AppController extends Controller
      * Lists all App entities.
      *
      */
-    public function indexAction()
-    {
+    public function indexAction() {
     	$em = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
         return $this->render('SinettMLABBuilderBundle:App:index.html.twig', array(

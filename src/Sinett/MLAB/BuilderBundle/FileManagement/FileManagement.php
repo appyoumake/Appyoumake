@@ -148,20 +148,30 @@ class FileManagement {
                     $yaml = new Parser();
 					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.yml"));
                     if (isset($temp["tooltip"])) {
-                        $entity->setDescription($temp["tooltip"]["nb_NO"]); //TODO: need to parse this as object with language...
+                        $entity->setDescription($temp["tooltip"][$this->config["locale"]]); 
                     } 
                     if (isset($temp["compatible_with"])) {
                         $entity->setCompatibleWith($temp["compatible_with"]);
                     } 
                     if (isset($temp["version"])) {
                         $entity->setVersion($temp["version"]);
+                    } else {
+                        $entity->setVersion(0);
                     }
                     if (isset($temp["newline"])) {
                         $entity->setNewLine($temp["newline"]);
                     } else {
                         $entity->setNewLine(0);
                     }
-				} //TODO: bail here if no yaml file
+//always increase order by to a higher number, then they can amend it later in the database
+                    $entity->setOrderBy($this->em->getRepository('SinettMLABBuilderBundle:Component')->findOneBy(array(), array('order_by' => 'DESC')) + 1);
+
+                } else {
+// clean up the file property, not persisted to DB
+                    $entity->setZipFile(null);
+                    return array("result" => false, "message" => "No configuration file found");
+                    
+                }
 				
 				$entity->setPath($dir_name);
 				$entity->setName($object_name);
