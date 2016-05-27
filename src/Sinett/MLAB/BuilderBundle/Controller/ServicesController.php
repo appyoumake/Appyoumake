@@ -364,6 +364,82 @@ class ServicesController extends Controller
         return json_decode($status, true);
     }
     
+    
+    /**
+     * Runs through the initial precompile process and then ZIPs the source code
+     * @param type $window_uid
+     * @param type $app_id
+     * @param type $app_version
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function cmpGetAppSourceAction($window_uid, $app_id, $app_version) {
+//check for valid variables first
+        $config = $this->container->parameters['mlab'];
+
+        if (intval($app_id) <= 0) {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
+        }
+        
+        if (floatval($app_version) <= 0) {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.2') . ': ' . $app_version));
+        }
+        
+//get the app database record
+        $file_mgmt = $this->get('file_management');
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
+
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        if (is_null($app)) {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.retrieve.db.entry') . ': ' . $app_id));
+        }
+        
+//prepare variables & get current processed app checksum
+        $app_uid = $app->getUid();
+        $app_path = $app->calculateFullPath($config['paths']['app']);
+        $path_app_config = $app_path . $config['filenames']["app_config"];
+        $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
+        
+//run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
+//the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
+        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
+        if (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
+        
+        $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
+        if ($res_precompile["result"] != "success") {
+            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation_failed", "platform": "' . $platform . '", "text": "' . $res_precompile["msg"] . '"}}', $config), true);
+            return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
+        }
+        $processed_app_checksum = $res_precompile["checksum"];
+
+        return new JsonResponse($arr);
+
+    }
+    
+    public function cmpUploadWebsite($window_uid, $app_id, $app_version) {
+        $this-cmpGetAppSourceAction($window_uid, $app_id, $app_version);
+   /*     function ftp_putAll($conn_id, $src_dir, $dst_dir) {
+    $d = dir($src_dir);
+    while($file = $d->read()) { // do this for each file in the directory
+        if ($file != "." && $file != "..") { // to prevent an infinite loop
+            if (is_dir($src_dir."/".$file)) { // do the following if it is a directory
+                if (!@ftp_chdir($conn_id, $dst_dir."/".$file)) {
+                    ftp_mkdir($conn_id, $dst_dir."/".$file); // create directories that do not yet exist
+                }
+                ftp_putAll($conn_id, $src_dir."/".$file, $dst_dir."/".$file); // recursive part
+            } else {
+                $upload = ftp_put($conn_id, $dst_dir."/".$file, $src_dir."/".$file, FTP_BINARY); // put the files
+            }
+        }
+    }
+    $d->close();
+}*/
+    }
+    
     /**
      * Downloads the compiled executable file and stored in the compiled folder, then checks if it has same checksum as online version
      * @param type $app_uid

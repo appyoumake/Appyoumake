@@ -1040,6 +1040,100 @@ Mlab_dt_management.prototype = {
             });
 
         },
+        
+        /**
+         * downloads a complte copy of prepared (i.e. finished precompile process) source code, so Mlab ise just used as an editor
+         * @returns {undefined}
+         */
+        get_app_source : function () {
+            var url = mlab.dt.urls.cmp_get_app_source.replace("_WINDOW_UID_", mlab.dt.uid);
+            var i = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.db.id"]);
+            url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
+            var v = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.version"]);
+            url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
+
+            $( document ).ajaxError(function(event, jqXHR, ajaxSettings) {
+                if (jqXHR.status === 0) {
+                    alert('Not connect.\n Verify Network.');
+                } else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404]');
+                } else if (jqXHR.status == 500) {
+                    alert('Internal Server Error [500].');
+/*                } else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                } else if (exception === 'timeout') {
+                    alert('Time out error.');
+                } else if (exception === 'abort') {
+                    alert('Ajax request aborted.');*/
+                } else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+                mlab.dt.utils.update_status("temporary", jqXHR.responseText, false);
+            });
+            
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function( json ) {
+                    if (json.result == "success") {
+                        console.log("Status returned: ");
+                        console.log(json.app_status);
+                    } else {
+                        alert(_tr["mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status"]);
+                        mlab.dt.utils.update_status("temporary", "", false);
+                    }
+                }
+                
+            });
+
+        },
+        
+        /**
+         * 
+         * @returns {undefined}
+         */
+        upload_website : function () {
+            var url = mlab.dt.urls.cmp_upload_website.replace("_WINDOW_UID_", mlab.dt.uid);
+            var i = prompt(_tr["mlab.dt.management.js.compiler.upload_website.prompt.db.id"]);
+            url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
+            var v = prompt(_tr["mlab.dt.management.js.compiler.upload_website.prompt.version"]);
+            url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
+
+            $( document ).ajaxError(function(event, jqXHR, ajaxSettings) {
+                if (jqXHR.status === 0) {
+                    alert('Not connect.\n Verify Network.');
+                } else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404]');
+                } else if (jqXHR.status == 500) {
+                    alert('Internal Server Error [500].');
+/*                } else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                } else if (exception === 'timeout') {
+                    alert('Time out error.');
+                } else if (exception === 'abort') {
+                    alert('Ajax request aborted.');*/
+                } else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+                mlab.dt.utils.update_status("temporary", jqXHR.responseText, false);
+            });
+            
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function( json ) {
+                    if (json.result == "success") {
+                        console.log("Status returned: ");
+                        console.log(json.app_status);
+                    } else {
+                        alert(_tr["mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status"]);
+                        mlab.dt.utils.update_status("temporary", "", false);
+                    }
+                }
+                
+            });
+
+        },        
     
         get_app : function (platform) {
             mlab.dt.management.socket.setup(mlab.dt.management.compiler.get_app_callback, platform);

@@ -44,6 +44,14 @@ cmp_get_app_status:
     pattern: /cmpGetAppStatus/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL }
 
+cmp_get_app_source:
+    pattern: /cmpGetAppSource/{window_uid}/{app_id}/{app_version}
+    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppSource, app_id:NULL, app_version:NULL }
+
+cmp_upload_website:
+    pattern: /cmpUploadWebsite/{window_uid}/{app_id}/{app_version}
+    defaults: { _controller: SinettMLABBuilderBundle:Services:cmpUploadWebsite, app_id:NULL, app_version:NULL }
+
 cmp_get_app_process:
     pattern: /cmpGetAppProcess/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppProcess }
@@ -51,3 +59,4 @@ cmp_get_app_process:
 cmp_get_list_compiled_apps:
     pattern: /cmpGetListCompiledApps/{app_id}/{app_version}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetListCompiledApps }
+

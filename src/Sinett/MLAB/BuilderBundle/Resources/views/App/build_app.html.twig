@@ -149,8 +149,9 @@
                                     <h3>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h3>
                                     <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
                                     <a href='javascript: mlab.dt.management.app_remove_locks();'>{% trans %}build_app.menu.utilities.delete.locks{% endtrans %}</a>
-                                    <a href='javascript: mlab.dt.management.compiler.get_app_status();'>{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}
-                                    </a>
+                                    <a href='javascript: mlab.dt.management.compiler.get_app_status();'>{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}</a>
+                                    <a href='javascript: mlab.dt.management.compiler.get_app_source();'>{% trans %}build_app.menu.utilities.download.source{% endtrans %}</a>
+                                    <a href='javascript: mlab.dt.management.compiler.upload_website();'>{% trans %}build_app.menu.utilities.upload.website{% endtrans %}</a>
                                 </div>
                             </div> <!-- End Feature col -->
 
@@ -210,7 +211,7 @@
                                     <p>{% trans %}app.builder.menu.login.info{% endtrans %}:<br>
                                         <a target='_top' href='{{ path('fos_user_security_login') }}'>{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
                                     </p>
-                                {% else %} <!-- If loged in -->
+                                {% else %} <!-- If logged in -->
                                     <p>{% trans %}app.builder.menu.log.info{% endtrans %}:<br>
                                         <b>{{ app.user.username }}</b><br><br>
                                     <a target='_top' href='{{ path('fos_user_security_logout') }}'>{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
