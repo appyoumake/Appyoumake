@@ -159,7 +159,7 @@ made smaler than the min width */
 }
 
  
-
+/*The accordion for grouping the component menu*/
 #mlab_editor .ui-accordion-content {
     border: 1px solid grey;
 }
@@ -176,13 +176,21 @@ made smaler than the min width */
     background-color: orange;
 }
 
+#mlab_editor .ui-accordion-header .mlab_component_name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 82%;
+}
 /*The accordion is closed*/
 #mlab_editor .ui-accordion-header:after {
     font-family: Arial, Helvetica, sans-serif;
     content: "+";
-    float: right;
-    padding-right: 5px;
+    position: absolute;
+    left: 7.8em;
+    top: 0%;
 }
+
 /*The accordion is open*/
 #mlab_editor .ui-accordion-header-active:after {
     content: "-";
