@@ -29,10 +29,10 @@
     };
     
     this.onResize = function (el) {
-        var w = $(el).innerWidth();
-        var h = $(el).innerHeight();
+        var w = $(el).width();
+        var h = $(el).height();
         var aspectratio = $(el).attr("data-mlab-aspectratio").split(":");
-        $(el).find("iframe").attr({"data-aspectratio" : (aspectratio[1] / aspectratio[0]), "width": w + "px", "height": h + "px"});
+        $(el).find("iframe").attr({"data-aspectratio" : (aspectratio[1] / aspectratio[0]), "width": w + "px", "height": h + "px"});      
     }
     
     this.getContentSize = function (el) {
@@ -118,14 +118,10 @@
 // Add youtube code to app, and resize it to fill whole width
         $.youtubeSelect = function(youtube_id){
             var container = mlab.dt.components.youtube.code.getHTMLElement(local_el);
-            container.html('<iframe class="mc_figure mc_interactive mc_timebased" width="560" height="315" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen ></iframe>');
-            var video = $(container).find("iframe");
-            video.attr('data-aspectRatio', video.height() / video.width()).removeAttr('height').removeAttr('width');
-            mlab.dt.api.closeAllPropertyDialogs();
-                 
-        }    
-
-
+            container.html('<iframe class="mc_figure mc_interactive mc_timebased" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen ></iframe>');
+            mlab.dt.api.display.setAspectRatio(local_el, "16:9");
+            mlab.dt.api.display.setSize(local_el, "large");
+        }
     };
     
     this.store_credentials = function (credentials, params) {
