@@ -76,6 +76,7 @@ class ComponentController extends Controller
             
             if ($res["result"]) {
             
+                
 	            $em->persist($entity);
 	            $em->flush();
 	
@@ -88,7 +89,7 @@ class ComponentController extends Controller
 	        	return new JsonResponse(array('db_table' => 'component',
 	        			'db_id' => 0,
 	        			'result' => 'FAILURE',
-	        			'message' => $this->get('translator')->trans('compController.msg.unable.upload.comp')));
+	        			'message' => $this->get('translator')->trans('compController.msg.unable.upload.comp') . ": " . $res["message"] ) );
 	        }
 	             
         }

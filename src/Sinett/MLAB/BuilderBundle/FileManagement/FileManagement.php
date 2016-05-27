@@ -38,11 +38,12 @@ class FileManagement {
 	private $entity_type;
 	private $em;
     
-    public function __construct($mlab, $router, \Doctrine\ORM\EntityManager $em)
+    public function __construct($mlab, $router, \Doctrine\ORM\EntityManager $em, $locale)
     {
         $this->config = $mlab;
         $this->router = $router;
         $this->em = $em;
+        $this->locale = $locale;
     }
 	
     /**
@@ -54,7 +55,7 @@ class FileManagement {
     	$this->entity_type = $entity_type;
     	$this->required_files = $this->config['verify_uploads'][$entity_type];
         if (isset($this->config['verify_uploads'][$entity_type . "_strings"])) {
-            $this->required_strings = $this->config['verify_uploads'][$entity_type . "_strings"];
+            $this->required_strings = $this->config['verify_uploads'][$entity_type . "_required_strings"];
         } else {
             $this->required_strings = array();
         }
@@ -89,6 +90,7 @@ class FileManagement {
 	
 			$zip = new ZipArchive();
 			$res = $zip->open($temp_name);
+            $conf_ok = TRUE;
 	
 //loop through and see if all required files are present
 			if ($res === TRUE) {
@@ -147,9 +149,22 @@ class FileManagement {
 				if (file_exists($full_path . "/conf.yml")) {
                     $yaml = new Parser();
 					$temp = $yaml->parse(@file_get_contents($full_path . "/conf.yml"));
+                    foreach($this->config['verify_uploads'][$this->entity_type . "_conf_required"] as $required_setting) {
+                        if (!isset($temp[$required_setting])) {
+                            $conf_ok = FALSE;
+                            $err_msg = "The following required entry was missing from the conf.yml file: " . $required_setting;
+                            break;
+                        }
+                    }
                     if (isset($temp["tooltip"])) {
-                        $entity->setDescription($temp["tooltip"][$this->config["locale"]]); 
-                    } 
+                        if (is_array($temp["tooltip"])) {
+                            if (isset($temp["tooltip"][$this->locale])) {
+                                $entity->setDescription($temp["tooltip"][$this->locale]);
+                            }
+                        } else {
+                            $entity->setDescription($temp["tooltip"]);
+                        }
+                    }
                     if (isset($temp["compatible_with"])) {
                         $entity->setCompatibleWith($temp["compatible_with"]);
                     } 
@@ -158,18 +173,22 @@ class FileManagement {
                     } else {
                         $entity->setVersion(0);
                     }
-                    if (isset($temp["newline"])) {
-                        $entity->setNewLine($temp["newline"]);
-                    } else {
-                        $entity->setNewLine(0);
-                    }
+                    
+                    if (isset($temp["order_by"])) {
 //always increase order by to a higher number, then they can amend it later in the database
-                    $entity->setOrderBy($this->em->getRepository('SinettMLABBuilderBundle:Component')->findOneBy(array(), array('order_by' => 'DESC')) + 1);
+                        $entity->setOrderBy($this->em->getRepository('SinettMLABBuilderBundle:Component')->findOneBy(array(), array('order_by' => 'DESC'))->getOrderBy() + 1);
+                    }
 
                 } else {
+                    $conf_ok = false;
+                    $err_msg = "No configuration file found";
+                }
+                
+//config file does not exists or does not have all required properties, so we bail.
+                if (!$conf_ok) {
 // clean up the file property, not persisted to DB
                     $entity->setZipFile(null);
-                    return array("result" => false, "message" => "No configuration file found");
+                    return array("result" => false, "message" => $err_msg);
                     
                 }
 				
@@ -247,7 +266,6 @@ class FileManagement {
             $component_record = $this->em->getRepository('SinettMLABBuilderBundle:Component')->findByPath($comp_id);
             if (is_array($component_record) && sizeof($component_record) > 0) {
                 $ob = $component_record[0]->getOrderBy();
-                $nl = $component_record[0]->getNewLine();
 //add credentials if the component has gotten it saved in the database
                 $comp_groups = $component_record[0]->getComponentGroups();
                 if (sizeof($comp_groups) > 0){
@@ -258,7 +276,6 @@ class FileManagement {
                 }
             } else {
                 $ob = 999 + rand(1, 10000); // make sure it comes at the end of the list and has a unique position
-                $nl = 0;
                 $credential = "";
             }
 
@@ -268,8 +285,7 @@ class FileManagement {
                     "server_code" => file_exists($comp_dir . $config["PHP"]),
                     "conf" => $tmp_yaml,
                     "is_feature" => false,
-                    "order_by" => $ob,
-                    "new_line" => $nl);
+                    "order_by" => $ob);
             
             $component["conf"]["credential_values"] = $credential;
             
