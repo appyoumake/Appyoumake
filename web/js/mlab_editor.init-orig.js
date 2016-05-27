@@ -151,8 +151,10 @@ $(document).ready(function() {
                     mlab.dt.components = data.mlab_components;
                     mlab.dt.storage_plugins = {};
                     var components_html = {};
+                    var category_translations = {};
                     var features_html = [];
                     var additional_html = "";
+                    var comp_type;
 
                     for (type in mlab.dt.components) {
 //we need to attach the code_dt.js content to an object so we can use it as JS code
@@ -169,7 +171,7 @@ $(document).ready(function() {
 //here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
                         mlab.dt.components[type].code.config = mlab.dt.components[type].conf;
                         var c = mlab.dt.components[type];
-                        if (c.accessible && !(c.is_feature || c.is_storage_plugin)) {
+                        if (c.accessible && !(c.is_storage_plugin)) {
 
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
                             var tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
@@ -179,23 +181,17 @@ $(document).ready(function() {
 //the category setting in the conf.yml files
                             if (typeof components_html[c.conf.category] == "undefined") {
                                 components_html[c.conf.category] = [];
+                                category_translations[c.conf.category] = mlab.dt.api.getLocaleComponentMessage(type, ["category_name"]);
                             }                                
 
+                            if (c.is_feature) {
+                                comp_type = "feature";
+                            } else {
+                                comp_type = "component";
+                            }
+                            
                             components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
-                                        "onclick='mlab.dt.design.component_add(\"" + type + "\");' " +
-                                        "title='" + tt + "' " +
-                                        "class='mlab_button_components' " +
-                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
-                                    "</div>" + 
-                                    "<div class='mlab_component_footer_tip'>" +
-                                            tte +
-                                     "</div>";
-
-                        } else if (c.accessible && c.is_feature) {
-
-//all features are in a single div
-                            features_html[parseInt(c.data.statusorder_by)] = "<div data-mlab-type='" + type + "' " +
-                                        "onclick='mlab.dt.design.feature_add(\"" + type + "\");' " +
+                                        "onclick='mlab.dt.design." + comp_type + "_add(\"" + type + "\");' " +
                                         "title='" + tt + "' " +
                                         "class='mlab_button_components' " +
                                         "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
@@ -219,22 +215,12 @@ $(document).ready(function() {
 //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
                     for  (category in components_html) {
                         var activeCat = Number(mlab.dt.utils.getCookie("mlabCompCat" + category));
-                        $("<div><h3 data-mlab-category='" + category + "'>" + category + "</h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
+                        $("<div><h3 data-mlab-category='" + category + "'><span class='mlab_category_name'>" + category_translations[category] + "</span></h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
                             heightStyle: "content",
                             active: activeCat,
                             collapsible: true
                         });
                     } 
-
-                    if (features_html.length != 0) {
-//Adds Features as a category (with all the features - if there is any) under the component toolbar and and adds an accordion to the categroy                            
-                       var activeCat = Number(mlab.dt.utils.getCookie("mlabCompCat" + "Features")); 
-                       $("<div><h3 data-mlab-category='Features'>Features</h3><div>" + features_html.join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
-                            heightStyle: "content",
-                            active: activeCat,
-                            collapsible: true
-                        });
-                    }
 
 
 //now loop through all components and for those that inherit another we transfer properties
