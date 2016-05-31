@@ -215,7 +215,7 @@ $(document).ready(function() {
 //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
                     for  (category in components_html) {
                         var activeCat = Number(mlab.dt.utils.getCookie("mlabCompCat" + category));
-                        $("<div><h3 data-mlab-category='" + category + "'><span class='mlab_category_name'>" + category_translations[category] + "</span></h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
+                        $("<div><h3 data-mlab-category='" + category + "'><div class='mlab_category_name'>" + category_translations[category] + "</div></h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
                             heightStyle: "content",
                             active: activeCat,
                             collapsible: true

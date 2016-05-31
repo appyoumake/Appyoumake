@@ -176,12 +176,13 @@ made smaler than the min width */
     background-color: orange;
 }
 
-#mlab_editor .ui-accordion-header .mlab_component_name {
+#mlab_editor .ui-accordion-header .mlab_category_name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 82%;
 }
+
 /*The accordion is closed*/
 #mlab_editor .ui-accordion-header:after {
     font-family: Arial, Helvetica, sans-serif;

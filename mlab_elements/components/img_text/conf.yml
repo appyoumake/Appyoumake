@@ -18,9 +18,9 @@ html: |
     <div style="clear: both;"></div>
 custom:
     decrease_size:
-        tooltip: { nb_NO: Reduser størrelsen på teksten, en_GB: Decrease the size of the text, default: Decrease the size of the text }
+        tooltip: { nb_NO: Reduser størrelsen på teksten og bildeteksten, en_GB: Decrease the size of the text and the caption, default: Decrease the size of the text and the caption }
     increase_size:
-        tooltip: { nb_NO: Øk størrelsen på teksten, en_GB: Increase the size of the text, default: Increase the size of the text }
+        tooltip: { nb_NO: Øk størrelsen på teksten og bildeteksten, en_GB: Increase the size of the text and the caption, default: Increase the size of the text and the caption }
     upload_image:
         order: 12
         newline: true

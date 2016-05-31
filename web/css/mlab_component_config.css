@@ -385,6 +385,59 @@ color: black;
     max-width: 95%;
 }
 
+/* ===  Spesific styling for component help  === */
+
+#mlab_editor .mlab_dt_comp_help_icons_single,
+#mlab_editor .mlab_dt_comp_help_icons_left,
+#mlab_editor .mlab_dt_comp_help_icons_middle,
+#mlab_editor .mlab_dt_comp_help_icons_right{
+    float: left;
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_left {
+    margin-left: 0.5em;
+    margin-right: 0.1em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_middle {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_right {
+    margin-left: 0.1em;
+    margin-right: 0.5em;
+}
+
+#mlab_editor .mlab_dt_comp_help_text {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+    direction: ltr;
+    margin: 0.5em;
+    padding-bottom: 10px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_align {
+    padding-top: 11px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_below_icon {
+    clear: both;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_img_below {
+    padding-bottom: 0;
+    margin-bottom: 2px;
+}
+
 
 /* ==========================================================================
    Run time - rt
