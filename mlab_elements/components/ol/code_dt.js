@@ -75,7 +75,7 @@
         
     };
     
-    this.custom_add_link = function (el) {
+    this.custom_add_link = function (el, event) {
         this.api.setLink(el, event);
     };
 

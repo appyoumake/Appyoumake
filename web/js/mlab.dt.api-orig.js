@@ -872,10 +872,11 @@ Mlab_dt_api.prototype = {
             alert(_tr["mlab.dt.api.js.getLink.no_selection"]);
             return;
         }
-        
+
 //we need to create a temporary link straight away so that we can refer to it later, otherwise the selection wil disappear.
         document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
-        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
+        //.mc_link.mc_text
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").addClass('mc_link mc_text').click(function(e) { e.preventDefault(); });
 
 //we need to request the URL *OR* which page to link to
         var opt = "<option value='-1'></option>";

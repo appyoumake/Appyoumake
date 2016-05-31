@@ -3,7 +3,7 @@ version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 name: chapter
 category_name: {nb_NO: Kapittel, en_GB: Chapter}
-extended_name: { nb_NO: Kapitteloverskrift, en_GB: Chapter heading, default: Chapter heading }
+extended_name: { nb_NO: Kapittel-overskrift, en_GB: Chapter heading, default: Chapter heading }
 tooltip: { nb_NO: Kapitteloverskrift, en_GB: Chapter heading, default: Chapter heading }
 footer_tip: { nb_NO: Kapitteloverskrift er overskrifter som i tillegg blir lagt til den navigerbare innholdslisten i appen, en_GB: Chapter headings are headlines that in addition are used to create an index for your app with clickable links, default: Chapter headings are headlines that in addition are used to create an index for your app with clickable links }
 html: <h1 class="mlab_chapter mc_text mc_display mc_heading mc_large mc_chapter"></h1>
