@@ -866,13 +866,13 @@ Mlab_dt_api.prototype = {
  * The actual link is created in updateLink above
  * @returns {Boolean|String}
  */
-    setLink: function () {
+    setLink: function (el, event) {
 //we must first of all check that som text is chosen inside the current component
         if (!this.checkSelTextValid()) {
             alert(_tr["mlab.dt.api.js.getLink.no_selection"]);
             return;
         }
-
+        
 //we need to create a temporary link straight away so that we can refer to it later, otherwise the selection wil disappear.
         document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
         $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
@@ -883,19 +883,28 @@ Mlab_dt_api.prototype = {
             opt = opt + "<option value='" + page + "'>" + mlab.dt.app.page_names[page] + "</option>";
         }
         var that = this;
-        $('<div id="mlab_dt_link_dialog">' + 
-            '<label><input type="radio" name="mlab_dt_getlink_choice" value="page">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
-            '<select id="mlab_dt_link_app_pages">' + opt + '</select><br>' + 
-            '<label><input type="radio" name="mlab_dt_getlink_choice" value="url">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
-            '<input type="text" id="mlab_dt_link_app_url">' + _tr["mlab.dt.api.js.getLink.url"] + '<br>' + 
-          '</div>').dialog({
-                            title: _tr["mlab.dt.api.js.getLink.heading"],
-                            modal: true,
-                            buttons: [{ text: _tr["mlab.dt.api.js.getLink.ok"],     click: function () { if (that.updateLink()) { $(this).dialog('destroy').remove(); } } },
-                                      { text: _tr["mlab.dt.api.js.getLink.cancel"], click: function () { $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); $(this).dialog('destroy').remove(); } }]
-                        }).dialog( "moveToTop" );
+        var content = $('<div id="mlab_dt_link_dialog">' + 
+            '<br><label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="page" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
+            '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + opt + '</select><br>' + 
+            '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
+            '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
+          '</div>');
+  
+        content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick=" if (that.updateLink()) {mlab.dt.api.closeAllPropertyDialogs();}">' + _tr["mlab.dt.api.js.getLink.ok"] + '</button>');
+        //content.append( '<button class="mlab_dt_button_cancel mlab_dt_right" onclick="this.cancelLink();">' + _tr["mlab.dt.api.js.getLink.cancel"] + '</button>');
+
+        var title = _tr["mlab.dt.api.js.getLink.heading"];
+        
+        this.displayPropertyDialog(el, title, content, null, null, null, null, false, event);
     },
     
+        
+    /* cancelLink: function () {
+         //debugger;
+         //$(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); 
+         mlab.dt.api.closeAllPropertyDialogs();
+     },*/
+ 
     removeLink: function () {
         //could use //document.execCommand("unlink", false, false);, but avoiding as does only remove links on selected area
         var link = this.getSelTextParentLinkElement();

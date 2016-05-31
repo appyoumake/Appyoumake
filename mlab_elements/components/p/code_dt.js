@@ -32,8 +32,8 @@
         return $(el).find("p").text().length;
     };
 
-    this.custom_add_link = function (el) {
-        this.api.setLink(el);
+    this.custom_add_link = function (el, event) {
+        this.api.setLink(el, event);
     };
 
     this.custom_remove_link = function (el) {
