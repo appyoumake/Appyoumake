@@ -26,6 +26,9 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Response;
+use ZipArchive;
+
+
 
 class ServicesController extends Controller
 {
@@ -413,9 +416,32 @@ class ServicesController extends Controller
         }
         
 //we now have the "ready to go" source, and we need to zip it up.
-        $temp_name = tempnam(sys_get_temp_dir(), "mlab");
-        //zip -r /tmp/test.zip *
+        if (!file_exists($compiled_app_path)) {
+            mkdir($compiled_app_path);
+        }
+
+        $temp_name = $compiled_app_path . $app_name . ".zip";
+        $zip = new ZipArchive();
+        $o = $zip->open($temp_name);
+        if ($o === TRUE) {
+            
+            $file_mgmt = $this->get('file_management');
+            $app_files = $file_mgmt->func_find($cached_app_path);
+            
+            foreach($app_files as $file) {
+                if (!$zip->addFile($file, str_replace($cached_app_path, "", $file))) {
+                    $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.zip_error.1'));
+                    return false;
+                } 
+            }  
+                  
+            $zip->close();
+        } else {
+            $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.zip_error.2'));
+            return new JsonResponse($arr);
+        }
         $processed_app_checksum = $res_precompile["checksum"];
+        $arr = array('result' => 'success', 'url' => $config["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_compiled/" . basename($temp_name),  'msg' => $this->get('translator')->trans('servicesController.msg.zip_success'));
 
         return new JsonResponse($arr);
 

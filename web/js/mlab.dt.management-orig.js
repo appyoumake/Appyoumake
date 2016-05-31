@@ -1047,10 +1047,9 @@ Mlab_dt_management.prototype = {
          */
         get_app_source : function () {
             var url = mlab.dt.urls.cmp_get_app_source.replace("_WINDOW_UID_", mlab.dt.uid);
-            var i = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.db.id"]);
-            url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
-            var v = prompt(_tr["mlab.dt.management.js.compiler.get_app_status.prompt.version"]);
-            url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
+            url = url.replace("_ID_", mlab.dt.app.id);
+            url = url.replace("_VERSION_", mlab.dt.app.active_version);
+
 
             $( document ).ajaxError(function(event, jqXHR, ajaxSettings) {
                 if (jqXHR.status === 0) {
@@ -1076,8 +1075,7 @@ Mlab_dt_management.prototype = {
                 dataType: 'json',
                 success: function( json ) {
                     if (json.result == "success") {
-                        console.log("Status returned: ");
-                        console.log(json.app_status);
+                        window.location.href = json.url;
                     } else {
                         alert(_tr["mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status"]);
                         mlab.dt.utils.update_status("temporary", "", false);
