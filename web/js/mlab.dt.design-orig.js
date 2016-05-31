@@ -554,8 +554,15 @@ Mlab_dt_design.prototype = {
                         var tt = this.parent.api.getLocaleComponentMessage(comp_name, ["custom", title, "tooltip"]);
                         var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
 
+                        if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
+                            var cl = "mlab_newline";
+                        } else {
+                            var cl = "";
+                        }
+
                         temp_menu[order] = "<img onclick='(function(e){ mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"), e);})(event)' " + 
                                          "title='" + tt + "' " + 
+                                         "class='" + cl + "' " + 
                                          "data-mlab-comp-tool-id='" + index + "' " + 
                                          icon + " >";
                     }
