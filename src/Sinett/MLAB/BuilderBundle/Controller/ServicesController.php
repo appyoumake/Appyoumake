@@ -399,6 +399,7 @@ class ServicesController extends Controller
 //prepare variables & get current processed app checksum
         $app_uid = $app->getUid();
         $app_path = $app->calculateFullPath($config['paths']['app']);
+        $app_name = $app->getName();
         $path_app_config = $app_path . $config['filenames']["app_config"];
         $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
@@ -406,14 +407,14 @@ class ServicesController extends Controller
         
 //run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
 //the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
-        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
-        if (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
-        
         $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
         if ($res_precompile["result"] != "success") {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation_failed", "platform": "' . $platform . '", "text": "' . $res_precompile["msg"] . '"}}', $config), true);
             return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
         }
+        
+//we now have the "ready to go" source, and we need to zip it up.
+        $temp_name = tempnam(sys_get_temp_dir(), "mlab");
+        //zip -r /tmp/test.zip *
         $processed_app_checksum = $res_precompile["checksum"];
 
         return new JsonResponse($arr);
@@ -422,6 +423,7 @@ class ServicesController extends Controller
     
     public function cmpUploadWebsite($window_uid, $app_id, $app_version) {
         $this-cmpGetAppSourceAction($window_uid, $app_id, $app_version);
+        
    /*     function ftp_putAll($conn_id, $src_dir, $dst_dir) {
     $d = dir($src_dir);
     while($file = $d->read()) { // do this for each file in the directory
@@ -506,6 +508,7 @@ class ServicesController extends Controller
      */
     public function cmpGetAppProcessAction($window_uid, $app_id, $app_version, $platform) {
         error_log("  > cmpGetAppProcessAction");
+        
 //check for valid variables first
         $config = $this->container->parameters['mlab'];
 
