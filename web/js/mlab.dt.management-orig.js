@@ -1075,7 +1075,11 @@ Mlab_dt_management.prototype = {
                 dataType: 'json',
                 success: function( json ) {
                     if (json.result == "success") {
-                        window.location.href = json.url;
+                        var iframe = $("<iframe/>").attr({
+                            src: json.url,
+                            style: "visibility:hidden;display:none"
+                        }).appendTo("body");
+
                     } else {
                         alert(_tr["mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status"]);
                         mlab.dt.utils.update_status("temporary", "", false);

@@ -1517,7 +1517,7 @@ class FileManagement {
  * @param type $exclude_files
  */
     public function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
-        $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS);
+        $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS | \RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
         if ($wildcard == "") {
             $wildcard = "*";
