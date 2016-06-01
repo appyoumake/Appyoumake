@@ -26,6 +26,9 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Response;
+use ZipArchive;
+
+
 
 class ServicesController extends Controller
 {
@@ -413,33 +416,114 @@ class ServicesController extends Controller
         }
         
 //we now have the "ready to go" source, and we need to zip it up.
-        $temp_name = tempnam(sys_get_temp_dir(), "mlab");
-        //zip -r /tmp/test.zip *
+        if (!file_exists($compiled_app_path)) {
+            mkdir($compiled_app_path);
+        }
+
+        $temp_name = $compiled_app_path . $app_name . ".zip";
+        $zip = new ZipArchive();
+        $o = $zip->open($temp_name, ZipArchive::CREATE);
+        if ($o === TRUE) {
+            
+            $app_files = $file_mgmt->func_find($cached_app_path);
+            
+            foreach($app_files as $file) {
+                if (!$zip->addFile($file, str_replace($cached_app_path, "", $file))) {
+                    $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.zip_error.1'));
+                    return false;
+                } 
+            }  
+                  
+            $zip->close();
+        } else {
+            $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.zip_error.2'), 'filename' => $temp_name);
+            return new JsonResponse($arr);
+        }
         $processed_app_checksum = $res_precompile["checksum"];
+        $arr = array('result' => 'success', 'url' => $config["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_compiled/" . basename($temp_name),  'msg' => $this->get('translator')->trans('servicesController.msg.zip_success'));
 
         return new JsonResponse($arr);
 
     }
     
     public function cmpUploadWebsite($window_uid, $app_id, $app_version) {
-        $this-cmpGetAppSourceAction($window_uid, $app_id, $app_version);
+//check for valid variables first
+        $config = $this->container->parameters['mlab'];
+
+        if (intval($app_id) <= 0) {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
+        }
         
-   /*     function ftp_putAll($conn_id, $src_dir, $dst_dir) {
-    $d = dir($src_dir);
-    while($file = $d->read()) { // do this for each file in the directory
-        if ($file != "." && $file != "..") { // to prevent an infinite loop
-            if (is_dir($src_dir."/".$file)) { // do the following if it is a directory
+        if (floatval($app_version) <= 0) {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.2') . ': ' . $app_version));
+        }
+        
+//get the app database record
+        $file_mgmt = $this->get('file_management');
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+            die("You have no access to this app");
+        }
+
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+        if (is_null($app)) {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.retrieve.db.entry') . ': ' . $app_id));
+        }
+        
+//prepare variables & get current processed app checksum
+        $app_uid = $app->getUid();
+        $app_path = $app->calculateFullPath($config['paths']['app']);
+        $app_name = $app->getName();
+        $path_app_config = $app_path . $config['filenames']["app_config"];
+        $compiled_app_path = substr_replace($app_path, "_compiled/", -1); 
+        $cached_app_path = substr_replace($app_path, "_cache/", -1); 
+        $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
+        
+//run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
+//the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
+        $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
+        if ($res_precompile["result"] != "success") {
+            return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
+        }
+        
+//we now have the "ready to go" source, and we need to zip it up.
+        if (!file_exists($compiled_app_path)) {
+            mkdir($compiled_app_path);
+        }
+
+        $temp_name = $compiled_app_path . $app_name . ".zip";
+        $app_files = $file_mgmt->func_find($cached_app_path);
+        
+        $conn_id = ftp_connect($ftp_server);
+
+        // login with username and password
+        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+       
+        foreach($app_files as $file) {
+            if (is_dir($file)) { // do the following if it is a directory
                 if (!@ftp_chdir($conn_id, $dst_dir."/".$file)) {
                     ftp_mkdir($conn_id, $dst_dir."/".$file); // create directories that do not yet exist
+                    
                 }
+                // upload a file
+                    if (ftp_put($conn_id, $remote_file, $file, FTP_ASCII)) {
+                     echo "successfully uploaded $file\n";
+                    } else {
+                     echo "There was a problem while uploading $file\n";
+                    }
                 ftp_putAll($conn_id, $src_dir."/".$file, $dst_dir."/".$file); // recursive part
             } else {
                 $upload = ftp_put($conn_id, $dst_dir."/".$file, $src_dir."/".$file, FTP_BINARY); // put the files
             }
-        }
-    }
-    $d->close();
-}*/
+        }  
+        // close the connection
+        ftp_close($conn_id);
+                  
+        $processed_app_checksum = $res_precompile["checksum"];
+        $arr = array('result' => 'success', 'url' => $config["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_compiled/" . basename($temp_name),  'msg' => $this->get('translator')->trans('servicesController.msg.zip_success'));
+
+        return new JsonResponse($arr);
+        
     }
     
     /**
