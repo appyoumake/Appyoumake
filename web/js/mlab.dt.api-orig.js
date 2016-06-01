@@ -892,19 +892,20 @@ Mlab_dt_api.prototype = {
           '</div>');
   
         content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick=" if (that.updateLink()) {mlab.dt.api.closeAllPropertyDialogs();}">' + _tr["mlab.dt.api.js.getLink.ok"] + '</button>');
-        //content.append( '<button class="mlab_dt_button_cancel mlab_dt_right" onclick="this.cancelLink();">' + _tr["mlab.dt.api.js.getLink.cancel"] + '</button>');
+        content.append( '<button class="mlab_dt_button_cancel mlab_dt_right" onclick=" that.cancelLink();">' + _tr["mlab.dt.api.js.getLink.cancel"] + '</button>');
 
         var title = _tr["mlab.dt.api.js.getLink.heading"];
         
-        this.displayPropertyDialog(el, title, content, null, null, null, null, false, event);
+        this.displayPropertyDialog(el, title, content, function() {$(".qtip-close").on("click", that.cancelLink);}, null, null, null, false, event);
+        
     },
     
         
-    /* cancelLink: function () {
+    cancelLink: function () {
          //debugger;
-         //$(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); 
+         $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); 
          mlab.dt.api.closeAllPropertyDialogs();
-     },*/
+    },
  
     removeLink: function () {
         //could use //document.execCommand("unlink", false, false);, but avoiding as does only remove links on selected area

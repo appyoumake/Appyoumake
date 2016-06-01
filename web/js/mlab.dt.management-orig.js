@@ -1096,10 +1096,8 @@ Mlab_dt_management.prototype = {
          */
         upload_website : function () {
             var url = mlab.dt.urls.cmp_upload_website.replace("_WINDOW_UID_", mlab.dt.uid);
-            var i = prompt(_tr["mlab.dt.management.js.compiler.upload_website.prompt.db.id"]);
-            url = url.replace("/_ID_", ((i != null && i != "") ? "/" + i : ""));
-            var v = prompt(_tr["mlab.dt.management.js.compiler.upload_website.prompt.version"]);
-            url = url.replace("/_VERSION_", ((v != null && v != "") ? "/" + v : ""));
+            url = url.replace("_ID_", mlab.dt.app.id);
+            url = url.replace("_VERSION_", mlab.dt.app.active_version);
 
             $( document ).ajaxError(function(event, jqXHR, ajaxSettings) {
                 if (jqXHR.status === 0) {

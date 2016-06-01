@@ -491,27 +491,29 @@ class ServicesController extends Controller
             mkdir($compiled_app_path);
         }
 
-        $temp_name = $compiled_app_path . $app_name . ".zip";
         $app_files = $file_mgmt->func_find($cached_app_path);
-        
-        $conn_id = ftp_connect($ftp_server);
+        $ftp_server = "bergh.fm";
+        $ftp_user_name = "flurky@bergh.fm";
+        $ftp_user_pass = "!flurkyflurkerson1";
+        $conn_id = ftp_connect();
 
         // login with username and password
         $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+        die(print_r($app_files, true));
        
         foreach($app_files as $file) {
             if (is_dir($file)) { // do the following if it is a directory
-                if (!@ftp_chdir($conn_id, $dst_dir."/".$file)) {
-                    ftp_mkdir($conn_id, $dst_dir."/".$file); // create directories that do not yet exist
-                    
+                if (!@ftp_chdir($conn_id, "/" . $file)) {
+                    ftp_mkdir($conn_id, "/" . $file); // create directories that do not yet exist
                 }
-                // upload a file
-                    if (ftp_put($conn_id, $remote_file, $file, FTP_ASCII)) {
-                     echo "successfully uploaded $file\n";
-                    } else {
-                     echo "There was a problem while uploading $file\n";
-                    }
-                ftp_putAll($conn_id, $src_dir."/".$file, $dst_dir."/".$file); // recursive part
+                
+// upload a file
+                if (ftp_put($conn_id, $remote_file, $file, FTP_ASCII)) {
+                    echo "successfully uploaded $file\n";
+                } else {
+                    echo "There was a problem while uploading $file\n";
+                }
+                
             } else {
                 $upload = ftp_put($conn_id, $dst_dir."/".$file, $src_dir."/".$file, FTP_BINARY); // put the files
             }
