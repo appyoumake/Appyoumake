@@ -25,6 +25,7 @@ security:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/category/.+/.+/load_categories, role: ROLE_USER }
         - { path: ^/category/, role: ROLE_ADMIN }
         - { path: ^/component/, role: ROLE_ADMIN }
         - { path: ^/group/, role: ROLE_ADMIN }
@@ -36,5 +37,6 @@ security:
         - { path: ^/system, role: ROLE_SUPER_ADMIN }
         - { path: ^/system/, role: ROLE_SUPER_ADMIN }
         - { path: ^/app/, role: ROLE_USER }
+
 
         
