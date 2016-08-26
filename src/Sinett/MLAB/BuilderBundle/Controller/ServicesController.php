@@ -344,7 +344,7 @@ class ServicesController extends Controller
             $em = $this->getDoctrine()->getManager();
             $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (is_null($app)) {
-                return new JsonResponse(array('result' => 'error', 'message' => 'servicesController.msg.unable.retrieve.db.entry' . ': ' . $app_id));
+                return new JsonResponse(array('result' => 'error', 'message' => $this->get('translator')->trans('servicesController.msg.unable.retrieve.db.entry') . ': ' . $app_id));
             }
             $app_uid = $app->getUid();
         } else {
@@ -540,13 +540,13 @@ class ServicesController extends Controller
         error_log("  > cmpDownloadApp");
         $config = $this->container->parameters['mlab'];
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "receiving"}}', $config), true);
-        if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.unable.update.websocket')); }
+        if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
 
 //prepare app variables and calculate som paths
         $em = $this->getDoctrine()->getManager();
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
         if (is_null($app)) {
-            return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.cmpDownloadApp' . ': ' . $app_uid));
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpDownloadApp') . ': ' . $app_uid));
         }
 
         $passphrase = urlencode($config["compiler_service"]["passphrase"]);
@@ -698,17 +698,17 @@ class ServicesController extends Controller
         $config = $this->container->parameters['mlab'];
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
-            return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.passphrase.not.matching'));
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));
         }
         
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
-        $fail_text = 'servicesController.msg.cbCmpCreatedAppAction.1';
+        $fail_text = $this->get('translator')->trans('servicesController.msg.cbCmpCreatedAppAction.1');
         $status = ($result == "true") ? "created" : "create_failed";
         
         if (!is_null($window_uid)) {
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.unable.update.websocket'));
+                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
             }
         }
         
@@ -719,7 +719,7 @@ class ServicesController extends Controller
             $em = $this->getDoctrine()->getManager();
             $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
             if (is_null($app)) {
-                return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.cbCmpCreatedAppAction.2' . ': ' . $app_uid, "platform" => $platform));
+                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cbCmpCreatedAppAction.2') . ': ' . $app_uid, "platform" => $platform));
             }
 
             $app_path = $app->calculateFullPath($config['paths']['app']);
@@ -733,7 +733,7 @@ class ServicesController extends Controller
             $processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
             $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "checksum" => $processed_app_checksum, "tag" => "multistep-$window_uid-$platform");
             $res_verify = $this->cmpCallRemoteFunction($config, $window_uid, "verifying", "compiler_service", $parameters, "verifyApp");
-            (strtolower($res_verify) != "true") ? $arr = array('result' => 'error', 'msg' => 'servicesController.msg.cbCmpCreatedAppAction.3') : $arr = array('result' => 'success');
+            (strtolower($res_verify) != "true") ? $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cbCmpCreatedAppAction.3')) : $arr = array('result' => 'success');
             return new JsonResponse($arr);
 
         } 
@@ -761,10 +761,10 @@ class ServicesController extends Controller
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             error_log("Passphrases not matching (local/remote): $local_passphrase / $passphrase ");
-            return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.passphrase.not.matching'));
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));
         }
         
-        $fail_text = 'servicesController.msg.cbCmpVerifiedAppAction.1';
+        $fail_text = $this->get('translator')->trans('servicesController.msg.cbCmpVerifiedAppAction.1');
         $status = ($result != "true" ? "verification_failed" : "verification_ok" );
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
@@ -780,7 +780,7 @@ class ServicesController extends Controller
             }
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . '", "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.unable.update.websocket'));
+                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
             }
         }
         
@@ -816,17 +816,17 @@ class ServicesController extends Controller
         $config = $this->container->parameters['mlab'];
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
-            return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.passphrase.not.matching'));
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));
         }
         
-        $fail_text = 'servicesController.msg.cbCmpCompiledAppAction';
+        $fail_text = $this->get('translator')->trans('servicesController.msg.cbCmpCompiledAppAction');
         $status = ($result != "true" ? "compilation_failed" : "compilation_ok" );
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
         if (!is_null($window_uid)) {
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "platform": "' . $platform . '"}}', $config), true);
             if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.unable.update.websocket'));
+                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
             }
         }
         
@@ -845,10 +845,10 @@ class ServicesController extends Controller
                 
                 $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '", "platform": "' . $platform . '"}}', $config), true);
             } else {
-                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed", "fail_text": "' . 'servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage' . '", "platform": "' . $platform . '"}}', $config), true);
+                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed", "fail_text": "' . $this->get('translator')->trans('servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage') . '", "platform": "' . $platform . '"}}', $config), true);
             }
             if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => 'servicesController.msg.unable.update.websocket'));
+                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
             }
 
         }        
