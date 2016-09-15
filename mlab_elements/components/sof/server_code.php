@@ -1,8 +1,9 @@
 <?php
 
 /*
- * https://ihl-databases.icrc.org/applic/ihl/ihl.nsf/ART/380-6000100 / 98
+ * https://ihl-databases.icrc.org/applic/ihl/ihl.nsf/ART/380-600100 / 98
 
+https://ihl-databases.icrc.org/applic/ihl/ihl.nsf/ART/365-570075?OpenDocument
 
 Include <div id="contentBlock">
 
@@ -39,41 +40,35 @@ function outputHtml(DOMNode $node) {
 class mlab_ct_sof {
     
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
-        for ($i = 1; $i++; $i > 99 ) {
-            $url = "https://ihl-databases.icrc.org/applic/ihl/ihl.nsf/ART/380-60000" . str_pad($i, 2, "0");
-        }
-        $url = "http://www.dsb.no/no/Ansvarsomrader/Farlige-stoffer/Transport/ADR-sjafor/";
-        $html = "<div class='mc_text mc_display '>";
-        $frontpage_content = file_get_contents($url);
+        $complete_html = "<div class='mc_text mc_display ' id='sof'><div style='width: 100%;height: auto; '><button style='width: 49%;height: 30px; float: left; padding: 0;' onclick='$(\".sof_current\").removeClass(\"sof_current\").css(\"display\", \"none\").prev().addClass(\"sof_current\").css(\"display\", \"block\")'>Previous</button><button style='width: 49%; height: 30px; float: right; padding:0;'  onclick='$(\".sof_current\").removeClass(\"sof_current\").css(\"display\", \"none\").next().addClass(\"sof_current\").css(\"display\", \"block\")'>Next</button></div><div>";
+        $html = "<div class='mc_text mc_display sof_current'>";
+        for ($i = 1; $i < 75; $i++ ) {
+            $url = "https://ihl-databases.icrc.org/applic/ihl/ihl.nsf/ART/365-5700" . sprintf('%02d', $i) . "?OpenDocument";
+            $content = @file_get_contents($url);
+            
+            if ($content) {
+                $doc = new \DOMDocument("1.0", "utf-8");
+                libxml_use_internal_errors(true);
+                $doc->validateOnParse = true;
+                $doc->loadHTML('<?xml encoding="UTF-8">' . $content);
 
-        $doc = new \DOMDocument("1.0", "utf-8");
-        libxml_use_internal_errors(true);
-        $doc->validateOnParse = true;
-        $doc->loadHTML('<?xml encoding="UTF-8">' . $frontpage_content);
+                $xpath = new DOMXpath($doc);
 
-        $xpath = new DOMXpath($doc);
+                $heads = $xpath->query("//*[contains(@class, 'titleH2')]");
+                if ($heads->length > 0) {
 
-        $heads = $xpath->query("//*[contains(@class, 'secondHeading')]");
-        foreach($heads as $head) {
-            $html .= "<h1>" . htmlentities($head->nodeValue) . "</h1>";
+                    $head = "<h3 class='mc_text mc_display mc_heading mc_small'>" . htmlentities($heads->item(0)->nodeValue) . "</h3>";
 
-        }
-
-        $intros = $xpath->query("//*[contains(@class, 'gradientintro')]");
-        foreach($intros as $intro) {
-            $html .= "<em>" . htmlentities($intro->nodeValue) . "</em>";
-
-        }
-
-        //$articles = $xpath->query("//*[contains(@class, 'article')]");
-        //$xpath = new DOMXpath($articles);
-
-        $contents = $xpath->query('//*[contains(@class, "article")]//*[contains(@class, "content")]');
-        foreach ($contents as $content) {
-            foreach  ($content->childNodes as $node) {
-                $html .= outputHtml($node);
+                    $paras = $xpath->query("//*[contains(@class, 'domino-par--indent')]");
+                    if ($paras->length > 0) {
+                        $para = "<p class='mc_text mc_display mc_medium'>" . $paras->item(0)->nodeValue . "</p>";
+                        $complete_html .= $html . $head . $para . "</div>";
+                        $html = "<div class='mc_text mc_display' style='display: none;'>";
+                    }
+                }
             }
         }
-        return $html . "</div>";
+
+        return $complete_html . "</div></div>";
     }
 }
