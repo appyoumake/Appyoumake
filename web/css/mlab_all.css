@@ -556,6 +556,140 @@ progress {
 #mlab_app_new_summary span {
     width: 45%;
 }
+/* ==========================================================================
+     Help qTip
+   ========================================================================== */
+
+#mlab_editor .qtip.mlab_page_help_qTip,
+.mlab_base .qtip.mlab_page_help_qTip,
+#mlab_editor .qtip.mlab_comp_help_qTip {
+    z-index: 601 !important;
+    box-shadow: none;
+    background-color: rgb(242,242,242) !important;
+}
+
+#mlab_editor .qtip.mlab_page_help_qTip,
+.mlab_base .qtip.mlab_page_help_qTip {
+    width: 500px;
+    max-width: 800px !important;
+}
+
+#mlab_editor .mlab_comp_help_qTip{
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-left: -4px;
+    margin-top: -8px;
+    direction: rtl;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-titlebar,
+.mlab_base .mlab_page_help_qTip .qtip-titlebar,
+#mlab_editor .mlab_comp_help_qTip .qtip-titlebar{
+    background-color: rgb(210,210,210);
+    height: 25px;
+    padding-top: 6px;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-title,
+.mlab_base .mlab_page_help_qTip .qtip-title,
+#mlab_editor .mlab_comp_help_qTip .qtip-title {
+    font-size: 15px;
+}
+
+#mlab_editor .mlab_page_help_qTip .qtip-close,
+.mlab_base .mlab_page_help_qTip .qtip-close{
+    top: 15px;
+    right: 5px;
+    background-color: white;
+} 
+
+#mlab_editor .mlab_comp_help_qTip .qtip-close {
+    top: 3px;
+    right: 5px;
+    background-color: white;
+}  
+
+
+/* ==========================================================================
+   Spesific styling for help
+   ========================================================================== */
+
+#mlab_editor .mlab_dt_comp_help_icons_single,
+#mlab_editor .mlab_dt_comp_help_icons_left,
+#mlab_editor .mlab_dt_comp_help_icons_middle,
+#mlab_editor .mlab_dt_comp_help_icons_right,
+.mlab_base .mlab_dt_comp_help_icons_single,
+.mlab_base .mlab_dt_comp_help_icons_left,
+.mlab_base .mlab_dt_comp_help_icons_middle,
+.mlab_base .mlab_dt_comp_help_icons_right {
+    float: left;
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_left,
+.mlab_base .mlab_dt_comp_help_icons_left {
+    margin-left: 0.5em;
+    margin-right: 0.1em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_middle,
+.mlab_base .mlab_dt_comp_help_icons_middle {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_right,
+.mlab_base .mlab_dt_comp_help_icons_right {
+    margin-left: 0.1em;
+    margin-right: 0.5em;
+}
+
+#mlab_editor .mlab_dt_comp_help_header,
+.mlab_base .mlab_dt_comp_help_header {
+    font-family: Arial,Helvetica,sans-serif;
+    color: #353535;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 14px;
+    margin: 0.5em;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text,
+.mlab_base .mlab_dt_comp_help_text {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+    direction: ltr;
+    margin: 0.5em;
+    padding-bottom: 15px;
+    padding-top: 5px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_align_middle,
+.mlab_base .mlab_dt_comp_help_text_align_middle {
+    padding-top: 11px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_below_icon,
+.mlab_base .mlab_dt_comp_help_text_below_icon {
+    clear: both;
+    padding-top: 0px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_img_below,
+.mlab_base .mlab_dt_comp_help_text_img_below {
+    padding-bottom: 0;
+    margin-bottom: 2px;
+}
     
 	
 /* ==========================================================================
