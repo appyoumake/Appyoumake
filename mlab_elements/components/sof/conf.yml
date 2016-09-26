@@ -1,0 +1,10 @@
+# Configuration file for combatlog component
+version: 1.1
+developer: Arild Bergh @ Sinett/FFI.no
+category: serviceconnections
+category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
+name: sof
+tooltip: { nb_NO: Genevakonvensjonen, en_GB: Geneva Convention, default: Geneva Convention }
+extended_name: { nb_NO: Hele genevakonvensjonen, en_GB: The full Geneva Convention, default: The full Geneva Convention }
+
+html: <h3 class='mc_text mc_display '>Genevakonvensjonen legges inn her</h3>
