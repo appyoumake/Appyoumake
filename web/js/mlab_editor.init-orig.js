@@ -451,6 +451,15 @@ $(document).ready(function() {
                                         }
                         });
                     });
+                    
+//prepare qtip for the credit of the icon use
+                    $('#mlab_credit_icons').qtip({
+                        hide:{ delay:500, fixed:true },//give a small delay
+                        position:   { my: 'left bottom', at: 'right center', adjust: { screen: true } },
+                        content: {text: function(){ return $("<div>The icons on this page are made by <a href='http://www.freepik.com' target='_blank' title='Freepik'>Freepik</a>, <a href='http://www.flaticon.com/authors/simpleicon' target='_blank' title='SimpleIcon'>SimpleIcon</a>, <a href='http://www.flaticon.com/authors/dave-gandy' target='_blank' title='Dave Gandy'>Dave Gandy</a>, <a href='http://www.flaticon.com/authors/anton-saputro' target='_blank' title='Anton Saputro'>Anton Saputro</a> and <a href='http://www.flaticon.com/authors/yannick' target='_blank' title='Yannick'>Yannick</a> from <a href='http://www.flaticon.com' target='_blank' title='Flaticon'>www.flaticon.com</a> and are licensed by <a href='http://creativecommons.org/licenses/by/3.0/' target='_blank' title='Creative Commons BY 3.0'>CC BY 3.0</a> - and many are made by the Sinett project at FFI.no</div>").html()},
+                        title: { text: "Credit for icons" } },
+                        style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                    });
 
 //prepare qtip for the download of app buttons
                     $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, platform) {

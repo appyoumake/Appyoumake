@@ -447,6 +447,25 @@ progress::-moz-progress-bar {
     margin-top: 60px;
 }
 
+#mlab_editor #mlab_menu .left,
+#mlab_editor_menu_dropdown_content .left {
+    float: left;
+}
+
+#mlab_editor_menu_dropdown_content a.left {
+    padding: 0px 3px;
+}
+
+
+#mlab_editor #mlab_menu .right ,
+#mlab_editor_menu_dropdown_content .right {
+    float: right;
+}
+
+#mlab_editor #mlab_menu .mlab_credit_icons {
+    color: #015b86;
+}
+
 /* adds a small app icon - used in App drop down menu */
 /* Not in use yet.... 
 #mlab_app_icon {
