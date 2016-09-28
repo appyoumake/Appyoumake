@@ -511,6 +511,7 @@ Mlab_dt_api.prototype = {
             hide:       false,
             style:      { classes: c },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el, event, api) } },
+                            show: function(event, api) { $('.qtip-title').append('<img class="mlab_dt_button_help" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQJJREFUeNpiZCAAWNk5BICUAxAboEld+P3zxwYGcgHIYCBuAOL3QPwfB74PxAn4zGHE4+r9WFyNCywA+iYRmwQzFQwHAQNmFhaFf3//bESXYMKieD6JhsNAAtBxDsRY4IDDgAegoADiA3gsyScmch2wROx8NDUGuCKflBS0H6ppPw41+8m2AM03AljEDXAk2/cMlACgAQqg4MKTL+YTlQ9wGG4ATb4COJR8AGJDYH54QCgVkWu4I7rhRFsABP14DF8AdfkFoosKLD7AlToSgQYvILksItKCA0DDHQnpJTaIsHl/IsMoQI4DLLiBGL1MtHbcqAUEAQuR6hqxZTRiNAIEGADaemUuXgZoWQAAAABJRU5ErkJggg==">'); },            
                             hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el, event, api) }; api.destroy(); that.properties_tooltip = false; },
                             visible: function(event, api) { if (func_visible) { that.executeCallback (func_visible, el, event, api) } } 
                         }
