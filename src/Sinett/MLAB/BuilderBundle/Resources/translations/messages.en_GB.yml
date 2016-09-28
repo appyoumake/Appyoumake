@@ -38,6 +38,7 @@ app.builder.list.heading.active_version: Active version
 app.builder.list.heading.last.updated: Last updated
 
 app.builder.list.tooltip.name: Click on the name to edit the app
+app.builder.list.tooltip.properties: Menu for
 
 
 #-----------------------------------------------------
@@ -377,7 +378,9 @@ build_app.menu.tooltip.back.app.list: Back to App list
 build_app.menu.utilities.delete.locks: Delete locks
 build_app.menu.utilities.test.connection.compiler: Test connection to compiler
 build_app.menu.tooltip.test.app.web: Test app in browser
-
+build_app.menu.utilities.download.source: Download source code
+build_app.menu.utilities.upload.website: Upload website
+ 
 build_app.page.tooltip.redo: Redo text changes
 build_app.page.tooltip.undo: Undo text changes
 
