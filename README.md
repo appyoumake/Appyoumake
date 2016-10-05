@@ -1,7 +1,10 @@
 Mlab App Builder; editor source code
 ====================================
 
-Mlab is licensed under the terms found in LICENSE_MLAB file in the root folder of the Mlab web app.
+Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+Proprietary and confidential
+Unauthorized copying of this file, via any medium is strictly prohibited
+
 
 The Symfony Framework is licensed under the terms found in LICENSE file in the root folder of the Mlab web app.
 

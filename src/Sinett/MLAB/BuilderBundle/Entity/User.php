@@ -2,7 +2,10 @@
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
-use FOS\UserBundle\Entity\User as BaseUser;
+// incorrect after upgrade to Symfony_2.8:
+//      use FOS\UserBundle\Entity\User as BaseUser;
+use FOS\UserBundle\Model\User as BaseUser;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**

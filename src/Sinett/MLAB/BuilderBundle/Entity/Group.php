@@ -2,12 +2,15 @@
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
+//next line added for Symfony_2.8
+use FOS\UserBundle\Model\Group as BaseGroup;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Group
  */
-class Group extends \FOS\UserBundle\Model\Group
+class Group extends BaseGroup
 {
     /**
      * @var integer

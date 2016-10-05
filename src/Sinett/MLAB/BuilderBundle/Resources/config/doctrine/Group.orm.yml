@@ -17,11 +17,12 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
           strategy: AUTO
 
   fields:
-    name:
-      type: string
-      length: 255
-      fixed: false
-      nullable: false
+#removed for Symfony_2.8, create duplicate column issue
+#    name:
+#      type: string
+#      length: 255
+#      fixed: false
+#      nullable: false
 
     description:
       type: text
