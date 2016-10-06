@@ -37,7 +37,6 @@ class AdminController extends Controller
  */
 	public function appsAction()
     {
-    	//die($this->container->parameters['mlab']['paths']['apps']);
     	$tabs = array(
     			"category" => $this->get('translator')->trans('app.admin.categories'),
     			"component" => $this->get('translator')->trans('app.admin.components'),

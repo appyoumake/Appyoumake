@@ -40,7 +40,7 @@ class ComponentController extends Controller
 //we look at the data-mlab-type attribute. 
 //These are returned as a json array, so we mainly merge them all and then send the array through to the render
         
-        $app_root = $this->container->parameters['mlab']["paths"]["app"];
+        $app_root = $this->container->getParameter('mlab')["paths"]["app"];
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
         $file_mgmt = $this->get('file_management');
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);

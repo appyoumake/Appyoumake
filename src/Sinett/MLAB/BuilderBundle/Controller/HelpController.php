@@ -270,10 +270,10 @@ class HelpController extends Controller
         			'message' => $this->get('translator')->trans('controller.help.msg.comp_id.empty')));
         }
         
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $help_basename = $config["paths"]["component"] . "/" . $comp_id . "/extended_tip";
         $help_generic = $help_basename . ".html";
-        $help_locale = $help_basename . "_" . $this->container->parameters['locale'] . ".html";
+        $help_locale = $help_basename . "_" . $this->container->getParameter('locale') . ".html";
         
         if (file_exists($help_locale)) {
             $html = file_get_contents($help_locale);

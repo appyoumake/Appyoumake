@@ -120,6 +120,7 @@ app.builder.menu.user.info.main.tooltip: User info
 # Help Menu
 #-----------------------------------------------------
 app.builder.help.menu.tooltip: Help
+app.mlab.menu.help.notfound: No help found for this subject
 
 
 #-----------------------------------------------------

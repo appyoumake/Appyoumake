@@ -137,7 +137,7 @@ class ComponentGroupController extends Controller
         $comp_entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
         
         
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $comp_config_path = $config["paths"]["component"] . $comp_entity->getPath() . "/conf.yml";
         
         $groups = $em->getRepository('SinettMLABBuilderBundle:Group')->findAll();

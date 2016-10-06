@@ -3,7 +3,7 @@ namespace Sinett\MLAB\BuilderBundle\Handler;
 
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Router;
@@ -14,7 +14,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
     protected $security;
     protected $container;
 
-    public function __construct(Router $router, SecurityContext $security, $container)
+    public function __construct(Router $router, AuthorizationChecker $security, $container)
     {
         $this->router   = $router;
         $this->security = $security;
@@ -30,7 +30,8 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
  */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {   
-        $paths = $this->container->parameters['mlab']['paths'];
+        $paths = $this->container->getParameter('mlab');
+        $paths = $paths['paths'];
         $env = $this->container->getParameter('kernel.environment');
         foreach ($paths as $path) {
             if (!file_exists($path)) {
