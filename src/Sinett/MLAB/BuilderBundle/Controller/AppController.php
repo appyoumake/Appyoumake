@@ -17,6 +17,10 @@ use Sinett\MLAB\BuilderBundle\Entity\App;
 use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -330,12 +334,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     */
     private function createCreateForm(App $entity)
     {
-        $form = $this->createForm(new AppType(), $entity, array(
+        $form = $this->createForm(AppType::class, $entity, array(
             'action' => $this->generateUrl('app_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -353,11 +357,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 				    	->setMethod('POST')
 				    	->add('name', null, array('required' => true))
 				    	->add('description', null, array('required' => true))
-				    	->add('splashFile', 'file', array('required' => false))
-                        ->add('importFile', 'file', array('required' => false))
-                        ->add('iconFile', 'hidden', array('required' => false))
-                        ->add('uid', 'hidden', array('required' => false))
-                        ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
+				    	->add('splashFile', FileType::class, array('required' => false))
+                        ->add('importFile', FileType::class, array('required' => false))
+                        ->add('iconFile', HiddenType::class, array('required' => false))
+                        ->add('uid', HiddenType::class, array('required' => false))
+                        ->add('copyApp', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
 				    	->add('keywords', null, array('required' => true))
                         ->add('categoryOne', 
                                 null, 
@@ -391,10 +395,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                       'empty_data' => null,
                                       'empty_value'  => '')
                              )                
-				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
+				    	->add('template', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
 				    	->add('active_version')
-				    	->add("copy_app", "hidden", array("mapped" => false))
-				    	->add('save', 'submit')
+				    	->add("copy_app", HiddenType::class, array("mapped" => false))
+				    	->add('save', SubmitType::class)
 				    	->getForm();
     }
 
@@ -477,12 +481,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     */
     private function createEditForm(App $entity)
     {
-        $form = $this->createForm(new AppType(), $entity, array(
+        $form = $this->createForm(AppType::class, $entity, array(
             'action' => $this->generateUrl('app_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }

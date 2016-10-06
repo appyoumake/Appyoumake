@@ -22,6 +22,7 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Sinett\MLAB\BuilderBundle\Form\ComponentType;
 use Sinett\MLAB\BuilderBundle\Entity\Category;
 use Sinett\MLAB\BuilderBundle\Form\CategoryType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Sinett\MLAB\BuilderBundle\Entity\User;
 use Sinett\MLAB\BuilderBundle\Form\UserType;

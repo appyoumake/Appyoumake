@@ -9,6 +9,7 @@ use Symfony\Component\Yaml\Parser;
 
 use Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
 use Sinett\MLAB\BuilderBundle\Form\ComponentGroupType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * ComponentGroup controller.
@@ -64,12 +65,12 @@ class ComponentGroupController extends Controller
      */
     private function createCreateForm(ComponentGroup $entity)
     {
-        $form = $this->createForm(new ComponentGroupType(), $entity, array(
+        $form = $this->createForm(ComponentGroupType::class, $entity, array(
             'action' => $this->generateUrl('componentgroup_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -197,12 +198,12 @@ class ComponentGroupController extends Controller
     */
     private function createEditForm(ComponentGroup $entity)
     {
-        $form = $this->createForm(new ComponentGroupType(), $entity, array(
+        $form = $this->createForm(ComponentGroupType::class, $entity, array(
             'action' => $this->generateUrl('componentgroup_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -321,7 +322,7 @@ class ComponentGroupController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('componentgroup_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }

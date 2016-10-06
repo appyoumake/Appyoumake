@@ -1,33 +1,33 @@
 template:
-    pattern:  /
+    path:  /
     defaults: { _controller: "SinettMLABBuilderBundle:Template:index" }
 
 template_show:
-    pattern:  /{id}/show
+    path:  /{id}/show
     defaults: { _controller: "SinettMLABBuilderBundle:Template:show" }
 
 template_new:
-    pattern:  /new
+    path:  /new
     defaults: { _controller: "SinettMLABBuilderBundle:Template:new" }
 
 template_create:
-    pattern:  /create
+    path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:Template:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 template_edit:
-    pattern:  /{id}/edit
+    path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:Template:edit" }
 
 template_update:
-    pattern:  /{id}/update
+    path:  /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:Template:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 template_delete:
-    pattern:  /{id}/delete
+    path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Template:delete" }
 
 template_toggle_state:
-    pattern:  /{id}/toggle_state
+    path:  /{id}/toggle_state
     defaults: { _controller: "SinettMLABBuilderBundle:Template:toggleState" }

@@ -1,34 +1,34 @@
 group:
-    pattern:  /
+    path:  /
     defaults: { _controller: "SinettMLABBuilderBundle:Group:index" }
 
 group_show:
-    pattern:  /{id}/show
+    path:  /{id}/show
     defaults: { _controller: "SinettMLABBuilderBundle:Group:show" }
 
 group_new:
-    pattern:  /new
+    path:  /new
     defaults: { _controller: "SinettMLABBuilderBundle:Group:new" }
 
 group_create:
-    pattern:  /create
+    path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:Group:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 group_edit:
-    pattern:  /{id}/edit
+    path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:Group:edit" }
 
 group_update:
-    pattern:  /{id}/update
+    path:  /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:Group:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 group_delete:
-    pattern:  /{id}/delete
+    path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Group:delete" }
-#    requirements: { _method: post|delete }
+#    requirements: { methods: post|delete }
 
 group_toggle_state:
-    pattern:  /{id}/toggle_state
+    path:  /{id}/toggle_state
     defaults: { _controller: "SinettMLABBuilderBundle:Group:toggleState" }

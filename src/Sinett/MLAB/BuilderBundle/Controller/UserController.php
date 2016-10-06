@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\User;
 use Sinett\MLAB\BuilderBundle\Form\UserType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * User controller.
@@ -83,14 +84,14 @@ class UserController extends Controller
     private function createCreateForm(User $entity)
     {
         $temp_roles = $this->getUser()->getRoles();
-        $form = $this->createForm(new UserType(), $entity, array(
+        $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
         	'current_user_role' => $temp_roles[0], 
             'attr' => array('autocomplete' => 'off'),
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.users.new.create.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.users.new.create.button'));
 
         return $form;
     }
@@ -176,13 +177,13 @@ class UserController extends Controller
     private function createEditForm(User $entity)
     {
         $temp_roles = $this->getUser()->getRoles();
-        $form = $this->createForm(new UserType(), $entity, array(
+        $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_update', array('id' => $entity->getId())),
             'method' => 'PUT',
             'current_user_role' => $temp_roles[0], 
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.users.edit.update.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.users.edit.update.button'));
 
         return $form;
     }

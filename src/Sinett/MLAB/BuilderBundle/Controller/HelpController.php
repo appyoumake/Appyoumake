@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Help;
 use Sinett\MLAB\BuilderBundle\Form\HelpType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Help controller.
@@ -75,13 +77,13 @@ class HelpController extends Controller
     */
     private function createCreateForm(Help $entity, $routes)
     {
-        $form = $this->createForm(new HelpType(), $entity, array(
+        $form = $this->createForm(HelpType::class, $entity, array(
             'action' => $this->generateUrl('help_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.system.admin.help.new.create.button'));
-        $form->add('route', 'choice', array(
+        $form->add('submit', SubmitType::class, array('label' => 'app.system.admin.help.new.create.button'));
+        $form->add('route', ChoiceType::class, array(
               'choices' => $routes
         ));
         return $form;
@@ -171,13 +173,13 @@ class HelpController extends Controller
     */
     private function createEditForm(Help $entity, $routes)
     {
-        $form = $this->createForm(new HelpType(), $entity, array(
+        $form = $this->createForm(HelpType::class, $entity, array(
             'action' => $this->generateUrl('help_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.system.admin.help.edit.update.button'));
-        $form->add('route', 'choice', array(
+        $form->add('submit', SubmitType::class, array('label' => 'app.system.admin.help.edit.update.button'));
+        $form->add('route', ChoiceType::class, array(
               'choices' => $routes
         ));
 

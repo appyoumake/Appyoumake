@@ -1517,32 +1517,38 @@ class FileManagement {
  * @param type $exclude_files
  */
     public function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
-        $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS | \RecursiveDirectoryIterator::SKIP_DOTS);
-        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
-        if ($wildcard == "") {
-            $wildcard = "*";
-        }
         $result = array();
+
+//bail if directory does not exist
+        if (file_exists($path)) {
         
-        foreach ($iterator as $file) {
-            if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
-                if ( fnmatch($wildcard, $file->getPathname()) ) {
-                    if ($exclude_files != "") {
-                        $exclude = false;
-                        foreach ($exclude_files as $exclude_file) {
-                            if (fnmatch($exclude_file, $file->getPathname()) || $exclude_file == $file->getBasename()) {
-                                $exclude = true;
-                                break;
+            $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS | \RecursiveDirectoryIterator::SKIP_DOTS);
+            $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+            if ($wildcard == "") {
+                $wildcard = "*";
+            }
+
+            foreach ($iterator as $file) {
+                if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
+                    if ( fnmatch($wildcard, $file->getPathname()) ) {
+                        if ($exclude_files != "") {
+                            $exclude = false;
+                            foreach ($exclude_files as $exclude_file) {
+                                if (fnmatch($exclude_file, $file->getPathname()) || $exclude_file == $file->getBasename()) {
+                                    $exclude = true;
+                                    break;
+                                }
                             }
-                        }
-                        if (!$exclude) {
+                            if (!$exclude) {
+                                $result[] = $file->getPathname();
+                            }
+                        } else {
                             $result[] = $file->getPathname();
                         }
-                    } else {
-                        $result[] = $file->getPathname();
                     }
                 }
             }
+            
         }
         
         return $result;

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Form\TemplateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Template controller.
@@ -93,12 +94,12 @@ class TemplateController extends Controller
     */
     private function createCreateForm(Template $entity)
     {
-        $form = $this->createForm(new TemplateType(), $entity, array(
+        $form = $this->createForm(TemplateType::class, $entity, array(
             'action' => $this->generateUrl('template_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.templates.new.create.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.templates.new.create.button'));
 
         return $form;
     }
@@ -172,12 +173,12 @@ class TemplateController extends Controller
     */
     private function createEditForm(Template $entity)
     {
-        $form = $this->createForm(new TemplateType(), $entity, array(
+        $form = $this->createForm(TemplateType::class, $entity, array(
             'action' => $this->generateUrl('template_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.templates.edit.groups.update.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.templates.edit.groups.update.button'));
 
         return $form;
     }

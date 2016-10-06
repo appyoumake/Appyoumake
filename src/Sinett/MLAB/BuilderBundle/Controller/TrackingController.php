@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Tracking;
 use Sinett\MLAB\BuilderBundle\Form\TrackingType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Tracking controller.
@@ -72,12 +73,12 @@ class TrackingController extends Controller
     */
     private function createCreateForm(Tracking $entity)
     {
-        $form = $this->createForm(new TrackingType(), $entity, array(
+        $form = $this->createForm(TrackingType::class, $entity, array(
             'action' => $this->generateUrl('tracking_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -151,12 +152,12 @@ class TrackingController extends Controller
     */
     private function createEditForm(Tracking $entity)
     {
-        $form = $this->createForm(new TrackingType(), $entity, array(
+        $form = $this->createForm(TrackingType::class, $entity, array(
             'action' => $this->generateUrl('tracking_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }

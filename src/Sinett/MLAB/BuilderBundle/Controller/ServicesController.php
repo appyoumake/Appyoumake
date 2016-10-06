@@ -22,6 +22,7 @@ use Sinett\MLAB\BuilderBundle\Entity\App;
 use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\EntityRepository;

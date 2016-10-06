@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Sinett\MLAB\BuilderBundle\Form\ComponentType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\EntityType;
 
 //also get list of apps, see indexAction
 use Sinett\MLAB\BuilderBundle\Entity\App;
@@ -109,12 +111,12 @@ class ComponentController extends Controller
     */
     private function createCreateForm(Component $entity)
     {
-        $form = $this->createForm(new ComponentType(), $entity, array(
+        $form = $this->createForm(ComponentType::class, $entity, array(
             'action' => $this->generateUrl('component_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.components.new.create.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.components.new.create.button'));
 
         return $form;
     }
@@ -188,12 +190,12 @@ class ComponentController extends Controller
     */
     private function createEditForm(Component $entity)
     {
-        $form = $this->createForm(new ComponentType(), $entity, array(
+        $form = $this->createForm(ComponentType::class, $entity, array(
             'action' => $this->generateUrl('component_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.components.edit.groups.update.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.components.edit.groups.update.button'));
 
         return $form;
     }

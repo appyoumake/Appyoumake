@@ -5,6 +5,10 @@ namespace Sinett\MLAB\BuilderBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class ComponentType extends AbstractType
 {
@@ -19,13 +23,13 @@ class ComponentType extends AbstractType
     	if ($action == "create") {
 	    	$builder->add('enabled', null, array('label' => 'app.admin.components.new.enabled'))
                     ->add('order_by', null, array('label' => 'app.admin.components.new.order_by'))
-	    			->add('groups', 'entity', array('class' => 'SinettMLABBuilderBundle:Group', 'multiple' => true, 'label' => 'app.admin.components.new.componentgroups'))
-                    ->add('zip_file', 'file', array('label' => 'app.admin.components.new.file'));
+	    			->add('groups', EntityType::class, array('class' => 'SinettMLABBuilderBundle:Group', 'multiple' => true, 'label' => 'app.admin.components.new.componentgroups'))
+                    ->add('zip_file', FileType::class, array('label' => 'app.admin.components.new.file'));
 	    } else {
 	    	//$builder->add('groups', null, array('label' => 'app.admin.components.new.groups'));
-            //$builder->add('groups', 'choice', array('multiple' => true, 'label' => 'app.admin.components.edit.groups.groups'));
-            $builder->add('componentgroups', 'entity', array('class' => 'SinettMLABBuilderBundle:ComponentGroup', 'multiple' => true, 'label' => 'app.admin.components.new.componentgroups'));
-	    	//->add('roles', 'choice', array('choices' => $role_choices, 'label' => 'app.admin.users.new.or.edit.roles'))
+            //$builder->add('groups', ChoiceType::class, array('multiple' => true, 'label' => 'app.admin.components.edit.groups.groups'));
+            $builder->add('componentgroups', EntityType::class, array('class' => 'SinettMLABBuilderBundle:ComponentGroup', 'multiple' => true, 'label' => 'app.admin.components.new.componentgroups'));
+	    	//->add('roles', ChoiceType::class, array('choices' => $role_choices, 'label' => 'app.admin.users.new.or.edit.roles'))
 	    }
         
 /*
@@ -53,7 +57,7 @@ class ComponentType extends AbstractType
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'Sinett\MLAB\BuilderBundle\Entity\Component'
@@ -63,7 +67,7 @@ class ComponentType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'sinett_mlab_builderbundle_component';
     }

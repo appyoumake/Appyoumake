@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Menu;
 use Sinett\MLAB\BuilderBundle\Form\MenuType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 // additional entities used to return data
 use Sinett\MLAB\BuilderBundle\Entity\App;
@@ -152,12 +153,12 @@ class MenuController extends Controller
     */
     private function createCreateForm(Menu $entity)
     {
-        $form = $this->createForm(new MenuType(), $entity, array(
+        $form = $this->createForm(MenuType::class, $entity, array(
             'action' => $this->generateUrl('menu_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -231,12 +232,12 @@ class MenuController extends Controller
     */
     private function createEditForm(Menu $entity)
     {
-        $form = $this->createForm(new MenuType(), $entity, array(
+        $form = $this->createForm(MenuType::class, $entity, array(
             'action' => $this->generateUrl('menu_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }

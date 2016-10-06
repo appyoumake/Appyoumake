@@ -87,7 +87,7 @@ services:
     security.authentication.customized_success_handler:
         class: %security.authentication.success_handler.class%
         public: false
-        arguments:  [@router, @security.authorization_checker, @service_container]
+        arguments:  ['@router', '@security.authorization_checker', '@service_container']
         
     sinett_mlab_builder.locale_listener:
         class: Sinett\MLAB\BuilderBundle\Listener\LocaleListener

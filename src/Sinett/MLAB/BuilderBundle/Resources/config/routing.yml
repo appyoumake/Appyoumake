@@ -1,5 +1,5 @@
 sinett_mlab_builder_homepage:
-    pattern:  /
+    path:  /
     defaults: { _controller: SinettMLABBuilderBundle:Default:index }
 
 SinettMLABBuilderBundle_app:
@@ -59,19 +59,19 @@ system:
     defaults: { _controller: SinettMLABBuilderBundle:Admin:system }
 
 index:
-    pattern: /index
+    path: /index
     defaults: { _controller: SinettMLABBuilderBundle:System:index }
 
 # compiler API related URLS (callbacks from API). These use "traditional" paremetr like ?x=y, so have no params specified here
 cb_cmp_created_app:
-    pattern: /callback/csAppCreated/
+    path: /callback/csAppCreated/
     defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCreatedApp }
     
 cb_cmp_verified_app:
-    pattern: /callback/csAppVerified/
+    path: /callback/csAppVerified/
     defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpVerifiedApp }
 
 cb_cmp_compiled_app:
-    pattern: /callback/csAppCompiled/
+    path: /callback/csAppCompiled/
     defaults: { _controller: SinettMLABBuilderBundle:Services:cbCmpCompiledApp }
     

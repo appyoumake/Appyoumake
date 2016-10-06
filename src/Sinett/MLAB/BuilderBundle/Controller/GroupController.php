@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Group;
 use Sinett\MLAB\BuilderBundle\Form\GroupType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Group controller.
@@ -79,12 +80,12 @@ class GroupController extends Controller
     */
     private function createCreateForm(Group $entity)
     {
-        $form = $this->createForm(new GroupType(), $entity, array(
+        $form = $this->createForm(GroupType::class, $entity, array(
             'action' => $this->generateUrl('group_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.groups.new.create.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.groups.new.create.button'));
 
         return $form;
     }
@@ -158,12 +159,12 @@ class GroupController extends Controller
     */
     private function createEditForm(Group $entity)
     {
-        $form = $this->createForm(new GroupType(), $entity, array(
+        $form = $this->createForm(GroupType::class, $entity, array(
             'action' => $this->generateUrl('group_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.groups.edit.update.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.groups.edit.update.button'));
 
         return $form;
     }
