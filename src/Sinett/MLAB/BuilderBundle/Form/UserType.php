@@ -30,7 +30,7 @@ class UserType extends AbstractType
 /*    		->add('categoryOne', 
                     null, 
                     array('query_builder' => function(EntityRepository $er) {
-                              return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
+                              return $er->createQueryBuilder('c')->where('c.lvl = 0')->addOrderBy('c.name');
                         },'label' => 'app.admin.users.new.or.edit.categoryOne',
                           'attr' => array('onchange' => 'loadCategories(this, 1);'))
                  )

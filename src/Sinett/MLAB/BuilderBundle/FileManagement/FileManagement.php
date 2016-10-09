@@ -365,7 +365,7 @@ class FileManagement {
                         file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "plugins" => $new_plugins)));
                     } else {
                         $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-                        if (key_exists("plugins", $tmp_existing_config)) {
+                        if (array_key_exists("plugins", $tmp_existing_config)) {
                             $tmp_existing_config["plugins"] = array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]));
                         } else {
                             $tmp_existing_config["plugins"] = $new_plugins;
@@ -488,7 +488,7 @@ class FileManagement {
             if (file_exists($template_path . "conf.yml")) {
                 $yaml = new Parser();
                 $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
-                if (key_exists("plugins", $temp)) {
+                if (array_key_exists("plugins", $temp)) {
                     $app_conf["plugins"] = array_merge($app_conf["plugins"], $temp["plugins"]);
                 }
             }
@@ -531,7 +531,7 @@ class FileManagement {
         $path_app_config = $path_app . $config['filenames']["app_config"];
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-            if (key_exists($key, $tmp_existing_config)) {
+            if (array_key_exists($key, $tmp_existing_config)) {
                 return $tmp_existing_config[$key];
             } 
         }
@@ -1071,7 +1071,7 @@ class FileManagement {
 // check to see if this has already been processed, if so just return
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-            if (key_exists("processed_checksum", $tmp_existing_config)) {
+            if (array_key_exists("processed_checksum", $tmp_existing_config)) {
                 if ($tmp_existing_config["processed_checksum"] == $app_checksum) {
                     return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
                 }
@@ -1434,7 +1434,7 @@ class FileManagement {
  * parse_url to find port, if no port, look at scheme, http = port 80, https = port 443
  */
         $parts = parse_url($infile);
-        if (!key_exists('port', $parts)) {
+        if (!array_key_exists('port', $parts)) {
             $parts['port'] = ($parts['scheme'] == "https" ? 443: 80);
         }
         
@@ -1563,8 +1563,10 @@ class FileManagement {
  */
     public function func_sed($files, $search, $replace) {
         foreach ($files as $file) {
-            $content = file_get_contents($file);
-            file_put_contents( $file, str_replace($search, $replace, $content) );
+            if (file_exists($file)) {
+                $content = file_get_contents($file);
+                file_put_contents( $file, str_replace($search, $replace, $content) );
+            }
         }
     }
     

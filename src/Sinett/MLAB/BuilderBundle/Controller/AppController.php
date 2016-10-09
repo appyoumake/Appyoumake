@@ -361,41 +361,41 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                         ->add('importFile', FileType::class, array('required' => false))
                         ->add('iconFile', HiddenType::class, array('required' => false))
                         ->add('uid', HiddenType::class, array('required' => false))
-                        ->add('copyApp', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
+                        ->add('copyApp', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:App', 'placeholder' => '', 'required' => true))
 				    	->add('keywords', null, array('required' => true))
                         ->add('categoryOne', 
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
+                                          return $er->createQueryBuilder('c')->where('c.lvl = 0')->addOrderBy('c.name');
                                       },
                                       'label' => 'app.admin.users.new.or.edit.categoryOne',
                                       'attr' => array('onchange' => 'loadCategories(this, 1);'),
                                       'required' => true,
                                       'empty_data'  => null,
-                                      'empty_value'  => '')
+                                      'placeholder'  => '')
                              )
                         ->add('categoryTwo', 
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 1')->addOrderBy('c.name');
+                                          return $er->createQueryBuilder('c')->where('c.lvl = 1')->addOrderBy('c.name');
                                       },
                                       'label' => 'app.admin.users.new.or.edit.categoryTwo',
                                       'attr' => array('onchange' => 'loadCategories(this, 2);'),
                                       'required' => true,
                                       'empty_data'  => null,
-                                      'empty_value'  => '')
+                                      'placeholder'  => '')
                              )
                         ->add('categoryThree', 
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 2')->addOrderBy('c.name');
+                                          return $er->createQueryBuilder('c')->where('c.lvl = 2')->addOrderBy('c.name');
                                       },
                                       'label' => 'app.admin.users.new.or.edit.categoryThree',
                                       'required' => true,
                                       'empty_data' => null,
-                                      'empty_value'  => '')
+                                      'placeholder'  => '')
                              )                
-				    	->add('template', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
+				    	->add('template', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:Template', 'placeholder' => '', 'required' => true))
 				    	->add('active_version')
 				    	->add("copy_app", HiddenType::class, array("mapped" => false))
 				    	->add('save', SubmitType::class)

@@ -17,8 +17,27 @@ $files = array(
     "web/js/jquery.ui-1.11.4.js" => "https://jqueryui.com/resources/download/jquery-ui-1.11.4.zip", 
     "web/css/jquery-ui.css" => "https://jqueryui.com/resources/download/jquery-ui-1.11.4.zip",
     "web/js/jquery.uploadfile-1.9.0.js" => "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/js/jquery.uploadfile.min.js", 
-    "web/js/jquery.uploadfile.css" => "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/css/uploadfile.css"
+    "web/css/jquery.uploadfile.css" => "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/css/uploadfile.css"
 );
+
+//set start folder = root
+
+if (chdir(__DIR__)) {
+    foreach ($files as $destination => $source) {
+        if (substr($source, -3) == "zip") {
+            if (!copy($source, ".")) {
+                break;
+            } else {
+                
+            }
+            
+        } else {
+            if (!copy($source, $destination)) {
+                break;
+            }
+        }
+    }
+}
 
 
 /* NOT REMOVED
