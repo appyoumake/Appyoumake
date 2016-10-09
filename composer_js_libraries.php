@@ -25,10 +25,18 @@ $files = array(
 if (chdir(__DIR__)) {
     foreach ($files as $destination => $source) {
         if (substr($source, -3) == "zip") {
-            if (!copy($source, ".")) {
+            if (!copy($source, "./" . basename($source))) {
                 break;
             } else {
-                
+                $zip = new ZipArchive;
+                if ($zip->open("./" . basename($source)) === true) {
+                    for($i = 0; $i < $zip->numFiles; $i++) {
+                        $filename = $zip->getNameIndex($i);
+                        $fileinfo = pathinfo($filename);
+                        copy("zip://".$path."#".$filename, $destination . $fileinfo['basename']);
+                    }                   
+                    $zip->close();                   
+                }                
             }
             
         } else {
