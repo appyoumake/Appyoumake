@@ -1,3 +1,34 @@
+<html>
+    <head>
+        
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>PHP Version</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+                
+            </tbody>
+        </table>
+    </body>
+</html>
 <?php
 
 /*
