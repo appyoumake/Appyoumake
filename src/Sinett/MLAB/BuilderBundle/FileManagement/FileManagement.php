@@ -166,6 +166,21 @@ class FileManagement {
                             $entity->setDescription($temp["tooltip"]);
                         }
                     }
+
+                    if (isset($temp["name"])) {
+                        if (is_array($temp["name"])) {
+                            if (isset($temp["name"][$this->locale])) {
+                                $entity->setName($temp["name"][$this->locale]);
+                            }
+                        } else {
+                            $entity->setName($temp["name"]);
+                        }
+
+//fallback, if no name specified in conf.yml we use thename of zip file
+                    } else {
+                        $entity->setName($object_name);
+                    }
+                    
                     if (isset($temp["compatible_with"])) {
                         $entity->setCompatibleWith($temp["compatible_with"]);
                     } 
@@ -194,7 +209,6 @@ class FileManagement {
                 }
 				
 				$entity->setPath($dir_name);
-				$entity->setName($object_name);
 		   
 // clean up the file property, not persisted to DB
 				$entity->setZipFile(null);
@@ -1575,8 +1589,8 @@ class FileManagement {
             return false;
         }
 
-        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+        $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
         foreach($files as $file) {
             if ($file->isDir()){
                 rmdir($file->getRealPath());

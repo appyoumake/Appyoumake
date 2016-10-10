@@ -63,10 +63,12 @@ Xdebug
 Zend OPcache
 
  *      Composer is installed (http://stackoverflow.com/questions/17219436/run-composer-with-a-php-script-in-browser)
- *      if relevant libraries are installed
+ *      if relevant vendor / javascript libraries are installed
  *      parameter.yml is right
  *      if MySQL DB is created and accessible
  *      regenerate /app/bootstrap.php.cache
+ *      ask for a salt
+ *      offer to install icons, components and templates, they should be a zip file of directories to make it easy to do many.
  *      Check owner of files & app/cache & app/logs (should be same as current owner of php process)
  * 
  * For each check it will offer to fix it.
