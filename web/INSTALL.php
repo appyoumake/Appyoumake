@@ -3,11 +3,9 @@
 /*
  * This installer script will check if:
  *      Has Internet connection
+ *      Must allow the use of URLs for downloading files using copy
  *      That date.timezone is set
  *      if relevant PHP extensions are loaded: 
-bcmath
-bz2
-calendar
 cgi-fcgi
 Core
 ctype
@@ -45,25 +43,18 @@ soap
 sockets
 SPL
 standard
-sysvmsg
-sysvsem
-sysvshm
 tokenizer
 wddx
-xdebug
 xml
 xmlreader
 xmlwriter
-Zend OPcache
 zip
 zlib
 
-[Zend Modules]
-Xdebug
-Zend OPcache
 
  *      Composer is installed (http://stackoverflow.com/questions/17219436/run-composer-with-a-php-script-in-browser)
  *      if relevant vendor / javascript libraries are installed
+ *          Must figure out where put list of javascript libraries... can I use a fake entry in composer?
  *      parameter.yml is right
  *      if MySQL DB is created and accessible
  *      regenerate /app/bootstrap.php.cache
@@ -74,3 +65,4 @@ Zend OPcache
  * For each check it will offer to fix it.
  */
 
+//Separate libraries and mlab js/css files so can exclude a dir from git 

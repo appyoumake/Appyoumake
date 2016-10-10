@@ -5,9 +5,9 @@
  *
  * Example:
     var opts = {
-      lines: 12             // The number of lines to draw
-    , length: 7             // The length of each line
-    , width: 5              // The line thickness
+      lines: 12,            // The number of lines to draw
+    , length: 7,            // The length of each line
+    , width: 5,             // The line thickness
     , radius: 10            // The radius of the inner circle
     , scale: 1.0            // Scales overall size of the spinner
     , corners: 1            // Roundness (0..1)
@@ -32,7 +32,7 @@
 ;(function (root, factory) {
 
   /* CommonJS */
-  if (typeof module == 'object' && module.exports) module.exports = factory()
+  if (typeof exports == 'object') module.exports = factory()
 
   /* AMD module */
   else if (typeof define == 'function' && define.amd) define(factory)
@@ -148,27 +148,26 @@
   // Built-in defaults
 
   var defaults = {
-    lines: 9             // The number of lines to draw
-  , length: 0             // The length of each line
-  , width: 21              // The line thickness
-  , radius: 38            // The radius of the inner circle
-  , scale: 1            // Scales overall size of the spinner
-  , corners: 0.8            // Roundness (0..1)
+    lines: 12             // The number of lines to draw
+  , length: 7             // The length of each line
+  , width: 5              // The line thickness
+  , radius: 10            // The radius of the inner circle
+  , scale: 1.0            // Scales overall size of the spinner
+  , corners: 1            // Roundness (0..1)
   , color: '#000'         // #rgb or #rrggbb
-  , opacity: 0.2          // Opacity of the lines
+  , opacity: 1/4          // Opacity of the lines
   , rotate: 0             // Rotation offset
   , direction: 1          // 1: clockwise, -1: counterclockwise
   , speed: 1              // Rounds per second
-  , trail: 76            // Afterglow percentage
+  , trail: 100            // Afterglow percentage
   , fps: 20               // Frames per second when using setTimeout()
   , zIndex: 2e9           // Use a high z-index by default
   , className: 'spinner'  // CSS class to assign to the element
-  , top: '94%'            // center vertically
-  , left: '52%'           // center horizontally
+  , top: '50%'            // center vertically
+  , left: '50%'           // center horizontally
   , shadow: false         // Whether to render a shadow
   , hwaccel: false        // Whether to use hardware acceleration (might be buggy)
   , position: 'absolute'  // Element positioning
-  , cursor: 'wait'        // Cursor state
   }
 
   /** The constructor */
@@ -198,7 +197,6 @@
       , zIndex: o.zIndex
       , left: o.left
       , top: o.top
-      , cursor: o.cursor
       })
 
       if (target) {
@@ -375,87 +373,5 @@
   }
 
   return Spinner
-
-}));
-
-
-/**
- * Copyright (c) 2011-2014 Felix Gnass
- * Licensed under the MIT license
- * http://spin.js.org/
- */
-
-/*
-
-Basic Usage:
-============
-
-$('#el').spin() // Creates a default Spinner using the text color of #el.
-$('#el').spin({ ... }) // Creates a Spinner using the provided options.
-
-$('#el').spin(false) // Stops and removes the spinner.
-
-Using Presets:
-==============
-
-$('#el').spin('small') // Creates a 'small' Spinner using the text color of #el.
-$('#el').spin('large', '#fff') // Creates a 'large' white Spinner.
-
-Adding a custom preset:
-=======================
-
-$.fn.spin.presets.flower = {
-  lines:   9
-, length: 10
-, width:  20
-, radius:  0
-}
-
-$('#el').spin('flower', 'red')
-
-*/
-
-;(function(factory) {
-
-  if (typeof exports == 'object') {
-    // CommonJS
-    factory(require('jquery'), require('spin.js'))
-  } else if (typeof define == 'function' && define.amd) {
-    // AMD, register as anonymous module
-    define(['jquery', 'spin'], factory)
-  } else {
-    // Browser globals
-    if (!window.Spinner) throw new Error('Spin.js not present')
-    factory(window.jQuery, window.Spinner)
-  }
-
-}
-    (function($, Spinner) {
-
-      $.fn.spin = function(opts, color) {
-
-        return this.each(function() {
-          var $this = $(this)
-            , data = $this.data()
-
-          if (data.spinner) {
-            data.spinner.stop()
-            delete data.spinner
-          }
-          if (opts !== false) {
-            opts = $.extend(
-              { color: color || $this.css('color') }
-            , $.fn.spin.presets[opts] || opts
-            )
-            data.spinner = new Spinner(opts).spin(this)
-          }
-        })
-      }
-
-      $.fn.spin.presets = {
-        tiny:  { lines:  8, length: 1, width: 2, radius: 3 }
-      , small: { lines:  7, length: 1, width: 5, radius: 5 }
-      , large: { lines: 10, length: 1, width: 4, radius: 8 }
-      }
 
 }));
