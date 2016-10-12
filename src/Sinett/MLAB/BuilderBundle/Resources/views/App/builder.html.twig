@@ -1,35 +1,12 @@
 {% extends '::base.html.twig' %}
 {% block title %}{% trans %}mlab.page.title.app.bulider.index{% endtrans %}{% endblock %}
-{% block body -%}
-
-    <h1>{% trans %}app.builder.list.main.heading{% endtrans %}</h1>
-	<p class="builder_welcome">{% trans %}app.builder.list.welcome.info{% endtrans %}</p>
-	<p><a class="mlab_button_new_app" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a></p>
-    <table class="records_list app_list" id="table_app">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
-                <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
-                <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
-                <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
-            </tr>
-        </thead>
-        <tbody>
-	        {% for app in apps %}
-		        {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
-	        {% endfor %}
-        </tbody>
-    </table>
-    <div id="builder_dialog_new_app"></div>
-{% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
-	<script src="{{ asset('/js/jquery.ddslick-1.0.0.js') }}"></script>
-    <script src="{{ asset('/js/jquery.contextmenu.js') }}"></script>
-    <link href="{{ asset("/css/jquery.contextmenu.css") }}" rel="stylesheet" />
-
+    {% javascripts '@applist_mlab_js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+        
     <script>
 		var url_new = "{{ path('app_new') }}";
 		var url_edit = "{{ path('app_edit', {id: 0} ) }}";
@@ -219,4 +196,28 @@
         }
         
 	</script>
+{% endblock %}
+
+
+{% block body -%}
+    <h1>{% trans %}app.builder.list.main.heading{% endtrans %}</h1>
+	<p class="builder_welcome">{% trans %}app.builder.list.welcome.info{% endtrans %}</p>
+	<p><a class="mlab_button_new_app" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a></p>
+    <table class="records_list app_list" id="table_app">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
+                <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
+                <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
+            </tr>
+        </thead>
+        <tbody>
+	        {% for app in apps %}
+		        {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
+	        {% endfor %}
+        </tbody>
+    </table>
+    <div id="builder_dialog_new_app"></div>
 {% endblock %}

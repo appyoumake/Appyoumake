@@ -22,6 +22,9 @@ $checks = array(
     "version_php" => array("fixable" => false, "check" => array("min" => 50400, "max" => 60000), "label" => "PHP version 5.4 or higher is required"),
     "version_composer" => array("check" => 1.3, "label" => "PHP version 5.4 or higher is required"),
 );
+
+///usr/bin/uglifyjs !!!!!!!!!!!!!!!!****************
+
 /*    "version_mysql" => array("check" => " >= 5.6 ", "label" => "MySQL version 5.5 or higher is required"),
     "url_allowed_php_ini" => array("label" => "The PHP URL functonality must be enabled"),
     "timezone_php_ini" => array("label" => "The timezone must be set"),

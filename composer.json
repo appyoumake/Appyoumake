@@ -57,8 +57,8 @@
         "mlab_specific": {
             "js_libraries": {
                 "web/js/bowser.js": "https://raw.githubusercontent.com/ded/bowser/v0.7.3/bowser.js", 
-                "web/js/jquery.contextMenu.js": "https://raw.githubusercontent.com/joewalnes/jquery-simple-context-menu/master/jquery.contextmenu.js", 
-                "web/css/jquery.contextMenu.css": "https://raw.githubusercontent.com/joewalnes/jquery-simple-context-menu/master/jquery.contextmenu.css", 
+                "web/js/jquery.contextmenu.js": "https://raw.githubusercontent.com/joewalnes/jquery-simple-context-menu/master/jquery.contextmenu.js", 
+                "web/css/jquery.contextmenu.css": "https://raw.githubusercontent.com/joewalnes/jquery-simple-context-menu/master/jquery.contextmenu.css", 
                 "web/js/jquery-2.1.4.js": "https://code.jquery.com/jquery-2.1.4.min.js", 
                 "web/js/jquery.ddslick-1.0.0.js": "https://raw.githubusercontent.com/prashantchaudhary/ddslick/master/jquery.ddslick.js", 
                 "web/js/jquery.mobile-1.4.5.js": "http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js", 

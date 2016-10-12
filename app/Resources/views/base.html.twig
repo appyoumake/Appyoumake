@@ -7,9 +7,92 @@
             <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/jquery.contextmenu.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/mlab_menu.css") }}" rel="stylesheet" />
-            <link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />
+            <link href="{{ asset("/css/mlab_all.css") }}" rel="stylesheet" />        
         {% endblock %}
+                
+        {% block javascripts %}
+            {% javascripts '@common_jquery_js' %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+
+                    //Checkes if the editor menu icon is cliked
+                    $("#mlab_editor_menu_dropdown").on("click",function(event) {   
+                          if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
+                              //User menu is open and needs to be closed 
+                              $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                              $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                          } 
+                          //Toggles the Editor menu on and off
+                          $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                          $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                          event.stopPropagation(); 
+                     });
+
+                    //Checkes if the user menu icon is cliked
+                    $("#mlab_user_menu_dropdown").on("click",function(event) { 
+                        if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
+                              //Editor menu is open and needs to be closed 
+                              $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                              $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                          } 
+                         //Toggles the User menu on and off
+                          $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                          $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                          event.stopPropagation(); 
+                     });
+
+                    //Listens for any click
+                     $(document).on('click', function (event) {
+                          // Checks if editor menu is open
+                          if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
+                              //Editor menu is open - close it
+                              $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
+                              $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
+                          } 
+                          // Checks if user menu is open
+                          if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
+                              //User menu is open - close it
+                              $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
+                              $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
+                          } 
+
+                     });  
+               });
+
+               function page_help(event) {
+                   var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
+                   var title = "Help";
+                   var owner = event.currentTarget;
+                   var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
+                   $.getJSON(url, function(data) {
+                       if (data.result == "SUCCESS") {
+                            $(owner).qtip({
+                                solo: false,
+                                content:    {
+                                            text: data.html,
+                                            title: title,
+                                            button: true
+                                            },
+                                position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                                show:       { ready: true, modal: { on: true, blur: false } },
+                                hide:       false,
+                                style:      { classes: qTipClasses },
+                                events:     {   hide: function(event, api) { api.destroy(); } }
+                            });
+                       } else {
+                           alert("{% trans %}app.mlab.menu.help.notfound{% endtrans %}");
+                       }
+
+                   });
+               }
+            </script>
+
+        {% endblock %}  
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
     </head>
     
@@ -103,88 +186,6 @@
                 <div class="container">
                     {% block body %}{% endblock %}
                 </div>
-                {% block javascripts %}
-                    <script src="{{ asset('/js/jquery-2.1.4.js') }}"></script>
-                    <script src="{{ asset('/js/jquery-ui.js') }}"></script>
-                    <script src="{{ asset('/js/jquery.uploadfile-1.9.0.js') }}"></script>
-                    <script src="{{ asset('/js/jquery.qtip-2.2.0.js') }}"></script>
-                    
-                     <script type="text/javascript">
-                        $(document).ready(function() {
-
-                            //Checkes if the editor menu icon is cliked
-                            $("#mlab_editor_menu_dropdown").on("click",function(event) {   
-                                  if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
-                                      //User menu is open and needs to be closed 
-                                      $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
-                                      $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
-                                  } 
-                                  //Toggles the Editor menu on and off
-                                  $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
-                                  $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
-                                  event.stopPropagation(); 
-                             });
-
-                            //Checkes if the user menu icon is cliked
-                            $("#mlab_user_menu_dropdown").on("click",function(event) { 
-                                if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
-                                      //Editor menu is open and needs to be closed 
-                                      $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
-                                      $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
-                                  } 
-                                 //Toggles the User menu on and off
-                                  $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
-                                  $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
-                                  event.stopPropagation(); 
-                             });
-
-                            //Listens for any click
-                             $(document).on('click', function (event) {
-                                  // Checks if editor menu is open
-                                  if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
-                                      //Editor menu is open - close it
-                                      $('#mlab_editor_menu_dropdown_content').toggleClass('mlab_show_editor_dropdown'); 
-                                      $('#mlab_editor_menu_dropdown').toggleClass('mlab_show_editor_dropdown_tab_selected'); 
-                                  } 
-                                  // Checks if user menu is open
-                                  if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
-                                      //User menu is open - close it
-                                      $('#mlab_user_menu_dropdown_content').toggleClass('mlab_show_user_dropdown'); 
-                                      $('#mlab_user_menu_dropdown').toggleClass('mlab_show_user_dropdown_tab_selected'); 
-                                  } 
-
-                             });  
-                       });
-
-                       function page_help(event) {
-                           var qTipClasses = 'qtip-light mlab_dt_box_style mlab_zindex_top_tooltip mlab_page_help_qTip mlab_dt_wide_qtip_box';
-                           var title = "Help";
-                           var owner = event.currentTarget;
-                           var url = "{{ path('help_getHtml', {route: app.request.attributes.get('_route')}) }}";
-                           $.getJSON(url, function(data) {
-                               if (data.result == "SUCCESS") {
-                                    $(owner).qtip({
-                                        solo: false,
-                                        content:    {
-                                                    text: data.html,
-                                                    title: title,
-                                                    button: true
-                                                    },
-                                        position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
-                                        show:       { ready: true, modal: { on: true, blur: false } },
-                                        hide:       false,
-                                        style:      { classes: qTipClasses },
-                                        events:     {   hide: function(event, api) { api.destroy(); } }
-                                    });
-                               } else {
-                                   alert("{% trans %}app.mlab.menu.help.notfound{% endtrans %}");
-                               }
-                               
-                           });
-                       }
-                    </script>
-                      
-                {% endblock %}  
             </div>    
         </div>
       
