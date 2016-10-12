@@ -64,6 +64,8 @@ class AppController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
     	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
+        print_r($this->container->getParameter('mlab')) ;
+        die();
         return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
                 'app_url' => $this->container->getParameter('mlab')["urls"]["app"],
