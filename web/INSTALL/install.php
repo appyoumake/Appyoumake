@@ -28,6 +28,7 @@ INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `pas
  *      ask for a salt, goes into security.yml
  *      offer to install icons, components and templates, they should be a zip file of directories to make it easy to do many.
  *      Check owner of files & app/cache & app/logs (should be same as current owner of php process)
+ *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
  */
 print getcwd();
 chdir("../");
@@ -35,7 +36,8 @@ chdir("../");
 $checks = array(
     "internet_present" => array("fixable" => false, "label" => "Mlab can be run without Internet connection, but during installation an Internet connection is required"),
     "version_php" => array("fixable" => false, "check" => array("min" => 50400, "max" => 60000), "label" => "PHP version 5.4 or higher is required"),
-    "version_composer" => array("check" => 1.3, "label" => "PHP version 5.4 or higher is required"),
+    "version_composer" => array("check" => 1.3, "label" => "Composer version 1.3 or higher is required"),
+    "version_uglifyjs"  => array("check" => 2.4, "label" => "UglifyJS version 2.4 or higher is required"),
 );
 
 ///usr/bin/uglifyjs !!!!!!!!!!!!!!!!****************
@@ -43,7 +45,7 @@ $checks = array(
 /*    "version_mysql" => array("check" => " >= 5.6 ", "label" => "MySQL version 5.5 or higher is required"),
     "url_allowed_php_ini" => array("label" => "The PHP URL functonality must be enabled"),
     "timezone_php_ini" => array("label" => "The timezone must be set"),
-"libraries_php" => array("check" => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,phar,readline,session,simplexml,soap,sockets,wdx,zip", "label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
+"libraries_php" => array("check" => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,wdx,zip", "label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
 "libraries_symfony" => array("label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
 "libraries_js" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
 "bootstrap_symfony" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
