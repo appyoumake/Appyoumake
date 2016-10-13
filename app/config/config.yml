@@ -38,12 +38,15 @@ twig:
 # Assetic Configuration
 assetic:
     debug:          %kernel.debug%
-    use_controller: %kernel.debug%
+    use_controller: true
     bundles: [ SinettMLABBuilderBundle ]
     filters:
         cssrewrite: ~
         uglifyjs2:
             bin: /usr/bin/uglifyjs
+            mangle: true
+            compress: true
+            
     assets:
         common_jquery_js:
             inputs:
@@ -51,6 +54,7 @@ assetic:
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery-ui.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.uploadfile-1.9.0.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.qtip-2.2.0.js'
+                - '@SinettMLABBuilderBundle/Resources/public/js/bowser.js'
                 
         applist_mlab_js:
             inputs:
@@ -62,8 +66,8 @@ assetic:
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.mobile-1.4.5.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.ddslick-1.0.0.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.qrcode-0.12.0.js'
+                - '@SinettMLABBuilderBundle/Resources/public/js/spin.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.spin.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/bowser.js'
         
         editor_mlab_js:
             inputs:

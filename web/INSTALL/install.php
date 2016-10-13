@@ -1,5 +1,20 @@
 <html>
 <?php
+
+//CREATE USER/GROUP
+/*
+INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`) VALUES
+(1, 'Generell', 'Generell gruppe for app tilgang', 1, 1, 'a:0:{}'),
+
+INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES
+(1, 1),
+INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES
+(3, 1),
+INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES
+(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 16:11:32', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2016-10-10 16:11:32', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, 'en_GB'),
+
+
+*/
 //Have two "things "pages", one for installed items, one for parameter.yml settings
 
 /*
@@ -14,7 +29,7 @@
  *      offer to install icons, components and templates, they should be a zip file of directories to make it easy to do many.
  *      Check owner of files & app/cache & app/logs (should be same as current owner of php process)
  */
-
+print getcwd();
 chdir("../");
 
 $checks = array(
