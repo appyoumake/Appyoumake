@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `category` (
   KEY `IDX_64C19C1727ACA70` (`parent_id`),
   KEY `name_index` (`name`),
   KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=37 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Table structure for table `component`
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `component` (
   PRIMARY KEY (`id`),
   KEY `name_index` (`name`),
   KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Dumping data for table `component`
@@ -132,10 +132,7 @@ INSERT INTO `component` (`id`, `name`, `description`, `path`, `enabled`, `versio
 (11, 'Google Maps', 'Google Maps', 'googlemap', 1, 1, 10),
 (12, 'Image and text', 'Use this to add a paragraph with an image in it', 'img_text', 1, 1, 7),
 (13, 'mysql_basic', 'mysql_basic', 'mysql_basic', 1, 1, 0),
-(14, 'quiz', 'quiz', 'quiz', 1, 1, 11),
-
-
--- --------------------------------------------------------
+(14, 'quiz', 'quiz', 'quiz', 1, 1, 11);
 
 --
 -- Table structure for table `components_groups`
@@ -149,8 +146,7 @@ CREATE TABLE IF NOT EXISTS `components_groups` (
   PRIMARY KEY (`id`),
   KEY `component_index` (`component_id`),
   KEY `group_index` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Table structure for table `grp`
@@ -168,8 +164,10 @@ CREATE TABLE IF NOT EXISTS `grp` (
   KEY `name_index` (`name`),
   KEY `is_default_index` (`is_default`),
   KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
+INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`) VALUES
+(1, 'General', 'Start group', 1, 1, 'a:0:{}');
 
 --
 -- Table structure for table `help`
@@ -181,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `help` (
   `message` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `route_index` (`route`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Dumping data for table `help`
@@ -217,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   KEY `order_by_index` (`order_by`),
   KEY `filter_role_index` (`filter_role`),
   KEY `filter_url_index` (`filter_url`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=32 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Dumping data for table `menu`
@@ -265,7 +263,7 @@ CREATE TABLE IF NOT EXISTS `template` (
   KEY `name_index` (`name`),
   KEY `compatible_with_index` (`compatible_with`),
   KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Dumping data for table `template`
@@ -274,6 +272,25 @@ CREATE TABLE IF NOT EXISTS `template` (
 INSERT INTO `template` (`id`, `name`, `description`, `compatible_with`, `path`, `enabled`, `version`) VALUES
 (1, 'Generic template', 'This is a basic, generic template to showcase key Mlab template features', NULL, 'generic', 1, NULL);
 
+
+--
+-- Table structure for table `templates_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `templates_groups` (
+  `template_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (`template_id`,`group_id`),
+  KEY `IDX_F43FD2D35DA0FB8` (`template_id`),
+  KEY `IDX_F43FD2D3FE54D947` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `templates_groups`
+--
+
+INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -295,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `tracking` (
   UNIQUE KEY `UNIQ_A87C621C7987212D` (`app_id`),
   KEY `created_index` (`created`),
   KEY `action_index` (`action`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -353,7 +370,10 @@ CREATE TABLE IF NOT EXISTS `usr` (
   KEY `IDX_1762498C9BAE1BDD` (`category_1`),
   KEY `IDX_1762498C2A74A67` (`category_2`),
   KEY `IDX_1762498C75A07AF1` (`category_3`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+
+INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES
+(1, NULL, NULL, NULL, 'admin@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-13 00:17:26', 'admin', 'admin', 'admin@ffi.no', 1, '2016-10-13 00:17:26', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL, 'en_GB');
 
 --
 -- Constraints for dumped tables
