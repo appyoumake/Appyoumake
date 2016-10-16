@@ -4,6 +4,7 @@
  * This installer script will first check prerequisites, errors here has to be changed by server admin
  *      Has Internet connection
  *      Has correct PHP version
+ *      Has correct uglify version
  *      Has correct MySQL version
  *      Has correct NodeJS version
  *      PHP.ini must have allow_url_fopen=On
@@ -50,28 +51,28 @@ INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `pas
 
 */
 //Have two "things "pages", one for installed items, one for parameter.yml settings
+error_reporting(E_ALL);
 
-print getcwd();
 chdir("../../");
 
 $checks = array(
     "internet_present" => array("fixable" => false, "label" => "Mlab can be run without Internet connection, but during installation an Internet connection is required"),
     "version_php" => array("fixable" => false, "check" => array("min" => 50400, "max" => 60000), "label" => "PHP version 5.4 or higher is required"),
-    "version_composer" => array("check" => 1.3, "label" => "Composer version 1.3 or higher is required"),
-    "version_uglifyjs"  => array("check" => 2.4, "label" => "UglifyJS version 2.4 or higher is required"),
-);
-
-///usr/bin/uglifyjs !!!!!!!!!!!!!!!!****************
-
-/*    "version_mysql" => array("check" => " >= 5.6 ", "label" => "MySQL version 5.5 or higher is required"),
+    "version_composer" => array("check" => "1.3", "label" => "Composer version 1.3 or higher is required"),
+    "version_uglifyjs"  => array("check" => "2.4", "label" => "UglifyJS version 2.4 or higher is required"),
+    "version_mysql" => array("check" => "5.6 ", "label" => "MySQL version 5.5 or higher is required"),
     "url_allowed_php_ini" => array("label" => "The PHP URL functonality must be enabled"),
     "timezone_php_ini" => array("label" => "The timezone must be set"),
-"libraries_php" => array("check" => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,wdx,zip", "label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
-"libraries_symfony" => array("label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
-"libraries_js" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
-"bootstrap_symfony" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
+    "libraries_php" => array("check" => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,wdx,zip", "label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
+    "libraries_symfony" => array("label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
+    "libraries_js" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
+    "bootstrap_symfony" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
 );
-*/
+
+require_once "spyc.php";
+$params = Spyc::YAMLLoad('app/config/installation_parameters.yml');
+
+//$params = yaml_parse_file("app/config/testparameters.yml", -1);
 
 function internet_present() {
     $conn = @fsockopen("www.google.com", 80); 
@@ -110,12 +111,10 @@ function version_composer() {
             return "Unable to install composer";
         }
     }
-    system('bin/composer.phar -V 2>&1');
-    //$info = explode(" ", shell_exec("bin/composer.phar -V"));
-    die(print_r(get_current_user(), true));
+    $info = explode(" ", shell_exec("bin/composer.phar -V"));
     foreach ($info as $value) {
         if (floatval($value)) {
-            if (floatval($value) >= $checks["version_composer"]["check"]) {
+            if (version_compare($value, $checks["version_composer"]["check"], ">=")) {
                 return true;
             } else {
                 return $checks["version_composer"]["check"];
@@ -125,6 +124,19 @@ function version_composer() {
     
     return "Unable to determine if composer is installed and the right version";
 }
+
+function version_uglify() {
+    global $checks;
+    
+    $info = explode(" ", shell_exec("uglifyjs --version"));
+    
+    if (version_compare($info[0], $checks["version_uglifyjs"]["check"], ">=")) {
+        return true;
+    } else {
+        return $info[0];
+    }
+}
+
 
 //the parameters.yml should be merged from default, non-changeable settings kept in application_parameters.yml and the stuff here which is changeable
 //in addition we'll autocreate the secret setting which is used to avoid csrf attacks
@@ -239,19 +251,49 @@ function version_composer() {
         
     </head>
     <body>
+        <!-- First the required stuff that they have to do themselves -->
         <table>
             <thead>
+                <tr><td colspan="3"><h2>Prerequisites</h2></td></tr>
                 <tr><td>Item</td><td>Status</td><td>Action</td></tr>
             </thead>
             <tbody>
                 <?php 
                 foreach ($checks as $key => $value) {
-                    eval("\$res = " . $key . "();");
+                    if (function_exists($key)) {
+                        eval("\$res = " . $key . "();");
+                    } else {
+                        $res = false;
+                    }
                     echo "<tr><td>" . $value["label"] . "</td><td>" . ($res === true ? "OK" : $res ) . "</td><td>" . ((!$res && $value["fixable"]) ? "<a href='INSTALL.php?fix=" . $key . "'>Fix</span>" : "" ) . "</td></tr>\n";
                 }
                 
                 ?>
             </tbody>
         </table>
+        
+        <!-- Then the parameters such as paths etc that we can update -->
+        
+HERE WE NEED TO LOOP TO THE LOWEST LEVEL THAT IS NOT ARRAY OR OBJECT AND THEN CREATE A BREADCRUMB PATH ON THE WAY (NESTED FUNCTION CALLS)
+AND WHEN value IS STRING OR NUMBER WE CREATE EDIT BOX
+        <table>
+            <thead>
+                <tr><td colspan="3"><h2>Site setup</h2></td></tr>
+                <tr><td>Item</td><td>Status</td><td>Action</td></tr>
+            </thead>
+            <tbody>
+                <?php 
+                foreach ($params as $top_level => $sub_level) {
+                    echo "<tr><td>" . $top_level . "</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
+                    foreach ($sub_level as $key => $value) {
+                        echo "<tr><td>&nbsp;</td><td>" . $key . "</td><td>" . $value . "</td></tr>\n";
+                    }
+                }
+                
+                ?>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td><button>Save</button></td></tr>
+            </tbody>
+        </table>
+        
     </body>
 </html>
