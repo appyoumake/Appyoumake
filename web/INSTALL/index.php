@@ -1,5 +1,37 @@
 <html>
 <?php
+/*
+ * This installer script will first check prerequisites, errors here has to be changed by server admin
+ *      Has Internet connection
+ *      Has correct PHP version
+ *      Has correct MySQL version
+ *      Has correct NodeJS version
+ *      PHP.ini must have allow_url_fopen=On
+ *      PHP.ini must have date.timezone set
+ *      Relevant PHP extensions must be loaded
+ *      Composer is installed (http://stackoverflow.com/questions/17219436/run-composer-with-a-php-script-in-browser) also use autoupdate
+ 
+ *****
+ ***** Then we need to specify composer commands to run
+ ***** 
+ *      After composer, check if relevant vendor / javascript libraries are installed
+ *      Check owner of files & app/cache & app/logs (should be same as current owner of php process)
+
+ *****
+ ***** Then we need allow editing of parameters.yml, and loading of data
+ ***** 
+ *      ask for a salt, goes into security.yml
+ *      edit parameters.yml
+ *      offer to install icons, components and templates, they should be a zip file of directories to make it easy to do many.
+ *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
+ */
+
+//Edit variables here
+
+$php_version_min = 5.4;
+$php_version_max = 6.9;
+
+//--------DO NOT EDIT BELOW THIS LINE----------------
 
 //CREATE USER/GROUP
 /*
@@ -8,8 +40,10 @@ INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`
 
 INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES
 (1, 1),
+
 INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES
 (3, 1),
+
 INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES
 (3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 16:11:32', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2016-10-10 16:11:32', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, 'en_GB'),
 
@@ -17,21 +51,8 @@ INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `pas
 */
 //Have two "things "pages", one for installed items, one for parameter.yml settings
 
-/*
- * This installer script will check if:
- *      Has Internet connection
- *      Must allow the use of URLs for downloading files using copy
- *      That date.timezone is set
- *      if relevant PHP extensions are loaded: 
- *      Composer is installed (http://stackoverflow.com/questions/17219436/run-composer-with-a-php-script-in-browser) also use autoupdate
- *      if relevant vendor / javascript libraries are installed
- *      ask for a salt, goes into security.yml
- *      offer to install icons, components and templates, they should be a zip file of directories to make it easy to do many.
- *      Check owner of files & app/cache & app/logs (should be same as current owner of php process)
- *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
- */
 print getcwd();
-chdir("../");
+chdir("../../");
 
 $checks = array(
     "internet_present" => array("fixable" => false, "label" => "Mlab can be run without Internet connection, but during installation an Internet connection is required"),
