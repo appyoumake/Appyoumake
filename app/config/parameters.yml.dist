@@ -33,7 +33,6 @@ parameters:
         save_interval: 60
         icon_text_maxlength: 6
 
-        os_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
         uploads_allowed:
           img: [image/gif, image/jpeg, image/png]
           video: [video/webm, video/mp4, video/ogg]

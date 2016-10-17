@@ -1,4 +1,8 @@
+<!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Verify and update Mlab installation before use</title>
 <?php
 /*
  * This installer script will first check prerequisites, errors here has to be changed by server admin
@@ -34,45 +38,85 @@ $php_version_max = 6.9;
 
 //--------DO NOT EDIT BELOW THIS LINE----------------
 
-//CREATE USER/GROUP
-/*
-INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`) VALUES
-(1, 'Generell', 'Generell gruppe for app tilgang', 1, 1, 'a:0:{}'),
-
-INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES
-(1, 1),
-
-INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES
-(3, 1),
-
-INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES
-(3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 16:11:32', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2016-10-10 16:11:32', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, 'en_GB'),
-
-
-*/
 //Have two "things "pages", one for installed items, one for parameter.yml settings
 error_reporting(E_ALL);
 
 chdir("../../");
 
 $checks = array(
-    "internet_present" => array("fixable" => false, "label" => "Mlab can be run without Internet connection, but during installation an Internet connection is required"),
-    "version_php" => array("fixable" => false, "check" => array("min" => 50400, "max" => 60000), "label" => "PHP version 5.4 or higher is required"),
-    "version_composer" => array("check" => "1.3", "label" => "Composer version 1.3 or higher is required"),
-    "version_uglifyjs"  => array("check" => "2.4", "label" => "UglifyJS version 2.4 or higher is required"),
-    "version_mysql" => array("check" => "5.6 ", "label" => "MySQL version 5.5 or higher is required"),
-    "url_allowed_php_ini" => array("label" => "The PHP URL functonality must be enabled"),
-    "timezone_php_ini" => array("label" => "The timezone must be set"),
-    "libraries_php" => array("check" => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,wdx,zip", "label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
-    "libraries_symfony" => array("label" => "These PHP extensions must be available. Check your PHP installation & php.ini"),
-    "libraries_js" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
-    "bootstrap_symfony" => array("label" => "These Javascript and libraries must be installed to be able to use Mlab"),
+    "internet_present" =>       array(  "label"     => "Internet connection", 
+                                        "help"      => "Mlab can be run without an Internet connection, but during installation a connection is required",
+                                        "action"    => "Check Internet connection on the server"),
+    
+    "version_php" =>            array(  "label"     => "PHP version", 
+                                        "check"     => array("min" => 50400, "max" => 60000), 
+                                        "help"      => "PHP version 5.4 or higher is required, version 7 or higher is not supported at the present time",
+                                        "action"    => "Install supported version of PHP on the server"),
+    
+    "url_allowed_php_ini" =>    array(  "label"     => "URL functionality", 
+                                        "help"      => "The PHP URL functonality must be enabled in the relevant PHP.INI file on the server",
+                                        "check"     => "allow_url_fopen", 
+                                        "action"    => "Set  the <a href='http://php.net/manual/en/filesystem.configuration.php'>allow_url_fopen setting</a> to <em>On</em> in the __PHPINI__ file on the server."),
+    
+    "timezone_php_ini" =>       array(  "label"     => "Timezone", 
+                                        "help"      => "The timezone must be set in the relevant PHP.INI file on the server",
+                                        "check"     => "date.timezone",
+                                        "action"    => "Update the __PHPINI__ file with a <a href='http://php.net/manual/en/timezones.php'>valid timezone setting</a>."), 
+    
+    "libraries_php" =>          array(  "label"     => "PHP extensions", 
+                                        "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
+                                        "check"     => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,wdx,zip", 
+                                        "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager."), 
+        
+    "version_mysql" =>          array(  "label"     => "MySQL version", 
+                                        "help"      => "A MySQL database server version 5.5 or higher is required to store Mlab usr and app data",
+                                        "check"     => "5.5", 
+                                        "action"    => "Install an appropriate version of Mlab on the server."), 
+    
+    "version_composer" =>       array(  "label"     => "Composer version", 
+                                        "help"      => "Composer is a library manager used by Mlab to install the Symfony framework and Javascript libraries. Version 1.3 or higher is required",
+                                        "check"     => "1.3", 
+                                        "action"    => "You can <a href='index.php?fix=version_composer'>click here</a> to try to install the correct version of composer, otherwise manually follow <a href='https://getcomposer.org/'>these instructions</a>."), 
+    
+    "version_symfony" =>         array( "label"     => "Symfony framework", 
+                                        "help"      => "Mlab requires the Symfony framework to be installed, during the installation a number of PHP and HTML files will be downloaded to the Mlab folder on the server.",
+                                        "check"     => "2.8", 
+                                        "action"    => "You can <a href='index.php?fix=libraries_symfony'>click here</a> to try to install the framework, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
+    
+    "bootstrap_symfony" =>       array( "label"     => "Boostrap file", 
+                                        "help"      => "The app/bootstrap.php.cache must be created, this is usually done by Composer when the Symfony framework is installed.",
+                                        "check"     => "app/bootstrap.php.cache", 
+                                        "action"    => "You can <a href='index.php?fix=bootstrap_symfony'>click here</a> to try to generate this file, otherwise manually follow <a href='http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache'>these instructions</a>."), 
+    
+    "libraries_js" =>           array(  "label"     => "Javascript libraries", 
+                                        "help"      => "These Javascript and libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui-1.11.4, jquery.uploadfile'",
+                                        "check"     => "bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui-1.11.4, jquery.uploadfile", 
+                                        "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
+    
+    "version_uglifyjs" =>       array(  "label"     => "UglifyJS version", 
+                                        "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
+                                        "check"     => "2.4", 
+                                        "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
 );
 
 require_once "spyc.php";
 $params = Spyc::YAMLLoad('app/config/installation_parameters.yml');
 
-//$params = yaml_parse_file("app/config/testparameters.yml", -1);
+/***
+ * Simple helper function to find the version number in a string by splitting by spaces and looking for float value
+ */
+function check_version_number($str, $ver) {
+    $info = explode(" ", $str);
+    foreach ($info as $value) {
+        if (floatval($value)) {
+            if (version_compare($value, $ver, ">=")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+}
 
 function internet_present() {
     $conn = @fsockopen("www.google.com", 80); 
@@ -86,17 +130,14 @@ function internet_present() {
 
 function version_php() {
     global $checks;
-    
-    if (PHP_VERSION_ID >= $checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $checks["version_php"]["check"]["max"]) {
-        return true;
-    } else {
-        return PHP_VERSION_ID;
-    }
+    return (PHP_VERSION_ID >= $checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $checks["version_php"]["check"]["max"]);
 }
 
-//check version, if not found or wrng version, download correct version
+// check version, if not found or wrong version, download correct version
+// see https://github.com/composer/packagist/issues/393 re home dir
 function version_composer() {
     global $checks;
+    putenv("COMPOSER_HOME=/home/utvikler/workspace/mlab.local.dev/bin/.composer");
     if (!file_exists("bin/composer.phar")) {
         $exp_sig = read("https://composer.github.io/installer.sig");
         copy('https://getcomposer.org/installer', 'bin/composer-setup.php');
@@ -111,7 +152,8 @@ function version_composer() {
             return "Unable to install composer";
         }
     }
-    $info = explode(" ", shell_exec("bin/composer.phar -V"));
+    $x = shell_exec("php /home/utvikler/workspace/mlab.local.dev/bin/composer.phar -V");
+    $info = explode(" ", $x);
     foreach ($info as $value) {
         if (floatval($value)) {
             if (version_compare($value, $checks["version_composer"]["check"], ">=")) {
@@ -128,7 +170,7 @@ function version_composer() {
 function version_uglify() {
     global $checks;
     
-    $info = explode(" ", shell_exec("uglifyjs --version"));
+    $ver = extract_version_number(shell_exec("uglifyjs --version"));
     
     if (version_compare($info[0], $checks["version_uglifyjs"]["check"], ">=")) {
         return true;
@@ -137,120 +179,81 @@ function version_uglify() {
     }
 }
 
+// se http://symfony.com/doc/current/doctrine.html
+function populate_db($password) {
+    $sql = "INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`) VALUES (1, 'General', 'General group for initial use', 1, 1, 'a:0:{}')";
+    $sql = "INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES (1, 1)";
+    $sql = "INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES (3, 1)";
+    $sql = "INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES (3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 16:11:32', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2016-10-10 16:11:32', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:\"ROLE_ADMIN\";}', 0, NULL, 'en_GB')";
+}
 
-//the parameters.yml should be merged from default, non-changeable settings kept in application_parameters.yml and the stuff here which is changeable
-//in addition we'll autocreate the secret setting which is used to avoid csrf attacks
-//$parameters_yml = yaml_parse_file ('app/config/parameters.yml.dist')["parameters"];
-/*array(
-    'parameters' =>
-    array(
-        'database_driver' => 'pdo_mysql',
-        'database_host' => 'localhost',
-        'database_port' => '',
-        'database_name' => 'mlab',
-        'database_user' => 'mlab_user',
-        'database_password' => '',
-        'mailer_transport' => 'smtp',
-        'mailer_host' => 'localhost',
-        'mailer_user' => '',
-        'mailer_password' => '',
-        'locale' => 'nb_NO',
+//----php_ini_loaded_file
+
+//app/console --version
+
+/*
+ * get a subsidiary branch, for instance:
+        uploads_allowed:
+          img: [image/gif, image/jpeg, image/png]
+          video: [video/webm, video/mp4, video/ogg]
+          audio: [audio/mp4, audio/mpeg, audio/vnd.wave]
+          
+        paths:
+          app: /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/
+          component: /home/utvikler/workspace/mlab.local.dev/mlab_elements/components/
+          template: /home/utvikler/workspace/mlab.local.dev/mlab_elements/templates/
+          icon: /home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/
+ 
+ * Will check if child property is string/number or not, if not it'll recurse until it arrives at final value
+ * Also needs to check if the child property is just an array of possible values, in that case we need to stop at current level
+ */
+function get_parameter_value($array, $prefix = '') {
+    $editable_types = array("boolean", "integer", "double", "string");
+    $result = array();
+    foreach ($array as $key => $value) {
+        $new_key = $prefix . (empty($prefix) ? '' : '.') . $key;
         
-        'mlab' => array(
-            'convert' => array(
-                'python_bin' => '/usr/bin/python',
-            ),
-            'ws_socket' => array(
-                'url_client' => 'ws://mlab.local.dev:8080/',
-                'path_client' => '/messages/',
-                'url_server' => 'http://mlab.local.dev:8080/',
-                'path_server' => '/messages/',
-            ),
-            'missing_icon' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==',
-            'save_interval' => 60,
-            'icon_text_maxlength' => 6,
-            'os_path' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-            'uploads_allowed' => array(
-                'img' =>
-                array(
-                    0 => 'image/gif',
-                    1 => 'image/jpeg',
-                    2 => 'image/png',
-                ),
-                'video' =>
-                array(
-                    0 => 'video/mpeg',
-                    1 => 'video/mp4',
-                    2 => 'video/x-flv',
-                ),
-                'audio' =>
-                array(
-                    0 => 'audio/mp4',
-                    1 => 'audio/mpeg',
-                    2 => 'audio/vnd.wave',
-                ),
-            ),
-            'paths' => array(
-                'app' => '/home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/',
-                'component' => '/home/utvikler/workspace/mlab.local.dev/mlab_elements/components/',
-                'template' => '/home/utvikler/workspace/mlab.local.dev/mlab_elements/templates/',
-                'icon' => '/home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/',
-            ),
-            'urls' => array(
-                'app' => '/mlab_elements/apps/',
-                'component' => '/mlab_elements/components/',
-                'template' => '/mlab_elements/templates/',
-                'icon' => '/mlab_elements/icons/',
-                'icon_font' => '/img/oswald_bold.ttf',
-            ),
-            'compiler_service' => array(
-                'supported_platforms' => array(
-                    0 => 'ios',
-                    1 => 'android',
-                ),
-                'default_icon' => 'data:image/png;base64,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',
-                'url' => '192.168.1.1:8282',
-                'protocol' => 'http',
-                'passphrase' => '',
-                'app_creator_identifier' => '',
-                'target_version' => array(
-                    'ios' => 7,
-                    'android' => 18,
-                ),
-                'rsync_bin' => '/usr/bin/rsync',
-                'rsync_url' => 'user@192.168.1.1::cs_inbox',
-                'rsync_password' => '',
-                'rsync_suffix' => '/www/',
-            ),
+        if (is_array($value)) {
+            $test_value = reset($value);
+            $first_key = key($value);
+            $test = gettype($test_value);
+            if ($first_key === 0 && in_array($test, $editable_types)) {
+                $result[$new_key] = implode(",", $value);
+            } else {
+                $result = array_merge($result, get_parameter_value($value, $new_key));
+            }
+        } else {
+            $result[$new_key] = $value;
+        }
+    }
+
+    return $result;
+}    
+    
+/*    
+    $editable_types = array("boolean", "integer", "double", "string");
+    $type = getttype($value);
+
+//if the next value down is a string/number, 
+    if (in_array($type, $editable_types)) {
+        return array($path, $value);
+        
+    } else {
+        $test = getttype(reset($value));
+        if (in_array($type, $editable_types)) {
             
-            'replace_in_filenames' =>
-            array(
-                'a' => '/[ÂÃÄÀÁÅàáâãäå]/',
-                'ae' => '/[Ææ]/',
-                'c' => '/[Çç]/',
-                'e' => '/[ÈÉÊËèéêë]/',
-                'i' => '/[ÌÍÎÏìíîï]/',
-                'o' => '/[ÒÓÔÕÖØòóôõöø]/',
-                'n' => '/[Ññ]/',
-                'u' => '/[ÙÚÛÜùúûü]/',
-                'y' => '/[Ýýÿ]/',
-                '_' => '/[^A-Za-z0-9]/',
-            ),
-            'plugins' =>
-            array(
-                0 => 'cordova-plugin-device',
-                1 => 'cordova-plugin-network-information',
-            ),
-        ),
-    ),
-)*/
+        } else {
+            return get_parameter_value($key, $value, $path, $result);
+        }
+    }
+    
+    return $result;
+}*/
+
 ?>
-
-
-    <head>
-        
     </head>
     <body>
+        <h1>Verify and update Mlab installation before use</h1>
         <!-- First the required stuff that they have to do themselves -->
         <table>
             <thead>
@@ -261,32 +264,28 @@ function version_uglify() {
                 <?php 
                 foreach ($checks as $key => $value) {
                     if (function_exists($key)) {
-                        eval("\$res = " . $key . "();");
+                        eval("\$res = " . $key . "(\$value);");
                     } else {
                         $res = false;
                     }
-                    echo "<tr><td>" . $value["label"] . "</td><td>" . ($res === true ? "OK" : $res ) . "</td><td>" . ((!$res && $value["fixable"]) ? "<a href='INSTALL.php?fix=" . $key . "'>Fix</span>" : "" ) . "</td></tr>\n";
+                    echo "<tr><td>" . $value["label"] . "</td><td><img src='" . ($res === true ? "ok.png" : "fail.png" ) . "'></td><td>" . ((!$res && $value["fixable"]) ? "<a href='INSTALL.php?fix=" . $key . "'>Fix</span>" : "" ) . "</td></tr>\n";
                 }
                 
                 ?>
             </tbody>
-        </table>
-        
         <!-- Then the parameters such as paths etc that we can update -->
-        
-HERE WE NEED TO LOOP TO THE LOWEST LEVEL THAT IS NOT ARRAY OR OBJECT AND THEN CREATE A BREADCRUMB PATH ON THE WAY (NESTED FUNCTION CALLS)
-AND WHEN value IS STRING OR NUMBER WE CREATE EDIT BOX
-        <table>
             <thead>
                 <tr><td colspan="3"><h2>Site setup</h2></td></tr>
                 <tr><td>Item</td><td>Status</td><td>Action</td></tr>
             </thead>
             <tbody>
                 <?php 
+                
                 foreach ($params as $top_level => $sub_level) {
                     echo "<tr><td>" . $top_level . "</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
-                    foreach ($sub_level as $key => $value) {
-                        echo "<tr><td>&nbsp;</td><td>" . $key . "</td><td>" . $value . "</td></tr>\n";
+                    $param_list = get_parameter_value($sub_level);
+                    foreach ($param_list as $key => $value) {
+                        echo "<tr><td>&nbsp;</td><td>$key</td><td><input type='text' name='$key' value='$value'></td></tr>\n";
                     }
                 }
                 
