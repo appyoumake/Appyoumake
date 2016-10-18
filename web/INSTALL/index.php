@@ -22,6 +22,9 @@ $php_version_max = 6.9;
 
 //--------DO NOT EDIT BELOW THIS LINE----------------
 
+require_once "spyc.php";
+chdir("../../");
+
 
 //--- RUN CODE IN RESPONSE TO GET REQUESTS ---
 
@@ -38,31 +41,38 @@ switch ($_REQUEST['fix']) {
     case "libraries_js":
         break;
 
+//this will merge the incoming parameters 
     case "save_parameters":
-        if (array_key_exists("submit_ok", $_POST) && $_POST["submit_ok"] == "Save") { 
+        if (array_key_exists("submit_ok", $_POST) && $_POST["submit_ok"] == "Save") {
             unset($_POST["submit_ok"]);
-            $params = array();
+            $params = array("parameters" => array());
             foreach ($_POST as $flat_key => $value) {
-                $keys = explode('.', $flat_key);
+                $arr = &$params["parameters"];
+                $keys = explode('__', $flat_key);
                 $count = count($keys);
                 foreach ($keys as $key) {
                     if (--$count <= 0) {
-                        break;
-                    }                       
-                    $params[$key] = array();
-                    $arr = &$params[$key];
+                        $arr[$key] = $value;
+                    } else {
+                        if (!key_exists($key, $arr)) {
+                            $arr[$key] = array();
+                        }
+                        $arr = &$arr[$key];
+                    }
                 }
             }
-            var_dump($array);
-            die();
+            
+//now load the other settings, merge and save
+            $app_params = Spyc::YAMLLoad('app/config/application_parameters.yml');
+            $save_params = array_merge_recursive($params, $app_params);
+            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($save_params));
+            
         }
         break;
 
 }
 
 //---FINISHED WITH THE ---
-
-chdir("../../");
 
 $checks = array(
     "internet_present" =>       array(  "label"     => "Internet connection", 
@@ -120,7 +130,6 @@ $checks = array(
                                         "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
 );
 
-require_once "spyc.php";
 $params = Spyc::YAMLLoad('app/config/installation_parameters.yml');
 
 $params_help = array(
@@ -411,7 +420,7 @@ function get_parameter_value($array, $prefix = '') {
     </head>
     <body>
         <h1>Verify and update Mlab installation before use</h1>
-        <form action='index.php?fix=save_parameters' method="post">
+        <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8">
 <!-- First the required stuff that they have to do themselves -->
             <table>
                 <thead>
@@ -446,7 +455,7 @@ function get_parameter_value($array, $prefix = '') {
                     foreach ($params as $top_level => $sub_level) {
                         $param_list = get_parameter_value($sub_level);
                         foreach ($param_list as $key => $value) {
-                            echo "<tr><td>$key</td><td colspan='2'><input type='text' name='$key' value='$value'></td><td title='" . htmlentities($params_help[$key]) . "'><img src='question.png'></td></tr>\n";
+                            echo "<tr><td>$key</td><td colspan='2'><input type='text' name='" . str_replace(".", "__", $key) . "' value='$value'></td><td title='" . htmlentities($params_help[$key]) . "'><img src='question.png'></td></tr>\n";
                         }
                     }
 
