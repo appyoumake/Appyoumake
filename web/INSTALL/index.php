@@ -15,6 +15,13 @@
  *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
  */
 
+
+////
+//mlab.paths.X, foreslå inst dir + mlab_elements
+//Legge til web server konfig om paths/urls re alias/redirect
+//Bruk whereis for python, rsync, 
+//
+//
 //Edit variables here
 
 $php_version_min = 5.4;
@@ -63,17 +70,14 @@ switch ($_REQUEST['fix']) {
             }
             
 //now load the other settings, merge and save
-            $app_params = Spyc::YAMLLoad('app/config/application_parameters.yml');
-            $save_params = array_merge_recursive($params, $app_params);
-            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($save_params));
+            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($params));
             
         }
         break;
 
 }
 
-//---FINISHED WITH THE ---
-
+// ARRAY OF PRE-REQUISITE VALUES TO CHECK FOR
 $checks = array(
     "internet_present" =>       array(  "label"     => "Internet connection", 
                                         "help"      => "Mlab can be run without an Internet connection, but during installation a connection is required",
@@ -130,7 +134,7 @@ $checks = array(
                                         "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
 );
 
-$params = Spyc::YAMLLoad('app/config/installation_parameters.yml');
+$params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
 
 $params_help = array(
     "database_driver" => "The name of the PHP database driver to use",
@@ -176,18 +180,6 @@ $params_help = array(
     "mlab.compiler_service.rsync_bin" => "Path to the Rsync executable file",
     "mlab.compiler_service.rsync_url" => "URL to use to upload files to compiler service",
     "mlab.compiler_service.rsync_password" => "Password to use to upload files to compiler service",
-    "mlab.compiler_service.rsync_suffix" => "Trainling string to use as part of the URL for uploading files",
-    "mlab.replace_in_filenames.a" => "Non-ASCII letters to replace by the letter A (keep list inside slashes)",
-    "mlab.replace_in_filenames.ae" =>"Non-ASCII letters to replace by the letter AE (keep list inside slashes)",
-    "mlab.replace_in_filenames.c" => "Non-ASCII letters to replace by the letter C (keep list inside slashes)",
-    "mlab.replace_in_filenames.e" => "Non-ASCII letters to replace by the letter E (keep list inside slashes)",
-    "mlab.replace_in_filenames.i" => "Non-ASCII letters to replace by the letter I (keep list inside slashes)",
-    "mlab.replace_in_filenames.o" => "Non-ASCII letters to replace by the letter O (keep list inside slashes)",
-    "mlab.replace_in_filenames.n" => "Non-ASCII letters to replace by the letter N (keep list inside slashes)",
-    "mlab.replace_in_filenames.u" => "Non-ASCII letters to replace by the letter U (keep list inside slashes)",
-    "mlab.replace_in_filenames.y" => "Non-ASCII letters to replace by the letter Y (keep list inside slashes)",
-    "mlab.replace_in_filenames._" => "Non-ASCII letters to replace by the letter _ (keep list inside slashes)",
-    "mlab.plugins" => "List of Cordova plugins to add to all apps, for instance cordova-plugin-device,cordova-plugin-network-information",
 );
 
 /***
@@ -451,14 +443,14 @@ function get_parameter_value($array, $prefix = '') {
                 </thead>
                 <tbody>
                     <?php 
-
-                    foreach ($params as $top_level => $sub_level) {
-                        $param_list = get_parameter_value($sub_level);
-                        foreach ($param_list as $key => $value) {
-                            echo "<tr><td>$key</td><td colspan='2'><input type='text' name='" . str_replace(".", "__", $key) . "' value='$value'></td><td title='" . htmlentities($params_help[$key]) . "'><img src='question.png'></td></tr>\n";
+                        foreach ($params as $top_level => $sub_level) {
+                            $param_list = get_parameter_value($sub_level);
+                            foreach ($param_list as $key => $value) {
+                                if (strpos($key, "___") !== false) {
+                                    echo "<tr><td>" . htmlentities($params_help[$key]) . "</td><td colspan='2'><input type='text' name='" . str_replace(array("___", "."), array("", "__"), $key) . "' value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
+                                }
+                            }
                         }
-                    }
-
                     ?>
                     <tr><td colspan='3'></td><td><input type="submit" name="submit_ok" value="Save"></td></tr>
                 </tbody>
