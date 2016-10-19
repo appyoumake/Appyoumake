@@ -16,12 +16,6 @@
  */
 
 
-////
-//mlab.paths.X, foreslå inst dir + mlab_elements
-//Legge til web server konfig om paths/urls re alias/redirect
-//Bruk whereis for python, rsync, 
-//
-//
 //Edit variables here
 
 $php_version_min = 5.4;
@@ -48,7 +42,10 @@ switch ($_REQUEST['fix']) {
     case "libraries_js":
         break;
 
-//this will merge the incoming parameters 
+//this will merge the incoming parameters with existing app related values
+    
+// generate   "secret" => "A random word or phrase that Symfony uses for CSRF tokens",
+
     case "save_parameters":
         if (array_key_exists("submit_ok", $_POST) && $_POST["submit_ok"] == "Save") {
             unset($_POST["submit_ok"]);
@@ -132,9 +129,21 @@ $checks = array(
                                         "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
                                         "check"     => "2.4", 
                                         "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
+    
+    "version_nodejs" =>       array(    "label"     => "Node JS version", 
+                                        "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
+                                        "check"     => "0.10.29", 
+                                        "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information."), 
 );
 
 $params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
+
+//if parameters.yml exists, then we read in the values from that one
+if (file_exists('app/config/parameters.yml')) { 
+    $param_values = Spyc::YAMLLoad('app/config/parameters.yml');
+} else {
+    $param_values = false;
+}
 
 $params_help = array(
     "database_driver" => "The name of the PHP database driver to use",
@@ -148,39 +157,65 @@ $params_help = array(
     "mailer_user" => "Name of user for email server login",
     "mailer_password" => "Password of user for email server login",
     "locale" => "Which locale to use, for instance en_UK. Can be overridden by individual Mlab users when they log in",
-    "secret" => "A random word or phrase that Symfony uses for CSRF tokens",
-    "mlab.convert.python_bin" => "Path to Python executable",
-    "mlab.ws_socket.url_client" => "URL for web socket server used by Mlab editor to communicate with server",
-    "mlab.ws_socket.path_client" => "Path prefix used when Mlab editor communicats with server through web sockets",
-    "mlab.ws_socket.url_server" => "URL for web socket server used to communicate with compiler and app market services",
-    "mlab.ws_socket.path_server" => "Path prefix used when communicating with compiler and app market services through web sockets",
-    "mlab.missing_icon" => "-not used-",
-    "mlab.save_interval" => "Number of seconds between each time changes are auto-saved",
-    "mlab.icon_text_maxlength" => "Maximum number of characters to allow on an app icon",
-    "mlab.uploads_allowed.img" => "List of mime types allowed for image uploads",
-    "mlab.uploads_allowed.video" => "List of mime types allowed for video uploads",
-    "mlab.uploads_allowed.audio" => "List of mime types allowed for audio uploads",
-    "mlab.paths.app" => "Full path to where Mlab created apps should be stored",
-    "mlab.paths.component" => "Full path to where Mlab components should be installed",
-    "mlab.paths.template" => "Full path to where Mlab templates should be installed",
-    "mlab.paths.icon" => "Full path to where images used to generate app icons should be installed",
-    "mlab.urls.app" => "External URL to where Mlab created apps should be stored",
-    "mlab.urls.component" => "External URL to where Mlab components should be installed",
-    "mlab.urls.template" => "External URL to where Mlab templates should be installed",
-    "mlab.urls.icon" => "External URL to where images used to generate app icons should be installed",
-    "mlab.urls.icon_font" => "External URL to where fonts used to generate app icons can be found",
-    "mlab.compiler_service.supported_platforms" => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
-    "mlab.compiler_service.default_icon" => "URI encoded image to use for missing icons in apps",
-    "mlab.compiler_service.url" => "URL to compilation service",
-    "mlab.compiler_service.protocol" => "Protocol (http/https) to use to connect to compilation service",
-    "mlab.compiler_service.passphrase" => "Unique passphrase to access compilation service",
-    "mlab.compiler_service.app_creator_identifier" => "Unique, reverse domain, identifier, for instance 'com.test.app'",
-    "mlab.compiler_service.target_version.ios" => "Which base/minimum version to compile apps for iOS for",
-    "mlab.compiler_service.target_version.android" => "Which base/minimum version to compile apps for Android for",
-    "mlab.compiler_service.rsync_bin" => "Path to the Rsync executable file",
-    "mlab.compiler_service.rsync_url" => "URL to use to upload files to compiler service",
-    "mlab.compiler_service.rsync_password" => "Password to use to upload files to compiler service",
+    "mlab__convert__python_bin" => "Path to Python executable",
+    "mlab__ws_socket__url_client" => "URL for web socket server used by Mlab editor to communicate with server",
+    "mlab__ws_socket__url_server" => "URL for web socket server used to communicate with compiler and app market services",
+    "mlab__uploads_allowed__img" => "List of mime types allowed for image uploads",
+    "mlab__uploads_allowed__video" => "List of mime types allowed for video uploads",
+    "mlab__uploads_allowed__audio" => "List of mime types allowed for audio uploads",
+    "mlab__paths__app" => "Full path to where Mlab created apps should be stored",
+    "mlab__paths__component" => "Full path to where Mlab components should be installed",
+    "mlab__paths__template" => "Full path to where Mlab templates should be installed",
+    "mlab__paths__icon" => "Full path to where images used to generate app icons should be installed",
+    "mlab__urls__app" => "External URL to where Mlab created apps should be stored",
+    "mlab__urls__component" => "External URL to where Mlab components should be installed",
+    "mlab__urls__template" => "External URL to where Mlab templates should be installed",
+    "mlab__urls__icon" => "External URL to where images used to generate app icons should be installed",
+    "mlab__compiler_service__supported_platforms" => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
+    "mlab__compiler_service__url" => "URL to compilation service",
+    "mlab__compiler_service__protocol" => "Protocol (http/https) to use to connect to compilation service",
+    "mlab__compiler_service__passphrase" => "Unique passphrase to access compilation service",
+    "mlab__compiler_service__app_creator_identifier" => "Unique, reverse domain, identifier, for instance 'com.test.app'",
+    "mlab__compiler_service__target_version__ios" => "Which base/minimum version to compile apps for iOS for",
+    "mlab__compiler_service__target_version__android" => "Which base/minimum version to compile apps for Android for",
+    "mlab__compiler_service__rsync_bin" => "Path to the Rsync executable file",
+    "mlab__compiler_service__rsync_url" => "URL to use to upload files to compiler service",
+    "mlab__compiler_service__rsync_password" => "Password to use to upload files to compiler service",
 );
+
+$write_permissions = array(getcwd() . "/app/cache", getcwd() . "/app/config", getcwd() . "/app/logs", getcwd() . "/composer.lock");
+
+//utility function to copy across existing values from parameters.yml () to parameters.yml.dist
+function copyLiveParams() {
+    
+}
+
+//function to set some sensible values if they are missing initially
+function init() {
+    global $params;
+    global $write_permissions;
+    $cur_dir = getcwd();
+    putenv("PATH='/usr/local/bin:/usr/bin:/bin'");
+
+    if (!$params["mlab__compiler_service__rsync_bin"]) {
+        $params["mlab__compiler_service__rsync_bin"] = shell_exec("which rsync");
+    }
+    if (!$params["mlab__convert__python_bin"]) {
+        $params["mlab__convert__python_bin"] = shell_exec("which python");
+    }
+    foreach(array("app", "component", "template", "icon") as $element) {
+        if (!$params["mlab__paths__" . $element]) {
+            $params["mlab__paths__$element"] = $cur_dir . "/mlab_elements/$element" . "s/";
+        }
+        $write_permissions[] = $params["mlab__paths__$element"];
+        
+        if (!$params["mlab__urls__" . $element]) {
+            $params["mlab__urls__$element"] = str_replace($cur_dir, "", $params["mlab__paths__$element"]) . "$element" . "s/";
+        }
+    }
+    
+}
+
 
 /***
  * Simple helper function to find the version number in a string by splitting by spaces and looking for float value
@@ -333,6 +368,11 @@ function version_uglifyjs() {
     return check_version_number($info, $checks["version_uglifyjs"]["check"]);
 }
 
+function version_nodejs() {
+    global $checks;
+    $info = str_replace("v", "", shell_exec("nodejs --version"));
+    return check_version_number($info, $checks["version_nodejs"]["check"]);
+}
 
 
 // se http://symfony.com/doc/current/doctrine.html
@@ -360,6 +400,7 @@ function populate_db($password) {
  * Also needs to check if the child property is just an array of possible values, in that case we need to stop at current level
  */
 function get_parameter_value($array, $prefix = '') {
+    global $param_values;
     $editable_types = array("boolean", "integer", "double", "string");
     $result = array();
     foreach ($array as $key => $value) {
@@ -380,7 +421,10 @@ function get_parameter_value($array, $prefix = '') {
     }
 
     return $result;
-}   
+}  
+
+//call the init function to fill variables
+init();
 
 ?><!DOCTYPE html>
 <html>
@@ -412,6 +456,8 @@ function get_parameter_value($array, $prefix = '') {
     </head>
     <body>
         <h1>Verify and update Mlab installation before use</h1>
+        <h2>setting up web server and correctly</h2>
+        <p>Look <a href="server_setup.html">here</a> for a full explanation on how to correctly configure the web server before starting the Mlab configuration</p>
         <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8">
 <!-- First the required stuff that they have to do themselves -->
             <table>
@@ -436,19 +482,28 @@ function get_parameter_value($array, $prefix = '') {
 
                     ?>
                 </tbody>
-    <!-- Then the parameters such as paths etc that we can update -->
-                <thead>
-                    <tr><td colspan="4"><h2>Site setup</h2></td></tr>
-                    <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
-                </thead>
+                
+<!-- Then the parameters such as paths etc that we can update -->
+                <tr><td colspan="4"><h2>Permissions</h2></td></tr>
+                <tr><td colspan='3'>File/Directory</td><td>Writable?</td></tr>
                 <tbody>
                     <?php 
-                        foreach ($params as $top_level => $sub_level) {
-                            $param_list = get_parameter_value($sub_level);
-                            foreach ($param_list as $key => $value) {
-                                if (strpos($key, "___") !== false) {
-                                    echo "<tr><td>" . htmlentities($params_help[$key]) . "</td><td colspan='2'><input type='text' name='" . str_replace(array("___", "."), array("", "__"), $key) . "' value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
-                                }
+                        foreach ($write_permissions as $dir) {
+                            echo "<tr><td colspan='3'>$dir</td><td><img src='" . (is_writable($dir) ? "ok" : "fail") . ".png'></td></tr>\n";
+                        }
+                    ?>
+                </tbody>
+                
+<!-- Then the parameters such as paths etc that we can update -->
+                <tr><td colspan="4"><h2>Site setup</h2></td></tr>
+                <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
+                <tbody>
+                    <?php 
+                        $param_list = get_parameter_value($params["parameters"], "parameters");
+                        foreach ($param_list as $key => $value) {
+                            if (strpos($key, "___") !== false) {
+                                $new_key = str_replace(array("___", "."), array("", "__"), $key);
+                                echo "<tr><td>" . htmlentities($params_help[$new_key]) . "</td><td colspan='2'><input type='text' name='" . $new_key . "' value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
                             }
                         }
                     ?>
