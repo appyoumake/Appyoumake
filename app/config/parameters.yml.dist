@@ -50,7 +50,6 @@ parameters:
           ___component: 
           ___template: 
           ___icon: 
-          icon_font: /img/oswald_bold.ttf
           
         filenames:
           component_icon: icon.png

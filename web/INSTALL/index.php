@@ -49,9 +49,11 @@ switch ($_REQUEST['fix']) {
     case "save_parameters":
         if (array_key_exists("submit_ok", $_POST) && $_POST["submit_ok"] == "Save") {
             unset($_POST["submit_ok"]);
-            $incoming_params = array("parameters" => array());
+            
+//here we loop through the incoming data and create an array that matches th one from the YAML file
+            $incoming_params = array();
             foreach ($_POST as $flat_key => $value) {
-                $arr = &$incoming_params["parameters"];
+                $arr = &$incoming_params;
                 $keys = explode('__', $flat_key);
                 $count = count($keys);
                 foreach ($keys as $key) {
@@ -67,7 +69,20 @@ switch ($_REQUEST['fix']) {
             }
             
 //now load the other settings, merge and save
-            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($incoming_params));
+//if the parameters.yml file already exists we read in these values and update them from the incoming data
+//otherwise we load the template parameters.yml.dist and add the values here
+// int he latter case we also need to remove the values prefixed by ___
+            if (file_exists('app/config/parameters.yml')) {
+                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
+            } else {
+                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
+            }
+            $combined_params = array_replace_recursive($existing_params, $incoming_params);
+            if (!$existing_params["parameters"]["secret"]) {
+                $existing_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
+            }
+            //var_dump($existing_params);
+            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($combined_params));
             
         }
         break;
@@ -147,41 +162,41 @@ if (file_exists('app/config/parameters.yml')) {
 }
 
 $params_help = array(
-    "database_driver" => "The name of the PHP database driver to use",
-    "database_host" => "URL/IP address of the database server to use",
-    "database_port" => "TCP/IP port of the database server, set to null ig using sockets",
-    "database_name" => "Name of the database (not server) to use on the database server, create this before adding it",
-    "database_user" => "Name of user for database login",
-    "database_password" => "Password of user for database login",
-    "mailer_transport" => "How to send emails (smtp, mail, sendmail, or gmail)",
-    "mailer_host" => "URL/IP address of the email server to use",
-    "mailer_user" => "Name of user for email server login",
-    "mailer_password" => "Password of user for email server login",
-    "locale" => "Which locale to use, for instance en_UK. Can be overridden by individual Mlab users when they log in",
-    "mlab__convert__python_bin" => "Path to Python executable",
-    "mlab__ws_socket__url_client" => "URL for web socket server used by Mlab editor to communicate with server",
-    "mlab__ws_socket__url_server" => "URL for web socket server used to communicate with compiler and app market services",
-    "mlab__uploads_allowed__img" => "List of mime types allowed for image uploads",
-    "mlab__uploads_allowed__video" => "List of mime types allowed for video uploads",
-    "mlab__uploads_allowed__audio" => "List of mime types allowed for audio uploads",
-    "mlab__paths__app" => "Full path to where Mlab created apps should be stored",
-    "mlab__paths__component" => "Full path to where Mlab components should be installed",
-    "mlab__paths__template" => "Full path to where Mlab templates should be installed",
-    "mlab__paths__icon" => "Full path to where images used to generate app icons should be installed",
-    "mlab__urls__app" => "External URL to where Mlab created apps should be stored",
-    "mlab__urls__component" => "External URL to where Mlab components should be installed",
-    "mlab__urls__template" => "External URL to where Mlab templates should be installed",
-    "mlab__urls__icon" => "External URL to where images used to generate app icons should be installed",
-    "mlab__compiler_service__supported_platforms" => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
-    "mlab__compiler_service__url" => "URL to compilation service",
-    "mlab__compiler_service__protocol" => "Protocol (http/https) to use to connect to compilation service",
-    "mlab__compiler_service__passphrase" => "Unique passphrase to access compilation service",
-    "mlab__compiler_service__app_creator_identifier" => "Unique, reverse domain, identifier, for instance 'com.test.app'",
-    "mlab__compiler_service__target_version__ios" => "Which base/minimum version to compile apps for iOS for",
-    "mlab__compiler_service__target_version__android" => "Which base/minimum version to compile apps for Android for",
-    "mlab__compiler_service__rsync_bin" => "Path to the Rsync executable file",
-    "mlab__compiler_service__rsync_url" => "URL to use to upload files to compiler service",
-    "mlab__compiler_service__rsync_password" => "Password to use to upload files to compiler service",
+    "parameters__database_driver" => "The name of the PHP database driver to use",
+    "parameters__database_host" => "URL/IP address of the database server to use",
+    "parameters__database_port" => "TCP/IP port of the database server, set to null ig using sockets",
+    "parameters__database_name" => "Name of the database (not server) to use on the database server, create this before adding it",
+    "parameters__database_user" => "Name of user for database login",
+    "parameters__database_password" => "Password of user for database login",
+    "parameters__mailer_transport" => "How to send emails (smtp, mail, sendmail, or gmail)",
+    "parameters__mailer_host" => "URL/IP address of the email server to use",
+    "parameters__mailer_user" => "Name of user for email server login",
+    "parameters__mailer_password" => "Password of user for email server login",
+    "parameters__locale" => "Which locale to use, for instance en_UK. Can be overridden by individual Mlab users when they log in",
+    "parameters__mlab__convert__python_bin" => "Path to Python executable",
+    "parameters__mlab__ws_socket__url_client" => "URL for web socket server used by Mlab editor to communicate with server",
+    "parameters__mlab__ws_socket__url_server" => "URL for web socket server used to communicate with compiler and app market services",
+    "parameters__mlab__uploads_allowed__img" => "List of mime types allowed for image uploads",
+    "parameters__mlab__uploads_allowed__video" => "List of mime types allowed for video uploads",
+    "parameters__mlab__uploads_allowed__audio" => "List of mime types allowed for audio uploads",
+    "parameters__mlab__paths__app" => "Full path to where Mlab created apps should be stored",
+    "parameters__mlab__paths__component" => "Full path to where Mlab components should be installed",
+    "parameters__mlab__paths__template" => "Full path to where Mlab templates should be installed",
+    "parameters__mlab__paths__icon" => "Full path to where images used to generate app icons should be installed",
+    "parameters__mlab__urls__app" => "External URL to where Mlab created apps should be stored",
+    "parameters__mlab__urls__component" => "External URL to where Mlab components should be installed",
+    "parameters__mlab__urls__template" => "External URL to where Mlab templates should be installed",
+    "parameters__mlab__urls__icon" => "External URL to where images used to generate app icons should be installed",
+    "parameters__mlab__compiler_service__supported_platforms" => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
+    "parameters__mlab__compiler_service__url" => "URL to compilation service",
+    "parameters__mlab__compiler_service__protocol" => "Protocol (http/https) to use to connect to compilation service",
+    "parameters__mlab__compiler_service__passphrase" => "Unique passphrase to access compilation service",
+    "parameters__mlab__compiler_service__app_creator_identifier" => "Unique, reverse domain, identifier, for instance 'com.test.app'",
+    "parameters__mlab__compiler_service__target_version__ios" => "Which base/minimum version to compile apps for iOS for",
+    "parameters__mlab__compiler_service__target_version__android" => "Which base/minimum version to compile apps for Android for",
+    "parameters__mlab__compiler_service__rsync_bin" => "Path to the Rsync executable file",
+    "parameters__mlab__compiler_service__rsync_url" => "URL to use to upload files to compiler service",
+    "parameters__mlab__compiler_service__rsync_password" => "Password to use to upload files to compiler service",
 );
 
 $write_permissions = array(getcwd() . "/app/cache", getcwd() . "/app/config", getcwd() . "/app/logs", getcwd() . "/composer.lock");
@@ -209,21 +224,29 @@ function clean_parameters($array, $prefix = '') {
     $editable_types = array("boolean", "integer", "double", "string");
     $result = array();
     foreach ($array as $key => $value) {
-        $flat_key = $prefix . (empty($prefix) ? '' : '.') . $key;
+        $flat_key = $prefix . (empty($prefix) ? '' : '__') . $key;
         
         if (is_array($value)) {
             $test_value = reset($value);
             $first_key = key($value);
             $test = gettype($test_value);
-            if ($first_key === 0 && in_array($test, $editable_types)) {
-                $result[$flat_key] = implode(",", $value);
+            
+//arrived at the innermost element IF next element is array of strings, if they flat key contains 3 underscores anywhere we want to use it 
+//(parameters to save are identified with 3 underscores before the key name in parameter.yml.dist)
+//Then the underscores are removed before adding to the flat array
+//            print $flat_key."<br>";
+            if ($first_key === 0 && in_array($test, $editable_types) && strpos($flat_key, "___") !== false) {
+                $new_key = str_replace("___", "", $flat_key);
+                $result[$new_key] = implode(",", $value);
             } else {
                 $result = array_merge($result, clean_parameters($value, $flat_key));
             }
         } else {
+            
+//as above 
             if (strpos($flat_key, "___") !== false) {
-                $new_key = str_replace(array("___", "."), array("", "__"), $key);
-                $result[$flat_key] = $value;
+                $new_key = str_replace("___", "", $flat_key);
+                $result[$new_key] = $value;
             }
         }
     }
@@ -238,25 +261,27 @@ function init() {
     $cur_dir = getcwd();
     putenv("PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'");
 
-    if (!$params["parameters"]["mlab"]["compiler_service"]["rsync_bin"]) {
-        $p = shell_exec("which rsync");
-        $params["parameters"]["mlab"]["compiler_service"]["rsync_bin"] = $p;
+    $params = clean_parameters($params);
+    
+    if (!$params["parameters__mlab__compiler_service__rsync_bin"]) {
+        $p = trim(shell_exec("which rsync"));
+        $params["parameters__mlab__compiler_service__rsync_bin"] = $p;
     }
-    if (!$params["parameters"]["mlab"]["convert"]["python_bin"]) {
-        $p = shell_exec("which python");
-        $params["parameters"]["mlab"]["convert"]["python_bin"] = $p;
+    if (!$params["parameters__mlab__convert__python_bin"]) {
+        $p = trim(shell_exec("which python"));
+        $params["parameters__mlab__convert__python_bin"] = $p;
     }
     foreach(array("app", "component", "template", "icon") as $element) {
-        if (!$params["parameters"]["mlab"]["paths"][$element]) {
-            $params["parameters"]["mlab"]["paths"][$element] = $cur_dir . "/mlab_elements/$element" . "s/";
+        if (!$params["parameters__mlab__paths__$element"]) {
+            $params["parameters__mlab__paths__$element"] = $cur_dir . "/mlab_elements/$element" . "s/";
         }
-        $write_permissions[] = $params["parameters"]["mlab"]["paths"][$element];
+        $write_permissions[] = $params["parameters__mlab__paths__$element"];
         
-        if (!$params["parameters"]["mlab"]["urls"][$element]) {
-            $params["parameters"]["mlab"]["urls"][$element] = str_replace($cur_dir, "", $params["parameters"]["mlab"]["paths"][$element]) . "$element" . "s/";
+        if (!$params["parameters__mlab__urls__$element"]) {
+            $params["parameters__mlab__urls__$element"] = str_replace($cur_dir, "", $params["parameters__mlab__paths__$element"]) . "$element" . "s/";
         }
     }
-    $params = clean_parameters($params);
+    
 }
 
 
@@ -502,12 +527,8 @@ init();
                 <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
                 <tbody>
                     <?php 
-                        $param_list = get_parameter_value($params["parameters"]);
-                        foreach ($param_list as $key => $value) {
-                            if (strpos($key, "___") !== false) {
-                                $new_key = str_replace(array("___", "."), array("", "__"), $key);
-                                echo "<tr><td>" . htmlentities($params_help[$new_key]) . "</td><td colspan='2'><input type='text' name='" . $new_key . "' value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
-                            }
+                        foreach ($params as $key => $value) {
+                            echo "<tr><td>" . htmlentities($params_help[$key]) . "</td><td colspan='2'><input type='text' name='" . $key . "' value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
                         }
                     ?>
                     <tr><td colspan='3'></td><td><input type="submit" name="submit_ok" value="Save"></td></tr>

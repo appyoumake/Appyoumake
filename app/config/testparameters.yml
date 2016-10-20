@@ -1,0 +1,132 @@
+---
+parameters:
+  database_driver: pdo_mysql
+  database_host: 127.0.0.1
+  database_port: "666"
+  database_name: devil
+  database_user: satan
+  database_password: ""
+  mailer_transport: smtp
+  mailer_host: 127.0.0.1
+  mailer_user: ""
+  mailer_password: ""
+  locale: nb_NO
+  supported_locales:
+    en_GB: English
+    nb_NO: Norsk
+  secret: flurkysnarkish
+  security.authentication.success_handler.class: >
+    Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
+  mlab:
+    convert:
+      python_bin: /usr/bin/pythond
+      converter_bin: document2HTML.py
+      config: config.json
+      converter_path: >
+        /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
+    ws_socket:
+      url_client: ws://url:8080/
+      path_client: /messages/
+      url_server: http://url:8080/
+      path_server: /messages/
+    missing_icon: >
+      data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==
+    icon_text_maxlength: 6
+    save_interval: 60
+    uploads_allowed:
+      img: image/gif,image/jpeg,image/png
+      video: video/webm,video/mp4,video/ogg
+      audio: audio/mp4,audio/mpeg,audio/vnd.wave
+    paths:
+      app: >
+        /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/
+      component: >
+        /home/utvikler/workspace/mlab.local.dev/mlab_elements/components/
+      template: >
+        /home/utvikler/workspace/mlab.local.dev/mlab_elements/templates/
+      icon: >
+        /home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/
+    urls:
+      app: /mlab_elements/apps/apps/
+      component: /mlab_elements/components/components/
+      template: /mlab_elements/templates/templates/
+      icon: /mlab_elements/icons/icons/
+      icon_font: /img/oswald_bold.ttf
+    filenames:
+      component_icon: icon.png
+      app_icon: icon.png
+      app_splash_screen: splash
+      app_config: conf.json
+    compiler_service:
+      supported_platforms: ios,android
+      default_icon: >
+        data:image/png;base64,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
+      url: ""
+      protocol: http
+      passphrase: ""
+      config_uid_tag: widget
+      config_uid_attribute: id
+      app_creator_identifier: com.test.apps
+      app_uid_metatag_placeholder: '%%%%APP_UID%%%%'
+      target_version:
+        ios: "7"
+        android: "18"
+      file_extensions:
+        ios: ipa
+        android: apk
+      rsync_bin: /usr/bin/rsync
+      rsync_url: user@url::cs_inbox
+      rsync_password: dddddd
+      rsync_suffix: /www/
+    verify_uploads:
+      template:
+        - frontpage.html
+        - page.html
+        - thumbnail.jpg
+        - conf.yml
+        - js/jquery.js
+        - js/jquery-ui.js
+        - js/jquery-mobile.js
+        - js/mlab.api.js
+        - css/mlab_component.css
+        - css/jquery-ui.css
+        - css/jquery-mobile.css
+      template_conf_required:
+        - name
+        - tooltip
+      component:
+        - code_dt.js
+        - conf.yml
+        - icon.png
+      component_conf_required:
+        - category
+        - html
+        - name
+        - tooltip
+      app:
+        - www
+      template_required_strings:
+        frontpage.html: '/\<div .*id\=.mlab_editable_area.*?\>/'
+    component_files:
+      ICON: icon.png
+      CONFIG: conf.yml
+      SCRIPTS: code_dt.js
+      PHP: server_code.php
+    app:
+      copy_files:
+        frontpage.html: index.html
+        js/: js
+        css/: css
+        img/: img
+      new_page: page.html
+      content_id: mlab_editable_area
+      html_header: |
+        <!DOCTYPE html>
+        <html>
+        <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>%%TITLE%%</title></head>
+        <body>
+      html_footer: '\n</body></html>'
+    replace_in_filenames: ""
+    plugins:
+      - cordova-plugin-device
+      - cordova-plugin-network-information
