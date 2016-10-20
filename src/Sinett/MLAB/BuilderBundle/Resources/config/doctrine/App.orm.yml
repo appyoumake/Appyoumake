@@ -139,8 +139,8 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       inversedBy: apps
           
     updatedBy:
-      targetEntity: User
-      inversedBy: apps
+      targetEntity: Sinett\MLAB\BuilderBundle\Entity\User
+      inversedBy: appsUpdatedBy
       joinColumn:
         name: updatedby_id
         referencedColumnName: id

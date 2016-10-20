@@ -67,11 +67,11 @@ Sinett\MLAB\BuilderBundle\Entity\User:
       mappedBy: user
 
     appsUpdatedBy:
-      targetEntity: App
-      mappedBy: user
+      targetEntity: Sinett\MLAB\BuilderBundle\Entity\App
+      mappedBy: updatedBy
       joinColumn:
         name: id
-        referencedColumnName: updateby_id
+        referencedColumnName: updatedby_id
 
   manyToMany:
     groups:

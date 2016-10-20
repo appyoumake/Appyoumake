@@ -18,19 +18,19 @@ parameters:
     
     mlab: 
         convert:
-            ___python_bin: /usr/bin/python
+            ___python_bin: 
             converter_bin: document2HTML.py
             config: config.json
             converter_path: src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
 
         ws_socket:
-            ___url_client: ws://mlab.local.dev:8080/
+            ___url_client: ws://url:8080/
             path_client: /messages/
 #must be in this format
-            ___url_server: http://mlab.local.dev:8080/
+            ___url_server: http://url:8080/
             path_server: /messages/
 
-        ___missing_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==
+        missing_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==
         save_interval: 60
         icon_text_maxlength: 6
 
@@ -46,11 +46,11 @@ parameters:
           ___icon: 
         
         urls:
-          ___app: /mlab_elements/apps/
-          ___component: /mlab_elements/components/
-          ___template: /mlab_elements/templates/
-          ___icon: /mlab_elements/icons/
-          ___icon_font: /img/oswald_bold.ttf
+          ___app: 
+          ___component: 
+          ___template: 
+          ___icon: 
+          icon_font: /img/oswald_bold.ttf
           
         filenames:
           component_icon: icon.png
@@ -70,7 +70,7 @@ parameters:
             app_uid_metatag_placeholder: %%%%APP_UID%%%%
             ___target_version: {ios: 7, android: 18}
             file_extensions: {ios: 'ipa', android: 'apk'}
-            ___rsync_bin: /usr/bin/rsync
+            ___rsync_bin: 
             ___rsync_url: user@url::cs_inbox
             ___rsync_password: 
             rsync_suffix: /www/

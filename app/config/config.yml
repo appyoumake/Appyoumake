@@ -39,7 +39,7 @@ twig:
 assetic:
     debug:          %kernel.debug%
     use_controller: true
-    bundles: [ SinettMLABBuilderBundle ]
+    bundles: [ SinettMLABBuilderBundle, FOSUserBundle ]
     filters:
         cssrewrite: ~
         uglifyjs2:

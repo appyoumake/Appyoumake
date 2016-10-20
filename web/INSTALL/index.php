@@ -49,9 +49,9 @@ switch ($_REQUEST['fix']) {
     case "save_parameters":
         if (array_key_exists("submit_ok", $_POST) && $_POST["submit_ok"] == "Save") {
             unset($_POST["submit_ok"]);
-            $params = array("parameters" => array());
+            $incoming_params = array("parameters" => array());
             foreach ($_POST as $flat_key => $value) {
-                $arr = &$params["parameters"];
+                $arr = &$incoming_params["parameters"];
                 $keys = explode('__', $flat_key);
                 $count = count($keys);
                 foreach ($keys as $key) {
@@ -67,7 +67,7 @@ switch ($_REQUEST['fix']) {
             }
             
 //now load the other settings, merge and save
-            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($params));
+            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($incoming_params));
             
         }
         break;
@@ -136,6 +136,7 @@ $checks = array(
                                         "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information."), 
 );
 
+//pick up parameters from dist file, then we clean it up to keep only entries that start with a __
 $params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
 
 //if parameters.yml exists, then we read in the values from that one
@@ -185,35 +186,77 @@ $params_help = array(
 
 $write_permissions = array(getcwd() . "/app/cache", getcwd() . "/app/config", getcwd() . "/app/logs", getcwd() . "/composer.lock");
 
-//utility function to copy across existing values from parameters.yml () to parameters.yml.dist
-function copyLiveParams() {
-    
-}
+
+/*
+ * Clean up the parameters so we only keep the ones that is prefixed with ___ (triple underscore)
+ * Also need to keep parents up to the top obviously
+ * 
+mlab: 
+    convert:
+        ___python_bin: 
+        converter_bin: document2HTML.py
+        config: config.json
+        converter_path: src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
+
+    ws_socket:
+        ___url_client: ws://url:8080/
+        path_client: /messages/ 
+ * Will check if child property is string/number or not, if not it'll recurse until it arrives at final value
+ * Also needs to check if the child property is just an array of possible values, in that case we need to stop at current level and store aray as comma delimited string
+ */
+function clean_parameters($array, $prefix = '') {
+    global $param_values;
+    $editable_types = array("boolean", "integer", "double", "string");
+    $result = array();
+    foreach ($array as $key => $value) {
+        $flat_key = $prefix . (empty($prefix) ? '' : '.') . $key;
+        
+        if (is_array($value)) {
+            $test_value = reset($value);
+            $first_key = key($value);
+            $test = gettype($test_value);
+            if ($first_key === 0 && in_array($test, $editable_types)) {
+                $result[$flat_key] = implode(",", $value);
+            } else {
+                $result = array_merge($result, clean_parameters($value, $flat_key));
+            }
+        } else {
+            if (strpos($flat_key, "___") !== false) {
+                $new_key = str_replace(array("___", "."), array("", "__"), $key);
+                $result[$flat_key] = $value;
+            }
+        }
+    }
+    return $result;
+}  
+
 
 //function to set some sensible values if they are missing initially
 function init() {
     global $params;
     global $write_permissions;
     $cur_dir = getcwd();
-    putenv("PATH='/usr/local/bin:/usr/bin:/bin'");
+    putenv("PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'");
 
-    if (!$params["mlab__compiler_service__rsync_bin"]) {
-        $params["mlab__compiler_service__rsync_bin"] = shell_exec("which rsync");
+    if (!$params["parameters"]["mlab"]["compiler_service"]["rsync_bin"]) {
+        $p = shell_exec("which rsync");
+        $params["parameters"]["mlab"]["compiler_service"]["rsync_bin"] = $p;
     }
-    if (!$params["mlab__convert__python_bin"]) {
-        $params["mlab__convert__python_bin"] = shell_exec("which python");
+    if (!$params["parameters"]["mlab"]["convert"]["python_bin"]) {
+        $p = shell_exec("which python");
+        $params["parameters"]["mlab"]["convert"]["python_bin"] = $p;
     }
     foreach(array("app", "component", "template", "icon") as $element) {
-        if (!$params["mlab__paths__" . $element]) {
-            $params["mlab__paths__$element"] = $cur_dir . "/mlab_elements/$element" . "s/";
+        if (!$params["parameters"]["mlab"]["paths"][$element]) {
+            $params["parameters"]["mlab"]["paths"][$element] = $cur_dir . "/mlab_elements/$element" . "s/";
         }
-        $write_permissions[] = $params["mlab__paths__$element"];
+        $write_permissions[] = $params["parameters"]["mlab"]["paths"][$element];
         
-        if (!$params["mlab__urls__" . $element]) {
-            $params["mlab__urls__$element"] = str_replace($cur_dir, "", $params["mlab__paths__$element"]) . "$element" . "s/";
+        if (!$params["parameters"]["mlab"]["urls"][$element]) {
+            $params["parameters"]["mlab"]["urls"][$element] = str_replace($cur_dir, "", $params["parameters"]["mlab"]["paths"][$element]) . "$element" . "s/";
         }
     }
-    
+    $params = clean_parameters($params);
 }
 
 
@@ -383,46 +426,6 @@ function populate_db($password) {
     $sql = "INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES (3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 16:11:32', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2016-10-10 16:11:32', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:\"ROLE_ADMIN\";}', 0, NULL, 'en_GB')";
 }
 
-/*
- * get a subsidiary branch, for instance:
-        uploads_allowed:
-          img: [image/gif, image/jpeg, image/png]
-          video: [video/webm, video/mp4, video/ogg]
-          audio: [audio/mp4, audio/mpeg, audio/vnd.wave]
-          
-        paths:
-          app: /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/
-          component: /home/utvikler/workspace/mlab.local.dev/mlab_elements/components/
-          template: /home/utvikler/workspace/mlab.local.dev/mlab_elements/templates/
-          icon: /home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/
- 
- * Will check if child property is string/number or not, if not it'll recurse until it arrives at final value
- * Also needs to check if the child property is just an array of possible values, in that case we need to stop at current level
- */
-function get_parameter_value($array, $prefix = '') {
-    global $param_values;
-    $editable_types = array("boolean", "integer", "double", "string");
-    $result = array();
-    foreach ($array as $key => $value) {
-        $new_key = $prefix . (empty($prefix) ? '' : '.') . $key;
-        
-        if (is_array($value)) {
-            $test_value = reset($value);
-            $first_key = key($value);
-            $test = gettype($test_value);
-            if ($first_key === 0 && in_array($test, $editable_types)) {
-                $result[$new_key] = implode(",", $value);
-            } else {
-                $result = array_merge($result, get_parameter_value($value, $new_key));
-            }
-        } else {
-            $result[$new_key] = $value;
-        }
-    }
-
-    return $result;
-}  
-
 //call the init function to fill variables
 init();
 
@@ -499,7 +502,7 @@ init();
                 <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
                 <tbody>
                     <?php 
-                        $param_list = get_parameter_value($params["parameters"], "parameters");
+                        $param_list = get_parameter_value($params["parameters"]);
                         foreach ($param_list as $key => $value) {
                             if (strpos($key, "___") !== false) {
                                 $new_key = str_replace(array("___", "."), array("", "__"), $key);
