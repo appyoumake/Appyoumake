@@ -20,26 +20,41 @@
 
 $php_version_min = 5.4;
 $php_version_max = 6.9;
+$system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 
 //--------DO NOT EDIT BELOW THIS LINE----------------
 
 require_once "spyc.php";
 chdir("../../");
+$next_step = 1;
 
 
 //--- RUN CODE IN RESPONSE TO GET REQUESTS ---
 
 switch ($_REQUEST['fix']) {
     case "version_composer":
+        putenv($system_path);
+        $exp_sig = trim(file_get_contents("https://composer.github.io/installer.sig"));
+        copy('https://getcomposer.org/installer', 'bin/composer-setup.php');
+        $dl_sig = trim(hash_file('SHA384', 'bin/composer-setup.php'));
+
+        if ($exp_sig == $dl_sig) {
+            chdir("bin");
+            include("composer-setup.php");
+            if (!file_exists("bin/composer.phar")) {
+                $error = "Unable to install composer";
+            }
+            chdir("..");
+        } 
+
         break;
 
     case "libraries_symfony":
+    case "libraries_js":
+        putenv($system_path);
         break;
 
     case "bootstrap_symfony":
-        break;
-
-    case "libraries_js":
         break;
 
 //this will merge the incoming parameters with existing app related values
@@ -71,19 +86,18 @@ switch ($_REQUEST['fix']) {
 //now load the other settings, merge and save
 //if the parameters.yml file already exists we read in these values and update them from the incoming data
 //otherwise we load the template parameters.yml.dist and add the values here
-// int he latter case we also need to remove the values prefixed by ___
+// in the latter case we also need to remove the values prefixed by ___
             if (file_exists('app/config/parameters.yml')) {
                 $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
             } else {
                 $existing_params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
             }
             $combined_params = array_replace_recursive($existing_params, $incoming_params);
-            if (!$existing_params["parameters"]["secret"]) {
-                $existing_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
+            if (!$combined_params["parameters"]["secret"]) {
+                $combined_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
             }
-            //var_dump($existing_params);
-            file_put_contents('app/config/testparameters.yml', Spyc::YAMLDump($combined_params));
-            
+            file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params));
+            $next_step = 2;
         }
         break;
 
@@ -155,13 +169,13 @@ $checks = array(
 $params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
 
 //if parameters.yml exists, then we read in the values from that one
-if (file_exists('app/config/parameters.yml')) { 
+if (file_exists('app/config/parameters.yml')) {
     $param_values = Spyc::YAMLLoad('app/config/parameters.yml');
 } else {
     $param_values = false;
 }
 
-$params_help = array(
+$params_help = array (
     "parameters__database_driver" => "The name of the PHP database driver to use",
     "parameters__database_host" => "URL/IP address of the database server to use",
     "parameters__database_port" => "TCP/IP port of the database server, set to null ig using sockets",
@@ -199,7 +213,7 @@ $params_help = array(
     "parameters__mlab__compiler_service__rsync_password" => "Password to use to upload files to compiler service",
 );
 
-$write_permissions = array(getcwd() . "/app/cache", getcwd() . "/app/config", getcwd() . "/app/logs", getcwd() . "/composer.lock");
+$write_permissions = array(getcwd() . "/app/cache", getcwd() . "/app/config", getcwd() . "/app/logs", getcwd() . "/composer.json", getcwd() . "/bin");
 
 
 /*
@@ -219,49 +233,65 @@ mlab:
  * Will check if child property is string/number or not, if not it'll recurse until it arrives at final value
  * Also needs to check if the child property is just an array of possible values, in that case we need to stop at current level and store aray as comma delimited string
  */
-function clean_parameters($array, $prefix = '') {
-    global $param_values;
+function clean_parameters($array, $param_values, $prefix = '') {
     $editable_types = array("boolean", "integer", "double", "string");
     $result = array();
     foreach ($array as $key => $value) {
-        $flat_key = $prefix . (empty($prefix) ? '' : '__') . $key;
-        
-        if (is_array($value)) {
-            $test_value = reset($value);
-            $first_key = key($value);
-            $test = gettype($test_value);
-            
+        if ($key != "_") { //special case for list of characters to replace
+            $flat_key = $prefix . (empty($prefix) ? '' : '__') . $key;
+
+//pick up the current value from the existing values if it exists
+            if ($param_values) {
+                $existing_values = $param_values[str_replace("___", "", $key)];
+            } else {
+                $existing_values = false;
+            }
+
+            if (is_array($value)) {
+                $test_value = reset($value);
+                $first_key = key($value);
+                $test = gettype($test_value);
+
 //arrived at the innermost element IF next element is array of strings, if they flat key contains 3 underscores anywhere we want to use it 
 //(parameters to save are identified with 3 underscores before the key name in parameter.yml.dist)
 //Then the underscores are removed before adding to the flat array
 //            print $flat_key."<br>";
-            if ($first_key === 0 && in_array($test, $editable_types) && strpos($flat_key, "___") !== false) {
-                $new_key = str_replace("___", "", $flat_key);
-                $result[$new_key] = implode(",", $value);
+                if ($first_key === 0 && in_array($test, $editable_types) && strpos($flat_key, "___") !== false) {
+                    $new_key = str_replace("___", "", $flat_key);
+                    if ($existing_values) {
+                        $result[$new_key] = implode(",", $existing_values);
+                    } else {
+                        $result[$new_key] = implode(",", $value);
+                    }
+                } else {
+                    $result = array_merge($result, clean_parameters($value, $existing_values, $flat_key));
+                }
             } else {
-                $result = array_merge($result, clean_parameters($value, $flat_key));
-            }
-        } else {
-            
+
 //as above 
-            if (strpos($flat_key, "___") !== false) {
-                $new_key = str_replace("___", "", $flat_key);
-                $result[$new_key] = $value;
+                if (strpos($flat_key, "___") !== false) {
+                    $new_key = str_replace("___", "", $flat_key);
+                    if ($existing_values) {
+                        $result[$new_key] = $existing_values;
+                    } else {
+                        $result[$new_key] = $value;
+                    }
+                }
             }
         }
     }
+    print $sno;
     return $result;
 }  
 
 
 //function to set some sensible values if they are missing initially
 function init() {
-    global $params;
-    global $write_permissions;
-    $cur_dir = getcwd();
-    putenv("PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'");
+    global $params, $param_values, $write_permissions, $system_path;
+    $cur_dir = getcwd($system_path);
+    putenv($system_path);
 
-    $params = clean_parameters($params);
+    $params = clean_parameters($params, $param_values);
     
     if (!$params["parameters__mlab__compiler_service__rsync_bin"]) {
         $p = trim(shell_exec("which rsync"));
@@ -281,7 +311,6 @@ function init() {
             $params["parameters__mlab__urls__$element"] = str_replace($cur_dir, "", $params["parameters__mlab__paths__$element"]) . "$element" . "s/";
         }
     }
-    
 }
 
 
@@ -361,38 +390,28 @@ function version_mysql() {
 // check version, if not found or wrong version, download correct version
 // see https://github.com/composer/packagist/issues/393 re home dir
 function version_composer() {
-    global $checks;
-    putenv("COMPOSER_HOME=/home/utvikler/workspace/mlab.local.dev/bin/.composer");
-    putenv("PATH='/usr/local/bin:/usr/bin:/bin'");
+    global $checks, $system_path;
+    putenv("COMPOSER_HOME=" . getcwd() . "/mlab.local.dev/bin/.composer");
+    putenv($system_path);
     
     if (!file_exists("bin/composer.phar")) {
-        $exp_sig = read("https://composer.github.io/installer.sig");
-        copy('https://getcomposer.org/installer', 'bin/composer-setup.php');
-        $dl_sig = hash_file('SHA384', 'bin/composer-setup.php');
-
-        if ($exp_sig == $dl_sig) {
-            include("bin/composer-setup.php");
-        } 
+        return "Composer is not installed, try to install";
         
-        include("bin/composer-setup.php");
-        if (!file_exists("bin/composer.phar")) {
-            return "Unable to install composer";
-        }
-    }
-
+    } else {
 //now check version
-    $ret = shell_exec("cd /home/utvikler/workspace/mlab.local.dev; bin/composer.phar -V");
-    $info = explode(" ", $ret);
-    foreach ($info as $value) {
-        if (floatval($value)) {
-            list($ver) = explode("-", $value);
-            if (version_compare($ver, $checks["version_composer"]["check"], ">=")) {
-                return true;
-            } else {
-                return "Version $ver installed, requires " . $checks["version_composer"]["check"];
+        $ret = shell_exec("bin/composer.phar -V");
+        $info = explode(" ", $ret);
+        foreach ($info as $value) {
+            if (floatval($value)) {
+                list($ver) = explode("-", $value);
+                if (version_compare($ver, $checks["version_composer"]["check"], ">=")) {
+                    return true;
+                } else {
+                    return "Version $ver installed, requires " . $checks["version_composer"]["check"];
+                }
             }
-        }
-    }    
+        }    
+    }
 }
 
 function version_symfony() {
@@ -454,13 +473,15 @@ function populate_db($password) {
 //call the init function to fill variables
 init();
 
+$fail_permissions = $fail_prerequisites = false;
 ?><!DOCTYPE html>
 <html>
     <head>
         <style>
-            table {
-                width: 500px;
+            div, table {
+                width: 650px;
             }
+
             table, th, td {
                 border: 1px solid lightgray;
                 border-collapse: collapse;
@@ -478,7 +499,62 @@ init();
                 width: 230px;
                 padding: 3px;
             }
+            button {
+                float: right;
+            }
         </style>
+        
+        <script>
+            var permissions_ok = true;
+            function move(direction) {
+                var curTable = document.querySelectorAll("[data-current='1']")[0];
+                var curId = curTable.getAttribute("id");
+                var input_element = null;
+                <?php
+                    $inputs = array_keys($params);
+                    echo "                var check_inputs = new Array('" . implode("','", $inputs) . "');";
+                ?>
+                        
+//check that all paramaters are filled in, otehrwise do NOT go to next tab
+//if all filled in and some are changed, then save it. Otherwise just display next table
+                if (curId == 1 && direction == 1) {
+                    var dirty = false;
+                    for (i in check_inputs) {
+                        input_element = document.getElementById(check_inputs[i]);
+                        if (input_element.value.trim() == "") {
+                            alert("One or more of the parameters have not been filled in. All entries must be filled in before it can be saved.");
+                            return;
+                        }
+                        if (input_element.value != input_element.getAttribute("data-original-value")) {
+//something has changed, submit form and bail
+                            dirty = true;
+                        }
+                    }
+                    if (dirty) {
+                        document.getElementById("parameters").submit();
+                        return;
+                    }
+                } else if (curId == 2 && direction == 1) {
+                    if (!permissions_ok) {
+                        alert("You must create the directories indicated and assign the user '<?php echo posix_getpwuid(posix_geteuid())['name']; ?>' as the owner of the files and directories listed here.")
+                        return;
+                    }
+                } else if (curId == 3 && direction == 1) {
+                }
+                            
+                if (direction == 1) {
+                    var showTable = curTable.nextElementSibling;
+                } else {
+                    var showTable = curTable.previousElementSibling;
+                }
+                if (showTable) {
+                    curTable.style.display = "none";
+                    curTable.setAttribute('data-current', '0');
+                    showTable.style.display = "block";
+                    showTable.setAttribute('data-current', '1');
+                }
+            }
+        </script>
         <meta charset="UTF-8" />
         <title>Verify and update Mlab installation before use</title>
     </head>
@@ -486,54 +562,78 @@ init();
         <h1>Verify and update Mlab installation before use</h1>
         <h2>setting up web server and correctly</h2>
         <p>Look <a href="server_setup.html">here</a> for a full explanation on how to correctly configure the web server before starting the Mlab configuration</p>
-        <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8">
-<!-- First the required stuff that they have to do themselves -->
-            <table>
-                <thead>
-                    <tr><td colspan="4"><h2>Prerequisites</h2></td></tr>
-                    <tr><td>Item</td><td>Status</td><td>Action required</td><td>&nbsp</td></tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    foreach ($checks as $key => $value) {
-                        if (function_exists($key)) {
-                            eval("\$res = " . $key . "(\$value);");
-                        } else {
-                            $res = false;
-                        }
-                        if ($res === true) {
-                            echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
-                        } else {
-                            echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $res</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
-                        }
-                    }
+        <div>
+            <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8" id="parameters">
 
-                    ?>
-                </tbody>
-                
-<!-- Then the parameters such as paths etc that we can update -->
-                <tr><td colspan="4"><h2>Permissions</h2></td></tr>
-                <tr><td colspan='3'>File/Directory</td><td>Writable?</td></tr>
-                <tbody>
-                    <?php 
-                        foreach ($write_permissions as $dir) {
-                            echo "<tr><td colspan='3'>$dir</td><td><img src='" . (is_writable($dir) ? "ok" : "fail") . ".png'></td></tr>\n";
+<!-- First the parameters such as paths etc that we can update, if they are not specified we do not know what folders to check for permissions -->
+                <table id="1" <?php if ($next_step == 1) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr><td colspan="4"><h2>Site setup</h2></td></tr>
+                        <tr><td colspan="4">Mlab uses various settings to let it know where to store files, how to connect to databases etc. Please fill in all the entries below, if an entry should be blank enter - (hyphen).</td></tr>
+                        <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            foreach ($params as $key => $value) {
+                                echo "<tr><td>" . htmlentities($params_help[$key]) . "</td><td colspan='2'><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
+                            }
+                        ?>
+                        <tr><td colspan='3'></td><td><input type="submit" name="submit_ok" value="Save"></td></tr>
+                    </tbody>
+                </table>
+
+
+<!-- Then the permissions required -->
+                <table id="2" <?php if ($next_step == 2) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr><td colspan="4"><h2>Permissions</h2></td></tr>
+                        <tr><td colspan='3'>File/Directory</td><td>Writable?</td></tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            $updated_permissions = false;
+                            foreach ($write_permissions as $dir) {
+                                if (is_writable($dir)) {
+                                    echo "<tr><td colspan='3'>$dir</td><td><img src='ok.png'></td></tr>\n";
+                                } else {
+                                    if (!$updated_permissions) {
+                                        echo "<script>permissions_ok = false;</script>";
+                                    }
+                                    echo "<tr><td colspan='3'>$dir</td><td><img src='fail.png'></td></tr>\n";
+                                }
+                            }
+                        ?>
+                    </tbody>
+                </table>
+
+<!-- Then the required stuff that they have to do themselves -->
+                <table id="3" <?php if ($next_step == 3) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr><td colspan="4"><h2>Prerequisites</h2></td></tr>
+                        <tr><td>Item</td><td>Status</td><td>Action required</td><td>&nbsp</td></tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        foreach ($checks as $key => $value) {
+                            if (function_exists($key)) {
+                                eval("\$res = " . $key . "(\$value);");
+                            } else {
+                                $res = false;
+                            }
+                            if ($res === true) {
+                                echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
+                            } else {
+                                echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $res</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
+                            }
                         }
-                    ?>
-                </tbody>
-                
-<!-- Then the parameters such as paths etc that we can update -->
-                <tr><td colspan="4"><h2>Site setup</h2></td></tr>
-                <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
-                <tbody>
-                    <?php 
-                        foreach ($params as $key => $value) {
-                            echo "<tr><td>" . htmlentities($params_help[$key]) . "</td><td colspan='2'><input type='text' name='" . $key . "' value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
-                        }
-                    ?>
-                    <tr><td colspan='3'></td><td><input type="submit" name="submit_ok" value="Save"></td></tr>
-                </tbody>
-            </table>
-        </form>
+
+                        ?>
+                    </tbody>
+                </table>
+            </form>
+            <hr>
+            <button onclick="move(1)">Next</button>
+            <button onclick="move(-1)">Previous</button>
+        </div>
     </body>
 </html>
