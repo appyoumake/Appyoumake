@@ -73,7 +73,7 @@ switch ($_REQUEST['fix']) {
                 $count = count($keys);
                 foreach ($keys as $key) {
                     if (--$count <= 0) {
-                        $arr[$key] = $value;
+                        $arr[$key] = (strpos($value, ",") ? implode(",", $value) : $value) ;
                     } else {
                         if (!key_exists($key, $arr)) {
                             $arr[$key] = array();
@@ -511,7 +511,8 @@ $fail_permissions = $fail_prerequisites = false;
                 var curId = curTable.getAttribute("id");
                 var input_element = null;
                 <?php
-                    $inputs = array_keys($params);
+                    $inputs = array_diff(array_keys($params), array("parameters__database_port", "parameters__mailer_user", "parameters__mailer_password"));
+                    //exclude certain parameters
                     echo "                var check_inputs = new Array('" . implode("','", $inputs) . "');";
                 ?>
                         
