@@ -1,4 +1,4 @@
-$existing_params["database_name"]<?php
+<?php
 /*
  * This installer script will first check prerequisites, errors here has to be changed by server admin
  *      Has Internet connection
