@@ -3,6 +3,12 @@
 use Symfony\Component\ClassLoader\ApcClassLoader;
 use Symfony\Component\HttpFoundation\Request;
 
+//Mlab hack, before do ANYTHING we check if the install directory exists, and if so redirect them promptly
+if (file_exists(__DIR__.'/../web/INSTALL/index.php')) {
+    header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/INSTALL/index.php");
+    die();
+}
+
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 
 // Use APC for autoloading to improve performance.

@@ -18,20 +18,60 @@
 
 //Edit variables here
 
-$php_version_min = 5.4;
-$php_version_max = 6.9;
-$system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
+
 
 //--------DO NOT EDIT BELOW THIS LINE----------------
-
+require_once "config.inc";
 require_once "spyc.php";
+$www_user = posix_getpwuid(posix_geteuid())['name'];
+$fail_permissions = false;
+$fail_versions = false;
 chdir("../../");
-$next_step = 1;
+if ($_REQUEST['next_step']) {
+    $next_step = $_REQUEST['next_step'];
+} else {
+    $next_step = 1;
+}
 
+function rmall($dir) { 
+    $files = array_diff(scandir($dir), array('.','..')); 
+    foreach ($files as $file) { 
+      (is_dir("$dir/$file")) ? rmall("$dir/$file") : unlink("$dir/$file"); 
+    } 
+    return rmdir($dir); 
+}
 
 //--- RUN CODE IN RESPONSE TO GET REQUESTS ---
+if ($_REQUEST['completed'] == 'ALL_OK') {
+    rmall("web/INSTALL");
+    header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
+    die();
+}
 
 switch ($_REQUEST['fix']) {
+    
+    case "import_empty_database":
+//get password etc from YAML file
+        $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
+        $mysql_host = $existing_params["database_host"];
+        $mysql_username = $existing_params["database_user"];
+        $mysql_password = $existing_params["database_password"];
+        $mysql_database = $existing_params["database_name"];
+        mysql_connect($mysql_host, $mysql_username, $mysql_password) or die('Error connecting to MySQL server: ' . mysql_error());
+        mysql_select_db($mysql_database) or die('Error selecting MySQL database: ' . mysql_error());
+        $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab.sql");
+        mysql_query($sql) or print('Error performing query \'<strong>' . $sql . '\': ' . mysql_error() . '<br /><br />');
+        $next_step = 4;
+        break;
+    
+    case "import_templates":
+        $next_step = 4;
+        break;
+    
+    case "import_components":
+        $next_step = 4;
+        break;
+    
     case "version_composer":
         putenv($system_path);
         $exp_sig = trim(file_get_contents("https://composer.github.io/installer.sig"));
@@ -46,24 +86,25 @@ switch ($_REQUEST['fix']) {
             }
             chdir("..");
         } 
-
+        $next_step = 4;
         break;
 
     case "libraries_symfony":
     case "libraries_js":
         putenv($system_path);
+        $p = trim(shell_exec("bin/composer.phar install"));
+        $next_step = 4;
         break;
 
     case "bootstrap_symfony":
+        $p = trim(shell_exec("bin/composer run-script post-update-cmd"));
+        $next_step = 4;
         break;
 
 //this will merge the incoming parameters with existing app related values
     
-// generate   "secret" => "A random word or phrase that Symfony uses for CSRF tokens",
 
     case "save_parameters":
-        if (array_key_exists("submit_ok", $_POST) && $_POST["submit_ok"] == "Save") {
-            unset($_POST["submit_ok"]);
             
 //here we loop through the incoming data and create an array that matches th one from the YAML file
             $incoming_params = array();
@@ -90,15 +131,17 @@ switch ($_REQUEST['fix']) {
             if (file_exists('app/config/parameters.yml')) {
                 $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
             } else {
-                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
+                $temp_yaml = file_get_contents('app/config/parameters.yml.dist');
+                $temp_yaml = str_replace("___", "", $temp_yaml);
+                $existing_params = Spyc::YAMLLoadString($temp_yaml);
             }
             $combined_params = array_replace_recursive($existing_params, $incoming_params);
+// generate   "secret" => "A random word or phrase that Symfony uses for CSRF tokens",
             if (!$combined_params["parameters"]["secret"]) {
                 $combined_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
             }
             file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params));
-            $next_step = 2;
-        }
+            $next_step = 3;
         break;
 
 }
@@ -110,7 +153,7 @@ $checks = array(
                                         "action"    => "Check Internet connection on the server"),
     
     "version_php" =>            array(  "label"     => "PHP version", 
-                                        "check"     => array("min" => 50400, "max" => 60000), 
+                                        "check"     => array("min" => $php_version_min, "max" => $php_version_max), 
                                         "help"      => "PHP version 5.4 or higher is required, version 7 or higher is not supported at the present time",
                                         "action"    => "Install supported version of PHP on the server"),
     
@@ -126,22 +169,22 @@ $checks = array(
     
     "libraries_php" =>          array(  "label"     => "PHP extensions", 
                                         "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
-                                        "check"     => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip", 
+                                        "check"     => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
                                         "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager."), 
         
     "version_mysql" =>          array(  "label"     => "MySQL version", 
                                         "help"      => "A MySQL database server version 5.5 or higher is required to store Mlab usr and app data",
-                                        "check"     => "5.5", 
+                                        "check"     => $mysql_version_min, 
                                         "action"    => "Install an appropriate version of Mlab on the server."), 
     
     "version_composer" =>       array(  "label"     => "Composer version", 
                                         "help"      => "Composer is a library manager used by Mlab to install the Symfony framework and Javascript libraries. Version 1.3 or higher is required",
-                                        "check"     => "1.3", 
+                                        "check"     => $composer_version_min, 
                                         "action"    => "You can <a href='index.php?fix=version_composer'>click here</a> to try to install the correct version of composer, otherwise manually follow <a href='https://getcomposer.org/'>these instructions</a>."), 
     
     "version_symfony" =>         array( "label"     => "Symfony framework", 
                                         "help"      => "Mlab requires the Symfony framework to be installed, during the installation a number of PHP and HTML files will be downloaded to the Mlab folder on the server.",
-                                        "check"     => "2.8", 
+                                        "check"     => $symfony_version_min, 
                                         "action"    => "You can <a href='index.php?fix=libraries_symfony'>click here</a> to try to install the framework, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
     
     "bootstrap_symfony" =>       array( "label"     => "Boostrap file", 
@@ -156,12 +199,12 @@ $checks = array(
     
     "version_uglifyjs" =>       array(  "label"     => "UglifyJS version", 
                                         "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
-                                        "check"     => "2.4", 
+                                        "check"     => $uglifyjs_version_min, 
                                         "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
     
     "version_nodejs" =>       array(    "label"     => "Node JS version", 
                                         "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
-                                        "check"     => "0.10.29", 
+                                        "check"     => $nodejs_version_min, 
                                         "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information."), 
 );
 
@@ -213,7 +256,14 @@ $params_help = array (
     "parameters__mlab__compiler_service__rsync_password" => "Password to use to upload files to compiler service",
 );
 
-$write_permissions = array(getcwd() . "/app/cache", getcwd() . "/app/config", getcwd() . "/app/logs", getcwd() . "/composer.json", getcwd() . "/bin");
+
+$d = getcwd();
+$write_permissions = array(
+    $d . "/app/cache" => (is_writable($d . "/app/cache") ? true : false), 
+    $d . "/app/config" => (is_writable($d . "/app/config") ? true : false), 
+    $d . "/app/logs" => (is_writable($d . "/app/logs") ? true : false), 
+    $d . "/composer.json" => (is_writable($d . "/composer.json") ? true : false), 
+    $d . "/bin" => (is_writable($d . "/bin") ? true : false));
 
 
 /*
@@ -287,8 +337,8 @@ function clean_parameters($array, $param_values, $prefix = '') {
 
 //function to set some sensible values if they are missing initially
 function init() {
-    global $params, $param_values, $write_permissions, $system_path;
-    $cur_dir = getcwd($system_path);
+    global $checks, $params, $param_values, $write_permissions, $system_path, $fail_permissions, $fail_versions;
+    $cur_dir = getcwd();
     putenv($system_path);
 
     $params = clean_parameters($params, $param_values);
@@ -297,18 +347,33 @@ function init() {
         $p = trim(shell_exec("which rsync"));
         $params["parameters__mlab__compiler_service__rsync_bin"] = $p;
     }
+    
     if (!$params["parameters__mlab__convert__python_bin"]) {
         $p = trim(shell_exec("which python"));
         $params["parameters__mlab__convert__python_bin"] = $p;
     }
+    
     foreach(array("app", "component", "template", "icon") as $element) {
         if (!$params["parameters__mlab__paths__$element"]) {
             $params["parameters__mlab__paths__$element"] = $cur_dir . "/mlab_elements/$element" . "s/";
         }
-        $write_permissions[] = $params["parameters__mlab__paths__$element"];
+        $write_permissions[$params["parameters__mlab__paths__$element"]] = (is_writable($params["parameters__mlab__paths__$element"]) ? true : false);
         
         if (!$params["parameters__mlab__urls__$element"]) {
             $params["parameters__mlab__urls__$element"] = str_replace($cur_dir, "", $params["parameters__mlab__paths__$element"]) . "$element" . "s/";
+        }
+    }
+
+    $fail_permissions = in_array(false, $write_permissions);
+    
+    foreach ($checks as $key => $value) {
+        if (function_exists($key)) {
+            eval("\$checks['" . $key . "']['result'] = " . $key . "(\$value);");
+        } else {
+            $checks[$key]['result'] = false;
+        }
+        if (!$checks[$key]['result']) {
+            $fail_versions = true;
         }
     }
 }
@@ -473,35 +538,22 @@ function populate_db($password) {
 //call the init function to fill variables
 init();
 
-$fail_permissions = $fail_prerequisites = false;
 ?><!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="basic.css">
         <style>
-            div, table {
-                width: 650px;
-            }
-
-            table, th, td {
-                border: 1px solid lightgray;
-                border-collapse: collapse;
-                padding: 5px;
-                vertical-align: top;
-            }
-            table td:nth-child(2), table td:nth-child(4) {
-                width: 40px;
-                text-align: center;
-            }
-            table td:nth-child(4) {
-                width: 250px;
-            }
-            input[type=text] {
-                width: 230px;
-                padding: 3px;
-            }
-            button {
-                float: right;
-            }
+            div, table { width: 650px; margin:0 auto; border: none; background-color: white;}
+            div {background: transparent; box-shadow: 10px 10px 5px #888888;}
+            th, td { border: 1px solid lightgray; border-collapse: collapse; padding: 5px; vertical-align: top; }
+            table td:nth-child(2), table td:nth-child(4) { width: 40px; text-align: center; }
+            table td:nth-child(4) { width: 250px; }
+            input[type=text] { width: 230px; padding: 3px; }
+            button { float: right; }
+            table .wrap { width: auto; }
+            tr.infobar {background-color: #CAED9E; }
+            button { background-color: green; color: white; font-size: 110%; }
+            button.error { background-color: red; }
         </style>
         
         <script>
@@ -511,19 +563,19 @@ $fail_permissions = $fail_prerequisites = false;
                 var curId = curTable.getAttribute("id");
                 var input_element = null;
                 <?php
-                    $inputs = array_diff(array_keys($params), array("parameters__database_port", "parameters__mailer_user", "parameters__mailer_password"));
+                    $inputs = array_diff(array_keys($params), $optional_params);
                     //exclude certain parameters
-                    echo "                var check_inputs = new Array('" . implode("','", $inputs) . "');";
+                    echo "var check_inputs = new Array('" . implode("','", $inputs) . "');";
                 ?>
                         
 //check that all paramaters are filled in, otehrwise do NOT go to next tab
 //if all filled in and some are changed, then save it. Otherwise just display next table
-                if (curId == 1 && direction == 1) {
+                if (curId == 2 && direction == 1) {
                     var dirty = false;
                     for (i in check_inputs) {
                         input_element = document.getElementById(check_inputs[i]);
                         if (input_element.value.trim() == "") {
-                            alert("One or more of the parameters have not been filled in. All entries must be filled in before it can be saved.");
+                            alert("One or more of the parameters have not been filled in. All required entries highlighted with a red asterisk must be filled in before the parameters can be saved.");
                             return;
                         }
                         if (input_element.value != input_element.getAttribute("data-original-value")) {
@@ -535,13 +587,7 @@ $fail_permissions = $fail_prerequisites = false;
                         document.getElementById("parameters").submit();
                         return;
                     }
-                } else if (curId == 2 && direction == 1) {
-                    if (!permissions_ok) {
-                        alert("You must create the directories indicated and assign the user '<?php echo posix_getpwuid(posix_geteuid())['name']; ?>' as the owner of the files and directories listed here.")
-                        return;
-                    }
-                } else if (curId == 3 && direction == 1) {
-                }
+                } 
                             
                 if (direction == 1) {
                     var showTable = curTable.nextElementSibling;
@@ -557,84 +603,104 @@ $fail_permissions = $fail_prerequisites = false;
             }
         </script>
         <meta charset="UTF-8" />
-        <title>Verify and update Mlab installation before use</title>
+        <title>Mlab installation</title>
     </head>
     <body>
-        <h1>Verify and update Mlab installation before use</h1>
-        <h2>setting up web server and correctly</h2>
-        <p>Look <a href="server_setup.html">here</a> for a full explanation on how to correctly configure the web server before starting the Mlab configuration</p>
         <div>
+            <h1>Mlab installation</h1>
+            <p>This installation page will help you through the steps required to configure your Mlab installation. For some of these steps you have to access the server as root/administrator, others you can do directly from this page.</p>
             <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8" id="parameters">
-
-<!-- First the parameters such as paths etc that we can update, if they are not specified we do not know what folders to check for permissions -->
-                <table id="1" <?php if ($next_step == 1) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
-                    <thead>
-                        <tr><td colspan="4"><h2>Site setup</h2></td></tr>
-                        <tr><td colspan="4">Mlab uses various settings to let it know where to store files, how to connect to databases etc. Please fill in all the entries below, if an entry should be blank enter - (hyphen).</td></tr>
-                        <tr><td>Setting</td><td colspan='2'>Current value</td><td>&nbsp;</td></tr>
-                    </thead>
+                
+<!-- First we show instructions for how to install web server, database server, etc -->
+                <table id="1" <?php if ($next_step == 1 ) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
                     <tbody>
-                        <?php 
-                            foreach ($params as $key => $value) {
-                                echo "<tr><td>" . htmlentities($params_help[$key]) . "</td><td colspan='2'><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td><td title='$key'><img src='question.png'></td></tr>\n";
-                            }
-                        ?>
-                        <tr><td colspan='3'></td><td><input type="submit" name="submit_ok" value="Save"></td></tr>
+                        <tr class="infobar"><td><h3>Step 1: Web, database and PHP server setup</h3></td></tr>
+                        <tr class="infobar"><td><p>First you need to prepare the web server (such as Apache), a database server (typically MySQL) and the PHP scripting language for use with the Symfony framework. The instructions on this page will take you through the most common scenarios.</p></td></tr>
+                        <tr class="infobar"><td><button type="button" onclick="move(1)">Completed instructions on this page, go to next step</button></td></tr>
+                        <tr><td><?php include "info.html"; ?></td></tr>
+                        <tr class="infobar"><td><button type="button" onclick="move(1)">Completed instructions on this page, go to next step</button></td></tr>
                     </tbody>
                 </table>
 
-
-<!-- Then the permissions required -->
+<!-- Second we get the parameters such as paths etc that we can update, if they are not specified we do not know what folders to check for permissions -->
                 <table id="2" <?php if ($next_step == 2) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
                     <thead>
-                        <tr><td colspan="4"><h2>Permissions</h2></td></tr>
-                        <tr><td colspan='3'>File/Directory</td><td>Writable?</td></tr>
+                        <tr><td colspan="3"><h3>Step 2: Mlab configuration settings</h3></td></tr>
+                        <?php if (!is_writable("app/config/") || (file_exists("app/config/parameters.yml") && !is_writable("app/config/parameters.yml"))) { ?>
+                                <tr class="infobar"><td colspan="3">The <?php echo $www_user; ?> user does not have access to write in the 'app/config' folder OR the 'app/config/parameters.yml' file. Update the owner and write permissions and click 'Retry' before continuing.</td></tr>
+                                <tr class="infobar"><td colspan="3"><button type="button" onclick="window.location.href = 'index.php?next_step=2';" class="error">Retry</button></td></tr>
+                            </thead>
+                        <?php } else { ?>
+                                <tr class="infobar"><td colspan="3"><p>Mlab uses various settings to let it know where to store files, how to connect to databases etc. Please fill in and verify all the required entries below and save them before going to next step.</p></td></tr>
+                                <tr class="infobar"><td colspan="3"><button type="button" onclick="move(1)">Save settings and continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                                <tr><td><em>Setting</em></td><td><em>Current value</em></td><td>&nbsp;</td></tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    foreach ($params as $key => $value) {
+                                        echo "<tr>" . 
+                                                 "<td>" . htmlentities($params_help[$key]) . (in_array($key, $inputs) ? " <span style='color: red; '>&nbsp;*</span>" : "") . "</td>" .
+                                                 "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td>" .
+                                                 "<td title='$key'><img src='question.png'></td>" .
+                                             "</tr>\n";
+                                    }
+                                ?>
+                                <tr class="infobar"><td colspan="3"><button type="button" onclick="move(1)">Save settings and continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                            </tbody>
+                        <?php } ?>
+                </table>
+
+
+<!-- Then the permissions required, we have checked for access in the init() function -->
+                <table id="3" <?php if ($next_step == 3) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr class="infobar"><td colspan="2"><h3>Step 3: File and directory permissions</h3></td></tr>
+                        <tr class="infobar"><td colspan="2"><p>For Mlab to work correctly, and for this installation page to be able to update settings, you must create the directories indicated below and assign the user '<?php echo $www_user; ?>' as the owner of the files and directories listed here; and the owner must then have write access to these directories and files. Check the status of the access below and continue when all entries have write access.</p></td></tr>
+                        <?php if ($fail_permissions) { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=3';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="move(1);">Continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } ?>
+                        <tr><td>File/Directory</td><td>Writable?</td></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($write_permissions as $dir => $write_ok) {
+                            echo "<tr><td>$dir</td><td><img src='" . (!$write_ok ? "fail" : "ok") . ".png'></td></tr>\n";
+                        } ?>
+                        <?php if ($fail_permissions) { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=3';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="move(1);">Continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+<!-- Then the libs and server versions checks -->
+                <table id="4" <?php if ($next_step == 4) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr class="infobar"><td colspan="4"><h3>Step 3: Versions and libraries</h3></td></tr>
+                        <?php if ($fail_versions) { ?>
+                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. Please correct the errors below before completing the Mlab installation</p></td></tr>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. They all seem to be correctly installed on this server!</p></td></tr>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Complete installation by removing the installation files</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } ?>
+                        <tr><td><em>Item</em></td><td><em>Status</em></td><td><em>Action required</em></td><td>&nbsp</td></tr>
                     </thead>
                     <tbody>
                         <?php 
-                            $updated_permissions = false;
-                            foreach ($write_permissions as $dir) {
-                                if (is_writable($dir)) {
-                                    echo "<tr><td colspan='3'>$dir</td><td><img src='ok.png'></td></tr>\n";
+                            foreach ($checks as $key => $value) {
+                                if ($value["result"]) {
+                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
                                 } else {
-                                    if (!$updated_permissions) {
-                                        echo "<script>permissions_ok = false;</script>";
-                                    }
-                                    echo "<tr><td colspan='3'>$dir</td><td><img src='fail.png'></td></tr>\n";
+                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $res</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
                                 }
                             }
                         ?>
                     </tbody>
                 </table>
-
-<!-- Then the required stuff that they have to do themselves -->
-                <table id="3" <?php if ($next_step == 3) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
-                    <thead>
-                        <tr><td colspan="4"><h2>Prerequisites</h2></td></tr>
-                        <tr><td>Item</td><td>Status</td><td>Action required</td><td>&nbsp</td></tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        foreach ($checks as $key => $value) {
-                            if (function_exists($key)) {
-                                eval("\$res = " . $key . "(\$value);");
-                            } else {
-                                $res = false;
-                            }
-                            if ($res === true) {
-                                echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
-                            } else {
-                                echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $res</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
-                            }
-                        }
-
-                        ?>
-                    </tbody>
-                </table>
             </form>
-            <hr>
-            <button onclick="move(1)">Next</button>
-            <button onclick="move(-1)">Previous</button>
         </div>
     </body>
 </html>

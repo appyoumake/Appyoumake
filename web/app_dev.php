@@ -3,6 +3,12 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
 
+//Mlab hack, before do ANYTHING we check if the install directory exists, and if so redirect them promptly
+if (file_exists(__DIR__.'/../web/INSTALL/index.php')) {
+    header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/INSTALL/index.php");
+    die();
+}
+
 // If you don't want to setup permissions the proper way, just uncomment the following PHP line
 // read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
 //umask(0000);

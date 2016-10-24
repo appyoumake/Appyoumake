@@ -1,0 +1,70 @@
+        <h1 class="wrap"><a id="Mlab_server_setup_0"></a>Mlab server setup</h1>
+        <h5><a id="THIS_DOCUMENT_IS_NOT_COMPLETED_AS_OF_14_APRIL_2016_2"></a>THIS DOCUMENT IS NOT COMPLETED AS OF 14 APRIL 2016</h5>
+        <p class="wrap">This repository hold all the code for the MLAB editor, including the admin functionality. It uses the Symfony framework, and backend code utilises PHP/MySQL, the HTML is generated from TWIG templates. The frontend relies heavily on Javascript/HTML5 and CSS3, with most pages using AJAX to store and retrieve data.</p>
+        <h2 class="wrap"><a id="Requirements_6"></a>Requirements</h2>
+        <ul>
+            <li>
+                <p class="wrap">MLAB uses a standard LAMP (Linux, Apache (2.x), MySQL (5.x), PHP (5.3+)) stack.</p>
+            </li>
+            <li>
+                <p class="wrap">PHP may need a newer version for logout to NOT display an error,  see <a href="https://github.com/symfony/symfony/issues/5868">https://github.com/symfony/symfony/issues/5868</a></p>
+            </li>
+            <li>
+                <p class="wrap">Install php-xml-dtd on Ubuntu (for DomDocuments)</p>
+            </li>
+            <li>
+                <p class="wrap">Install php5-dom on ubuntu</p>
+            </li>
+        </ul>
+        <h1 class="wrap"><a id="Setup_16"></a>Setup</h1>
+        <p class="wrap">MLAB can run on most web servers, such as Apache, nginx or Lighttpd, below is the configuration used for these servers</p>
+        <h2 class="wrap"><a id="_20"></a></h2>
+        <h2 class="wrap"><a id="Lighttpd_22"></a>Lighttpd</h2>
+        <ul>
+            <li>
+                <p class="wrap">Edit config file: /etc/lighttpd/conf-available/10-simple-vhost.conf</p>
+                <pre class="wrap"><code></code></pre>
+            </li>
+        </ul>
+        <h1 class="wrap"><a id="usrsharedoclighttpdsimplevhosttxt_27"></a>/usr/share/doc/lighttpd/simple-vhost.txt</h1>
+        <p class="wrap">server.modules += ( "mod_simple_vhost" )</p>
+        <h2 class="wrap"><a id="The_document_root_of_a_virtual_host_is_documentroot__29"></a>The document root of a virtual host is document-root =</h2>
+        <h2 class="wrap"><a id="simplevhostserverroot__HTTPhost__simplevhostdocumentroot_30"></a>simple-vhost.server-root + $HTTP["host"] + simple-vhost.document-root</h2>
+        <p class="wrap">simple-vhost.server-root         = "/home/utvikler/workspace/"
+            simple-vhost.document-root       = "/"</p>
+        <h2 class="wrap"><a id="the_default_host_if_no_host_is_sent_33"></a>the default host if no host is sent</h2>
+        <p class="wrap">simple-vhost.default-host        = "local.dev"</p>
+        <pre class="wrap"><code>
+* Edit config file: /etc/lighttpd/conf-available/20-mlab-vhost.conf
+
+</code></pre>
+        <h1 class="wrap"><a id="usrsharedoclighttpdsimplevhosttxt_40"></a>/usr/share/doc/lighttpd/simple-vhost.txt</h1>
+        <p class="wrap">server.modules += ( "mod_accesslog" )</p>
+        <h2 class="wrap"><a id="The_document_root_of_a_virtual_host_is_documentroot__42"></a>The document root of a virtual host is document-root =</h2>
+        <h2 class="wrap"><a id="simplevhostserverroot__HTTPhost__simplevhostdocumentroot_43"></a>simple-vhost.server-root + $HTTP["host"] + simple-vhost.document-root</h2>
+        <p class="wrap">$HTTP["url"] =~ "/mlab_elements/resources($|/)" {
+            simple-vhost.document-root = "/"
+            dir-listing.activate = "enable"
+            dir-listing.show-readme = "enable"
+            dir-listing.hide-readme-file = "enable"
+            } else $HTTP["host"] =~ "mlab.<em>&quot; {
+                simple-vhost.document-root = "/web/"
+                url.rewrite-if-not-file = (
+                "^/$" =&gt; "app.php",
+                &quot;<sup>/(?!.+.php)[</sup>?]+(?.</em>)?" =&gt; "app.php/$1$2",
+            )
+            alias.url = ( "/mlab_elements/" =&gt; "/path_to_mlab/mlab_elements/" )
+            accesslog.filename = "/var/log/lighttpd/access-mlab.log"
+            }</p>
+        <pre class="wrap"><code>
+* Enable the new configuration (this is from Linux command line):
+
+</code></pre>
+        <p class="wrap">$ sudo lighttpd-enable-mod simple-vhost
+            $ sudo lighttpd-enable-mod mlab-vhost
+            $ sudo /etc/init.d/lighttpd force-reload</p>
+        <pre class="wrap"><code>
+###
+Debugging lighttpd vhost/rerouting:
+
+* add to /etc/lighttpd/lighttpd.conf
