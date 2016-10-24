@@ -1,4 +1,4 @@
-<?php
+$existing_params["database_name"]<?php
 /*
  * This installer script will first check prerequisites, errors here has to be changed by server admin
  *      Has Internet connection
@@ -43,24 +43,24 @@ function rmall($dir) {
 
 //--- RUN CODE IN RESPONSE TO GET REQUESTS ---
 if ($_REQUEST['completed'] == 'ALL_OK') {
-    rmall("web/INSTALL");
-    header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
-    die();
+    //rmall("web/INSTALL");
+    //header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
+    die("NOW THE FOLDER WOULD BE DELETED...");
 }
 
 switch ($_REQUEST['fix']) {
     
     case "import_empty_database":
 //get password etc from YAML file
-        $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
-        $mysql_host = $existing_params["database_host"];
-        $mysql_username = $existing_params["database_user"];
-        $mysql_password = $existing_params["database_password"];
-        $mysql_database = $existing_params["database_name"];
-        mysql_connect($mysql_host, $mysql_username, $mysql_password) or die('Error connecting to MySQL server: ' . mysql_error());
-        mysql_select_db($mysql_database) or die('Error selecting MySQL database: ' . mysql_error());
+        $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
         $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab.sql");
-        mysql_query($sql) or print('Error performing query \'<strong>' . $sql . '\': ' . mysql_error() . '<br /><br />');
+        $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
+        if ($mysqli->connect_errno) {
+            $error = "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+        }
+        if ($result = $mysqli->query($sql)) {
+            $result->close();
+        }
         $next_step = 4;
         break;
     
@@ -81,8 +81,10 @@ switch ($_REQUEST['fix']) {
         if ($exp_sig == $dl_sig) {
             chdir("bin");
             include("composer-setup.php");
-            if (!file_exists("bin/composer.phar")) {
+            if (!file_exists("composer.phar")) {
                 $error = "Unable to install composer";
+            } else {
+                chmod("bin/composer.phar", 0770);
             }
             chdir("..");
         } 
@@ -169,7 +171,7 @@ $checks = array(
     
     "libraries_php" =>          array(  "label"     => "PHP extensions", 
                                         "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
-                                        "check"     => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysql,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
+                                        "check"     => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
                                         "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager."), 
         
     "version_mysql" =>          array(  "label"     => "MySQL version", 
@@ -192,20 +194,25 @@ $checks = array(
                                         "check"     => "app/bootstrap.php.cache", 
                                         "action"    => "You can <a href='index.php?fix=bootstrap_symfony'>click here</a> to try to generate this file, otherwise manually follow <a href='http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache'>these instructions</a>."), 
     
-    "libraries_js" =>           array(  "label"     => "Javascript libraries", 
+    "libraries_js" =>            array( "label"     => "Javascript libraries", 
                                         "help"      => "These Javascript and libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-1.9.0'",
                                         "check"     => "bowser.js,jquery.contextmenu.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery-ui.js,jquery.uploadfile-1.9.0.js", 
                                         "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
     
-    "version_uglifyjs" =>       array(  "label"     => "UglifyJS version", 
+    "version_uglifyjs" =>        array( "label"     => "UglifyJS version", 
                                         "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
                                         "check"     => $uglifyjs_version_min, 
                                         "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
     
-    "version_nodejs" =>       array(    "label"     => "Node JS version", 
+    "version_nodejs" =>          array( "label"     => "Node JS version", 
                                         "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
                                         "check"     => $nodejs_version_min, 
                                         "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information."), 
+    
+    "import_empty_database" =>   array( "label"     => "Initial Mlab data", 
+                                        "help"      => "To start using Mlab the basic database must be set up and an admin user must be added. ",
+                                        "check"     => 14, 
+                                        "action"    => "You can click <a href='index.php?fix=import_empty_database'>here</a> to do this, or you can manually import the 'INSTALL/mlab.sql' file into the designated database."), 
 );
 
 //pick up parameters from dist file, then we clean it up to keep only entries that start with a __
@@ -464,6 +471,9 @@ function version_composer() {
         
     } else {
 //now check version
+        if (!is_executable("bin/composer.phar")) {
+            chmod("bin/composer.phar", 0770);
+        }
         $ret = shell_exec("bin/composer.phar -V");
         $info = explode(" ", $ret);
         foreach ($info as $value) {
@@ -527,12 +537,27 @@ function version_nodejs() {
 }
 
 
-// se http://symfony.com/doc/current/doctrine.html
-function populate_db($password) {
-    $sql = "INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`) VALUES (1, 'General', 'General group for initial use', 1, 1, 'a:0:{}')";
-    $sql = "INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES (1, 1)";
-    $sql = "INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES (3, 1)";
-    $sql = "INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES (3, NULL, NULL, NULL, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 16:11:32', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2016-10-10 16:11:32', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:\"ROLE_ADMIN\";}', 0, NULL, 'en_GB')";
+//checking to see if the database exists and if the relevant tables have been created
+function import_empty_database() {
+    global $checks;
+//get password etc from YAML file
+    $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
+    $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
+    if ($mysqli->connect_errno) {
+        return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+    }
+    $sql = "SELECT count(*) AS num_tables FROM information_schema.TABLES WHERE (TABLE_SCHEMA = '$existing_params[database_name]')";
+    if ($result = $mysqli->query($sql)) {
+        $info = $result->fetch_array(MYSQLI_ASSOC);
+        $result->close();
+        if ($info["num_tables"] >= $checks["import_empty_database"]["check"]) {
+            return true;
+        } else {
+            return "Incorrect number of tables, please verify by comparing database '$mysql_database' with the content of 'web/INSTALL/mlab.sql'.";
+        }
+    } else {
+        return "Database not found or user credentials incorrect";
+    }
 }
 
 //call the init function to fill variables
@@ -691,13 +716,18 @@ init();
                     <tbody>
                         <?php 
                             foreach ($checks as $key => $value) {
-                                if ($value["result"]) {
+                                if ($value["result"] === true) {
                                     echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
                                 } else {
-                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $res</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
+                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $value[result]</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
                                 }
                             }
                         ?>
+                        <?php if ($fail_versions) { ?>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Complete installation by removing the installation files</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </form>
