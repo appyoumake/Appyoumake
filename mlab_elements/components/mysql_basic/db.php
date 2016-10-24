@@ -1,10 +1,13 @@
 <?php
+
+//EXTREMELY simple backend to demonstrate the MySQL storage plugin
+
 session_start();
 header("Access-Control-Allow-Origin: *");
 $server = "localhost";
-$user = "root";
-$pass = "ntoctomto";
-$dbname = "mlab_demo";
+$user = "";
+$pass = "";
+$dbname = "mlab_demo_storage";
 
 extract($_POST);
 
