@@ -34,37 +34,4 @@
             simple-vhost.document-root       = "/"</p>
         <h2 class="wrap"><a id="the_default_host_if_no_host_is_sent_33"></a>the default host if no host is sent</h2>
         <p class="wrap">simple-vhost.default-host        = "local.dev"</p>
-        <pre class="wrap"><code>
-* Edit config file: /etc/lighttpd/conf-available/20-mlab-vhost.conf
-
-</code></pre>
-        <h1 class="wrap"><a id="usrsharedoclighttpdsimplevhosttxt_40"></a>/usr/share/doc/lighttpd/simple-vhost.txt</h1>
-        <p class="wrap">server.modules += ( "mod_accesslog" )</p>
-        <h2 class="wrap"><a id="The_document_root_of_a_virtual_host_is_documentroot__42"></a>The document root of a virtual host is document-root =</h2>
-        <h2 class="wrap"><a id="simplevhostserverroot__HTTPhost__simplevhostdocumentroot_43"></a>simple-vhost.server-root + $HTTP["host"] + simple-vhost.document-root</h2>
-        <p class="wrap">$HTTP["url"] =~ "/mlab_elements/resources($|/)" {
-            simple-vhost.document-root = "/"
-            dir-listing.activate = "enable"
-            dir-listing.show-readme = "enable"
-            dir-listing.hide-readme-file = "enable"
-            } else $HTTP["host"] =~ "mlab.<em>&quot; {
-                simple-vhost.document-root = "/web/"
-                url.rewrite-if-not-file = (
-                "^/$" =&gt; "app.php",
-                &quot;<sup>/(?!.+.php)[</sup>?]+(?.</em>)?" =&gt; "app.php/$1$2",
-            )
-            alias.url = ( "/mlab_elements/" =&gt; "/path_to_mlab/mlab_elements/" )
-            accesslog.filename = "/var/log/lighttpd/access-mlab.log"
-            }</p>
-        <pre class="wrap"><code>
-* Enable the new configuration (this is from Linux command line):
-
-</code></pre>
-        <p class="wrap">$ sudo lighttpd-enable-mod simple-vhost
-            $ sudo lighttpd-enable-mod mlab-vhost
-            $ sudo /etc/init.d/lighttpd force-reload</p>
-        <pre class="wrap"><code>
-###
-Debugging lighttpd vhost/rerouting:
-
-* add to /etc/lighttpd/lighttpd.conf
+        
