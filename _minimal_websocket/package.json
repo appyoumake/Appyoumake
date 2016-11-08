@@ -1,10 +1,11 @@
 {
     "name": "mlab.minimal_websocket.dev",
-    "description": "A minimal websocket server supporting mlab",
+    "description": "A minimal websocket server supporting Mlab, Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved",
     "version": "0.0.1",
     "main": "app.js",
     "author": {
-        "name": "FFI Sinett"
+        "name": "Arild Bergh/Sinett 3.0 programme",
+        "email": "firstname.lastname@ffi.no"
     },
     "licenses": {
         "type": "none"

@@ -1,7 +1,16 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme firstname.lastname at ffi.no 
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/**
+ * Very basic Websocket server for messages between Mlab editor backend and frontend
+ * Used when data comes back from either the compiler or the app market services
  */
 
 //first get config details
@@ -20,6 +29,7 @@ console.log = function (data){
 
 console.log("Listening on localhost:" + config.port);
 
+//listen to incoming connections
 mlabServicesCallbackServer.on('connection', function(ws) {
     console.log(ws.upgradeReq.url);
     url_info = ws.upgradeReq.url.match(/[^/]+/g);
@@ -88,6 +98,7 @@ mlabServicesCallbackServer.on('connection', function(ws) {
 
 });
 
+//open websocket when first start
 mlabServicesCallbackServer.on('open', function open() {
   console.log("opening");
 });
