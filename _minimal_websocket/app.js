@@ -1,7 +1,7 @@
 /*******************************************************************************************************************************
 @copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
 @license Proprietary and confidential
-@author Arild Bergh/Sinett 3.0 programme firstname.lastname at ffi.no 
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
 Unauthorized copying of this file, via any medium is strictly prohibited 
 

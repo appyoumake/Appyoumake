@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
+{#
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+#}
+
+{#
+Core page template for all pages except the app editor page
+#}
         <meta charset="UTF-8" />
         <title>{% block title %}MLAB{% endblock %}</title>
         {% block stylesheets %}
@@ -20,7 +33,7 @@
             <script type="text/javascript">
                 $(document).ready(function() {
 
-                    //Checkes if the editor menu icon is cliked
+                    //Checkes if the editor menu icon is clicked
                     $("#mlab_editor_menu_dropdown").on("click",function(event) {   
                           if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
                               //User menu is open and needs to be closed 
@@ -33,7 +46,7 @@
                           event.stopPropagation(); 
                      });
 
-                    //Checkes if the user menu icon is cliked
+                    //Checkes if the user menu icon is clicked
                     $("#mlab_user_menu_dropdown").on("click",function(event) { 
                         if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
                               //Editor menu is open and needs to be closed 

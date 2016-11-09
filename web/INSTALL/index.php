@@ -16,16 +16,20 @@
  */
 
 
-//Edit variables here
+// EDIT SETTINGS IN config.inc FILE
 
-
-
-//--------DO NOT EDIT BELOW THIS LINE----------------
+if (!extension_loaded("mysqli")) {
+    die("Installation script requires the 'mysqli' PHP extension to be installed. Install, restart server and try again.");
+}
+        
 require_once "config.inc";
 require_once "spyc.php";
 $www_user = posix_getpwuid(posix_geteuid())['name'];
 $fail_permissions = false;
+$fail_permissions_post_symfony = false;
 $fail_versions = false;
+$fail_pre_check_versions = false;
+
 chdir("../../");
 if ($_REQUEST['next_step']) {
     $next_step = $_REQUEST['next_step'];
@@ -43,8 +47,8 @@ function rmall($dir) {
 
 //--- RUN CODE IN RESPONSE TO GET REQUESTS ---
 if ($_REQUEST['completed'] == 'ALL_OK') {
-    //rmall("web/INSTALL");
-    //header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
+    rmall("web/INSTALL");
+    header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
     die("NOW THE FOLDER WOULD BE DELETED...");
 }
 
@@ -149,7 +153,7 @@ switch ($_REQUEST['fix']) {
 }
 
 // ARRAY OF PRE-REQUISITE VALUES TO CHECK FOR
-$checks = array(
+$pre_checks = array(
     "internet_present" =>       array(  "label"     => "Internet connection", 
                                         "help"      => "Mlab can be run without an Internet connection, but during installation a connection is required",
                                         "action"    => "Check Internet connection on the server"),
@@ -157,7 +161,15 @@ $checks = array(
     "version_php" =>            array(  "label"     => "PHP version", 
                                         "check"     => array("min" => $php_version_min, "max" => $php_version_max), 
                                         "help"      => "PHP version 5.4 or higher is required, version 7 or higher is not supported at the present time",
-                                        "action"    => "Install supported version of PHP on the server"),
+                                        "action"    => "
+<h1>Mlab server setup</h1>
+<p>&nbsp;Before you can use Mlab you need to install the source code on a correctly configured webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features required, so as long as your operating system supports the requirements below you should be able to run it. There are four main steps involved in this:</p>
+<ol>
+  <li>Install server software such as web server, database server, PHP, etc.</li>
+ <li>Create a directory (folder) for Mlab and copy the source code into this directory.</li>
+<li>Configure the various server software and helper software (where required) to match the Mlab directory location.</li>
+<li>Run the Mlab installation script which will verify that the setup is correct and perform certain actions that will complete the setup.
+<ol><li>Alternatively you can manually install Mlab. The steps required are described in this document under the &ldquo;<a href='#_5:_(Optional)_Install'>Install Mlab manually</a>&rdquo; section toward the end of the document.</li></ol></li></ol>"),
     
     "url_allowed_php_ini" =>    array(  "label"     => "URL functionality", 
                                         "help"      => "The PHP URL functonality must be enabled in the relevant PHP.INI file on the server",
@@ -179,6 +191,20 @@ $checks = array(
                                         "check"     => $mysql_version_min, 
                                         "action"    => "Install an appropriate version of Mlab on the server."), 
     
+    "version_uglifyjs" =>        array( "label"     => "UglifyJS version", 
+                                        "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
+                                        "check"     => $uglifyjs_version_min, 
+                                        "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
+    
+    "version_nodejs" =>          array( "label"     => "Node JS version", 
+                                        "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
+                                        "check"     => $nodejs_version_min, 
+                                        "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information."), 
+    
+);
+
+// ARRAY OF VALUES TO CHECK FOR THAT WE CAN HELP THEM WITH
+$checks = array(
     "version_composer" =>       array(  "label"     => "Composer version", 
                                         "help"      => "Composer is a library manager used by Mlab to install the Symfony framework and Javascript libraries. Version 1.3 or higher is required",
                                         "check"     => $composer_version_min, 
@@ -198,16 +224,6 @@ $checks = array(
                                         "help"      => "These Javascript and libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-1.9.0'",
                                         "check"     => "bowser.js,jquery.contextmenu.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery-ui.js,jquery.uploadfile-1.9.0.js", 
                                         "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
-    
-    "version_uglifyjs" =>        array( "label"     => "UglifyJS version", 
-                                        "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
-                                        "check"     => $uglifyjs_version_min, 
-                                        "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'."), 
-    
-    "version_nodejs" =>          array( "label"     => "Node JS version", 
-                                        "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
-                                        "check"     => $nodejs_version_min, 
-                                        "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information."), 
     
     "import_empty_database" =>   array( "label"     => "Initial Mlab data", 
                                         "help"      => "To start using Mlab the basic database must be set up and an admin user must be added. ",
@@ -266,11 +282,15 @@ $params_help = array (
 
 $d = getcwd();
 $write_permissions = array(
-    $d . "/app/cache" => (is_writable($d . "/app/cache") ? true : false), 
+    $d . "/app" => (is_writable($d . "/app") ? true : false), 
     $d . "/app/config" => (is_writable($d . "/app/config") ? true : false), 
-    $d . "/app/logs" => (is_writable($d . "/app/logs") ? true : false), 
     $d . "/composer.json" => (is_writable($d . "/composer.json") ? true : false), 
     $d . "/bin" => (is_writable($d . "/bin") ? true : false));
+
+
+$write_permissions_post_symfony = array(
+    $d . "/app/cache" => (is_writable($d . "/app/cache") ? true : false), 
+    $d . "/app/logs" => (is_writable($d . "/app/logs") ? true : false));
 
 
 /*
@@ -337,14 +357,13 @@ function clean_parameters($array, $param_values, $prefix = '') {
             }
         }
     }
-    print $sno;
     return $result;
 }  
 
 
 //function to set some sensible values if they are missing initially
 function init() {
-    global $checks, $params, $param_values, $write_permissions, $system_path, $fail_permissions, $fail_versions;
+    global $checks, $pre_checks, $params, $param_values, $write_permissions, $system_path, $fail_permissions, $fail_permissions_post_symfony, $fail_versions, $fail_pre_check_versions;
     $cur_dir = getcwd();
     putenv($system_path);
 
@@ -372,6 +391,7 @@ function init() {
     }
 
     $fail_permissions = in_array(false, $write_permissions);
+    $fail_permissions_post_symfony = in_array(false, $write_permissions_post_symfony);
     
     foreach ($checks as $key => $value) {
         if (function_exists($key)) {
@@ -383,6 +403,18 @@ function init() {
             $fail_versions = true;
         }
     }
+    
+    foreach ($pre_checks as $key => $value) {
+        if (function_exists($key)) {
+            eval("\$pre_checks['" . $key . "']['result'] = " . $key . "(\$value);");
+        } else {
+            $pre_checks[$key]['result'] = false;
+        }
+        if (!$pre_checks[$key]['result']) {
+            $fail_pre_check_versions = true;
+        }
+    }
+    
 }
 
 
@@ -413,36 +445,36 @@ function internet_present() {
 }
 
 function version_php() {
-    global $checks;
-    return (PHP_VERSION_ID >= $checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $checks["version_php"]["check"]["max"]);
+    global $pre_checks;
+    return (PHP_VERSION_ID >= $pre_checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $pre_checks["version_php"]["check"]["max"]);
 }
 
 function url_allowed_php_ini() {
-    global $checks;
-    $setting = ini_get($checks["url_allowed_php_ini"]["check"]);
+    global $pre_checks;
+    $setting = ini_get($pre_checks["url_allowed_php_ini"]["check"]);
     if (gettype($setting) == "string") {
         $setting = strtolower($setting);
     }
     if (in_array($setting, array("true", "yes", 1, "on"))) {
         return true;
     } else {
-        return $checks["url_allowed_php_ini"]["check"] . " set to " . $setting;
+        return $pre_checks["url_allowed_php_ini"]["check"] . " set to " . $setting;
     }
 }
 
 function timezone_php_ini() {
-    global $checks;
-    $setting = ini_get($checks["timezone_php_ini"]["check"]);
+    global $pre_checks;
+    $setting = ini_get($pre_checks["timezone_php_ini"]["check"]);
     if (trim($setting)) {
         return true;
     } else {
-        return $checks["timezone_php_ini"]["check"] . " set to " . $setting;
+        return $pre_checks["timezone_php_ini"]["check"] . " set to " . $setting;
     }
 }
 
 function libraries_php() {
-    global $checks;
-    $libs = explode(",", $checks["libraries_php"]["check"]);
+    global $pre_checks;
+    $libs = explode(",", $pre_checks["libraries_php"]["check"]);
     foreach ($libs as $lib) {
         if (!extension_loaded($lib)) {
             return "PHP extension $lib not present";
@@ -452,11 +484,11 @@ function libraries_php() {
 }
 
 function version_mysql() {
-    global $checks;
+    global $pre_checks;
     $info = shell_exec("mysql -N -B -e \"SHOW VARIABLES LIKE 'version';\"");
     list($info) = explode("-", $info);
     $info = str_replace("version", "", $info);
-    return check_version_number($info, $checks["version_mysql"]["check"]);
+    return check_version_number($info, $pre_checks["version_mysql"]["check"]);
 }
 
 // check version, if not found or wrong version, download correct version
@@ -525,15 +557,15 @@ function libraries_js() {
 }
 
 function version_uglifyjs() {
-    global $checks;
+    global $pre_checks;
     $info = shell_exec("uglifyjs --version");
-    return check_version_number($info, $checks["version_uglifyjs"]["check"]);
+    return check_version_number($info, $pre_checks["version_uglifyjs"]["check"]);
 }
 
 function version_nodejs() {
-    global $checks;
+    global $pre_checks;
     $info = str_replace("v", "", shell_exec("nodejs --version"));
-    return check_version_number($info, $checks["version_nodejs"]["check"]);
+    return check_version_number($info, $pre_checks["version_nodejs"]["check"]);
 }
 
 
@@ -638,12 +670,32 @@ init();
                 
 <!-- First we show instructions for how to install web server, database server, etc -->
                 <table id="1" <?php if ($next_step == 1 ) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr class="infobar"><td colspan="4"><h3>Step 1: Web, database and PHP server setup</h3></td></tr>
+                        <?php if ($fail_pre_check_versions) { ?>
+                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. Please correct the errors below before completing the Mlab installation</p></td></tr>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=1';" class="error">Retry</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. They all seem to be correctly installed on this server!</p></td></tr>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="move(1)">Continue</button></td></tr>
+                        <?php } ?>
+                        <tr><td><em>Item</em></td><td><em>Status</em></td></tr>
+                    </thead>
                     <tbody>
-                        <tr class="infobar"><td><h3>Step 1: Web, database and PHP server setup</h3></td></tr>
-                        <tr class="infobar"><td><p>First you need to prepare the web server (such as Apache), a database server (typically MySQL) and the PHP scripting language for use with the Symfony framework. The instructions on this page will take you through the most common scenarios.</p></td></tr>
-                        <tr class="infobar"><td><button type="button" onclick="move(1)">Completed instructions on this page, go to next step</button></td></tr>
-                        <tr><td><?php include "info.html"; ?></td></tr>
-                        <tr class="infobar"><td><button type="button" onclick="move(1)">Completed instructions on this page, go to next step</button></td></tr>
+                        <?php 
+                            foreach ($pre_checks as $key => $value) {
+                                if ($value["result"] === true) {
+                                    echo "<tr><td>$value[label]</td><td><img src='ok.png'></td></tr>\n";
+                                } else {
+                                    echo "<tr><td><details><summary>$value[label]</summary><p>Error: $value[result]<hr>Action: $value[action]<br><br>$value[help]</p></details></td><td><img src='fail.png'></td></tr>\n";
+                                }
+                            }
+                        ?>
+                        <?php if ($fail_pre_check_versions) { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=1';" class="error">Retry</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="move(1)">Continue</button></td></tr>
+                        <?php } ?>
                     </tbody>
                 </table>
 
@@ -676,7 +728,7 @@ init();
                 </table>
 
 
-<!-- Then the permissions required, we have checked for access in the init() function -->
+<!-- Then the permissions required for folders that are NOT created by symfony, we have checked for access in the init() function -->
                 <table id="3" <?php if ($next_step == 3) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
                     <thead>
                         <tr class="infobar"><td colspan="2"><h3>Step 3: File and directory permissions</h3></td></tr>
@@ -726,7 +778,31 @@ init();
                         <?php if ($fail_versions) { ?>
                             <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Complete installation by removing the installation files</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                            <tr class="infobar"><td colspan="4"><button type="button" onclick="move(1);">Continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+<!-- Then the permissions required for folders that are NOT created by symfony, we have checked for access in the init() function -->
+                <table id="5" <?php if ($next_step == 5) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                    <thead>
+                        <tr class="infobar"><td colspan="2"><h3>Step 5: Symfony file and directory permissions</h3></td></tr>
+                        <tr class="infobar"><td colspan="2"><p>For Mlab to work correctly, and for this installation page to be able to update settings, you must create the directories indicated below and assign the user '<?php echo $www_user; ?>' as the owner of the files and directories listed here; and the owner must then have write access to these directories and files. Check the status of the access below and continue when all entries have write access.</p></td></tr>
+                        <?php if ($fail_permissions_post_symfony) { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=5';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Complete installation by removing the installation files</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } ?>
+                        <tr><td>File/Directory</td><td>Writable?</td></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($write_permissions_post_symfony as $dir => $write_ok) {
+                            echo "<tr><td>$dir</td><td><img src='" . (!$write_ok ? "fail" : "ok") . ".png'></td></tr>\n";
+                        } ?>
+                        <?php if ($fail_permissions_post_symfony) { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=5';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                        <?php } else { ?>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Complete installation by removing the installation files</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
                         <?php } ?>
                     </tbody>
                 </table>
