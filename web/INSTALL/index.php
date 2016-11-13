@@ -161,15 +161,7 @@ $pre_checks = array(
     "version_php" =>            array(  "label"     => "PHP version", 
                                         "check"     => array("min" => $php_version_min, "max" => $php_version_max), 
                                         "help"      => "PHP version 5.4 or higher is required, version 7 or higher is not supported at the present time",
-                                        "action"    => "
-<h1>Mlab server setup</h1>
-<p>&nbsp;Before you can use Mlab you need to install the source code on a correctly configured webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features required, so as long as your operating system supports the requirements below you should be able to run it. There are four main steps involved in this:</p>
-<ol>
-  <li>Install server software such as web server, database server, PHP, etc.</li>
- <li>Create a directory (folder) for Mlab and copy the source code into this directory.</li>
-<li>Configure the various server software and helper software (where required) to match the Mlab directory location.</li>
-<li>Run the Mlab installation script which will verify that the setup is correct and perform certain actions that will complete the setup.
-<ol><li>Alternatively you can manually install Mlab. The steps required are described in this document under the &ldquo;<a href='#_5:_(Optional)_Install'>Install Mlab manually</a>&rdquo; section toward the end of the document.</li></ol></li></ol>"),
+                                        "action"    => ""),
     
     "url_allowed_php_ini" =>    array(  "label"     => "URL functionality", 
                                         "help"      => "The PHP URL functonality must be enabled in the relevant PHP.INI file on the server",
@@ -367,6 +359,7 @@ function init() {
     $cur_dir = getcwd();
     putenv($system_path);
 
+    $info = file("web/INSTALL/info.html", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $params = clean_parameters($params, $param_values);
     
     if (!$params["parameters__mlab__compiler_service__rsync_bin"]) {
@@ -404,6 +397,7 @@ function init() {
         }
     }
     
+//looping through all pre checks and see if they are present of missing
     foreach ($pre_checks as $key => $value) {
         if (function_exists($key)) {
             eval("\$pre_checks['" . $key . "']['result'] = " . $key . "(\$value);");
@@ -412,6 +406,23 @@ function init() {
         }
         if (!$pre_checks[$key]['result']) {
             $fail_pre_check_versions = true;
+        }
+        
+//loop through the info.html content and assign help text. 
+//this is done by looking for comment lines with $key as the content
+        $update_help = false;
+
+        foreach ($info as $line) {
+            if (!$update_help && $line == "<!--$key-->") {
+                $update_help = true;
+                $pre_checks[$key]['action'] = '';
+            } else if ($update_help) {
+                if ($line == "<!--/$key-->") {
+                    $update_help = false;
+                } else {
+                    $pre_checks[$key]['action'] .= $line;
+                }
+            } 
         }
     }
     
@@ -687,7 +698,7 @@ init();
                                 if ($value["result"] === true) {
                                     echo "<tr><td>$value[label]</td><td><img src='ok.png'></td></tr>\n";
                                 } else {
-                                    echo "<tr><td><details><summary>$value[label]</summary><p>Error: $value[result]<hr>Action: $value[action]<br><br>$value[help]</p></details></td><td><img src='fail.png'></td></tr>\n";
+                                    echo "<tr><td><details><summary>$value[label]</summary><p>Error: $value[result]<hr>$value[action]</p></details></td><td><img src='fail.png'></td></tr>\n";
                                 }
                             }
                         ?>
