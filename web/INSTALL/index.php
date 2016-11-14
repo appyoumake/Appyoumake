@@ -457,7 +457,11 @@ function internet_present() {
 
 function version_php() {
     global $pre_checks;
-    return (PHP_VERSION_ID >= $pre_checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $pre_checks["version_php"]["check"]["max"]);
+    if (PHP_VERSION_ID >= $pre_checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $pre_checks["version_php"]["check"]["max"]) {
+        return "PHP is incorrect version";
+    } else {
+        return false;
+    }
 }
 
 function url_allowed_php_ini() {

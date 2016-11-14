@@ -18,7 +18,7 @@
             }
         </style>
     </head>
-
+<!--internet_present -->
     <body>
         <h1>Mlab server setup</h1>
         <p>Before you can use Mlab you need to install the source code on a correctly configured  webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features  required, so as long as your operating system supports the requirements below  you should be able to run it. There are four main steps involved in this:</p>
@@ -85,27 +85,37 @@
         
         <h2>1.1.1: Check that web  server works</h2>
         <p>Point your browser  to localhost to test that it's working, you should see a basic welcome page.</p>
+
         
 <!--version_php-->
         <h2>1.2 Install php5 and  php5-fpm</h2>
         <p>Install  core php5, including php5-fpm that runs a FastCGI  server on the socket /var/run/php5-fpm.sock.</p>
         <pre>sudo apt-get install php5-common php5-cli php5-fpm</pre>
+<!--/version_php-->
+<!--libraries_php-->
         <p>Next you need to install required PHP extensions. Depending on your  version of PHP, some of these may already be installed as part of the above  core PHP installation. Below is a common command to add missing extensions. The  Mlab installation script will check if any of these are missing later.</p>
         <pre>sudo apt-get install php5-cgi php5-cli, php5-common, php5-fpm, php5-gd, php5-intl, php5-json, php5-mcrypt, php5-mysql, php5-readline</pre>
-<!--/version_php-->
+<!--/libraries_php-->
         
+<!--version_mysql-->
         <h2>1.3 Install MySQL</h2>
         <p>If mysql is not installed you need to run the following commands:</p>
         <pre>apt-get install mysql-server mysql-client </pre>
         <p>You will be asked to set the password for the root user, make a note of  this for later.</p>
+<!--/version_mysql-->
         
+<!--version_nodejs-->
+<!--version_uglifyjs-->
         <h2>1.4 Install NodeJS, npm and uglifyjs</h2>
         <p>If NodeJS or npm is not installed  you need to run the  following commands:</p>
         <pre>apt-get install nodejs npm</pre>
         <p>After npm is installed you can use npm to insyall uglifyjs:</p>
         <pre>npm install uglifyjs -g</pre>
         <p>The “-g” parameter is important, without this uglifyjs  will be installed in the current directory, it needs to be installed “globally”  so it can be used by Mlab later.</p>
-        
+<!--/version_nodejs-->
+<!--/version_uglifyjs-->
+
+<!--source_code-->
         <h1>2: Create directory and  copy Mlab source code</h1>
         <p>After  installing the servers and helper software in step 1, you need to copy over the  Mlab source code. </p>
         <ul>
@@ -131,6 +141,7 @@
 
         <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code} -R</pre>
         <pre>sudo chown {webserveruser}:{webserveruser} .{mlab_elements} -R</pre>
+<!--/source_code-->
 
         <h1><a name="_3:_Configuration"></a>3: Server configuration</h1>
 
@@ -254,6 +265,7 @@
         <pre>sudo /etc/init.d/lighttpd force-reload</pre>
 
 
+<!--version_mysql-->
         <h2>Configure MySQL server</h2>
         <ul>
             <li>  UTF8  must be set in MySQL. Setting UTF8 defaults for MySQL is as  simple as adding a few lines to your configuration file (typically my.cnf in /etc/mysql/):</li>
@@ -266,8 +278,11 @@
         <pre>[mysqld]</pre>
         <pre>collation-server = utf8_general_ci</pre>
         <pre>character-set-server = utf8</pre>
+<!--/version_mysql-->
 
 
+<!--timezone_php_ini-->
+<!--url_allowed_php_ini-->
         <h2>PHP</h2>
         <ul>
             <li> If  you have problems with PHP  it could be that it is a higher version (typically 7.x) is installed. Mlab  requires version 5.4 or higher, but lower  than 7.0. See this for help: <a  href="http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04">http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04</a></li>
@@ -287,6 +302,8 @@
         <pre>; http://php.net/date.timezone</pre>
         <pre>date.timezone = Europe/Oslo&nbsp;</pre>
         <pre>If you run the php-fpm  version (and not php-cgi) you MUST restart the  hardware server when you do a change! It is not enough to just restart the web  server or PHP software.</pre>
+<!--/url_allowed_php_ini-->
+<!--/timezone_php_ini-->
 
 
         <h2>Start mlab  web-sockets messaging</h2>
@@ -315,6 +332,7 @@
         <pre>cp -Rf /{mlab_elements}/icons/.  /{mlab_elements}/icons</pre>
         
         
+<!--import_empty_database-->
         <h3 >Create the Mlab database and user</h3>
         <pre>mysqladmin -u root -p create mlab</pre>
         <pre>mysql -u root -p -e 'GRANT ALL PRIVILEGES ON mlab.* TO 'mlab'@'localhost' IDENTIFIED BY 'mlab_db_password';FLUSH  PRIVILEGES;’</pre>
@@ -333,8 +351,10 @@
         </ul>
         <pre>cp -Rf /{mlab_code}/mlab_elements/components/* /{mlab_elements}/components&nbsp;</pre>
         <pre>cp -Rf /{mlab_code}/mlab_elements/templates/* /{mlab_elements}/templates</pre>
+<!--/import_empty_database-->
         
         
+<!--version_composer-->
         <h3 >Installing Composer</h3>
         <ul>
             <li> Composer  is a package manager for PHP. It is used to install the Symfony  framework that Mlab uses on the  server side. The following commands  installs Composer (irrespective  of OS used):</li>
@@ -342,8 +362,10 @@
         <pre>cd /{mlab_code}/bin</pre>
         <pre>sudo curl -sS https://getcomposer.org/installer  | php</pre>
         <pre>sudo chmod composer.phar</pre>
+<!--/version_composer-->
         
         
+<!--version_symfony-->
         <h3 >Complete Symfony  installation</h3>
         <ul>
             <li> At  this stage the composer package manager will be used to install the Symfony framework,  Symfony libraries and some Javascript libraries used by Mlab on the front end.</li>
@@ -357,11 +379,14 @@
         </ul>
         <pre>Sudo php app/check.php</pre>
 
+<!--bootstrap_symfony-->
         <ul>
             <li>  If you get an error regarding  &quot;bootstrap.php.cache&quot; (missing,  etc), usually the case when starting  or moving to new version of Symfony,  run this from root of site:</li>
         </ul>
         <pre>php ./vendor/sensio/distribution-bundle/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php  </pre>
         <p>See:&nbsp;<a  href="http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache">http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache</a></p>
+<!--/bootstrap_symfony-->
+
         <ul>
             <li> Remove/delete&nbsp;app/.htaccess&nbsp;</li>
         </ul>
@@ -377,6 +402,16 @@
         <pre>sudo php app/console cache:clear --env=dev</pre>
         <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code}/app/cache -R</pre>
         <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code}/app/logs -R</pre>
+<!--/version_symfony-->
+
+<!--libraries_js-->
+        <h3>Install JavaScript libraries</h3>
+        <ul>
+            <li>Mlab requires a number of jQuery JavaScript libraries. These are normally installed when you install the Symfony libraries. If they have not been installed yu can run the command below to manually install them.</li>
+        </ul>
+        <pre>cd /{mlab_code}/</pre>
+        <pre>sudo bin/composer.phar run-script post-install-cmd </pre>
+<!--/libraries_js-->
 
 </body>
 
