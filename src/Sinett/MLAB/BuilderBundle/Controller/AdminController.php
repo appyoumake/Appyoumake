@@ -10,8 +10,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 *******************************************************************************************************************************/
 
 /*
- * Admin related code to maintain/upload templates, components and apps
- * as well as user related management
+ * @abstract Admin related code to maintain/upload templates, components and apps as well as user related management
  */
 namespace Sinett\MLAB\BuilderBundle\Controller;
 

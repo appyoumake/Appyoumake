@@ -1,4 +1,14 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /*
  * This installer script will first check prerequisites, errors here has to be changed by server admin
  *      Has Internet connection
@@ -10,7 +20,7 @@
  *      PHP.ini must have date.timezone set
  *      Relevant PHP extensions must be loaded
  *      Composer is installed (http://stackoverflow.com/questions/17219436/run-composer-with-a-php-script-in-browser) also use autoupdate
- *      ask for a salt, goes into security.yml
+ *      creates a salt, goes into security.yml
  *      edit parameters.yml
  *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
  */
@@ -681,6 +691,7 @@ init();
         <div>
             <h1>Mlab installation</h1>
             <p>This installation page will help you through the steps required to configure your Mlab installation. For some of these steps you have to access the server as root/administrator, others you can do directly from this page.</p>
+            <p><a href="info.html" target="_new">Click here for complete setup instructions.</a></p>
             <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8" id="parameters">
                 
 <!-- First we show instructions for how to install web server, database server, etc -->

@@ -1,5 +1,16 @@
-/*
- * All functions used in /src/Sinett/MLAB/BuilderBundle/Resources/views/App/build_app.html.twig
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no) rewrite/implementation of all functionality
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no) additional functionality
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/**
+ * @abstract All functions used in /src/Sinett/MLAB/BuilderBundle/Resources/views/App/build_app.html.twig
  * but not the data that has to come from TWIG. Therefore, see top of that page for data structures.
  */
 //TODO: NEED TO NOT USE slf (window.slf = JS builtin variable)

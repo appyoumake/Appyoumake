@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 """ Example: ./document2HTML.py -c <path_to_config> -i <path_to_source_document> -o <path_to_output_directory> -t <tag_to_split_on> -a <optional_tag_attribute> """
 
 import os

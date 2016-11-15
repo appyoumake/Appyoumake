@@ -1,4 +1,19 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/**
+ * @abstract ComponentGroup controller, manages data for access to components by group membership.
+ *
+ */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
@@ -11,10 +26,7 @@ use Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
 use Sinett\MLAB\BuilderBundle\Form\ComponentGroupType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-/**
- * ComponentGroup controller.
- *
- */
+
 class ComponentGroupController extends Controller
 {
 

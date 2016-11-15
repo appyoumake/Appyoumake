@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Basi user management, most of the user stuf is done by the FOSUserBundle library.
+ * @abstract Basic user management, most of the user stuff is done by the FOSUserBundle library.
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;

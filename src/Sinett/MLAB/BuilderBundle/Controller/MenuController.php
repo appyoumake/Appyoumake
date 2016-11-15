@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * REDUNDANT! Menus were initially stored in the database, but over time the amount of menus shrank.
+ * @abstract  REDUNDANT! Menus were initially stored in the database, but over time the amount of menus have shrunk so no need for this.
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;

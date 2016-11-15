@@ -8,7 +8,7 @@
         "email": "firstname.lastname@ffi.no"
     },
     "licenses": {
-        "type": "none"
+        "type": "SEE LICENSE IN /LICENSE_MLAB"
     },
     "scripts": {
         "start": "node app.js"

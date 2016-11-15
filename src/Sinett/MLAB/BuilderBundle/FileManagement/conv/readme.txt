@@ -1,14 +1,21 @@
-Instruksjoner:
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 
-Av software har jeg testet med / utviklet for:
+Instructions:
 
-Python-moduler:
+Tested with:
+
+Python-modules:
 argparse, 1.1
 json, 2.0.9
 python-magic
 python-bs4
 
 
-python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
+python document2HTML.py -c <path to config> -i <path to input file to convert> -o <path to directory for output>
 
-I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
+In addition one can use: -t <tag to split into pages> -a <attribute as split criteria (for example id="Title*")

@@ -1,7 +1,17 @@
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no) rewrite/implementation of all functionality
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no) additional functionality
 
-/*********************************************************************************************
- *********** Functions to parse HTML for a page and insert it into the editor area ***********
- *********************************************************************************************/
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/**
+ * @abstract Functions to parse HTML for a page and insert it into the editor area 
+ */
 
 /***********************************************************
  ******************* Utility functions *********************

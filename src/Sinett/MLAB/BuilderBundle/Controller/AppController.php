@@ -1,12 +1,17 @@
 <?php
-/**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Controller for all app related work, primarily the editor, but also the lit of apps
- */
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/**
+ * @abstract Controller for all app related work, primarily the editor, but also the list of apps
+ */
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;

@@ -1,5 +1,15 @@
 <?php
-//This should be edited when Mlab or a lirbary is updated
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+//Lists version numbers, etc. to check for. Should be edited when Mlab or a library is updated
 
 $php_version_min = 50400; 
 $php_version_max = 60000;

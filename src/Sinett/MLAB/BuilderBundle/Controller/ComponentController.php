@@ -1,10 +1,17 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Takes care of basic component related work, including uploading components
+ * @abstract Takes care of basic component related work, including uploading components
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
