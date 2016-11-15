@@ -19,3 +19,11 @@
 /src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-file-upload/
 /src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-ui-1.10.3/
 /netbeans/
+
+/web/css/jquery.contextmenu.css
+/web/css/jquery-qtip.css
+/web/css/jquery-ui.css
+/web/css/jquery.uploadfile.css
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/bowser.js
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/spin.js
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/j*.js
