@@ -468,9 +468,9 @@ function internet_present() {
 function version_php() {
     global $pre_checks;
     if (PHP_VERSION_ID >= $pre_checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $pre_checks["version_php"]["check"]["max"]) {
-        return "PHP is incorrect version";
+        return true;
     } else {
-        return false;
+        return "PHP is incorrect version";
     }
 }
 
