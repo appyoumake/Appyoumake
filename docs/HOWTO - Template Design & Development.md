@@ -1,7 +1,7 @@
 #Mlab App Builder: Template developers' guide
 
 >Version: 1.0 (April 2016, first public release)<br>
-Copyright: © Norwegian Defence Research Institute (FFI) 2013 - 2016<br>
+Copyright: © Norwegian Defence Research Establishment (FFI) 2013 - 2016<br>
 Initial author: Cecilie Jackbo Gran, Sinett 3.0, FFI<br>
 Updating authors: <br>
 Comment: _Only update the version number above when template specifications change_

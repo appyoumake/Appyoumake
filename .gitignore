@@ -27,3 +27,4 @@
 /src/Sinett/MLAB/BuilderBundle/Resources/public/js/bowser.js
 /src/Sinett/MLAB/BuilderBundle/Resources/public/js/spin.js
 /src/Sinett/MLAB/BuilderBundle/Resources/public/js/j*.js
+!/src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.ddslick-1.0.0.js

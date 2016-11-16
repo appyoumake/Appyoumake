@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="base.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,15 +25,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="144.82609"
-     inkscape:cy="711.23919"
+     inkscape:cx="533.97415"
+     inkscape:cy="673.00438"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1057"
+     inkscape:window-height="1031"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="1" />
@@ -58,11 +58,18 @@
        d="m 158.62483,137.9016 302.08946,0 -0.0534,43.57143 c -0.0128,10.41502 8.38557,18.66204 18.79969,18.79969 l 50,0.66089 0,398.51802 c 0,10.41503 -8.38466,18.7997 -18.79969,18.7997 l -352.03608,0 c -10.41503,0 -18.7997,-8.38467 -18.7997,-18.7997 l 0,-442.75034 c 0,-10.41503 8.38467,-18.79969 18.7997,-18.79969 z"
        id="rect2985"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="scsscssssss" />
+       sodipodi:nodetypes="scsscssssss"
+       inkscape:export-filename="/home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/base.png"
+       inkscape:export-xdpi="95.286469"
+       inkscape:export-ydpi="95.286469" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 461.42857,138.07647 67.14286,62.85714"
+       style="fill:none;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 461.24291,138.0461 67.76672,62.4128"
        id="path3760"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/utvikler/workspace/mlab.local.dev/mlab_elements/icons/base.png"
+       inkscape:export-xdpi="95.286469"
+       inkscape:export-ydpi="95.286469" />
   </g>
 </svg>

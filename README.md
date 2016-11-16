@@ -1,6 +1,6 @@
 Mlab App Builder; editor source code
 ====================================
-Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
 Proprietary and confidential
 Unauthorized copying of this file, via any medium is strictly prohibited
 

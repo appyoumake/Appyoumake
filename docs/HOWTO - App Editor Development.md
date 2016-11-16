@@ -3,7 +3,7 @@
 #####THIS DOCUMENT IS NOT COMPLETED AS OF 14 APRIL 2016
 
 >Version: 1.0 (April 2016, first public release)<br>
-Copyright: © Norwegian Defence Research Institute (FFI) 2013 - 2016<br>
+Copyright: © Norwegian Defence Research Establishment (FFI) 2013 - 2016<br>
 Initial author: Arild Bergh, Sinett 3.0, FFI<br>
 Updating authors: <br>
 Comment: _Only update the version number above when component specifications change_

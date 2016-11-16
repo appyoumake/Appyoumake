@@ -1,7 +1,7 @@
 #The code_rt.js file in detail
 
 >Version: 1.0 (April 2016, first public release)<br>
-Copyright: © Norwegian Defence Research Institute (FFI) 2013 - 2016<br>
+Copyright: © Norwegian Defence Research Establishment (FFI) 2013 - 2016<br>
 Initial author: Arild Bergh, Sinett 3.0, FFI<br>
 Updating authors: <br>
 Comment: _Only update the version number above when component specifications change_

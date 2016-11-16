@@ -1,6 +1,6 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI) - All Rights Reserved
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
 @license Proprietary and confidential
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
