@@ -1,0 +1,459 @@
+/*
+MLAB component styling for comunication with the app creator or the 
+app user.
+
+  The styles allways begins with:
+   dt
+   1. #mlab_editor
+   2. #mlab_editor #mlab_editable_area
+
+   rt
+
+id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
+
+*/
+
+
+/* ==========================================================================
+   Design time - dt
+   ========================================================================== */
+
+/* ===  Styling of the qtip boks  === */
+
+#mlab_editor .qtip,
+#mlab_editor .ui-dialog{
+    background-color: white  !important;
+    border: solid orange 2px; 
+    box-shadow: 10px 10px 5px #888888;
+    padding-bottom: 5px;
+    margin-bottom: 60px;
+    z-index: 2001;
+}
+
+#mlab_editor .qtip.mlab_dt_wide_qtip_box{
+    max-width: 500px;
+}
+
+
+/* ===  Information  === */
+
+#mlab_editor .mlab_dt_text,
+#mlab_editor .mlab_dt_text_headline,
+#mlab_editor .mlab_dt_text_info,
+#mlab_editor .qtip-titlebar,
+#mlab_editor .ui-dialog-titlebar,
+#mlab_editor .mlab_dt_text_filename {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+    direction: ltr;
+    margin: 0.5em;
+}
+
+#mlab_editor .qtip-titlebar,
+#mlab_editor .ui-dialog-titlebar {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding-left: 0.5em;
+    padding-right: 2.5em;
+    background-color: rgba(255,165,0,0.2);
+}
+
+#mlab_editor .ui-dialog-titlebar {
+    background-color: rgba(255,165,0,0.5);
+    padding: 3px;
+}
+
+#mlab_editor .qtip-titlebar .qtip-close {
+    top: 1px;
+    background-color: white;
+}
+
+#mlab_editor .ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
+#mlab_editor .ui-state-default .ui-icon {
+    background-image: url(images/ui-icons_888888_256x240.png);
+    margin-top: -8px;
+    margin-left: -8px;
+}
+
+#mlab_editor .ui-accordion .ui-state-default .ui-icon {
+    background-image: none;
+}
+
+#mlab_editor .ui-icon-alert {
+    background-position: 0 -145px;
+    background-image: url(images/ui-icons_222222_256x240.png);
+    float: left;
+    margin-right: 5px;
+}
+
+#mlab_editor .ui-dialog #mlab_dialog_delete {
+    min-height: 10px !important;
+    padding: 10px;
+    padding-top: 20px;
+    font-size: 13px;
+}
+
+#mlab_editor .ui-dialog .ui-button-text{
+   padding: 2px 5px;
+    font-size: 13px; 
+}
+
+#mlab_editor .mlab_dt_text_headline {
+    font-weight: bold;
+    line-height: 14px;
+    font-size: 12px;
+}
+
+#mlab_editor .mlab_dt_text_info {  
+    width: 95%;
+    margin-bottom: 1.5em;
+}
+
+#mlab_editor .mlab_dt_text_filename {
+      font-size: 12px; 
+      font-style: italic;
+}
+
+#mlab_editor .mlab_dt_progress_bar {
+    float: left;
+    width: 90%;
+}
+
+#mlab_editor .mlab_dt_status_bar {
+    //later
+}
+
+/* ===  Buttons  === */
+
+#mlab_editor .mlab_dt_button,
+#mlab_editor .mlab_dt_button_ok,
+#mlab_editor .mlab_dt_button_cancel,
+#mlab_editor .mlab_dt_button_close,
+#mlab_editor .mlab_dt_button_retry,
+#mlab_editor .mlab_dt_button_done,
+#mlab_editor .mlab_dt_button_upload_files,
+#mlab_editor .mlab_dt_dialog_credentials .ui-button {
+    background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, #B4B4B4 100%) repeat scroll center center rgba(0, 0, 0, 0);
+    border: 1px solid #AAAAAA;
+    border-radius: 2px;
+    color: #212121;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 10.5px !important;
+    line-height: 12px;
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+    margin-top: 0px;
+    padding: 5.5px 12px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: none;
+    transition: box-shadow 0.1s linear 0s;
+    vertical-align: top;
+    word-wrap: break-word;
+    cursor: pointer;
+}
+
+
+/* ===  Space - new line === */
+
+#mlab_editor .mlab_dt_button_new_line {
+    padding: 18px;
+    padding-right: 50%;
+}
+
+#mlab_editor .mlab_dt_button_small_new_line {
+    padding: 1px;
+    padding-right: 50%;
+}
+
+#mlab_editor .mlab_dt_large_new_line {
+    padding: 22px;
+}
+
+#mlab_editor .mlab_dt_larger_new_line {
+    padding: 35px;
+}
+
+#mlab_editor .mlab_dt_largest_new_line {
+    padding: 44px;
+}
+
+
+#mlab_editor .mlab_dt_medium_new_line {
+    padding: 12px;
+}
+
+#mlab_editor .mlab_dt_small_new_line {
+    padding: 7px;
+}
+
+#mlab_editor .mlab_dt_tiny_new_line {
+    padding: 1px;
+}
+
+#mlab_editor .mlab_dt_new_row {
+    padding: 7px;
+}
+
+
+/* ===  Input  === 
+    Generell tekst
+    Label
+    URL
+    Koordinater for kart
+    Velg filer
+    Bruker navn
+    Passord
+    Drop down liste
+    Autocomplete liste
+    Liste med thumbnails
+    Check list
+*/
+
+#mlab_editor .mlab_dt_input, 
+#mlab_editor .mlab_dt_large_input,
+#mlab_editor .mlab_dt_label,
+#mlab_editor .mlab_dt_short_label,
+#mlab_editor .mlab_dt_textarea,
+#mlab_editor .mlab_dt_medium_textarea,
+#mlab_editor .mlab_dt_select,
+#mlab_editor .mlab_dt_picture {
+    float: left;
+    font-size:12px;
+    font-family: Arial,Helvetica,sans-serif;
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+#mlab_editor .mlab_dt_large_input {
+    min-width: 90%;
+}
+
+#mlab_editor .mlab_dt_label {
+    min-width: 55%;
+}
+
+#mlab_editor .mlab_dt_short_label {
+    min-width: 25%;
+}
+
+#mlab_editor .mlab_dt_medium_textarea {
+    min-width: 90%;
+    min-height: 4em;
+} 
+
+
+/* ===  Tabs  === */
+
+#mlab_editor .mlab_dt_tab {
+    //HER jeg skal legge til.... TODO
+}
+
+#mlab_editor .mlab_dt_tab_list {
+border-bottom: 1px solid orange;
+padding-top: 0.5em;
+margin-bottom: 0.5em;   
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab {
+font-size: 0.9em;
+font-family: Arial,Helvetica,sans-serif;
+padding: 0.3em;
+margin: 0.7px;
+margin-bottom: 0;
+border: 1px solid orange;
+border-bottom: 0;
+cursor: pointer;
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active {
+background-color: rgba(255,165,0,0.2);
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active a{
+outline: none;
+color: black;
+}
+
+/* ===  Fieldset - group  === */
+#mlab_editor .mlab_dt_group {
+    border: solid 1px lightgrey;
+    padding-bottom: 4px;
+    margin: 5px;
+    margin-top: 10px;
+}
+
+/* ===  list for component size and aspect   === */
+#mlab_editor #mlab_component_size_list ul, 
+#mlab_editor #mlab_component_aspect_list ul {
+    background-color: white;
+    border: 0px orange solid;
+    padding: 8px;
+    padding-left:25px;
+    margin: 0;    
+}
+
+#mlab_editor #mlab_component_size_list li, 
+#mlab_editor #mlab_component_aspect_list li {
+    cursor: pointer;
+    list-style-type: square; 
+    padding-right: 10px;
+    color: black;
+    font-size:13px; 
+    line-height: 16px;
+    text-decoration: underline; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#mlab_editor #mlab_component_size_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_component_aspect_list li.mlab_item_applied:before {
+    content: "\2713 ";
+    margin-left: -1em;
+    margin-right: .100em;
+}
+
+/* ===  list for component storage plugin   === */
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] ul {
+    background-color: white;
+    border: 0px orange solid;
+    padding-top: 0px;
+    padding-right: 8px;
+    padding-left: 2px;
+    padding-bottom: 12px;
+    margin: 0;    
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li {
+    cursor: pointer;
+    list-style-type: none; 
+    padding-right: 10px;
+    color: black;
+    font-size:13px; 
+    line-height: 16px;
+    text-decoration: underline; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li.mlab_item_applied span:after {
+    content: "\2713 ";
+    color: darkgreen;
+    padding-left: 2px;
+    font-weight: bold;
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] img[data-mlab-comp-tool='credentials'] {
+    width: 15px;
+    height: 15px;
+    margin-bottom: -4px;
+    margin-right: 2px;
+}
+
+/* ===  Placement  === */
+
+#mlab_editor .mlab_dt_right {
+    float: right;
+}
+
+
+#mlab_editor .mlab_dt_left {
+   float: left;
+}
+
+/* ===  Spesific styling for individual components  === */
+
+#mlab_editor #mlab_cp_googlemap_center,
+#mlab_editor #mlab_cp_googlemap_markers {
+   min-width: 205px;
+}
+
+#mlab_editor #mlab_cp_img_select_image {
+    min-width: 195px;
+    max-width: 95%;
+}
+
+/* ===  Spesific styling for component help  === */
+
+#mlab_editor .mlab_dt_comp_help_icons_single,
+#mlab_editor .mlab_dt_comp_help_icons_left,
+#mlab_editor .mlab_dt_comp_help_icons_middle,
+#mlab_editor .mlab_dt_comp_help_icons_right{
+    float: left;
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_left {
+    margin-left: 0.5em;
+    margin-right: 0.1em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_middle {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+}
+
+#mlab_editor .mlab_dt_comp_help_icons_right {
+    margin-left: 0.1em;
+    margin-right: 0.5em;
+}
+
+#mlab_editor .mlab_dt_comp_help_text {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+    direction: ltr;
+    margin: 0.5em;
+    padding-bottom: 10px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_align {
+    padding-top: 11px;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_below_icon {
+    clear: both;
+}
+
+#mlab_editor .mlab_dt_comp_help_text_img_below {
+    padding-bottom: 0;
+    margin-bottom: 2px;
+}
+
+
+/* ==========================================================================
+   Run time - rt
+   ========================================================================== */
+
+#mlab_editable_area .mlab_rt_maximize {  
+  /* Set rules to fill the screen */
+  min-height: 100%;
+  //min-width: 1024px;
+	
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+	
+  /* Set up positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
