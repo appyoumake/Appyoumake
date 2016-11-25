@@ -21,9 +21,11 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         {% endblock %}
                 
         {% block javascripts %}
-            {% javascripts '@common_jquery_js' %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
+            <script src='{{ asset('/js/jquery-2.1.4.js') }}'></script>
+            <script src='{{ asset('/js/jquery.ui-1.11.4.js') }}'></script>
+            <script src='{{ asset('/js/jquery.uploadfile-1.9.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.qtip-2.2.0.js') }}'></script>
+            <script src='{{ asset('/js/bowser.js') }}'></script>
 
             <script type="text/javascript">
 

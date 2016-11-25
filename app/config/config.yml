@@ -59,7 +59,7 @@ assetic:
         common_jquery_js:
             inputs:
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery-2.1.4.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/jquery-ui.js'
+                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.ui-1.11.4.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.uploadfile-1.9.0.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/jquery.qtip-2.2.0.js'
                 - '@SinettMLABBuilderBundle/Resources/public/js/bowser.js'
