@@ -14,10 +14,11 @@ Unauthorized copying of this file, via any medium is strictly prohibited
 For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
         {% block stylesheets %}
+            <link href='{{ asset("/css/reset.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/mlab_reset_editor.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/jquery-ui.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/jquery-qtip.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/jquery.uploadfile.css") }}' rel='stylesheet' />
-            <link href='{{ asset("/css/mlab_reset_editor.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_menu.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_editor.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_component_config.css") }}' rel='stylesheet' />
@@ -34,11 +35,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <script src='{{ asset('/js/jquery.contextMenu-1.0.0.js') }}'></script>
             <script src='{{ asset('/js/spin.js') }}'></script>
             <script src='{{ asset('/js/jquery.spin.js') }}'></script>
-            
-            <!-- not required, part of main jquery ui file now <script src='{{ asset('/js/jquery.ui.position.js') }}'></script> -->
-            
             <script src='{{ asset('/js/bowser.js') }}'></script>
-
 
             <script type='text/javascript'>
                 //these vars are generated from backend and are required for the initialisation of the mlab object later

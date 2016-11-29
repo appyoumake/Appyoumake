@@ -13,9 +13,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 {% block javascripts %}
 	{{ parent() }}
-    {% javascripts '@applist_mlab_js' %}
-        <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script src='{{ asset('/js/jquery.ddslick-1.0.0.js') }}'></script>
+    <script src='{{ asset('/js/jquery.contextMenu-1.0.0.js') }}'></script>
+{% endjavascripts %}
         
     <script>
 		var url_new = "{{ path('app_new') }}";

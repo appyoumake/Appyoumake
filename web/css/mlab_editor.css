@@ -183,6 +183,7 @@ made smaler than the min width */
 
 #mlab_editor .ui-accordion-header-active {
     background-color: orange;
+    color: #555555;
 }
 
 #mlab_editor .ui-accordion-header .mlab_category_name {
@@ -190,6 +191,7 @@ made smaler than the min width */
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 82%;
+    color: #212121;
 }
 
 /*The accordion is closed*/

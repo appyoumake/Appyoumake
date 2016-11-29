@@ -17,6 +17,7 @@ Core page template for all pages except the app editor page
         <meta charset="UTF-8" />
         <title>{% block title %}MLAB{% endblock %}</title>
         {% block stylesheets %}
+            <link href='{{ asset("/css/reset.css") }}' rel='stylesheet' />
             <link href="{{ asset("/css/jquery-ui.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery-qtip.css") }}" rel="stylesheet" />
             <link href="{{ asset("/css/jquery.uploadfile.css") }}" rel="stylesheet" />
