@@ -140,9 +140,11 @@ made smaler than the min width */
     background-color: white;
 }
 
+/* NOT USING INTERFERES WITH qtip
 #mlab_editor .mlab_qtip_menu_tooltip.qtip{
     z-index: 20000 !important;
 }
+*/
 
 #mlab_editor .mlab_qtip_tooltip.qtip p{
     margin: 0 0 6px;
@@ -616,6 +618,7 @@ made smaler than the min width */
     z-index: 400 !important;
 }
 
+/* NOT USING; INTERFERES WITH QTIP Z INDEX
 .mlab_zindex_top_tooltip {
     z-index: 510 !important;
 }
@@ -623,6 +626,7 @@ made smaler than the min width */
 .mlab_zindex_top_helptip {
     z-index: 550 !important;
 }
+*/
 
 #mlab_editor.mlab_loading_info {
     cursor: wait;
