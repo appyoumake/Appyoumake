@@ -180,10 +180,10 @@ Mlab_dt_api.prototype = {
                                  title: title,
                                  button: true
                                  },
-                     position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+                     position:   { my: 'topRight', at: 'bottomMiddle', viewport: $(window), effect: false },
                      show:       { ready: true, modal: { on: false } },
                      hide:       false,
-                     style:      { classes: qTipClasses },
+                     style:      { classes: qTipClasses, tip: true },
                      events:     {   hide: function(event, api) { api.destroy(); } }
                  });
             } else {
@@ -272,7 +272,7 @@ Mlab_dt_api.prototype = {
             position: { my: 'leftMiddle', at: 'rightMiddle' },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
-            style: { classes: 'qtip-light mlab_zindex_top_tooltip' },
+            style: { classes: 'qtip-light mlab_zindex_top_tooltip', tip: true },
             events: { render: function(event, api) {
                             that.indicateWait(true);
                             this.dt_component = el;
@@ -519,7 +519,7 @@ Mlab_dt_api.prototype = {
             position:   { my: myPosQtip, at: 'rightMiddle', adjust: { screen: true } },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
-            style:      { classes: c },
+            style:      { classes: c, tip: true },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el, event, api) } },
                             show: function(event, api) { $('.qtip-title').append('<img class="mlab_dt_button_help" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQJJREFUeNpiZCAAWNk5BICUAxAboEld+P3zxwYGcgHIYCBuAOL3QPwfB74PxAn4zGHE4+r9WFyNCywA+iYRmwQzFQwHAQNmFhaFf3//bESXYMKieD6JhsNAAtBxDsRY4IDDgAegoADiA3gsyScmch2wROx8NDUGuCKflBS0H6ppPw41+8m2AM03AljEDXAk2/cMlACgAQqg4MKTL+YTlQ9wGG4ATb4COJR8AGJDYH54QCgVkWu4I7rhRFsABP14DF8AdfkFoosKLD7AlToSgQYvILksItKCA0DDHQnpJTaIsHl/IsMoQI4DLLiBGL1MtHbcqAUEAQuR6hqxZTRiNAIEGADaemUuXgZoWQAAAABJRU5ErkJggg==">'); },            
                             hide: function(event, api) { if (func_hide) { that.executeCallback (func_hide, el, event, api) }; api.destroy(); that.properties_tooltip = false; },
@@ -555,7 +555,7 @@ Mlab_dt_api.prototype = {
             position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
             show:       { ready: true, modal: { on: false} },
             hide:       false,
-            style:      { classes: styleClasses },
+            style:      { classes: styleClasses, tip: true },
             events:     { hide: function(event, api) { api.destroy(); }, render: function() { $(".mlab_help_icon").qtip().elements.tooltip.draggable(); } }
         });
     },

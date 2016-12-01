@@ -1,13 +1,13 @@
 /*
- * qTip2 - Pretty powerful tooltips - v3.0.3
+ * qTip2 - Pretty powerful tooltips - v2.2.1-29-
  * http://qtip2.com
  *
- * Copyright (c) 2016 
+ * Copyright (c) 2015 
  * Released under the MIT licenses
  * http://jquery.org/license
  *
- * Date: Fri May 13 2016 02:57 EDT-0400
- * Plugins: viewport modal
+ * Date: Tue Dec 8 2015 05:50 EST-0500
+ * Plugins: tips modal viewport svg imagemap ie6
  * Styles: core basic css3
  */
 .qtip{
@@ -557,6 +557,38 @@
 }
 
 
+.qtip .qtip-tip{
+	margin: 0 auto;
+	overflow: hidden;
+	z-index: 10;
+
+}
+
+	/* Opera bug #357 - Incorrect tip position
+	https://github.com/Craga89/qTip2/issues/367 */
+	x:-o-prefocus, .qtip .qtip-tip{
+		visibility: hidden;
+	}
+
+	.qtip .qtip-tip,
+	.qtip .qtip-tip .qtip-vml,
+	.qtip .qtip-tip canvas{
+		position: absolute;
+
+		color: #123456;
+		background: transparent;
+		border: 0 dashed transparent;
+	}
+
+	.qtip .qtip-tip canvas{ top: 0; left: 0; }
+
+	.qtip .qtip-tip .qtip-vml{
+		behavior: url(#default#VML);
+		display: inline-block;
+		visibility: visible;
+	}
+
+
 #qtip-overlay{
 	position: fixed;
 	left: 0; top: 0;
@@ -578,3 +610,8 @@
 		filter:alpha(opacity=70);
 		-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 	}
+
+
+.qtipmodal-ie6fix{
+	position: absolute !important;
+}

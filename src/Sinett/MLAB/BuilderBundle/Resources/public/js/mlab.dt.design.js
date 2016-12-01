@@ -624,14 +624,14 @@ Mlab_dt_design.prototype = {
         this.parent.qtip_tools = $(curr_comp).qtip({
             solo: false,
             content:    { text: function() { return $('#mlab_toolbar_for_components').clone(true); } },
-            position:   { my: myPosQtip, at: 'rightTop', adjust: { screen: true } },
+            position:   { my: myPosQtip, at: 'rightTop', viewport: $(window) },
             show: {ready: true, modal: { on: false, blur: false }},
             hide: false,
             events: {
                 hide: function(event, api) { $(mlab.dt.api.properties_tooltip).qtip('hide'); api.destroy(); },
                 visible: function(event, api) { $(mlab.dt.qtip_tools).qtip().elements.content.find("*").removeAttr("id"); },
             },
-            style: { classes: 'qtip-light mlab_zindex_regular_tooltip' },
+            style: { classes: 'qtip-light mlab_zindex_regular_tooltip', tip: true },
     
 /*            show:       { ready: true, modal: { on: false, blur: false } },
             hide:       false, */

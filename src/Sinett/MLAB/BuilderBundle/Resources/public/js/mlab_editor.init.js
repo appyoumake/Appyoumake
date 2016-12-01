@@ -272,7 +272,7 @@ $(document).ready(function() {
                             show:       { ready: true, modal: { on: true, blur: false } },
                             hide:       false,
                             events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
-                            style:      { classes: "mlab_zindex_top_tooltip" }
+                            style:      { classes: "mlab_zindex_top_tooltip", tip: true }
                         });
                     } );*/
 
@@ -403,10 +403,10 @@ $(document).ready(function() {
                         mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                             solo: false,
                             content:    {text: $("#mlab_component_size_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.size.title"], button: true },
-                            position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                            position:   { my: 'leftMiddle', at: 'rightMiddle', viewport: $(window)},
                             show:       { ready: true, modal: { on: true, blur: false } },
                             hide:       false,
-                            style:      { classes: "mlab_zindex_top_tooltip" },
+                            style:      { classes: "mlab_zindex_top_tooltip", tip: true },
                             events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; },
                                           visible: function() {  
                                             $("[data-mlab-comp-size='small']").on("click", function () { 
@@ -438,10 +438,10 @@ $(document).ready(function() {
                         mlab.dt.api.properties_tooltip = $(owner_element).qtip({
                             solo: false,
                             content:    {text: $("#mlab_component_aspect_list").clone(), title: _tr["mlab_editor.init.js.qtip.comp.aspect.title"], button: true },
-                            position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                            position:   { my: 'leftMiddle', at: 'rightMiddle', viewport: $(window)},
                             show:       { ready: true, modal: { on: true, blur: false } },
                             hide:       false,
-                            style:      { classes: "mlab_zindex_top_tooltip" },
+                            style:      { classes: "mlab_zindex_top_tooltip", tip: true },
                             events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; }, 
                                           visible: function() {  
                                             $("[data-mlab-comp-aspect='4:3']").on("click", function () { 
@@ -466,10 +466,10 @@ $(document).ready(function() {
 //prepare qtip for the credit of the icon use
                      $('#mlab_credit_icons').qtip({
                          hide:{ delay:500, fixed:true },//give a small delay
-                         position:   { my: 'left bottom', at: 'right center', adjust: { screen: true } },
+                         position:   { my: 'left bottom', at: 'right center', viewport: $(window) },
                          content: {text: function(){ return $("<div>The icons on this page are made by <a href='http://www.freepik.com' target='_blank' title='Freepik'>Freepik</a>, <a href='http://www.flaticon.com/authors/simpleicon' target='_blank' title='SimpleIcon'>SimpleIcon</a>, <a href='http://www.flaticon.com/authors/dave-gandy' target='_blank' title='Dave Gandy'>Dave Gandy</a>, <a href='http://www.flaticon.com/authors/anton-saputro' target='_blank' title='Anton Saputro'>Anton Saputro</a> and <a href='http://www.flaticon.com/authors/yannick' target='_blank' title='Yannick'>Yannick</a> from <a href='http://www.flaticon.com' target='_blank' title='Flaticon'>www.flaticon.com</a> and are licensed by <a href='http://creativecommons.org/licenses/by/3.0/' target='_blank' title='Creative Commons BY 3.0'>CC BY 3.0</a> - and many are made by the Sinett project at FFI.no</div>").html()},
                          title: { text: "Credit for icons" } },
-                         style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                         style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip", tip: true }
                      });
  
 //prepare qtip for the download of app buttons
@@ -478,7 +478,7 @@ $(document).ready(function() {
                             hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                             content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
                             title: { text: _tr["mlab_editor.init.js.qtip.download.app.title"] + " " + platform } },
-                            style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                            style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip", tip: true }
                         });
                     });
 

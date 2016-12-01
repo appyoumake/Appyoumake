@@ -60,7 +60,7 @@ Mlab_dt_management.prototype = {
                             hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
                             content: {text: function(){ return $("[data-mlab-download-link-info='" + platform + "']").html()},
                                      title: { text: "Download to " + platform } },
-                            style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip" }
+                            style: { classes: "mlab_qtip_tooltip mlab_qtip_menu_tooltip", tip: true }
                         });*/
                     }
                 });
@@ -168,7 +168,7 @@ Mlab_dt_management.prototype = {
                 position: { my: 'top right', at: 'bottom right', target: $("#mlab_download_qr_field") },
                 show: { ready: true, modal: { on: false, blur: false } },
                 hide: 'unfocus',
-                style: { classes: 'qtip-tipped' }});
+                style: { classes: 'qtip-tipped', tip: true }});
         */
         });
 
@@ -218,6 +218,13 @@ Mlab_dt_management.prototype = {
             }
         }
         $("#mlab_existing_pages").html(list);
+        
+//make page list sortable to reset pages
+        $("#mlab_existing_pages ol").sortable({
+                update: function(event, ui) {
+                   mlab.dt.management.page_reorder(event, ui);
+                }
+            }).disableSelection();
 
 //Various app meta data
         $("#mlab_edit_app_title").text(this.parent.app.name);
@@ -402,6 +409,19 @@ Mlab_dt_management.prototype = {
         this.page_open(this.parent.app.id, curr_num);
 
     },
+
+/*
+ * Move the selected page to a new position int he app, this is done on backend by renaming the actual file
+ * So if you want to move page 2 to 10, 3 - 9  will be minus one, 2 will be 10
+ * @param {type} event jquery event info
+ * @param {type} ui jquery ui info
+ * @returns {undefined}
+ */
+    page_reorder : function (event, ui) {
+        console.log(event);
+        console.log(ui);
+    },
+
 
 /**
  * Retrieve content of a page from server and insert it into the editor area
@@ -685,7 +705,7 @@ Mlab_dt_management.prototype = {
                 position: { my: 'topMiddle', at: 'bottomMiddle' },
                 show: { ready: true },
                 hide: { event: 'unfocus' },
-                style: { "background-color": "white", color: "blue", classes: "mlab_qtip_info" } } ) ;
+                style: { "background-color": "white", color: "blue", classes: "mlab_qtip_info", tip: true } } ) ;
             
                 //hides the qTip after 5 seconds
                 window.setTimeout(function () { $(".mlab_qtip_info").remove();}, 5000);
