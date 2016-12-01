@@ -148,14 +148,6 @@ table.app_list{
     font-size: 1.23em    
 }
 
-/* overwriting jQuery */
-.ui-tabs .ui-tabs-panel {
-    padding-bottom: 1em;
-    padding-top: 1.5em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-}
-
 th {
     font-size: 0.67em;
     display: table-cell;
@@ -981,4 +973,80 @@ body.mlab_base div.mlab_top_bar_back {
 
 .ui-widget-content {
 	border: none;
+}
+
+
+/* Dialog box  -  overwriting jQuery */
+.ui-tabs .ui-tabs-panel {
+    padding-bottom: 1em;
+    padding-top: 1.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    background-color: white;
+}
+
+.ui-dialog-titlebar,
+.ui-widget-header {
+	border: 0;
+    border-bottom: 1px solid #aaaaaa;
+    background: #E6E6E6;
+    color: #222222;
+    font-weight: bold;
+    padding: 0.4em 1em;
+    position: relative;
+    line-height: 1.3;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 100%;
+}
+
+.ui-dialog .ui-dialog-title {
+	border: 0;
+    color: #222222;
+    font-weight: bold;
+    line-height: 1.3;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 100%;
+}
+
+.ui-dialog-titlebar-close {
+	border: 1px solid #d3d3d3;
+    background: #e6e6e6;
+    font-weight: normal;
+    color: #555555;
+}
+
+.ui-dialog .ui-dialog-content {
+    background-color: white;
+}
+
+.ui-widget-content {
+	padding: 0;
+    background-color: white;
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+    font-weight: normal;
+    color: #212121;
+    font-family: Verdana,Arial,sans-serif;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    list-style: none;
+    float: left;
+    position: relative;
+    top: 0;
+    margin: 1px .2em 0 0;
+    border-bottom-width: 0;
+    padding: 0;
+    white-space: nowrap;
+    border: 1px solid #cccccc;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    border: 1px solid #cccccc;
+}
+
+.ui-widget-overlay {
+background: #666666;
+opacity: 0.5;
 }

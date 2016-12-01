@@ -174,6 +174,8 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     vertical-align: top;
     word-wrap: break-word;
     cursor: pointer;
+    box-shadow: none;
+    width: auto;
 }
 
 #mlab_editor .mlab_dt_button_help {
@@ -266,6 +268,9 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     margin-left: 0.5em;
     margin-right: 0.5em;
     padding-bottom: 0.2em;
+    border-radius: 0px;
+    border: 1px solid rgb(169, 169, 169);
+    cursor: pointer;
 }
 
 #mlab_editor .mlab_dt_large_input {
@@ -412,7 +417,7 @@ color: black;
 
 #mlab_editor #mlab_cp_img_select_image {
     min-width: 195px;
-    max-width: 95%;
+    max-width: 71%;
 }
 
 

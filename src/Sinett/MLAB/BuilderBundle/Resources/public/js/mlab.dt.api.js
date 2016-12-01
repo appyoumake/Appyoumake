@@ -553,7 +553,7 @@ Mlab_dt_api.prototype = {
                         button: true
                         },
             position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
-            show:       { ready: true, modal: { on: true, blur: false } },
+            show:       { ready: true, modal: { on: false} },
             hide:       false,
             style:      { classes: styleClasses },
             events:     { hide: function(event, api) { api.destroy(); }, render: function() { $(".mlab_help_icon").qtip().elements.tooltip.draggable(); } }
