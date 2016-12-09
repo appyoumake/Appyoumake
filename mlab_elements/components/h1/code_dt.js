@@ -14,8 +14,8 @@
     //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
         var that = this;
-        this.getHTMLElement(el).attr("contenteditable", "true")
-                .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.api.getLocaleComponentMessage(that.config.name, ["placeholder"])); } } ) ;
+        this.getHTMLElement(el).attr("contenteditable", "true");
+              //  .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.api.getLocaleComponentMessage(that.config.name, ["placeholder"])); that.highlight(that.getHTMLElement(el)); } } ) ;
     };
     
 	this.onSave = function (el) {

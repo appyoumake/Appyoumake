@@ -8,12 +8,19 @@
         $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
         this.highlight($(el).find("p"));
     };
+    
+     this.onCreate = function (el) {
+        this.onLoad (el);
+        this.getHTMLElement(el).text(this.api.getLocaleComponentMessage(this.config.name, ["placeholder"]));
+        this.highlight(this.getHTMLElement(el));
+    };
 
     
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
         $(el).find("p").attr("contenteditable", "true");
-        $(el).find("p").bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text("Add content"); } } ) ;
+        $(el).find("p").bind("blur keyup paste copy cut mouseup")
+        //, function() { if ($(this).text().trim() == "") { $(this).text("Add content"); } } ) ;
     };
     
 	this.onSave = function (el) {
