@@ -702,7 +702,7 @@ Mlab_dt_management.prototype = {
            
             $("#mlab_statusbar_permanent").qtip( {
                 content: {text: "<ul><li>" + template_best_practice_msg.join("</li><li>") + "</li></ul>" },
-                position: { my: 'topMiddle', at: 'bottomMiddle' },
+                position: { my: 'topMiddle', at: 'bottomMiddle', viewport: $(window) },
                 show: { ready: true },
                 hide: { event: 'unfocus' },
                 style: { "background-color": "white", color: "blue", classes: "mlab_qtip_info", tip: true } } ) ;

@@ -269,7 +269,7 @@ Mlab_dt_api.prototype = {
         this.properties_tooltip = $(owner_element).qtip({
             solo: false,
             content: {text: content, title: _tr["mlab.dt.api.js.uploadMedia.qtip.title"] },
-            position: { my: 'leftMiddle', at: 'rightMiddle' },
+            position: { my: 'leftMiddle', at: 'rightMiddle', viewport: $(window) },
             show: { ready: true, modal: { on: true, blur: false } },
             hide: false,
             style: { classes: 'qtip-light mlab_zindex_top_tooltip', tip: true },
@@ -516,7 +516,7 @@ Mlab_dt_api.prototype = {
         that.properties_tooltip = $(owner_element).qtip({
             solo: false,
             content:    {text: content, title: title, button: true },
-            position:   { my: myPosQtip, at: 'rightMiddle', adjust: { screen: true } },
+            position:   { my: myPosQtip, at: 'rightMiddle', viewport: $(window) },
             show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c, tip: true },
@@ -552,7 +552,7 @@ Mlab_dt_api.prototype = {
                         title: title,
                         button: true
                         },
-            position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
+            position:   { my: 'topRight', at: 'bottomMiddle', viewport: $(window), effect: false },
             show:       { ready: true, modal: { on: false} },
             hide:       false,
             style:      { classes: styleClasses, tip: true },
