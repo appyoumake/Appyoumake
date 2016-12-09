@@ -94,7 +94,7 @@ switch ($_REQUEST['fix']) {
 
         if ($exp_sig == $dl_sig) {
             chdir("bin");
-            include("composer-setup.php");
+            $p = trim(shell_exec("php composer-setup.php"));
             if (!file_exists("composer.phar")) {
                 $error = "Unable to install composer";
             } else {
