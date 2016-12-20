@@ -44,11 +44,20 @@ class ComponentRepository extends EntityRepository
 	 */
 	public function findAccessByGroups ( $groups) {
 		$components = array();
+        $comp_group_repo = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:ComponentGroup');
 		foreach ($groups as $group) {
 			$temp_components = $group->getComponents();
 			foreach ($temp_components as $temp_component) {
                 if ($temp_component->getEnabled()) {
-                    $components[] = $temp_component->getPath();
+                    $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
+                    if ($access_record) {
+                        $access_state = $access_record->getAccessState();
+                    } else {
+                        $access_state = 0;
+                    }
+                    if ( ($access_state & 2) > 0) {
+                        $components[] = $temp_component->getPath();
+                    }
                 }
 			}
 		}

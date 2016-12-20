@@ -23,14 +23,24 @@ class TemplateRepository extends EntityRepository
 {
 	/**
 	 * Returns a list of all templates that is allowed for the specified groups
+     * The TemplateGroupData::access_state field has bit 1 set to 1 if user access is set up for this person's group access
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
-	public function findAllByGroups ( $groups) {
+	public function findAllByGroups ( $groups ) {
 		$templates = array();
+        $repository = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:TemplateGroupData');
 		foreach ($groups as $group) {
 			$temp_templates = $group->getTemplates();
 			foreach ($temp_templates as $temp_template) {
-				$templates[$temp_template->getId()] = $temp_template->getArray();
+                $access_record = $repository->findOneBy(array('template_id' => $temp_template->getId(), 'group_id' => $group->getId()));
+                if ($access_record) {
+                    $access_state = $access_record->getAccessState();
+                } else {
+                    $access_state = 0;
+                }
+                if ( ($access_state & 2) > 0) {
+                    $templates[$temp_template->getId()] = $temp_template->getArray();
+                }
 			}
 		}
 		return $templates;

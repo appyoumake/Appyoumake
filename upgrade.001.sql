@@ -19,3 +19,5 @@ INSERT INTO `templates_groups_data` (`template_id`, `group_id`, `access_state`) 
 (1, 1, 0),
 (1, 2, 0),
 (1, 3, 0);
+
+ALTER TABLE  `grp` ADD  `categories` TEXT NULL ;
