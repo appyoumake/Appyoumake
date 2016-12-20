@@ -73,6 +73,13 @@ class Group extends BaseGroup
 
     
     /**
+     * Categories for a group, JSON structure of nested strings (3 levels)
+     * @var string
+     */
+    private $categories;
+
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -384,6 +391,29 @@ class Group extends BaseGroup
     public function getEnabled()
     {
         return $this->enabled;
+    }
+    
+    /**
+     * Set categories
+     *
+     * @param string $categories
+     * @return Group
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+    
+        return $this;
+    }
+
+    /**
+     * Get categories
+     *
+     * @return string 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
     
 }

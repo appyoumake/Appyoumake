@@ -36,8 +36,14 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 	<progress value="0" max="0" class="hidden"></progress>
 {% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/themes/default/style.min.css" />
+	{{ parent() }}
+{% endblock %}
+    
 {% block javascripts %}
 	{{ parent() }}
+    <script src='{{ asset('/js/jstree-3.3.3.js') }}'></script>
 	<script>
 	
             

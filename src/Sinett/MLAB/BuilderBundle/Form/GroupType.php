@@ -29,6 +29,7 @@ class GroupType extends AbstractType
             ->add('description', null, array('label' => 'app.admin.groups.new.or.edit.description'))
             ->add('enabled', null, array('label' => 'app.admin.groups.new.or.edit.enabled'))
             ->add('users', null, array('label' => 'app.admin.groups.new.or.edit.users'))
+            ->add('categories', "hidden")
         ;
     }
     

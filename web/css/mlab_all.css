@@ -1097,3 +1097,25 @@ opacity: 0.5;
 #qtip-overlay div {
     opacity: 0.4;
 }
+
+/* styling of the new category treeview */
+
+#mlab_group_edit {
+    width: 48%;
+    height: 300px;
+    float: left;
+}
+
+#mlab_categories_tree {
+    width: 48%;
+    height: 300px;
+    border: 1px solid red;
+    float: right;
+}
+
+.jstree-default .jstree-icon:empty {
+    width: 0;
+    height: 0;
+    line-height: 0;
+    background: none;
+}

@@ -49,6 +49,9 @@ Sinett\MLAB\BuilderBundle\Entity\Group:
       options:
         default: true
             
+    categories:
+      type: text
+      nullable: true
 
                           
   manyToMany:
