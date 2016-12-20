@@ -18,7 +18,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             {% if entity.groups is empty %} <!-- If no group -->
                {% trans %}app.admin.components.no.group{% endtrans %}
             {% else %} <!-- If have groups -->
-                {{ entity.groups|join(", ") }}
+                {{ entity.groupNames|raw }}
             {% endif %} 
         </a>
     </td>

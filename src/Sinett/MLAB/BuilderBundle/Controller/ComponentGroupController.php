@@ -253,7 +253,9 @@ class ComponentGroupController extends Controller
             'delete_form' => $deleteForm->createView(),
         ));
     }
-     /**
+    
+    
+    /**
       * Updates the ComponentGroup entities for a component.
       * The data coming back is NOT mapped directly to a database, thus we are updating the records manually here
       * If the user is a regular admin user we ignore the records related to groups they are not a member of
@@ -360,6 +362,8 @@ class ComponentGroupController extends Controller
                     'result' => 'SUCCESS',
                     'record' => $this->renderView('SinettMLABBuilderBundle:Component:show_admin.html.twig', array('entity' => $component))));
     }
+    
+    
     /**
      * Deletes a ComponentGroup entity.
      *

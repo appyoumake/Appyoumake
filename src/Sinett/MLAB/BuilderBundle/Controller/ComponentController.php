@@ -93,6 +93,7 @@ class ComponentController extends Controller
 //this stops overlappping group access from enabling access for a particular user
             $group_access = $this->getUser()->getGroupsIdArray();
             $entities = array();
+            
             foreach ($temp_entities as $entity) {
                 $add_entity = false;
                 $group_user_access = array();
@@ -145,7 +146,8 @@ class ComponentController extends Controller
             $res = $file_mgmt->handleUpload($entity);
             
             if ($res["result"]) {
-            
+
+//set up admin access initially
                 foreach($entity->getComponentGroups() as $group) {
                     $group->setAccessState(1);
                 }

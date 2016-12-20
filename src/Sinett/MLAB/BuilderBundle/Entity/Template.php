@@ -72,7 +72,13 @@ class Template
     
 //flag used to see if it can be deleted or not
     private $canDelete;
+
+    /**
+     * @var string
+     */
+    private $group_names;
     
+
     /**
      * Constructor
      */
@@ -402,4 +408,28 @@ class Template
     {
         return $this->canDelete;
     }
+    
+    /**
+     * Set enabled
+     *
+     * @param string $enabled
+     * @return Component
+     */
+    public function setGroupNames($names)
+    {
+        $this->group_names = $names;
+    
+        return $this;
+    }
+
+    /**
+     * Get group_names
+     *
+     * @return string 
+     */
+    public function getGroupNames()
+    {
+        return $this->group_names;
+    }
+    
 }

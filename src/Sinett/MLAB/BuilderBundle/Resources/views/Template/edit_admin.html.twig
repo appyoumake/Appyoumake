@@ -1,0 +1,28 @@
+{#
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+#}
+{% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
+
+{% block body -%}
+    <h5>{% trans %}app.admin.templates.tooltip.group{% endtrans %} {{ entity.name }}</h5>
+
+    <form action="{{ path('template_update_group',  { 'template_id': template_id }) }}" method="post">
+        
+        {% for group in groups %}
+            <input type="checkbox" class="mlab_edit_compgroup_checkbox" id="sinett_mlab_builderbundle_templategroup_{{ group.id }}_enabled" name="sinett_mlab_builderbundle_templategroup[{{ group.id }}][enabled]" value="{{ group.id }}" {% if group.isEnabled == "true" %} checked {% endif %}>
+            <label class="mlab_edit_compgroup_checkbox_label" for="sinett_mlab_builderbundle_templategroup_{{ group.id }}_enabled">{{ group.name }}</label> 
+            <br>
+        {% endfor %}
+            <br>
+            <input type="submit" value="{% trans %}app.admin.components.new.create.button{% endtrans %}">
+    </form>
+   
+
+{% endblock %}

@@ -31,6 +31,11 @@ template_update:
     defaults: { _controller: "SinettMLABBuilderBundle:Template:update" }
     requirements: { methods: post|put }
 
+template_update_group:
+    path:  /{template_id}/update_groups
+    defaults: { _controller: "SinettMLABBuilderBundle:Template:updateGroups" }
+    requirements: { methods: post|put }
+
 template_delete:
     path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Template:delete" }
