@@ -41,7 +41,12 @@ class ComponentGroup
      */
     private $group;
 
-
+    /**
+     * @var int
+     */
+    private $access_state;
+    
+    
     /**
      * Get id
      *
@@ -142,4 +147,29 @@ class ComponentGroup
     {
     	return $this->group->getName();
     }
+    
+    /**
+     * Set access state
+     *
+     * @param integer
+     * @return ComponentGroup
+     */
+    public function setAccessState($state)
+    {
+        $this->access_state = $state;
+    
+        return $this;
+    }
+
+    /**
+     * Get access state
+     *
+     * @return integer
+     */
+    public function getAccessState()
+    {
+        return $this->access_state;
+    }
+    
+    
 }

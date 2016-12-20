@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Group;
+use Sinett\MLAB\BuilderBundle\Entity\User;
 use Sinett\MLAB\BuilderBundle\Form\GroupType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -37,8 +38,10 @@ class GroupController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $temp_roles = $this->getUser()->getRoles();
+        $temp_groups = $this->getUser()->getGroupsArray();
 
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Group')->findAll();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
 
         return $this->render('SinettMLABBuilderBundle:Group:index.html.twig', array(
             'entities' => $entities,
@@ -47,6 +50,7 @@ class GroupController extends Controller
     
     /**
      * Creates a new Group entity.
+     * If the current user is a regular admin they will be added to the group
      *
      */
     public function createAction(Request $request)
@@ -57,8 +61,15 @@ class GroupController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            
             foreach($entity->getUsers() as $user){
                 $user->addGroup($entity);
+            }
+            
+//if regular admin, add themselves as a user in this group, regardless of whether they did this through the dialog box.
+            if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                $entity->addUser($this->getUser());
+//                $this->getUser()->addGroup($entity);
             }
 
             $em->persist($entity);
@@ -90,12 +101,26 @@ class GroupController extends Controller
             'action' => $this->generateUrl('group_create'),
             'method' => 'POST',
         ));
-
+        
+//need to create custom form for regular admin because we want to filter out and only show users that the current admin controls.
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $temp_roles = $this->getUser()->getRoles();
+            $temp_groups = $this->getUser()->getGroupsArray();
+            $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            $form->add('users', 'entity', array( 'choices' => $users,
+                                                    'class' => 'SinettMLABBuilderBundle:User',
+                                                    'label' => 'app.admin.groups.users',
+                                                    'required' => false,
+                                                    'empty_data'  => null,
+                                                    'placeholder'  => '',
+                                                    'multiple' => true));
+        }
         $form->add('submit', SubmitType::class, array('label' => 'app.admin.groups.new.create.button'));
-
         return $form;
+
     }
 
+    
     /**
      * Displays a form to create a new Group entity.
      *
@@ -169,6 +194,19 @@ class GroupController extends Controller
             'action' => $this->generateUrl('group_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
+        
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $temp_roles = $this->getUser()->getRoles();
+            $temp_groups = $this->getUser()->getGroupsArray();
+            $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            $form->add('users', 'entity', array( 'choices' => $users,
+                                                    'class' => 'SinettMLABBuilderBundle:User',
+                                                    'label' => 'app.admin.groups.users',
+                                                    'required' => false,
+                                                    'empty_data'  => null,
+                                                    'placeholder'  => '',
+                                                    'multiple' => true));
+        }
 
         $form->add('submit', SubmitType::class, array('label' => 'app.admin.groups.edit.update.button'));
 
@@ -188,7 +226,7 @@ class GroupController extends Controller
             throw $this->createNotFoundException($this->get('translator')->trans('groupController.createNotFoundException'));
         }
 
-//remove all old groups from DB record
+//remove all old groups from DB record 
         foreach($entity->getUsers() as $user){
             $user->removeGroup($entity);
         }

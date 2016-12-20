@@ -231,6 +231,7 @@ app.admin.groups: Groups
 app.admin.groups.name: Name
 app.admin.groups.description: Description
 app.admin.groups.enabled: Enabled
+app.admin.groups.users: Users
 
 app.admin.groups.tooltip.isdefault: The group is set as default
 app.admin.groups.tooltip.name: Edit group

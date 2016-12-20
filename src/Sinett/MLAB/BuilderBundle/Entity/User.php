@@ -326,6 +326,35 @@ class User extends BaseUser
     }
 
     /**
+     * Get string array of group names for this user
+     *
+     * @return array of strings 
+     */
+    public function getGroupsArray()
+    {
+        $groups = array();
+    	foreach ($this->groups as $group) {
+    		$groups[] = $group->getName();
+        }
+        return $groups;
+    }
+    
+    /**
+     * Get string array of group names for this user
+     *
+     * @return array of strings 
+     */
+    public function getGroupsIdArray()
+    {
+        $groups = array();
+    	foreach ($this->groups as $group) {
+    		$groups[] = $group->getId();
+        }
+        return $groups;
+    }
+    
+    
+    /**
      * Get roles
      *
      * @return \Doctrine\Common\Collections\Collection 

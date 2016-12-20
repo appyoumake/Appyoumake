@@ -232,6 +232,7 @@ app.admin.groups: Grupper
 app.admin.groups.name: Navn
 app.admin.groups.description: Beskrivelse
 app.admin.groups.enabled: Aktiv
+app.admin.groups.users: Brukere
 
 app.admin.groups.tooltip.isdefault: Gruppen er satt som standard
 app.admin.groups.tooltip.name: Rediger gruppe

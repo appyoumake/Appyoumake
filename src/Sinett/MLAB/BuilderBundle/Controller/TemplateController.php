@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Template;
+use Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData;
 use Sinett\MLAB\BuilderBundle\Form\TemplateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -31,26 +32,42 @@ class TemplateController extends Controller
 {
 
     /**
-     * Lists all Template entities.
+     * Lists all Template entities (if superadmin) or just enabled in current user's groups if regular admin.
      *
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllCheckDeleteable();
+        
+        if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllCheckDeleteable();
+        } else {
+            $temp_entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllEnabledCheckDeleteable();
+//now we need to filter out the ones that the current user does not have group access to 
+//group access can be set with the parameter admin_only, but here we don't worry about this, whether access is given to 
+            $group_access = $this->getUser()->getGroupsIdArray();
+            $entities = array();
+            foreach ($temp_entities as $entity) {
+                foreach ($entity->getGroups() as $group) {
+                    if (in_array($group->getId(), $group_access)) { // only deal with groups that we have access to
+                        $entities[] = $entity;
+                    }
+                }
+            }
+        }
 
         return $this->render('SinettMLABBuilderBundle:Template:index.html.twig', array(
             'entities' => $entities,
         ));
     }
     /**
-     * Creates a new Template entity.
+     * Creates a new Template entity, only allowed for superadmin
+     * Basically uploads a zip file with template as part of the creation
      *
      */
     public function createAction(Request $request)
     {
-    	
+    	$this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
         $entity = new Template();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -183,6 +200,20 @@ class TemplateController extends Controller
             'action' => $this->generateUrl('template_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
+        
+//need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $temp_roles = $this->getUser()->getRoles();
+            $temp_groups = $this->getUser()->getGroupsArray();
+            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            $form->add('groups', 'entity', array( 'choices' => $groups,
+                                                  'class' => 'SinettMLABBuilderBundle:Group',
+                                                  'label' => 'app.admin.users.groups',
+                                                  'required' => true,
+                                                  'empty_data'  => null,
+                                                  'placeholder'  => '',
+                                                  'multiple' => true));
+        }
 
         $form->add('submit', SubmitType::class, array('label' => 'app.admin.templates.edit.groups.update.button'));
 
@@ -248,6 +279,7 @@ class TemplateController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);
         
@@ -278,6 +310,8 @@ class TemplateController extends Controller
      * @param type $id
      */
     public function toggleStateAction($id) {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
+        
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);

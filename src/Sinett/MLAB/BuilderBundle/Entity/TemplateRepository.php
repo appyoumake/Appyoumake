@@ -63,7 +63,19 @@ class TemplateRepository extends EntityRepository
 		}
 		return $templates;
 	}
+
+  	/**
+	 * Returns a list of all templates with information about whether they can be deleted (not used in any apps)
+	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
+	 */
+	public function findAllEnabledCheckDeleteable () {
+		$templates = $this->findByEnabled(1);
+		foreach ($templates as $id => $template) {
+			$temp_apps = $template->getApps();
+			$templates[$id]->setCanDelete($temp_apps->count() == 0);
+		}
+		return $templates;
+	}
     
-	
-	
+
 }

@@ -15,6 +15,8 @@ Sinett\MLAB\BuilderBundle\Entity\ComponentGroup:
       columns: [ component_id ]
     group_index:
       columns: [ group_id ]
+    access_state_index:
+      columns: [ access_state ]
 
   id:
     id: 
@@ -26,6 +28,12 @@ Sinett\MLAB\BuilderBundle\Entity\ComponentGroup:
     credential:
       type: text
       nullable: true
+         
+    access_state:
+      type: integer
+      nullable: false
+      options:
+        default: 0
          
 # link to apps for a version
   manyToOne:

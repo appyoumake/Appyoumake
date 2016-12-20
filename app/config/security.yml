@@ -36,6 +36,7 @@ security:
         - { path: ^/category/.+/.+/load_categories, role: ROLE_USER }
         - { path: ^/category/, role: ROLE_ADMIN }
         - { path: ^/component/, role: ROLE_ADMIN }
+        - { path: ^/componentgroup/, role: ROLE_ADMIN }
         - { path: ^/group/, role: ROLE_ADMIN }
         - { path: ^/menu/, role: ROLE_ADMIN }
         - { path: ^/template/, role: ROLE_ADMIN }

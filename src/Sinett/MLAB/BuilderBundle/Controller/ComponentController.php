@@ -36,7 +36,9 @@ class ComponentController extends Controller
 {
 
     /**
-     * Lists all Component entities, in addition find out which have been used and do NOT allow them to be deleted
+     * For superadmin: Lists all Component entities
+     * For admin: List all component entities that are enabled and that is assigned to at least one group that the current user belongs to
+     * In addition find out which components have been used and do NOT allow them to be deleted
      *
      */
     public function indexAction()
@@ -55,11 +57,69 @@ class ComponentController extends Controller
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);
         
 //now pick up the components, and set canDelete for those who have not been used
-        if (is_array($all_comps_used)) {
-            $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
+        
+//for superadmin we list all components
+        if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            if (is_array($all_comps_used)) {
+                $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
+            } else {
+                $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAll();
+            }
+            
+            foreach ($entities as $entity) {
+                $group_user_access = array();
+//pick up group access names, we show admin access (bit 0 = 1) in red
+                foreach ($entity->getGroups() as $group) {
+                    $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $entity->getId(), 'group' => $group->getId()))->getAccessState();
+                    if ( ($access_state & 1) > 0) {
+                        $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
+                    } else if ( ($access_state & 2) > 0) {
+                        $group_user_access[] = $group->getName();
+                    }
+                }
+                $entity->setGroupNames(implode(", ", $group_user_access));
+            }
+            
+//for regular admin only list the ones they have access to through group membership
         } else {
-            $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAll();
+            if (is_array($all_comps_used)) {
+                $temp_entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllEnabledCheckDeleteable($all_comps_used);
+            } else {
+                $temp_entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findByEnabled(1);
+            }
+            
+//now we need to filter out the ones that the current user does not have group access to 
+//group access can be set with the field access_state, if this is 1 or 3 (binary 01 is set) then it means we have access at the admin level
+//this stops overlappping group access from enabling access for a particular user
+            $group_access = $this->getUser()->getGroupsIdArray();
+            $entities = array();
+            foreach ($temp_entities as $entity) {
+                $add_entity = false;
+                $group_user_access = array();
+                $sub_groups = $entity->getGroups();
+                foreach ($sub_groups as $group) {
+                    if (in_array($group->getId(), $group_access)) { // only deal with groups that we have access to
+
+//here we check what sort of access record this is.
+//if bit 0 = 1 we have admin access, so we list it
+                        $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $entity->getId(), 'group' => $group->getId()))->getAccessState();
+                        if ( ($access_state & 1) > 0 && !in_array($entity, $entities)) {
+                            $add_entity = true;
+                        } 
+
+//if bit 1 = 1 we have user access, so we add this group name to the list
+                        if ( ($access_state & 2) > 0) {
+                            $group_user_access[] = $group->getName();
+                        }
+                    }
+                }
+                if ($add_entity) {
+                    $entities[] = $entity;
+                    $entities[sizeof($entities) - 1]->setGroupNames(implode(", ", $group_user_access));
+                }
+            }
         }
+        
 //using alternative TWIG as this is called from the admin pages, and we need to use a link to the componentgroup class to edit group access & credentials
         return $this->render('SinettMLABBuilderBundle:Component:index_admin.html.twig', array(
             'entities' => $entities
@@ -67,11 +127,12 @@ class ComponentController extends Controller
     }
     
     /**
-     * Creates a new Component entity.
-     *
+     * Creates a new Component entity, only allowed for superadmin
+     * Basically uploads a zip file with component as part of the creation
      */
     public function createAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
         $entity = new Component();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -85,7 +146,9 @@ class ComponentController extends Controller
             
             if ($res["result"]) {
             
-                
+                foreach($entity->getComponentGroups() as $group) {
+                    $group->setAccessState(1);
+                }
 	            $em->persist($entity);
 	            $em->flush();
 	
@@ -266,6 +329,7 @@ class ComponentController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($id);
         if (!$entity) {
@@ -294,6 +358,8 @@ class ComponentController extends Controller
      * @param type $id
      */
     public function toggleStateAction($id) {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
+
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($id);

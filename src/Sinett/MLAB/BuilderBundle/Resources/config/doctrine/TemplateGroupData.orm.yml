@@ -1,0 +1,45 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData:
+  type: entity
+  table: templates_groups_data
+  repositoryClass: Sinett\MLAB\BuilderBundle\Entity\TemplateGroupDataRepository
+  
+  indexes:
+    template_index:
+      columns: [ template_id ]
+    group_index:
+      columns: [ group_id ]
+    access_state_index:
+      columns: [ access_state ]
+
+  id:
+    id: 
+      type: integer
+      generator:
+          strategy: AUTO
+
+  fields:
+    template_id:
+      type: integer
+      nullable: false
+      options:
+        default: 0
+         
+    group_id:
+      type: integer
+      nullable: false
+      options:
+        default: 0
+         
+    access_state:
+      type: integer
+      nullable: false
+      options:
+        default: 0
+         

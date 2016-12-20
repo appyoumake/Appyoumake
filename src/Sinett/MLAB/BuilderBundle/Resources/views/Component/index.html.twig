@@ -19,10 +19,12 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 <th>{% trans %}app.admin.components.version{% endtrans %}</th>
                 <th>{% trans %}app.admin.components.description{% endtrans %}</th>
                 <th>{% trans %}app.admin.components.groups{% endtrans %}</th>
-                <th>{% trans %}app.admin.components.enabled{% endtrans %}</th>
-                <th> 
-                	<a class="mlab_button_new_component" href="{{ path('component_new') }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
-                </th>
+                {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
+                    <th>{% trans %}app.admin.components.enabled{% endtrans %}</th>
+                    <th> 
+                        <a class="mlab_button_new_component" href="{{ path('component_new') }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
+                    </th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
