@@ -27,23 +27,19 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     
     <script>
         $(document).ready(function() {
+            $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
+                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify($('#mlab_categories_tree').jstree(true).get_json(null, {flat:true}))); 
+                //$.jstree.destroy(); //must remove jstree so is always initialised correctly when re-open, otherwise on("ready.jstree" below failes
+                return true;
+                }
+            );
+            
             $('#mlab_categories_tree').jstree(
                 { 'core' : {
-                    'check_callback' : true,
-                    'data' : [ 'Simple root node', 
-                               { 'text' : 'Root node 2',
-                                 'state' : { 'opened' : true, 'selected' : true },
-                                 'children' : [ { 'text' : 'Child 1' }, 'Child 2' ]
-                               }]
+                    'check_callback' : true
                   },
                   "plugins" : [ "dnd", "search", "state", "types", "wholerow" ]
-               }).on("ready.jstree", function(e, data) {
-                    $("#dataTree").jstree('open_all');   
-               }).on("changed.jstree", function (e, data) {
-                    var result = data.selected.map(function(node) {
-                        return $('#mlab_categories_tree').jstree(true).get_json(node, {flat:true});
-                    });
-                });
+               });
         });
         
 
@@ -73,7 +69,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         };
         
         function mlab_category_delete() {
-            if (prompt("Are you sure you want to delete the current branch? This cannot be changed!")) {
+            if (confirm("Are you sure you want to delete the current branch? This cannot be changed!")) {
                 var ref = $('#mlab_categories_tree').jstree(true),
                     sel = ref.get_selected();
                 if(!sel.length) { return false; }

@@ -14,4 +14,71 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
     {{ form(edit_form) }}
 
+    <div id="mlab_categories_tree_edit">
+        
+    </div>
+    <div>
+        <img src="/img/newVersion.png" onclick="mlab_category_create();">
+        <img src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
+        <img src="/img/notPublished.png" onclick="mlab_category_delete();">
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            console.log($("#sinett_mlab_builderbundle_group_categories").val());
+            $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
+                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify($('#mlab_categories_tree_edit').jstree(true).get_json(null, {flat:true}))); 
+                $("#mlab_categories_tree_edit").jstree('destroy');
+                //$.jstree.destroy(); //must remove jstree so is always initialised correctly when re-open, otherwise on("ready.jstree" below failes
+                return true;
+                }
+            );
+            
+            $('#mlab_categories_tree_edit').jstree(
+                { 'core' : {
+                    'check_callback' : true,
+                    'data' : JSON.parse($("#sinett_mlab_builderbundle_group_categories").val())
+                  },
+                  "plugins" : [ "dnd", "search", "state", "types", "wholerow" ]
+               });
+        });
+        
+
+        function mlab_category_create() {
+            var ref = $('#mlab_categories_tree_edit').jstree(true),
+                sel = ref.get_selected();
+            
+//root level
+            if(!sel.length) { 
+                sel = ref.create_node(null, {"type":"file"});
+            } else if ( $('#mlab_categories_tree_edit').jstree(true).get_path(sel[0]).length <= 2 ) {
+                sel = ref.create_node(sel[0], {"type":"file"});
+            } else {
+                return;
+            }
+            if(sel) {
+                ref.edit(sel);
+            }
+        };
+        
+        function mlab_category_rename() {
+            var ref = $('#mlab_categories_tree_edit').jstree(true),
+                sel = ref.get_selected();
+            if(!sel.length) { return false; }
+            sel = sel[0];
+            ref.edit(sel);
+        };
+        
+        function mlab_category_delete() {
+            if (confirm("Are you sure you want to delete the current branch? This cannot be changed!")) {
+                var ref = $('#mlab_categories_tree_edit').jstree(true),
+                    sel = ref.get_selected();
+                if(!sel.length) { return false; }
+                ref.delete_node(sel);
+            }
+        };
+        
+    </script>
+
+    
 {% endblock %}

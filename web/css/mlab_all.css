@@ -1106,7 +1106,7 @@ opacity: 0.5;
     float: left;
 }
 
-#mlab_categories_tree {
+#mlab_categories_tree, #mlab_categories_tree_edit {
     width: 48%;
     height: 300px;
     border: 1px solid red;
