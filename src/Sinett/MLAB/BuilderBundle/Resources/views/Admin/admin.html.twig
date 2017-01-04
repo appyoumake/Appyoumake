@@ -200,7 +200,12 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
         // need to reload data if edit record AND already created dialog box
                                     } else if ( event.data.link == "edit" ) {  
-                                        $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
+                                        if (event.data.entity = "group") {
+//special case for group editing, the jstree function needs to be reinitialised to function OK
+                                            $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { mlab_category_init(); assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
+                                        } else {
+                                            $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
+                                        }
 
         // in all other cases just re-display dialog box, usually for new record
         // remember: new can be both new and adminNew if change this to use specific event.data.link if clause
