@@ -510,8 +510,14 @@ function libraries_php() {
 
 function version_mysql() {
     global $pre_checks;
-    $info = shell_exec("mysql -N -B -e \"SHOW VARIABLES LIKE 'version';\"");
-    list($info) = explode("-", $info);
+    $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
+    $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
+    if ($mysqli->connect_errno) {
+        return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+    }
+    
+    $info = $mysqli->server_version;
+    die($info . "---");
     $info = str_replace("version", "", $info);
     return check_version_number($info, $pre_checks["version_mysql"]["check"]);
 }
