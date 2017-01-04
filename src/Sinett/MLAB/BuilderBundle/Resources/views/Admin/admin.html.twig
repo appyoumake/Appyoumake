@@ -200,7 +200,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
         // need to reload data if edit record AND already created dialog box
                                     } else if ( event.data.link == "edit" ) {  
-                                        if (event.data.entity = "group") {
+                                        if (event.data.entity == "group") {
 //special case for group editing, the jstree function needs to be reinitialised to function OK
                                             $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { mlab_category_init(); assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
                                         } else {
