@@ -377,6 +377,23 @@ Mlab_dt_api.prototype = {
         });
     },
 
+    getScriptFiles : function (scripts) {
+        var next_script = scripts.shift();
+        var that = this;
+        $.ajaxSetup({ cache: true });
+        $.getScript(next_script).done(function( script, textStatus ) {
+            console.log( textStatus );
+            if (scripts.length > 0) {
+                return that.getScriptFiles(scripts);
+            }
+            return true;
+        }).fail(function( jqxhr, settings, exception ) {
+            console.log( "Unable to load script: " +  next_script);
+            return false;
+        });
+        $.ajaxSetup({ cache: false });
+    },
+
 /**
  * Loads all js/css files required by a component at design time.
  * Files loaded are specified in the conf.yml parameter required_libs.
@@ -384,6 +401,7 @@ Mlab_dt_api.prototype = {
  * @returns {undefined}
  */
     getLibraries : function (comp_id) {
+        var js_stack = [];
         if ("required_libs" in this.parent.components[comp_id].conf) {
             if ("designtime" in this.parent.components[comp_id].conf.required_libs) {
                 var comp_url = window.location.origin + this.parent.urls.components_root_url;
@@ -393,10 +411,11 @@ Mlab_dt_api.prototype = {
                     var file = this.parent.components[comp_id].conf.required_libs.designtime[i];
                     var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ ;
                     
+//has full URL including protocol, i.e. it is remote
                     if (regexp.test(file)) {
                         if (file.substr(-3) == ".js") {
                             if ($("script[src*='" + file + "']").length < 1) {
-                                $("head").append($("<script src='" + file + "' >"));
+                                js_stack.push(file);
                             }
                         } else {
                             if ($("link[href*='" + file + "']").length < 1) {
@@ -404,15 +423,18 @@ Mlab_dt_api.prototype = {
                             }
                         }
                         
+//"local", i.e. file that is part of Mlab a component 
                     } else if (file.substr(-3) == ".js") {
-                        if ($("script[src*='" + file + "']").length < 1) {
-                            $("head").append($("<script src='" + comp_url + comp_path + "/js/" + file + "' >"));
-                        }
+                        js_stack.push(comp_url + comp_path + "/js/" + file);
                     } else if (file.substr(-4) == ".css") {
                         if ($("link[href*='" + file + "']").length < 1) {
                             $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >"));
                         }
                     }
+                }
+                
+                if (js_stack.length > 0 ) {
+                    this.getScriptFiles(js_stack);
                 }
             }
         }
