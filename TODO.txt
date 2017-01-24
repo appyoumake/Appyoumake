@@ -1,0 +1,7 @@
+- Se om kan fikse CSS kjapt
+- Fix categories / database call in new app wizard
+- Fix JS loading issue when add calendar component first time
+- Test all deler flere ganger
+
+PPT slide: add one for relationship between conf.yml, etc and diferent parts of the process.
+Use kdiff3 to discuss differences in code
