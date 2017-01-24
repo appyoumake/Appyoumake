@@ -1,0 +1,4 @@
+- Se om kan fikse CSS kjapt
+- Fix categories / database call in new app wizard
+- Fix JS loading issue when add calendar component first time
+- Test all deler flere ganger
