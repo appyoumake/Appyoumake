@@ -52,7 +52,7 @@ part of a list */
     font-family: Arial,sans-serif;
     font-style: normal;
     text-shadow: none;
-    color: #ffffff;  
+    color: #000000;  
     margin-top: 0.3em;
     margin-bottom: 0.3em;
 }
@@ -155,7 +155,6 @@ part of a list */
 .mlab_main_body_content .mc_text.mc_dark {
     color: #000000;  
 }
-
 
 /*  */
 #mlab_editor .mc_text.mc_small,
@@ -449,6 +448,7 @@ part of a list */
 .mlab_main_body_content .mlab_dt_medium_textarea.mc_blurred {
     color: lightgray;
 }
+
 
 /* ==========================================================================
    Buttons

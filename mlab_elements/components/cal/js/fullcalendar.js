@@ -5626,7 +5626,7 @@ var DayTableMixin = FC.DayTableMixin = {
 	renderHeadDateCellHtml: function(date, colspan, otherAttrs) {
 		var view = this.view;
 		var classNames = [
-			'fc-day-header',
+			'fc-day-header mc_text mc_dark',
 			view.widgetHeaderClass
 		];
 
@@ -5926,7 +5926,7 @@ var DayGrid = FC.DayGrid = Grid.extend(DayTableMixin, {
 		if (this.view.dayNumbersVisible) {
 			html += this.view.buildGotoAnchorHtml(
 				date,
-				{ 'class': 'fc-day-number' },
+				{ 'class': 'fc-day-number mc_text mc_dark' },
 				date.date() // inner HTML
 			);
 		}
@@ -6335,7 +6335,7 @@ DayGrid.mixin({
 					''
 					) +
 			'>' +
-				'<div class="fc-content">' +
+				'<div class="fc-content mc_text mc_dark mc_small">' +
 					(this.isRTL ?
 						titleHtml + ' ' + timeHtml : // put a natural space in between
 						timeHtml + ' ' + titleHtml   //
@@ -7715,7 +7715,7 @@ TimeGrid.mixin({
 				''
 				) +
 			'>' +
-				'<div class="fc-content">' +
+				'<div class="fc-content mc_text mc_dark mc_small">' +
 					(timeText ?
 						'<div class="fc-time"' +
 						' data-start="' + htmlEscape(startTimeText) + '"' +
@@ -9702,7 +9702,7 @@ function Toolbar(calendar, toolbarOptions) {
 
 		if (sections) {
 			if (!el) {
-				el = this.el = $("<div class='fc-toolbar "+ toolbarOptions.extraClasses + "'/>");
+				el = this.el = $("<div class='mc_text mc_dark fc-toolbar "+ toolbarOptions.extraClasses + "'/>");
 			}
 			else {
 				el.empty();
@@ -9806,7 +9806,7 @@ function Toolbar(calendar, toolbarOptions) {
 							classes = [
 								'fc-' + buttonName + '-button',
 								tm + '-button',
-								tm + '-state-default'
+								tm + '-state-default mc_button'
 							];
 
 							button = $( // type="button" so that it doesn't submit a form

@@ -5,9 +5,11 @@
  */
 
 
-.fc {
+#mlab_editor .fc,
+.mlab_main_body_content .fc {
 	direction: ltr;
 	text-align: left;
+    background-color: white;
 }
 
 .fc-rtl {
