@@ -377,21 +377,25 @@ Mlab_dt_api.prototype = {
         });
     },
 
-    getScriptFiles : function (scripts) {
+//if = true we call component_add_html to complete the adding of the components
+    getScriptFiles : function (scripts, process_adding_code, comp_id) {
         var next_script = scripts.shift();
         var that = this;
         $.ajaxSetup({ cache: true });
         $.getScript(next_script).done(function( script, textStatus ) {
-            console.log( textStatus );
             if (scripts.length > 0) {
-                return that.getScriptFiles(scripts);
+                return that.getScriptFiles(scripts, process_adding_code, comp_id);
+            }
+            $.ajaxSetup({ cache: false });
+            if (process_adding_code === true) {
+                mlab.dt.design.component_add_html(comp_id);
             }
             return true;
         }).fail(function( jqxhr, settings, exception ) {
-            console.log( "Unable to load script: " +  next_script);
+            alert( "Unable to load script: " +  next_script + ". Component not added, please check network connection");
+            $.ajaxSetup({ cache: false });
             return false;
         });
-        $.ajaxSetup({ cache: false });
     },
 
 /**
@@ -400,7 +404,7 @@ Mlab_dt_api.prototype = {
  * @param {string} comp_id, the unique ID for the component that needs to load the files
  * @returns {undefined}
  */
-    getLibraries : function (comp_id) {
+    getLibraries : function (comp_id, process_adding_code) {
         var js_stack = [];
         if ("required_libs" in this.parent.components[comp_id].conf) {
             if ("designtime" in this.parent.components[comp_id].conf.required_libs) {
@@ -434,7 +438,7 @@ Mlab_dt_api.prototype = {
                 }
                 
                 if (js_stack.length > 0 ) {
-                    this.getScriptFiles(js_stack);
+                    this.getScriptFiles(js_stack, process_adding_code, comp_id);
                 }
             }
         }
