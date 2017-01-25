@@ -141,23 +141,17 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 {{ form_widget(form.keywords) }}
             </div>
 
-            <div>
-                {{ form_label(form.categoryOne, null, {'label': 'builder.new.app.classification.categoryOne'|trans}) }}
-                {{ form_errors(form.categoryOne) }}
-                {{ form_widget(form.categoryOne) }}
-            </div>
-
-            <div>
-                {{ form_label(form.categoryTwo, null, {'label': 'builder.new.app.classification.categoryTwo'|trans}) }}
-                {{ form_errors(form.categoryTwo) }}
-                {{ form_widget(form.categoryTwo) }}
-            </div>
-
-            <div>
-                {{ form_label(form.categoryThree, null, {'label': 'builder.new.app.classification.categoryThree'|trans}) }}
-                {{ form_errors(form.categoryThree) }}
-                {{ form_widget(form.categoryThree) }}
-            </div>
+            {% for i in [1,2,3] %}
+                <div>
+                    <label for="mlab_tag_{{i}}">{{ ('builder.new.app.classification.category' ~ i)|trans }}</label>
+                    <select id="mlab_tag_{{i}}" onclick="loadCategories(this, {{i}})">
+                        {% if i == 1 %}
+                            {{tag_level_1|join('')|raw}}
+                        {% endif %}
+                    </select>
+                </div>
+            {% endfor %}
+            {{ form_widget(form.tags) }}
                         
         </div>
         
@@ -175,7 +169,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 <script type="text/javascript">
     var icon_created = false;
-    var tags = JSON.parse({{tags}});
+    var mlab_app_tags = JSON.parse('{{tags|raw}}');
     
 //run various jQuery plugins which enhances the user interaction when dialog box is filled in
     $(document).ready(function () {
@@ -374,37 +368,49 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         return funcs;
     } //end buildIcon
     
+//utility function to add child entries to categories level 2 or 3
+    function addOptions(tags, level) {
+        for (i in tags) {
+            $("#mlab_tag_" + level).append("<option value='" + tags[i].text + "'>" + tags[i].text + "</option>");
+        }
+    }
+
 //function to load sub categories when a higher level category is selected
     function loadCategories(el, level) {
+        if (level == 3) {
+            return;
+        }
 
-        if ( parseInt($(el).val()) == 0 || isNaN(parseInt($(el).val())) )  {
+        var sel_val = $(el).val();
+//if they select the empty one we clear out the select boxes below this level
+        if ( parseInt(sel_val) == 0 || isNaN(parseInt(sel_val)) )  {
             if (level == 1 ) {
-                $("#form_categoryTwo").html("");
-                $("#form_categoryThree").html("");
-            } else {
-                $("#form_categoryThree").html("");
+                $("#mlab_tag_2").html("");
+                $("#mlab_tag_3").html("");
+            } else if (level == 2 ) {
+                $("#mlab_tag_3").html("");
             }
             return; 
         }
-        if (level == 1 ) {
-            $("#form_categoryTwo").html("<option>{% trans %}properties.build.app.load.categories{% endtrans %}</option>");
-            $("#form_categoryThree").html("<option>{% trans %}properties.build.app.load.categories{% endtrans %}</option>");
-        } else {
-            $("#form_categoryThree").html("<option>{% trans %}properties.build.app.load.categories{% endtrans %}</option>");
-        }
-        var url = "{{ path('category_load_categories', {id: '_ID_', level: '_LEVEL_'}) }}";
-        url = url.replace("_ID_", $(el).val());
-        url = url.replace("_LEVEL_", level);
-        $.getJSON(url, function( data ) {
-            if (data.result == "SUCCESS" ) {
-                if (data.level == 1 ) {
-                    $("#form_categoryTwo").html(data.categories);
-                    $("#form_categoryThree").html("");
+        
+//we get the correct children to populate with by using the index of each select element
+//for the first one the user may belong to multiple groups, so we need to determine which of the top level elements it belongs to
+        $("#mlab_tag_" + (level + 1)).html("<option></option>");
+        var top_index = $("#mlab_tag_1").prop('selectedIndex');
+        var start_index = 0;
+        for (tagSets in mlab_app_tags) {
+            if (top_index <= start_index + mlab_app_tags[tagSets].length) {
+                var tags = mlab_app_tags[tagSets][$("#mlab_tag_1").prop('selectedIndex') - (start_index + 1)].children;
+                if (level == 1) {
+                    addOptions(tags, level + 1);
                 } else {
-                    $("#form_categoryThree").html(data.categories);
+                    addOptions(tags[$("#mlab_tag_2").prop('selectedIndex') - 1].children, level + 1);
                 }
+            } else {
+                start_index = start_index + mlab_app_tags[tagSets].length;
             }
-        });
+        }
+
     }
     
 //function to move back and forth in new app/properties wizard 
@@ -513,20 +519,13 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                         msg = msg + "{% trans %}properties.build.app.fill.keywords{% endtrans %}\n";
                     }
 
-                    if ($('#form_categoryOne').val() == null || $('#form_categoryOne').val().trim() == "") {
+                    if ($('#mlab_tag_1').val() == null || $('#mlab_tag_1').val().trim() == "") {
                         msg = msg + "{% trans %}properties.build.app.fill.main.category{% endtrans %}\n";
                     }  
-
-                    if ($('#form_categoryTwo').val() == null || $('#form_categoryTwo').val().trim() == "") {
-                        msg = msg + "{% trans %}properties.build.app.fill.secondary.category{% endtrans %}\n";
-                    }  
-
-                    if ($('#form_categoryThree').val() == null || $('#form_categoryThree').val().trim() == "") {
-                        msg = msg + "{% trans %}properties.build.app.fill.final.category{% endtrans %}\n";
-                    } 
                 
 //moving to last page, display all info so they can check before committing
                     if (msg == '') {
+                        $('#form_tags').val(JSON.stringify([$('#mlab_tag_1').val(), $('#mlab_tag_2').val(), $('#mlab_tag_3').val()]))
                         var action = $("input[type='radio'][name='select_base']:checked").val();
                         var based_on = "";
                         switch(action) {
@@ -549,9 +548,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.keywords{% endtrans %}:</span> " + $('#form_keywords').val() + 
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.category{% endtrans %}:</span> " + 
-                                      $('#form_categoryOne option:selected').html() + " - " +
-                                      $('#form_categoryTwo option:selected').html() + " - " +
-                                      $('#form_categoryThree option:selected').html() + "</div>" +
+                                      $('#mlab_tag_1 option:selected').html() + " - " +
+                                      $('#mlab_tag_2 option:selected').html() + " - " +
+                                      $('#mlab_tag_3 option:selected').html() + "</div>" +
                                       "<div class='hidden mlab_splash'><img id='mlab_splash_preview' width='128' height='128'><span class='hidden mlab_app_new_summary'>{% trans %}builder.new.app.submit.splashScreen{% endtrans %}</span></div>" + 
                                       "</fieldset>" +
                                       "<p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>";

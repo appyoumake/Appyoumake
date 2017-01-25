@@ -86,7 +86,6 @@ class AppController extends Controller
         $entity->setActiveVersion(1); 
     	$file_mgmt = $this->get('file_management');
         $temp_groups = $this->getUser()->getGroups();
-        
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($temp_groups);
@@ -94,13 +93,26 @@ class AppController extends Controller
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
     	$app_icon_path = $this->container->getParameter('mlab')['filenames']['app_icon'];
-        $tags = array();
-        foreach ($temp_groups as $temp_group) {
-            $tags[] = $temp_group->getCategories();
-        }
-
-        $form = $this->createAppForm($entity, 'create');
+        $tags = '';
+        $tag_level_1 = array("<option></option>");
         
+//this loop will get the predefined categories for all the groups the current user is a member of
+//it will store all entries in a string (they are stored as JSON objects in the DB) + preload the top level entries to put in the first drop down box
+        foreach ($temp_groups as $temp_group) {
+            $cat = trim($temp_group->getCategories());
+            if ($cat) {
+                if (strlen($tags)) { $tags .= ','; };
+                $tags .= $cat;
+                $cat_obj = json_decode($cat);
+                foreach ($cat_obj as $tag_tree) {
+                    $txt = $tag_tree->text;
+                    $tag_level_1[] = "<option value='$txt'>$txt</option>";
+                }
+            }
+        }
+        $tags = '[' . $tags . ']';
+        
+        $form = $this->createAppForm($entity, 'create');
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
             'entity' => $entity,
             'apps' => $apps,
@@ -116,6 +128,7 @@ class AppController extends Controller
             'icon_text_maxlength' => $this->container->getParameter('mlab')['icon_text_maxlength'],
             'icon_default' => $this->container->getParameter('mlab')['compiler_service']['default_icon'],
             'tags' => $tags,
+            'tag_level_1' => $tag_level_1,
         ));
         
     }
@@ -409,6 +422,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 				    	->add('template', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:Template', 'placeholder' => '', 'required' => true))
 				    	->add('active_version')
 				    	->add("copy_app", HiddenType::class, array("mapped" => false))
+                        ->add("tags", HiddenType::class)
 				    	->add('save', SubmitType::class)
 				    	->getForm();
     }

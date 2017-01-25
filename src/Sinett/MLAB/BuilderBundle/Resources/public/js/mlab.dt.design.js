@@ -83,6 +83,15 @@ Mlab_dt_design.prototype = {
             return;
         }
         
+//first we load the relevant CSS/JS files, when that is done we will call component_add_html from the getScriptFiles function.
+//this is because script files come down at different speeds, and we need them all down before we can add HTML etc to the page
+        this.parent.api.getLibraries(id, true);
+
+        
+    },
+    
+    component_add_html : function (id) {
+        
         this.parent.flag_dirty = true;
         var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='4:3' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
@@ -94,6 +103,7 @@ Mlab_dt_design.prototype = {
         } else {
             var new_comp = $("<div data-mlab-type='" + id + "' " + data_display_dependent + " style='display: block;'>" + this.parent.components[id].html + "</div>");
         }
+
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
         new_comp.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
@@ -110,9 +120,7 @@ Mlab_dt_design.prototype = {
         }
         
 //scroll down where the component is added
-        window.scrollTo(0,document.body.scrollHeight);
-//now we load the relevant CSS/JS files
-        this.parent.api.getLibraries(id);
+        window.scrollTo(0, document.body.scrollHeight);
 
 //finally we add dependencies, i.e. components that this component depends on
         if (this.parent.components[id].hasOwnProperty("conf") && this.parent.components[id].conf.hasOwnProperty("dependencies")) {
@@ -165,7 +173,7 @@ Mlab_dt_design.prototype = {
             this.parent.flag_dirty = false;
         });
         
-    },
+    },    
 
 /**
  * This executes (using eval()) any code for a component that is added to the app

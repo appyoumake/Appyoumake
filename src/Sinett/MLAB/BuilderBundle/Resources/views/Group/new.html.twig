@@ -20,24 +20,20 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         
     </div>
     <div>
-        <img src="/img/newVersion.png" onclick="mlab_category_create();">
-        <img src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
-        <img src="/img/notPublished.png" onclick="mlab_category_delete();">
+        <img class="mlab_mini_tools" src="/img/newVersion.png" onclick="mlab_category_create();">
+        <img class="mlab_mini_tools" src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
+        <img class="mlab_mini_tools" src="/img/notPublished.png" onclick="mlab_category_delete();">
     </div>
     
     <script>
         $(document).ready(function() {
             $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
                 var items = $('#mlab_categories_tree').jstree(true).get_json(null);
-                var tags = {};
+                var tags = [];
                 for (i in items) {
                     getTreeAsArray(items[i], tags);
                 }
                 $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
-                debugger;
-
-                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
-                //$.jstree.destroy(); //must remove jstree so is always initialised correctly when re-open, otherwise on("ready.jstree" below failes
                 return true;
                 }
             );

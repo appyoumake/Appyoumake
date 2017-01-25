@@ -28,7 +28,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         $(document).ready(function() {
             $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
                 var items = $('#mlab_categories_tree_edit').jstree(true).get_json(null);
-                var tags = {};
+                var tags = [];
                 for (i in items) {
                     getTreeAsArray(items[i], tags);
                 }
@@ -36,15 +36,13 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 return true;
                 }
             );
-            
             mlab_category_init();
-
         });
         
         function mlab_category_init() {
-            debugger;
             if ($("#sinett_mlab_builderbundle_group_categories").val()) {
-                var dt = JSON.parse($("#sinett_mlab_builderbundle_group_categories").val())
+                debugger;
+                var dt = (JSON.parse($("#sinett_mlab_builderbundle_group_categories").val()));
             } else {
                 var dt = null;
             }

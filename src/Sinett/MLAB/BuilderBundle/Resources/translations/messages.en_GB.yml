@@ -77,9 +77,9 @@ builder.new.app.active_version.number: Version number
 
 builder.new.app.classification.description: Keywords will help others find your app when searching
 builder.new.app.classification.keywords: Keywords
-builder.new.app.classification.categoryOne: 1. Category
-builder.new.app.classification.categoryTwo: 2. Category
-builder.new.app.classification.categoryThree: 3. Category
+builder.new.app.classification.category1: 1. Category
+builder.new.app.classification.category2: 2. Category
+builder.new.app.classification.category3: 3. Category
 
 builder.new.app.submit.description: Take a look at the details before finalizing the app. It will be possible to change the details later.
 builder.new.app.submit.basedon: Based on
@@ -525,6 +525,7 @@ compController.createNotFoundException.comp: Unable to find Component entity.
 compController.msg.toggleStateAction: Unable to locate component record
 
 controller.msg.unable.create.record: Unable to create new record
+controller.msg.unable.update.record: Unable to update record
 controller.msg.unable.locate.record: Unable to locate user record
 
 groupController.createNotFoundException: Unable to find Group entity.

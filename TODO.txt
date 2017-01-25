@@ -1,9 +1,0 @@
-- Fix categories / database call in new app wizard
-- Fix JS loading issue when add calendar component first time
-- Add SMS facility when click on event
-- Test all deler flere ganger
-
-PPT slide: add one for relationship between conf.yml, etc and diferent parts of the process.
-Link in Cordova as well.
-Legg til slide om fordeler for forskere (teste en ide i større sammenhang) og våre kunder (kan benytte selv flere ganger)
-Use kdiff3 to discuss differences in code

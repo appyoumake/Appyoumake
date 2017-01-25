@@ -231,24 +231,42 @@ class GroupController extends Controller
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
-            foreach($entity->getUsers() as $user){
+            /*foreach($entity->getUsers() as $user){
                 if (in_array($user, $users)) {
                     $user->removeGroup($entity);
                 }
-            }
-//now add self always
-            $this->getUser()->addGroup($entity);
+            }*/
         } else {
-            foreach($entity->getUsers() as $user){
+            /*foreach($entity->getUsers() as $user){
                 $user->removeGroup($entity);
-            }
+            }*/
         }
         
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
+        
 //now add the new ones (may be identical of course)
+/*        $added_self = false;
+        
         foreach($entity->getUsers() as $user) {
             $user->addGroup($entity);
+            if ($user->getId() == $current_user_id) {
+                $added_self = true;
+            }
+        }*/
+        
+//now add self always
+        $added_self = false;
+        $current_user_id = $this->getUser()->getId();
+        foreach($entity->getUsers() as $user) {
+            if ($user->getId() == $current_user_id) {
+                $added_self = true;
+            }
+        }
+
+        if (!$added_self) {
+            $entity->addUser($this->getUser());
+//            $this->getUser()->addGroup($entity);
         }
 
         if ($editForm->isValid()) {

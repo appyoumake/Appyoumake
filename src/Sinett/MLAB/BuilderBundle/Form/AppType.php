@@ -39,6 +39,7 @@ class AppType extends AbstractType
             ->add('user')
             ->add('updatedBy')
             ->add('groups')
+            ->add('tags')
         ;
     }
     
