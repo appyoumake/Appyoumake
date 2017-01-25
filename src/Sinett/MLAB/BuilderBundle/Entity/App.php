@@ -664,7 +664,8 @@ class App
     		'groups' => $this->groups,
     		'published' => $this->published,
     		'enabled' => $this->enabled,
-            'uid' => $this->uid
+            'uid' => $this->uid,
+            'tags' => $this->tags
     		);
     }
     
@@ -709,7 +710,8 @@ class App
     			'groups' => $groups,
     			'published' => $this->published,
     			'enabled' => $this->enabled,
-    			'uid' => $this->uid
+    			'uid' => $this->uid,
+                'tags' => $this->tags
     	);
     }    
     

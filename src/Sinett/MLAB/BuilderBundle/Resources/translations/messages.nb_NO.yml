@@ -77,9 +77,9 @@ builder.new.app.active_version.number: Versjonsnummer
 
 builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
 builder.new.app.classification.keywords: Nøkkelord
-builder.new.app.classification.categoryOne: 1. Kategori
-builder.new.app.classification.categoryTwo: 2. Kategori
-builder.new.app.classification.categoryThree: 3. Kategori
+builder.new.app.classification.category1: 1. Kategori
+builder.new.app.classification.category2: 2. Kategori
+builder.new.app.classification.category3: 3. Kategori
 
 builder.new.app.submit.description: Se over detaljer før du ferdigstiller appen. Det vil være mulighet for å endre detaljene senere.
 builder.new.app.submit.basedon: Basert på
@@ -526,6 +526,7 @@ compController.createNotFoundException.comp: Kan ikke finne komponent entitet
 compController.msg.toggleStateAction: Kan ikke finne komponent logg eller kilde
 
 controller.msg.unable.create.record: Kan ikke lage ny forekomst
+controller.msg.unable.update.record: Kan ikke oppdatere databasen
 controller.msg.unable.locate.record: Kan ikke lokalisere brukerinfo
 
 groupController.createNotFoundException: Kan ikke finne Gruppeenheten
