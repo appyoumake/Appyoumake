@@ -41,3 +41,7 @@
 			
 		});
     }
+    
+    this.custom_dont_click = function (el) {
+        alert(this.config.custom.msg);
+    }
