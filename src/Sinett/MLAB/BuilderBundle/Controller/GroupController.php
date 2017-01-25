@@ -226,20 +226,33 @@ class GroupController extends Controller
             throw $this->createNotFoundException($this->get('translator')->trans('groupController.createNotFoundException'));
         }
 
-//remove all old groups from DB record 
-        foreach($entity->getUsers() as $user){
-            $user->removeGroup($entity);
+//remove all old groups from DB record IF they are in the group of the currently editing user
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $temp_roles = $this->getUser()->getRoles();
+            $temp_groups = $this->getUser()->getGroupsArray();
+            $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            foreach($entity->getUsers() as $user){
+                if (in_array($user, $users)) {
+                    $user->removeGroup($entity);
+                }
+            }
+//now add self always
+            $this->getUser()->addGroup($entity);
+        } else {
+            foreach($entity->getUsers() as $user){
+                $user->removeGroup($entity);
+            }
         }
         
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
+//now add the new ones (may be identical of course)
+        foreach($entity->getUsers() as $user) {
+            $user->addGroup($entity);
+        }
 
         if ($editForm->isValid()) {
             
-//now add the new ones (may be identical of course)
-            foreach($entity->getUsers() as $user){
-                $user->addGroup($entity);
-            }
             $em->flush();
 
             return new JsonResponse(array('db_table' => 'group',
@@ -252,7 +265,8 @@ class GroupController extends Controller
         return new JsonResponse(array('db_table' => 'group',
         		'db_id' => $id,
         		'result' => 'FAILURE',
-        		'message' => $this->get('translator')->trans('controller.msg.unable.create.record')));
+                'error' => $editForm->getErrorsAsString(),
+        		'message' => $this->get('translator')->trans('controller.msg.unable.update.record')));
     }
     
     /**

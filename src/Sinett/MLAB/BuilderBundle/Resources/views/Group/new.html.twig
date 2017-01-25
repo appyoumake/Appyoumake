@@ -28,7 +28,15 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <script>
         $(document).ready(function() {
             $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
-                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify($('#mlab_categories_tree').jstree(true).get_json(null, {flat:true}))); 
+                var items = $('#mlab_categories_tree').jstree(true).get_json(null);
+                var tags = {};
+                for (i in items) {
+                    getTreeAsArray(items[i], tags);
+                }
+                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
+                debugger;
+
+                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
                 //$.jstree.destroy(); //must remove jstree so is always initialised correctly when re-open, otherwise on("ready.jstree" below failes
                 return true;
                 }

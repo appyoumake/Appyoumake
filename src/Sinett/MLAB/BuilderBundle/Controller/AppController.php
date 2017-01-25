@@ -85,14 +85,19 @@ class AppController extends Controller
     	$entity = new App();
         $entity->setActiveVersion(1); 
     	$file_mgmt = $this->get('file_management');
+        $temp_groups = $this->getUser()->getGroups();
         
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
-        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($temp_groups);
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_groups);
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
     	$app_icon_path = $this->container->getParameter('mlab')['filenames']['app_icon'];
+        $tags = array();
+        foreach ($temp_groups as $temp_group) {
+            $tags[] = $temp_group->getCategories();
+        }
 
         $form = $this->createAppForm($entity, 'create');
         
@@ -110,6 +115,7 @@ class AppController extends Controller
             'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
             'icon_text_maxlength' => $this->container->getParameter('mlab')['icon_text_maxlength'],
             'icon_default' => $this->container->getParameter('mlab')['compiler_service']['default_icon'],
+            'tags' => $tags,
         ));
         
     }

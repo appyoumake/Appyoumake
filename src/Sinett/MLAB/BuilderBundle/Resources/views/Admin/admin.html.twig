@@ -45,7 +45,17 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 	{{ parent() }}
     <script src='{{ asset('/js/jstree-3.3.3.js') }}'></script>
 	<script>
-	
+
+        function getTreeAsArray(obj, tags) {
+            if (obj.children.length > 0) {
+                tags[obj.text] = {};
+                for (i in obj.children) {
+                    getTreeAsArray(obj.children[i], tags[obj.text]);
+                }
+            } else {
+                tags[obj.text] = obj.text;
+            }
+        }
             
 		function progressHandlingFunction(e){
 		    if(e.lengthComputable){
@@ -62,6 +72,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
  */
   		function assignSubmitDataHandler(dialog_id) {
   			$( "#" + dialog_id + " form").submit(function( event ) {
+                debugger;
   				event.preventDefault();
   				$( "#" + dialog_id ).dialog( "close" );
   				
@@ -101,13 +112,14 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                     prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
                                     } // end function to run for each link  
                                 ); // end each function 
-//hack to display updated category list which always return the whole list when added
+/* TODO OUT
+    //hack to display updated category list which always return the whole list when added
   	  			    		} else if ($('#tabs_admin_apps').tabs('option','active') == 0) {
                                 $("#tabs_admin_apps div.ui-tabs-panel[aria-hidden='false']").html(data);
                                 $("#tabs_admin_apps div.ui-tabs-panel[aria-hidden='false'] .records_list").find("a").each(function () {
                                     prepare_links(this, "ui-tabs-1");
-                                    } // end function to run for each link  
-                                ); // end each function 
+                                } // end function to run for each link   
+                                ); // end each function */
                             }                           
                             
   	  			    	}
@@ -146,6 +158,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 		
 //makes all the regular a href links into ajax links by stopping default action and loading manually into a dlg box
         function prepare_links(element, ui_id) {
+            debugger;
             var temp_url_elements = element.href.split("/");
             var this_link = temp_url_elements[temp_url_elements.length - 1];
             var this_id = temp_url_elements[temp_url_elements.length - 2];
@@ -193,6 +206,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
         // not delete and dialog box is not created yet, so make new one and fill it 
                                     } else if ($("#" + event.data.dialog_id).length == 0 ) {  
+                                        debugger;
                                         $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
                                             .load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); } )
                                             .appendTo('body')
@@ -200,6 +214,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
         // need to reload data if edit record AND already created dialog box
                                     } else if ( event.data.link == "edit" ) {  
+                                        debugger;
                                         if (event.data.entity == "group") {
 //special case for group editing, the jstree function needs to be reinitialised to function OK
                                             $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { mlab_category_init(); assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
@@ -210,6 +225,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         // in all other cases just re-display dialog box, usually for new record
         // remember: new can be both new and adminNew if change this to use specific event.data.link if clause
                                     } else { 
+                                        debugger;
                                         if ($("#" + event.data.dialog_id + ' form').length > 0) {
                                             $("#" + event.data.dialog_id + ' form')[0].reset();
                                         }
