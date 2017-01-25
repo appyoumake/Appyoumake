@@ -122,11 +122,24 @@
     opacity: 0.92;
 }
 
+#mlab_page_body .mlab_menu_logo {
+    padding: 0;
+    padding-bottom: 35%;
+    margin: 0;
+    margin-top: 8%;
+    background-image: url('./img/logo_blue.svg');
+    background-size: 85%;
+    background-position: 0;
+    background-repeat: no-repeat;
+    border-width: 0;
+    border-style: hidden;
+}
+
 #mlab_page_body .mlab_settings_heading,
 #mlab_page_body .mlab_menu_heading {
     font-size: 1.4em;
     font-weight: bold;
-    padding-top: 3em;
+    padding-top: 1.2em;
     cursor: alias;
 }
 
