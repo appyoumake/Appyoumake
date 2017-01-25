@@ -100,6 +100,11 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       uid:
           type: text
           nullable: false
+          
+      tags:
+          type: text
+          nullable: true
+
 
 #      templateId:
 #        type: integer

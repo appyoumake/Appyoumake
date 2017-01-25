@@ -21,3 +21,5 @@ INSERT INTO `templates_groups_data` (`template_id`, `group_id`, `access_state`) 
 (1, 3, 0);
 
 ALTER TABLE  `grp` ADD  `categories` TEXT NULL ;
+
+ALTER TABLE  `app` ADD  `tags` TEXT NOT NULL ;

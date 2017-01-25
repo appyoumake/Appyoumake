@@ -44,7 +44,6 @@ class AdminController extends Controller
 	public function appsAction()
     {
     	$tabs = array(
-    			"category" => $this->get('translator')->trans('app.admin.categories'),
     			"component" => $this->get('translator')->trans('app.admin.components'),
                 "template" => $this->get('translator')->trans('app.admin.templates'),
     			);
