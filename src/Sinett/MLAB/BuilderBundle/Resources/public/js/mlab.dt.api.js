@@ -439,9 +439,13 @@ Mlab_dt_api.prototype = {
                 
                 if (js_stack.length > 0 ) {
                     this.getScriptFiles(js_stack, process_adding_code, comp_id);
+                    return;
                 }
             }
         }
+        if (process_adding_code === true) {
+            mlab.dt.design.component_add_html(comp_id);
+        }        
     },
 
 /**
