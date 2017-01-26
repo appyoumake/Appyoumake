@@ -5,8 +5,6 @@ version: 0.8
 developer: Cecilie Jackbo Gran
 tooltip: { nb_NO: Enkel FFI Mal, en_GB: Basic FFI template, default: Basic FFI template }
 
-
-permissions: ["android.permission.INTERNET"] 
 plugins: ["cordova-plugin-geolocation, cordova-plugin-battery-status"]
 
 pages:
