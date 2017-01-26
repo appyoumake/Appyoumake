@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Add page title here</title>
+<title>Mlab</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="mlab:app_uid" content="%%APP_UID%%" />
@@ -33,22 +33,10 @@
      * @type type
      */
     function mlabInitialiseApp() {
-        console.log("FUNCTION: mlabInitialiseApp");
-//Uses on pagecreate to get the page name to display when the page is loaded the first time
-/*        $( document ).on( "pagebeforeshow", function( event ) {  
-            console.log("FUNCTION: pagebeforeshow");
-            var page = $.mobile.pageContainer.pagecontainer('getActivePage');
-            var pageTitle = page.data("title");
-            page.find(".mlab_page_name").text(pageTitle);
-        });
-*/        
-        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
-        
+        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");  
     };
   
     $(document).on('pagecreate', '#mlab_index_page', function(e) {
-        console.log("EVENT: pagecreate for index page");
-  
         //Opens the previous page 
         $(".mlab_nav_previous_page").on("click", function () { mlab.api.navigation.pageDisplay("previous"); });
         //Opens the next page 
@@ -57,7 +45,6 @@
         $(".mlab_btn_color_toggle").on("vclick", function () { mlab.api.settings.pageColorToggle("mlab_page_body", "mc_text"); });
         //Toggles the text size between 100% and 130%       
         $(".mlab_btn_txsize_toggle").on("vclick", function () { mlab.api.settings.pageTextSizeToggle("mlab_main_body_content"); });
-
     });
 </script>
 
@@ -126,7 +113,6 @@
             switch (curr_page) {
 
                 case 0:
-                    console.log("case 0 - curr_page == " + curr_page + " last_page == " + last_page);
                     //First page in the app
                     if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
                         // do nothing
@@ -144,7 +130,6 @@
 
                 case last_page:
                     //Last page in the app and the app has more than one page
-                    console.log("curr_page == LAST PAGE -  gggggggggg" + "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%" + "side");
                     if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
                        // do nothing
                     } else {
