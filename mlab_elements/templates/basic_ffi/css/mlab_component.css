@@ -232,7 +232,7 @@ part of a list */
 /* A chapter display element */
 #mlab_editor .mc_display.mc_chapter,
 .mlab_main_body_content .mc_display.mc_chapter {
-    color: white;
+    color: #0C365C;
 }
 
 /* An ingress display element - typically below a heading */
@@ -433,7 +433,7 @@ part of a list */
 /* Text for entry elements (typically labels) */
 #mlab_editor .mc_entry.mc_info,
 .mlab_main_body_content .mc_entry.mc_info {
-    color: white;
+    color: #0C365C;
 }
 
 /* highlight */
