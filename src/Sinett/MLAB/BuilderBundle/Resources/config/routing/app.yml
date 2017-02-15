@@ -1,39 +1,46 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 app:
-    pattern:  /
+    path:  /
     defaults: { _controller: "SinettMLABBuilderBundle:App:index" }
 
 app_show:
-    pattern:  /{id}/show
+    path:  /{id}/show
     defaults: { _controller: "SinettMLABBuilderBundle:App:show" }
 
 app_new:
-    pattern:  /new
+    path:  /new
     defaults: { _controller: "SinettMLABBuilderBundle:App:new" }
 
 app_create:
-    pattern:  /create
+    path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:App:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 app_edit:
-    pattern:  /{id}/edit
+    path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:App:edit" }
 
 app_update:
-    pattern:  /{id}/update
+    path:  /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:App:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 app_delete:
-    pattern:  /{id}/delete
+    path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:App:delete" }
 
 app_remove_from_appstore:
-    pattern:  /{id}/removeAppStore
+    path:  /{id}/removeAppStore
     defaults: { _controller: "SinettMLABBuilderBundle:App:removeAppStore" }
 
 app_recall:
-    pattern:  /{id}/recall
+    path:  /{id}/recall
     defaults: { _controller: "SinettMLABBuilderBundle:App:recall" }
 
 app_builder_index:
@@ -55,12 +62,12 @@ app_builder_editor_closed:
 app_builder_page_save:
     path:   /builder/{app_id}/{page_num}/{old_checksum}/page_put
     defaults: { _controller: "SinettMLABBuilderBundle:App:putPage" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 app_builder_page_new:
     path:   /builder/{app_id}/{uid}/page_new
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 app_builder_page_copy:
     path:   /builder/{app_id}/{page_num}/{uid}/page_copy
@@ -85,7 +92,7 @@ app_builder_component_added:
 app_builder_component_upload:
     path:   /builder/{app_id}/{comp_id}/component_upload
     defaults: { _controller: "SinettMLABBuilderBundle:App:componentUpload" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 app_builder_feature_add:
     path:   /builder/{app_id}/{comp_id}/feature_add

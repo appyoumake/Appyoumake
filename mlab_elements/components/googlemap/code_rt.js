@@ -10,7 +10,7 @@
         }
         
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='https://" + vars.config.map_script + "&callback=mlab.api.components.googlemap.initMap" + trimmed_id + "'>")); 
+            $("head").append($("<script src='https://" + vars.config.map_script + "&key=" + "AIzaSyAIPKs3rxK8sgR7-aHO6s-CvMkpTG-QZUQ" + "&callback=mlab.api.components.googlemap.initMap" + trimmed_id + "'>")); 
         } else {
             eval("mlab.api.components.googlemap.initMap" + trimmed_id + "();");
         }

@@ -1,0 +1,43 @@
+# Configuration file for calendar component
+
+
+# autorun_on_create (string, optional)
+category: serviceconnections
+category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
+# compatible (array of Strings, optional)
+# credentials: ["apikey"]
+# custom (Object (key/value style), required if custom functions are written in the code_dt.js code, see comment)
+developer: Anonym @ Sinett/FFI.no
+# display_dependent (Boolean, optional)
+extended_name: { nb_NO: Google Kalender, en_GB: Google Calendar, default: Google Calendar }
+# extended_tooltip 
+# feature (Boolean, optional)
+footer_tip: { nb_NO: Google Kalender brukes for a vise en offentlig kalender, en_GB: Google calendar is used to share a public calendar, default: Google calendar is used to share a public calendar }
+html:
+    designtime: <div><div data-mlab-cp-cal-name='cal'>Calendar</div><div data-mlab-cp-cal-name='zoom'></div></div>
+# inherit (String, optional)
+# messages (Array of objects of strings, optional)
+name: cal
+# paste_allowed (Boolean, optional)
+# placeholder (String, optional)
+# plugins cordova-sms-plugin
+# process_keypress (Boolean, optional)
+required_libs: { designtime: ["fullcalendar.css", "moment.js", "fullcalendar.js", "gcal.js"], runtime: ["fullcalendar.css", "moment.js", "fullcalendar.js", "gcal.js"]}
+resizeable: true
+# storage_plugin (Boolean or array of strings, required if component is a storage plugin)
+tooltip: { nb_NO: Google Kalender, en_GB: Google Calendar, default: Google Calendar }
+# unique (Boolean, optional)
+version: 0.9
+# visible (Boolean)
+
+custom:
+    data_identifier: mlab-cp-cal-name
+    apikey: AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE
+    calendar: hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com
+    msg: You just had to, didn't you!
+    
+    dont_click:
+        tooltip: { nb_NO: Ikke klikk denne, en_GB: Don't click this, default: Don't click this }
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB7FBMVEUAAAD/swD/pgD/pwD/pgD/pgD/pwD/pgD/tgD/pAD/pwD/pgD/pgD/pgD/pwD/pgD/pgD/pgD/qAD/pgD/pgD/pwD/pAD/pgD/pgD/pwD/qgD/pwD/pgD/pwD/vwD/pgD/pgD/pQD/pgD/pQD/pQD/pQD/pwD/qAD/pQD/pgD//wD/pAD/pgD/qgD/pgD/pwD/pQD/pgD/pQD/pQD/pgD/qgD/pgD/pgD/pQD/pgD/pQD/pgD/pQD/pgD/pQD/pwD/pgD/pgD/pgD/pQD/pwD/pgD/pgD/pwD/pQD/pgD/pgD/pgD/pgD/pQD/pwD/pwD/pgD/pgD/qAD/pgD/qgD/pgD/pwD/pgD/pgD/pQD/pQD/pgD/pgD/pgD/nwD/pgD/pgD/pQD/pgD/pwD/qgD/pQD/ogD/pgD/pQD/pQD/pgD/pwD/pgD/pwD/pwD/pQD/pgD/pgD/pgD/pQD/pgD/pAD/pwD/pwD/pgD/pwD/pgD/oQD/pQD/qAD/pQD/pgD/qgD/pgD/pgD/owD/pgD/gAD/pQD/qAD/pgD/qgD/pgD/pgD/qgD/pgD/pgD/pgD/pgD/pgD/pgD/pwD/ogD/pgD/pgD/pwD/pgD/ogD/nQD/pwD/pgD/pgD/pwD/pAD/pQD/pgD/pgAAAABK/NXpAAAAonRSTlMACniz5+Swcgc728hwOT1zz9MyK/R0KqDXnCR/8SAEzIFV7ncwM4JJkb8BTNge7DpEr6hH5hvjPICPb6Mi6VtiFLRfZoWEmm59kGqhjFhoiHmrRqwM6hoo6xFpy0iGEP6NXn4dBmAhuLk2p8dn3muiRd8XvLU4lksuXfYTUikfdRjv8CfAAsov6BWJ4AncrpV7m5hAC1OkMU0WDZ/t4kMci7qr523dAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB+EBGgAXGXLg0JoAAAGfSURBVDjLY2CAAUYmZhZWNnYOBhyAk4ubh5ePX0BQCLu8sIiomLiEoKSUtIwsNnk5eQVFJWUVVTUldQ1NLSwKtHV09fQNDI34jE1MzcyxKLCwtLK2sbWz13NwdBLnwaLA0E7c2cWVgcHN3cPTyxuLAh8eH19xP6BJ/jxMARpYFKgHBkEVuKsE+2FREBKqGwZREBYeEYnNn1HRHBAFDDF22EMqQBGsQFw0VgxHWMeBFcR7J7CqJCYlo8qlpEalMTCAFaQzMPgvyvDRy0RRkJUtHpHDAHUDg2+uFkNefoGoKUJBoTlDUbFjCUwBGwND6SKJstByuAJQ4KZkLYIqqKgEKqiqZqhJhyuoNWFkYNCyBCqI0YaI1NUzMDQ0IuwIlgaR1ahOb2hCsHX1mjH9jayAwaqFgILWNnv8ChjaOzrxK2DoskZXEN6Nwu3pLUBTkNiHyi/o7UEV6J+ApmPiJBRuJMtkNAVTdKYic6eh2QAE05tmIDipETMxg8acFZZ3Z82eE8SABSRrzuWfVzd/6oJuwwYG7EBlUlvonIWxxnABAMuWWauwTo2GAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAxLTI2VDAwOjIzOjI1KzAxOjAwVBVViQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMS0yNlQwMDoyMzoyNSswMTowMCVI7TUAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC
+        order: 100    
+    

@@ -1,0 +1,214 @@
+/* Style Sheet for the Basic template
+   Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
+*/
+
+
+/* ==========================================================================
+   Page
+   ========================================================================== */
+#mlab_page_body .mlab_content_wrapper {
+   margin-top: 2%;
+   margin-bottom: 2%;
+   margin-left: 5%;
+   margin-right: 5%;
+}
+
+#mlab_page_body .mlab_main_body_content {
+    overflow-y: visible;
+}
+
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+#mlab_page_body .mlab_main_body_content {
+    font-size: 100%;
+}
+
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+#mlab_page_body .mlab_header {
+    padding: 0;
+    margin: 0;
+    background-image: url('./img/contentpage_header_backgr.png');
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-position-y: bottom;
+    border-width: 0;
+    border-style: hidden;
+    overflow: hidden;
+    opacity: 1;
+    z-index: 120 !important;
+    border-width: 0 0 0.15em 0;
+    border-style: solid;
+    border-color: #666666;
+}
+
+#mlab_page_body .mlab_header_box{
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+#mlab_page_body .mlab_nav_previous_page, 
+#mlab_page_body .mlab_nav_next_page {
+    padding-bottom: 8%;
+    width: 7%;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-top: 2.5%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    float: left;
+    background-image: url('./img/btn_prev.svg');
+}
+
+#mlab_page_body .mlab_nav_next_page {
+    background-image: url('./img/btn_next.svg');  
+    float: right;
+}
+
+#mlab_page_body .mlab_page_name {
+    float: left;
+    max-width: 50%;
+    width: 50%;
+    margin-top: 4%;
+    margin-left: 2%;
+    margin-bottom: 1%;
+    font-size: 100%;
+    font-size: 4vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+    font-family: Arial,sans-serif;
+}
+
+<<<<<<< HEAD
+#mlab_page_body .mlab_btn_menu,  
+=======
+#mlab_page_body .mlab_btn_menu, 
+>>>>>>> origin/assetic
+#mlab_page_body .mlab_btn_settings {
+    padding: 0;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding-bottom: 10%;
+    float: left;  
+}
+
+#mlab_page_body .mlab_btn_menu {
+    background-image: url('./img/btn_menu.svg');
+    width: 7%;
+    margin-right: 5%;
+}
+
+#mlab_page_body .mlab_btn_settings {
+    background-image: url('./img/btn_settings.svg');
+    width: 7%;
+    float: right;
+    margin-left: 5%;
+}
+
+
+/* ==========================================================================
+   Menu and Settings Panel
+   ========================================================================== */
+#mlab_page_body .mlab_menu_panel, 
+#mlab_page_body .mlab_settings_panel {
+    padding: 1%;
+    background-color: #ffffff;
+    color: #333333; 
+    opacity: 0.92;
+}
+
+#mlab_page_body .mlab_settings_heading,
+#mlab_page_body .mlab_menu_heading {
+    font-size: 1.4em;
+    font-weight: bold;
+    padding-top: 3em;
+    cursor: alias;
+}
+
+#mlab_page_body .mlab_settings_heading {
+    padding-top: 2em;
+}
+
+#mlab_page_body .mlab_hr_panel {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+#mlab_page_body .mlab_settings_text,
+#mlab_page_body .mlab_menu_text {
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    cursor: alias;
+}
+
+#mlab_page_body .mlab_btn_color_toggle, 
+#mlab_page_body .mlab_btn_txsize_toggle,
+#mlab_page_body .mlab_btn_close,
+#mlab_page_body .mlab_btn_close_menu {
+    padding: 0;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding-bottom: 4em;
+    width: 4em;
+    float: left; 
+    background-image: url('./img/btn_color_toggle.svg');
+    cursor: pointer;
+}
+
+#mlab_page_body .mlab_btn_txsize_toggle {
+    background-image: url('./img/btn_txsize.svg');
+}
+
+#mlab_page_body .mlab_btn_close,
+#mlab_page_body .mlab_btn_close_menu {
+    background-image: url('./img/btn_close.svg');
+    float: right;
+    margin-top: 0em;
+    width: 1.7em;
+    cursor: pointer;
+}
+
+#mlab_page_body .mlab_btn_close_menu {
+    float: left;
+}
+
+#mlab_page_body .mlab_creators {
+    font-size: 0.7em;
+    cursor: alias;
+}
+
+#mlab_page_body.mlab_color_toggle {
+    background-color: white;
+}
+
+#mlab_page_body .mlab_main_body_content .mc_text.mlab_color{
+    color: black;
+}
+
+#mlab_page_body .mlab_main_body_content.mlab_large_text{
+    font-size: 130%;
+}
+
+#mlab_page_body .mlab_hide {
+    visibility:hidden !important;
+}
+
+/* ==========================================================================
+  To hide an element from the app builder - add the class "mlab_hide_in_app_builder"
+  to the element - the App Builder will have a stylesheet with the syntax:
+
+.mlab_hide_in_app_builder {
+    display: none !important;
+}
+========================================================================== */

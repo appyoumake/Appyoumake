@@ -1,3 +1,11 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 # core table, the list of apps that is being developed, it is NOT linked to market,
 # the apps table there is updated when new apps are updated  
 Sinett\MLAB\BuilderBundle\Entity\App:
@@ -92,6 +100,11 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       uid:
           type: text
           nullable: false
+          
+      tags:
+          type: text
+          nullable: true
+
 
 #      templateId:
 #        type: integer
@@ -139,8 +152,8 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       inversedBy: apps
           
     updatedBy:
-      targetEntity: User
-      inversedBy: apps
+      targetEntity: Sinett\MLAB\BuilderBundle\Entity\User
+      inversedBy: appsUpdatedBy
       joinColumn:
         name: updatedby_id
         referencedColumnName: id

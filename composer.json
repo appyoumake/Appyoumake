@@ -8,22 +8,21 @@
     },
     "require": {
         "php": ">=5.3.3",
-        "symfony/symfony": "2.3.*",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
-        "doctrine/doctrine-bundle": "1.2.*",
-	"twig/extensions": "1.0.*",
-        "symfony/swiftmailer-bundle": "2.3.*",
-        "symfony/monolog-bundle": "2.3.*",
-        "sensio/distribution-bundle": "2.3.*",
-        "sensio/framework-extra-bundle": "2.3.*",
-        "sensio/generator-bundle": "2.3.*",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "friendsofsymfony/user-bundle": "1.3.3",
-
+        "symfony/symfony": "~2.8",
+        "doctrine/orm": ">=2.5.5,<2.5.x-dev",
+        "doctrine/doctrine-bundle": "1.6.4",
+        "twig/extensions": "1.4.0",
+        "symfony/swiftmailer-bundle": "2.3.11",
+        "symfony/monolog-bundle": "2.11.*",
+        "sensio/distribution-bundle": "~4.0",
+        "sensio/framework-extra-bundle": "3.0.16",
+        "sensio/generator-bundle": "3.0.8",
+        "incenteev/composer-parameter-handler": "2.1.2",
+        "friendsofsymfony/user-bundle": "dev-master",
         "gedmo/doctrine-extensions": "dev-master",
-        "symfony/yaml": "2.3.*",
-        "symfony/assetic-bundle": "2.3.*",
-        "willdurand/js-translation-bundle": "^2.2"
+        "symfony/yaml": "2.8.12",
+        "symfony/assetic-bundle": "2.8.0",
+        "willdurand/js-translation-bundle": "2.6.1"
     },
     "scripts": {
         "post-install-cmd": [
@@ -38,7 +37,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "\\Sinett\\ScriptHandler::installRequirementsFile"
         ]
     },
     "config": {
@@ -52,7 +52,24 @@
             "file": "app/config/parameters.yml"
         },
         "branch-alias": {
-            "dev-master": "2.3-dev"
+            "dev-master": "2.8.x-dev"
+        },
+        "mlab_specific": {
+            "js_libraries": {
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/bowser.js": "https://raw.githubusercontent.com/ded/bowser/v0.7.3/bowser.js", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.contextmenu.js": "https://raw.githubusercontent.com/joewalnes/jquery-simple-context-menu/master/jquery.contextmenu.js", 
+                "web/css/jquery.contextmenu.css": "https://raw.githubusercontent.com/joewalnes/jquery-simple-context-menu/master/jquery.contextmenu.css", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-2.1.4.js": "https://code.jquery.com/jquery-2.1.4.js", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.mobile-1.4.5.js": "http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.qrcode-0.12.0.js": "https://release.larsjung.de/jquery-qrcode/jquery-qrcode-0.12.0.zip",
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.qtip-2.2.0.js": "http://cdn.jsdelivr.net/qtip2/2.2.0/jquery.qtip.js", 
+                "web/css/jquery-qtip.css": "http://cdn.jsdelivr.net/qtip2/2.2.0/jquery.qtip.css", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/spin.js": "https://raw.githubusercontent.com/fgnass/spin.js/2.2.0/spin.js", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.spin.js": "https://raw.githubusercontent.com/fgnass/spin.js/2.2.0/jquery.spin.js", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-ui.js|web/css/jquery-ui.css":  "https://jqueryui.com/resources/download/jquery-ui-1.11.4.zip", 
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.uploadfile-1.9.0.js": "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/js/jquery.uploadfile.js", 
+                "web/css/jquery.uploadfile.css": "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/css/uploadfile.css"
+            }
         }
     }
 }

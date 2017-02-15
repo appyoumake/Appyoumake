@@ -1,3 +1,12 @@
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 /*
 MLAB
 */
@@ -137,14 +146,6 @@ table {
 
 table.app_list{
     font-size: 1.23em    
-}
-
-/* overwriting jQuery */
-.ui-tabs .ui-tabs-panel {
-    padding-bottom: 1em;
-    padding-top: 1.5em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
 }
 
 th {
@@ -597,7 +598,6 @@ progress {
     font-size: 15px;
 }
 
-#mlab_editor .mlab_page_help_qTip .qtip-close,
 .mlab_base .mlab_page_help_qTip .qtip-close{
     top: 15px;
     right: 5px;
@@ -940,4 +940,182 @@ body.mlab_base div.mlab_top_bar_back {
     color: gray;
 }
 
+/* Corner radius */
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-left,
+.ui-corner-tl {
+	border-top-left-radius: 3px;
+}
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-right,
+.ui-corner-tr {
+	border-top-right-radius: 3px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-left,
+.ui-corner-bl {
+	border-bottom-left-radius: 3px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-right,
+.ui-corner-br {
+	border-bottom-right-radius: 3px;
+}
 
+.ui-widget-header {
+    border: none;
+	border-bottom: 1px solid #aaaaaa;
+}
+
+.ui-widget-content {
+	border: none;
+}
+
+
+/* Dialog box  -  overwriting jQuery */
+.ui-tabs .ui-tabs-panel {
+    padding-bottom: 1em;
+    padding-top: 1.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    background-color: white;
+}
+
+.ui-dialog-titlebar,
+.ui-widget-header {
+	border: 0;
+    border-bottom: 1px solid #aaaaaa;
+    background: #E6E6E6;
+    color: #222222;
+    font-weight: bold;
+    padding: 0.4em 1em;
+    position: relative;
+    line-height: 1.3;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 100%;
+}
+
+.ui-dialog .ui-dialog-title {
+	border: 0;
+    color: #222222;
+    font-weight: bold;
+    line-height: 1.3;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 100%;
+}
+
+.ui-dialog-titlebar-close {
+	border: 1px solid #d3d3d3;
+    background: #e6e6e6;
+    font-weight: normal;
+    color: #555555;
+}
+
+.ui-dialog .ui-dialog-content {
+    background-color: white;
+}
+
+.ui-widget-content {
+	padding: 0;
+    background-color: white;
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+    font-weight: normal;
+    color: #212121;
+    font-family: Verdana,Arial,sans-serif;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    list-style: none;
+    float: left;
+    position: relative;
+    top: 0;
+    margin: 1px .2em 0 0;
+    border-bottom-width: 0;
+    padding: 0;
+    white-space: nowrap;
+    border: 1px solid #cccccc;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    border: 1px solid #cccccc;
+}
+
+.ui-widget-overlay {
+background: #666666;
+opacity: 0.5;
+}
+
+/*jQuery UI amendments, Arild dec. 2016*/
+.ui-state-default .ui-icon,
+.ui-state-hover .ui-icon,
+.ui-state-focus .ui-icon,
+.ui-state-highlight .ui-icon,
+.ui-state-error .ui-icon,
+.ui-state-error-text .ui-icon {
+	background-image: url("images/ui-icons_222222_256x240.png");
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default,
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+	border: 1px solid #777777;
+	background: #f6f6f6 url("images/ui-bg_glass_100_f6f6f6_1x400.png") 50% 50% repeat-x;
+	font-weight: bold;
+    outline-color: #777777;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight,
+.ui-state-highlight a,
+.ui-widget-content .ui-state-highlight a,
+.ui-widget-header .ui-state-highlight a,
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error {
+    border: 1px solid #888888;
+    background: #e6e6e6 url("images/ui-bg_glass_65_e6e6e6_1x400.png") 50% 50% repeat-x;
+    outline-color: #888888;
+}
+
+/*qtip2 amendments, Arild dec. 2016*/
+#qtip-overlay div {
+    opacity: 0.4;
+}
+
+/* styling of the new category treeview */
+
+#mlab_group_edit {
+    width: 48%;
+    height: 300px;
+    float: left;
+}
+
+#mlab_categories_tree, #mlab_categories_tree_edit {
+    width: 48%;
+    height: 300px;
+    border: 1px solid red;
+    float: right;
+}
+
+.jstree-default .jstree-icon:empty {
+    width: 0;
+    height: 0;
+    line-height: 0;
+    background: none;
+}

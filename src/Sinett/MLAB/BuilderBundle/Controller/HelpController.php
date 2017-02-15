@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * basic code to load and store help text from the help table
+ * @abstract  basic code to load and store help text from the help table
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
@@ -15,6 +21,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Help;
 use Sinett\MLAB\BuilderBundle\Form\HelpType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Help controller.
@@ -75,13 +83,13 @@ class HelpController extends Controller
     */
     private function createCreateForm(Help $entity, $routes)
     {
-        $form = $this->createForm(new HelpType(), $entity, array(
+        $form = $this->createForm(HelpType::class, $entity, array(
             'action' => $this->generateUrl('help_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.system.admin.help.new.create.button'));
-        $form->add('route', 'choice', array(
+        $form->add('submit', SubmitType::class, array('label' => 'app.system.admin.help.new.create.button'));
+        $form->add('route', ChoiceType::class, array(
               'choices' => $routes
         ));
         return $form;
@@ -171,13 +179,13 @@ class HelpController extends Controller
     */
     private function createEditForm(Help $entity, $routes)
     {
-        $form = $this->createForm(new HelpType(), $entity, array(
+        $form = $this->createForm(HelpType::class, $entity, array(
             'action' => $this->generateUrl('help_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.system.admin.help.edit.update.button'));
-        $form->add('route', 'choice', array(
+        $form->add('submit', SubmitType::class, array('label' => 'app.system.admin.help.edit.update.button'));
+        $form->add('route', ChoiceType::class, array(
               'choices' => $routes
         ));
 
@@ -270,10 +278,10 @@ class HelpController extends Controller
         			'message' => $this->get('translator')->trans('controller.help.msg.comp_id.empty')));
         }
         
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $help_basename = $config["paths"]["component"] . "/" . $comp_id . "/extended_tip";
         $help_generic = $help_basename . ".html";
-        $help_locale = $help_basename . "_" . $this->container->parameters['locale'] . ".html";
+        $help_locale = $help_basename . "_" . $this->container->getParameter('locale') . ".html";
         
         if (file_exists($help_locale)) {
             $html = file_get_contents($help_locale);

@@ -1,3 +1,13 @@
+{#
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+#}
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
@@ -9,10 +19,12 @@
                 <th>{% trans %}app.admin.components.version{% endtrans %}</th>
                 <th>{% trans %}app.admin.components.description{% endtrans %}</th>
                 <th>{% trans %}app.admin.components.groups{% endtrans %}</th>
-                <th>{% trans %}app.admin.components.enabled{% endtrans %}</th>
-                <th> 
-                	<a class="mlab_button_new_component" href="{{ path('component_new') }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
-                </th>
+                {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
+                    <th>{% trans %}app.admin.components.enabled{% endtrans %}</th>
+                    <th> 
+                        <a class="mlab_button_new_component" href="{{ path('component_new') }}" title="{% trans %}app.admin.components.tooltip.new{% endtrans %}"></a>
+                    </th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>

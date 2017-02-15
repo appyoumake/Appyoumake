@@ -1,3 +1,12 @@
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 /* ==========================================================================
    This is the styles for the mlab editor 
    (the top menu has its own css)
@@ -131,9 +140,11 @@ made smaler than the min width */
     background-color: white;
 }
 
+/* NOT USING INTERFERES WITH qtip
 #mlab_editor .mlab_qtip_menu_tooltip.qtip{
     z-index: 20000 !important;
 }
+*/
 
 #mlab_editor .mlab_qtip_tooltip.qtip p{
     margin: 0 0 6px;
@@ -174,6 +185,7 @@ made smaler than the min width */
 
 #mlab_editor .ui-accordion-header-active {
     background-color: orange;
+    color: #555555;
 }
 
 #mlab_editor .ui-accordion-header .mlab_category_name {
@@ -181,6 +193,12 @@ made smaler than the min width */
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 82%;
+    color: #212121;
+    font-weight: normal;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: none;
+    cursor: pointer;
+    line-height: 1.3;
 }
 
 /*The accordion is closed*/
@@ -188,6 +206,8 @@ made smaler than the min width */
     font-family: Arial, Helvetica, sans-serif;
     content: "+";
     position: absolute;
+    color: #212121;
+    font-weight: normal;
     left: 7.8em;
     top: 0%;
 }
@@ -584,7 +604,7 @@ made smaler than the min width */
 /* TEMP AV ARILD */
 
 #mlab_editor ul.ui-autocomplete {
-    z-index: 10000;
+    z-index: 15000; 
     background-color: wheat;
     border: 1px solid gray;
 }
@@ -605,6 +625,7 @@ made smaler than the min width */
     z-index: 400 !important;
 }
 
+/* NOT USING; INTERFERES WITH QTIP Z INDEX
 .mlab_zindex_top_tooltip {
     z-index: 510 !important;
 }
@@ -612,6 +633,7 @@ made smaler than the min width */
 .mlab_zindex_top_helptip {
     z-index: 550 !important;
 }
+*/
 
 #mlab_editor.mlab_loading_info {
     cursor: wait;

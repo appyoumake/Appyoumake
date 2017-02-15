@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Library that contains all code related to file and app page management, for instance copying a page or processing pages for compilation.
+ * @abstract Library that contains all code related to file and app page management, for instance copying a page or processing pages for compilation.
  */
 
 namespace Sinett\MLAB\BuilderBundle\FileManagement;
@@ -166,6 +172,21 @@ class FileManagement {
                             $entity->setDescription($temp["tooltip"]);
                         }
                     }
+
+                    if (isset($temp["name"])) {
+                        if (is_array($temp["name"])) {
+                            if (isset($temp["name"][$this->locale])) {
+                                $entity->setName($temp["name"][$this->locale]);
+                            }
+                        } else {
+                            $entity->setName($temp["name"]);
+                        }
+
+//fallback, if no name specified in conf.yml we use thename of zip file
+                    } else {
+                        $entity->setName($object_name);
+                    }
+                    
                     if (isset($temp["compatible_with"])) {
                         $entity->setCompatibleWith($temp["compatible_with"]);
                     } 
@@ -194,7 +215,6 @@ class FileManagement {
                 }
 				
 				$entity->setPath($dir_name);
-				$entity->setName($object_name);
 		   
 // clean up the file property, not persisted to DB
 				$entity->setZipFile(null);
@@ -365,7 +385,7 @@ class FileManagement {
                         file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "plugins" => $new_plugins)));
                     } else {
                         $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-                        if (key_exists("plugins", $tmp_existing_config)) {
+                        if (array_key_exists("plugins", $tmp_existing_config)) {
                             $tmp_existing_config["plugins"] = array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]));
                         } else {
                             $tmp_existing_config["plugins"] = $new_plugins;
@@ -488,7 +508,7 @@ class FileManagement {
             if (file_exists($template_path . "conf.yml")) {
                 $yaml = new Parser();
                 $temp = $yaml->parse(@file_get_contents($template_path . "conf.yml"));
-                if (key_exists("plugins", $temp)) {
+                if (array_key_exists("plugins", $temp)) {
                     $app_conf["plugins"] = array_merge($app_conf["plugins"], $temp["plugins"]);
                 }
             }
@@ -531,7 +551,7 @@ class FileManagement {
         $path_app_config = $path_app . $config['filenames']["app_config"];
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-            if (key_exists($key, $tmp_existing_config)) {
+            if (array_key_exists($key, $tmp_existing_config)) {
                 return $tmp_existing_config[$key];
             } 
         }
@@ -1071,7 +1091,7 @@ class FileManagement {
 // check to see if this has already been processed, if so just return
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-            if (key_exists("processed_checksum", $tmp_existing_config)) {
+            if (array_key_exists("processed_checksum", $tmp_existing_config)) {
                 if ($tmp_existing_config["processed_checksum"] == $app_checksum) {
                     return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
                 }
@@ -1434,7 +1454,7 @@ class FileManagement {
  * parse_url to find port, if no port, look at scheme, http = port 80, https = port 443
  */
         $parts = parse_url($infile);
-        if (!key_exists('port', $parts)) {
+        if (!array_key_exists('port', $parts)) {
             $parts['port'] = ($parts['scheme'] == "https" ? 443: 80);
         }
         
@@ -1517,32 +1537,38 @@ class FileManagement {
  * @param type $exclude_files
  */
     public function func_find($path, $type = "", $wildcard = "", $exclude_files = "") {
-        $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS | \RecursiveDirectoryIterator::SKIP_DOTS);
-        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
-        if ($wildcard == "") {
-            $wildcard = "*";
-        }
         $result = array();
+
+//bail if directory does not exist
+        if (file_exists($path)) {
         
-        foreach ($iterator as $file) {
-            if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
-                if ( fnmatch($wildcard, $file->getPathname()) ) {
-                    if ($exclude_files != "") {
-                        $exclude = false;
-                        foreach ($exclude_files as $exclude_file) {
-                            if (fnmatch($exclude_file, $file->getPathname()) || $exclude_file == $file->getBasename()) {
-                                $exclude = true;
-                                break;
+            $dir_iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS | \RecursiveDirectoryIterator::SKIP_DOTS);
+            $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+            if ($wildcard == "") {
+                $wildcard = "*";
+            }
+
+            foreach ($iterator as $file) {
+                if ( ($type == "") || ( $type == "f" && $file->isFile() ) || ( $type == "d" && $file->isDir() ) ) {
+                    if ( fnmatch($wildcard, $file->getPathname()) ) {
+                        if ($exclude_files != "") {
+                            $exclude = false;
+                            foreach ($exclude_files as $exclude_file) {
+                                if (fnmatch($exclude_file, $file->getPathname()) || $exclude_file == $file->getBasename()) {
+                                    $exclude = true;
+                                    break;
+                                }
                             }
-                        }
-                        if (!$exclude) {
+                            if (!$exclude) {
+                                $result[] = $file->getPathname();
+                            }
+                        } else {
                             $result[] = $file->getPathname();
                         }
-                    } else {
-                        $result[] = $file->getPathname();
                     }
                 }
             }
+            
         }
         
         return $result;
@@ -1557,8 +1583,10 @@ class FileManagement {
  */
     public function func_sed($files, $search, $replace) {
         foreach ($files as $file) {
-            $content = file_get_contents($file);
-            file_put_contents( $file, str_replace($search, $replace, $content) );
+            if (file_exists($file)) {
+                $content = file_get_contents($file);
+                file_put_contents( $file, str_replace($search, $replace, $content) );
+            }
         }
     }
     
@@ -1567,8 +1595,8 @@ class FileManagement {
             return false;
         }
 
-        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+        $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
         foreach($files as $file) {
             if ($file->isDir()){
                 rmdir($file->getRealPath());

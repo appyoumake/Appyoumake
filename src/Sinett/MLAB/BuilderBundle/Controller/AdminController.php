@@ -1,11 +1,16 @@
 <?php
-/**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Admin related code to maintain/upload templates, components and apps
- * as well as user related management
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme firstname.lastname at ffi.no 
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/*
+ * @abstract Admin related code to maintain/upload templates, components and apps as well as user related management
  */
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
@@ -22,6 +27,7 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Sinett\MLAB\BuilderBundle\Form\ComponentType;
 use Sinett\MLAB\BuilderBundle\Entity\Category;
 use Sinett\MLAB\BuilderBundle\Form\CategoryType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Sinett\MLAB\BuilderBundle\Entity\User;
 use Sinett\MLAB\BuilderBundle\Form\UserType;
@@ -37,9 +43,7 @@ class AdminController extends Controller
  */
 	public function appsAction()
     {
-    	//die($this->container->parameters['mlab']['paths']['apps']);
     	$tabs = array(
-    			"category" => $this->get('translator')->trans('app.admin.categories'),
     			"component" => $this->get('translator')->trans('app.admin.components'),
                 "template" => $this->get('translator')->trans('app.admin.templates'),
     			);

@@ -1,4 +1,13 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
@@ -148,6 +157,22 @@ class Component
     }
 
     /**
+     * Remove componentGroups
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup
+     */
+    public function removeComponentGroupById($id)
+    {
+        foreach($this->groups as $group) {
+            if ($group->getId() == $id) {
+                $this->componentGroups->removeElement($group);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Get componentGroups
      *
      * @return \Doctrine\Common\Collections\Collection 
@@ -242,6 +267,11 @@ class Component
      */
     private $path;
     
+    /**
+     * @var string
+     */
+    private $group_names;
+    
     
     /**
      * Set enabled
@@ -264,6 +294,29 @@ class Component
     public function getEnabled()
     {
         return $this->enabled;
+    }
+    
+    /**
+     * Set enabled
+     *
+     * @param string $enabled
+     * @return Component
+     */
+    public function setGroupNames($names)
+    {
+        $this->group_names = $names;
+    
+        return $this;
+    }
+
+    /**
+     * Get group_names
+     *
+     * @return string 
+     */
+    public function getGroupNames()
+    {
+        return $this->group_names;
     }
     
     /**

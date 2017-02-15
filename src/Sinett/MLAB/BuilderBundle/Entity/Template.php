@@ -1,4 +1,13 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
@@ -63,7 +72,13 @@ class Template
     
 //flag used to see if it can be deleted or not
     private $canDelete;
+
+    /**
+     * @var string
+     */
+    private $group_names;
     
+
     /**
      * Constructor
      */
@@ -393,4 +408,28 @@ class Template
     {
         return $this->canDelete;
     }
+    
+    /**
+     * Set enabled
+     *
+     * @param string $enabled
+     * @return Component
+     */
+    public function setGroupNames($names)
+    {
+        $this->group_names = $names;
+    
+        return $this;
+    }
+
+    /**
+     * Get group_names
+     *
+     * @return string 
+     */
+    public function getGroupNames()
+    {
+        return $this->group_names;
+    }
+    
 }

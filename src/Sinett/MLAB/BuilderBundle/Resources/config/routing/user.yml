@@ -1,34 +1,41 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 user:
-    pattern:  /
+    path:  /
     defaults: { _controller: "SinettMLABBuilderBundle:User:index" }
 
 user_show:
-    pattern:  /{id}/show
+    path:  /{id}/show
     defaults: { _controller: "SinettMLABBuilderBundle:User:show" }
 
 user_new:
-    pattern:  /new
+    path:  /new
     defaults: { _controller: "SinettMLABBuilderBundle:User:new" }
 
 user_create:
-    pattern:  /create
+    path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:User:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 user_edit:
-    pattern:  /{id}/edit
+    path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:User:edit" }
 
 user_update:
-    pattern:  /{id}/update
+    path:  /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:User:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 user_delete:
-    pattern:  /{id}/delete
+    path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:User:delete" }
-#    requirements: { _method: post|delete }
+#    requirements: { methods: post|delete }
 
 user_toggle_state:
-    pattern:  /{id}/toggle_state
+    path:  /{id}/toggle_state
     defaults: { _controller: "SinettMLABBuilderBundle:User:toggleState" }

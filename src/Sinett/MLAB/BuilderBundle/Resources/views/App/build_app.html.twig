@@ -3,16 +3,26 @@
     <head>
         <meta charset='UTF-8' />
         <title>{% block title %}{% trans %}mlab.page.title.app.bulider.editor{% endtrans %}{% endblock %}</title>
+{#
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+#}
         {% block stylesheets %}
-            <link href='{{ asset("/css/jquery-ui.css") }}' rel='stylesheet' />
-            <link href='{{ asset("/css/jquery-qtip.css") }}' rel='stylesheet' />
-            <link href='{{ asset("/css/jquery.uploadfile.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/reset.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_reset_editor.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/jquery-ui.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/jquery.qtip.nightly.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/jquery.uploadfile.css") }}' rel='stylesheet' />
+            <link href='{{ asset("/css/mlab_all.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_menu.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_editor.css") }}' rel='stylesheet' />
-            <link href='{{ asset("/css/jquery.contextMenu.css") }}' rel='stylesheet' />
             <link href='{{ asset("/css/mlab_component_config.css") }}' rel='stylesheet' />
-            
         {% endblock %}
             
         {% block javascripts %}
@@ -20,13 +30,12 @@
             <script src='{{ asset('/js/jquery.mobile-1.4.5.js') }}'></script>
             <script src='{{ asset('/js/jquery.ui-1.11.4.js') }}'></script>
             <script src='{{ asset('/js/jquery.uploadfile-1.9.0.js') }}'></script>
-            <script src='{{ asset('/js/jquery.qtip-2.2.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.qtip.nightly.js') }}'></script>
             <script src='{{ asset('/js/jquery.ddslick-1.0.0.js') }}'></script>
             <script src='{{ asset('/js/jquery.qrcode-0.12.0.js') }}'></script>
-            <script src='{{ asset('/js/jquery.contextMenu-1.0.0.js') }}'></script>
+            <script src='{{ asset('/js/jquery.contextmenu-1.0.0.js') }}'></script>
+            <script src='{{ asset('/js/spin.js') }}'></script>
             <script src='{{ asset('/js/jquery.spin.js') }}'></script>
-            <!-- not required, part of main jquery ui file now <script src='{{ asset('/js/jquery.ui.position.js') }}'></script> -->
-            
             <script src='{{ asset('/js/bowser.js') }}'></script>
 
             <script type='text/javascript'>
@@ -50,7 +59,7 @@
                                               button: true
                                             },
                                 position:   { my: 'topRight', at: 'bottomMiddle', adjust: { screen: true }, effect: false },
-                                show:       { ready: true, modal: { on: true, blur: false } },
+                                show:       { ready: true, modal: { on: false } },
                                 hide:       false,
                                 style:      { classes: qTipClasses },
                                 events:     {   hide: function(event, api) { api.destroy(); } }
@@ -61,14 +70,10 @@
                     });
                 }
             </script>
+            {% javascripts '@editor_mlab_js' %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
 
-            <script src='{{ asset('/js/mlab.api.js') }}'></script>
-            <script src='{{ asset('/js/mlab.dt.api-orig.js') }}'></script>
-            <script src='{{ asset('/js/mlab.dt.management-orig.js') }}'></script>
-            <script src='{{ asset('/js/mlab.dt.bestpractice-orig.js') }}'></script>
-            <script src='{{ asset('/js/mlab.dt.design-orig.js') }}'></script>
-            <script src='{{ asset('/js/mlab.dt.utils-orig.js') }}'></script>
-            <script src='{{ asset('/js/mlab_editor.init-orig.js') }}'></script>
         {% endblock %}
             
             

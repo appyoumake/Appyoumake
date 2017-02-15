@@ -1,3 +1,12 @@
+{#
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+#}
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
 {% block body -%}
@@ -5,4 +14,83 @@
 
     {{ form(edit_form) }}
 
+    <div id="mlab_categories_tree_edit">
+        
+    </div>
+    <div>
+        <img src="/img/newVersion.png" onclick="mlab_category_create();">
+        <img src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
+        <img src="/img/notPublished.png" onclick="mlab_category_delete();">
+    </div>
+    
+    <script>
+                
+        $(document).ready(function() {
+            $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
+                var items = $('#mlab_categories_tree_edit').jstree(true).get_json(null);
+                var tags = [];
+                for (i in items) {
+                    getTreeAsArray(items[i], tags);
+                }
+                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
+                return true;
+                }
+            );
+            mlab_category_init();
+        });
+        
+        function mlab_category_init() {
+            if ($("#sinett_mlab_builderbundle_group_categories").val()) {
+                debugger;
+                var dt = (JSON.parse($("#sinett_mlab_builderbundle_group_categories").val()));
+            } else {
+                var dt = null;
+            }
+            $("#mlab_categories_tree_edit").jstree('destroy');
+            $('#mlab_categories_tree_edit').jstree(
+                { 'core' : {
+                    'check_callback' : true,
+                    'data' : dt
+                  },
+                  "plugins" : [ "dnd", "search", "state", "types", "wholerow" ]
+               });            
+        }
+
+        function mlab_category_create() {
+            var ref = $('#mlab_categories_tree_edit').jstree(true),
+                sel = ref.get_selected();
+            
+//root level
+            if(!sel.length) { 
+                sel = ref.create_node(null, {"type":"file"});
+            } else if ( $('#mlab_categories_tree_edit').jstree(true).get_path(sel[0]).length <= 2 ) {
+                sel = ref.create_node(sel[0], {"type":"file"});
+            } else {
+                return;
+            }
+            if(sel) {
+                ref.edit(sel);
+            }
+        };
+        
+        function mlab_category_rename() {
+            var ref = $('#mlab_categories_tree_edit').jstree(true),
+                sel = ref.get_selected();
+            if(!sel.length) { return false; }
+            sel = sel[0];
+            ref.edit(sel);
+        };
+        
+        function mlab_category_delete() {
+            if (confirm("Are you sure you want to delete the current branch? This cannot be changed!")) {
+                var ref = $('#mlab_categories_tree_edit').jstree(true),
+                    sel = ref.get_selected();
+                if(!sel.length) { return false; }
+                ref.delete_node(sel);
+            }
+        };
+        
+    </script>
+
+    
 {% endblock %}

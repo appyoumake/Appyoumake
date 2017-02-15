@@ -38,7 +38,7 @@
                                 "} ");
 
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
+            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&key=" + "AIzaSyAIPKs3rxK8sgR7-aHO6s-CvMkpTG-QZUQ" + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
         }
         
     };
@@ -49,7 +49,7 @@
         var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
         var trimmed_guid = guid.replace(/-/g, "");
         if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
+            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&key=" + "AIzaSyAIPKs3rxK8sgR7-aHO6s-CvMkpTG-QZUQ" + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
         } else {
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }

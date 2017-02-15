@@ -1,0 +1,674 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+%Users%: brukere
+
+#-----------------------------------------------------
+# Titel of the pages in Mlab
+#-----------------------------------------------------
+mlab.page.title.index: Welcome to MLAB
+mlab.page.title.app.bulider.index: MLAB apps
+mlab.page.title.app.bulider.editor: MLAB app editor
+mlab.page.title.admin: MLAB admin
+
+
+#-----------------------------------------------------
+# Index info page
+#-----------------------------------------------------
+app.builder.index.page.heading: Mlab
+app.builder.index.page.text: Welcome to Mlab. With this tool you can create your own interactive apps.
+app.builder.index.page.link.text.before: To get started go to the
+app.builder.index.page.link.app.list: App list
+app.builder.index.page.link.text.after: or chose a different action from the menu above.
+app.builder.index.page.help.guide.heading: How to create an app in 5 steps
+app.builder.index.page.help.guide.text1: Start the New App wizard
+app.builder.index.page.help.guide.text2: Click on a component to add to page
+app.builder.index.page.help.guide.text3: Edit the component content and settings
+app.builder.index.page.help.guide.text4: Add more components and pages until the app is completed
+app.builder.index.page.help.guide.text5: Build the app and try it on a mobile or tablet 
+
+
+#-----------------------------------------------------
+# List of apps page
+#-----------------------------------------------------
+app.builder.list.main.heading: Apps
+app.builder.list.welcome.info: Welcome to Mlab app builder! <br><br> Here is a list of apps you can access. You can edit them by clicking on the app name. Use the button to create a new app.
+app.builder.list.new.app.button: New App
+app.builder.list.heading.app: App Name
+app.builder.list.heading.published: Published
+app.builder.list.heading.version: Version
+app.builder.list.heading.active_version: Active version
+app.builder.list.heading.last.updated: Last updated
+
+app.builder.list.tooltip.name: Click on the name to edit the app
+app.builder.list.tooltip.properties: Menu for
+
+
+#-----------------------------------------------------
+# New App Form 
+#-----------------------------------------------------
+builder.new.app.basedon.tab: Based on
+builder.new.app.select_base.tab: Choose base
+builder.new.app.name.tab: Name
+builder.new.app.classification.tab: Classify
+builder.new.app.submit.tab: Make
+
+builder.new.app.select_base.description: Choose whether you want the app to be based on a template, an existing app or an Office file.
+builder.new.app.select_base.template: Template
+builder.new.app.select_base.existing_app: Existing App
+builder.new.app.select_base.office_file: Office file
+builder.new.app.basedon.description: Choose what you want to base the app on
+
+builder.new.app.name.description: Give the app a name and a full description before proceeding
+builder.new.app.name.name: Name
+builder.new.app.name.descriptionLab: Description
+builder.new.app.name.selectBackground: Choose background
+builder.new.app.name.selectForground: Choose icon
+builder.new.app.name.iconFile: Icon file
+builder.new.app.name.addIconFileImage: Add image
+builder.new.app.name.iconText: Icon text
+builder.new.app.name.addIconText: Add text
+builder.new.app.name.splashFile: Splash file
+builder.new.app.active_version.number: Version number
+
+builder.new.app.classification.description: Keywords will help others find your app when searching
+builder.new.app.classification.keywords: Keywords
+builder.new.app.classification.category1: 1. Category
+builder.new.app.classification.category2: 2. Category
+builder.new.app.classification.category3: 3. Category
+
+builder.new.app.submit.description: Take a look at the details before finalizing the app. It will be possible to change the details later.
+builder.new.app.submit.basedon: Based on
+builder.new.app.submit.name: Name
+builder.new.app.submit.descriptionLab: Description
+builder.new.app.submit.keywords: Keywords
+builder.new.app.submit.category: Categories
+builder.new.app.submit.splashScreen: Splash screen
+
+app.wizard.button.previous: < Previous
+app.wizard.button.next: Next >
+app.wizard.button.finished: Finished
+
+
+#-----------------------------------------------------
+# Main Menu
+#-----------------------------------------------------
+app.mlab.menu.tooltip: Menu
+app.builder.menu.welcome.info: This is the main manu for the Mlab app builder.
+app.builder.menu.heading.links: Navigate
+app.builder.menu.links.info: List of pages you have access to
+app.builder.menu.links.app.info: To get to the page where you create content for an app - click the name of the app you want to work with (or create a new app first).
+app.builder.menu.heading.save: Save
+app.builder.menu.save.info: The app will automatically be saved at regular intervals. If you want to save now click on the save icon below.
+app.builder.menu.save.tooltip: Save the app
+app.builder.menu.link.app.builder: App list
+app.builder.menu.link.admin.app: App admin
+app.builder.menu.link.admin.users: User admin
+app.builder.menu.link.system: System admin
+
+
+#-----------------------------------------------------
+# User info Menu
+#-----------------------------------------------------
+app.builder.menu.user.info.heading: User info
+app.builder.menu.log.info: You are logged in as
+app.builder.menu.login.info: You must first login
+app.builder.menu.link.logout: Log out
+app.builder.menu.link.login: Login
+
+app.builder.menu.user.info.main.tooltip: User info
+
+
+#-----------------------------------------------------
+# Help Menu
+#-----------------------------------------------------
+app.builder.help.menu.tooltip: Help
+app.mlab.menu.help.notfound: No help found for this subject
+
+
+#-----------------------------------------------------
+# App builder Menu (edit app)
+#-----------------------------------------------------
+app.builder.edit.menu.tooltip: Editor menu
+app.mlab.logo.tooltip: Back to the App list
+
+app.builder.overlay.info: Please wait while Mlab opens your app...
+app.builder.statusbar.info.permanent: App name
+app.builder.statusbar.info.permanent.label: App
+
+app.builder.edit.menu.heading.feature: App feature
+app.builder.edit.menu.feature.info: You can add special features to an application, it may be accessing a database or a link to a calendar. Choose from the list below. Those with a check mark is already added to this app.
+app.builder.edit.menu.heading.utilities: Utilities
+app.builder.edit.menu.utilities.info: If the page is greyed out, you can click here to unlock it.
+
+app.builder.edit.menu.heading.test.app: App testing
+app.builder.edit.menu.heading.test.app.web: Try App in a web page
+app.builder.edit.menu.test.app.web.info: Do a quick test of how the app will look like by clicking the www-button. The App will then appear in a new web page.
+app.builder.edit.menu.heading.test.app.mob: Try App on a mobile
+app.builder.edit.menu.test.app.mob.info: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
+app.builder.edit.menu.test.app.mob.qr.wait.text: It may take some time before the QR code appears. Please wait.
+app.builder.edit.menu.test.app.mob.tooltip: Test app on %platform% mobile device
+
+
+#-----------------------------------------------------
+# App builder - the page bar
+#-----------------------------------------------------
+app.builder.page.heading: Pages
+app.builder.page.save: Save
+app.builder.page.cancel: Cancel
+
+app.builder.page.menu.delete.info: Click on the X to permanently delete the page you are on
+app.builder.page.menu.delete: Delete the currently open page
+
+app.builder.page.tooltip.save: Save changes to the page name
+app.builder.page.tooltip.cancel: Cancel changes to the page name
+app.builder.page.tooltip.page.name: Click to changes the page name
+app.builder.page.tooltip.page.name.edit: Add new page name
+app.builder.page.tooltip.pagelist: Click to bring up the list of pages in the app
+app.builder.page.tooltip.new: New page
+
+
+#-----------------------------------------------------
+# Admin + System pages welcome
+#-----------------------------------------------------
+app.admin.users.welcome: Welcome to the Mlab User Admin Pages
+app.admin.apps.welcome: Welcome to the Mlab App Admin Pages
+app.system.admin.welcome: Welcome to the Mlab System Admin Pages
+
+
+#-----------------------------------------------------
+# Admin + System pages alert
+#-----------------------------------------------------
+app.system.admin.alert.Unable.to.update.record: Not able to update record -
+app.system.admin.alert.waiting.to.load.data: Waiting to load data
+app.system.admin.alert.delete.item: Do you want to delete?
+app.system.admin.alert.Unable.to.delete.record: Not able to delete record -
+
+
+#-----------------------------------------------------
+# Users tab - User Admin Pages
+#-----------------------------------------------------
+app.admin.users: Users
+app.admin.users.username: Username
+app.admin.users.email: Email
+app.admin.users.groups: Groups
+app.admin.users.enabled: Enabled
+app.admin.users.last.login: Last login
+
+app.admin.users.tooltip.username: Edit user
+app.admin.users.tooltip.delete: Delete user
+app.admin.users.tooltip.new: Create new user
+
+
+#-----------------------------------------------------
+# Edit and new user - User Admin Pages
+#-----------------------------------------------------
+app.admin.users.new.heading: Create new user
+app.admin.users.edit.heading: Edit user
+
+app.admin.users.new.or.edit.email: Email
+app.admin.users.new.or.edit.username: Username
+app.admin.users.new.or.edit.plain.password: Password
+app.admin.users.new.or.edit.categoryOne: Category one
+app.admin.users.new.or.edit.categoryTwo: Category two
+app.admin.users.new.or.edit.categoryThree: Category three
+app.admin.users.new.or.edit.groups: Groups
+app.admin.users.new.or.edit.roles: Roles
+app.admin.users.new.or.edit.enabled: Enabled
+
+app.admin.users.new.create.button: Save
+app.admin.users.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# Groups tab - User Admin Pages
+#-----------------------------------------------------
+app.admin.groups: Groups
+app.admin.groups.name: Name
+app.admin.groups.description: Description
+app.admin.groups.enabled: Enabled
+app.admin.groups.users: Users
+
+app.admin.groups.tooltip.isdefault: The group is set as default
+app.admin.groups.tooltip.name: Edit group
+app.admin.groups.tooltip.delete: Delete group
+app.admin.groups.tooltip.new: Create new group
+
+
+#-----------------------------------------------------
+# Edit and new group - User Admin Pages
+#-----------------------------------------------------
+app.admin.groups.new.heading: Create new group
+app.admin.groups.edit.heading: Edit group
+
+app.admin.groups.new.or.edit.name: Name
+app.admin.groups.new.or.edit.description: Description
+app.admin.groups.new.or.edit.isDefault: Default
+app.admin.groups.new.or.edit.enabled: Enabled
+app.admin.groups.new.or.edit.users: Users
+
+app.admin.groups.new.create.button: Save
+app.admin.groups.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# Template tab - App Admin Pages
+#-----------------------------------------------------
+app.admin.templates: Templates
+app.admin.templates.name: Name
+app.admin.templates.version: Version
+app.admin.templates.description: Description
+app.admin.templates.compatiblewith: Compatible with
+app.admin.templates.groups: Groups
+
+app.admin.templates.tooltip.group: Edit groups for template
+app.admin.templates.tooltip.enabled: Enabled template
+app.admin.templates.tooltip.disabled: Disabled template
+app.admin.templates.tooltip.delete: Delete template
+app.admin.templates.tooltip.new: Create new template
+app.admin.templates.enabled: Enabled
+
+
+#-----------------------------------------------------
+# Edit and new template - App Admin Pages
+#-----------------------------------------------------
+app.admin.templates.new.heading: Create new template
+app.admin.templates.new.enabled: Enabled
+app.admin.templates.new.groups: Groups
+app.admin.templates.new.file: Zip file
+app.admin.templates.new.create.button: Save
+
+app.admin.templates.edit.groups.heading: Edit groups
+app.admin.templates.edit.groups.groups: Groups
+app.admin.templates.edit.groups.update.button: Update
+
+
+#-----------------------------------------------------
+# Components tab - App Admin Pages
+#-----------------------------------------------------
+app.admin.components: Components
+app.admin.components.name: Name
+app.admin.components.version: Version
+app.admin.components.description: Description
+app.admin.components.groups: Groups
+
+app.admin.components.tooltip.group: Edit groups for components
+app.admin.components.tooltip.enabled: Enabled components
+app.admin.components.tooltip.disabled: Disabled components
+app.admin.components.tooltip.delete: Delete component
+app.admin.components.tooltip.new: Create new component
+app.admin.components.enabled: Enabled
+app.admin.components.no.group: None
+
+
+#-----------------------------------------------------
+# Edit and new component - App Admin Pages
+#-----------------------------------------------------
+app.admin.components.new.heading: Create new component
+app.admin.components.new.enabled: Enabled
+app.admin.components.new.groups: Groups
+app.admin.components.new.file: Zip file
+app.admin.components.new.create.button: Save
+
+app.admin.components.edit.groups.heading: Edit groups for
+app.admin.components.edit.groups.credential: Credential
+app.admin.components.edit.groups.groups: Groups
+app.admin.components.edit.groups.update.button: Update
+
+
+#-----------------------------------------------------
+# Categories tab - System + App Admin Pages
+#-----------------------------------------------------
+app.admin.categories: Categories
+app.system.admin.categories: Categories
+
+app.admin.categories.tooltip.new: Create new main category
+app.admin.categories.tooltip.edit: Edit category
+app.admin.categories.tooltip.delete: Delete category
+app.admin.categories.tooltip.new.sub: Create new subcategory for
+
+
+#-----------------------------------------------------
+# Edit and new categories - System + App Admin Pages
+#-----------------------------------------------------
+app.admin.categories.new.heading: Create new category
+app.admin.categories.new.name: Name
+app.admin.categories.new.parent: Belongs under
+app.admin.categories.new.system: System category
+app.admin.categories.new.create.button: Save
+
+app.admin.categories.edit.heading: Edit category
+app.admin.categories.edit.name: Name
+app.admin.categories.edit.parent: Belongs under
+app.admin.categories.edit.system: System category
+app.admin.categories.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# System Help tab - System Admin Pages
+#-----------------------------------------------------
+app.system.admin.help: Help
+app.system.admin.help.route: Page
+app.system.admin.help.message: Help text
+
+app.system.admin.help.tooltip.new: Create new help text
+app.system.admin.help.tooltip.route: Edit help text
+app.system.admin.help.tooltip.delete: Delete help text
+
+
+#-----------------------------------------------------
+# Edit and new system help - System Admin Pages
+#-----------------------------------------------------
+app.system.admin.help.new.heading: Create new help text
+app.system.admin.help.new.route: Page
+app.system.admin.help.new.message: Help text
+app.system.admin.help.new.create.button: Save
+
+app.system.admin.help.edit.heading: Edit help text
+app.system.admin.help.edit.route: Page
+app.system.admin.help.edit.message: Help text
+app.system.admin.help.edit.update.button: Update
+
+
+#-----------------------------------------------------
+# HTML.TWIG files - starts with file name (and folder 
+#       for others than the app folder)
+#-----------------------------------------------------
+layout.menu.tooltip.back.app.list: Back to App list
+layout.menu.tooltip.editor.menu: Editor menu
+layout.menu.tooltip.help: Help
+layout.menu.tooltip.user.info: User info
+
+build_app.menu.tooltip.back.app.list: Back to App list
+build_app.menu.utilities.delete.locks: Delete locks
+build_app.menu.utilities.test.connection.compiler: Test connection to compiler
+build_app.menu.tooltip.test.app.web: Test app in browser
+build_app.menu.utilities.download.source: Download source code
+build_app.menu.utilities.upload.website: Upload website
+<<<<<<< HEAD
+
+=======
+ 
+>>>>>>> origin/assetic
+build_app.page.tooltip.redo: Redo text changes
+build_app.page.tooltip.undo: Undo text changes
+
+build_app.components.toolbar.tooltip.move.up: Move selected component up
+build_app.components.toolbar.tooltip.move.down: Move selected component down
+build_app.components.toolbar.tooltip.delete: Delete selected component
+build_app.components.toolbar.tooltip.help: Get help about selected component
+build_app.components.toolbar.tooltip.cut: Cut selected component, you can paste it into another page in this app
+build_app.components.toolbar.tooltip.copy: Copy selected component, you can paste it into another page in this app
+build_app.components.toolbar.tooltip.paste: Paste component from Mlab clipboard
+build_app.components.toolbar.tooltip.resize: Resize component
+build_app.components.toolbar.tooltip.aspect.ratio: Select aspect ratio
+build_app.components.toolbar.tooltip.storage: Select storage mechanism
+build_app.components.toolbar.tooltip.credentials: Edit credentials
+
+build_app.components.toolbar.component.size.small: Small
+build_app.components.toolbar.component.size.medium: Medium
+build_app.components.toolbar.component.size.large: Large
+build_app.components.toolbar.component.size.full.screen: Full Screen
+
+build_app.components.toolbar.component.aspect.4.3: 4:3
+build_app.components.toolbar.component.aspect.16.9: 16:9
+build_app.components.toolbar.component.aspect.1.1: 1:1
+
+build_app.tooltip.not.saved: The latest changes were not saved
+build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
+build_app.dialog.delete.title: Delete?
+build_app.dialog.delete.text: Are you sure you want to delete?
+
+build_app.footer.tooltip.help: Turn help off
+build_app.footer.help: Hold the mouse over the item you wish to describe.
+
+builder.dialog.new.app.title: App details
+builder.popup.app.properties.title: Mlab app options
+builder.popup.app.properties.label.edit.content: Edit app content
+builder.popup.app.properties.label.edit.details: Edit app details
+builder.popup.app.properties.label.download: Download the app
+builder.popup.app.properties.label.copy.link: Copy link to the app
+builder.popup.app.properties.label.new.incremental: Create a new incremental version
+builder.popup.app.properties.label.new.major: Create a new major version
+builder.popup.app.properties.label.new.branch: Create a new branch
+builder.popup.app.properties.label.send.market: Send app to market
+builder.popup.app.properties.label.hide.market: Hide app from market
+builder.popup.app.properties.label.withdraw.market: Withdraw app from market/devices
+builder.popup.app.properties.label.delete: Delete app
+
+builder.create.new.version.confirm: Do you want to create a new version based on the active version of this app? \n\nThis version will be the active version that you can edit, and send to the market to replace the current version (if any).
+builder.create.new.branch.confirm: Do you want to create a new branch based on the active version of this app? \n\nThis branch will be a copy of the current active version that you can edit, and send to the market independently of the app you are copying.
+builder.create.active.version.confirm: Do you want to change the active version for this app? The version you activate will be the one you can edit, and will be the one you can send to the market to replace the current version (if any).
+builder.create.delete.confirm: Are you sure you want to delete this app? This will only work if it has not been sent to the market.
+
+properties.build.app.import.ppt.doc: Import PPT or DOC file
+properties.build.app.design.icon.legend: Design icon
+properties.build.app.design.icon.foreground.img.error.1: This browser does not support local images, get your technical support to upload your images
+properties.build.app.design.icon.foreground.img.error.2: This browser doesn't seem to support the `files` property of file inputs.
+
+properties.build.app.load.categories: ...loading...
+
+properties.build.app.fill.base.on: You must select what to base the new app on
+properties.build.app.fill.doc.convert: You must select a document to convert
+properties.build.app.fill.doc.convert.format: Document to convert must be PowerPoint or Word format
+properties.build.app.fill.template: You must select a template to use
+properties.build.app.fill.app.copy: You must select an app to copy
+properties.build.app.fill.name: You must enter a name for this app
+properties.build.app.fill.version: You must enter a version number that is 1 or higher.
+properties.build.app.fill.splash.format: Splash file must be in PNG or JPEG format
+properties.build.app.fill.description: You must enter a description for this app
+properties.build.app.fill.keywords: You must enter one or more keywords for this app
+properties.build.app.fill.main.category: You must select a main category for this app
+properties.build.app.fill.secondary.category: You must select a secondary category for this app
+properties.build.app.fill.final.category: You must select a final category for this app
+
+properties.build.app.summery.1: You are creating an empty app based on the
+properties.build.app.summery.2: template
+properties.build.app.summery.3: You are creating a new app copied from the
+properties.build.app.summery.4: app. All content will be copied across, but any changes will only apply to the new app.
+properties.build.app.summery.5: You are creating a new app with content copied from the
+properties.build.app.summery.6: file, with layout based on the
+properties.build.app.summery.7: template
+
+properties.build.app.error: An error occurred, see console log for more information
+
+show.remove.from.app.store: remove from app store
+show.recall.from.app.store: recall
+
+category.show.add: add
+category.show.delete: delete
+
+
+#-----------------------------------------------------
+# PHP files - starts with file name
+#-----------------------------------------------------
+appController.msg.createAction.1: App name already exists, chose a different name
+appController.msg.createAction.2: Unable to create app from template
+appController.msg.createAction.3: Invalid file uploaded
+appController.msg.createAction.4: Neither app to copy nor template specified
+appController.msg.createAction.5: Incorrect data submitted, may be a field missing
+
+appController.die.no.access: You have no access to this app
+appController.createNotFoundException.app: Unable to find App entity.
+appController.msg.unable.store.splach.screen: Unable to store splash screen for app
+appController.msg.unable.store.icon: Unable to store icon for app
+appController.msg.unable.copy.app.files: Unable to copy app files
+
+appController.msg.updateAction.1: An app with the name and version number specified already exists, chose a different name and/or version
+appController.msg.updateAction.2: Unable to update app
+
+appController.msg.deleteAction.1: Unable to find record to delete
+appController.msg.deleteAction.2: Cannot delete apps that have been sent to the market
+
+appController.msg.app.id.not.specified: Application ID not specified
+appController.msg.page.not.specified: Page not specified
+appController.msg.component.type.not.specified: Component type not specified
+
+appController.msg.getPageAction: File does not exists, contact support
+appController.msg.putPageAction: Unable to save file, please try again
+appController.msg.newPageAction: Unable to create a new file, maximum app size of 999 pages reached!
+appController.msg.copyPageAction: Unable to copy the page, please try again
+appController.msg.deletePageAction: Unable to delete page
+appController.msg.componentUploadAction.1: File type not allowed, please convert to another format
+appController.msg.componentUploadAction.2: Unable to load server_code.php file
+appController.msg.componentUploadAction.3: Unable to run application on server
+appController.msg.featureAddAction.1: Unable to update app with feature
+appController.msg.featureAddAction.2: , please try again
+appController.msg.storagePluginAddAction.1: Storage plugin not specified
+appController.msg.storagePluginAddAction.2: Unable to copy JavaScript file for this component
+appController.msg.createNewVersionAction: Increment must be 0.1 or 1, value supplied was
+
+categoryController.createNotFoundException: Unable to find Category entity.
+
+compController.msg.unable.upload.comp: Unable to upload component
+compController.createNotFoundException.comp: Unable to find Component entity.
+compController.msg.toggleStateAction: Unable to locate component record
+
+controller.msg.unable.create.record: Unable to create new record
+controller.msg.unable.update.record: Unable to update record
+controller.msg.unable.locate.record: Unable to locate user record
+
+groupController.createNotFoundException: Unable to find Group entity.
+
+helpController.createNotFoundException: Unable to find Help entity.
+
+menuController.createNotFoundException: Unable to find Menu entity.
+
+servicesController.msg.unable.update.websocket: Unable to update websocket messages
+servicesController.msg.unable.retrieve.db.entry: Unable to retrieve app database entry
+servicesController.msg.cmpDownloadApp: Unable to retrieve app database entry to download app
+servicesController.msg.cmpGetAppProcessAction.1: App ID not specified
+servicesController.msg.cmpGetAppProcessAction.2: App version not specified
+servicesController.msg.cmpGetAppProcessAction.3: Platform not specified
+servicesController.msg.cmpGetAppProcessAction.4: Platform not supported for compilation
+servicesController.msg.cmpGetAppProcessAction.5: createApp compiler service failed
+servicesController.msg.cmpGetAppProcessAction.6: verifyApp compiler service failed
+servicesController.msg.passphrase.not.matching: Passphrase not matching
+servicesController.msg.cbCmpCreatedAppAction.1: Failed to create app remotely
+servicesController.msg.cbCmpCreatedAppAction.2: Unable to retrieve app database entry to verify upload
+servicesController.msg.cbCmpCreatedAppAction.3: verifyApp compiler service failed
+servicesController.msg.cbCmpVerifiedAppAction.1: Files failed to upload
+servicesController.msg.cbCmpVerifiedAppAction.2: compileApp compiler service failed
+servicesController.msg.cbCmpCompiledAppAction: App failed to compile
+servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage: Downloaded app does not match app sent, check for connection errors and try again
+
+templateController.msg.createAction: Invalid data
+templateController.msg.createNotFoundException: Unable to find Template entity.
+templateController.msg.unable.upload.template: Unable to upload template
+templateController.msg.toggleStateAction: Unable to locate template record
+
+trackingController.createNotFoundException: Unable to find Tracking entity.
+
+userController.msg.unable.create.record: Unable to create new record
+userController.msg.unable.find.record: Unable to locate user record
+userController.msg.email.exists: A user with this email is already registered, email addresses must be unique
+userController.createNotFoundException: Unable to find User entity.
+userController.editAction.response: You do not have the rights to edit this user, must be Super Admin
+
+
+#-----------------------------------------------------
+# JS files - starts with file name 
+#-----------------------------------------------------
+mlab.dt.design.js.alert.only.one.comp: You can only have one component of this type on a page
+mlab.dt.design.js.alert.add.comp: Add the component again.
+mlab.dt.design.js.alert.error.occurred: An error occurred
+mlab.dt.design.js.alert.help.notfound: No help for you today
+mlab.dt.design.js.qtip.help.title: Help
+mlab.dt.design.js.update_status.adding.feature: Adding feature...
+mlab.dt.design.js.update_status.feature.added: Feature added
+mlab.dt.design.js.update_status.feature.already.added: Feature already added
+mlab.dt.design.js.update_status.adding.storage.plugin: Adding storage plugin...
+mlab.dt.design.js.update_status.storage.plugin.added: Storage plugin added
+
+mlab.dt.management.js.update_status.opening.app: Opening app
+mlab.dt.management.js.prompt.title.front.page: Please enter the title for the front page of this app
+mlab.dt.management.js.update_status.ready: Ready
+mlab.dt.management.js.update_status.retrieving.app: Retrieving app
+mlab.dt.management.js.update_status.unlocking.pages: Unlocking all pages...
+mlab.dt.management.js.update_status.opening.page: Opening page
+mlab.dt.management.js.update_status.storing.page: Storing page
+mlab.dt.management.js.update_status.saved.page: Saved page
+mlab.dt.management.js.update_status.unable.save.page: Unable to save page
+mlab.dt.management.js.update_status.copying.page: Copying page
+mlab.dt.management.js.update_status.deleting.page: Deleting page
+mlab.dt.management.js.update_status.unable.contact.server: Unable to contact server
+
+mlab.dt.management.js.app_download_process.1: Download
+mlab.dt.management.js.app_download_process.2: Download test app here
+mlab.dt.management.js.app_download_process.3: Mail link
+mlab.dt.management.js.app_download_process.4: Error
+
+mlab.dt.management.js.app_submit_to_market: Not implemented yet
+mlab.dt.management.js.app_update_gui_metadata.copy.pages: Copy page
+mlab.dt.management.js.index_page_process.alert.1: This app does not have an editable area called
+mlab.dt.management.js.index_page_process.alert.2: unable to open app. Check with the system administrator for further information.
+mlab.dt.management.js.page_update_title.alert.page.locked: Page is locked, you cannot update the title
+mlab.dt.management.js.page_new.prompt.title.new.page: Please enter the title of the new page
+mlab.dt.management.js.page_copy.alert.not.copy.index.page: You can not copy the index page
+mlab.dt.management.js.page_copy.alert.not.delete.index.page: You can not delete the index page
+mlab.dt.management.js.page_copy.alert.sure.delete: Are you sure you want to delete this page? This cannot be undone!
+mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Cannot open new window, change your settings to allow popup windows
+mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (leave blank is OK)
+mlab.dt.management.js.compiler.get_app_status.prompt.version: version (leave blank is OK)
+mlab.dt.management.js.compiler.get_app_status.prompt.platform: platform (ios or android) (leave blank is OK)
+mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Unable to get app status
+mlab.dt.management.js.compiler.get_app.status.creating.app: Creating app...
+
+mlab_editor.init.js.alert.browser.support: This web app will only work in Chrome/Chromium or Firefox
+mlab_editor.init.js.alert.unsaved: You have unsaved changes, do you want to lose these?
+
+mlab_editor.init.js.qtip.comp.storage.plugin.title: Storage plugin
+mlab_editor.init.js.qtip.comp.size.title: Component size
+mlab_editor.init.js.qtip.comp.aspect.title: Aspect ratio
+mlab_editor.init.js.qtip.download.app.title: Download to
+
+mlab_editor.init.js.compiling.connected: Creating app...connected to server
+mlab_editor.init.js.compiling.creating: Creating app remotely...
+mlab_editor.init.js.compiling.created: App created remotely
+mlab_editor.init.js.compiling.precompilation: Processing files...
+mlab_editor.init.js.compiling.uploading: Uploading files to compiler...
+mlab_editor.init.js.compiling.verifying: Verifying upload...
+mlab_editor.init.js.compiling.verification_ok: Files uploaded OK...
+mlab_editor.init.js.compiling.compiling: Waiting for compiler...
+mlab_editor.init.js.compiling.compilation_ok: App compiled OK...
+mlab_editor.init.js.compiling.receiving: Receiving app...
+mlab_editor.init.js.compiling.ready: App ready! Links are found in the menu
+mlab_editor.init.js.compiling.failed: App ready but there was a problem obtaining the links, please try again
+mlab_editor.init.js.compiling.failed.loading.comps: Unable to load components from the server, cannot continue, will return to front page
+mlab_editor.init.js.compiling.failed.loading.var: Unable to load variables from the server, cannot continue, will return to front page
+
+mlab.dt.api.js.getMedia.fail: Unable to obtain files
+
+mlab.dt.api.js.uploadMedia.qtip.content.1: Select an image from the list or click 'Add file' to upload an image
+mlab.dt.api.js.uploadMedia.qtip.content.2: ...loading image...
+mlab.dt.api.js.uploadMedia.qtip.content.3: Add file
+mlab.dt.api.js.uploadMedia.qtip.content.4: Cancel
+mlab.dt.api.js.uploadMedia.qtip.content.5: OK
+mlab.dt.api.js.uploadMedia.qtip.title: Upload media
+
+mlab.dt.api.js.getLink.prompt: Please enter the URL or page number (for pages in this app) to link to
+mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
+
+mlab.dt.api.js.getCredentials.dlg.title: Credentials
+mlab.dt.api.js.getCredentials.dlg.text: Credentials are items such as URLs or passwords that Mlab require to connect to a cloud service
+mlab.dt.api.js.getCredentials.dlg.save: Save
+
+controller.help.msg.comp_id.empty: No component ID specified when trying to retrieve component help file
+controller.help.msg.file.notfound: Component help file not found
+
+mlab.dt.api.js.getLink.heading: Add link
+mlab.dt.api.js.getLink.app_page: I want to link to a page in my app
+mlab.dt.api.js.getLink.url: I want to link to an external website
+mlab.dt.api.js.getLink.ok: OK
+mlab.dt.api.js.getLink.cancel: Cancel
+mlab.dt.api.js.getLink.alert_url_wrong: The URL you entered is not a valid URL, please check and try again
+mlab.dt.api.js.getLink.alert_no_page: You must select a page to link to
+mlab.dt.api.js.getLink.alert_choose_type: Choose a link type to add
+mlab.dt.api.js.getLink.no_selection: Please select som text inside the current component to add link to
+
+select.locale: Select language
+mlab.dt.management.js.websocket.error.connect: Connection to message server failed, cannot continue. Check Internet connection and try again.

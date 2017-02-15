@@ -1,8 +1,20 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
-use FOS\UserBundle\Entity\User as BaseUser;
+// incorrect after upgrade to Symfony_2.8:
+//      use FOS\UserBundle\Entity\User as BaseUser;
+use FOS\UserBundle\Model\User as BaseUser;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -313,6 +325,35 @@ class User extends BaseUser
         return $this->groups;
     }
 
+    /**
+     * Get string array of group names for this user
+     *
+     * @return array of strings 
+     */
+    public function getGroupsArray()
+    {
+        $groups = array();
+    	foreach ($this->groups as $group) {
+    		$groups[] = $group->getName();
+        }
+        return $groups;
+    }
+    
+    /**
+     * Get string array of group names for this user
+     *
+     * @return array of strings 
+     */
+    public function getGroupsIdArray()
+    {
+        $groups = array();
+    	foreach ($this->groups as $group) {
+    		$groups[] = $group->getId();
+        }
+        return $groups;
+    }
+    
+    
     /**
      * Get roles
      *

@@ -1,62 +1,69 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 # market API related URLS (internal actions)
 mkt_get_tagged_users:
-    pattern: /mktGetTaggedUsers/{window_uid}/{token}/{tag}
+    path: /mktGetTaggedUsers/{window_uid}/{token}/{tag}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktGetTaggedUsers }
 
 mkt_submit_app_details:
-    pattern: /mktSubmitAppDetails/{window_uid}/{app_details}
+    path: /mktSubmitAppDetails/{window_uid}/{app_details}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSubmitAppDetails }
 
 mkt_upload_app_file:
-    pattern: /mktUploadAppFile/{window_uid}/{token}/{app_uid}/{replace_existing}
+    path: /mktUploadAppFile/{window_uid}/{token}/{app_uid}/{replace_existing}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktUploadAppFile }
 
 mkt_publish_app:
-    pattern: /mktPublishApp/{window_uid}/{token}/{app_uid}/{version}
+    path: /mktPublishApp/{window_uid}/{token}/{app_uid}/{version}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktPublishApp }
 
 mkt_unpublish_app:
-    pattern: /mktUnpublishApp/{window_uid}/{token}/{app_uid}/{version}/{action}
+    path: /mktUnpublishApp/{window_uid}/{token}/{app_uid}/{version}/{action}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktUnpublishApp }
 
 mkt_login:
-    pattern: /mktLogin/{window_uid}/{username}/{password}
+    path: /mktLogin/{window_uid}/{username}/{password}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktLogin }
 
 mkt_create_user:
-    pattern: /mktCreateUser/{window_uid}/{token}/{user_details}
+    path: /mktCreateUser/{window_uid}/{token}/{user_details}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktCreateUser }
 
 mkt_get_new_users:
-    pattern: /mktGetNewUsers/{window_uid}/{token}
+    path: /mktGetNewUsers/{window_uid}/{token}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktGetNewUsers }
 
 mkt_set_user_state:
-    pattern: /mktSetUserState/{window_uid}/{token}/{app_uid}/{state}
+    path: /mktSetUserState/{window_uid}/{token}/{app_uid}/{state}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSetUserState }
 
 mkt_set_tagged_users_state:
-    pattern: /mktsetTaggedUsersState/{window_uid}/{token}/{tag}/{state}
+    path: /mktsetTaggedUsersState/{window_uid}/{token}/{tag}/{state}
     defaults: { _controller: SinettMLABBuilderBundle:Services:mktSetTaggedUsersState }
 
 # compiler API related URLS (internal actions)
 cmp_get_app_status:
-    pattern: /cmpGetAppStatus/{window_uid}/{app_id}/{app_version}/{platform}
+    path: /cmpGetAppStatus/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppStatus, app_id:NULL, app_version:NULL, platform:NULL }
 
 cmp_get_app_source:
-    pattern: /cmpGetAppSource/{window_uid}/{app_id}/{app_version}
+    path: /cmpGetAppSource/{window_uid}/{app_id}/{app_version}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppSource, app_id:NULL, app_version:NULL }
 
 cmp_upload_website:
-    pattern: /cmpUploadWebsite/{window_uid}/{app_id}/{app_version}
+    path: /cmpUploadWebsite/{window_uid}/{app_id}/{app_version}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpUploadWebsite, app_id:NULL, app_version:NULL }
 
 cmp_get_app_process:
-    pattern: /cmpGetAppProcess/{window_uid}/{app_id}/{app_version}/{platform}
+    path: /cmpGetAppProcess/{window_uid}/{app_id}/{app_version}/{platform}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetAppProcess }
 
 cmp_get_list_compiled_apps:
-    pattern: /cmpGetListCompiledApps/{app_id}/{app_version}
+    path: /cmpGetListCompiledApps/{app_id}/{app_version}
     defaults: { _controller: SinettMLABBuilderBundle:Services:cmpGetListCompiledApps }
 

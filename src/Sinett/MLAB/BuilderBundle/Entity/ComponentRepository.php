@@ -1,4 +1,13 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
@@ -35,11 +44,20 @@ class ComponentRepository extends EntityRepository
 	 */
 	public function findAccessByGroups ( $groups) {
 		$components = array();
+        $comp_group_repo = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:ComponentGroup');
 		foreach ($groups as $group) {
 			$temp_components = $group->getComponents();
 			foreach ($temp_components as $temp_component) {
                 if ($temp_component->getEnabled()) {
-                    $components[] = $temp_component->getPath();
+                    $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
+                    if ($access_record) {
+                        $access_state = $access_record->getAccessState();
+                    } else {
+                        $access_state = 0;
+                    }
+                    if ( ($access_state & 2) > 0) {
+                        $components[] = $temp_component->getPath();
+                    }
                 }
 			}
 		}
@@ -57,13 +75,26 @@ class ComponentRepository extends EntityRepository
 		return $component;
 	}
 
-        /**
+    /**
 	 * Returns a list of all components with information about whether they can be deleted (not used in any apps)
      * 
 	 * @param array of ids of all components that have been used
 	 */
 	public function findAllCheckDeleteable ($all_comps_used) {
 		$components = $this->findAll();
+		foreach ($components as $id => $component) {
+			$components[$id]->setCanDelete( ! in_array($component->getPath(), $all_comps_used) );
+		}
+		return $components;
+	}
+	
+    /**
+	 * Returns a list of all ENABLED components with information about whether they can be deleted (not used in any apps)
+     * 
+	 * @param array of ids of all components that have been used
+	 */
+	public function findAllEnabledCheckDeleteable ($all_comps_used) {
+		$components = $this->findByEnabled(1);
 		foreach ($components as $id => $component) {
 			$components[$id]->setCanDelete( ! in_array($component->getPath(), $all_comps_used) );
 		}

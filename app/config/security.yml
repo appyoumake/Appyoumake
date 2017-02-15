@@ -1,3 +1,11 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 security:
     encoders:
         FOS\UserBundle\Model\UserInterface: sha512
@@ -15,7 +23,7 @@ security:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
-                csrf_provider: form.csrf_provider
+                csrf_token_generator: security.csrf.token_manager
                 success_handler: security.authentication.customized_success_handler
             logout:       true
             anonymous:    true
@@ -28,6 +36,7 @@ security:
         - { path: ^/category/.+/.+/load_categories, role: ROLE_USER }
         - { path: ^/category/, role: ROLE_ADMIN }
         - { path: ^/component/, role: ROLE_ADMIN }
+        - { path: ^/componentgroup/, role: ROLE_ADMIN }
         - { path: ^/group/, role: ROLE_ADMIN }
         - { path: ^/menu/, role: ROLE_ADMIN }
         - { path: ^/template/, role: ROLE_ADMIN }

@@ -1,3 +1,12 @@
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 /*
 MLAB component styling for comunication with the app creator or the 
 app user.
@@ -165,6 +174,25 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     vertical-align: top;
     word-wrap: break-word;
     cursor: pointer;
+    box-shadow: none;
+    width: auto;
+}
+
+#mlab_editor .mlab_dt_button_help {
+    float: right;
+    height: 12px;
+    margin-top: 1px;
+    margin-right: -5px;
+    background: whitesmoke;
+    border: solid 1px darkgray;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#mlab_editor .mlab_comp_help_qTip .mlab_dt_button_help,
+#mlab_editor .mlab_page_help_qTip .mlab_dt_button_help {
+    visibility: hidden;
 }
 
 #mlab_editor .mlab_dt_button_help {
@@ -257,6 +285,9 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
     margin-left: 0.5em;
     margin-right: 0.5em;
     padding-bottom: 0.2em;
+    border-radius: 0px;
+    border: 1px solid rgb(169, 169, 169);
+    cursor: pointer;
 }
 
 #mlab_editor .mlab_dt_large_input {
@@ -403,7 +434,7 @@ color: black;
 
 #mlab_editor #mlab_cp_img_select_image {
     min-width: 195px;
-    max-width: 95%;
+    max-width: 71%;
 }
 
 

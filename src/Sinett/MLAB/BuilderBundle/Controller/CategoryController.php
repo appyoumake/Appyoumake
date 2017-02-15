@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Manages the categories that are used for the apps
+ * @abstract Manages the categories that are used for the apps
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
@@ -21,6 +27,8 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 use Sinett\MLAB\BuilderBundle\Entity\Category;
 use Sinett\MLAB\BuilderBundle\Form\CategoryType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 /**
  * Category controller.
@@ -33,7 +41,7 @@ class CategoryController extends Controller
      * Lists all Category entities.
      * See https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('SinettMLABBuilderBundle:Category');
@@ -42,7 +50,7 @@ class CategoryController extends Controller
         
 //this is called from two different locations, /system and /admin/apps. 
 //if called from system the user can edit all elements
-        if (basename($this->getRequest()->headers->get('referer')) == "system") {
+        if (basename($request->headers->get('referer')) == "system") {
             $options = array(
         		'decorate' => true,
         		'rootOpen' => '<ul>',
@@ -91,7 +99,7 @@ class CategoryController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Category();
-        $form = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($request, $entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -117,24 +125,24 @@ class CategoryController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(Category $entity, $parent_id = 0)
+    private function createCreateForm(Request $request, Category $entity, $parent_id = 0)
     {
         $request = $this->container->get('request');
         
 //we call the same code from two different places, regular admin and system admin, if regular admin we do not display the system option to create system categories
-        if (basename($this->getRequest()->headers->get('referer')) == "system") {
+        if (basename($request->headers->get('referer')) == "system") {
             $system_class = "";
         } else {
             $system_class = "hidden";
         }
-        $form = $this->createForm(new CategoryType(), $entity, array(
+        $form = $this->createForm(CategoryType::class, $entity, array(
             'action' => $this->generateUrl('category_create'),
             'method' => 'POST',
        		'parent_category_id' => $parent_id,
             'class' => $system_class
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.categories.new.create.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.categories.new.create.button'));
 
         return $form;
     }
@@ -143,11 +151,11 @@ class CategoryController extends Controller
      * Displays a form to create a new Category entity.
      *
      */
-    public function newAction($id)
+    public function newAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $entity = new Category();
-        $form = $this->createCreateForm($entity, $em->getRepository('SinettMLABBuilderBundle:Category')->find($id));
+        $form = $this->createCreateForm($request, $entity, $em->getRepository('SinettMLABBuilderBundle:Category')->find($id));
 
         return $this->render('SinettMLABBuilderBundle:Category:new.html.twig', array(
             'entity' => $entity,
@@ -180,7 +188,7 @@ class CategoryController extends Controller
      * Displays a form to edit an existing Category entity.
      *
      */
-    public function editAction($id)
+    public function editAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -190,7 +198,7 @@ class CategoryController extends Controller
             throw $this->createNotFoundException('Unable to find Category entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($request, $entity);
         
 
         return $this->render('SinettMLABBuilderBundle:Category:edit.html.twig', array(
@@ -207,24 +215,24 @@ class CategoryController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Category $entity)
+    private function createEditForm(Request $request, Category $entity)
     {
         
 //we call the same code from two different places, regular admin and system admin, if regular admin we do not display the system option to create system categories
-        if (basename($this->getRequest()->headers->get('referer')) == "system") {
+        if (basename($request()->headers->get('referer')) == "system") {
             $system_class = "";
         } else {
             $system_class = "hidden";
         }
         
         
-        $form = $this->createForm(new CategoryType(), $entity, array(
+        $form = $this->createForm(CategoryType::class, $entity, array(
             'action' => $this->generateUrl('category_update', array('id' => $entity->getId())),
             'method' => 'PUT',
             'class' => $system_class
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.categories.edit.update.button'));
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.categories.edit.update.button'));
 
         return $form;
     }
@@ -243,7 +251,7 @@ class CategoryController extends Controller
         }
 
         
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($request, $entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {

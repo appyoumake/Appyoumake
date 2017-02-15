@@ -1,11 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Functions here are all for backend communication with the compiler and app market services
+ * @abstract Functions here are all for backend communication with the compiler and app market services
  * There is no GUI, just AJAX calls with JSON data sent back and forth, with calls being made to servers
  * hosting the two services.
  */
@@ -22,6 +27,7 @@ use Sinett\MLAB\BuilderBundle\Entity\App;
 use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\EntityRepository;
@@ -335,7 +341,7 @@ class ServicesController extends Controller
  */
     private function cmpGetAppStatus($app_id = NULL, $app_version = NULL, $platform = NULL) {
         error_log("  > cmpGetAppStatus");
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $passphrase = urlencode($config["compiler_service"]["passphrase"]);
         $protocol = $config["compiler_service"]["protocol"];
         $url = $protocol . "://" . $config["compiler_service"]["url"] . "/getAppStatus?passphrase=" . urlencode($passphrase);
@@ -377,7 +383,7 @@ class ServicesController extends Controller
      */
     public function cmpGetAppSourceAction($window_uid, $app_id, $app_version) {
 //check for valid variables first
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
 
         if (intval($app_id) <= 0) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
@@ -448,7 +454,7 @@ class ServicesController extends Controller
     
     public function cmpUploadWebsite($window_uid, $app_id, $app_version) {
 //check for valid variables first
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
 
         if (intval($app_id) <= 0) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
@@ -538,7 +544,7 @@ class ServicesController extends Controller
      */
     private function cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $remote_compiled_app_checksum, $platform) {
         error_log("  > cmpDownloadApp");
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "receiving"}}', $config), true);
         if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
 
@@ -596,7 +602,7 @@ class ServicesController extends Controller
         error_log("  > cmpGetAppProcessAction");
         
 //check for valid variables first
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
 
         if (intval($app_id) <= 0) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
@@ -659,7 +665,7 @@ class ServicesController extends Controller
 //now we need to check to see if the app has been created on the remote server, if not we create it
 //the create function is async, so we need to point exit here, and wait for the callback to be called by the remote service.
         $app_info = $this->cmpGetAppStatus($app_id, $app_version, $platform);
-        if ( empty($app_info) || !key_exists($app_uid, $app_info) || !key_exists($app_version, $app_info[$app_uid]) ) {
+        if ( empty($app_info) || !array_key_exists($app_uid, $app_info) || !array_key_exists($app_version, $app_info[$app_uid]) ) {
             $parameters = array("app_uid" => $app_uid, "app_version" => $app_version, "tag" => "multistep-$window_uid-$platform");
             $res_call_create = $this->cmpCallRemoteFunction($config, $window_uid, "creating", "compiler_service", $parameters, "createApp");
             (strtolower($res_call_create) !== "true") ? $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.5')) : $arr = array('result' => 'success');
@@ -684,18 +690,18 @@ class ServicesController extends Controller
      * @param type $app_version
      * @param type $tag
      */
-    public function cbCmpCreatedAppAction() {
+    public function cbCmpCreatedAppAction(Request $request) {
         error_log("  > cbCmpCreatedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
 //we therefore need to read them from the request object
-        $request = $this->getRequest();
+//Symfony_2.8        $request = $this->getRequest();
         $passphrase = $request->query->get("passphrase");
         $app_uid = $request->query->get("app_uid");
         $app_version = $request->query->get("app_version");
         $result = strtolower($request->query->get("result"));
         $tag = $request->query->get("tag");
         
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));
@@ -744,13 +750,13 @@ class ServicesController extends Controller
     
 //app verification (checksum) callback, if this is true all is well.
 //if this is called as a part of a complete getapp process, then we will ask for the app to be compiled if it verified OK
-    public function cbCmpVerifiedAppAction() {
+    public function cbCmpVerifiedAppAction(Request $request) {
         error_log("  > cbCmpVerifiedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         
 //we therefore need to read them from the request object
-        $request = $this->getRequest();
+//Symfony_2.8        $request = $this->getRequest();
         $passphrase = $request->query->get("passphrase");
         $app_uid = $request->query->get("app_uid");
         $app_version = $request->query->get("app_version");
@@ -799,11 +805,11 @@ class ServicesController extends Controller
 
 //app finished compiling callback, if this is true all is well.
 //if this is called as a part of a complete getapp process, then we will ask for the app to be downloaded
-    public function cbCmpCompiledAppAction() {
+    public function cbCmpCompiledAppAction(Request $request) {
         error_log("  > cbCmpCompiledAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
 //we therefore need to read them from the request object
-        $request = $this->getRequest();
+//Symfony_2.8        $request = $this->getRequest();
         $passphrase = $request->query->get("passphrase");
         $app_uid = $request->query->get("app_uid");
         $app_version = $request->query->get("app_version");
@@ -813,7 +819,7 @@ class ServicesController extends Controller
         $result = $request->query->get("result");
         $tag = $request->query->get("tag");
 
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));

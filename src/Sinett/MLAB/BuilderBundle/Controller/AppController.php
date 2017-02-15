@@ -1,12 +1,17 @@
 <?php
-/**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Controller for all app related work, primarily the editor, but also the lit of apps
- */
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
+/**
+ * @abstract Controller for all app related work, primarily the editor, but also the list of apps
+ */
 namespace Sinett\MLAB\BuilderBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +22,10 @@ use Sinett\MLAB\BuilderBundle\Entity\App;
 use Sinett\MLAB\BuilderBundle\Form\AppType;
 use Sinett\MLAB\BuilderBundle\Entity\Template;
 use Sinett\MLAB\BuilderBundle\Entity\Component;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,8 +71,8 @@ class AppController extends Controller
     	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
         return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
-                'app_url' => $this->container->parameters['mlab']["urls"]["app"],
-                'app_icon' => $this->container->parameters['mlab']["filenames"]["app_icon"]
+                'app_url' => $this->container->getParameter('mlab')["urls"]["app"],
+                'app_icon' => $this->container->getParameter('mlab')["filenames"]["app_icon"]
     	));
     }
 
@@ -76,17 +85,34 @@ class AppController extends Controller
     	$entity = new App();
         $entity->setActiveVersion(1); 
     	$file_mgmt = $this->get('file_management');
-        
+        $temp_groups = $this->getUser()->getGroups();
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
-        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
-        $url_apps = $this->container->parameters['mlab']['urls']['app'];
-    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
-    	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
-
-        $form = $this->createAppForm($entity, 'create');
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($temp_groups);
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_groups);
+        $url_apps = $this->container->getParameter('mlab')['urls']['app'];
+    	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
+    	$app_icon_path = $this->container->getParameter('mlab')['filenames']['app_icon'];
+        $tags = '';
+        $tag_level_1 = array("<option></option>");
         
+//this loop will get the predefined categories for all the groups the current user is a member of
+//it will store all entries in a string (they are stored as JSON objects in the DB) + preload the top level entries to put in the first drop down box
+        foreach ($temp_groups as $temp_group) {
+            $cat = trim($temp_group->getCategories());
+            if ($cat) {
+                if (strlen($tags)) { $tags .= ','; };
+                $tags .= $cat;
+                $cat_obj = json_decode($cat);
+                foreach ($cat_obj as $tag_tree) {
+                    $txt = $tag_tree->text;
+                    $tag_level_1[] = "<option value='$txt'>$txt</option>";
+                }
+            }
+        }
+        $tags = '[' . $tags . ']';
+        
+        $form = $this->createAppForm($entity, 'create');
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
             'entity' => $entity,
             'apps' => $apps,
@@ -98,9 +124,11 @@ class AppController extends Controller
             'app_icon_path' => $app_icon_path,
             'backgrounds' => $backgrounds,
             'foregrounds' => $foregrounds,
-            'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
-            'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
-            'icon_default' => $this->container->parameters['mlab']['compiler_service']['default_icon'],
+            'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
+            'icon_text_maxlength' => $this->container->getParameter('mlab')['icon_text_maxlength'],
+            'icon_default' => $this->container->getParameter('mlab')['compiler_service']['default_icon'],
+            'tags' => $tags,
+            'tag_level_1' => $tag_level_1,
         ));
         
     }
@@ -130,7 +158,7 @@ class AppController extends Controller
         	$app_data = $temp_app_data["form"];
             
 //get config values
-        	$config = $this->container->parameters['mlab'];
+        	$config = $this->container->getParameter('mlab');
 
 //prepare doctrine manager
         	$em = $this->getDoctrine()->getManager();
@@ -176,7 +204,7 @@ class AppController extends Controller
             }
             
             $entity->setUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
-        	$usr = $this->get('security.context')->getToken()->getUser();
+        	$usr = $this->get('security.token_storage')->getToken()->getUser();
         	$entity->setUser($usr);
         	$entity->setUpdatedBy($usr);
         	
@@ -330,12 +358,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     */
     private function createCreateForm(App $entity)
     {
-        $form = $this->createForm(new AppType(), $entity, array(
+        $form = $this->createForm(AppType::class, $entity, array(
             'action' => $this->generateUrl('app_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -353,48 +381,49 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 				    	->setMethod('POST')
 				    	->add('name', null, array('required' => true))
 				    	->add('description', null, array('required' => true))
-				    	->add('splashFile', 'file', array('required' => false))
-                        ->add('importFile', 'file', array('required' => false))
-                        ->add('iconFile', 'hidden', array('required' => false))
-                        ->add('uid', 'hidden', array('required' => false))
-                        ->add('copyApp', 'entity', array( 'class' => 'SinettMLABBuilderBundle:App', 'empty_value' => '', 'required' => true))
+				    	->add('splashFile', FileType::class, array('required' => false))
+                        ->add('importFile', FileType::class, array('required' => false))
+                        ->add('iconFile', HiddenType::class, array('required' => false))
+                        ->add('uid', HiddenType::class, array('required' => false))
+                        ->add('copyApp', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:App', 'placeholder' => '', 'required' => true))
 				    	->add('keywords', null, array('required' => true))
                         ->add('categoryOne', 
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 0')->addOrderBy('c.name');
+                                          return $er->createQueryBuilder('c')->where('c.lvl = 0')->addOrderBy('c.name');
                                       },
                                       'label' => 'app.admin.users.new.or.edit.categoryOne',
                                       'attr' => array('onchange' => 'loadCategories(this, 1);'),
                                       'required' => true,
                                       'empty_data'  => null,
-                                      'empty_value'  => '')
+                                      'placeholder'  => '')
                              )
                         ->add('categoryTwo', 
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 1')->addOrderBy('c.name');
+                                          return $er->createQueryBuilder('c')->where('c.lvl = 1')->addOrderBy('c.name');
                                       },
                                       'label' => 'app.admin.users.new.or.edit.categoryTwo',
                                       'attr' => array('onchange' => 'loadCategories(this, 2);'),
                                       'required' => true,
                                       'empty_data'  => null,
-                                      'empty_value'  => '')
+                                      'placeholder'  => '')
                              )
                         ->add('categoryThree', 
                                 null, 
                                 array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c', 'Sinett\MLAB\BuilderBundle\Entity\Category')->where('c.lvl = 2')->addOrderBy('c.name');
+                                          return $er->createQueryBuilder('c')->where('c.lvl = 2')->addOrderBy('c.name');
                                       },
                                       'label' => 'app.admin.users.new.or.edit.categoryThree',
                                       'required' => true,
                                       'empty_data' => null,
-                                      'empty_value'  => '')
+                                      'placeholder'  => '')
                              )                
-				    	->add('template', 'entity', array( 'class' => 'SinettMLABBuilderBundle:Template', 'empty_value' => '', 'required' => true))
+				    	->add('template', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:Template', 'placeholder' => '', 'required' => true))
 				    	->add('active_version')
-				    	->add("copy_app", "hidden", array("mapped" => false))
-				    	->add('save', 'submit')
+				    	->add("copy_app", HiddenType::class, array("mapped" => false))
+                        ->add("tags", HiddenType::class)
+				    	->add('save', SubmitType::class)
 				    	->getForm();
     }
 
@@ -444,9 +473,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $foregrounds = $file_mgmt->getForegrounds();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
-        $url_apps = $this->container->parameters['mlab']['urls']['app'];
-    	$url_templates = $this->container->parameters['mlab']['urls']['template'];
-    	$app_icon_path = $this->container->parameters['mlab']['filenames']['app_icon'];
+        $url_apps = $this->container->getParameter('mlab')['urls']['app'];
+    	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
+    	$app_icon_path = $this->container->getParameter('mlab')['filenames']['app_icon'];
         
         $editForm = $this->createAppForm($entity, 'update');
         
@@ -461,9 +490,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             'app_icon_path' => $app_icon_path,
             'backgrounds' => $backgrounds,
             'foregrounds' => $foregrounds,
-            'icon_font_url' => $this->container->parameters['mlab']['urls']['app'],
-            'icon_text_maxlength' => $this->container->parameters['mlab']['icon_text_maxlength'],
-            'icon_default' => $this->container->parameters['mlab']['compiler_service']['default_icon'],
+            'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
+            'icon_text_maxlength' => $this->container->getParameter('mlab')['icon_text_maxlength'],
+            'icon_default' => $this->container->getParameter('mlab')['compiler_service']['default_icon'],
         ));
         
     }
@@ -477,12 +506,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     */
     private function createEditForm(App $entity)
     {
-        $form = $this->createForm(new AppType(), $entity, array(
+        $form = $this->createForm(AppType::class, $entity, array(
             'action' => $this->generateUrl('app_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -509,7 +538,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         if ($editForm->isValid()) {
 
 //get config values
-        	$config = $this->container->parameters['mlab'];
+        	$config = $this->container->getParameter('mlab');
             
 //prepare file management service
 		    $file_mgmt = $this->get('file_management');
@@ -547,7 +576,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_creator_identifier"] . $old_path, $config["compiler_service"]["app_creator_identifier"] . $new_path);
             }
             
-        	$usr = $this->get('security.context')->getToken()->getUser();
+        	$usr = $this->get('security.token_storage')->getToken()->getUser();
         	$entity->setUpdatedBy($usr);
             $entity->setUid($config["compiler_service"]["app_creator_identifier"] . "." . $entity->getPath());
 		    
@@ -623,7 +652,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         								  'message' => $this->get('translator')->trans('appController.msg.deleteAction.2')));
         }
         
-        $app_path = $entity->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $app_path = $entity->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $app_path = dirname($app_path);
         
         try {
@@ -680,10 +709,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $request = $this->container->get('request');
 
         $file_mgmt = $this->get('file_management');
-        $res = $file_mgmt->preCompileProcessingAction($app, $this->container->parameters['mlab']);
+        $res = $file_mgmt->preCompileProcessingAction($app, $this->container->getParameter('mlab'));
         
         if ($res["result"] == "success") {
-            return $this->redirect($request->getSchemeAndHttpHost() . $this->container->parameters['mlab']["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_cache/index.html");
+            return $this->redirect($request->getSchemeAndHttpHost() . $this->container->getParameter('mlab')["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_cache/index.html");
         } else {
             return new Response( "Unable to pre-process app: " . implode("<br>",$res) );
         }
@@ -698,7 +727,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 /*
     	
 // pick up config from parameters.yml, we use this mainly for paths
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
 
@@ -737,7 +766,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 */
         
         $yaml = new Parser();
-        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->parameters['locale'] . '.yml'));
+        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->getParameter('locale') . '.yml'));
 
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
@@ -763,13 +792,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
     	
 // pick up config from parameters.yml, we use this mainly for paths
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('app');
 
 //get app details + list of pages
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
 
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
         $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
@@ -851,7 +880,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
     	
 //load all the components        
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
     	$file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
         
@@ -891,7 +920,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
     	
 //create the path to the file to open
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
     	
 //calculate page number
 	    $file_mgmt = $this->get('file_management');
@@ -921,7 +950,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //here we pick up a list of compiled apps, this has to come here rather than when app is opened as the URL is manipualted after app is opened
 //only happens if $app_open_mode = true, this is when we call this function from the mlab.dt.manage,ent.app_open function
 
-                $config = $this->container->parameters['mlab'];
+                $config = $this->container->getParameter('mlab');
                 $comp_files = array();
                 foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
                     $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
@@ -976,7 +1005,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
 //create the path to the file to open
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         
 //create file management object
 	    $file_mgmt = $this->get('file_management');
@@ -999,7 +1028,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //for this checksum we exclude the current file as we are the only ones who can change it
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
         $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
-        $mlab_app_data = $app->getArrayFlat($this->container->parameters['mlab']["paths"]["template"]);
+        $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
@@ -1181,10 +1210,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
         }
 
-        $path_app = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $path_app = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
 // MK Component path added
-        $path_component = $this->container->parameters['mlab']['paths']['component'] . $comp_id . "/";
-        $replace_chars = $this->container->parameters['mlab']['replace_in_filenames'];
+        $path_component = $this->container->getParameter('mlab')['paths']['component'] . $comp_id . "/";
+        $replace_chars = $this->container->getParameter('mlab')['replace_in_filenames'];
         
 //loop through list of files and place it in relevant folder based on mime type, move file and then return the file path
         foreach($request->files as $uploadedFile) {
@@ -1194,7 +1223,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             $ext = $uploadedFile->getClientOriginalExtension();
             $file_name = str_replace("_$ext", ".$ext", preg_replace(array_values($replace_chars), array_keys($replace_chars), $orig_name)) ;
             $sub_folder = false;
-            foreach ($this->container->parameters['mlab']['uploads_allowed'] as $folder => $formats) {
+            foreach ($this->container->getParameter('mlab')['uploads_allowed'] as $folder => $formats) {
                 if (in_array($uploadedFile->getMimeType(), $formats)) {
                     $sub_folder = $folder;
                     break;
@@ -1275,7 +1304,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
         $file_mgmt = $this->get('file_management');
-        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $this->container->parameters['mlab']));
+        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $this->container->getParameter('mlab')));
     }
     
 /**
@@ -1298,9 +1327,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
 
 //get config etc
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
         $doc = "index.html";
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
 
 //load the component they want to add
 	    $file_mgmt = $this->get('file_management');
@@ -1343,9 +1372,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
 //get config etc
-        $config = $this->container->parameters['mlab'];
-        $path_app_js = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . "/js/";
-        $path_component = $this->container->parameters['mlab']['paths']['component'] . $storage_plugin_id . "/";
+        $config = $this->container->getParameter('mlab');
+        $path_app_js = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "/js/";
+        $path_component = $this->container->getParameter('mlab')['paths']['component'] . $storage_plugin_id . "/";
         $path_app_include_file = $path_app_js . "include_comp.txt";
 
 //check if path to component and app exists
@@ -1388,8 +1417,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
 
 //get config etc
-        $config = $this->container->parameters['mlab'];
-        $app_path = $app->calculateFullPath($this->container->parameters['mlab']['paths']['app']) . "img/";
+        $config = $this->container->getParameter('mlab');
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "img/";
         $file_url = "img/"; //we have reset the base path in the editor, so this will work
         $file_extensions = explode(",", $file_types);
         $files = array();
@@ -1467,7 +1496,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
 
 //get config values
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
 
 //get new version number and copy files before adding the version record 
         $file_mgmt = $this->get('file_management');
@@ -1526,7 +1555,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $new_version_num = floor($new_version_num + 1);
 
 //get config values
-        $config = $this->container->parameters['mlab'];
+        $config = $this->container->getParameter('mlab');
 
 //get new version number and copy files before adding the version record 
         $file_mgmt = $this->get('file_management');
@@ -1561,7 +1590,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             $new_branch->setCategoryOne($app->getCategoryOne());
             $new_branch->setCategoryTwo($app->getCategoryTwo());
             $new_branch->setCategoryThree($app->getCategoryThree());
-            $usr = $this->get('security.context')->getToken()->getUser();
+            $usr = $this->get('security.token_storage')->getToken()->getUser();
         	$new_branch->setUser($usr);
         	$new_branch->setUpdatedBy($usr);
             $new_branch->setActiveVersion($new_version_num);

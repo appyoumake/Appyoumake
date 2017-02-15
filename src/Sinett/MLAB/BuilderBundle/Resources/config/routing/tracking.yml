@@ -1,30 +1,37 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 tracking:
-    pattern:  /
+    path:  /
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:index" }
 
 tracking_show:
-    pattern:  /{id}/show
+    path:  /{id}/show
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:show" }
 
 tracking_new:
-    pattern:  /new
+    path:  /new
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:new" }
 
 tracking_create:
-    pattern:  /create
+    path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 tracking_edit:
-    pattern:  /{id}/edit
+    path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:edit" }
 
 tracking_update:
-    pattern:  /{id}/update
+    path:  /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 tracking_delete:
-    pattern:  /{id}/delete
+    path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Tracking:delete" }
-#    requirements: { _method: post|delete }
+#    requirements: { methods: post|delete }

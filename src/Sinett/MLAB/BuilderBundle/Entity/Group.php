@@ -1,13 +1,25 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
+
+//next line added for Symfony_2.8
+use FOS\UserBundle\Model\Group as BaseGroup;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Group
  */
-class Group extends \FOS\UserBundle\Model\Group
+class Group extends BaseGroup
 {
     /**
      * @var integer
@@ -58,6 +70,13 @@ class Group extends \FOS\UserBundle\Model\Group
      * @var boolean
      */
     private $enabled;
+
+    
+    /**
+     * Categories for a group, JSON structure of nested strings (3 levels)
+     * @var string
+     */
+    private $categories;
 
     
     /**
@@ -372,6 +391,29 @@ class Group extends \FOS\UserBundle\Model\Group
     public function getEnabled()
     {
         return $this->enabled;
+    }
+    
+    /**
+     * Set categories
+     *
+     * @param string $categories
+     * @return Group
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+    
+        return $this;
+    }
+
+    /**
+     * Get categories
+     *
+     * @return string 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
     
 }

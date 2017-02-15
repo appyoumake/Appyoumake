@@ -1,4 +1,13 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
@@ -31,4 +40,27 @@ class UserRepository extends EntityRepository
     		return $qb->getQuery()->getResult();
 		} 
 	}
+    
+	/**
+	 * Same as findByRole but for admin (not super admin) users it now only shows users/admins in their own groups
+     * This way we can properly use the admin role to manage parts of an organisation
+	 * @param string $role
+	 * @param array $groups
+	 */
+	public function findByRoleAndGroup($role, $groups) {
+		if ($role == "ROLE_SUPER_ADMIN") {
+			return $this->findAll();
+			
+		} else if ($role == "ROLE_ADMIN") {
+			$qb = $this->getEntityManager()->createQueryBuilder();
+    		$qb->select(array('u', 'g'))
+	            ->from($this->getEntityName(), 'u')
+	            ->leftJoin('u.groups', 'g')
+	            ->where('u.roles NOT LIKE :roles')
+                ->andWhere($qb->expr()->in('g.name',$groups))
+	            ->setParameter('roles', '%"ROLE_SUPER_ADMIN"%');
+    		return $qb->getQuery()->getResult();
+		} 
+	}
+
 }

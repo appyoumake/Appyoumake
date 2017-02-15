@@ -13,3 +13,14 @@
 /nbproject/private/
 /mlab_elements/templates/basic/nbproject/private/
 /vendor/
+/bin/deprecation-detector.phar
+/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/__pycache__/
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-ui-theme/
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-file-upload/
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-ui-1.10.3/
+/netbeans/
+
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/bowser.js
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/spin.js
+/src/Sinett/MLAB/BuilderBundle/Resources/public/js/j*.js
+!/src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.ddslick-1.0.0.js

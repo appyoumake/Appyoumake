@@ -1,3 +1,13 @@
+{#
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+#}
 {% extends "::base.html.twig" %}
 
 {% block title %}{% trans %}mlab.page.title.admin{% endtrans %}{% endblock %}
@@ -26,12 +36,27 @@
 	<progress value="0" max="0" class="hidden"></progress>
 {% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/themes/default/style.min.css" />
+	{{ parent() }}
+{% endblock %}
+    
 {% block javascripts %}
 	{{ parent() }}
+    <script src='{{ asset('/js/jstree-3.3.3.js') }}'></script>
 	<script>
-	
-            
-		function progressHandlingFunction(e){
+
+        function getTreeAsArray(obj, tags) {
+            tags.push({text: obj.text});
+            if (obj.children.length > 0) {
+                tags[tags.length -1]["children"] = [];
+                for (i in obj.children) {
+                    getTreeAsArray(obj.children[i], tags[tags.length -1]["children"]);
+                }
+            } 
+        }
+        
+        function progressHandlingFunction(e){
 		    if(e.lengthComputable){
 		        $('progress').attr({value:e.loaded,max:e.total});
 		    }
@@ -75,23 +100,24 @@
   	  			    		if (data.action == 'ADD') {
                                 $("#table_" + data.db_table + " tr:last").after(data.record);
                                 $("#table_" + data.db_table + " tr:last").find("a").each(function () {
-                                    prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
+                                    prepare_links(this, "ui-id-" + ($('#tabs_admin_apps').tabs('option','active') + 1));
                                     } // end function to run for each link  
                                 ); // end each function 
                                
   	  			    		} else if (data.action == 'EDIT' || data.action == 'UPDATE') {
   	  			    			$("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
                                 $("#row_" + data.db_table + "_" + data.db_id).find("a").each(function () {
-                                    prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
+                                    prepare_links(this, "ui-id-" + ($('#tabs_admin_apps').tabs('option','active') + 1));
                                     } // end function to run for each link  
                                 ); // end each function 
-//hack to display updated category list which always return the whole list when added
+/* TODO OUT
+    //hack to display updated category list which always return the whole list when added
   	  			    		} else if ($('#tabs_admin_apps').tabs('option','active') == 0) {
                                 $("#tabs_admin_apps div.ui-tabs-panel[aria-hidden='false']").html(data);
                                 $("#tabs_admin_apps div.ui-tabs-panel[aria-hidden='false'] .records_list").find("a").each(function () {
-                                    prepare_links(this, "ui-tabs-1");
-                                    } // end function to run for each link  
-                                ); // end each function 
+                                    prepare_links(this, "ui-id-1");
+                                } // end function to run for each link   
+                                ); // end each function */
                             }                           
                             
   	  			    	}
@@ -115,7 +141,7 @@
 		    $( "#tabs_admin_apps" ).tabs({
 		    	load: function( event, ui ) {
 		    		$(ui.panel[0]).find("a").each(function () {
-		    			prepare_links(this, $(ui.panel[0]).attr("id"));
+		    			prepare_links(this, "ui-id-" + ($('#tabs_admin_apps').tabs('option','active') + 1));
 		    			} // end function to run for each link  
 		    		); // end each function 
 		    	}, // end load parameters 
@@ -169,7 +195,7 @@
                                             if (data.result == "SUCCESS" && parseInt(data.db_id) > 0) {
                                                 $("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
                                                 $("#row_" + data.db_table + "_" + data.db_id).find("a").each(function () {
-                                                    prepare_links(this, $('#tabs_admin_apps  [id=ui-tabs-' + ($('#tabs_admin_apps').tabs('option','active') + 1) + ']').attr('id'));
+                                                    prepare_links(this, "ui-id-" + ($('#tabs_admin_apps').tabs('option','active') + 1));
                                                     } // end function to run for each link  
                                                 ); // end each function 
                                             }
@@ -184,7 +210,12 @@
 
         // need to reload data if edit record AND already created dialog box
                                     } else if ( event.data.link == "edit" ) {  
-                                        $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
+                                        if (event.data.entity == "group") {
+//special case for group editing, the jstree function needs to be reinitialised to function OK
+                                            $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { mlab_category_init(); assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
+                                        } else {
+                                            $("#" + event.data.dialog_id).load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); $("#" + event.data.dialog_id).dialog().show(); } )
+                                        }
 
         // in all other cases just re-display dialog box, usually for new record
         // remember: new can be both new and adminNew if change this to use specific event.data.link if clause

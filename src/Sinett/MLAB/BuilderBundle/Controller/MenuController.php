@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * REDUNDANT! Menus were initially stored in the database, but over time the amount of menus shrank.
+ * @abstract  REDUNDANT! Menus were initially stored in the database, but over time the amount of menus have shrunk so no need for this.
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
@@ -15,6 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\Menu;
 use Sinett\MLAB\BuilderBundle\Form\MenuType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 // additional entities used to return data
 use Sinett\MLAB\BuilderBundle\Entity\App;
@@ -152,12 +159,12 @@ class MenuController extends Controller
     */
     private function createCreateForm(Menu $entity)
     {
-        $form = $this->createForm(new MenuType(), $entity, array(
+        $form = $this->createForm(MenuType::class, $entity, array(
             'action' => $this->generateUrl('menu_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -231,12 +238,12 @@ class MenuController extends Controller
     */
     private function createEditForm(Menu $entity)
     {
-        $form = $this->createForm(new MenuType(), $entity, array(
+        $form = $this->createForm(MenuType::class, $entity, array(
             'action' => $this->generateUrl('menu_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }

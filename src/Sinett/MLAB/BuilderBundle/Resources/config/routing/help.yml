@@ -1,38 +1,45 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 help:
-    pattern:  /
+    path:  /
     defaults: { _controller: "SinettMLABBuilderBundle:Help:index" }
 
 help_show:
-    pattern:  /{id}/show
+    path:  /{id}/show
     defaults: { _controller: "SinettMLABBuilderBundle:Help:show" }
 
 help_new:
-    pattern:  /new
+    path:  /new
     defaults: { _controller: "SinettMLABBuilderBundle:Help:new" }
 
 help_create:
-    pattern:  /create
+    path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:Help:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 help_edit:
-    pattern:  /{id}/edit
+    path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:Help:edit" }
 
 help_update:
-    pattern:  /{id}/update
+    path:  /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:Help:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 help_delete:
-    pattern:  /{id}/delete
+    path:  /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:Help:delete" }
-#    requirements: { _method: post|delete }
+#    requirements: { methods: post|delete }
 
 help_getHtml:
-    pattern:  /{route}/get_html
+    path:  /{route}/get_html
     defaults: { _controller: "SinettMLABBuilderBundle:Help:getHtml" }
     
 help_get_component_helpfile:
-    pattern:  /{comp_id}/get_component_helpfile
+    path:  /{comp_id}/get_component_helpfile
     defaults: { _controller: "SinettMLABBuilderBundle:Help:getComponentHelpfile" }

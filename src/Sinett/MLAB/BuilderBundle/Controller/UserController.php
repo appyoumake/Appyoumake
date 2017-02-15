@@ -1,10 +1,16 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
+
 /**
- * @author Arild Bergh @ Sinett 3.0 programme <firstname.lastname@ffi.no>
- * @copyright (c) 2013-2016, Norwegian Defence Research Institute (FFI)
- * @license http://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
- *
- * Basi user management, most of the user stuf is done by the FOSUserBundle library.
+ * @abstract Basic user management, most of the user stuff is done by the FOSUserBundle library.
  */
 
 namespace Sinett\MLAB\BuilderBundle\Controller;
@@ -15,6 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Sinett\MLAB\BuilderBundle\Entity\User;
 use Sinett\MLAB\BuilderBundle\Form\UserType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * User controller.
@@ -31,7 +38,8 @@ class UserController extends Controller
     {
     	$em = $this->getDoctrine()->getManager();
         $temp_roles = $this->getUser()->getRoles();
-        $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findByRole($temp_roles[0]);
+        $temp_groups = $this->getUser()->getGroupsArray();
+        $entities = $em->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
 
         return $this->render('SinettMLABBuilderBundle:User:index.html.twig', array(
             'entities' => $entities,
@@ -83,14 +91,29 @@ class UserController extends Controller
     private function createCreateForm(User $entity)
     {
         $temp_roles = $this->getUser()->getRoles();
-        $form = $this->createForm(new UserType(), $entity, array(
+        $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
         	'current_user_role' => $temp_roles[0], 
             'attr' => array('autocomplete' => 'off'),
         ));
+        
+//need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $temp_roles = $this->getUser()->getRoles();
+            $temp_groups = $this->getUser()->getGroupsArray();
+            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            $form->add('groups', 'entity', array( 'choices' => $groups,
+                                                    'class' => 'SinettMLABBuilderBundle:Group',
+                                                    'label' => 'app.admin.users.groups',
+                                                    'required' => true,
+                                                    'empty_data'  => null,
+                                                    'placeholder'  => '',
+                                                    'multiple' => true));
+        }
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.users.new.create.button'));
+
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.users.new.create.button'));
 
         return $form;
     }
@@ -148,7 +171,7 @@ class UserController extends Controller
         if ($temp_roles[0] == "ROLE_SUPER_ADMIN") {
         	$can_edit = true;
         } else {
-                $temp_roles = $entity->getRoles();
+            $temp_roles = $entity->getRoles();
         	$can_edit = ($temp_roles[0] != "ROLE_SUPER_ADMIN");
         }
         
@@ -176,13 +199,27 @@ class UserController extends Controller
     private function createEditForm(User $entity)
     {
         $temp_roles = $this->getUser()->getRoles();
-        $form = $this->createForm(new UserType(), $entity, array(
+        $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_update', array('id' => $entity->getId())),
             'method' => 'PUT',
             'current_user_role' => $temp_roles[0], 
         ));
 
-        $form->add('submit', 'submit', array('label' => 'app.admin.users.edit.update.button'));
+//need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $temp_roles = $this->getUser()->getRoles();
+            $temp_groups = $this->getUser()->getGroupsArray();
+            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            $form->add('groups', 'entity', array( 'choices' => $groups,
+                                                    'class' => 'SinettMLABBuilderBundle:Group',
+                                                    'label' => 'app.admin.users.groups',
+                                                    'required' => true,
+                                                    'empty_data'  => null,
+                                                    'placeholder'  => '',
+                                                    'multiple' => true));
+        }
+        
+        $form->add('submit', SubmitType::class, array('label' => 'app.admin.users.edit.update.button'));
 
         return $form;
     }
@@ -200,12 +237,33 @@ class UserController extends Controller
             throw $this->createNotFoundException('Unable to find User entity.');
         }
 
+//if this is a regular admin we must not lose the group memberships that this admin does not control. 
+//I.e. if admin is member of A and B and the user being edite is set to be member of B and is already member of C then need to keep C
+        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            $preserve_groups = array();
+            $temp_groups = $this->getUser()->getGroupsIdArray();
+            foreach($entity->getGroups() as $group) {
+                if (!in_array($group->getId(), $temp_groups)) { //a group that current admin does not control, save it so can re-add below
+                    $preserve_groups[] = $group;                        
+                }
+            }
+        }
         
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            
             $this->get('fos_user.user_manager')->updateUser($entity, false);
+            
+//re-add missing groups here
+            if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && !empty($preserve_groups)) {
+                foreach ($preserve_groups as $group) {
+                    $entity->addGroup($group);
+                }
+            }
+
+            
             $em->flush();
             
             return new JsonResponse(array('db_table' => 'user',
@@ -221,6 +279,7 @@ class UserController extends Controller
         		'message' => $this->get('translator')->trans('userController.msg.unable.create.record')));
             
     }
+    
     /**
      * Deletes a User entity.
      *

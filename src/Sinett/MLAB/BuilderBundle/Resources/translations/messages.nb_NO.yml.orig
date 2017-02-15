@@ -1,0 +1,675 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+%Users%: brukere
+
+#-----------------------------------------------------
+# Titel of the pages in Mlab
+#-----------------------------------------------------
+mlab.page.title.index: Velkommen til MLAB
+mlab.page.title.app.bulider.index: MLAB apper
+mlab.page.title.app.bulider.editor: MLAB app editor
+mlab.page.title.admin: MLAB admin
+
+
+#-----------------------------------------------------
+# Index info page
+#-----------------------------------------------------
+app.builder.index.page.heading: Mlab
+app.builder.index.page.text: Velkommen til Mlab. Med dette rammeverket kan du lage dine egne interaktive apper.
+app.builder.index.page.link.text.before: For å komme i gang gå til
+app.builder.index.page.link.app.list: App liste
+app.builder.index.page.link.text.after: eller velg en annen handling fra menyen ovenfor.
+app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 steg
+app.builder.index.page.help.guide.text1: Start Ny App veiviseren
+app.builder.index.page.help.guide.text2: Klikk på en komponent for å legge den til på siden
+app.builder.index.page.help.guide.text3: Rediger innholdet og innstillingene til komponenten
+app.builder.index.page.help.guide.text4: Legg til flere komponenter og sider til appen er ferdig
+app.builder.index.page.help.guide.text5: Bygg appen og prøve den på mobil eller nettbrett
+
+
+#-----------------------------------------------------
+# List of apps page
+#-----------------------------------------------------
+app.builder.list.main.heading: App'er
+app.builder.list.welcome.info: Velkommen til Mlab app-bygger! <br><br> Her har du en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. Bruk knappen for å lage en ny app.
+app.builder.list.new.app.button: Ny App
+app.builder.list.heading.app: App navn
+app.builder.list.heading.published: Publisert
+app.builder.list.heading.version: Versjon
+app.builder.list.heading.active_version: Aktiv versjon
+app.builder.list.heading.last.updated: Sist oppdatert
+
+app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
+app.builder.list.tooltip.properties: Menyen til
+
+
+#-----------------------------------------------------
+# New app form 
+#-----------------------------------------------------
+builder.new.app.basedon.tab: Baser på
+builder.new.app.select_base.tab: Velg base
+builder.new.app.name.tab: Navn
+builder.new.app.classification.tab: Klassifiser
+builder.new.app.submit.tab: Lag
+
+builder.new.app.select_base.description: Velg om du ønsker at appen skal baseres på en mal, en eksisterende app eller en Office fil.
+builder.new.app.select_base.template: Mal
+builder.new.app.select_base.existing_app: Eksisterende App
+builder.new.app.select_base.office_file: Office fil
+builder.new.app.basedon.description: Velg det du ønsker å basere appen på
+
+builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
+builder.new.app.name.name: Navn
+builder.new.app.name.descriptionLab: Beskrivelse
+builder.new.app.name.selectBackground: Velg bakgrunn
+builder.new.app.name.selectForground: Velg ikon
+builder.new.app.name.iconFile: Ikon-fil
+builder.new.app.name.addIconFileImage: Legg til bilde
+builder.new.app.name.iconText: Ikon-tekst
+builder.new.app.name.addIconText: Legg til tekst
+builder.new.app.name.splashFile: Splash-fil
+builder.new.app.active_version.number: Versjonsnummer
+
+builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
+builder.new.app.classification.keywords: Nøkkelord
+builder.new.app.classification.category1: 1. Kategori
+builder.new.app.classification.category2: 2. Kategori
+builder.new.app.classification.category3: 3. Kategori
+
+builder.new.app.submit.description: Se over detaljer før du ferdigstiller appen. Det vil være mulighet for å endre detaljene senere.
+builder.new.app.submit.basedon: Basert på
+builder.new.app.submit.name: Navn
+builder.new.app.submit.descriptionLab: Beskrivelse
+builder.new.app.submit.keywords: Nøkkelord
+builder.new.app.submit.category: Kategorier
+builder.new.app.submit.splashScreen: Splash screen
+
+app.wizard.button.previous: < Forrige
+app.wizard.button.next: Neste >
+app.wizard.button.finished: Ferdig
+
+
+#-----------------------------------------------------
+# Main Menu
+#-----------------------------------------------------
+app.mlab.menu.tooltip: Menu
+app.builder.menu.welcome.info: Dette er hovedmenyen til Mlab
+app.builder.menu.heading.links: Naviger
+app.builder.menu.links.info: Liste over sider i Mlab du har tilgang til
+app.builder.menu.links.app.info: For å komme til siden hvor du lager innhold til en app - klikk på navnet til appen du ønsker å jobbe med (evnt. lag en ny app først).
+app.builder.menu.heading.save: Lagre
+app.builder.menu.save.info: Appen blir lagret automatisk med jevne mellomrom. Om du ønsker å lagre nå klikk på lagre ikonet under.
+app.builder.menu.save.tooltip: Lagre appen
+app.builder.menu.link.app.builder: App liste
+app.builder.menu.link.admin.app: App admin
+app.builder.menu.link.admin.users: Bruker admin
+app.builder.menu.link.system: System admin
+
+
+#-----------------------------------------------------
+# User info Menu
+#-----------------------------------------------------
+app.builder.menu.user.info.heading: Brukerinfo
+app.builder.menu.log.info: Du er logget inn som
+app.builder.menu.login.info: Du må først logge inn
+app.builder.menu.link.logout: Logg ut
+app.builder.menu.link.login: Logg inn
+
+app.builder.menu.user.info.main.tooltip: Bruker info
+
+
+#-----------------------------------------------------
+# Help Menu
+#-----------------------------------------------------
+app.builder.help.menu.tooltip: Hjelp
+app.mlab.menu.help.notfound: Ingen hjelp tilgjengelig for dette emnet
+
+
+
+#-----------------------------------------------------
+# App builder Menu (edit app)
+#-----------------------------------------------------
+app.builder.edit.menu.tooltip: Editor meny
+app.mlab.logo.tooltip: Tilbake til App liste
+
+app.builder.overlay.info: Vennligst vent mens Mlab åpner appen din...
+app.builder.statusbar.info.permanent: Appnavn
+app.builder.statusbar.info.permanent.label: App
+
+app.builder.edit.menu.heading.feature: App egenskaper
+app.builder.edit.menu.feature.info: Du kan legge til spesielle egenskaper til en app, det kan være oppkobling mot en database eller link til en kalender. Velg i fra listen nedenfor. De med en hake er allerede lagt til i denne appen.
+app.builder.edit.menu.heading.utilities: Ekstra verktøy
+app.builder.edit.menu.utilities.info: Om siden er grået ut kan du klikke her for å låse den opp igjen.
+
+app.builder.edit.menu.heading.test.app: App testing
+app.builder.edit.menu.heading.test.app.web: Prøv App på web
+app.builder.edit.menu.test.app.web.info: Gjøre en rask test av hvordan appen kommer til å se ut ved å klikke på www-knappen. Du vil da få opp appen i en ny web side.
+app.builder.edit.menu.heading.test.app.mob: Prøv App på mobil
+app.builder.edit.menu.test.app.mob.info: Klikk en gang på knappen for å lage en test App som du kan laste ned til din mobil. Dette krever at du har en QR-leser på din mobil.
+app.builder.edit.menu.test.app.mob.qr.wait.text: Det kan ta litt tid før QR-koden vises. Vennligst vent.
+app.builder.edit.menu.test.app.mob.tooltip: Test app på %platform% mobil enhet
+
+
+#-----------------------------------------------------
+# App builder - the page bar
+#-----------------------------------------------------
+app.builder.page.heading: Sider
+app.builder.page.save: Lagre
+app.builder.page.cancel: Avbryt
+
+app.builder.page.menu.delete.info: Klikk på krysset for å permanent slette siden du står på
+app.builder.page.menu.delete: Slett siden som er åpen 
+
+app.builder.page.tooltip.save: Lagre endring av sidenavn
+app.builder.page.tooltip.cancel: Avbryt endring av sidenavn
+app.builder.page.tooltip.page.name: Klikk for å endre sidenavn
+app.builder.page.tooltip.page.name.edit: Skriv inn nytt sidenavn
+app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
+app.builder.page.tooltip.new: Ny side
+
+
+#-----------------------------------------------------
+# Admin + System pages welcome
+#-----------------------------------------------------
+app.admin.users.welcome: Velkommen til Mlab Bruker Admin sidene
+app.admin.apps.welcome: Velkommen til Mlab App Admin sidene
+app.system.admin.welcome: Velkommen til Mlab System Admin sidene
+
+
+#-----------------------------------------------------
+# Admin + System pages alert
+#-----------------------------------------------------
+app.system.admin.alert.Unable.to.update.record: Ikke i stand til å oppdatere rad -
+app.system.admin.alert.waiting.to.load.data: Venter for å laste opp data
+app.system.admin.alert.delete.item: Ønsker du å slette?
+app.system.admin.alert.Unable.to.delete.record: Ikke i stand til å slette rad -
+
+
+#-----------------------------------------------------
+# Users tab - User Admin Pages
+#-----------------------------------------------------
+app.admin.users: Brukere
+app.admin.users.username: Brukernavn
+app.admin.users.email: E-post
+app.admin.users.groups: Grupper
+app.admin.users.enabled: Aktiv
+app.admin.users.last.login: Siste innlogging
+
+app.admin.users.tooltip.username: Rediger bruker
+app.admin.users.tooltip.delete: Slett bruker
+app.admin.users.tooltip.new: Opprett ny bruker
+
+
+#-----------------------------------------------------
+# Edit and new user - User Admin Pages
+#-----------------------------------------------------
+app.admin.users.new.heading: Opprett ny bruker
+app.admin.users.edit.heading: Rediger bruker
+
+app.admin.users.new.or.edit.email: E-post
+app.admin.users.new.or.edit.username: Brukernavn
+app.admin.users.new.or.edit.plain.password: Passord
+app.admin.users.new.or.edit.categoryOne: Kategori en
+app.admin.users.new.or.edit.categoryTwo: Kategori to
+app.admin.users.new.or.edit.categoryThree: Kategori tre
+app.admin.users.new.or.edit.groups: Grupper
+app.admin.users.new.or.edit.roles: Roller
+app.admin.users.new.or.edit.enabled: Aktiv
+
+app.admin.users.new.create.button: Lagre
+app.admin.users.edit.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# Groups tab - User Admin Pages
+#-----------------------------------------------------
+app.admin.groups: Grupper
+app.admin.groups.name: Navn
+app.admin.groups.description: Beskrivelse
+app.admin.groups.enabled: Aktiv
+app.admin.groups.users: Brukere
+
+app.admin.groups.tooltip.isdefault: Gruppen er satt som standard
+app.admin.groups.tooltip.name: Rediger gruppe
+app.admin.groups.tooltip.delete: Slett gruppe
+app.admin.groups.tooltip.new: Opprett ny gruppe
+
+
+#-----------------------------------------------------
+# Edit and new group - User Admin Pages
+#-----------------------------------------------------
+app.admin.groups.new.heading: Opprett ny gruppe
+app.admin.groups.edit.heading: Rediger gruppe
+
+app.admin.groups.new.or.edit.name: Navn
+app.admin.groups.new.or.edit.description: Beskrivelse
+app.admin.groups.new.or.edit.isDefault: Standard
+app.admin.groups.new.or.edit.enabled: Aktiv
+app.admin.groups.new.or.edit.users: Brukere
+
+app.admin.groups.new.create.button: Lagre
+app.admin.groups.edit.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# Template tab - App Admin Pages
+#-----------------------------------------------------
+app.admin.templates: Maler
+app.admin.templates.name: Navn
+app.admin.templates.version: Versjon
+app.admin.templates.description: Beskrivelse
+app.admin.templates.compatiblewith: Kompatibel med
+app.admin.templates.groups: Grupper
+
+app.admin.templates.tooltip.group: Rediger grupper til mal
+app.admin.templates.tooltip.enabled: Aktiver mal
+app.admin.templates.tooltip.disabled: Deaktiver mal
+app.admin.templates.tooltip.delete: Slett mal
+app.admin.templates.tooltip.new: Opprett ny mal
+app.admin.templates.enabled: Aktiv
+
+
+#-----------------------------------------------------
+# Edit and new template - App Admin Pages
+#-----------------------------------------------------
+app.admin.templates.new.heading: Opprett ny mal
+app.admin.templates.new.enabled: Aktiv
+app.admin.templates.new.groups: Grupper
+app.admin.templates.new.file: Zip-fil
+app.admin.templates.new.create.button: Lagre
+
+app.admin.templates.edit.groups.heading: Rediger grupper
+app.admin.templates.edit.groups.groups: Grupper
+app.admin.templates.edit.groups.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# Components tab - App Admin Pages
+#-----------------------------------------------------
+app.admin.components: Komponenter
+app.admin.components.name: Navn
+app.admin.components.version: Versjon
+app.admin.components.description: Beskrivelse
+app.admin.components.groups: Grupper
+
+app.admin.components.tooltip.group: Rediger grupper til komponent
+app.admin.components.tooltip.enabled: Aktiver komponent
+app.admin.components.tooltip.disabled: Deaktiver komponent
+app.admin.components.tooltip.delete: Slett komponent
+app.admin.components.tooltip.new: Opprett ny komponent
+app.admin.components.enabled: Aktiv
+app.admin.components.no.group: Ingen
+
+
+#-----------------------------------------------------
+# Edit and new component - App Admin Pages
+#-----------------------------------------------------
+app.admin.components.new.heading: Opprett ny komponent
+app.admin.components.new.enabled: Aktiv
+app.admin.components.new.groups: Grupper
+app.admin.components.new.file: Zip-fil
+app.admin.components.new.create.button: Lagre
+
+app.admin.components.edit.groups.heading: Rediger grupper for
+app.admin.components.edit.groups.credential: Tilgangsinformasjon
+app.admin.components.edit.groups.groups: Grupper
+app.admin.components.edit.groups.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# Categories tab - System + App Admin Pages
+#-----------------------------------------------------
+app.admin.categories: Kategorier
+app.system.admin.categories: Kategorier
+
+app.admin.categories.tooltip.new: Opprett ny hovedkategori
+app.admin.categories.tooltip.edit: Rediger kategori
+app.admin.categories.tooltip.delete: Slett kategori
+app.admin.categories.tooltip.new.sub: Opprett ny underkategori til
+
+
+#-----------------------------------------------------
+# Edit and new categories - System + App Admin Pages
+#-----------------------------------------------------
+app.admin.categories.new.heading: Opprett ny kategori
+app.admin.categories.new.name: Navn
+app.admin.categories.new.parent: Ligger under
+app.admin.categories.new.system: System kategori
+app.admin.categories.new.create.button: Lagre
+
+app.admin.categories.edit.heading: Rediger kategori
+app.admin.categories.edit.name: Navn
+app.admin.categories.edit.parent: Ligger under
+app.admin.categories.edit.system: System kategori
+app.admin.categories.edit.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# System Help tab - System Admin Pages
+#-----------------------------------------------------
+app.system.admin.help: Hjelp
+app.system.admin.help.route: Side
+app.system.admin.help.message: Hjelpetekst
+
+app.system.admin.help.tooltip.new: Opprett ny hjelpetekst
+app.system.admin.help.tooltip.route: Rediger hjelpetekst
+app.system.admin.help.tooltip.delete: Slett hjelpetekst
+
+
+#-----------------------------------------------------
+# Edit and new system help - System Admin Pages
+#-----------------------------------------------------
+app.system.admin.help.new.heading: Opprett ny hjelpetekst
+app.system.admin.help.new.route: Side
+app.system.admin.help.new.message: Hjelpetekst
+app.system.admin.help.new.create.button: Lagre
+
+app.system.admin.help.edit.heading: Rediger hjelpetekst
+app.system.admin.help.edit.route: Side
+app.system.admin.help.edit.message: Hjelpetekst
+app.system.admin.help.edit.update.button: Oppdater
+
+
+#-----------------------------------------------------
+# HTML.TWIG files - starts with file name (and folder 
+#       for others than the app folder)
+#-----------------------------------------------------
+layout.menu.tooltip.back.app.list: Tilbake til appoversikt
+layout.menu.tooltip.editor.menu: Redigering	
+layout.menu.tooltip.help: Hjelp
+layout.menu.tooltip.user.info: Brukerinfo
+
+build_app.menu.tooltip.back.app.list: Tilbake til appoversikt
+build_app.menu.utilities.delete.locks: Fjern lås
+build_app.menu.utilities.test.connection.compiler: Test kompilator forbindelsen
+build_app.menu.tooltip.test.app.web: Test appen i nettleser
+build_app.menu.utilities.download.source: Last ned kildekode
+build_app.menu.utilities.upload.website: Last opp webside
+<<<<<<< HEAD
+
+=======
+ 
+>>>>>>> origin/assetic
+build_app.page.tooltip.redo: Gjør om tekst endringer
+build_app.page.tooltip.undo: Angre tekst endringer
+
+build_app.components.toolbar.tooltip.move.up: Flytt valgt element opp
+build_app.components.toolbar.tooltip.move.down: Flytt valgt element ned
+build_app.components.toolbar.tooltip.delete: Slett valgt element
+build_app.components.toolbar.tooltip.help: Få hjelp til valgt element
+build_app.components.toolbar.tooltip.cut: Klipp ut valgt element, du kan lime den inn i en annen side i appen
+build_app.components.toolbar.tooltip.copy: Kopier valgt element, du kan lime den inn i en annen side i appen
+build_app.components.toolbar.tooltip.paste: Lim inn element fra Mlab utklippstavle
+build_app.components.toolbar.tooltip.resize: Skaler element
+build_app.components.toolbar.tooltip.aspect.ratio: Velg størrelse
+build_app.components.toolbar.tooltip.storage: Velg lagringsmekanisme
+build_app.components.toolbar.tooltip.credentials: Rediger tilgangsinformasjon
+
+build_app.components.toolbar.component.size.small: Liten
+build_app.components.toolbar.component.size.medium: Medium
+build_app.components.toolbar.component.size.large: Stor
+build_app.components.toolbar.component.size.full.screen: Fullskjerm
+
+build_app.components.toolbar.component.aspect.4.3: 4:3
+build_app.components.toolbar.component.aspect.16.9: 16:9
+build_app.components.toolbar.component.aspect.1.1: 1:1
+
+build_app.tooltip.not.saved: Siste endringer ble ikke lagret
+build_app.not.saved: Mlab var ikke i stand til å lagre de siste enndringene på denne siden. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
+build_app.dialog.delete.title: Slette?
+build_app.dialog.delete.text: Er du sikker på at du vil slette?
+    
+build_app.footer.tooltip.help: Slå av hjelp
+build_app.footer.help: Hold musepekeren over elementet du ønsker en beskrivelse av.
+
+builder.dialog.new.app.title: App egenskaper
+builder.popup.app.properties.title: Mlab app valg
+builder.popup.app.properties.label.edit.content: Rediger appeninnhold
+builder.popup.app.properties.label.edit.details: Rediger app egenskaper
+builder.popup.app.properties.label.download: Last ned appen
+builder.popup.app.properties.label.copy.link: Kopier lenke til appen
+builder.popup.app.properties.label.new.incremental: Lag ny mindre versjonen
+builder.popup.app.properties.label.new.major: Lag ny stor versjon
+builder.popup.app.properties.label.new.branch: Lag ny del
+builder.popup.app.properties.label.send.market: Send appen til markedet
+builder.popup.app.properties.label.hide.market: Skjul appen fra markedet
+builder.popup.app.properties.label.withdraw.market: Trekk appen tilbake fra markedet
+builder.popup.app.properties.label.delete: Slett appen
+
+builder.create.new.version.confirm: Ønsker du lage en ny versjon basert på den aktive versjonen? Denne versjonen vil du kunne redigere og sende over til markedet og vil være gjeldende.
+builder.create.new.branch.confirm: Ønsker du lage en ny versjon basert på den aktive versjonen? Denne versjonen vil en kopi av den aktive som du kan redigere og sende over til markedet uavhengig av appen du tar utgangspunkt i.
+builder.create.active.version.confirm: Ønsker du å endre den aktive versjonen av denne appen? Den versjonen du aktiverer vil bli den du kan redigere, og vil være den versjonen du kan sende til markedet for å erstatte eksisterende versjon.
+builder.create.delete.confirm: Er du bombesikker på at du vil slette denne appen? Denne handlingen kan kun tillates når du ikke har en aktiv versjon på markedet.
+
+properties.build.app.import.ppt.doc: Importer PPT eller DOC
+properties.build.app.design.icon.legend: Bygg appikon
+properties.build.app.design.icon.foreground.img.error.1: Denne nettleseren støtter ikke lokale bilder, kontakt teknisk brukerstøtte for å laste opp bildene dine
+properties.build.app.design.icon.foreground.img.error.2: Denne nettleseren ser ikke ut til å støtte opplasting via fil menyen
+
+properties.build.app.load.categories: ...laster inn
+
+properties.build.app.fill.base.on: Du må velge et utgangspunkt for den nye appen
+properties.build.app.fill.doc.convert: Du må velge en fil eller et dokument for å konvertere
+properties.build.app.fill.doc.convert.format: Dokumentet må være PP-presentasjon  eller et word-fil
+properties.build.app.fill.template: Du må velge en mal du ønsker å bruke
+properties.build.app.fill.app.copy: Velg appen du ønsker å kopiere
+properties.build.app.fill.name: Gi appen et navn
+properties.build.app.fill.version: Gi appen din en versjonsnummer som er 1,2,3 osv
+properties.build.app.fill.splash.format: Filen må være i PNG eller JPEG-format
+properties.build.app.fill.description: Du må gi appen din en kort beskrivelse
+properties.build.app.fill.keywords: Fyll inn noen stikkord som beskriver innholdet i appen din (søkbart på markedet)
+properties.build.app.fill.main.category: Velg en kategori
+properties.build.app.fill.secondary.category: Velg en underkategori
+properties.build.app.fill.final.category: Velg en endelig underkategori for din app
+
+properties.build.app.summery.1: Du lager nå en ny app basert på
+properties.build.app.summery.2: Mal
+properties.build.app.summery.3: Du lager nå en ny app basert på en kopi av
+properties.build.app.summery.4: app. All innhold blir kopiert over, men endringer du gjøre gjelder kun den nye versjonen
+properties.build.app.summery.5: Du lager nå en ny app med innhold kopiert fra
+properties.build.app.summery.6: fil, med utseende basert på
+properties.build.app.summery.7: mal
+
+properties.build.app.error: En feil har oppstått, sjekk loggen for mer informasjon
+
+show.remove.from.app.store: fjern appen fra markedet
+show.recall.from.app.store: tilbakekall
+
+category.show.add: legg til
+category.show.delete: slett
+
+
+#-----------------------------------------------------
+# PHP files - starts with file name
+#-----------------------------------------------------
+appController.msg.createAction.1: App navn eksisterer fra før av, velg nytt navn
+appController.msg.createAction.2: Klarer ikke å lage app fra mal
+appController.msg.createAction.3: Feil filformat
+appController.msg.createAction.4: Verken en app er valgt for kopiering eller mal spesifisert
+appController.msg.createAction.5: Mangelfull data oppgitt, fyll inn alle felt
+
+appController.die.no.access: Du har ingen tilgang til denne appen
+appController.createNotFoundException.app: Finner ikke opprinnelig app eller kilde
+appController.msg.unable.store.splach.screen: Kan ikke lagre appens splash screen
+appController.msg.unable.store.icon: Kan ikke lagre appens ikon
+appController.msg.unable.copy.app.files: Kan ikke kopiere appens filer
+
+appController.msg.updateAction.1: En app med samme navn og versjonsnummer eksisterer allerede, velg nytt navn og/eller versjonsnummer
+appController.msg.updateAction.2: Kan ikke oppdatere appen
+
+appController.msg.deleteAction.1: Finner ikke app for sletting
+appController.msg.deleteAction.2: Kan ikke slette app som har blitt publisert til markedet
+
+appController.msg.app.id.not.specified: Applikasjons-ID ikke spesifisert
+appController.msg.page.not.specified: Side ikke spesifisert
+appController.msg.component.type.not.specified: Komponent type ikke spesifisert
+
+appController.msg.getPageAction: Fil eksisterer ikke
+appController.msg.putPageAction: Kan ikke lagre fil, prøve igjen
+appController.msg.newPageAction: Kan ikke lage ny fil, maksimal antall sider (999) er nådd
+appController.msg.copyPageAction: Kan ikke kopiere side, prøv igjen
+appController.msg.deletePageAction: Kan ikke slette side
+appController.msg.componentUploadAction.1: Fil-format ikke tillatt, vennligst endre format
+appController.msg.componentUploadAction.2: Kan ikke laste inn server_code.php fil
+appController.msg.componentUploadAction.3: Kan ikke kjøre applikasjonen på server
+appController.msg.featureAddAction.1: Kan ikke oppdatere appen med disse egenskapene
+appController.msg.featureAddAction.2: Vennligst prøv igjen
+appController.msg.storagePluginAddAction.1: Lagringsenhet ikke spesifisert
+appController.msg.storagePluginAddAction.2: Kan ikke kopiere JavaScript for denne komponenten
+appController.msg.createNewVersionAction: Verdien må e mellom 0.1 or 1, oppgitt verdi var
+
+categoryController.createNotFoundException: Kan ikke finne kategorienheten
+
+compController.msg.unable.upload.comp: Kan ikke finne komponentenheten
+compController.createNotFoundException.comp: Kan ikke finne komponent entitet
+compController.msg.toggleStateAction: Kan ikke finne komponent logg eller kilde
+
+controller.msg.unable.create.record: Kan ikke lage ny forekomst
+controller.msg.unable.update.record: Kan ikke oppdatere databasen
+controller.msg.unable.locate.record: Kan ikke lokalisere brukerinfo
+
+groupController.createNotFoundException: Kan ikke finne Gruppeenheten
+
+helpController.createNotFoundException: Kan ikke finne Hjelpeenheten
+
+menuController.createNotFoundException: Kan ikke finne Menyenheten
+
+servicesController.msg.unable.update.websocket: Kan ikke oppdatere WebSocket meldinger
+servicesController.msg.unable.retrieve.db.entry: Kan ikke hente app database oppføring
+servicesController.msg.cmpDownloadApp: Kan ikke hente app database oppføring for å laste ned appen
+servicesController.msg.cmpGetAppProcessAction.1: App ID ikke spesifisert
+servicesController.msg.cmpGetAppProcessAction.2: App versjon ikke spesifisert
+servicesController.msg.cmpGetAppProcessAction.3: Plattform ikke spesifisert
+servicesController.msg.cmpGetAppProcessAction.4: Plattform støttes ikke for kompilering
+servicesController.msg.cmpGetAppProcessAction.5: createApp kompilator tjeneste mislyktes
+servicesController.msg.cmpGetAppProcessAction.6: verifyApp kompilator tjeneste mislyktes
+servicesController.msg.passphrase.not.matching: Passord til tjenesten samsvarer ikke 
+servicesController.msg.cbCmpCreatedAppAction.1: Klarte ikke å lage app eksternt
+servicesController.msg.cbCmpCreatedAppAction.2: Kan ikke hente app database oppføring for å kontrollere opplasting
+servicesController.msg.cbCmpCreatedAppAction.3: verifyApp kompilator tjeneste mislyktes
+servicesController.msg.cbCmpVerifiedAppAction.1: Opplasting av filer mislyktes
+servicesController.msg.cbCmpVerifiedAppAction.2: compileApp kompilator tjeneste mislyktes
+servicesController.msg.cbCmpCompiledAppAction: App mislyktes i å kompilere
+servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage: Nedlastet app og sendt app samsvarer ikke, sjekk for tilkoblingsfeil og prøv igjen
+
+templateController.msg.createAction: Ugyldige data
+templateController.msg.createNotFoundException: Finner ikke Template database oppføring 
+templateController.msg.unable.upload.template: Kan ikke laste opp template
+templateController.msg.toggleStateAction: Finner ikke template database oppføring 
+
+trackingController.createNotFoundException: Finner ikke Tracking database oppføring
+
+userController.msg.unable.create.record: Kan ikke lage ny forekomst
+userController.msg.unable.find.record: Finner ikke brukerinfo
+userController.msg.email.exists: En bruker med denne eposten er allerede registrert, epost addresser må være unike
+userController.createNotFoundException: Finner ikke brukerinfo.
+userController.editAction.response: Du har ikke tilgang til å redigere denne brukeren, bare en superbruker eller Admin har denne rettigheten
+
+
+#-----------------------------------------------------
+# JS files - starts with file name 
+#-----------------------------------------------------
+mlab.dt.design.js.alert.only.one.comp: En side kan bare ha en komponent av denne typen
+mlab.dt.design.js.alert.add.comp: Legg til komponenten igjen.
+mlab.dt.design.js.alert.error.occurred: Det har oppstått en feil
+mlab.dt.design.js.alert.help.notfound: Ikke noe hjelp å få i dag..
+mlab.dt.design.js.qtip.help.title: Hjelp
+mlab.dt.design.js.update_status.adding.feature: Legger til funksjon
+mlab.dt.design.js.update_status.feature.added: Funksjon lagt til
+mlab.dt.design.js.update_status.feature.already.added: Funksjon er allerede lagt til
+mlab.dt.design.js.update_status.adding.storage.plugin: Legger til lagringsenhetÉ
+mlab.dt.design.js.update_status.storage.plugin.added: Lagringsenhet lagt til
+
+mlab.dt.management.js.update_status.opening.app: Åpner appen
+mlab.dt.management.js.prompt.title.front.page: Vennligst skriv tittel for førstesiden i denne appen
+mlab.dt.management.js.update_status.ready: Klar
+mlab.dt.management.js.update_status.retrieving.app: Henter appen
+mlab.dt.management.js.update_status.unlocking.pages: Låser opp alt innhold
+mlab.dt.management.js.update_status.opening.page: Åpner side
+mlab.dt.management.js.update_status.storing.page: Lagrer side
+mlab.dt.management.js.update_status.saved.page: Side lagret
+mlab.dt.management.js.update_status.unable.save.page: Kan ikke lagre side
+mlab.dt.management.js.update_status.copying.page: Kopierer side
+mlab.dt.management.js.update_status.deleting.page: Sletter side
+mlab.dt.management.js.update_status.unable.contact.server: Ingen forbindelse til server 
+
+mlab.dt.management.js.app_download_process.1: Last ned
+mlab.dt.management.js.app_download_process.2: Last ned test app her
+mlab.dt.management.js.app_download_process.3: Mail lenke
+mlab.dt.management.js.app_download_process.4: Feilmelding
+
+mlab.dt.management.js.app_submit_to_market: Ikke overført til markedet ennå
+mlab.dt.management.js.app_update_gui_metadata.copy.pages: Kopier side
+mlab.dt.management.js.index_page_process.alert.1: Denne appen har ikke et redigerbart område
+mlab.dt.management.js.index_page_process.alert.2: kan ikke åpne appen. Sjekk med systemadministratoren for mer informasjon.
+mlab.dt.management.js.page_update_title.alert.page.locked: Side er stengt, denne appen har ingen sider å redigere
+mlab.dt.management.js.page_new.prompt.title.new.page: Skriv inn nytt navn på siden
+mlab.dt.management.js.page_copy.alert.not.copy.index.page: Kan ikke kopiere innholdssiden
+mlab.dt.management.js.page_copy.alert.not.delete.index.page: Kan ikke slette innholdssiden
+mlab.dt.management.js.page_copy.alert.sure.delete: Er du bombesikker på at du vil slette denne siden? Denne handlingen kan ikke gjøre om!
+mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Kan ikke åpne nytt vindu, endr innstillingene for å tillate popup-vinduer
+mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (det er OK å la den stå tom )
+mlab.dt.management.js.compiler.get_app_status.prompt.version: versjon (det er OK å la den stå tomt)
+mlab.dt.management.js.compiler.get_app_status.prompt.platform: Velg platform (iOS eller Android)
+mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Kan ikke hente app status
+mlab.dt.management.js.compiler.get_app.status.creating.app: Bygger app...
+
+mlab_editor.init.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
+mlab_editor.init.js.alert.unsaved: Du har endringer som ikke er lagret, er du bombesikker på at du vil forlate siden?
+
+mlab_editor.init.js.qtip.comp.storage.plugin.title: Lagringsenhet
+mlab_editor.init.js.qtip.comp.size.title: Komponent størrelse
+mlab_editor.init.js.qtip.comp.aspect.title: Størrelsesforhold
+mlab_editor.init.js.qtip.download.app.title: Last ned til
+
+mlab_editor.init.js.compiling.connected: Bygger app..koblet til server
+mlab_editor.init.js.compiling.creating: Bygger app eksternt..
+mlab_editor.init.js.compiling.created: App bygget eksternt..
+mlab_editor.init.js.compiling.precompilation: Prosesserer filer...
+mlab_editor.init.js.compiling.uploading: Laster opp filer til kompilator..
+mlab_editor.init.js.compiling.verifying: Verifiserer opplastning...
+mlab_editor.init.js.compiling.verification_ok: Fil opplastning OK...
+mlab_editor.init.js.compiling.compiling: Venter på kompilering...
+mlab_editor.init.js.compiling.compilation_ok: App kompillering OK...
+mlab_editor.init.js.compiling.receiving: Mottar app...
+mlab_editor.init.js.compiling.ready: Appen er klar! Lenke til appen finnes under menyen
+mlab_editor.init.js.compiling.failed: Appen er klar, men det oppsto en feil under henting av lenke
+mlab_editor.init.js.compiling.failed.loading.comps: Kan ikke laste inn komponenter, returnerer til forsiden
+mlab_editor.init.js.compiling.failed.loading.var: Kan ikke laste inn verdier fra server, returnerer til forsiden
+
+mlab.dt.api.js.getMedia.fail: Kan ikke hente filer
+
+mlab.dt.api.js.uploadMedia.qtip.content.1: Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde
+mlab.dt.api.js.uploadMedia.qtip.content.2: ...laster inn bilde...
+mlab.dt.api.js.uploadMedia.qtip.content.3: Velg fil
+mlab.dt.api.js.uploadMedia.qtip.content.4: Avbryt
+mlab.dt.api.js.uploadMedia.qtip.content.5: OK
+mlab.dt.api.js.uploadMedia.qtip.title: Last opp media
+
+mlab.dt.api.js.getLink.prompt: Vennligst skriv in URL-adressen (for denne appen)
+mlab.dt.api.js.getLink.alert: Ingen URL/webside spesifisert, kan ikke legge til lenke
+
+mlab.dt.api.js.getCredentials.dlg.title: Akkreditering
+mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Mlab skal lagre data på eller hente data fra en skytjeneste
+mlab.dt.api.js.getCredentials.dlg.save: Lagre
+
+controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet
+controller.help.msg.file.notfound: Komponent hjelpefil ikke funnet
+
+mlab.dt.api.js.getLink.heading: Legg til link
+mlab.dt.api.js.getLink.app_page: Jeg ønsker å linke til en side i min app
+mlab.dt.api.js.getLink.url: Jeg ønsker å linke til en ekstern nettside
+mlab.dt.api.js.getLink.ok: OK
+mlab.dt.api.js.getLink.cancel: Avbryt
+mlab.dt.api.js.getLink.alert_url_wrong: Nettadressen du skrev inn er ikke en gyldig URL, sjekk og prøv igjen
+mlab.dt.api.js.getLink.alert_no_page: Du må velge en side å linke til
+mlab.dt.api.js.getLink.alert_choose_type: Velg en link type du vil legge til
+mlab.dt.api.js.getLink.no_selection: Vennligst velg noe tekst i den gjeldende komponenten som linken skal legges til
+
+select.locale: Velg språk
+mlab.dt.management.js.websocket.error.connect: Tilkobling til meldingsserver mislyktes, kan ikke fortsette. Sjekk Internett-tilkobling og prøv igjen.

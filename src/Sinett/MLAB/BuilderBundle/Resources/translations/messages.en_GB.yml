@@ -1,3 +1,10 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 %Users%: brukere
 
 #-----------------------------------------------------
@@ -70,9 +77,9 @@ builder.new.app.active_version.number: Version number
 
 builder.new.app.classification.description: Keywords will help others find your app when searching
 builder.new.app.classification.keywords: Keywords
-builder.new.app.classification.categoryOne: 1. Category
-builder.new.app.classification.categoryTwo: 2. Category
-builder.new.app.classification.categoryThree: 3. Category
+builder.new.app.classification.category1: 1. Category
+builder.new.app.classification.category2: 2. Category
+builder.new.app.classification.category3: 3. Category
 
 builder.new.app.submit.description: Take a look at the details before finalizing the app. It will be possible to change the details later.
 builder.new.app.submit.basedon: Based on
@@ -120,6 +127,7 @@ app.builder.menu.user.info.main.tooltip: User info
 # Help Menu
 #-----------------------------------------------------
 app.builder.help.menu.tooltip: Help
+app.mlab.menu.help.notfound: No help found for this subject
 
 
 #-----------------------------------------------------
@@ -223,6 +231,7 @@ app.admin.groups: Groups
 app.admin.groups.name: Name
 app.admin.groups.description: Description
 app.admin.groups.enabled: Enabled
+app.admin.groups.users: Users
 
 app.admin.groups.tooltip.isdefault: The group is set as default
 app.admin.groups.tooltip.name: Edit group
@@ -380,7 +389,7 @@ build_app.menu.utilities.test.connection.compiler: Test connection to compiler
 build_app.menu.tooltip.test.app.web: Test app in browser
 build_app.menu.utilities.download.source: Download source code
 build_app.menu.utilities.upload.website: Upload website
-
+ 
 build_app.page.tooltip.redo: Redo text changes
 build_app.page.tooltip.undo: Undo text changes
 
@@ -516,6 +525,7 @@ compController.createNotFoundException.comp: Unable to find Component entity.
 compController.msg.toggleStateAction: Unable to locate component record
 
 controller.msg.unable.create.record: Unable to create new record
+controller.msg.unable.update.record: Unable to update record
 controller.msg.unable.locate.record: Unable to locate user record
 
 groupController.createNotFoundException: Unable to find Group entity.

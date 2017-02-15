@@ -1,4 +1,13 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 
@@ -132,6 +141,11 @@ class App
      */
     private $uid;
     
+    /**
+     * tags for the app, replacing the 3 category fields from before. We store TSV values here
+     */
+    private $tags;
+    
     
     /**
      * Constructor
@@ -195,6 +209,29 @@ class App
     public function getUid()
     {
         return $this->uid;
+    }
+
+    /**
+     * Set tags
+     *
+     * @param string $tags
+     * @return App
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    
+        return $this;
+    }
+
+    /**
+     * Get tags
+     *
+     * @return string 
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**
@@ -627,7 +664,8 @@ class App
     		'groups' => $this->groups,
     		'published' => $this->published,
     		'enabled' => $this->enabled,
-            'uid' => $this->uid
+            'uid' => $this->uid,
+            'tags' => $this->tags
     		);
     }
     
@@ -672,7 +710,8 @@ class App
     			'groups' => $groups,
     			'published' => $this->published,
     			'enabled' => $this->enabled,
-    			'uid' => $this->uid
+    			'uid' => $this->uid,
+                'tags' => $this->tags
     	);
     }    
     

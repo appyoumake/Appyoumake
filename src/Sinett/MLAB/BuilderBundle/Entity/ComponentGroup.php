@@ -1,4 +1,14 @@
 <?php
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
 use Symfony\Component\Yaml\Parser;
@@ -31,7 +41,12 @@ class ComponentGroup
      */
     private $group;
 
-
+    /**
+     * @var int
+     */
+    private $access_state;
+    
+    
     /**
      * Get id
      *
@@ -132,4 +147,29 @@ class ComponentGroup
     {
     	return $this->group->getName();
     }
+    
+    /**
+     * Set access state
+     *
+     * @param integer
+     * @return ComponentGroup
+     */
+    public function setAccessState($state)
+    {
+        $this->access_state = $state;
+    
+        return $this;
+    }
+
+    /**
+     * Get access state
+     *
+     * @return integer
+     */
+    public function getAccessState()
+    {
+        return $this->access_state;
+    }
+    
+    
 }

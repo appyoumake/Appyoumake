@@ -1,3 +1,10 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 Sinett\MLAB\BuilderBundle\Entity\ComponentGroup:
   type: entity
   table: components_groups
@@ -8,6 +15,8 @@ Sinett\MLAB\BuilderBundle\Entity\ComponentGroup:
       columns: [ component_id ]
     group_index:
       columns: [ group_id ]
+    access_state_index:
+      columns: [ access_state ]
 
   id:
     id: 
@@ -19,6 +28,12 @@ Sinett\MLAB\BuilderBundle\Entity\ComponentGroup:
     credential:
       type: text
       nullable: true
+         
+    access_state:
+      type: integer
+      nullable: false
+      options:
+        default: 0
          
 # link to apps for a version
   manyToOne:

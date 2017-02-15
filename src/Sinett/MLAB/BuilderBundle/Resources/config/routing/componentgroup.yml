@@ -1,3 +1,10 @@
+# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+# @license Proprietary and confidential
+# @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited 
+# 
+# For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 componentgroup:
     path:     /
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:index" }
@@ -13,7 +20,7 @@ componentgroup_new:
 componentgroup_create:
     path:     /create
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:create" }
-    requirements: { _method: post }
+    requirements: { methods: post }
 
 componentgroup_edit:
     path:     /{component_id}/edit
@@ -22,7 +29,7 @@ componentgroup_edit:
 componentgroup_update_groups:
     path:     /{component_id}/update_groups
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:updateGroups" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 componentgroup_admin_new:
     path:     /{component_id}/admin_new
@@ -31,9 +38,9 @@ componentgroup_admin_new:
 componentgroup_update:
     path:     /{id}/update
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:update" }
-    requirements: { _method: post|put }
+    requirements: { methods: post|put }
 
 componentgroup_delete:
     path:     /{id}/delete
     defaults: { _controller: "SinettMLABBuilderBundle:ComponentGroup:delete" }
-    requirements: { _method: post|delete }
+    requirements: { methods: post|delete }
