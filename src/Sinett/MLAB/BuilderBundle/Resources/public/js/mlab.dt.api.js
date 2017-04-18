@@ -559,7 +559,6 @@ Mlab_dt_api.prototype = {
         this.indicateWait(false);
     },
     
-    c
 /**
  * Displays the help text, loaded via AJAX from 
  * @param {string} title
