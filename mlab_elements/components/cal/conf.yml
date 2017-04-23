@@ -5,7 +5,7 @@
 category: serviceconnections
 category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
 # compatible (array of Strings, optional)
-# credentials: ["apikey"]
+credentials: ["apikey"]
 # custom (Object (key/value style), required if custom functions are written in the code_dt.js code, see comment)
 developer: Anonym @ Sinett/FFI.no
 # display_dependent (Boolean, optional)
