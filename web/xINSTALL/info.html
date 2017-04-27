@@ -26,6 +26,47 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             li {
                 padding-left: 1em;
             }
+            
+            /* Style the tab */
+            div.tab {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                height: 30px;
+                padding: 0px;
+            }
+
+            /* Style the buttons inside the tab */
+            div.tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+                padding: 3px 10px;
+                border-radius: 4px 4px 0px 0px;
+            }
+
+            /* Change background color of buttons on hover */
+            div.tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            div.tab button.active {
+                background-color: #ccc;
+            }
+
+            /* Style the tab content */
+            .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border: 1px solid #ccc;
+                border-top: none;
+                margin-bottom: 30px;
+            }
         </style>
     </head>
 <!--internet_present -->
@@ -46,15 +87,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
         <h1>1: Install server and helper software</h1>
         <p>These are  the servers that Mlab requires</p>
-
-        <ol>  
-            <li> Web server (Must support integration  with PHP. Apache 2.x, Lighttpd and Nginx have all  been tested)</li>
-            <li> Database server (MySQL 5.x has been  tested, Mlab should work with any database server supported by the <a  href="http://www.doctrine-project.org/projects/orm.html">Doctrine ORM</a>)</li>
-            <li> PHP (5.4+ or higher, but not version  7.x. PHP should ideally be run using the <a href="https://php-fpm.org/">FastCGI Process Manager</a> for performance reasons)
-                <ol type='a'>
-                    <li>  You  also need the following PHP extensions installed: ereg,  fileinfo, gd, gettext, iconv, intl, json, libxml,  mbstring, mhash, mysqli, openssl, pcre, pdo_mysql, phar, readline, session, simplexml, soap, sockets, zip, dom, ereg, fileinfo, gd, gettext, iconv, intl, json, libxml, mbstring, mhash, mysqli, openssl, pcre, pdo_mysql, phar, readline, session, simplexml, soap, sockets, zip, dom, xml, xmlreader, xmlwriter</li>
-                </ol>
-            </li>
+           FLYTTE NED....
             <li> Node.js (runs a websocket  server for communication with remote services)</li>
             <li> Npm (helper software, used to install uglify primarily)</li>
             <li> UglifyJS (a tool to compress Javascript  files, without this you cannot run Mlab)&nbsp;</li>
@@ -63,54 +96,194 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         <p><b >Notes on how to configure the servers are given  in <a href="#_3:_Configuration">step 3</a>.</b></p>
 
         <h2>1.1: Install web server</h2>
-        <p>Choose  which web server you want to use. Apache is often preinstalled on Linux, if so you can skip this step. To install on Linux use your package manager and  install the relevant package. For Windows refer to these notes for Apache: <a  href="https://httpd.apache.org/docs/current/platform/windows.html">https://httpd.apache.org/docs/current/platform/windows.html</a> or these notes for nginx: <a  href="http://nginx.org/en/docs/windows.html">http://nginx.org/en/docs/windows.html</a>.  Lighttpd is not available in an updated version for Windows.</p>
+        <p>Choose  which web server you want to use that supports integration with PHP. Apache 2.x, Lighttpd and Nginx have all  been tested.</p>
 
         <h3>Alternative 1: Install Apache</h3>
+        
+        <div class="tab">
+            <button class="tablinks111 defaultOpen" onclick="openTab(event, 'Debian', '111')">Debian 14.04</button>
+            <button class="tablinks111" onclick="openTab(event, 'Windows', '111')">Windows</button>
+            <button class="tablinks111" onclick="openTab(event, 'Mac', '111')">Mac</button>
+            <button class="tablinks111" onclick="openTab(event, 'OtherLinux', '111')">Other Linux</button>
+        </div>
 
-        <p>Run the  following commands:</p>
+        <div id="Debian111" class="tabcontent tabcontent111">
+            <p>Run the  following commands:</p>
 
-        <pre>apt-get install apache2</pre>
-        <pre>service apache2 start</pre>
+            <pre>apt-get install apache2</pre>
+            <pre>service apache2 start</pre>
+            
+            <p>Relevant link: <a  href="http://httpd.apache.org/docs/current/install.html">http://httpd.apache.org/docs/current/install.html</a></p>
+        </div>
 
-        <p>Relevant link: <a  href="http://httpd.apache.org/docs/current/install.html">http://httpd.apache.org/docs/current/install.html</a></p>
+        <div id="Windows111" class="tabcontent tabcontent111">
+            <p>For Windows refer to these notes for Apache: <a  href="https://httpd.apache.org/docs/current/platform/windows.html">https://httpd.apache.org/docs/current/platform/windows.html</a></p> 
+        </div>
+
+        <div id="Mac111" class="tabcontent tabcontent111">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux111" class="tabcontent tabcontent111">
+            <p>Apache is often preinstalled on Linux, if so you can skip this step. If not install on Linux using your package manager and  install the relevant package.</p>
+        </div>
+        
 
         <h3>Alternative 2: Install Nginx</h3>
+        
+        <div class="tab">
+            <button class="tablinks112 defaultOpen" onclick="openTab(event, 'Debian', '112')">Debian 14.04</button>
+            <button class="tablinks112" onclick="openTab(event, 'Windows', '112')">Windows</button>
+            <button class="tablinks112" onclick="openTab(event, 'Mac', '112')">Mac</button>
+            <button class="tablinks112" onclick="openTab(event, 'OtherLinux', '112')">Other Linux</button>
+        </div>
 
-        <p>Apache2 may  be installed by default, if so you need to remove it.</p>
-        <pre>service apache2 stop</pre>
-        <pre>update-rc.d -f apache2 remove</pre>
-        <pre>apt-get remove apache2</pre>
+        <div id="Debian112" class="tabcontent tabcontent112">
+            <p>Apache2 may  be installed by default, if so you need to remove it.</p>
+            <pre>service apache2 stop</pre>
+            <pre>update-rc.d -f apache2 remove</pre>
+            <pre>apt-get remove apache2</pre>
 
-        <p>Then install nginx using these commands:</p>
-        <pre>sudo apt-get install nginx</pre>
-        <pre>sudo service nginx start</pre>
+            <p>Then install nginx using these commands:</p>
+            <pre>sudo apt-get install nginx</pre>
+            <pre>sudo service nginx start</pre>
 
-        <p>Relevant link: <a  href="https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp">https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp</a></p>
+            <p>Relevant link: <a  href="https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp">https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp</a></p>
+       </div>
 
+        <div id="Windows112" class="tabcontent tabcontent112">
+             <p>For Windows follow these notes for nginx: <a  href="http://nginx.org/en/docs/windows.html">http://nginx.org/en/docs/windows.html</a>./p>
+        </div>
+
+        <div id="Mac112" class="tabcontent tabcontent112">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux112" class="tabcontent tabcontent112">
+            <p>TBD</p>
+        </div>
+
+        
         <h3>Alternative 3: Install Lighttpd</h3>
+        <div class="tab">
+            <button class="tablinks113 defaultOpen" onclick="openTab(event, 'Debian', '113')">Debian 14.04</button>
+            <button class="tablinks113" onclick="openTab(event, 'Windows', '113')">Windows</button>
+            <button class="tablinks113" onclick="openTab(event, 'Mac', '113')">Mac</button>
+            <button class="tablinks113" onclick="openTab(event, 'OtherLinux', '113')">Other Linux</button>
+        </div>
 
-        <pre>apt-get install lighttpd</pre>
-        <pre>service lighttpd start</pre>
-        <p>Relevant link: <a  href="http://redmine.lighttpd.net/projects/lighttpd/wiki">http://redmine.lighttpd.net/projects/lighttpd/wiki</a></p>
+        <div id="Debian113" class="tabcontent tabcontent113">
+            <p>Apache2 may  be installed by default, if so you need to remove it.</p>
+
+            <pre>apt-get install lighttpd</pre>
+            <pre>service lighttpd start</pre>
+            
+            <p>Relevant link: <a  href="http://redmine.lighttpd.net/projects/lighttpd/wiki">http://redmine.lighttpd.net/projects/lighttpd/wiki</a></p>
+        </div>
+
+        <div id="Windows113" class="tabcontent tabcontent113">
+             <p>Lighttpd is not available in an updated version for Windows.</p>
+        </div>
+
+        <div id="Mac113" class="tabcontent tabcontent113">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux113" class="tabcontent tabcontent113">
+            <p>TBD</p>
+        </div>
+        
         
         <h2>1.1.1: Check that web  server works</h2>
         <p>Point your browser  to localhost to test that it's working, you should see a basic welcome page.</p>
 
         
 <!--version_php-->
-        <h2>1.2 Install php5 and  php5-fpm</h2>
-        <p>Install  core php5, including php5-fpm that runs a FastCGI  server on the socket /var/run/php5-fpm.sock.</p>
-        <pre>sudo apt-get install php5-common php5-cli php5-fpm</pre>
+        <h2>1.2 Install Database server - PHP 5 </h2>
+        <p>Install  core PHP 5.4+ or higher, but not version  7.x <b>including PHP 5 -FPM </b>that runs a <a href="https://php-fpm.org/">FastCGI Process Manager</a>  server (for performance reasons) on the socket.</p>
+        <div class="tab">
+            <button class="tablinks121 defaultOpen" onclick="openTab(event, 'Debian', '121')">Debian 14.04</button>
+            <button class="tablinks121" onclick="openTab(event, 'Windows', '121')">Windows</button>
+            <button class="tablinks121" onclick="openTab(event, 'Mac', '121')">Mac</button>
+            <button class="tablinks121" onclick="openTab(event, 'OtherLinux', '121')">Other Linux</button>
+        </div>
+
+        <div id="Debian121" class="tabcontent tabcontent121">
+            <br>
+            <pre>sudo apt-get install php5-common php5-cli php5-fpm</pre>
+            <p>php5-fpm runs a FastCGI  server on the socket /var/run/php5-fpm.</p>
+        </div>
+
+        <div id="Windows121" class="tabcontent tabcontent121">
+             <p>TBD</p>
+        </div>
+
+        <div id="Mac121" class="tabcontent tabcontent121">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux121" class="tabcontent tabcontent121">
+            <p>TBD</p>
+        </div>
 <!--/version_php-->
 <!--libraries_php-->
-        <p>Next you need to install required PHP extensions. Depending on your  version of PHP, some of these may already be installed as part of the above  core PHP installation. Below is a common command to add missing extensions. The  Mlab installation script will check if any of these are missing later.</p>
-        <pre>sudo apt-get install php5-gd, php5-intl, php5-json, php5-mcrypt, php5-mysql, php5-readline, php-gettext, php-pear, php-xml-dtd, php-xml-htmlsax3, php-xml-parser, php-xml-rpc, php-xml-rpc2, php-xml-rss, php-xml-serializer</pre>
+        <h3>Install required PHP extensions</h3>
+        <p>Next you need to install required PHP extensions. Depending on your  version of PHP, some of these may already be installed as part of the above core PHP installation. The  Mlab installation script will check if any of these are missing later:</p>
+        <p>ereg,  fileinfo, gd, gettext, iconv, intl, json, libxml,  mbstring, mhash, mysqli, openssl, pcre, pdo_mysql, phar, readline, session, simplexml, soap, sockets, zip, dom, ereg, fileinfo, gd, gettext, iconv, intl, json, libxml, mbstring, mhash, mysqli, openssl, pcre, pdo_mysql, phar, readline, session, simplexml, soap, sockets, zip, dom, xml, xmlreader, xmlwriter</p>
+        <div class="tab">
+            <button class="tablinks122 defaultOpen" onclick="openTab(event, 'Debian', '122')">Debian 14.04</button>
+            <button class="tablinks122" onclick="openTab(event, 'Windows', '122')">Windows</button>
+            <button class="tablinks122" onclick="openTab(event, 'Mac', '122')">Mac</button>
+            <button class="tablinks122" onclick="openTab(event, 'OtherLinux', '122')">Other Linux</button>
+        </div>
+
+        <div id="Debian122" class="tabcontent tabcontent122">
+            <br>
+            <pre>sudo apt-get install php5-gd, php5-intl, php5-json, php5-mcrypt, php5-mysql, php5-readline, php-gettext, php-pear, php-xml-dtd,</pre>
+            <pre> php-xml-htmlsax3, php-xml-parser, php-xml-rpc, php-xml-rpc2, php-xml-rss, php-xml-serializer</pre>
+        </div>
+
+        <div id="Windows122" class="tabcontent tabcontent122">
+             <p>TBD</p>
+        </div>
+
+        <div id="Mac122" class="tabcontent tabcontent122">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux122" class="tabcontent tabcontent122">
+            <p>TBD</p>
+        </div>
 <!--/libraries_php-->
         
 <!--version_mysql-->
         <h2>1.3 Install MySQL</h2>
-        <p>If mysql is not installed you need to run the following commands:</p>
-        <pre>apt-get install mysql-server mysql-client </pre>
+        <p>MySQL 5.x has been  tested so the example shows that but Mlab should work with any database server supported by the <a  href="http://www.doctrine-project.org/projects/orm.html">Doctrine ORM</a>)<p>
+        <p>MySQL might be pre installed, if not you need to run the following commands:</p>
+         <div class="tab">
+            <button class="tablinks131 defaultOpen" onclick="openTab(event, 'Debian', '131')">Debian 14.04</button>
+            <button class="tablinks131" onclick="openTab(event, 'Windows', '131')">Windows</button>
+            <button class="tablinks131" onclick="openTab(event, 'Mac', '131')">Mac</button>
+            <button class="tablinks131" onclick="openTab(event, 'OtherLinux', '131')">Other Linux</button>
+        </div>
+
+        <div id="Debian131" class="tabcontent tabcontent131">
+            <br>
+            <pre>apt-get install mysql-server mysql-client </pre>
+        </div>
+
+        <div id="Windows131" class="tabcontent tabcontent131">
+             <p>TBD</p>
+        </div>
+
+        <div id="Mac131" class="tabcontent tabcontent131">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux131" class="tabcontent tabcontent131">
+            <p>TBD</p>
+        </div>
+        
         <p>You will be asked to set the password for the root user, make a note of  this for later.</p>
 <!--/version_mysql-->
         
@@ -118,9 +291,54 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 <!--version_uglifyjs-->
         <h2>1.4 Install NodeJS, npm and uglifyjs</h2>
         <p>If NodeJS or npm is not installed  you need to run the  following commands:</p>
-        <pre>apt-get install nodejs npm</pre>
-        <p>After npm is installed you can use npm to insyall uglifyjs:</p>
-        <pre>npm install uglifyjs -g</pre>
+        <div class="tab">
+            <button class="tablinks141 defaultOpen" onclick="openTab(event, 'Debian', '141')">Debian 14.04</button>
+            <button class="tablinks141" onclick="openTab(event, 'Windows', '141')">Windows</button>
+            <button class="tablinks141" onclick="openTab(event, 'Mac', '141')">Mac</button>
+            <button class="tablinks141" onclick="openTab(event, 'OtherLinux', '141')">Other Linux</button>
+        </div>
+
+        <div id="Debian141" class="tabcontent tabcontent141">
+            <br>
+            <pre>apt-get install nodejs npm</pre>
+        </div>
+
+        <div id="Windows141" class="tabcontent tabcontent141">
+             <p>TBD</p>
+        </div>
+
+        <div id="Mac141" class="tabcontent tabcontent141">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux141" class="tabcontent tabcontent141">
+            <p>TBD</p>
+        </div>
+        
+        <p>After npm is installed you can use npm to install uglifyjs:</p>
+        <div class="tab">
+            <button class="tablinks142 defaultOpen" onclick="openTab(event, 'Debian', '142')">Debian 14.04</button>
+            <button class="tablinks142" onclick="openTab(event, 'Windows', '142')">Windows</button>
+            <button class="tablinks142" onclick="openTab(event, 'Mac', '142')">Mac</button>
+            <button class="tablinks142" onclick="openTab(event, 'OtherLinux', '142')">Other Linux</button>
+        </div>
+
+        <div id="Debian142" class="tabcontent tabcontent142">
+            <br>
+            <pre>npm install uglifyjs -g</pre>
+        </div>
+
+        <div id="Windows142" class="tabcontent tabcontent142">
+             <p>TBD</p>
+        </div>
+
+        <div id="Mac142" class="tabcontent tabcontent142">
+            <p>TBD</p>
+        </div>
+        
+        <div id="OtherLinux142" class="tabcontent tabcontent142">
+            <p>TBD</p>
+        </div>
         <p>The “-g” parameter is important, without this uglifyjs  will be installed in the current directory, it needs to be installed “globally”  so it can be used by Mlab later.</p>
 <!--/version_nodejs-->
 <!--/version_uglifyjs-->
@@ -422,6 +640,30 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         <pre>cd /{mlab_code}/</pre>
         <pre>sudo bin/composer.phar run-script post-install-cmd </pre>
 <!--/libraries_js-->
+
+
+<script>
+function openTab(evt, tabName, tabGroup) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent" + tabGroup);
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks" + tabGroup);
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName + tabGroup).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+var open = document.getElementsByClassName("defaultOpen");
+var x;
+for (x = 0; x < open.length; x++) {
+        open[x].click();
+    }
+</script>
 
 </body>
 
