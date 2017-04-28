@@ -206,7 +206,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                         $('<div/>', { 'class': 'dlg_edit_data', 'id': event.data.dialog_id } )
                                             .load( $(this).attr('href'), function() { assignSubmitDataHandler(event.data.dialog_id); } )
                                             .appendTo('body')
-                                            .dialog({modal: true});
+                                            .dialog({ modal: true, width: 550 });
 
         // need to reload data if edit record AND already created dialog box
                                     } else if ( event.data.link == "edit" ) {  

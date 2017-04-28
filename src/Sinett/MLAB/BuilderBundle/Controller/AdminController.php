@@ -74,7 +74,6 @@ class AdminController extends Controller
     public function systemAction()
     {
     	$tabs = array(
-    			"category" => $this->get('translator')->trans('app.system.admin.categories'),
     			"help" => $this->get('translator')->trans('app.system.admin.help')
     	);
     	 

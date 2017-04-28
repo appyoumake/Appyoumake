@@ -1098,7 +1098,7 @@ opacity: 0.5;
     opacity: 0.4;
 }
 
-/* styling of the new category treeview */
+/* styling of the new category treeview used in group dialog box */
 
 #mlab_group_edit {
     width: 48%;
@@ -1106,11 +1106,51 @@ opacity: 0.5;
     float: left;
 }
 
-#mlab_categories_tree, #mlab_categories_tree_edit {
-    width: 48%;
-    height: 300px;
-    border: 1px solid red;
+#mlab_categories_wrapper {
+    float: left;
+    width: 300px;
+    height: 400px;
+}
+
+#mlab_categories_tree_edit_wrapper {
+    width: 200px;
+    height: 330px;
+    border-left: 1px solid gray;
+    padding-left: 10px;
     float: right;
+}
+
+#mlab_categories_tree_edit_wrapper img {
+    float: right;
+    width: 16px;
+    height: 16px;
+    margin: 0 5px;
+} 
+
+#mlab_categories_tree_edit_wrapper span {
+    height: 16px;
+    float:left;
+    display: block;
+    font-size: 0.7em !important;
+}
+
+#mlab_categories_tree, #mlab_categories_tree_edit {
+    width: 200px;
+    height: 300px;
+    border: 1px solid;
+    float: left;
+    clear: both;
+    margin-top: 10px;
+    overflow-y: scroll;
+    font-size: 0.7em !important;
+}
+
+#sinett_mlab_builderbundle_group_users {
+    height: 240px
+}
+
+#sinett_mlab_builderbundle_group_submit {
+    
 }
 
 .jstree-default .jstree-icon:empty {

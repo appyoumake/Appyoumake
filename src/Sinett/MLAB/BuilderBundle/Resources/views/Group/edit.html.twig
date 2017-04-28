@@ -12,15 +12,22 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block body -%}
     <h4>{% trans %}app.admin.groups.edit.heading{% endtrans %}</h4>
 
-    {{ form(edit_form) }}
-
-    <div id="mlab_categories_tree_edit">
-        
+    <div id="mlab_categories_wrapper">
+        {{ form(edit_form) }}
     </div>
-    <div>
-        <img src="/img/newVersion.png" onclick="mlab_category_create();">
-        <img src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
-        <img src="/img/notPublished.png" onclick="mlab_category_delete();">
+
+    <div id="mlab_categories_tree_edit_wrapper">
+        <div id="mlab_categories_tree_edit_headline">
+            <span>Kategorier</span>
+            <div class="right">
+                <img src="/img/idelete.png" onclick="mlab_category_delete();">
+                <img src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
+                <img src="/img/new_general.png" onclick="mlab_category_create();">
+            </div>
+        </div>
+        <div id="mlab_categories_tree_edit">
+
+        </div>
     </div>
     
     <script>
@@ -39,9 +46,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             mlab_category_init();
         });
         
+//initialise the category treeview
         function mlab_category_init() {
             if ($("#sinett_mlab_builderbundle_group_categories").val()) {
-                debugger;
                 var dt = (JSON.parse($("#sinett_mlab_builderbundle_group_categories").val()));
             } else {
                 var dt = null;

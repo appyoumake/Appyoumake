@@ -219,7 +219,7 @@ class CategoryController extends Controller
     {
         
 //we call the same code from two different places, regular admin and system admin, if regular admin we do not display the system option to create system categories
-        if (basename($request()->headers->get('referer')) == "system") {
+        if (basename($request->headers->get('referer')) == "system") {
             $system_class = "";
         } else {
             $system_class = "hidden";
