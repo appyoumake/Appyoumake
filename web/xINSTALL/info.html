@@ -12,19 +12,37 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <head>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
         <style>
+            html, body {
+                width: 750px;
+            }
             pre {
                 background-color: lightgrey;
                 margin: 0; 
-                margin-left: 3.5em;
-                padding-left: 1em;
+                padding: 0.3em 1em;
+                white-space: pre-wrap;
             }
             ol, ul {
-                list-style: outside disc none; 
+                list-style-position: outside;
                 margin-left: 1em; 
                 padding-left: 1em;
             }
+            ul {
+                list-style: outside disc none;
+            }
             li {
                 padding-left: 1em;
+            }
+            
+            .columns li {
+                line-height: 1.2em;
+                float: left;
+                display: inline;    
+                width:30%;
+            }
+            
+            h1, h2, h3, h4, h5 {
+                font-family: Arial, Helvetica, sans-serif;
+                padding-top: 1em;
             }
             
             /* Style the tab */
@@ -33,6 +51,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 border: 1px solid #ccc;
                 height: 30px;
                 padding: 0px;
+                clear: both;
             }
 
             /* Style the buttons inside the tab */
@@ -72,74 +91,68 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 <!--internet_present -->
     <body>
         <h1>Mlab server setup</h1>
-        <p>Before you can use Mlab you need to install the source code on a correctly configured  webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features  required, so as long as your operating system supports the requirements below  you should be able to run it. There are four main steps involved in this:</p>
+        <p>Before you can use Mlab you need to install the source code on a correctly configured webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features required, as long as your operating system supports the requirements below you should be able to run it. There are four main steps involved in this:</p>
         <ol>
-            <li>Install server software such as web  server, database server, PHP, etc.</li>
-            <li>Create a directory (folder) for Mlab  and copy the source code into this directory.</li>
-            <li>Configure the various server  software and helper software (where required) to match the Mlab directory  location.</li>
-            <li>Run the Mlab installation script  which will verify that the setup is correct and perform certain actions that  will complete the setup.  
+            <li>Install server software such as web server, database server, PHP, etc.</li>
+            <li>Create a directory (folder) for Mlab and copy the source code into this directory.</li>
+            <li>Configure the various server software and helper software (where required) to match the Mlab directory location.</li>
+            <li>Run the Mlab installation script which will verify that the setup is correct and perform certain actions that will complete the setup.  
                 <ol type='a'> 
-                    <li>Alternatively  you can manually install Mlab. The steps required are described in this  document under the “<a href="#_5:_(Optional)_Install">Install Mlab manually</a>”  section toward the end of the document.</li>
+                    <li>Alternatively you can manually install Mlab. The steps required are described in this document under the “<a href="#_5:_(Optional)_Install">Install Mlab manually</a>”  section toward the end of the document.</li>
                 </ol>
             </li>
         </ol>
-        <p><i>All examples in this document use a generic  Debian/Ubuntu installation, thus all examples refer to apt-get as the package  manager. Other Linux distributions may use rpm, yum or other  package managers, modify the commands as  required. On Windows there is no package manager. For each software  installation you need to download the relevant software package and run the  executable installer.</i></p>
+        <p><i>All examples in this document use a generic Debian/Ubuntu installation, thus all examples refer to apt-get as the package manager. Other Linux distributions may use rpm, yum or other package managers, modify the commands as required. On Windows there is no package manager. For each software installation you need to download the relevant software package and run the executable installer.</i></p>
 
-        <h1>1: Install server and helper software</h1>
-        <p>These are  the servers that Mlab requires</p>
-           FLYTTE NED....
-            <li> Node.js (runs a websocket  server for communication with remote services)</li>
-            <li> Npm (helper software, used to install uglify primarily)</li>
-            <li> UglifyJS (a tool to compress Javascript  files, without this you cannot run Mlab)&nbsp;</li>
-        </ol>
+        <h1>1 Install server and helper software</h1>
+        <p>Here we go through the installation of servers and related software that Mlab requires to operate correctly. This section only deals with the actual installation of the software, <b>notes on how to configure the servers to work with Mlab are given in <a href="#_3:_Configuration">step 3</a>.</b></p>
+        <p>If you are setting up a development machine and not a live server you may want to use the XAMPP package. This includes almost everything that Mlab requires and needs only a minimal installation. You can download this from <a href="https://www.apachefriends.org/index.html">here</a> and skip to step <a href="#_1.4_Install_NodeJS_npm_and_uglifyjs">1.4</a> </p>
 
-        <p><b >Notes on how to configure the servers are given  in <a href="#_3:_Configuration">step 3</a>.</b></p>
-
-        <h2>1.1: Install web server</h2>
-        <p>Choose  which web server you want to use that supports integration with PHP. Apache 2.x, Lighttpd and Nginx have all  been tested.</p>
+        <h2>1.1 Install web server</h2>
+        <p>Choose which web server you want to use that supports integration with PHP. Apache 2.x and Nginx have been tested.</p>
 
         <h3>Alternative 1: Install Apache</h3>
         
         <div class="tab">
-            <button class="tablinks111 defaultOpen" onclick="openTab(event, 'Debian', '111')">Debian 14.04</button>
+            <button class="tablinks111 defaultOpen" onclick="openTab(event, 'Debian', '111')">Ubuntu 14.04</button>
             <button class="tablinks111" onclick="openTab(event, 'Windows', '111')">Windows</button>
             <button class="tablinks111" onclick="openTab(event, 'Mac', '111')">Mac</button>
-            <button class="tablinks111" onclick="openTab(event, 'OtherLinux', '111')">Other Linux</button>
+            <button class="tablinks111" onclick="openTab(event, 'OtherLinux', '111')">Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian111" class="tabcontent tabcontent111">
-            <p>Run the  following commands:</p>
+            <p>Run the following commands:</p>
 
             <pre>apt-get install apache2</pre>
             <pre>service apache2 start</pre>
             
-            <p>Relevant link: <a  href="http://httpd.apache.org/docs/current/install.html">http://httpd.apache.org/docs/current/install.html</a></p>
+            <p>Relevant link: <a href="http://httpd.apache.org/docs/current/install.html">http://httpd.apache.org/docs/current/install.html</a></p>
         </div>
 
         <div id="Windows111" class="tabcontent tabcontent111">
-            <p>For Windows refer to these notes for Apache: <a  href="https://httpd.apache.org/docs/current/platform/windows.html">https://httpd.apache.org/docs/current/platform/windows.html</a></p> 
+            <p>For Windows refer to these notes for Apache: <a href="https://httpd.apache.org/docs/current/platform/windows.html">https://httpd.apache.org/docs/current/platform/windows.html</a></p> 
         </div>
 
         <div id="Mac111" class="tabcontent tabcontent111">
-            <p>TBD</p>
+            <p>On many MacOSX versions Apache is already installed. If not, there are many guides to using Apache on the macOS. A recent and very complete guide can be found here: <a href="https://coolestguidesontheplanet.com/get-apache-mysql-php-and-phpmyadmin-working-on-macos-sierra/">Install Apache, MySQL, PHP and phpMyAdmin on macOS Sierra</a></p>
         </div>
         
         <div id="OtherLinux111" class="tabcontent tabcontent111">
-            <p>Apache is often preinstalled on Linux, if so you can skip this step. If not install on Linux using your package manager and  install the relevant package.</p>
+            <p>Apache is often preinstalled on Linux, if so you can skip this step. If not install on Linux using your package manager and install the relevant package, examples using RPM can be found here: <a href="https://httpd.apache.org/docs/current/platform/rpm.html">Using Apache With RPM Based Systems (Redhat / CentOS / Fedora)</a>.</p>
         </div>
         
 
         <h3>Alternative 2: Install Nginx</h3>
         
         <div class="tab">
-            <button class="tablinks112 defaultOpen" onclick="openTab(event, 'Debian', '112')">Debian 14.04</button>
+            <button class="tablinks112 defaultOpen" onclick="openTab(event, 'Debian', '112')">Ubuntu 14.04</button>
             <button class="tablinks112" onclick="openTab(event, 'Windows', '112')">Windows</button>
             <button class="tablinks112" onclick="openTab(event, 'Mac', '112')">Mac</button>
-            <button class="tablinks112" onclick="openTab(event, 'OtherLinux', '112')">Other Linux</button>
+            <button class="tablinks112" onclick="openTab(event, 'OtherLinux', '112')">Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian112" class="tabcontent tabcontent112">
-            <p>Apache2 may  be installed by default, if so you need to remove it.</p>
+            <p>Apache2 may be installed by default, if so you need to remove it.</p>
             <pre>service apache2 stop</pre>
             <pre>update-rc.d -f apache2 remove</pre>
             <pre>apt-get remove apache2</pre>
@@ -148,499 +161,440 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <pre>sudo apt-get install nginx</pre>
             <pre>sudo service nginx start</pre>
 
-            <p>Relevant link: <a  href="https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp">https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp</a></p>
+            <p>Relevant link: <a href="https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp">https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp</a></p>
        </div>
 
         <div id="Windows112" class="tabcontent tabcontent112">
-             <p>For Windows follow these notes for nginx: <a  href="http://nginx.org/en/docs/windows.html">http://nginx.org/en/docs/windows.html</a>./p>
+             <p>For Windows follow these notes: <a href="http://nginx.org/en/docs/windows.html">nginx for Windows</a>./p>
         </div>
 
         <div id="Mac112" class="tabcontent tabcontent112">
-            <p>TBD</p>
+            <p>On Mac based computers you can follow these instructions: <a href="https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew">https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew</a></p>
         </div>
         
         <div id="OtherLinux112" class="tabcontent tabcontent112">
-            <p>TBD</p>
+            <p>Most other Linux distributions have packages available for nginx, see <a href="https://www.nginx.com/resources/wiki/start/topics/tutorials/install/">official nginx pages for more information</a>.</p>
         </div>
 
         
-        <h3>Alternative 3: Install Lighttpd</h3>
-        <div class="tab">
-            <button class="tablinks113 defaultOpen" onclick="openTab(event, 'Debian', '113')">Debian 14.04</button>
-            <button class="tablinks113" onclick="openTab(event, 'Windows', '113')">Windows</button>
-            <button class="tablinks113" onclick="openTab(event, 'Mac', '113')">Mac</button>
-            <button class="tablinks113" onclick="openTab(event, 'OtherLinux', '113')">Other Linux</button>
-        </div>
-
-        <div id="Debian113" class="tabcontent tabcontent113">
-            <p>Apache2 may  be installed by default, if so you need to remove it.</p>
-
-            <pre>apt-get install lighttpd</pre>
-            <pre>service lighttpd start</pre>
-            
-            <p>Relevant link: <a  href="http://redmine.lighttpd.net/projects/lighttpd/wiki">http://redmine.lighttpd.net/projects/lighttpd/wiki</a></p>
-        </div>
-
-        <div id="Windows113" class="tabcontent tabcontent113">
-             <p>Lighttpd is not available in an updated version for Windows.</p>
-        </div>
-
-        <div id="Mac113" class="tabcontent tabcontent113">
-            <p>TBD</p>
-        </div>
-        
-        <div id="OtherLinux113" class="tabcontent tabcontent113">
-            <p>TBD</p>
-        </div>
-        
-        
-        <h2>1.1.1: Check that web  server works</h2>
-        <p>Point your browser  to localhost to test that it's working, you should see a basic welcome page.</p>
+        <h2>1.1.1 Check that web server works</h2>
+        <p>Point your browser to <a href="http://localhost">http://localhost</a> to test that it's working, you should see a basic welcome page.</p>
 
         
 <!--version_php-->
-        <h2>1.2 Install Database server - PHP 5 </h2>
-        <p>Install  core PHP 5.4+ or higher, but not version  7.x <b>including PHP 5 -FPM </b>that runs a <a href="https://php-fpm.org/">FastCGI Process Manager</a>  server (for performance reasons) on the socket.</p>
+        <h2>1.2 Install PHP</h2>
+        <p>PHP 5.4+ or higher is required for the Mlab server. <b>The next major version of PHP, version 7.x is untested and unlikely to work out of the box!</b> We do therefore not recommend using version 7 or higher. </p>
+        <p>You can install PHP as a CGI, CLI or FPM process, we recommend FPM that runs a <a href="https://php-fpm.org/">FastCGI Process Manager</a>  server (for performance reasons). The examples here discus installing the FPM version, if you use another type you must adjust the commands accordingly.</p>
         <div class="tab">
-            <button class="tablinks121 defaultOpen" onclick="openTab(event, 'Debian', '121')">Debian 14.04</button>
+            <button class="tablinks121 defaultOpen" onclick="openTab(event, 'Debian', '121')">Ubuntu 14.04</button>
             <button class="tablinks121" onclick="openTab(event, 'Windows', '121')">Windows</button>
             <button class="tablinks121" onclick="openTab(event, 'Mac', '121')">Mac</button>
-            <button class="tablinks121" onclick="openTab(event, 'OtherLinux', '121')">Other Linux</button>
+            <button class="tablinks121" onclick="openTab(event, 'OtherLinux', '121')">Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian121" class="tabcontent tabcontent121">
-            <br>
             <pre>sudo apt-get install php5-common php5-cli php5-fpm</pre>
-            <p>php5-fpm runs a FastCGI  server on the socket /var/run/php5-fpm.</p>
+            <p>php5-fpm runs a FastCGI server on the socket /var/run/php5-fpm.</p>
         </div>
 
         <div id="Windows121" class="tabcontent tabcontent121">
-             <p>TBD</p>
+            <p>Information on an Windows installation can be found at the official PHP pages: <a href="http://php.net/manual/en/install.windows.php">Installation on Windows systems</a></p>
         </div>
 
         <div id="Mac121" class="tabcontent tabcontent121">
-            <p>TBD</p>
+            <p>Many versions of MacOSX have PHP already installed. Information on an MacOS installation can be found at the official PHP pages: <a href="http://php.net/manual/en/install.macosx.php">Installation on Mac OS X</a></p>
         </div>
         
         <div id="OtherLinux121" class="tabcontent tabcontent121">
-            <p>TBD</p>
+            <p>Most Linux varieties have PHP 5.x as a package in their repositories so you can install it using your preferred package manager. Otherwise refer to the official PHP pages: <a href="http://php.net/manual/en/install.unix.php">Installation on Unix systems</a></p>
         </div>
 <!--/version_php-->
 <!--libraries_php-->
-        <h3>Install required PHP extensions</h3>
-        <p>Next you need to install required PHP extensions. Depending on your  version of PHP, some of these may already be installed as part of the above core PHP installation. The  Mlab installation script will check if any of these are missing later:</p>
-        <p>ereg,  fileinfo, gd, gettext, iconv, intl, json, libxml,  mbstring, mhash, mysqli, openssl, pcre, pdo_mysql, phar, readline, session, simplexml, soap, sockets, zip, dom, ereg, fileinfo, gd, gettext, iconv, intl, json, libxml, mbstring, mhash, mysqli, openssl, pcre, pdo_mysql, phar, readline, session, simplexml, soap, sockets, zip, dom, xml, xmlreader, xmlwriter</p>
+        <h3>1.2.1 Install required PHP extensions</h3>
+        <p>Next you need to install a number of PHP extensions that provides additional functionality that Mlab depends on. Some of these may already be installed as part of the core PHP installation.</p>
+        <p><b>The actual package names may vary between different operating systems and different versions of PHP and/or operating systems/distributions, please refer to your particular operating system.</b></p>
+        <p>The extensions required are: 
+            <ul class="columns" style="width: 700px; display: block; margin-bottom: 20px;">
+                <li>ereg</li>
+                <li>fileinfo</li>
+                <li>gd</li>
+                <li>gettext</li>
+                <li>iconv</li>
+                <li>intl</li>
+                <li>json</li>
+                <li>libxml</li>
+                <li> mbstring</li>
+                <li>mhash</li>
+                <li>mysqli</li>
+                <li>openssl</li>
+                <li>pcre</li>
+                <li>pdo_mysql</li>
+                <li>phar</li>
+                <li>readline</li>
+                <li>session</li>
+                <li>simplexml</li>
+                <li>soap</li>
+                <li>sockets</li>
+                <li>zip</li>
+                <li>dom</li>
+                <li>ereg</li>
+                <li>fileinfo</li>
+                <li>gd</li>
+                <li>gettext</li>
+                <li>iconv</li>
+                <li>intl</li>
+                <li>json</li>
+                <li>libxml</li>
+                <li>mbstring</li>
+                <li>mhash</li>
+                <li>mysqli</li>
+                <li>openssl</li>
+                <li>pcre</li>
+                <li>pdo_mysql</li>
+                <li>phar</li>
+                <li>readline</li>
+                <li>session</li>
+                <li>simplexml</li>
+                <li>soap</li>
+                <li>sockets</li>
+                <li>zip</li>
+                <li>dom</li>
+                <li>xml</li>
+                <li>xmlreader</li>
+                <li>xmlwriter</li>
+            </ul>
+        </p>
+        <div style="width: 100%; display: block; clear: both; height: 20px; float: left;"></div>
         <div class="tab">
-            <button class="tablinks122 defaultOpen" onclick="openTab(event, 'Debian', '122')">Debian 14.04</button>
+            <button class="tablinks122 defaultOpen" onclick="openTab(event, 'Debian', '122')">Ubuntu 14.04</button>
             <button class="tablinks122" onclick="openTab(event, 'Windows', '122')">Windows</button>
             <button class="tablinks122" onclick="openTab(event, 'Mac', '122')">Mac</button>
-            <button class="tablinks122" onclick="openTab(event, 'OtherLinux', '122')">Other Linux</button>
+            <button class="tablinks122" onclick="openTab(event, 'OtherLinux', '122')">Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian122" class="tabcontent tabcontent122">
-            <br>
-            <pre>sudo apt-get install php5-gd, php5-intl, php5-json, php5-mcrypt, php5-mysql, php5-readline, php-gettext, php-pear, php-xml-dtd,</pre>
-            <pre> php-xml-htmlsax3, php-xml-parser, php-xml-rpc, php-xml-rpc2, php-xml-rss, php-xml-serializer</pre>
+            <p>You can use the standard package manager to install these. </p>
+            <pre>sudo apt-get install php5-gd php5-intl php5-json php5-mcrypt php5-mysql php5-readline php-gettext php-pear php-xml-dtd php-xml-htmlsax3 php-xml-parser php-xml-rpc php-xml-rpc2 php-xml-rss php-xml-serializer</pre>
         </div>
 
         <div id="Windows122" class="tabcontent tabcontent122">
-             <p>TBD</p>
+            <p>You can use the <a href="http://php.net/manual/en/install.pecl.windows.php">PHP Extension Community Library (PECL)</a> repository to install these extensions on Windows.</p>
         </div>
 
         <div id="Mac122" class="tabcontent tabcontent122">
-            <p>TBD</p>
+            <p>As with Windows you can install the <a href="https://jason.pureconcepts.net/2012/10/install-pear-pecl-mac-os-x/">PHP Extension Community Library (PECL)</a> repository to install these extensions.</p>
         </div>
         
         <div id="OtherLinux122" class="tabcontent tabcontent122">
-            <p>TBD</p>
+            <p>Most Linux and Unix distributions will have the required extensions in their repositories, please refer to relevant documentation to find the correct packages to install.</p>
         </div>
+        <p>The Mlab installation script will check if any of these libraries are missing later.</p>
 <!--/libraries_php-->
         
 <!--version_mysql-->
-        <h2>1.3 Install MySQL</h2>
-        <p>MySQL 5.x has been  tested so the example shows that but Mlab should work with any database server supported by the <a  href="http://www.doctrine-project.org/projects/orm.html">Doctrine ORM</a>)<p>
-        <p>MySQL might be pre installed, if not you need to run the following commands:</p>
+        <h2>1.3 Install database server</h2>
+        <p>Mlab should work with any database server supported by the <a href="http://www.doctrine-project.org/projects/orm.html">Doctrine ORM</a> library. In the example here we refer to MySQL 5.x as it has been tested with Mlab. <a href="https://mariadb.org/">MariaDB</a> is a drop-in replacement for MySQL and should also work without problems.<p>
          <div class="tab">
-            <button class="tablinks131 defaultOpen" onclick="openTab(event, 'Debian', '131')">Debian 14.04</button>
+            <button class="tablinks131 defaultOpen" onclick="openTab(event, 'Debian', '131')">Ubuntu 14.04</button>
             <button class="tablinks131" onclick="openTab(event, 'Windows', '131')">Windows</button>
             <button class="tablinks131" onclick="openTab(event, 'Mac', '131')">Mac</button>
-            <button class="tablinks131" onclick="openTab(event, 'OtherLinux', '131')">Other Linux</button>
+            <button class="tablinks131" onclick="openTab(event, 'OtherLinux', '131')">Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian131" class="tabcontent tabcontent131">
-            <br>
+            <p>MySQL might be pre-installed, if not you need to run the following commands:</p>
             <pre>apt-get install mysql-server mysql-client </pre>
         </div>
 
         <div id="Windows131" class="tabcontent tabcontent131">
-             <p>TBD</p>
+            <p>Follow instructions <a href="https://dev.mysql.com/doc/refman/5.7/en/windows-installation.html">here</a> to find out how to install the Windows version of MySQL.</p>
         </div>
 
         <div id="Mac131" class="tabcontent tabcontent131">
-            <p>TBD</p>
+            <p>For complete instructions look at the <a href="https://dev.mysql.com/doc/refman/5.7/en/osx-installation.html">MySQL documentation for MacOSX.</a></p>
         </div>
         
         <div id="OtherLinux131" class="tabcontent tabcontent131">
-            <p>TBD</p>
+            <p>MySQL is usually available in your distribution's repository, if not you can look at the <a href="https://dev.mysql.com/doc/refman/5.7/en/binary-installation.html">official installation instructions</a> for some guidance.</p>
         </div>
         
-        <p>You will be asked to set the password for the root user, make a note of  this for later.</p>
+        <p>You will be asked to set the password for the root user, make a note of this for later.</p>
 <!--/version_mysql-->
         
 <!--version_nodejs-->
 <!--version_uglifyjs-->
-        <h2>1.4 Install NodeJS, npm and uglifyjs</h2>
-        <p>If NodeJS or npm is not installed  you need to run the  following commands:</p>
+        <h2><a name="_1.4_Install_NodeJS_npm_and_uglifyjs"></a>1.4 Install NodeJS, npm and uglifyjs</h2>
+        <p>NodeJS is used for a small Websockets server, this is required in the app compilation process. Additionally, UglifyJS is used to protect the front end source code from copying. Without this protection Mlab will not run.</p>
         <div class="tab">
-            <button class="tablinks141 defaultOpen" onclick="openTab(event, 'Debian', '141')">Debian 14.04</button>
+            <button class="tablinks141 defaultOpen" onclick="openTab(event, 'Debian', '141')">Ubuntu 14.04</button>
             <button class="tablinks141" onclick="openTab(event, 'Windows', '141')">Windows</button>
             <button class="tablinks141" onclick="openTab(event, 'Mac', '141')">Mac</button>
-            <button class="tablinks141" onclick="openTab(event, 'OtherLinux', '141')">Other Linux</button>
+            <button class="tablinks141" onclick="openTab(event, 'OtherLinux', '141')">Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian141" class="tabcontent tabcontent141">
-            <br>
+            <p>If NodeJS or npm are not installed you need to run the following command to install the relevant packages:</p>
             <pre>apt-get install nodejs npm</pre>
         </div>
 
         <div id="Windows141" class="tabcontent tabcontent141">
-             <p>TBD</p>
+            <p>NodeJS and NPM are available as downloadable packages, for installation details see <a href="http://blog.teamtreehouse.com/install-node-js-npm-windows">here</a>.</p>
         </div>
 
         <div id="Mac141" class="tabcontent tabcontent141">
-            <p>TBD</p>
+            <p>Mac users can follow the instructions <a href="https://coolestguidesontheplanet.com/installing-node-js-on-macos/">here</a> on how to install NodeJS/npm.</p>
         </div>
         
         <div id="OtherLinux141" class="tabcontent tabcontent141">
-            <p>TBD</p>
+            <p>There are packages available for most Linux/Unix based OSes, official details are on <a href="https://nodejs.org/en/download/package-manager/">the NodeJS website</a>.</p>
         </div>
         
-        <p>After npm is installed you can use npm to install uglifyjs:</p>
+        <p>After npm is installed you can use npm to install UglifyJS.</p>
         <div class="tab">
-            <button class="tablinks142 defaultOpen" onclick="openTab(event, 'Debian', '142')">Debian 14.04</button>
-            <button class="tablinks142" onclick="openTab(event, 'Windows', '142')">Windows</button>
-            <button class="tablinks142" onclick="openTab(event, 'Mac', '142')">Mac</button>
-            <button class="tablinks142" onclick="openTab(event, 'OtherLinux', '142')">Other Linux</button>
+            <button class="tablinks141 defaultOpen" onclick="openTab(event, 'Debian', '142')">Ubuntu 14.04, Windows, Mac and Linux/Unix/BSD variants</button>
         </div>
 
         <div id="Debian142" class="tabcontent tabcontent142">
-            <br>
+            <p>If npm is correctly installed this will be the same command on all operating systems:</p>
             <pre>npm install uglifyjs -g</pre>
         </div>
-
-        <div id="Windows142" class="tabcontent tabcontent142">
-             <p>TBD</p>
-        </div>
-
-        <div id="Mac142" class="tabcontent tabcontent142">
-            <p>TBD</p>
-        </div>
+        <p>The “-g” parameter is important, without this uglifyjs will be installed in the current directory, it needs to be installed “globally” so it can be used by Mlab later. <b>You may need to run this command as root/administrator user to work correctly.</b></p>
         
-        <div id="OtherLinux142" class="tabcontent tabcontent142">
-            <p>TBD</p>
-        </div>
-        <p>The “-g” parameter is important, without this uglifyjs  will be installed in the current directory, it needs to be installed “globally”  so it can be used by Mlab later.</p>
 <!--/version_nodejs-->
 <!--/version_uglifyjs-->
 
 <!--source_code-->
-        <h1>2: Create directory and  copy Mlab source code</h1>
-        <p>After  installing the servers and helper software in step 1, you need to copy over the  Mlab source code. </p>
-        <ul>
-            <li> First create a new directory in a suitable location for your OS/Web  server. On Linux this is often /var/www, but refer to  your OS information where is the best location for this. Below we will use {mlab_code} for this folder. You will also need to create  another folder for the elements that make up an app and the apps themselves (apps, components, icons and templates), below we will use  {mlab_elements} for these directories. Create the  following directories:</li>
-        </ul>
-        <pre>sudo mkdir {mlab_code}</pre>
-        <pre>sudo mkdir {mlab_elements}</pre>
-        <pre>sudo mkdir {mlab_elements}/apps/</pre>
-        <pre>sudo mkdir {mlab_elements}/components/</pre>
-        <pre>sudo mkdir {mlab_elements}/templates/</pre>
-        <pre>sudo mkdir {mlab_elements}/icons/</pre>
+        <h1>2 Create directory and copy Mlab source code</h1>
+        <p>After installing the servers and helper software in step 1, you need to copy over the Mlab source code. </p>
+        <h2><a name="2_1"></a>2.1 Create directories/folders for Mlab</h2>
+        <p>First create a new directory in a suitable location for your OS/Web server. On Linux this is often /var/www, but refer to your OS information where is the best location for this. Below we will use {mlab_code} for this folder. You will also need to create another folder for the elements that make up an app and the apps themselves (apps, components, icons and templates), below we will use {mlab_elements} for these directories. Create the following directories:</p>
+        <div class="tab">
+            <button class="tablinks21 defaultOpen" onclick="openTab(event, 'Debian', '21')">Ubuntu 14.04, Mac and Linux/Unix/BSD variants</button>
+            <button class="tablinks21" onclick="openTab(event, 'Windows', '21')">Windows</button>
+        </div>      
+        <div id="Debian21" class="tabcontent tabcontent21">
+            <pre>sudo mkdir {mlab_code}<br>sudo mkdir {mlab_elements}<br>sudo mkdir {mlab_elements}/apps/<br>sudo mkdir {mlab_elements}/components/<br>sudo mkdir {mlab_elements}/templates/<br>sudo mkdir {mlab_elements}/icons/</pre>
+        </div>
+        <div id="Windows21" class="tabcontent tabcontent21">
+            <pre>mkdir {mlab_code}<br>mkdir {mlab_elements}<br>mkdir {mlab_elements}/apps/<br>mkdir {mlab_elements}/components/<br>mkdir {mlab_elements}/templates/<br>mkdir {mlab_elements}/icons/</pre>
+        </div>
         
-        <ul>
-            <li>Next get your Mlab zip file, typically named something like mlab-v.0.9.0.zip       (the actual filename will vary depending on the version you install) . Unzip       it inside the new directory. 
-                <ul>    
-                    <li>Make sure that the Mlab code is inside the root of the directory.        If the unzip process has created a sub-directory inside the directory you        must copy the files from the sub-directory and into the directory.</li>
-                </ul>
-            </li>
-            <li>Then if you using the Mlab installation scrip (see below), set the       right permissions to the directory you created. The owner of the Mlab       directory and all files and directories inside the Mlab directory should       be the web server process/user. This is because Mlab will need to create       files as users create apps or uploads new components, etc. </li>
-        </ul>
+        <h2>2.2 Install Mlab source code</h2>
+        <p>Next get your Mlab zip file, typically named something like mlab-v.0.9.0.zip (the actual filename will vary depending on the version you install). Unzip it inside the new directory using the relevant utility for your operating system. </p>
+        <p>Make sure that the Mlab code is inside the root of the directory. If the unzip process has created a sub-directory inside the directory you must copy the files from the sub-directory and into the directory.</p>
 
-        <p>Below the actual user name is indicated  with <i>{webserveruser}</i>, you will need to replace this with the actual user name of your web server  process user.</p>
+        <h2>2.3 Set access permissions</h2>
+        <p>Set the right permissions to the directory you created. The owner of the Mlab directory and all files and directories inside the Mlab directory should       be the web server process/user. This is because Mlab will need to create files as users create apps or uploads new components, etc. </p>
+        <p>In the text below the actual user name is indicated with <i>{webserveruser}</i>, you will need to replace this with the actual user name of your web server process user.</p>
 
-        <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code} -R</pre>
-        <pre>sudo chown {webserveruser}:{webserveruser} .{mlab_elements} -R</pre>
+        <div class="tab">
+            <button class="tablinks23 defaultOpen" onclick="openTab(event, 'Debian', '23')">Ubuntu 14.04, Mac and Linux/Unix/BSD variants</button>
+            <button class="tablinks23" onclick="openTab(event, 'Windows', '23')">Windows</button>
+        </div>              
+        <div id="Debian23" class="tabcontent tabcontent23">
+            <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code} -R<br>sudo chown {webserveruser}:{webserveruser} {mlab_elements} -R</pre>
+        </div>
+        <div id="Windows23" class="tabcontent tabcontent23">
+            <p>As an administrative user run the following commands:</p>
+            <pre>icacls "{mlab_code}" /grant {webserveruser}:(OI)(CI)F /T<br>icacls "{mlab_elements}" /grant {webserveruser}:(OI)(CI)F /TR</pre>
+        </div>
 <!--/source_code-->
 
-        <h1><a name="_3:_Configuration"></a>3: Server configuration</h1>
+        <h1><a name="_3:_Configuration"></a>3 Server configuration</h1>
 
-        <p>The server  software installed in step 1. needs some additional configurations to be able  to work with Mlab. Below you will find detailed instructions and examples for  each of these servers. Replace {mlab_url} with the relevant  URL for your server.</p>
+        <p>The server software installed in step 1. needs some additional configurations to be able to work with Mlab. Below you will find detailed instructions and examples for each of these servers. Replace {mlab_url} with the relevant URL for your server.</p>
 
-        <h2>Configure Web servers</h2>
+        <h2>3.1 Configure Web servers</h2>
 
         <h3>Alternative  1: Apache configuration</h3>
-        <p>To run Mlab  as a virtual host Apache needs the setup outlined below. The actual file to  enter this information into varies, under  Linux this is often in the /etc/apache2/sites-available/ directory, you  can use a file named 020-mlab.conf  to store the configuration.</p>
+        <p>To run Mlab as a virtual host Apache needs the setup outlined below. The actual file to enter this information into varies, please refer to the relevant documentation for your operating system with regards to which file to edit.</p>
+        <p> Use your preferred text editor and enter the following text in the relevant configuration file.</p>
+        <pre>&lt;VirtualHost *:80&gt;
+    ServerName {mlab_url}
+    ServerAdmin webmaster@localhost
+    AliasMatch /mlab_elements/components/(.*) /{mlab_elements}/components/$1
+    AliasMatch /mlab_elements/apps/(.*) /{mlab_elements}/apps/$1
+    AliasMatch /mlab_elements/templates/(.*) /{mlab_elements}/templates/$1
+    AliasMatch /mlab_elements/icons/(.*) /{mlab_elements}/icons/$1
+    &lt;Directory /{mlab_elements}/&gt;
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+        Require all granted
+    &lt;/Directory&gt;
+    DocumentRoot /{mlab_code}/web
+    &lt;Directory /{mlab_code}/web/&gt;
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
+        Require all granted
+        &lt;IfModule mod_rewrite.c&gt;
+            RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteRule ^(.*)$ /app.php [QSA,L]
+        &lt;/IfModule&gt;
+    &lt;/Directory&gt;
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;</pre>
 
-        <ul>
-            <li> Using  <i>nano</i> as  your text editor, enter the following command (substitute <i>nano</i> below with your preferred text  editor).</li>
-        </ul>
-        <pre>sudo nano /etc/apache2/sites-available/020-mlab.conf</pre>
+        <p>If your system supports the APACHE_LOG_DIR variable, you can use ${APACHE_LOG_DIR}/, otherwise you will need to enter the full path, for instance /var/log/apache2/.</p>
 
-        <ul>
-            <li> In the empty file enter the  following configuration:</li>
-        </ul>
-        <pre>&lt;VirtualHost *:80&gt;  ServerName {mlab_url}  ServerAdmin webmaster@localhost  AliasMatch /mlab_elements/components/(.*) /{mlab_elements}/components/$1  AliasMatch /mlab_elements/apps/(.*) /{mlab_elements}/apps/$1  AliasMatch /mlab_elements/templates/(.*) /{mlab_elements}/templates/$1  AliasMatch /mlab_elements/icons/(.*) /{mlab_elements}/icons/$1  &lt;Directory /{mlab_elements}/&gt;  &nbsp;&nbsp;&nbsp; Options Indexes FollowSymLinks MultiViews  &nbsp;&nbsp;&nbsp; AllowOverride All  &nbsp;&nbsp;&nbsp; Order allow,deny  &nbsp;&nbsp;&nbsp; allow from all  &nbsp;&nbsp;&nbsp; Require all granted  &lt;/Directory&gt;  DocumentRoot /{mlab_code}/web  &lt;Directory /{mlab_code}/web/&gt;  &nbsp;&nbsp;&nbsp; Options Indexes FollowSymLinks MultiViews  &nbsp;&nbsp;&nbsp; AllowOverride None  &nbsp;&nbsp;&nbsp; Order allow,deny  &nbsp;&nbsp;&nbsp; allow from all  &nbsp;&nbsp;&nbsp; Require all granted  &nbsp;&nbsp;&nbsp; &lt;IfModule mod_rewrite.c&gt;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RewriteEngine On  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RewriteCond %{REQUEST_FILENAME} !-f  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RewriteRule ^(.*)$ /app.php [QSA,L]  &nbsp;&nbsp;&nbsp; &lt;/IfModule&gt;  &lt;/Directory&gt;  ErrorLog ${APACHE_LOG_DIR}/error.log   CustomLog ${APACHE_LOG_DIR}/access.log combined  &lt;/VirtualHost&gt;</pre>
-
-        <ul>
-            <li class=MsoNormal >If your system supports the APACHE_LOG_DIR       variable, you can use${APACHE_LOG_DIR}/, otherwise you will need to enter       the full path, for instance /var/log/apache2/.</li>
-            <li class=MsoNormal >If you made the config file in the sites-available       folder. You need to make a link to it in the sites-enabled folder. The       sites-enabled manages which of your virtual hosts will actually be booted       into Apache when it starts up. This can for example be useful when you       want to maintain virtual-host configuration files, but don't want the       sites to be live, or are in a deployment process. Link your newly created       file:</li>
-        </ul>
-        <pre>sudo ln -s /{your-path}/apache2/sites-available/020-mlab.conf /{your-path}/apache2/sites-enabled/020-mlab.conf&nbsp;</pre>
-
-        <ul>
-            <li>Restart Apache to make the changes take effect</li>
-        </ul>
-        <pre>sudo service apache2 restart</pre>
-
+        <p><b>Restart Apache to make the changes take effect, refer to the Apache documentation for your operating system on how to do this.</b></p>
 
         <h3>Alternative  2: Nginx configuration</h3>
-        <ul>
-            <li> Disable the default vhost by removing the symbolic link in /etc/nginx/sites-available/default:</li>
-        </ul>
-        <pre>sudo rm /etc/nginx/sites-enabled/default</pre>
+        <p>As with Apache you need to refer to the relevant nginx documentation as to which file should be edited.You need to change the server_name to match a URL that you’re using for the site.</p>
 
-        <ul>
-            <li> Create a new file /etc/nginx/sites-available/mlab to contain the mlab nginx configuration based on the code below. You may want  to change the server_name to match a URL that you’re  using for the site. </li>
-        </ul>
+        <pre>server {
+    listen  80 default_server;
+    server_name  localhost  {mlab_url} 127.0.0.1;
+    root /{mlab_code}/web;
+    index app.php;
+    ##  First try to serve mlab static files
+     location / {
+      try_files $uri $uri/ /app.php?$query_string;
+    }
+     ##  Static files in {mlab_elements}
+     location /mlab_elements {
+       alias /{mlab_elements};
+    }
+    ## mlab php requestst are passed on to the php5-fpm socket 
+     location ~ [^/]\.php(/|$) {
+      fastcgi_split_path_info ^(.+\.php)(/.+)$;
+      fastcgi_pass unix:/var/run/php5-fpm.sock;
+      fastcgi_index index.php;
+       include fastcgi_params;
+      fastcgi_param PATH_INFO    $fastcgi_path_info;
+      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+      }
+}</pre>
 
-        <pre>server {</pre>
-        <pre>    listen  80 default_server;</pre>
-        <pre>    server_name  localhost  {mlab_url} 127.0.0.1;</pre>
-        <pre>    root /{mlab_code}/web;</pre>
-        <pre>    index app.php;</pre>
-        <pre>    ##  First try to serve mlab static files</pre>
-        <pre>     location / {</pre>
-        <pre>      try_files $uri $uri/ /app.php?$query_string;</pre>
-        <pre>    }</pre>
-        <pre>     ##  Static files in {mlab_elements}</pre>
-        <pre>     location /mlab_elements {</pre>
-        <pre>       alias /{mlab_elements};</pre>
-        <pre>    }</pre>
-        <pre>    ## mlab php requestst  are passed on to the php5-fpm socket </pre>
-        <pre>     location ~ [^/]\.php(/|$) {</pre>
-        <pre>      fastcgi_split_path_info ^(.+\.php)(/.+)$;</pre>
-        <pre>      fastcgi_pass unix:/var/run/php5-fpm.sock;</pre>
-        <pre>      fastcgi_index index.php;</pre>
-        <pre>       include fastcgi_params;</pre>
-        <pre>      fastcgi_param PATH_INFO    $fastcgi_path_info;</pre>
-        <pre>      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;</pre>
-        <pre>      }</pre>
-        <pre>}</pre>
-
-        <ul>
-            <li> Create a symlink  to the new file to activate it</li>
-        </ul>
-        <pre>sudo ln -s /etc/nginx/sites-available/mlab /etc/nginx/sites-enabled/mlab</pre>
-        
-        <ul>
-            <li> In addition, you should set in /etc/php5/fpm/php.ini cgi.fix_pathinfo  = 0 </li>
-            <li> Restart after configuration changes:</li>
-        </ul>
-        <pre>sudo service php5-fpm restart </pre>
-        <pre>sudo service nginx restart</pre>
-
-        <p>Nginx should now be configured to serve mlab  code from /var/local/mlab/web  and using php5-fpm for .php files. In addition,  uploaded components and templates, and apps in progress will be served as  static content from /var/local/mlab_elements  Packaged components and templates</p>
-
-
-        <h3>Alternative  3: Lighttpd configuration</h3>
-        <ul>   
-            <li class=MsoNormal >Edit config file: /etc/lighttpd/conf-available/10-simple-vhost.conf</li>
-        </ul>
-        <pre># /usr/share/doc/lighttpd/simple-vhost.txt</pre>
-        <pre>server.modules += ( &quot;mod_simple_vhost&quot; )</pre>
-        <pre>## The document root of a virtual host is  document-root =</pre>
-        <pre>##&nbsp;&nbsp; simple-vhost.server-root  + $HTTP[&quot;host&quot;] + simple-vhost.document-root</pre>
-        <pre>simple-vhost.server-root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  = &quot;/home/utvikler/workspace/&quot;</pre>
-        <pre>simple-vhost.document-root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  = &quot;/&quot;</pre>
-        <pre>## the default host if no host is sent</pre>
-        <pre>simple-vhost.default-host&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  = &quot;local.dev&quot;</pre>
-
-        <ul>
-            <li class=MsoNormal >Edit config file: /etc/lighttpd/conf-available/20-mlab-vhost.conf</li>
-        </ul>
-        <pre># /usr/share/doc/lighttpd/simple-vhost.txt</pre>
-        <pre>server.modules += ( &quot;mod_accesslog&quot; )</pre>
-        <pre>## The document root of a virtual host is  document-root =</pre>
-        <pre>##&nbsp;&nbsp; simple-vhost.server-root  + $HTTP[&quot;host&quot;] + simple-vhost.document-root</pre>
-        <pre>$HTTP[&quot;url&quot;]  =~ &quot;/mlab_elements/resources($|/)&quot; {</pre>
-        <pre>simple-vhost.document-root  = &quot;/&quot;</pre>
-        <pre>dir-listing.activate = &quot;enable&quot;</pre>
-        <pre>dir-listing.show-readme = &quot;enable&quot;</pre>
-        <pre>dir-listing.hide-readme-file =  &quot;enable&quot;</pre>
-        <pre>} else $HTTP[&quot;host&quot;] =~ &quot;mlab.*&quot; {</pre>
-        <pre>simple-vhost.document-root  = &quot;/web/&quot;</pre>
-        <pre>url.rewrite-if-not-file = (&quot;^/$&quot; =&gt; &quot;app.php&quot;,</pre>
-        <pre>&quot;^/(?!.+\.php)[^\?]+(\?.*)?&quot;  =&gt; &quot;app.php/$1$2&quot;,</pre>
-        <pre>)</pre>
-        <pre>alias.url = ( &quot;/mlab_elements/&quot;  =&gt; &quot;/path_to_mlab/mlab_elements/&quot;  )</pre>
-        <pre>accesslog.filename = &quot;/var/log/lighttpd/access-mlab.log&quot;</pre>
-        <pre>}</pre>
-
-        <ul>
-            <li class=MsoNormal >Enable the new configuration (this is from Linux       command line):</li>
-        </ul>
-        <pre>sudo lighttpd-enable-mod simple-vhost</pre>
-        <pre>sudo lighttpd-enable-mod mlab-vhost</pre>
-        <pre>sudo /etc/init.d/lighttpd force-reload</pre>
-
+        <p>In addition, you should set in /etc/php5/fpm/php.ini cgi.fix_pathinfo = 0 </p>
+        <p><b>Restart nginx to make the changes take effect, refer to nginx documentation for your operating system on how to do this.</b></p>
 
 <!--version_mysql-->
-        <h2>Configure MySQL server</h2>
-        <ul>
-            <li>  UTF8  must be set in MySQL. Setting UTF8 defaults for MySQL is as  simple as adding a few lines to your configuration file (typically my.cnf in /etc/mysql/):</li>
-        </ul>
-        <pre>sudo nano /{your-path}/{your-file-name}.cnf</pre>
-
-        <ul>
-            <li>  Enter/add  the following settings:</li>
-        </ul>
-        <pre>[mysqld]</pre>
-        <pre>collation-server = utf8_general_ci</pre>
-        <pre>character-set-server = utf8</pre>
+        <h2>3.2 Configure database server</h2>
+        <p>Different database servers will require different settings, not all directly related to Mlab. The only thing we want to emphasise here is the need to enable UTF-8, this enables the use of non-ASCII characaters in Mlab, without this it will not work correctly. Setting UTF8 defaults for MySQL is as simple as adding a few lines to your configuration file (typically my.cnf in /etc/mysql/ on Mac/Linux/Unix variants, otherwise my.cnf inside the MySQL folder on Windows).</p>
+        <p>Update (or add) the following settings:</p>
+        <pre>[mysqld]<br>collation-server = utf8_general_ci<br>character-set-server = utf8</pre>
 <!--/version_mysql-->
 
 
 <!--timezone_php_ini-->
 <!--url_allowed_php_ini-->
-        <h2>PHP</h2>
-        <ul>
-            <li> If  you have problems with PHP  it could be that it is a higher version (typically 7.x) is installed. Mlab  requires version 5.4 or higher, but lower  than 7.0. See this for help: <a  href="http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04">http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04</a></li>
-            <li>  Symfony requires that the  option date.timezone is set in your php.ini file(s). If you do not know which php.ini you  are using you can run this command (if you run php-fpm):</li>
-        </ul>
+        <h2>3.3 Configuring PHP</h2>
+        <p>If you have problems with PHP it could be that it is a higher version (typically 7.x) is installed. Mlab requires version 5.4 or higher, but lower than 7.0. See this for help: <a href="http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04">http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04</a></p>
+        <p>Symfony, the main framework used by Mlab, requires that the option date.timezone is set in your php.ini file(s). If you do not know which php.ini you are using you can run this command (if you run php-fpm)</li>
 
         <pre>php5-fpm --ini </pre>
 
-        <p>OR this if you run PHP as a regular  CGI server:</p>
+        <p>Or this if you run PHP as a regular CGI server:</p>
         <pre>php5-cgi --ini</pre>
 
-        <p>This  will tell you the path to the relevant PHP file, open the php.ini file using nano or your favorite command  line editor and search for the line containing date.timezone.  Uncomment the directive by removing the ; sign in the beginning of the line,  and add the <a href="http://php.net/manual/en/timezones.php">appropriate timezone</a>
+        <p>This will tell you the path to the relevant PHP file, open the php.ini file using nano or your favorite command line editor and search for the line containing date.timezone.  Uncomment the directive by removing the ; (semicolon) sign in the beginning of the line,  and add the <a href="http://php.net/manual/en/timezones.php">appropriate timezone</a>
             for your application. For example Europe/Oslo.</p>
 
         <pre>[Date]</pre>
-        <pre>; Defines the default timezone  used by the date functions</pre>
+        <pre>; Defines the default timezone used by the date functions</pre>
         <pre>; http://php.net/date.timezone</pre>
         <pre>date.timezone = Europe/Oslo&nbsp;</pre>
-        <pre>If you run the php-fpm  version (and not php-cgi) you MUST restart the  hardware server when you do a change! It is not enough to just restart the web  server or PHP software.</pre>
+        <p><b>If you run the php-fpm version (and not php-cgi) you MUST restart the hardware server when you do a change! It is not enough to just restart the web server or PHP software.</b></p>
 <!--/url_allowed_php_ini-->
 <!--/timezone_php_ini-->
 
 
-        <h2>Start mlab  web-sockets messaging</h2>
-        <ul>
-            <li>  Mlab  uses web-sockets to exchange messages between the Mlab editing tool and the app  compilation and app market services. Run the following command to start it,  this should also be added to the computer’s startup routine  so it is always available.</li>
-        </ul>
-        <pre>cd /var/local/mlab/_minimal_websocket&nbsp;npm install&nbsp;npm start</pre>
+        <h2>3.4 Start mlab web-sockets messaging</h2>
+        <p>Mlab uses web-sockets to exchange messages between the Mlab editing tool and the app compilation and app market services. Run the following command to start it: </p>
+        <pre>cd {mlab_folder}/_minimal_websocket<br>>npm start</pre>
+        <p>The server configuration should be updated so that this Websocket server always starts when the server is rebooted, alternatively you should have a script that starts this at the same time as you start the main Mlab server. Refer to your OS documentation to find out how you create a service and how you can start this service whenever the computer is rebooted.</p>
 
+        <h1>4. Complete the Mlab installation </h1>
 
-        <h1>4. Complete Mlab installation </h1>
-
-        <h2>4.1 Alternative 1: Complete through installation web  page</h2>
-        <ul>
-            <li> The  set up should now be ready for running the Mlab installation script. Open a web browser  and go to <a  href="http://%7bmlab_url%7d/INSTALL/index.php">http://{mlab_url}/INSTALL/index.php</a>, replace {mlab_url} with the URL used for Mlab.</li>
-        </ul>
+        <h2>4.1 Alternative 1: Complete through installation web page</h2>
+        <p> The set up should now be ready for running the Mlab installation script. Open a web browser and go to http://{mlab_url}/INSTALL/index.php Replace {mlab_url} with the URL used for Mlab. Then follow the instructions on your screen.</p>
 
         
-        <h2><a name="_5:_(Optional)_Install"></a>4.2: (Alternative 2) Complete manually</h2>
+        <h2><a name="_5:_(Optional)_Install"></a>4.2 Alternative 2: Complete installation manually</h2>
         <p>It is safer to use the installation web page, but if you prefer to do it manually or you have encountered some problems you can follow the steps below.</p>
         
         
-        <h3>(Optional) install icons</h3>
-        <ul>
-            <li>  &quot;Install&quot;  your own icon set if you want to (Mlab includes some basic copyright free icons  with the default install).</li>
-        </ul>
-        <pre>cp -Rf /{mlab_elements}/icons/.  /{mlab_elements}/icons</pre>
+        <h3>4.2.1 Install icons (Optional)</h3>
+        <p>Install your own icon set, used to create icons for new apps, if you want to. Mlab includes some basic copyright free icons with the default install. To install them you simply copy them into /{mlab_elements}/icons/backgrounds or /{mlab_elements}/icons/foregrounds (each Mlab app icons is made up of a background and a foreground). Replace {mlab_elements} with the path you created in step <a href="#2_1">2.1</a>.</p>
         
         
 <!--import_empty_database-->
-        <h3 >Create the Mlab database and user</h3>
-        <pre>mysqladmin -u root -p create mlab</pre>
-        <pre>mysql -u root -p -e 'GRANT ALL PRIVILEGES ON mlab.* TO 'mlab'@'localhost' IDENTIFIED BY 'mlab_db_password';FLUSH  PRIVILEGES;’</pre>
-        <ul>
-            <li>  Setup  the database with tables and initial data<br>  The database will contain different data, users, installed components,  templates, categories etc.. If you do not want to load all templates and components manually, you may  load a database dump with the basic templates  and components in it</li>
-            <li>  If  you want an empty database run this command</li>
-        </ul>
-        <pre>mysql -u root -p &lt; /{mlab_code}/mlab_empty.sql&nbsp;</pre>
-        <ul>
-            <li>  If  you want a database with basic templates and components run this command</li>
-        </ul>
-        <pre>mysql -u root -p &lt; /var/local/mlab/mlab.sql</pre>
-        <ul>
-            <li>  Both databases contains a superuser with credentials &quot;<a href="mailto:admin@mlab.domain">admin@mlab.domain</a>&quot;  and &quot;mlab_password&quot;. Use  this to add your own admin  and delete the default one.</li>
-            <li> If  you chose the database with the templates and components loaded, you will also  have to copy the related template and component files.&nbsp;</li>
-        </ul>
-        <pre>cp -Rf /{mlab_code}/mlab_elements/components/* /{mlab_elements}/components&nbsp;</pre>
-        <pre>cp -Rf /{mlab_code}/mlab_elements/templates/* /{mlab_elements}/templates</pre>
+        <h3 >4.2.3 Prepare the Mlab database</h3>
+        <p>The database must be set up before Mlab works. You need to create the database and a database user, then you need to populate the new database with some data before you can use Mlab.</p>
+        <p><b>In all the commands below replace the various placeholders, such as "{mlab_database}" with values that matches your setup.</b></p>
+        <p>First we create a database and a user for that database from the command line:</p>
+        <pre>mysqladmin -u root -p create {mlab_database}</pre>
+        <pre>mysql -u root -p -e "GRANT ALL PRIVILEGES ON mlab.* TO '{mlab_database}'@'localhost' IDENTIFIED BY '{mlab_db_password}'; FLUSH PRIVILEGES;"</pre>
+        <p>Next we need to upload some data into the new database. You now have two options. You can start from scratch with no data apart from a user that you can log in as. With this option you need to manually install all the components and templates to use in your Mlab installation. If, however, you do not want to load all templates and components manually, you may load a database with the basic Mlab templates and components already in it.</p>
+        <p>Empty database command:</p>
+        <pre>mysql -u root -p mlab &lt; /{mlab_code}/mlab_empty.sql</pre>
+        <p>Database with basic templates and components command:</p>
+        <pre>mysql -u root -p mlab &lt; /{mlab_code}/mlab.sql</pre>
+        <p>Both databases contains a user with "superadmin" credentials, the initial login is &quot;admin@mlab.domain&quot; with password &quot;mlab_password&quot;. Use this to add your own super admin user and delete the default user, or at the very least change the password for the default user.</p>
+
+        <p><b>If you chose the database with the templates and components loaded, you also need to copy the related template and component files.</b></p>
+        <p>Use your preferred copy method to move files from</p>
+        <pre>/{mlab_code}/mlab_elements/components/*</pre>
+        <pre>/{mlab_code}/mlab_elements/templates/* </pre>
+        <p>to</p>
+        <pre>/{mlab_elements}/components</pre>
+        <pre>/{mlab_elements}/templates</pre>
 <!--/import_empty_database-->
         
         
 <!--version_composer-->
-        <h3 >Installing Composer</h3>
-        <ul>
-            <li> Composer  is a package manager for PHP. It is used to install the Symfony  framework that Mlab uses on the  server side. The following commands  installs Composer (irrespective  of OS used):</li>
-        </ul>
-        <pre>cd /{mlab_code}/bin</pre>
-        <pre>sudo curl -sS https://getcomposer.org/installer  | php</pre>
-        <pre>sudo chmod composer.phar</pre>
+        <h3 >4.2.4 Installing Composer</h3>
+        <p> Composer is a package manager for PHP. It is used to install the Symfony framework that Mlab uses on the server side. Follow the instructions on the <a href="https://getcomposer.org/download/">official Composer download page</a> to install it.</p>
 <!--/version_composer-->
         
         
 <!--version_symfony-->
-        <h3 >Complete Symfony  installation</h3>
-        <ul>
-            <li> At  this stage the composer package manager will be used to install the Symfony framework,  Symfony libraries and some Javascript libraries used by Mlab on the front end.</li>
-        </ul>
+        <h3 >4.2.5 Complete Symfony installation</h3>
+        <p> At this stage the composer package manager will be used to install the Symfony framework,  Symfony libraries and some Javascript libraries used by Mlab on the front end. The commands below are the same for all operating systems. <b>You may need to run them as a administrative/root user.</b></p>
         <pre>cd /{mlab_code}/</pre>
-        <pre>sudo bin/composer.phar install</pre>
-        <ul>
-            <li> This creates the&nbsp;parameters.yml file&nbsp;(in&nbsp;app/config) if it does  not exist, using&nbsp;parameters.yml.dist&nbsp;as a  template. </li>
-            <li> Composer install&nbsp;will generate  the cache in&nbsp;app/cache. You may need to correct  permissions on the cache folder after running&nbsp;composer install</li>
-            <li>  Check  that everything works OK and that versions of tools are correct by running this  command</li>
-        </ul>
-        <pre>Sudo php app/check.php</pre>
+        <pre>bin/composer.phar install</pre>
+        <p>This creates the parameters.yml file (in app/config) if it does not exist, using parameters.yml.dist as a template. </p>
+        <p>The Composer installer will also generate the cache in app/cache. You may need to correct permissions on the cache folder after running composer install</p>
+        <p>Check that everything works OK and that versions of tools are correct by running this command (possibly as an administrative/root user):</p>
+        <pre>php app/check.php</pre>
 
 <!--bootstrap_symfony-->
-        <ul>
-            <li>  If you get an error regarding  &quot;bootstrap.php.cache&quot; (missing,  etc), usually the case when starting  or moving to new version of Symfony,  run this from root of site:</li>
-        </ul>
+        <p>If you get an error regarding  &quot;bootstrap.php.cache&quot; (missing,  etc), usually the case when starting or moving to new version of Symfony, run this from the root folder of Mlab site:</p>
         <pre>php ./vendor/sensio/distribution-bundle/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php  </pre>
-        <p>See:&nbsp;<a  href="http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache">http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache</a></p>
+        <p>See: <a href="http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache">http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache</a> for more information.</p>
 <!--/bootstrap_symfony-->
 
-        <ul>
-            <li> Remove/delete&nbsp;app/.htaccess&nbsp;</li>
-        </ul>
-        <pre>Sudo rm app/.htaccess&nbsp;</pre>
-
-
-        <h3 >Edit&nbsp;parameters.yml</h3>
-        <ul>
-            <li>  Composer should have  given you a parameters.yml  in&nbsp;app/config. Edit this file according to your setup, pay  particular attention to paths and login/password details. The database settings  must match the database you set up using MySQL earlier.</li>
-            <li> Clear  the cache, check permissions</li>
-        </ul>
-        <pre>sudo php app/console cache:clear --env=prod</pre>
-        <pre>sudo php app/console cache:clear --env=dev</pre>
-        <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code}/app/cache -R</pre>
-        <pre>sudo chown {webserveruser}:{webserveruser} {mlab_code}/app/logs -R</pre>
+        <p>Remove the {mlab_code}/app/.htaccess using the relevant command for your platform.</p>
+        
+        <h3 >4.2.6 Edit parameters.yml, clear the cache and set directory permissions</h3>
+        <p>The Composer installer should have created a parameters.yml in the /app/config directory. Edit this file according to your setup, pay particular attention to paths and login/password details. The database settings must match the database you set up using MySQL earlier.</p>
+        <p>Next you need to clear the cache that Symfony creates and update the access permissions for the cache and log folders (commands may need to be run as administrator/root user):</p>
+        <br>
+        <div class="tab">
+            <button class="tablinks426 defaultOpen" onclick="openTab(event, 'Debian', '426')">Ubuntu 14.04, Mac and Linux/Unix/BSD variants</button>
+            <button class="tablinks426" onclick="openTab(event, 'Windows', '426')">Windows</button>
+        </div>              
+        <div id="Debian426" class="tabcontent tabcontent426">
+            <pre>php app/console cache:clear --env=prod<br>php app/console cache:clear --env=dev<br>sudo chown {webserveruser}:{webserveruser} {mlab_code}/app/cache -R<br>sudo chown {webserveruser}:{webserveruser} {mlab_code}/app/logs -R</pre>
+        </div>
+        <div id="Windows426" class="tabcontent tabcontent426">
+            <pre>php app/console cache:clear --env=prod<br>php app/console cache:clear --env=dev<br>icacls "{mlab_code}/app/cache" /grant {webserveruser}:(OI)(CI)F /T<br>icacls "{mlab_code}/app/logs" /grant {webserveruser}:(OI)(CI)F /TR</pre>
+        </div>        
 <!--/version_symfony-->
 
 <!--libraries_js-->
-        <h3>Install JavaScript libraries</h3>
-        <ul>
-            <li>Mlab requires a number of jQuery JavaScript libraries. These are normally installed when you install the Symfony libraries. If they have not been installed yu can run the command below to manually install them.</li>
-        </ul>
+        <h3>4.2.7 Install JavaScript libraries</h3>
+        <p>Mlab requires a number of jQuery JavaScript libraries. These are normally installed when you install the Symfony libraries. If they have not been installed you can run the command below to manually install them (you may need to do this as an administrator/root user).</p>
         <pre>cd /{mlab_code}/</pre>
-        <pre>sudo bin/composer.phar run-script post-install-cmd </pre>
+        <pre>bin/composer.phar run-script post-install-cmd </pre>
 <!--/libraries_js-->
-
+    <h3 style="text-align: center;">---MLAB INSTALLATION COMPLETED---</h3>
 
 <script>
 function openTab(evt, tabName, tabGroup) {
