@@ -70,7 +70,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
  * the result should be the index page which we display in the calling tab
  */
   		function assignSubmitDataHandler(dialog_id) {
+            console.log("Assign - #" + dialog_id + " form");
   			$( "#" + dialog_id + " form").submit(function( event ) {
+                console.log("Submit - #" + dialog_id + " form");
   				event.preventDefault();
   				$( "#" + dialog_id ).dialog( "close" );
   				

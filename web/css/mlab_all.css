@@ -1100,13 +1100,7 @@ opacity: 0.5;
 
 /* styling of the new category treeview used in group dialog box */
 
-#mlab_group_edit {
-    width: 48%;
-    height: 300px;
-    float: left;
-}
-
-#mlab_categories_wrapper {
+#mlab_categories_wrapper_new, #mlab_categories_wrapper_edit {
     float: left;
     width: 300px;
     height: 400px;

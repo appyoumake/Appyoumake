@@ -12,7 +12,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block body -%}
     <h4>{% trans %}app.admin.groups.edit.heading{% endtrans %}</h4>
 
-    <div id="mlab_categories_wrapper">
+    <div id="mlab_categories_wrapper_edit">
         {{ form(edit_form) }}
     </div>
 
@@ -33,13 +33,18 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <script>
                 
         $(document).ready(function() {
-            $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
+            $('#mlab_categories_wrapper_edit form').on("submit", function(e){
                 var items = $('#mlab_categories_tree_edit').jstree(true).get_json(null);
+                if (items.length < 1) {
+                    alert("You must add at least one category for this group before saving it.");
+                    e.stopImmediatePropagation();
+                    return false;
+                }
                 var tags = [];
                 for (i in items) {
                     getTreeAsArray(items[i], tags);
                 }
-                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
+                $('#mlab_categories_wrapper_edit [name="sinett_mlab_builderbundle_group[categories]"').val(JSON.stringify(tags)); 
                 return true;
                 }
             );
@@ -48,8 +53,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         
 //initialise the category treeview
         function mlab_category_init() {
-            if ($("#sinett_mlab_builderbundle_group_categories").val()) {
-                var dt = (JSON.parse($("#sinett_mlab_builderbundle_group_categories").val()));
+            if ($('#mlab_categories_wrapper_edit [name="sinett_mlab_builderbundle_group[categories]"]').val()) {
+                var dt = (JSON.parse($('#mlab_categories_wrapper_edit [name="sinett_mlab_builderbundle_group[categories]"]').val()));
             } else {
                 var dt = null;
             }
@@ -73,6 +78,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             } else if ( $('#mlab_categories_tree_edit').jstree(true).get_path(sel[0]).length <= 2 ) {
                 sel = ref.create_node(sel[0], {"type":"file"});
             } else {
+                alert("You can only have three levels of categories. Please select a higher level category before adding a new category."); 
                 return;
             }
             if(sel) {
@@ -83,7 +89,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         function mlab_category_rename() {
             var ref = $('#mlab_categories_tree_edit').jstree(true),
                 sel = ref.get_selected();
-            if(!sel.length) { return false; }
+            if(!sel.length) { alert("Please select an entry to edit."); return false; }
             sel = sel[0];
             ref.edit(sel);
         };
@@ -92,7 +98,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             if (confirm("Are you sure you want to delete the current branch? This cannot be changed!")) {
                 var ref = $('#mlab_categories_tree_edit').jstree(true),
                     sel = ref.get_selected();
-                if(!sel.length) { return false; }
+                if(!sel.length) { alert("Please select an entry to delete."); return false; }
                 ref.delete_node(sel);
             }
         };

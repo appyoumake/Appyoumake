@@ -12,28 +12,39 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block body -%}
     <h4>{% trans %}app.admin.groups.new.heading{% endtrans %}</h4>
 
-    <div id="mlab_group_edit">
+    <div id="mlab_categories_wrapper_new">
         {{ form(form) }}
     </div>
     
-    <div id="mlab_categories_tree">
-        
-    </div>
-    <div>
-        <img class="mlab_mini_tools" src="/img/newVersion.png" onclick="mlab_category_create();">
-        <img class="mlab_mini_tools" src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
-        <img class="mlab_mini_tools" src="/img/notPublished.png" onclick="mlab_category_delete();">
+    <div id="mlab_categories_tree_edit_wrapper">
+        <div id="mlab_categories_tree_edit_headline">
+            <span>Kategorier</span>
+            <div class="right">
+                <img src="/img/idelete.png" onclick="mlab_category_delete();">
+                <img src="/img/menu_field_edit.png" onclick="mlab_category_rename();">
+                <img src="/img/new_general.png" onclick="mlab_category_create();">
+            </div>
+        </div>
+        <div id="mlab_categories_tree">
+
+        </div>
     </div>
     
     <script>
         $(document).ready(function() {
-            $('form[name="sinett_mlab_builderbundle_group"]').on("submit", function(){
+            $('#mlab_categories_wrapper_new form').on("submit", function(e){
+                console.log("JSTREE - name sinett_mlab_builderbundle_group");
                 var items = $('#mlab_categories_tree').jstree(true).get_json(null);
+                if (items.length < 1) {
+                    alert("You must add at least one category for this group before saving it.");
+                    e.stopImmediatePropagation();
+                    return false;
+                }
                 var tags = [];
                 for (i in items) {
                     getTreeAsArray(items[i], tags);
                 }
-                $("#sinett_mlab_builderbundle_group_categories").val(JSON.stringify(tags)); 
+                $('#mlab_categories_wrapper_new [name="sinett_mlab_builderbundle_group[categories]"]').val(JSON.stringify(tags)); 
                 return true;
                 }
             );
@@ -57,6 +68,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             } else if ( $('#mlab_categories_tree').jstree(true).get_path(sel[0]).length <= 2 ) {
                 sel = ref.create_node(sel[0], {"type":"file"});
             } else {
+                alert("You can only have three levels of categories. Please select a higher level category before adding a new category."); 
                 return;
             }
             if(sel) {
@@ -67,7 +79,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         function mlab_category_rename() {
             var ref = $('#mlab_categories_tree').jstree(true),
                 sel = ref.get_selected();
-            if(!sel.length) { return false; }
+            if(!sel.length) { alert("Please select an entry to edit."); return false; }
             sel = sel[0];
             ref.edit(sel);
         };
@@ -76,7 +88,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             if (confirm("Are you sure you want to delete the current branch? This cannot be changed!")) {
                 var ref = $('#mlab_categories_tree').jstree(true),
                     sel = ref.get_selected();
-                if(!sel.length) { return false; }
+                if(!sel.length) { alert("Please select an entry to delete."); return false; }
                 ref.delete_node(sel);
             }
         };

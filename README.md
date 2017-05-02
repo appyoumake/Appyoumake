@@ -1,6 +1,7 @@
-Mlab App Builder; editor source code
+Mlab App Builder; editor source code (version 0.9.1)
 ====================================
 Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+
 Proprietary and confidential
 Unauthorized copying of this file, via any medium is strictly prohibited
 

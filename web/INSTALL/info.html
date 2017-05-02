@@ -324,7 +324,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 <!--version_nodejs-->
 <!--version_uglifyjs-->
         <h2><a name="_1.4_Install_NodeJS_npm_and_uglifyjs"></a>1.4 Install NodeJS, npm and uglifyjs</h2>
-        <p>NodeJS is used for a small Websockets server, this is required in the app compilation process. Additionally, UglifyJS is used to protect the front end source code from copying. Without this protection Mlab will not run.</p>
+        <p>NodeJS is used for a small Websockets server, this is required to talk to other Mlab services such as the app compilation service. Additionally, UglifyJS is used to protect the front end source code from copying. Without this protection Mlab will not run.</p>
         <div class="tab">
             <button class="tablinks141 defaultOpen" onclick="openTab(event, 'Debian', '141')">Ubuntu 14.04</button>
             <button class="tablinks141" onclick="openTab(event, 'Windows', '141')">Windows</button>
@@ -594,6 +594,16 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         <pre>cd /{mlab_code}/</pre>
         <pre>bin/composer.phar run-script post-install-cmd </pre>
 <!--/libraries_js-->
+
+<!--assetic_update-->
+        <h3>4.2.8 Update the JavaScript assets</h3>
+        <p>It is a contractual obligation to use UglifyJS to protect the Javascript source in Mlab. To do this you need to generate a single combined "asset" JavaScript from the original code using the commands below (you may need to do this as an administrator/root user). <b>If you do not do this Mlab will fail to work.</b></p>
+        <pre>cd /{mlab_code}/</pre>
+        <pre>app/console --env=prod assetic:dump</pre>
+        <pre>app/console --env=dev assetic:dump</pre>
+<!--/assetic_update-->
+
+app/console --env=prod assetic:dump
     <h3 style="text-align: center;">---MLAB INSTALLATION COMPLETED---</h3>
 
 <script>

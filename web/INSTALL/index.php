@@ -112,6 +112,12 @@ switch ($_REQUEST['fix']) {
         $next_step = 4;
         break;
 
+    case "assetic_update":
+        putenv($system_path);
+        $p = trim(shell_exec("app/console --env=prod assetic:dump"));
+        $next_step = 4;
+        break;
+
     case "bootstrap_symfony":
         $p = trim(shell_exec("bin/composer run-script post-update-cmd"));
         $next_step = 4;
@@ -224,8 +230,13 @@ $checks = array(
     
     "libraries_js" =>            array( "label"     => "Javascript libraries", 
                                         "help"      => "These Javascript and libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-1.9.0'",
-                                        "check"     => "bowser.js,jquery.contextmenu.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery-ui.js,jquery.uploadfile-1.9.0.js", 
+                                        "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-1.9.0.js", 
                                         "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
+    
+    "assetic_update" =>            array( "label"     => "Javascript protection", 
+                                        "help"      => "The Javascript libraries created by FFI must be protected using UglifyJS as per your contractual obligations. To do this you need to generate a single combined 'asset' JavaScript file from the original code. If you do not do this Mlab will fail to work.",
+                                        "check"     => "web/js/*.js", 
+                                        "action"    => "You can <a href='index.php?fix=assetic_update'>click here</a> to run the Symfony assetic command which protects the source code, otherwise you can follow the manual instructions."), 
     
     "import_empty_database" =>   array( "label"     => "Initial Mlab data", 
                                         "help"      => "To start using Mlab the basic database must be set up and an admin user must be added. ",
@@ -517,7 +528,6 @@ function version_mysql() {
     }
     
     $info = $mysqli->server_version;
-    die($info . "---");
     $info = str_replace("version", "", $info);
     return check_version_number($info, $pre_checks["version_mysql"]["check"]);
 }
@@ -576,12 +586,25 @@ function bootstrap_symfony() {
     }
 }
 
+function assetic_update() {
+    global $checks;
+    $files = glob($checks["assetic_update"]["check"]);
+    if (sizeof($files) > 0) {
+        foreach($files as $file) {
+            if (preg_match('/[0-9]{7,}/', basename($file))) {
+                return true;
+            }
+        }
+    }
+    return "Assetic file not found in " . $checks["assetic_update"]["check"];
+}
+
 function libraries_js() {
     global $checks;
     $libs = explode(",", $checks["libraries_js"]["check"]);
     foreach ($libs as $lib) {
-        if (!file_exists("src/Sinett/MLAB/BuilderBundle/Resources/public/js/$lib")) {
-            return "Library src/Sinett/MLAB/BuilderBundle/Resources/public/js/$lib not found";
+        if (!file_exists("web/js/$lib")) {
+            return "Library web/js/$lib not found";
         }
     }
     return true;
@@ -801,9 +824,9 @@ init();
                         <?php 
                             foreach ($checks as $key => $value) {
                                 if ($value["result"] === true) {
-                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
+                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"], ENT_QUOTES) . "'><img src='question.png'></td></tr>\n";
                                 } else {
-                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $value[result]</td><td title='" . htmlentities($value["help"]) . "'><img src='question.png'></td></tr>\n";
+                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $value[result]</td><td title='" . htmlentities($value["help"], ENT_QUOTES) . "'><img src='question.png'></td></tr>\n";
                                 }
                             }
                         ?>
