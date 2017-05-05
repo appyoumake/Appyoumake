@@ -413,9 +413,27 @@ function init() {
         } else {
             $checks[$key]['result'] = false;
         }
-        if (!$checks[$key]['result']) {
+        if ($checks[$key]['result'] !== true) {
             $fail_versions = true;
         }
+        
+//loop through the info.html content and assign help text. 
+//this is done by looking for comment lines with $key as the content
+        $update_help = false;
+
+        foreach ($info as $line) {
+            if (!$update_help && $line == "<!--$key-->") {
+                $update_help = true;
+                $checks[$key]['action'] = '';
+            } else if ($update_help) {
+                if ($line == "<!--/$key-->") {
+                    $update_help = false;
+                } else {
+                    $checks[$key]['action'] .= $line;
+                }
+            } 
+        }
+        
     }
     
 //looping through all pre checks and see if they are present of missing
@@ -425,7 +443,7 @@ function init() {
         } else {
             $pre_checks[$key]['result'] = false;
         }
-        if (!$pre_checks[$key]['result']) {
+        if ($pre_checks[$key]['result'] !== true) {
             $fail_pre_check_versions = true;
         }
         
@@ -527,8 +545,8 @@ function version_mysql() {
         return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
     }
     
-    $info = $mysqli->server_version;
-    $info = str_replace("version", "", $info);
+    $info = $mysqli->server_info;
+    //$info = str_replace("version", "", $info);
     return check_version_number($info, $pre_checks["version_mysql"]["check"]);
 }
 
@@ -726,13 +744,13 @@ init();
 <!-- First we show instructions for how to install web server, database server, etc -->
                 <table id="1" <?php if ($next_step == 1 ) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
                     <thead>
-                        <tr class="infobar"><td colspan="4"><h3>Step 1: Web, database and PHP server setup</h3></td></tr>
+                        <tr class="infobar"><td colspan="2"><h3>Step 1: Web, database and PHP server setup</h3></td></tr>
                         <?php if ($fail_pre_check_versions) { ?>
-                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. Please correct the errors below before completing the Mlab installation</p></td></tr>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=1';" class="error">Retry</button></td></tr>
+                            <tr class="infobar"><td colspan="2"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. Please correct the errors below before completing the Mlab installation</p></td></tr>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=1';" class="error">Retry</button></td></tr>
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. They all seem to be correctly installed on this server!</p></td></tr>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="move(1)">Continue</button></td></tr>
+                            <tr class="infobar"><td colspan="2"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. They all seem to be correctly installed on this server!</p></td></tr>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="move(1)">Continue</button></td></tr>
                         <?php } ?>
                         <tr><td><em>Item</em></td><td><em>Status</em></td></tr>
                     </thead>
@@ -810,30 +828,30 @@ init();
 <!-- Then the libs and server versions checks -->
                 <table id="4" <?php if ($next_step == 4) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
                     <thead>
-                        <tr class="infobar"><td colspan="4"><h3>Step 3: Versions and libraries</h3></td></tr>
+                        <tr class="infobar"><td colspan="2"><h3>Step 4: Versions and libraries</h3></td></tr>
                         <?php if ($fail_versions) { ?>
-                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. Please correct the errors below before completing the Mlab installation</p></td></tr>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                            <tr class="infobar"><td colspan="2"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. Please correct the errors below before completing the Mlab installation</p></td></tr>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="4"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. They all seem to be correctly installed on this server!</p></td></tr>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Complete installation by removing the installation files</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                            <tr class="infobar"><td colspan="2"><p>Mlab requires various servers, helper programs and libraries to be present to work correctly. They all seem to be correctly installed on this server!</p></td></tr>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="move(1);">Continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
                         <?php } ?>
-                        <tr><td><em>Item</em></td><td><em>Status</em></td><td><em>Action required</em></td><td>&nbsp</td></tr>
+                        <tr><td><em>Item</em></td><td><em>Status</em></td></tr>
                     </thead>
                     <tbody>
                         <?php 
                             foreach ($checks as $key => $value) {
                                 if ($value["result"] === true) {
-                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='ok.png'></td><td>None</td><td title='" . htmlentities($value["help"], ENT_QUOTES) . "'><img src='question.png'></td></tr>\n";
+                                    echo "<tr><td>$value[label]</td><td><img src='ok.png'></td></tr>\n";
                                 } else {
-                                    echo "<tr><td>" . $value["label"] . "</td><td><img src='fail.png'></td><td>$value[action]<hr>Error: $value[result]</td><td title='" . htmlentities($value["help"], ENT_QUOTES) . "'><img src='question.png'></td></tr>\n";
+                                    echo "<tr><td><details><summary>$value[label]</summary><p>Error: $value[result]<hr>$value[action]</p></details></td><td><img src='fail.png'></td></tr>\n";
                                 }
                             }
                         ?>
                         <?php if ($fail_versions) { ?>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="window.location.href = 'index.php?next_step=4';" class="error">Retry</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="4"><button type="button" onclick="move(1);">Continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
+                            <tr class="infobar"><td colspan="2"><button type="button" onclick="move(1);">Continue</button><button type="button" onclick="move(-1)">Go back</button></td></tr>
                         <?php } ?>
                     </tbody>
                 </table>
