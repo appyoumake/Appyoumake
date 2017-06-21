@@ -30,7 +30,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     
             {% for group_label, choice in options %}
                 {% for version in choice.versions %}
-                    <option data-imagesrc="{{ url_apps ~ choice.path ~ '/' ~ version.version ~ '/' ~ app_icon_path }}" data-description="{{ choice.description }} ({{ version.version }})" value="{{ choice.id }}.{{ version.id }}">{{ choice.name }}</option>
+                    <option data-imagesrc="{{ url_apps ~ choice.path ~ '/' ~ version.version ~ '/' ~ app_icon_path }}" data-description="{{ choice.name }} ({{ version.version }})" value="{{ choice.id }}.{{ version.id }}">{{ choice.name }}</option>
                 {% endfor %}
             {% endfor %}
                     

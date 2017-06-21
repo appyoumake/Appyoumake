@@ -747,6 +747,44 @@ class FileManagement {
         } //end try to unlink
     }    
     
+    /**
+     * Moves a page, this is done by renaming pages so they are always sequential.
+     * 
+     * @param type $app
+     * @param type $page_num
+     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
+     */
+    public function reorderPage($app, $from_page, $to_page) {
+        /*
+//get path of file to delete
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
+        $page_to_move = $this->getPageFileName($app_path, $from_page);
+        $start_page_loop = min($from_page, $to_page);
+        
+       
+        $pages = glob ( $app_path . "/???.html" );
+        foreach ($pages as $page) {
+            $page = basename($page);
+            if ($page > $page_to_move) {
+                $newname = substr("000" . (intval($page) - 1), -3) . ".html";
+                rename("$app_path/$page", "$app_path/$newname");
+            } 
+
+        }
+
+        if (file_exists("$app_path/$page_to_move")) {
+            return intval($page_to_move);
+        } else {
+            $page_to_open = substr("000" . (intval($page_to_move) - 1), -3) . ".html";
+            if (file_exists("$app_path/$page_to_open")) {
+                return intval($page_to_open);
+            } else {
+                return 0;
+            }
+        }*/
+
+    }    
+    
 /**
  * returns an associative array of file names and titles of the pages for an app
  * @param type $app

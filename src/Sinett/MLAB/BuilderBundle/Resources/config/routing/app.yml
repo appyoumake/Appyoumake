@@ -77,6 +77,10 @@ app_builder_page_delete:
     path:   /builder/{app_id}/{page_num}/{uid}/page_delete
     defaults: { _controller: "SinettMLABBuilderBundle:App:deletePage" }
     
+app_builder_page_reorder:
+    path:   /builder/{app_id}/{from_page}/{to_page}/page_reorder
+    defaults: { _controller: "SinettMLABBuilderBundle:App:reorderPage" }
+    
 app_builder_app_unlock:
     path:   /builder/app_removelocks
     defaults: { _controller: "SinettMLABBuilderBundle:App:removeLocks" }

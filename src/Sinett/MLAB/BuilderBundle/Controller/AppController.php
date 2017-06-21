@@ -844,6 +844,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
+                                        "page_reorder " => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_')),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
                                         "app_preview" => $this->generateUrl('app_preview',  array('app_id' => '_APPID_')),
@@ -1176,6 +1177,54 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             
         }
     }    
+    
+    /**
+     * Delete a page. Will fail if someone has a page open that has a number higher than page to delete
+     * @param type $app_id
+     * @param type $page_num
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function reorderPageAction ($app_id, $from_page, $to_page) {
+        /*
+//for the time being do not allow them to change the index page
+        if ($from_page == "index" || $to_page == "index") {
+            return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.cant.move.indexpage') . ": %d", $app_id)));
+        }
+        
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+    	
+//get the name of the file to delete
+	    $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        
+//renames the individual page files, returns page from and to variables so frontend can update variables
+        $res = $file_mgmt->reorderPage($app, $from_page, $to_page);
+        if ($res === false) {
+            return new JsonResponse(array(
+                    'result' => 'error',
+                    'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionError'),
+                    'from_page' => $from_page,
+                    'to_page' => $to_page));
+        } else {
+            return new JsonResponse(array(
+                    'result' => 'success',
+                    'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
+                    'from_page' => $from_page,
+                    'to_page' => $to_page));
+        }*/
+    }        
     
     function removeLocksAction() {
 	    $file_mgmt = $this->get('file_management');
