@@ -543,6 +543,22 @@ Mlab_dt_management.prototype = {
     },
 
 /**
+ * Retrieve content of a page from server and insert it into the editor area
+ * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
+ */
+    file_import : function (app_id) {
+        that = this;
+        this.page_save( function() { that.file_import_process(app_id, page_num); } );
+    },
+
+    file_import_process : function (app_id) {
+
+        
+
+    },
+
+
+/**
  * This will update the title of the currently open page and also update relevant items other places
  */
     page_update_title : function () {

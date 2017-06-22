@@ -146,8 +146,7 @@ class AppController extends Controller
      * 5: When callback receives a success it upload the files from here, using RSYNC, SFTP, or similar tools.
      * 6: When upload done, redirects to edit the app
      */
-    public function createAction(Request $request)
-    {
+    public function createAction(Request $request) {
     	$entity = new App();
         $form = $this->createAppForm($entity, 'create');
         $form->handleRequest($request);
@@ -1424,6 +1423,41 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
     }
+    
+    /**
+     * Edits an existing App entity.
+     *
+     */
+    public function importFileAction(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die($this->get('translator')->trans('appController.die.no.access'));
+        }
+
+        $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+        
+        if (!$entity) {
+            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
+        }
+        
+
+//now we store the splash file and the icon file (if created)
+        /*if (null != $request && $request->isValid()) {
+            $splash_filename = $config["filenames"]["app_splash_screen"] . "." . $entity->getSplashFile()->getClientOriginalExtension();
+            if (!move_uploaded_file($entity->getSplashFile()->getPathname(), "$app_destination/$splash_filename")) {
+                return new JsonResponse(array(
+                        'action' => 'ADD',
+                        'result' => 'FAILURE',
+                        'message' => $this->get('translator')->trans('appController.msg.unable.store.splach.screen')));
+            }
+        }*/
+            
+        return new JsonResponse(array('db_table' => 'app',
+        		'db_id' => $id,
+        		'result' => 'FAILURE',
+        		'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
+            
+    }
 
     
     public function getUploadedFilesAction($app_id, $file_types) {
@@ -1663,4 +1697,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             rmdir($dir);
         }
     }
+    
+    
 }
