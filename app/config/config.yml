@@ -45,15 +45,14 @@ twig:
 
 # Assetic Configuration
 assetic:
-    debug:          %kernel.debug%
-    use_controller: true
-    bundles: [ SinettMLABBuilderBundle, FOSUserBundle ]
     filters:
         cssrewrite: ~
         uglifyjs2:
             bin: /usr/bin/uglifyjs
             mangle: true
             compress: true
+    debug:          %kernel.debug%
+    bundles: [ SinettMLABBuilderBundle, FOSUserBundle ]
             
     assets:
 #        common_jquery_js:

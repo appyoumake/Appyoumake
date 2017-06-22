@@ -212,9 +212,9 @@ Mlab_dt_management.prototype = {
             }
 
             if (i == currpage) {
-                list.append("<li data-mlab-page-open='" + i + "'>" + span + this.parent.app.page_names[i] + "</li>");
+                list.append("<li data-mlab-page-num='" + i + "' data-mlab-page-open='" + i + "'>" + span + this.parent.app.page_names[i] + "</li>");
             } else {
-                list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
+                list.append("<li data-mlab-page-num='" + i + "'>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
             }
         }
 
@@ -428,7 +428,7 @@ Mlab_dt_management.prototype = {
         }
         that = this;
 //turn off automatic saving before moving file
-        this.page_save( function() { mlab.dt.utils.timer_stop(); that.page_reorder_process(); } );
+        this.page_save( function() { mlab.dt.utils.timer_stop(); that.page_reorder_process(event, ui); } );
     },
 
     page_reorder_process : function (event, ui) {
@@ -436,23 +436,28 @@ Mlab_dt_management.prototype = {
         debugger;
         
         var app_id = this.parent.app.id;
-        var from_page = ui.item.find("a").data("mlab-page-open");
+        var from_page = ui.item.data("mlab-page-num");
         var to_page = ui.item.index();
-        var url = this.parent.urls.page_reorder.replace("_ID_", app_id);
         var that = this;
 
+        var url = this.parent.urls.page_reorder.replace("_ID_", app_id);
         url = url.replace("_FROM_PAGE_", from_page);
         url = url.replace("_TO_PAGE_", to_page);
+        url = url.replace("_UID_", this.parent.uid);
+        
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.reordering.page"], true);
 
         $.get(url, function( data ) {
             console.log(data);
-            
+            that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                alert("yowsa");
+//update the list of pages to the new order, the page numbers have changed so we need to do that
+                that.parent.app.page_names = data.page_names;
+                that.parent.app.curr_page_num = data.to_page;
             } else {
                 alert("Unable to move page");
             }
+            that.app_update_gui_metadata();
             mlab.dt.utils.timer_start(); 
         });
     },

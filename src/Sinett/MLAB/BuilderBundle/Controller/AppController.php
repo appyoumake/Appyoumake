@@ -739,32 +739,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             die($this->get('translator')->trans('appController.die.no.access'));
         }
         
-//load translation for use in Javascript
-        /*
-         * 
-         * http://blog.servergrove.com/2014/03/18/symfony2-components-overview-translation/
-         * 
-         * 
- 
-        include_once $this->get('kernel')->getRootDir() . '/../vendor/autoload.php';
-
-        $local_translator = new Translator('en_GB');
-        $local_translator->addLoader('yaml', new YamlFileLoader());
-        $local_translator->addResource('yaml', $this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.en_GB.yml' , 'en_GB');
-
-        $dumper = new JsonFileDumper();
-        $dumper->dump($catalogue, array('path' => __DIR__.'/dumps'));
-        
-        die($local_translator->trans('app.admin.categories.new.heading'));        
-
-        
-        $loader = new YamlFileLoader();
-        $catalogue = $loader->load($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.en_GB.yml' , 'en_GB');
-
-        $dumper = new JsonFileDumper();
-        $dumper->dump($catalogue);        
-*/
-        
         $yaml = new Parser();
         $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->getParameter('locale') . '.yml'));
 
@@ -844,7 +818,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
-                                        "page_reorder " => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_')),
+                                        "page_reorder" => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_', 'uid' => '_UID_')),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
                                         "app_preview" => $this->generateUrl('app_preview',  array('app_id' => '_APPID_')),
@@ -1183,7 +1157,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @param type $page_num
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function reorderPageAction ($app_id, $from_page, $to_page) {
+    public function reorderPageAction ($app_id, $from_page, $to_page, $uid) {
         
 //for the time being do not allow them to change the index page
         if ($from_page == "index" || $to_page == "index") {
@@ -1209,7 +1183,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $file_mgmt->setConfig('app');
         
 //renames the individual page files, returns page from and to variables so frontend can update variables
-        $res = $file_mgmt->reorderPage($app, $from_page, $to_page);
+        $res = $file_mgmt->reorderPage($app, $from_page, $to_page, $uid);
         if ($res === false) {
             return new JsonResponse(array(
                     'result' => 'error',
@@ -1221,7 +1195,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     'result' => 'success',
                     'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
                     'from_page' => $from_page,
-                    'to_page' => $to_page));
+                    'to_page' => $to_page,
+                    'page_names' => $file_mgmt->getPageIdAndTitles($app)));
         }
     }
     
