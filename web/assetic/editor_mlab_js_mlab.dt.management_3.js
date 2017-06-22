@@ -434,6 +434,8 @@ Mlab_dt_management.prototype = {
         
         $.get(url, function( data ) {
             if (data.result == "success") {
+            }
+        });
     },
 
 

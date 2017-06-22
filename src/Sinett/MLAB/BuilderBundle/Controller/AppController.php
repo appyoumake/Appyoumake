@@ -947,7 +947,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             }
             
             if ($app_open_mode) {
-                
 //here we pick up a list of compiled apps, this has to come here rather than when app is opened as the URL is manipualted after app is opened
 //only happens if $app_open_mode = true, this is when we call this function from the mlab.dt.manage,ent.app_open function
 
@@ -1185,7 +1184,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function reorderPageAction ($app_id, $from_page, $to_page) {
-        /*
+        
 //for the time being do not allow them to change the index page
         if ($from_page == "index" || $to_page == "index") {
             return new JsonResponse(array(
@@ -1223,8 +1222,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
                     'from_page' => $from_page,
                     'to_page' => $to_page));
-        }*/
-    }        
+        }
+    }
     
     function removeLocksAction() {
 	    $file_mgmt = $this->get('file_management');

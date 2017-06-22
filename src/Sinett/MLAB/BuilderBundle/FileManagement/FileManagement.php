@@ -755,34 +755,45 @@ class FileManagement {
      * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
      */
     public function reorderPage($app, $from_page, $to_page) {
-        /*
-//get path of file to delete
-        $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        $page_to_move = $this->getPageFileName($app_path, $from_page);
-        $start_page_loop = min($from_page, $to_page);
         
-       
-        $pages = glob ( $app_path . "/???.html" );
-        foreach ($pages as $page) {
-            $page = basename($page);
-            if ($page > $page_to_move) {
-                $newname = substr("000" . (intval($page) - 1), -3) . ".html";
-                rename("$app_path/$page", "$app_path/$newname");
-            } 
-
+//get path of files to reorder 
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
+        
+//get full pathname of the file that is being moved, then rename temporarily the file to move and delete the lock
+        $page_to_move = $this->getPageFileName($app_path, $from_page);
+        $tmp_name = $this->GUID_v4();
+        rename($page_to_move, "$app_path/$tmp_name");
+        $files = glob("$page_to_move*.lock");
+        
+        foreach ($files as $file) {
+//need to store unique web browser tab ID to relock the page when it is renamed, it is in format 002.html.3_1498115277_1941.lock
+            $uid = explode(".", $file);
+            $uid = $temp[2];
+            unlink($file);
         }
-
-        if (file_exists("$app_path/$page_to_move")) {
-            return intval($page_to_move);
-        } else {
-            $page_to_open = substr("000" . (intval($page_to_move) - 1), -3) . ".html";
-            if (file_exists("$app_path/$page_to_open")) {
-                return intval($page_to_open);
-            } else {
-                return 0;
+        
+//now loop through all pages from the lowest to the highest as they want to move the page down the list (i.e. to a higher page number)
+        if ($from_page < $to_page) {
+            for ($p = $from_page; $p < $to_page; $p++) {
+                $oldname = substr("000" . ($p + 1), -3) . ".html";
+                $newname = substr("000" . ($p), -3) . ".html";
+                rename("$app_path/$oldname", "$app_path/$newname");
             }
-        }*/
-
+            $newname = substr("000" . ($to_page), -3) . ".html";
+            rename("$app_path/$tmp_name", "$app_path/$newname");
+        } else if ($from_page > $to_page) {
+            for ($p = $from_page; $p > $to_page; $p--) {
+                $oldname = substr("000" . ($p - 1), -3) . ".html";
+                $newname = substr("000" . ($p), -3) . ".html";
+                rename("$app_path/$oldname", "$app_path/$newname");
+            }
+        } else {
+            return false;
+        }
+        $newname = substr("000" . ($to_page), -3) . ".html";
+        rename("$app_path/$tmp_name", "$app_path/$newname");
+        file_put_contents("$app_path/$newname.$uid.lock", "");
+        return true;
     }    
     
 /**
