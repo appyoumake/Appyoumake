@@ -226,7 +226,7 @@ progress::-moz-progress-bar {
 #mlab_editor .dropdown_user_menu,
 .mlab_base .dropdown_user_menu,
 .mlab_layout .dropdown_user_menu {
-    width: 155px;
+    width: 165px;
     float: right;
     margin-right: 0px;
 }
@@ -258,7 +258,7 @@ progress::-moz-progress-bar {
 
 #mlab_editor #mlab_user_menu_dropdown_content .mlab_one_user_col,
 #mlab_user_menu_dropdown_content .mlab_one_user_col {
-    width:125px;
+    width:140px;
 }
 
 #mlab_editor #mlab_editor_menu_dropdown_content .mlab_three_col {
@@ -283,11 +283,13 @@ progress::-moz-progress-bar {
 #mlab_editor_menu_dropdown_content h3, 
 #mlab_user_menu_dropdown_content h3,
 #mlab_editor_menu_dropdown_content h4, 
-#mlab_editor_menu_dropdown_content ul li {
-    font-family:Arial, Helvetica, sans-serif;
-    font-size:12px;
-    line-height:21px;
-    text-align:left;
+#mlab_editor_menu_dropdown_content ul li,
+#mlab_editor  #mlab_editor_menu_dropdown_content b, 
+#mlab_editor  #mlab_user_menu_dropdown_content b {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4mm;
+    line-height: normal;
+    text-align: left;
 }
 
 #mlab_editor  #mlab_editor_menu_dropdown_content h2, 
@@ -304,14 +306,16 @@ progress::-moz-progress-bar {
 #mlab_editor_menu_dropdown_content h3,
 #mlab_user_menu_dropdown_content h3 {
     border-bottom:1px solid #888888;
-    font-size:14px;
+    font-size:5mm;
+    line-height: normal;
     margin:7px 0 14px 0;
     padding-bottom:7px;
 }
 
 #mlab_editor #mlab_editor_menu_dropdown_content h4,
 #mlab_editor_menu_dropdown_content h4 {
-    font-size: 13px;
+    font-size: 4mm;
+    line-height: normal;
     font-weight: bold;
     margin: 5px 0 5px 0;
     padding-bottom: 0;
@@ -321,8 +325,8 @@ progress::-moz-progress-bar {
 #mlab_editor #mlab_user_menu_dropdown_content p,
 #mlab_editor_menu_dropdown_content p,
 #mlab_user_menu_dropdown_content p {
-    line-height:18px;
-    margin:0 0 10px 0;
+    line-height: normal;
+    margin: 0 0 10px 0;
 }
 
 /* Link styling */
@@ -333,9 +337,9 @@ progress::-moz-progress-bar {
     color: #015b86;
     display:block;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:13px; 
+    font-size:4mm; 
+    line-height: 5.5mm;
     outline:0;
-    text-decoration:none;
 }
 
 /* Feature list */
@@ -366,6 +370,8 @@ progress::-moz-progress-bar {
 #mlab_editor  #mlab_editor_menu_dropdown_content #mlab_exit_icon, 
 #mlab_editor  #mlab_editor_menu_dropdown_content #mlab_preview_icon, 
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_save_icon,
+#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_source_code_icon,
+#mlab_editor  #mlab_editor_menu_dropdown_content .mlab_unlock_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon,
@@ -391,11 +397,19 @@ progress::-moz-progress-bar {
     background-image: url("/img/menu_save_icon.png");
 }
 
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_unlock_icon {
+    background-image: url("/img/menu_unlock.png");
+}
+
+#mlab_editor #mlab_editor_menu_dropdown_content .mlab_source_code_icon {
+    background-image: url("/img/menu_soucecode.png");
+}
+
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_ios_icon_grey,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon,
 #mlab_editor  #mlab_editor_menu_dropdown_content .mlab_download_android_icon_grey {
-    padding-right: 2px;
+    padding-right: 10px;
     float: left;
 }
 

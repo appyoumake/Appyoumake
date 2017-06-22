@@ -109,6 +109,7 @@ app.builder.menu.link.app.builder: App liste
 app.builder.menu.link.admin.app: App admin
 app.builder.menu.link.admin.users: Bruker admin
 app.builder.menu.link.system: System admin
+app.builder.edit.menu.tooltip.app.name: App navn
 
 
 #-----------------------------------------------------
@@ -130,7 +131,6 @@ app.builder.help.menu.tooltip: Hjelp
 app.mlab.menu.help.notfound: Ingen hjelp tilgjengelig for dette emnet
 
 
-
 #-----------------------------------------------------
 # App builder Menu (edit app)
 #-----------------------------------------------------
@@ -143,8 +143,10 @@ app.builder.statusbar.info.permanent.label: App
 
 app.builder.edit.menu.heading.feature: App egenskaper
 app.builder.edit.menu.feature.info: Du kan legge til spesielle egenskaper til en app, det kan være oppkobling mot en database eller link til en kalender. Velg i fra listen nedenfor. De med en hake er allerede lagt til i denne appen.
-app.builder.edit.menu.heading.utilities: Ekstra verktøy
-app.builder.edit.menu.utilities.info: Om siden er grået ut kan du klikke her for å låse den opp igjen.
+app.builder.edit.menu.heading.download.source: Last ned kode
+app.builder.edit.menu.download.source.info: Kildekoden for hele appen kan lastes ned ved å klikke på knappen under.
+app.builder.edit.menu.heading.delete.locks: Fjern lås
+app.builder.edit.menu.delete.locks.info: Om siden er grået ut kan du klikke på knappen under for å låse den opp igjen.
 
 app.builder.edit.menu.heading.test.app: App testing
 app.builder.edit.menu.heading.test.app.web: Prøv App på web
@@ -385,11 +387,7 @@ layout.menu.tooltip.help: Hjelp
 layout.menu.tooltip.user.info: Brukerinfo
 
 build_app.menu.tooltip.back.app.list: Tilbake til appoversikt
-build_app.menu.utilities.delete.locks: Fjern lås
-build_app.menu.utilities.test.connection.compiler: Test kompilator forbindelsen
 build_app.menu.tooltip.test.app.web: Test appen i nettleser
-build_app.menu.utilities.download.source: Last ned kildekode
-build_app.menu.utilities.upload.website: Last opp webside
  
 build_app.page.tooltip.redo: Gjør om tekst endringer
 build_app.page.tooltip.undo: Angre tekst endringer

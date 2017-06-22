@@ -153,17 +153,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                     <div class='mlab_save_icon' title='{% trans %}app.builder.menu.save.tooltip{% endtrans %}'></div>
                                 </a>  
                             </div> <!-- End Navigate & Save col -->
-
-                            <div class='mlab_one_col'> <!-- Feature col -->
-                                <div class='mlab_sub_menu'>
-                                    <h3>{% trans %}app.builder.edit.menu.heading.utilities{% endtrans %}</h3>
-                                    <p> {% trans %}app.builder.edit.menu.utilities.info{% endtrans %}</p> 
-                                    <a href='javascript: mlab.dt.management.app_remove_locks();'>{% trans %}build_app.menu.utilities.delete.locks{% endtrans %}</a>
-                                    <a href='javascript: mlab.dt.management.compiler.get_app_status();'>{% trans %}build_app.menu.utilities.test.connection.compiler{% endtrans %}</a>
-                                    <a href='javascript: mlab.dt.management.compiler.get_app_source();'>{% trans %}build_app.menu.utilities.download.source{% endtrans %}</a>
-                                    <a href='javascript: mlab.dt.management.compiler.upload_website();'>{% trans %}build_app.menu.utilities.upload.website{% endtrans %}</a>
-                                </div>
-                            </div> <!-- End Feature col -->
+                            
 
                             <div class='mlab_one_col'> <!-- Testing col -->
                                 <div class='mlab_end_appbuilder'>
@@ -196,7 +186,22 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                     {% endfor %}                             
                                 </div>
                             </div> <!-- End Testing col -->
+                            
 
+                              <div class='mlab_one_col'> <!-- Feature col -->
+                                <div class='mlab_sub_menu'>
+                                    <h3>{% trans %}app.builder.edit.menu.heading.download.source{% endtrans %}</h3>
+                                    <p> {% trans %}app.builder.edit.menu.download.source.info{% endtrans %}</p>
+                                    <div class='mlab_source_code_icon' title='{% trans %}app.builder.edit.menu.heading.download.source{% endtrans %}'></div>
+                                    
+                                    <br><br>
+                                    <h3>{% trans %}app.builder.edit.menu.heading.delete.locks{% endtrans %}</h3>
+                                    <p> {% trans %}app.builder.edit.menu.delete.locks.info{% endtrans %}</p>
+                                    <div class='mlab_unlock_icon' title='{% trans %}app.builder.edit.menu.heading.delete.locks{% endtrans %}'></div>
+                                </div>
+                            </div> <!-- End Feature col -->
+                            
+                            
                             <div class='mlab_three_col'> <!-- Developed by col -->
                                 <h3></h3>
                                 <p class="left">Developed by the Sinett project at FFI.no</p> <p id="mlab_credit_icons" class="right mlab_credit_icons">Credit for icones downloaded from flaticon.com</p>
@@ -204,7 +209,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                         </div><!-- End Editor menu container -->
                         
                         <li class='single'><div class='mlab_statusbar_permanent_label'>{% trans %}app.builder.statusbar.info.permanent.label{% endtrans %}:</div></li>
-                        <li class='single'><div id='mlab_statusbar_permanent'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
+                        <li class='single'><div id='mlab_statusbar_permanent' title='{% trans %}app.builder.edit.menu.tooltip.app.name{% endtrans %}'>{% trans %}app.builder.statusbar.info.permanent{% endtrans %}</div></li>
                         <li class='single'><div id='mlab_statusbar_progress_spin'>&nbsp;</div></li>
                         <li class='single'><div id='mlab_statusbar_temporary'>&nbsp;</div></li>
                         <li class='single'><div id='mlab_statusbar_compiler'>&nbsp;</div></li>

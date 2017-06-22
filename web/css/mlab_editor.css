@@ -256,7 +256,7 @@ made smaler than the min width */
     padding: 4px;
     margin: 0;
     margin-right: 2px;
-    font-size: 14px;
+    font-size: 4.5mm;
     font-weight: bold;
 }
 
@@ -268,7 +268,7 @@ made smaler than the min width */
     padding: 4px;
     margin-top: 0;
     margin-right: 7px;
-    font-size: 12px;
+    font-size: 4mm;
     font-weight: normal;
 }
 
@@ -308,8 +308,8 @@ made smaler than the min width */
     overflow-y: auto;
     display: none;
     position: absolute;
-    left: 220px;
-    top: 103px;
+    left: 234px;
+    top: 106px;
     z-index: 980;
     min-width: 250px;
     max-width: 350px;
@@ -339,15 +339,17 @@ made smaler than the min width */
 #mlab_editor #mlab_page_management #mlab_existing_pages li {
     padding-bottom: 6px;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:12px; 
+    font-size: 3.5mm;
+    line-height: 4.5mm;
     font-weight: bold;
     color: #000000;
-    line-height: 12px;
 }
 
 #mlab_editor #mlab_page_management #mlab_existing_pages li a {
     color: #000000;  
     font-weight: normal;
+    font-size: 3.5mm;
+    line-height: 4.5mm;
 }
 
 #mlab_editor #mlab_page_management #mlab_page_control_delete {

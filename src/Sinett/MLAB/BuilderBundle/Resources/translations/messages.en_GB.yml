@@ -109,6 +109,7 @@ app.builder.menu.link.app.builder: App list
 app.builder.menu.link.admin.app: App admin
 app.builder.menu.link.admin.users: User admin
 app.builder.menu.link.system: System admin
+app.builder.edit.menu.tooltip.app.name: App name
 
 
 #-----------------------------------------------------
@@ -142,8 +143,10 @@ app.builder.statusbar.info.permanent.label: App
 
 app.builder.edit.menu.heading.feature: App feature
 app.builder.edit.menu.feature.info: You can add special features to an application, it may be accessing a database or a link to a calendar. Choose from the list below. Those with a check mark is already added to this app.
-app.builder.edit.menu.heading.utilities: Utilities
-app.builder.edit.menu.utilities.info: If the page is greyed out, you can click here to unlock it.
+app.builder.edit.menu.heading.download.source: Download code
+app.builder.edit.menu.download.source.info: The source code for the whole app can be downloaded by clicking on the button below.
+app.builder.edit.menu.heading.delete.locks: Delete locks
+app.builder.edit.menu.delete.locks.info: If the page is greyed out, you can click on the button below to unlock it.
 
 app.builder.edit.menu.heading.test.app: App testing
 app.builder.edit.menu.heading.test.app.web: Try App in a web page
@@ -384,11 +387,7 @@ layout.menu.tooltip.help: Help
 layout.menu.tooltip.user.info: User info
 
 build_app.menu.tooltip.back.app.list: Back to App list
-build_app.menu.utilities.delete.locks: Delete locks
-build_app.menu.utilities.test.connection.compiler: Test connection to compiler
 build_app.menu.tooltip.test.app.web: Test app in browser
-build_app.menu.utilities.download.source: Download source code
-build_app.menu.utilities.upload.website: Upload website
  
 build_app.page.tooltip.redo: Redo text changes
 build_app.page.tooltip.undo: Undo text changes
