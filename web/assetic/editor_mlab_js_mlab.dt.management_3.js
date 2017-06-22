@@ -217,11 +217,10 @@ Mlab_dt_management.prototype = {
                 list.append("<li>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
             }
         }
-
         $("#mlab_existing_pages").html(list);
         
 //make page list sortable to reset pages
-        $("#mlab_existing_pages ol").sortable({
+        $("#mlab_existing_pages").sortable({
                 items: "> li:gt(0)",
                 update: function(event, ui) {
                    mlab.dt.management.page_reorder(event, ui);
@@ -420,42 +419,25 @@ Mlab_dt_management.prototype = {
  * @returns {undefined}
  */
     page_reorder : function (event, ui) {
+        console.log(event);
+        console.log(ui);
         
-//bail if it has not been moved
-        if (ui.item.find("a").data("mlab-page-open") == ui.item.index()) {
-            console.log("not moved");
-            return;
-        }
-        that = this;
-//turn off automatic saving before moving file
-        this.page_save( function() { mlab.dt.utils.timer_stop(); that.page_reorder_process(); } );
-    },
-
-    page_reorder_process : function (event, ui) {
-
-        debugger;
-        
-        var app_id = this.parent.app.id;
-        var from_page = ui.item.find("a").data("mlab-page-open");
-        var to_page = ui.item.index();
-        var url = this.parent.urls.page_reorder.replace("_ID_", app_id);
+        var local_page_num = page_num;
+        var url = this.parent.urls.app_open.replace("_ID_", app_id);
+        url = url.replace("_PAGE_NUM_", 'index');
+        url = url.replace("_UID_", this.parent.uid);
+        url = url.replace("_OPEN_MODE_", "true");
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.app"], true);
         var that = this;
-
-        url = url.replace("_FROM_PAGE_", from_page);
-        url = url.replace("_TO_PAGE_", to_page);
-        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.reordering.page"], true);
-
+        var local_app_id = app_id;
+        
+        
         $.get(url, function( data ) {
-            console.log(data);
-            
             if (data.result == "success") {
-                alert("yowsa");
-            } else {
-                alert("Unable to move page");
             }
-            mlab.dt.utils.timer_start(); 
         });
     },
+
 
 /**
  * Retrieve content of a page from server and insert it into the editor area

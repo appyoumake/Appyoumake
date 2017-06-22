@@ -747,6 +747,55 @@ class FileManagement {
         } //end try to unlink
     }    
     
+    /**
+     * Moves a page, this is done by renaming pages so they are always sequential.
+     * 
+     * @param type $app
+     * @param type $page_num
+     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
+     */
+    public function reorderPage($app, $from_page, $to_page) {
+        
+//get path of files to reorder 
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
+        
+//get full pathname of the file that is being moved, then rename temporarily the file to move and delete the lock
+        $page_to_move = $this->getPageFileName($app_path, $from_page);
+        $tmp_name = $this->GUID_v4();
+        rename($page_to_move, "$app_path/$tmp_name");
+        $files = glob("$page_to_move*.lock");
+        
+        foreach ($files as $file) {
+//need to store unique web browser tab ID to relock the page when it is renamed, it is in format 002.html.3_1498115277_1941.lock
+            $uid = explode(".", $file);
+            $uid = $temp[2];
+            unlink($file);
+        }
+        
+//now loop through all pages from the lowest to the highest as they want to move the page down the list (i.e. to a higher page number)
+        if ($from_page < $to_page) {
+            for ($p = $from_page; $p < $to_page; $p++) {
+                $oldname = substr("000" . ($p + 1), -3) . ".html";
+                $newname = substr("000" . ($p), -3) . ".html";
+                rename("$app_path/$oldname", "$app_path/$newname");
+            }
+            $newname = substr("000" . ($to_page), -3) . ".html";
+            rename("$app_path/$tmp_name", "$app_path/$newname");
+        } else if ($from_page > $to_page) {
+            for ($p = $from_page; $p > $to_page; $p--) {
+                $oldname = substr("000" . ($p - 1), -3) . ".html";
+                $newname = substr("000" . ($p), -3) . ".html";
+                rename("$app_path/$oldname", "$app_path/$newname");
+            }
+        } else {
+            return false;
+        }
+        $newname = substr("000" . ($to_page), -3) . ".html";
+        rename("$app_path/$tmp_name", "$app_path/$newname");
+        file_put_contents("$app_path/$newname.$uid.lock", "");
+        return true;
+    }    
+    
 /**
  * returns an associative array of file names and titles of the pages for an app
  * @param type $app
