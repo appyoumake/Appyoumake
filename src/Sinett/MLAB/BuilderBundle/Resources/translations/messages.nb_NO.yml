@@ -163,6 +163,7 @@ app.builder.edit.menu.test.app.mob.tooltip: Test app på %platform% mobil enhet
 app.builder.page.heading: Sider
 app.builder.page.save: Lagre
 app.builder.page.cancel: Avbryt
+app.builder.page.import: Importer sider
 
 app.builder.page.menu.delete.info: Klikk på krysset for å permanent slette siden du står på
 app.builder.page.menu.delete: Slett siden som er åpen 
@@ -173,7 +174,7 @@ app.builder.page.tooltip.page.name: Klikk for å endre sidenavn
 app.builder.page.tooltip.page.name.edit: Skriv inn nytt sidenavn
 app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i appen
 app.builder.page.tooltip.new: Ny side
-
+app.builder.page.tooltip.import: Importer en Powerpoint eller Word fil
 
 #-----------------------------------------------------
 # Admin + System pages welcome
@@ -592,6 +593,7 @@ mlab.dt.management.js.update_status.copying.page: Kopierer side
 mlab.dt.management.js.update_status.deleting.page: Sletter side
 mlab.dt.management.js.update_status.unable.contact.server: Ingen forbindelse til server 
 mlab.dt.management.js.update_status.reordering.page: Flytter siden...
+mlab.dt.management.js.update_status.importing.file: Importerer sider fra fil
 
 mlab.dt.management.js.app_download_process.1: Last ned
 mlab.dt.management.js.app_download_process.2: Last ned test app her

@@ -246,17 +246,18 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                             <img data-mlab-comp-tool='redo' class='mlab_tools mlab_button_redo' src='/img/tools/redo.png' title='{% trans %}build_app.page.tooltip.redo{% endtrans %}'>
                             <img data-mlab-comp-tool='undo' class='mlab_tools mlab_tools_space mlab_button_undo' src='/img/tools/undo.png' title='{% trans %}build_app.page.tooltip.undo{% endtrans %}'> 
                             <img id='mlab_page_control_new' src='/img/menu_new_icon.png' title='{% trans %}app.builder.page.tooltip.new{% endtrans %}'>
+                            <img id='mlab_page_control_import' src='/img/menu_copy_icon.png' title='{% trans %}app.builder.page.tooltip.import{% endtrans %}' >
+                            
+                    </div>
+                 </div>
 
+                    <div id='mlab_page_management'>
+                        <div id='mlab_existing_pages'></div>
+                        <div id='mlab_page_management_info'>
+                            {% trans %}app.builder.page.menu.delete.info{% endtrans %}:
+                            <img id='mlab_page_control_delete' src='/img/delete_page.png' title='{% trans %}app.builder.page.menu.delete{% endtrans %}'>
                         </div>
-
-                        <div id='mlab_page_management'>
-                            <div id='mlab_existing_pages'>
-                            </div>
-                            <div id='mlab_page_management_info'>
-                                {% trans %}app.builder.page.menu.delete.info{% endtrans %}:
-                                <img id='mlab_page_control_delete' src='/img/delete_page.png' title='{% trans %}app.builder.page.menu.delete{% endtrans %}'>
-                            </div>
-                        </div>
+                    </div>
                 </div>
                 
                     <div class='container'>
@@ -312,9 +313,19 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                         <div id='mlab_dialog_confirm' class="mlab_hidden" title='{% trans %}build_app.tooltip.not.saved{% endtrans %}'>
                             <p><span class='ui-icon ui-icon-alert mlab_dialog_confirm_text'>{% trans %}build_app.not.saved{% endtrans %}</span></p>
                         </div>
+
                         <div id='mlab_dialog_delete' class="mlab_hidden" title='{% trans %}build_app.dialog.delete.title{% endtrans %}'>
                             <p><span class='ui-icon ui-icon-alert'></span>{% trans %}build_app.dialog.delete.text{% endtrans %}</p>
                         </div>
+
+                        <div id='mlab_dialog_import' class="mlab_hidden" title='{% trans %}app.builder.page.import{% endtrans %}'>
+                            <form id="mlab_form_import_file" name="mlab_form_import_file">
+                                <input type="file" id="mlabImportFile" name="mlabImportFile">
+                                <input type="hidden" id="mlabImportAppId" name="app_id">
+                                <button class='mlab_dt_button_ok_left' title='{% trans %}app.builder.page.tooltip.import{% endtrans %}' onclick="$('#mlabImportAppId').val(mlab.dt.app.id); mlab.dt.management.file_import(); return false;">{% trans %}mlab.dt.api.js.uploadMedia.qtip.content.5{% endtrans %}</button>
+                            </form>
+                        </div>
+
                         <div id='mlab_overlay'><div class='mlab_modal'>{% trans %}app.builder.overlay.info{% endtrans %}</div></div>
                         <div style='clear: both;'>&nbsp;</div>
                     </div>

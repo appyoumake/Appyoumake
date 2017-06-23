@@ -135,7 +135,7 @@ app_preview:
     defaults: { _controller: "SinettMLABBuilderBundle:App:appPreview" }
 
 app_import_file:
-    path:  /{app_id}/update
+    path:  /importFile
     defaults: { _controller: "SinettMLABBuilderBundle:App:importFile" }
-    requirements: { methods: post|put }
+    requirements: { methods: post }
 

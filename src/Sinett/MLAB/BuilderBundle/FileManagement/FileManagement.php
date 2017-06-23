@@ -1404,6 +1404,7 @@ class FileManagement {
         
     }
     
+    
 /**
  * Removes the temporay files from a template or component upload
  * @param type $entity: the component or template doctribe entity

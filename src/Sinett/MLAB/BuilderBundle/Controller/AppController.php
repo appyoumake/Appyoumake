@@ -249,40 +249,6 @@ class AppController extends Controller
                     break;
 
                 case "office_file":
-                    $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-                    if ($result !== true) {
-                        return new JsonResponse(array(
-                                'action' => 'ADD',
-                                'result' => 'FAILURE',
-                                'message' => 'Unable to create app from template'));
-                    }
-                    if (null === $entity->getImportFile() || !$entity->getImportFile()->isValid()) {
-                       return new JsonResponse(array(
-                                    'action' => 'ADD',
-                                    'result' => 'FAILURE',
-                                    'message' => $this->get('translator')->trans('appController.msg.createAction.3')));
-                    }
-
-                    $py_pth = $config["convert"]["python_bin"];
-                    $cv_bin = $config["convert"]["converter_bin"];
-                    $cv_conf = $config["convert"]["config"];
-                    $cv_pth = $config["convert"]["converter_path"];
-                    $file_name = $entity->getImportFile()->getPathname();
-
-/*
-python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
-I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
-    */
-                    $cmd = "$py_pth $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $file_name -o $app_destination";
-                    //$cmd = "cp /home/utvikler/workspace/mlab_elements/*.html $app_destination";
-                    $cmd_res = passthru($cmd);
-                    if (file_exists("$app_destination/000.html")) {
-                        $file_mgmt->injectHtml("$app_destination/index.html", "mlab_editable_area", "$app_destination/000.html", true);
-                        unlink("$app_destination/000.html");
-                    }
-                
-// after we have copied across the template and then converted the document file
-// we need to insert the content of 000.html in index.html.
                     break;
 
                 default:
@@ -739,7 +705,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
         $yaml = new Parser();
-        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->container->getParameter('locale') . '.yml'));
+        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->getUser()->getLocale() . '.yml'));
 
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
     			"mlab_app_page_num" => $page_num,
@@ -818,6 +784,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_reorder" => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_', 'uid' => '_UID_')),
+                                        "file_import" => $this->generateUrl('app_import_file'),
                                         "feature_add" => $this->generateUrl('app_builder_feature_add',  array('app_id' => '_APPID_', 'comp_id' => '_COMPID_')),
                                         "storage_plugin_add" => $this->generateUrl('app_builder_storage_plugin_add',  array('app_id' => '_APPID_', 'storage_plugin_id' => '_STORAGE_PLUGIN_ID_')),
                                         "app_preview" => $this->generateUrl('app_preview',  array('app_id' => '_APPID_')),
@@ -1151,7 +1118,58 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     }    
     
     /**
-     * Delete a page. Will fail if someone has a page open that has a number higher than page to delete
+     * imports a PPT/DOC file into current app using external python code
+     * 
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function importFileAction (Request $request) {
+        
+//get config values
+       	$config = $this->container->getParameter('mlab');
+        
+//store values in array for easy access
+        $temp_app_data = $request->request->all();
+        $app_id = $temp_app_data["app_id"];
+
+//check if they are allowed to access this app
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+            die($this->get('translator')->trans('appController.die.no.access'));
+        }
+
+        $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($app_id);
+        if (!$entity) {
+            return new JsonResponse(array('db_table' => 'app',
+                    'db_id' => $id,
+                    'result' => 'FAILURE',
+                    'message' => $this->get('translator')->trans('appController.createNotFoundException.app')));    
+        }
+        $app_destination =  $entity->calculateFullPath($config["paths"]["app"]);
+
+//check and verify the uploaded file
+        $file = $request->files->get("mlabImportFile");
+        $py_pth = $config["convert"]["python_bin"];
+        $cv_bin = $config["convert"]["converter_bin"];
+        $cv_conf = $config["convert"]["config"];
+        $cv_pth = $config["convert"]["converter_path"];
+        $file_name = $file->getPathname();
+        $new_file_name = $file_name . "." . $file->guessExtension();
+        rename($file_name, $new_file_name);
+
+/*
+python document2HTML.py -c <filbane til konfig> -i <filbane til dokument som skal konverteres> -o <katalog til output>
+I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitte-kriterium (f.eks. id="Tittel*")
+*/
+        $cmd = "$py_pth $cv_pth/$cv_bin -c $cv_pth/$cv_conf -i $new_file_name -o $app_destination";
+        //$cmd = "cp /home/utvikler/workspace/mlab_elements/*.html $app_destination";
+        $cmd_res = passthru($cmd);
+               
+        return new JsonResponse(array('action' => 'ADD', 'result' => 'SUCCESS', 'message' => $cmd_res, 'cmd' => $cmd));
+    }
+                    
+                    
+    /**
+     * Moves a page to a different position
      * @param type $app_id
      * @param type $page_num
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -1423,42 +1441,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
     }
-    
-    /**
-     * Edits an existing App entity.
-     *
-     */
-    public function importFileAction(Request $request, $id) {
-        $em = $this->getDoctrine()->getManager();
-        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
-            die($this->get('translator')->trans('appController.die.no.access'));
-        }
-
-        $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
-        
-        if (!$entity) {
-            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
-        }
-        
-
-//now we store the splash file and the icon file (if created)
-        /*if (null != $request && $request->isValid()) {
-            $splash_filename = $config["filenames"]["app_splash_screen"] . "." . $entity->getSplashFile()->getClientOriginalExtension();
-            if (!move_uploaded_file($entity->getSplashFile()->getPathname(), "$app_destination/$splash_filename")) {
-                return new JsonResponse(array(
-                        'action' => 'ADD',
-                        'result' => 'FAILURE',
-                        'message' => $this->get('translator')->trans('appController.msg.unable.store.splach.screen')));
-            }
-        }*/
-            
-        return new JsonResponse(array('db_table' => 'app',
-        		'db_id' => $id,
-        		'result' => 'FAILURE',
-        		'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
-            
-    }
-
     
     public function getUploadedFilesAction($app_id, $file_types) {
         if ($app_id > 0) {

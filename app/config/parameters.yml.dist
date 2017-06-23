@@ -30,6 +30,7 @@ parameters:
             converter_bin: document2HTML.py
             config: config.json
             converter_path: src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
+            filetype_allowed: [application/msword, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation]
 
         ws_socket:
             ___url_client: ws://url:8080/

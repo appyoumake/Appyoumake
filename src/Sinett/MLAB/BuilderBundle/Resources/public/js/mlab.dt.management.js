@@ -433,8 +433,6 @@ Mlab_dt_management.prototype = {
 
     page_reorder_process : function (event, ui) {
 
-        debugger;
-        
         var app_id = this.parent.app.id;
         var from_page = ui.item.data("mlab-page-num");
         var to_page = ui.item.index();
@@ -448,7 +446,6 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.reordering.page"], true);
 
         $.get(url, function( data ) {
-            console.log(data);
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
 //update the list of pages to the new order, the page numbers have changed so we need to do that
@@ -543,18 +540,35 @@ Mlab_dt_management.prototype = {
     },
 
 /**
- * Retrieve content of a page from server and insert it into the editor area
- * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
+ * Call a backend python script that uses OpenOffice to convert PPT and DOC to individual pages
  */
-    file_import : function (app_id) {
+    file_import : function () {
         that = this;
-        this.page_save( function() { that.file_import_process(app_id, page_num); } );
+        this.page_save( function() { that.file_import_process(); } );
     },
 
-    file_import_process : function (app_id) {
+    file_import_process : function () {
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.importing.file"], true);
 
-        
+        var form = $('#mlab_form_import_file')[0]; // You need to use standard javascript object here
+        var formData = new FormData(form);
 
+        $.ajax({
+            url: this.parent.urls.file_import,
+            data: formData,
+            type: 'POST',
+            contentType: false, 
+            processData: false, 
+            success: function( json ) {
+                    that.parent.utils.update_status("completed");
+                    console.log("Status returned: " + json.app_status);
+                    if (json.result == "success") {
+                        mlab.dt.utils.update_status("temporary", "", false);
+                        that.parent.app.page_names = data.page_names;
+                        that.app_update_gui_metadata();
+                    }
+                }
+        });
     },
 
 

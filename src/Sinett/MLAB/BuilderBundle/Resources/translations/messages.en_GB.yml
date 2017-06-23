@@ -163,6 +163,7 @@ app.builder.edit.menu.test.app.mob.tooltip: Test app on %platform% mobile device
 app.builder.page.heading: Pages
 app.builder.page.save: Save
 app.builder.page.cancel: Cancel
+app.builder.page.import: Import pages
 
 app.builder.page.menu.delete.info: Click on the X to permanently delete the page you are on
 app.builder.page.menu.delete: Delete the currently open page
@@ -173,6 +174,8 @@ app.builder.page.tooltip.page.name: Click to changes the page name
 app.builder.page.tooltip.page.name.edit: Add new page name
 app.builder.page.tooltip.pagelist: Click to bring up the list of pages in the app
 app.builder.page.tooltip.new: New page
+app.builder.page.tooltip.import: Import a Powerpoint or Word file
+
 
 
 #-----------------------------------------------------
@@ -592,6 +595,7 @@ mlab.dt.management.js.update_status.copying.page: Copying page
 mlab.dt.management.js.update_status.deleting.page: Deleting page
 mlab.dt.management.js.update_status.unable.contact.server: Unable to contact server
 mlab.dt.management.js.update_status.reordering.page: Moving page
+mlab.dt.management.js.update_status.importing.file: Importing pages from file
 
 mlab.dt.management.js.app_download_process.1: Download
 mlab.dt.management.js.app_download_process.2: Download test app here

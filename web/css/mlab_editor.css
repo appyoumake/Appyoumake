@@ -672,3 +672,8 @@ made smaler than the min width */
     float:left; 
     margin:0 7px 20px 0;
 }
+
+#mlab_editor #mlab_page_control_import {
+    padding-left: 10px;
+    width: 22px;
+}

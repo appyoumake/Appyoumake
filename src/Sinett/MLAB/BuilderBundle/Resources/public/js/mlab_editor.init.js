@@ -310,6 +310,10 @@ $(document).ready(function() {
                     });
     
                     $("#mlab_page_control_new").on("click", function () { mlab.dt.management.page_new(); });
+                    $("#mlab_page_control_import").on("click", function () {
+                        $( "#mlab_dialog_import" ).dialog({ resizable: false, height:120, modal: true });
+                    });
+                    
                     
                     $("#mlab_page_control_delete").on("click", function () { mlab.dt.management.page_delete(); });
 
