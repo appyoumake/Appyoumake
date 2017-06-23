@@ -420,6 +420,7 @@ build_app.dialog.delete.text: Er du sikker på at du vil slette?
     
 build_app.footer.tooltip.help: Slå av hjelp
 build_app.footer.help: Hold musepekeren over elementet du ønsker en beskrivelse av.
+build_app.footer.help.paste.text: For å unngå formateringsproblemer i Mlab får du kun ren uformatert tekst når du limer inn tekst fra utklippstavla.
 
 builder.dialog.new.app.title: App egenskaper
 builder.popup.app.properties.title: Mlab app valg
