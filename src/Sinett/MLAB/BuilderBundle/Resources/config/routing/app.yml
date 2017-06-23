@@ -78,7 +78,7 @@ app_builder_page_delete:
     defaults: { _controller: "SinettMLABBuilderBundle:App:deletePage" }
     
 app_builder_page_reorder:
-    path:   /builder/{app_id}/{from_page}/{to_page}/page_reorder
+    path:   /builder/{app_id}/{from_page}/{to_page}/{uid}/page_reorder
     defaults: { _controller: "SinettMLABBuilderBundle:App:reorderPage" }
     
 app_builder_app_unlock:
@@ -133,3 +133,9 @@ app_list_create_new_branch:
 app_preview:
     path:   /builder/{app_id}/preview
     defaults: { _controller: "SinettMLABBuilderBundle:App:appPreview" }
+
+app_import_file:
+    path:  /{app_id}/update
+    defaults: { _controller: "SinettMLABBuilderBundle:App:importFile" }
+    requirements: { methods: post|put }
+

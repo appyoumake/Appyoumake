@@ -592,6 +592,7 @@ mlab.dt.management.js.update_status.unable.save.page: Unable to save page
 mlab.dt.management.js.update_status.copying.page: Copying page
 mlab.dt.management.js.update_status.deleting.page: Deleting page
 mlab.dt.management.js.update_status.unable.contact.server: Unable to contact server
+mlab.dt.management.js.update_status.reordering.page: Moving page
 
 mlab.dt.management.js.app_download_process.1: Download
 mlab.dt.management.js.app_download_process.2: Download test app here
