@@ -423,6 +423,7 @@ build_app.dialog.delete.text: Are you sure you want to delete?
 
 build_app.footer.tooltip.help: Turn help off
 build_app.footer.help: Hold the mouse over the item you wish to describe.
+build_app.footer.help.paste.text: To avoid formatting problems in Mlab you only get plain unformatted text when you paste text from the clipboard.
 
 builder.dialog.new.app.title: App details
 builder.popup.app.properties.title: Mlab app options

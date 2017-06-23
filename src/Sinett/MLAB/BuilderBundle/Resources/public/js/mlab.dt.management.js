@@ -126,7 +126,11 @@ Mlab_dt_management.prototype = {
 
 //insert via built in exec commands
                 document.execCommand("insertHTML", false, text);
-                
+//add a text in the footer to explain that the formating is lost when you paste text
+                $(".mlab_editor_footer_help").text(_tr["build_app.footer.help.paste.text"]);
+//hide the text after 5 seconds
+                setTimeout( function() { $(".mlab_editor_footer_help").text(""); }, 5000);
+              
                 mlab.dt.flag_dirty = true;
             });
             
