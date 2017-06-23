@@ -8,6 +8,44 @@
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 
 """ Example: ./document2HTML.py -c <path_to_config> -i <path_to_source_document> -o <path_to_output_directory> -t <tag_to_split_on> -a <optional_tag_attribute> """
+# https://github.com/dagwieers/unoconv/issues/290
+# https://www.google.no/search?q=ubuntu+%22Cannot+find+a+suitable+pyuno+library+and+python+binary+combination+%22&oq=ubuntu+%22Cannot+find+a+suitable+pyuno+library+and+python+binary+combination+%22&aqs=chrome..69i57.26800j0j9&client=ubuntu-browser&sourceid=chrome&es_sm=91&ie=UTF-8
+ 2033  ll /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv
+ 2034  ll mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2035  /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2036  sudo pip install BeautifulSoup4
+ 2037  /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2038  sudo /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2039  ll /tmp/phpQDYOTB.ppt
+ 2040  grep mlab_temp_vars src/Sinett/MLAB/BuilderBundle/* -r
+ 2041  killall chromium-browser
+ 2042  /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2043  ll /tmp/phpQDYOTB.ppt
+ 2044  sudo /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2045  ll /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
+ 2046  sudo chmod 777 /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/*py
+ 2047  sudo chmod 777 /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/*pyc
+ 2048  sudo chmod 777 /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/unoconv 
+ 2049  sudo /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2050  sudo apt-get install libreoffice
+ 2051  sudo /usr/bin/python /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2052  sudo apt-get install pyuno
+ 2053  sudo apt-get install pyuno*
+ 2054  sudo nano /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/document2HTML.py 
+ 2055  sudo /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2056  sudo apt-get install python-uno
+ 2057  sudo apt-get install libreoffice-script-provider-python
+ 2058  sudo /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2059  python
+ 2060  pyuno
+ 2061  sudo  nano /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv/unoconv 
+ 2062  sudo /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//document2HTML.py -c /home/utvikler/workspace/mlab.local.dev/src/Sinett/MLAB/BuilderBundle/FileManagement/conv//config.json -i /tmp/phpQDYOTB.ppt -o /home/utvikler/workspace/mlab.local.dev/mlab_elements/apps/048349fcXbfdaX4c54Xb956X1b2cba2fa729/1/
+ 2063  git add -A && git commit -m "File upload works, just need to get libreoffice working" && git push
+ 2064  git pull
+ 2065  git push
+ 2066  git pull
+ 2067  git add -A && git commit -m "File upload works, just need to get libreoffice working" && git push
+ 2068  history
 
 import os
 import sys
