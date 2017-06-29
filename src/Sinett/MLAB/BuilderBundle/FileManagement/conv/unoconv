@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 ### This program is free software; you can redistribute it and/or modify
 ### it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ def find_offices():
                           glob.glob('/usr/local/openoffice*') + \
                           glob.glob('/usr/local/ooo*') + \
                           glob.glob('/usr/local/lib/libreoffice*')
-
+            print(extrapaths)
     ### Find a working set for python UNO bindings
     for basepath in extrapaths:
         if os.name in ( 'nt', 'os2' ):
