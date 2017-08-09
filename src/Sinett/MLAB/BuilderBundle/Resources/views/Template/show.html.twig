@@ -15,7 +15,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
         <a href="{{ path('template_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.templates.tooltip.group{% endtrans %} '{{ entity.name }}'">
-            {% if entity.groups is empty %} <!-- If no group -->
+            {% if entity.groupNames is empty %} <!-- If no group -->
                {% trans %}app.admin.components.no.group{% endtrans %}
             {% else %} <!-- If have groups -->
                 {{ entity.groupNames|raw }}

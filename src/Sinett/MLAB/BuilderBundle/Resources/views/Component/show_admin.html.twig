@@ -13,7 +13,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <td class="mlab_align_center">{{ entity.version }}</td>
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
-        {% if entity.groups is empty %} <!-- If no group -->
+        {% if entity.groupNames is empty %} <!-- If no group -->
             <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
             {% trans %}app.admin.components.no.group{% endtrans %}
         {% else %} <!-- If have groups -->

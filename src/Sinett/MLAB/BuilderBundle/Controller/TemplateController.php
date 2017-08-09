@@ -41,16 +41,18 @@ class TemplateController extends Controller
         
         if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
             $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllCheckDeleteable();
-            
             foreach ($entities as $entity) {
                 $group_user_access = array();
 //pick up group access names, we show admin access (bit 0 = 1) in red
                 foreach ($entity->getGroups() as $group) {
-                    $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()))->getAccessState();
-                    if ( ($access_state & 1) > 0) {
-                        $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
-                    } else if ( ($access_state & 2) > 0) {
-                        $group_user_access[] = $group->getName();
+                    $template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()));
+                    if ($template_group_data) {
+                        $access_state = $template_group_data->getAccessState();
+                        if ( ($access_state & 1) > 0) {
+                            $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
+                        } else if ( ($access_state & 2) > 0) {
+                            $group_user_access[] = $group->getName();
+                        }
                     }
                 }
                 $entity->setGroupNames(implode(", ", $group_user_access));
@@ -73,14 +75,17 @@ class TemplateController extends Controller
 
 //here we check what sort of access record this is.
 //if bit 0 = 1 we have admin access, so we list it
-                        $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()))->getAccessState();
-                        if ( ($access_state & 1) > 0 && !in_array($entity, $entities)) {
-                            $add_entity = true;
-                        } 
+                        $template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()));
+                        if ($template_group_data) {
+                            $access_state = $template_group_data->getAccessState();
+                            if ( ($access_state & 1) > 0 && !in_array($entity, $entities)) {
+                                $add_entity = true;
+                            } 
 
 //if bit 1 = 1 we have user access, so we add this group name to the list
-                        if ( ($access_state & 2) > 0) {
-                            $group_user_access[] = $group->getName();
+                            if ( ($access_state & 2) > 0) {
+                                $group_user_access[] = $group->getName();
+                            }
                         }
                     }
                 }
