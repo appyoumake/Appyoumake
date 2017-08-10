@@ -5,17 +5,24 @@ category: list
 name: table
 tooltip: Table, add and remove columns and rows
 html: |
-    <table style="width:100%" class="mc_text mc_entry mc_info">
-      <tr>
-        <th class="mc_text mc_entry mc_info">Enter heading here</th>
-        <th class="mc_text mc_entry mc_info">&nbsp;</th> 
-      </tr>
-      <tr>
-        <td class="mc_text mc_entry mc_info">Enter content here</td>
-        <td class="mc_text mc_entry mc_info">&nbsp;</td> 
-      </tr>
+    <table style="width:100%" class="mc_container">
+      <thead>
+        <tr class="mc_list">
+          <th class="mc_text mc_entry mc_heading mc_medium">Enter heading here</th>
+          <th class="mc_text mc_entry mc_heading mc_medium">&nbsp;</th> 
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="mc_list">
+          <td class="mc_text mc_entry mc_item">Enter content here</td>
+          <td class="mc_text mc_entry mc_item">&nbsp;</td> 
+        </tr>
+      </tbody>
     </table>
 custom:
+    cell_html: <td class="mc_text mc_entry mc_item" contenteditable="true">&nbsp;</td>
+    header_cell_html: <th class="mc_text mc_entry mc_heading mc_medium" contenteditable="true">&nbsp;</th>
+    row_start_html: <tr class="mc_list">
     add_link:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAddJREFUeNrsVr1SwkAQjoJjythRamcZOzuh0w7fADs79Q3CEzB2dqGjhDcIpVbQWsEbEDsYf+K3zt7M5sglx5mSnfkmP7d3393ut5t43t4q7OjY7wEzIBNYABEQ1EkUAGONSAdtJJTzDlzJcEmA0MJ9DnQ+N+uUHho1kg2BPvAGXAI+v28Bm5/vr6lrGPV8rYB2gd9K5tQppGLhgE94BTwhXPMC30dcBuoZPn9cTUfNUD4mWCQq8Vn+R5GRFiIp/65hTix9d8lZUiH9jMOXC71eHmrs0EKNbYu9DVR+ue7G2vhzKWGJ9En2Z8AF5VDLacpkCYtKGeV6aFSpgYwW7KiFVRFTp+EIdNhPJ8sV/dYJK8jIKBexGLvj01qRbXWaRrM50nKmyJa8IHWNc/iFwDv79ICR6CxGslxIqetru0950pwFkVhWkZEsd0LsOOYTKLvBpFe6QR9cYvwDt9cVZFOel9rUnKyb2ODT5WLPCvppZHN8GVLZDW6xy0nJ5kIpEPhafwlMhX9qIqLOg9uupkinfrnQQhQUtKtVwRd9J2IpmhNREiTxe7zbAD7wgOcXW+nb5tD5t8HphJD+GidRvwetkjkTFlXq1WH8SYoK5D/j5rC3UvsVYAD7ENo13pqynAAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Legg til en lenke på den valgte teksten, en_GB: Add a link to the currently highlighted text, default: Add a link to the currently highlighted text }
