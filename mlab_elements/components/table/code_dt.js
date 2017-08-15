@@ -151,7 +151,7 @@
     
 //here we set the width in percentage increments. If the percentage width is not set OR it is pixels we calculate from width of table 
 //otherwise we just add a percentage point.
-    this.custom_increase_col_width = function (el) {
+    this.custom_set_col_width = function (el, adjust) {
         var table = this.getHTMLElement(el);
         var current_cell = table.find("[data-mlab-dt-table-focus='1']");
         if (current_cell.length < 1) {
@@ -163,17 +163,22 @@
         var width_percent = $(table_native.rows[0].cells[current_col]).css("width");
         debugger; // $(table_native.rows[0].cells[current_col]).attr("style").split("width: ")
         if (width_percent.indexOf("%") > 0) {
-            var new_width = parseInt(width_percent) + 1;
+            var new_width = parseInt(width_percent) + adjust;
         } else {
-            var new_width = Math.ceil((parseInt(width_percent) / table_width) * 100) + 1;
+            var new_width = Math.ceil((parseInt(width_percent) / table_width) * 100) + adjust;
         }
         if (new_width <= 90) {
             $(table_native.rows[0].cells[current_col]).css("width", new_width + "%");
         }
+//add code here so that if still same PX we add one percentage point.
+    };
+    
+    this.custom_increase_col_width = function (el) {
+        this.custom_set_col_width(el, 1);
     };
     
     this.custom_decrease_col_width = function (el) {
-        
+        this.custom_set_col_width(el, -1);
     };
     
 //we need to use tab to create indents/outdents
