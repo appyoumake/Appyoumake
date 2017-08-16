@@ -161,24 +161,34 @@
         var table_width = table.width();
         var table_native = table[0];
         var width_percent = $(table_native.rows[0].cells[current_col]).css("width");
-        debugger; // $(table_native.rows[0].cells[current_col]).attr("style").split("width: ")
         if (width_percent.indexOf("%") > 0) {
             var new_width = parseInt(width_percent) + adjust;
         } else {
             var new_width = Math.ceil((parseInt(width_percent) / table_width) * 100) + adjust;
         }
-        if (new_width <= 90) {
+        if (new_width >= 10 && new_width <= 90) {
+            var old_style = table_native.rows[0].cells[current_col].style.display;
+            table_native.rows[0].cells[current_col].style.display = "none";
             $(table_native.rows[0].cells[current_col]).css("width", new_width + "%");
+            table_native.rows[0].cells[current_col].offsetHeight; 
+            table_native.rows[0].cells[current_col].style.display = old_style;
         }
 //add code here so that if still same PX we add one percentage point.
     };
     
-    this.custom_increase_col_width = function (el) {
-        this.custom_set_col_width(el, 1);
+    this.custom_increase_col_width = function (el, ev) {
+        var adjust = 1;
+        if (ev.shiftKey) {
+            adjust = 10;
+        }
+        this.custom_set_col_width(el, adjust);
     };
     
-    this.custom_decrease_col_width = function (el) {
-        this.custom_set_col_width(el, -1);
+    this.custom_decrease_col_width = function (el, ev) {
+        var adjust = -1;
+        if (ev.shiftKey) {
+            adjust = -10;
+        }this.custom_set_col_width(el, adjust);
     };
     
 //we need to use tab to create indents/outdents
