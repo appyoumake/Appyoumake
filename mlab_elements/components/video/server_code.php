@@ -12,6 +12,9 @@ class mlab_ct_video {
         $thumbnail_filename = $path_app_html_root . "/images/" . $file_filename;
         // exec("ffmpeg -i '$file_uploaded' -an -f mjpeg -t 1 -r 1 -y -filter:v scale='640:-1' " . $thumbnail_filename);
 
+//exec("cordova plugin add https://github.com/jaeger25/Html5Video.git");
+    
+//"ffmpeg -i Harald.mp4 -an -f mjpeg -t 1 -r 1 -y -s 620x370 test2.jpg"
     //    exec("avconv -i '$file_uploaded' -c copy '$file_filename'.mp4");
     //    exec("avconv -i '$file_uploaded' -c h263 '$file_filename'.mp4");
     //    exec("ffmpeg -i '$file_uploaded' -vcodec mpeg4 -acodec libfdk_aac '$file_filename'.mp4");

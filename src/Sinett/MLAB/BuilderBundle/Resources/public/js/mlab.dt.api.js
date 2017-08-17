@@ -315,12 +315,14 @@ Mlab_dt_api.prototype = {
                                 });
 
                                 $("#mlab_cp_image_uploadfiles_start").click(function() {
+                                    console.log("mlab_cp_image_uploadfiles_start");
                                     uploadObj.startUpload();
                                 });
                             }
                             
                             $('#mlab_cp_image_button_ok', api.elements.content).click(	
                                     function(e) {
+                                        console.log("mlab_code_" + component_id);
                                         api.hide(e); 
                                         if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
                                             document["mlab_code_" + component_id].setProperties( $("#mlab_dt_form_upload").serializeArray(), this );
