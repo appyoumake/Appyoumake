@@ -115,7 +115,7 @@ app_builder_load_components:
     defaults: { _controller: "SinettMLABBuilderBundle:App:loadBuilderComponents" }
 
 app_builder_get_uploaded_files:
-    path:   /builder/{app_id}/{file_types}/get_uploaded_files
+    path:   /builder/{app_id}/{file_type}/get_uploaded_files
     defaults: { _controller: "SinettMLABBuilderBundle:App:getUploadedFiles" }
 
 app_list_set_active_version:

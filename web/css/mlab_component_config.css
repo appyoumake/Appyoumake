@@ -128,6 +128,7 @@ id="mlab_editor_chrome" gjøres om til id="mlab_editable_area" ??? TODO
 #mlab_editor .mlab_dt_text_info {  
     width: 95%;
     margin-bottom: 1.5em;
+    white-space: normal; /* added for file upload dialog. */
 }
 
 #mlab_editor .mlab_dt_text_filename {

@@ -520,6 +520,7 @@ appController.msg.featureAddAction.2: , please try again
 appController.msg.storagePluginAddAction.1: Storage plugin not specified
 appController.msg.storagePluginAddAction.2: Unable to copy JavaScript file for this component
 appController.msg.createNewVersionAction: Increment must be 0.1 or 1, value supplied was
+appController.msg.file.upload.error: A problem occured trying to add the file, most likely it was too large. Max size allowed is 
 
 categoryController.createNotFoundException: Unable to find Category entity.
 

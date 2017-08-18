@@ -1,12 +1,14 @@
+//use this to support inheritance in audio component
+    this.media_type = "video";
+
     this.getHTMLElement = function(el)  {
-        return $(el).find("video");
+        return $(el).find(this.media_type);
     };
 
-
     this.onCreate = function (el) {
-        var vid = this.getHTMLElement(el);
-        if (typeof vid.attr("src") == "undefined" || vid.attr("src") == "") {
-            vid.attr("poster", this.config.placeholder);
+        var media = this.getHTMLElement(el);
+        if (typeof media.attr("src") == "undefined" || vid.attr("src") == "") {
+            media.attr("poster", this.config.placeholder);
         }
     };
 
@@ -29,12 +31,13 @@
         return 1;
     };
 
-    this.custom_upload_video = function (el) {
-        this.api.uploadMedia(el, this.config, "mp4,mov,avi,wmv", this.cbVideoUploaded, event);
+    this.custom_upload_media = function (el) {
+        this.api.uploadMedia(el, this.config, this.media_type, this.cbUploadCompleted, event);
     };
 
-    this.cbVideoUploaded = function(el, video_url) {
-        console.log(video_url);
-        var video = $(el).find('video');
-        video.attr('src', video_url);
+    this.cbUploadCompleted = function(el, media_url) {
+        console.log(media_url);
+        var media = $(el).find(this.media_type);
+        media.attr({'src': media_url, 'poster': media_url + ".png"});
+        
     };

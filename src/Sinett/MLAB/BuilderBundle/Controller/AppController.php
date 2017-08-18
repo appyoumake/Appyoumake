@@ -775,7 +775,7 @@ class AppController extends Controller
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
-                                        "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_types' => '_FILETYPES_', 'app_id' => '_APPID_')),
+                                        "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_type' => '_FILETYPE_', 'app_id' => '_APPID_')),
                                         "editor_closed" => $this->generateUrl('app_builder_editor_closed',  array('uid' => '_UID_')),
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
                                         "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => 'false')),
@@ -1232,6 +1232,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function componentUploadAction(Request $request, $app_id, $comp_id) {
+        $test = $request->files->getError();
+        if ($test == "error") {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => $this->get('translator')->trans('appController.msg.file.upload.error') . ini_get('post_max_size') ));
+        }
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1276,7 +1282,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                     'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')));
             }
             
-            if ($sub_folder == "img") {
+            if ($sub_folder == "image") {
                 //list($width, $height, $type, $attr) = getimagesize($uploadedFile["tmp_name"]);
             }
             
@@ -1442,7 +1448,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         
     }
     
-    public function getUploadedFilesAction($app_id, $file_types) {
+//function to return all files of a certain type (video, audio, image) to the front end so 
+//app creator can re-use already uploaded files
+    public function getUploadedFilesAction($app_id, $file_type) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1457,15 +1465,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
 //get config etc
         $config = $this->container->getParameter('mlab');
-        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "img/";
-        $file_url = "img/"; //we have reset the base path in the editor, so this will work
-        $file_extensions = explode(",", $file_types);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "$file_type/";
+        $file_url = "$file_type/"; //we have reset the base path in the editor, so this will work
         $files = array();
         
-        foreach ($file_extensions as $ext) {
-            foreach (glob($app_path . "*." . $ext) as $file) {
-                $files[$file_url . basename($file)] = basename($file);
-            }
+        foreach (glob($app_path . "*") as $file) {
+            $files[$file_url . basename($file)] = basename($file);
         }
 
         return new JsonResponse(array('result' => 'success', 'files' => $this->renderView('SinettMLABBuilderBundle:App:options.html.twig', array('files' => $files))));

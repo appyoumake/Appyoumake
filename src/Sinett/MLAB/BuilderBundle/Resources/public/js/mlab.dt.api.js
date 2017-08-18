@@ -201,12 +201,12 @@ Mlab_dt_api.prototype = {
  * @param {String} extensions
  * @returns {Array} list of options for select element
  */
-    getMedia : function (extensions) {
-        var data = $.ajax({
+    getMedia : function (file_type) {
+        var data = $.ajax( {
             type: "GET",
-            url: this.parent.urls.uploaded_files.replace("_APPID_", this.parent.app.id).replace("_FILETYPES_", extensions),
+            url: this.parent.urls.uploaded_files.replace("_APPID_", this.parent.app.id).replace("_FILETYPE_", file_type),
             async: false,
-        }).responseText;
+        } ).responseText;
 
         data = eval("(" + data + ")");
         if (data.result == "success") {
@@ -248,7 +248,7 @@ Mlab_dt_api.prototype = {
  * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
  * @returns {undefined}
  */
-    uploadMedia : function (el, component_config, file_extensions, cb, event) {
+    uploadMedia : function (el, component_config, file_type, cb, event) {
         this.indicateWait(true);
         content = $('<form />', {"id": "mlab_dt_form_upload" } );
         content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], "class": "mlab_dt_text_info" }) );
@@ -258,6 +258,7 @@ Mlab_dt_api.prototype = {
         content.append( $('<div />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"], "id": "mlab_cp_image_button_cancel", "class": "pure-button pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
        // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
         content.append( $('<div />', { text:  _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"], "id": "mlab_cp_image_button_ok", "class": "pure-button pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
+        content.append( $('<img />', { "id": "mlab_cp_image_spinner", "class": "right", "src": "/img/spinner.gif" }) );
 
         var that = this;
         
@@ -280,7 +281,7 @@ Mlab_dt_api.prototype = {
                             this.dt_config = component_config;
                             this.dt_cb = cb;
 //load existing files
-                            var existing_files = that.getMedia(file_extensions);
+                            var existing_files = that.getMedia(file_type);
                             $("#mlab_cp_img_select_image").html(existing_files)
                                                           .on("change", function() {
                                 that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_img_select_image").val()); 
@@ -293,6 +294,7 @@ Mlab_dt_api.prototype = {
 //upload files 
                             if ($("#mlab_cp_image_button_ok").length > 0) {
                                 var that_qtip = this;
+                                console.log('starting upload');
                                 var uploadObj = $("#mlab_cp_image_uploadfiles").uploadFile({
                                     url: that.getUrlUploadAbsolute(that_qtip.dt_config.name),
                                     formData: { comp_id: that_qtip.dt_component_id, app_path: that.parent.app.path },
@@ -303,7 +305,7 @@ Mlab_dt_api.prototype = {
                                     autoSubmit: true,
                                     fileName: "mlab_files",
                                     showStatusAfterSuccess: true,
-                                    allowedTypes: file_extensions,
+//                                    allowedTypes: file_extensions,
                                     onSuccess: function(files, data, xhr) {
                                                 that_qtip.dt_cb(that_qtip.dt_component, data.url);
                                                 that.setDirty();

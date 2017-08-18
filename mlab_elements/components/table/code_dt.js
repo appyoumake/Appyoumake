@@ -104,7 +104,7 @@
             return;
         }
         var row = current_cell.parent();
-		if (row.index() > 0) {
+		if (row.parent().prop("tagName").toLowerCase() == "tbody") {
             row.detach();
         }
     };

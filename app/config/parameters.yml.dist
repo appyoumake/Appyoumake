@@ -44,10 +44,9 @@ parameters:
         icon_text_maxlength: 6
 
         uploads_allowed:
-          ___img: [image/gif, image/jpeg, image/png]
-          ___video: [video/webm, video/mp4, video/ogg]
-          ___audio: [audio/mp4, audio/mpeg, audio/vnd.wave]
-          
+          ___image: [image/gif, image/jpeg, image/png]
+          ___video: [video/webm, video/mp4, video/ogg, video/x-msvideo, video/3gpp, video/quicktime]
+          ___audio: [audio/mp4, audio/mpeg3, audio/mpeg, audio/wave, audio/x-wav, audio/wav, audio/aac, audio/webm, audio/ogg]          
         paths:
           ___app: 
           ___component: 

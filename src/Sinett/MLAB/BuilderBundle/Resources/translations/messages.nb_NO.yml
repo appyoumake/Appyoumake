@@ -517,7 +517,8 @@ appController.msg.featureAddAction.1: Kan ikke oppdatere appen med disse egenska
 appController.msg.featureAddAction.2: Vennligst prøv igjen
 appController.msg.storagePluginAddAction.1: Lagringsenhet ikke spesifisert
 appController.msg.storagePluginAddAction.2: Kan ikke kopiere JavaScript for denne komponenten
-appController.msg.createNewVersionAction: Verdien må e mellom 0.1 or 1, oppgitt verdi var
+appController.msg.createNewVersionAction: Verdien må være mellom 0.1 or 1, oppgitt verdi var
+appController.msg.file.upload.error: Et problem oppsto med å legge til filen, sannsynligvis er den for stor. Maksimum tillatt størrelse er 
 
 categoryController.createNotFoundException: Kan ikke finne kategorienheten
 
