@@ -449,14 +449,15 @@ class FileManagement {
 
 //3: run the server_code.php file if it exists
             if (file_exists($path_component . "server_code.php")) {
-                if (!class_exists("mlab_ct_" . $comp_id) && !@(include($path_component . "server_code.php"))) {
+                $temp_class_name = "mlab_ct_" . $comp_id;
+                
+                if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
                     return array(
                             'result' => 'failure',
                             'msg' => "Unable to load server_code.php file");
                 }
                 
-                if (class_exists("mlab_ct_" . $comp_id)) {
-                    $temp_class_name = "mlab_ct_" . $comp_id;
+                if (class_exists($temp_class_name)) {
                     $component_class = new $temp_class_name();
                     if (method_exists($component_class, "onCreate")) {
                         if (!$component_class->onCreate($path_app, $path_component, $comp_id)) {

@@ -1225,18 +1225,19 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     }
     
     /**
-     * Handles a file being uploaded
+     * Handles a file being uploaded by a component
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param type $app_id
      * @param type $comp_id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function componentUploadAction(Request $request, $app_id, $comp_id) {
-        $test = $request->files->getError();
-        if ($test == "error") {
+        
+//check if upload successful and validate parameters
+        if (empty($request->files->parameters)) {
     		return new JsonResponse(array(
     			'result' => 'failure',
-    			'msg' => $this->get('translator')->trans('appController.msg.file.upload.error') . ini_get('post_max_size') ));
+    			'msg' => $this->get('translator')->trans('appController.msg.file.upload.error') . " " . ini_get('post_max_size') ));
         }
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
@@ -1256,80 +1257,82 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
         }
 
+//load libraries
+        $file_mgmt = $this->get('file_management');
+        
+//get paths
         $path_app = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
-// MK Component path added
         $path_component = $this->container->getParameter('mlab')['paths']['component'] . $comp_id . "/";
         $replace_chars = $this->container->getParameter('mlab')['replace_in_filenames'];
+        $urls = array();
         
-//loop through list of files and place it in relevant folder based on mime type, move file and then return the file path
+//loop through list of files and determine mime type and folder, generate name and move file
+//then return the file path
         foreach($request->files as $uploadedFile) {
             $width = $height = $type = $attr = null;
-            $orig_name = $uploadedFile->getClientOriginalName();
-//TODO fix hack so keep extension properly
-            $ext = $uploadedFile->getClientOriginalExtension();
-            $file_name = str_replace("_$ext", ".$ext", preg_replace(array_values($replace_chars), array_keys($replace_chars), $orig_name)) ;
+            $f_name =  $file_mgmt->GUID_v4();
+            $f_ext = $uploadedFile->guessExtension();
+            $f_mime = $uploadedFile->getMimeType();
+            md5_file($file_uploaded);
+            
             $sub_folder = false;
             foreach ($this->container->getParameter('mlab')['uploads_allowed'] as $folder => $formats) {
-                if (in_array($uploadedFile->getMimeType(), $formats)) {
+                if (in_array($f_mime, $formats)) {
                     $sub_folder = $folder;
                     break;
                 }
             }
             
             if ( !$sub_folder ) {
+                return new JsonResponse( array(
+                    'result' => 'failure',
+                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')) );
+            }
+
+//if the component has a routine to process the file, then we call this.
+//otherwise we just copy the file
+            $process_file = false;
+            $temp_class_name = "mlab_ct_" . $comp_id;
+
+            if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
                 return new JsonResponse(array(
                     'result' => 'failure',
-                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')));
+                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
             }
-            
-            if ($sub_folder == "image") {
-                //list($width, $height, $type, $attr) = getimagesize($uploadedFile["tmp_name"]);
-            }
-            
-//url of file to return, this is always a relative path, it comes from the uploads_allowed section in parameters.yml 
-            $url = $sub_folder . "/" . $file_name;
-        
-            $uploadedFile->move($path_app . $sub_folder, $file_name);
-// MK
-            if (file_exists($path_component . "server_code.php")) {
-                if (!@(include($path_component . "server_code.php"))) {
-                    return new JsonResponse(array(
+
+            if (class_exists($temp_class_name)) {
+                $component_class = new $temp_class_name();
+                if (method_exists($component_class, "onUpload")) {
+                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id)
+                    if (!$url) {
+                        return new JsonResponse(array(
                             'result' => 'failure',
-                            'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
-                } else {
-                    if (function_exists("onUpload")) {
-                        if (!onUpload($path_app . $sub_folder . "/" . $file_name, $path_app, $path_component, $comp_id)) {
-                            return new JsonResponse(array(
-                                'result' => 'failure',
-                                'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
-                        }
+                            'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
                     }
+                    $process_file = true;
+                    $urls[] = $url;
                 }
             }
-// MK end
-            /*{
-                return new JsonResponse(array(
-                    'result' => 'failure',
-                    'msg' => 'Unable to copy uploaded file to app folder'));
-            }*/
             
-            
-            return new JsonResponse(array(
-                    'result' => 'success',
-                    "url" => $url,
-                    "file_name" => $orig_name,
-                    "file_width" => $width,
-                    "file_height" => $height,
-                    "file_type" => $type));
+            if (!$process_file) {
+                $uploadedFile->move($path_app . $sub_folder, $f_name);
+                $urls[] = $sub_folder . "/" . $file_name;
+            }
+        }
+
+//we now return an array of URLs (most of the time it will only be one)
+        return new JsonResponse(array(
+            'result' => 'success',
+            "urls" => $urls));
         }
     }
 
-    /**
-     * Whenever a component is added on the front end this function is called to copy files if required and run the server_code code
-     * @param type $app_id
-     * @param type $comp_id
-     * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
-     */
+/**
+ * Whenever a component is added on the front end this function is called to copy files if required and run the server_code code
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
+ */
     public function componentAddedAction($app_id, $comp_id) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();

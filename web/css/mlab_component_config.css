@@ -433,7 +433,7 @@ color: black;
    min-width: 205px;
 }
 
-#mlab_editor #mlab_cp_img_select_image {
+#mlab_editor #mlab_cp_select_file {
     min-width: 195px;
     max-width: 71%;
 }

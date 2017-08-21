@@ -323,7 +323,7 @@ $(document).ready(function() {
                     $("#mlab_button_help").on("click", function () { mlab.dt.design.toggle_footer(); });
 
 
-//Checkes if the editor menu icon is cliked
+//Checks if the editor menu icon is cliked
                     $("#mlab_editor_menu_dropdown").on("click",function(event) { 
                         if ($('#mlab_user_menu_dropdown_content').hasClass('mlab_show_user_dropdown')) {
 //User menu is open and needs to be closed 
@@ -336,7 +336,7 @@ $(document).ready(function() {
                         event.stopPropagation(); 
                     });
 
-//Checkes if the user menu icon is cliked
+//Checks if the user menu icon is cliked
                     $("#mlab_user_menu_dropdown").on("click",function(event) { 
                         if ($('#mlab_editor_menu_dropdown_content').hasClass('mlab_show_editor_dropdown')) {
 //Editor menu is open and needs to be closed 

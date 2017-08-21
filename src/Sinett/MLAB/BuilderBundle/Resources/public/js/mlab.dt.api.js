@@ -243,17 +243,20 @@ Mlab_dt_api.prototype = {
          }
      },
 /**
- * 
+ * This is the function used by all components if they want to upload a file.
+ * It uses the jquery uploadfile plugin: https://github.com/hayageek/jquery-upload-file
  * @param {type} el: DIV surrounding the component HTML
  * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
  * @returns {undefined}
  */
     uploadMedia : function (el, component_config, file_type, cb, event) {
         this.indicateWait(true);
+        
+//generate the form used to upload files on the fly
         content = $('<form />', {"id": "mlab_dt_form_upload" } );
         content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], "class": "mlab_dt_text_info" }) );
-        content.append( $('<select id="mlab_cp_img_select_image" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
-        content.append( $('<div />', { "id": "mlab_cp_image_uploadfiles", "class": "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { allowed_types: ["jpg", "jpeg", "png", "gif"], multi: false} }) );
+        content.append( $('<select id="mlab_cp_select_file" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
+        content.append( $('<div />', { "id": "mlab_cp_image_uploadfiles", "class": "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { multi: false} }) );
         content.append( $('<div />', { "class": "mlab_dt_large_new_line" }) );
         content.append( $('<div />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"], "id": "mlab_cp_image_button_cancel", "class": "pure-button pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
        // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
@@ -282,9 +285,9 @@ Mlab_dt_api.prototype = {
                             this.dt_cb = cb;
 //load existing files
                             var existing_files = that.getMedia(file_type);
-                            $("#mlab_cp_img_select_image").html(existing_files)
+                            $("#mlab_cp_select_file").html(existing_files)
                                                           .on("change", function() {
-                                that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_img_select_image").val()); 
+                                that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_select_file").val()); 
                                 that.setDirty();
                                 
                                 that.closeAllPropertyDialogs();
@@ -307,11 +310,17 @@ Mlab_dt_api.prototype = {
                                     showStatusAfterSuccess: true,
 //                                    allowedTypes: file_extensions,
                                     onSuccess: function(files, data, xhr) {
-                                                that_qtip.dt_cb(that_qtip.dt_component, data.url);
-                                                that.setDirty();
-                                                api.hide(); 
+                                                console.log("error uploading file");
+                                                if (data.result == "failure") {
+                                                    alert(data.msg);
+                                                } else {
+                                                    that_qtip.dt_cb(that_qtip.dt_component, data.url);
+                                                    that.setDirty();
+                                                    api.hide(); 
+                                                }
                                         }.bind(that_qtip.dt_component),
                                     onError: function(files, status, errMsg) { 
+                                        console.log("error uploading file");
                                         alert(errMsg); 
                                     }
                                 });

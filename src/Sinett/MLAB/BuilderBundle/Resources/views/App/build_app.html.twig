@@ -192,12 +192,16 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                 <div class='mlab_sub_menu'>
                                     <h3>{% trans %}app.builder.edit.menu.heading.download.source{% endtrans %}</h3>
                                     <p> {% trans %}app.builder.edit.menu.download.source.info{% endtrans %}</p>
-                                    <div class='mlab_source_code_icon' title='{% trans %}app.builder.edit.menu.heading.download.source{% endtrans %}'></div>
+                                    <a href='javascript: mlab.dt.management.compiler.get_app_source();'>
+                                        <div class='mlab_source_code_icon' title='{% trans %}app.builder.edit.menu.heading.download.source{% endtrans %}'></div>
+                                    </a>
                                     
                                     <br><br>
                                     <h3>{% trans %}app.builder.edit.menu.heading.delete.locks{% endtrans %}</h3>
                                     <p> {% trans %}app.builder.edit.menu.delete.locks.info{% endtrans %}</p>
-                                    <div class='mlab_unlock_icon' title='{% trans %}app.builder.edit.menu.heading.delete.locks{% endtrans %}'></div>
+                                    <a href='javascript: mlab.dt.management.app_remove_locks();'>
+                                        <div class='mlab_unlock_icon' title='{% trans %}app.builder.edit.menu.heading.delete.locks{% endtrans %}'></div>
+                                    </a>
                                 </div>
                             </div> <!-- End Feature col -->
                             
