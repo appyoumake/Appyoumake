@@ -1303,7 +1303,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             if (class_exists($temp_class_name)) {
                 $component_class = new $temp_class_name();
                 if (method_exists($component_class, "onUpload")) {
-                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id)
+                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $this->container->getParameter('mlab'))
                     if (!$url) {
                         return new JsonResponse(array(
                             'result' => 'failure',
