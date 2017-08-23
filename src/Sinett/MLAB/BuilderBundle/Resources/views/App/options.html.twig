@@ -6,8 +6,10 @@
 Unauthorized copying of this file, via any medium is strictly prohibited 
 
 For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
+was: <option value="{{ url }}">{{ file }}</option>
 #}
     <option>&nbsp;</option>
     {% for url, file in files %}
-        <option value="{{ url }}">{{ file }}</option>
+        <option data-imagesrc="{{ url }}" data-description="{{ file }}" value="{{ url }}">{{ file }}</option>
     {% endfor %}

@@ -1250,7 +1250,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'result' => 'failure',
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
-
         if ( !isset($comp_id) ) {
     		return new JsonResponse(array(
     			'result' => 'failure',
@@ -1266,7 +1265,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $replace_chars = $this->container->getParameter('mlab')['replace_in_filenames'];
         $urls = array();
         
-//loop through list of files and determine mime type and folder, generate name and move file
+//loop through list of files and determine mime type and folder, generate name and move or process file
 //then return the file path
         foreach($request->files as $uploadedFile) {
             $width = $height = $type = $attr = null;
@@ -1275,6 +1274,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             $f_mime = $uploadedFile->getMimeType();
             md5_file($file_uploaded);
             
+//check to see if the mime type is allowed
             $sub_folder = false;
             foreach ($this->container->getParameter('mlab')['uploads_allowed'] as $folder => $formats) {
                 if (in_array($f_mime, $formats)) {
@@ -1294,7 +1294,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             $process_file = false;
             $temp_class_name = "mlab_ct_" . $comp_id;
 
-            if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
+            if (!file_exists($path_component . "server_code.php")) {
+                $process_file = false;
+            } else if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
                 return new JsonResponse(array(
                     'result' => 'failure',
                     'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
@@ -1303,7 +1305,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             if (class_exists($temp_class_name)) {
                 $component_class = new $temp_class_name();
                 if (method_exists($component_class, "onUpload")) {
-                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $this->container->getParameter('mlab'))
+                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $this->container->getParameter('mlab'));
                     if (!$url) {
                         return new JsonResponse(array(
                             'result' => 'failure',
@@ -1314,7 +1316,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 }
             }
             
-            if (!$process_file) {
+//no onupload processing, so we just copy the file            
+            if (!$process_file) {            
                 $uploadedFile->move($path_app . $sub_folder, $f_name);
                 $urls[] = $sub_folder . "/" . $file_name;
             }
@@ -1324,7 +1327,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         return new JsonResponse(array(
             'result' => 'success',
             "urls" => $urls));
-        }
     }
 
 /**
@@ -1472,7 +1474,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $file_url = "$file_type/"; //we have reset the base path in the editor, so this will work
         $files = array();
         
-        foreach (glob($app_path . "*") as $file) {
+        foreach (glob($app_path . "*.png") as $file) {
             $files[$file_url . basename($file)] = basename($file);
         }
 

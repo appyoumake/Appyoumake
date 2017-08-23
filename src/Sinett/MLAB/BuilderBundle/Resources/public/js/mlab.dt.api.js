@@ -250,116 +250,113 @@ Mlab_dt_api.prototype = {
  * @returns {undefined}
  */
     uploadMedia : function (el, component_config, file_type, cb, event) {
-        this.indicateWait(true);
         
-//generate the form used to upload files on the fly
-        content = $('<form />', {"id": "mlab_dt_form_upload" } );
-        content.append( $('<p />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"], "class": "mlab_dt_text_info" }) );
-        content.append( $('<select id="mlab_cp_select_file" class="mlab_dt_select"><option>' + _tr["mlab.dt.api.js.uploadMedia.qtip.content.2"] + '</option></select>') );
-        content.append( $('<div />', { "id": "mlab_cp_image_uploadfiles", "class": "mlab_dt_button_upload_files mlab_dt_left", name: "mlab_cp_image_uploadfiles", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.3"], data: { multi: false} }) );
-        content.append( $('<div />', { "class": "mlab_dt_large_new_line" }) );
-        content.append( $('<div />', { text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"], "id": "mlab_cp_image_button_cancel", "class": "pure-button pure-button-xsmall mlab_dt_button_cancel mlab_dt_left" }) );
-       // content.append( $('<div />', { class: "mlab_dt_button_new_line" }) );
-        content.append( $('<div />', { text:  _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"], "id": "mlab_cp_image_button_ok", "class": "pure-button pure-button-xsmall right mlab_dt_button_ok mlab_dt_left" }) );
-        content.append( $('<img />', { "id": "mlab_cp_image_spinner", "class": "right", "src": "/img/spinner.gif" }) );
-
+//store for later when callbacks are executed in different contexts
         var that = this;
+        var that_qtip = null;
         
-        if (typeof event != "undefined") {
-            var owner_element = event.currentTarget;
-        } else {
-            var owner_element = el;
+//first some utility functions
+
+//generate the form used to upload files on the fly
+        function local_prepare_form_html() {
+            content = $('<form />', {"id": "mlab_dt_form_upload" } );
+            content.append( $('<p />',      {                                          class: "mlab_dt_text_info",                  text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"] }) );
+            content.append( $('<select />', { id: "mlab_cp_select_file",               class: "mlab_dt_select" }) );
+            content.append( $('<div />',    { id: "mlab_cp_mediaupload_uploadfiles",   class: "mlab_dt_picture mlab_dt_left" }) );
+            content.append( $('<div />',    {                                          class: "mlab_dt_large_new_line",             html: "&nbsp;" }) );
+            content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
+            content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_ok",     class: "mlab_dt_button_ok mlab_dt_left",     text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"] }) );
+//            content.append( $('<img />',    { id: "mlab_cp_mediaupload_spinner",       class: "right",                                                               src:  "/img/spinner.gif" }) );
+            return content;
         }
-        this.properties_tooltip = $(owner_element).qtip({
-            solo: false,
-            content: {text: content, title: _tr["mlab.dt.api.js.uploadMedia.qtip.title"] },
-            position: { my: 'leftMiddle', at: 'rightMiddle', viewport: $(window) },
-            show: { ready: true, modal: { on: true, blur: false } },
-            hide: false,
-            style: { classes: 'qtip-light mlab_zindex_top_tooltip', tip: true },
-            events: { render: function(event, api) {
-                            that.indicateWait(true);
-                            this.dt_component = el;
-                            this.dt_component_id = component_config.name;
-                            this.dt_config = component_config;
-                            this.dt_cb = cb;
-//load existing files
-                            var existing_files = that.getMedia(file_type);
-                            $("#mlab_cp_select_file").html(existing_files)
-                                                          .on("change", function() {
-                                that_qtip.dt_cb(that_qtip.dt_component, $("#mlab_cp_select_file").val()); 
-                                that.setDirty();
-                                
-                                that.closeAllPropertyDialogs();
-                            }); 
+        
+        function local_set_media_source_existing () {
+            cb(el, $("#mlab_cp_select_file").val()); 
+            that.setDirty();
+            that.closeAllPropertyDialogs();
+        }
+        
+        function local_set_media_source (url) {
+            cb(el, url); 
+            that.setDirty();
+            that.closeAllPropertyDialogs();
+        }
+        
+        function local_render_tooltip(event, api) {
+            that.indicateWait(true);
+            that_qtip = this;
+            
+            this.dt_component = el;
+            this.dt_component_id = component_config.name;
+            this.dt_config = component_config;
+            this.dt_cb = cb;
+            
+//load existing files into dropdown box and make it ddslick
+            var existing_files = that.getMedia(file_type);
+            $("#mlab_cp_select_file").html(existing_files)
+                                     .on("change", local_set_media_source_existing)
+                                     .ddslick({
+                                         width: 180,
+                                         imagePosition: "left",
+                                         selectText: "Select existing media file to use" });
 
 
-//upload files 
-                            if ($("#mlab_cp_image_button_ok").length > 0) {
-                                var that_qtip = this;
-                                console.log('starting upload');
-                                var uploadObj = $("#mlab_cp_image_uploadfiles").uploadFile({
-                                    url: that.getUrlUploadAbsolute(that_qtip.dt_config.name),
-                                    formData: { comp_id: that_qtip.dt_component_id, app_path: that.parent.app.path },
-                                    multiple: false,
-                                    showCancel: false,
-                                    showAbort: false,
-                                    showDone: false,
-                                    autoSubmit: true,
-                                    fileName: "mlab_files",
-                                    showStatusAfterSuccess: true,
-//                                    allowedTypes: file_extensions,
-                                    onSuccess: function(files, data, xhr) {
-                                                console.log("error uploading file");
-                                                if (data.result == "failure") {
-                                                    alert(data.msg);
-                                                } else {
-                                                    that_qtip.dt_cb(that_qtip.dt_component, data.url);
-                                                    that.setDirty();
-                                                    api.hide(); 
-                                                }
-                                        }.bind(that_qtip.dt_component),
-                                    onError: function(files, status, errMsg) { 
-                                        console.log("error uploading file");
-                                        alert(errMsg); 
-                                    }
-                                });
-
-                                $("#mlab_cp_image_uploadfiles_start").click(function() {
-                                    console.log("mlab_cp_image_uploadfiles_start");
-                                    uploadObj.startUpload();
-                                });
+//prepare upload files jquery plugin
+            var uploadObj = $("#mlab_cp_mediaupload_uploadfiles").uploadFile({
+                url: that.getUrlUploadAbsolute(that_qtip.dt_config.name),
+                formData: { comp_id: that_qtip.dt_component_id, app_path: that.parent.app.path },
+                multiple: false,
+                dragDrop: true,
+                showCancel: true,
+                showAbort: true,
+                showDone: true,
+                autoSubmit: false,
+                fileName: "mlab_files",
+                showStatusAfterSuccess: true,
+                onSuccess: function(files, data, xhr) {
+                            if (data.result == "failure") {
+                                alert(data.msg);
+                            } else {
+                                local_set_media_source(data.url);
                             }
-                            
-                            $('#mlab_cp_image_button_ok', api.elements.content).click(	
-                                    function(e) {
-                                        console.log("mlab_code_" + component_id);
-                                        api.hide(e); 
-                                        if (typeof (document["mlab_code_" + component_id]) !== "undefined") {
-                                            document["mlab_code_" + component_id].setProperties( $("#mlab_dt_form_upload").serializeArray(), this );
-                                        }
-                                    }.bind(that_qtip.dt_component));
-                            $('#mlab_cp_image_button_cancel', api.elements.content).click(function(e) { api.hide(e); });
-                            
-                            //Adding mlab style 
-                            //$('#mlab_property_button_ok').addClass('mlab_dt_button_ok mlab_dt_left'); 
-                            //$('#mlab_property_button_cancel').addClass('mlab_dt_button_cancel  mlab_dt_left');
-                            //$('#mlab_property_uploadfiles').addClass('mlab_dt_button_upload_files  mlab_dt_left');
-                            $('.new_but_line').addClass('mlab_dt_button_new_line');
-                            $('.new_big_line').addClass('mlab_dt_large_new_line');
-                            $('.new_small_line').addClass('mlab_dt_small_new_line');
-                            $('.info').addClass('mlab_dt_text_info');
-                            $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
-                            $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
-                            that.indicateWait(false);
-                        },
-                        show: function(event, api) { api.focus(event); },
-                        hide: function(event, api) { api.destroy(); that.properties_tooltip = false; }
+                    }.bind(that_qtip.dt_component),
+                onError: function(files, status, errMsg) { alert(errMsg); }
+            });
+            that.indicateWait(false);
+        }
+        
+
+//can be called from element or in response to event click, this decides who should "own" this tooltip
+        var owner_element = (typeof event != "undefined") ? event.currentTarget : el;
+
+//the meat of this function, displaying the tooltip
+        that_qtip = this.properties_tooltip = $(owner_element).qtip({
+            solo:       false,
+            content:    { text: local_prepare_form_html(), title: _tr["mlab.dt.api.js.uploadMedia.qtip.title"] },
+            position:   { my: 'leftMiddle', at: 'rightMiddle', viewport: $(window) },
+            show:       { ready: true, modal: { on: true, blur: false } },
+            hide:       false,
+            style:      { classes: 'qtip-light mlab_zindex_top_tooltip', tip: true },
+            events:     {
+                          render: local_render_tooltip,
+                          show: function(event, api) { api.focus(event); },
+                          hide: function(event, api) { api.destroy(); that.properties_tooltip = false; 
+                        }
             }
         });
-        this.indicateWait(false);
-    },
+        
+//assign close events and add mlab styles
+        $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
+        $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
+/*        $('.new_but_line').addClass('mlab_dt_button_new_line');
+        $('.new_big_line').addClass('mlab_dt_large_new_line');
+        $('.new_small_line').addClass('mlab_dt_small_new_line');
+        $('.info').addClass('mlab_dt_text_info');
+        $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
+        $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');*/
 
+    },
+    
 /**
  * Creates a unique ID starting with the prefix mlab_, followed by a rfc4122 version 4 compliant GUID. 
  * This is typically used to create an ID for a component that must not clash with any other IDs.

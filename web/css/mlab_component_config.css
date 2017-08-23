@@ -426,6 +426,10 @@ color: black;
    float: left;
 }
 
+#mlab_editor .mlab_dt_newline {
+   clear: both;
+}
+
 /* ===  Spesific styling for individual components  === */
 
 #mlab_editor #mlab_cp_googlemap_center,
