@@ -7,7 +7,7 @@
     };
 
     this.onCreate = function (el) {
-        this.onLoad (el);
+        this.onLoad(el);
         this.getHTMLElement(el).html('<img src="' + this.config.placeholder + '" >');
     };
     

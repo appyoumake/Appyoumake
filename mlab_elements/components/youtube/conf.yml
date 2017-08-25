@@ -1,10 +1,10 @@
 # Configuration file for a streaming video component using Youtube
+name: youtube
+extended_name: { nb_NO: YouTube videoer, en_GB: YouTube videos, default: YouTube videos }
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: video
-category_name: {nb_NO: Video, en_GB: Video}
-name: youtube
-extended_name: youtube
+category: media
+category_name: {nb_NO: Media, en_GB: Media}
 tooltip: {nb_NO: YouTube, en_GB: YouTube, default: YouTube}
 footer_tip: {nb_NO: Klikk på denne knappen for å velge og vise en video fra YouTube, en_GB: Click on this button to select and show a video from YouTube, default: Click on this button to select and show a video from YouTube }
 required_libs: { designtime: ["youtube.css"] }

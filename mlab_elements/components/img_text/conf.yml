@@ -1,10 +1,8 @@
 # Configuration file for image and text component
-version: 1.1
-developer: Arild Bergh @ Sinett/FFI.no
-category: image
-category_name: {nb_NO: Bilde, en_GB: Image}
 name: img_text
 extended_name: { nb_NO: Bilde med tekst, en_GB: Image with text, default: Image with text }
+version: 1.1
+developer: Arild Bergh @ Sinett/FFI.no
 inherit: img
 tooltip: { nb_NO: Bilde med tekst, en_GB: Image with text, default: Image with text }
 footer_tip: { nb_NO: Bilde som kan lastes opp og omsluttes av tekst med en eventuell undertekst, en_GB: Image that can be uploaded and surrounded by text, default: Image that can be uploaded and surrounded by text }

@@ -1,4 +1,4 @@
-//use this to support inheritance in audio component
+//use this to support inheritance in other components
     this.media_type = "video";
 
     this.getHTMLElement = function(el)  {
@@ -6,16 +6,16 @@
     };
 
     this.onCreate = function (el) {
+        this.onLoad(el);
         var media = this.getHTMLElement(el);
-        if (typeof media.attr("src") == "undefined" || vid.attr("src") == "") {
-            media.attr("poster", this.config.placeholder);
-        }
+        media.attr("poster", this.config.placeholder);
     };
 
 /* Hook called when component is loaded into app.
  * @param {jQuery} el Main element for component. 
  */
     this.onLoad = function (el) {
+        this.getHTMLElement(el).css("pointer-events", "none");
     };
 
 /* Hook called when app is saved.
@@ -24,7 +24,7 @@
 */
     this.onSave = function (el) {
         var html = el.outerHTML;
-        return html;
+        return html.replace('pointer-events: none', '');
     };
 
     this.getContentSize = function() {
@@ -36,7 +36,6 @@
     };
 
     this.cbUploadCompleted = function(el, media_url) {
-        console.log(media_url);
         var media = $(el).find(this.media_type);
         media.attr({'src': media_url, 'poster': media_url + ".png"});
         
