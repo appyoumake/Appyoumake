@@ -1471,10 +1471,24 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //get config etc
         $config = $this->container->getParameter('mlab');
         $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "$file_type/";
-        $file_url = "$file_type/"; //we have reset the base path in the editor, so this will work
+        $file_url = $app->calculateFullPath($this->container->getParameter('mlab')["urls"]["app"]) . "$file_type/"; //we have reset the base path in the editor, so this will work
         $files = array();
+        switch ($file_type) {
+            case "video":
+                $search = "*.png";
+                break;
+            case "image":
+                $search = "*";
+                break;
+            case "audio":
+                $search = "*.txt";
+                break;
+            default:
+                $search = "*";
+                break;
+        }
         
-        foreach (glob($app_path . "*.png") as $file) {
+        foreach (glob($app_path . $search) as $file) {
             $files[$file_url . basename($file)] = basename($file);
         }
 

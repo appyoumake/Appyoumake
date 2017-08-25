@@ -293,6 +293,7 @@ Mlab_dt_api.prototype = {
             
 //load existing files into dropdown box and make it ddslick
             var existing_files = that.getMedia(file_type);
+            debugger;
             $("#mlab_cp_select_file").html(existing_files)
                                      .on("change", local_set_media_source_existing)
                                      .ddslick({
