@@ -195,6 +195,9 @@ Mlab_dt_design.prototype = {
 */
         
         if (created) {
+            if (this.parent.components[comp_id].conf.experimental) {
+                alert("Please be aware that this component is in the testing stage. Do not use it for apps you will share with others.");
+            }
             if (typeof this.parent.components[comp_id].code.onCreate != "undefined") {
                 this.parent.components[comp_id].code.onCreate(el);
             }

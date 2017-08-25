@@ -11,6 +11,7 @@ tooltip: {nb_NO: Legg til video fil, en_GB: Add video file, default: Add video f
 footer_tip: {nb_NO: Klikk på denne knappen for å velge en video fra PCen din, en_GB: Click on this button to select a video from you local PC, default: Click on this button to select a video from you local PC }
 resizeable: true
 autorun_on_create: custom_upload_media
+experimental: true
 html: |
     <video controls src="" poster="" style="width: inherit; height: inherit;"  >Embedded videos not supported</video>
 custom:
