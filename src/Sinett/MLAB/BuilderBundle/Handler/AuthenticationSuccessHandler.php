@@ -40,8 +40,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
  */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {   
-        $paths = $this->container->getParameter('mlab');
-        $paths = $paths['paths'];
+        $paths = $this->container->getParameter('mlab')['paths'];
         $env = $this->container->getParameter('kernel.environment');
         foreach ($paths as $path) {
             if (!file_exists($path)) {

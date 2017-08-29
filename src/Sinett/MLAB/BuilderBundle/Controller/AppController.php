@@ -72,7 +72,7 @@ class AppController extends Controller
         return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
                 'app_url' => $this->container->getParameter('mlab')["urls"]["app"],
-                'app_icon' => $this->container->getParameter('mlab')["filenames"]["app_icon"]
+                'app_icon' => $this->container->getParameter('mlab_app')["filenames"]["app_icon"]
     	));
     }
 
@@ -92,7 +92,7 @@ class AppController extends Controller
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_groups);
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
-    	$app_icon_path = $this->container->getParameter('mlab')['filenames']['app_icon'];
+    	$app_icon_path = $this->container->getParameter('mlab_app')['filenames']['app_icon'];
         $tags = '';
         $tag_level_1 = array("<option></option>");
         
@@ -125,8 +125,8 @@ class AppController extends Controller
             'backgrounds' => $backgrounds,
             'foregrounds' => $foregrounds,
             'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
-            'icon_text_maxlength' => $this->container->getParameter('mlab')['icon_text_maxlength'],
-            'icon_default' => $this->container->getParameter('mlab')['compiler_service']['default_icon'],
+            'icon_text_maxlength' => $this->container->getParameter('mlab_app')['icon_text_maxlength'],
+            'icon_default' => $this->container->getParameter('mlab_app')['compiler_service']['default_icon'],
             'tags' => $tags,
             'tag_level_1' => $tag_level_1,
         ));
@@ -156,8 +156,8 @@ class AppController extends Controller
             $temp_app_data = $request->request->all();
         	$app_data = $temp_app_data["form"];
             
-//get config values
-        	$config = $this->container->getParameter('mlab');
+//get config values, we use the variable in different places below, so pick up both config.yml and parameters.yml entities
+        	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 
 //prepare doctrine manager
         	$em = $this->getDoctrine()->getManager();
@@ -440,7 +440,7 @@ class AppController extends Controller
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
-    	$app_icon_path = $this->container->getParameter('mlab')['filenames']['app_icon'];
+    	$app_icon_path = $this->container->getParameter('mlab_app')['filenames']['app_icon'];
         
         $editForm = $this->createAppForm($entity, 'update');
         
@@ -456,8 +456,8 @@ class AppController extends Controller
             'backgrounds' => $backgrounds,
             'foregrounds' => $foregrounds,
             'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
-            'icon_text_maxlength' => $this->container->getParameter('mlab')['icon_text_maxlength'],
-            'icon_default' => $this->container->getParameter('mlab')['compiler_service']['default_icon'],
+            'icon_text_maxlength' => $this->container->getParameter('mlab_app')['icon_text_maxlength'],
+            'icon_default' => $this->container->getParameter('mlab_app')['compiler_service']['default_icon'],
         ));
         
     }
@@ -503,7 +503,7 @@ class AppController extends Controller
         if ($editForm->isValid()) {
 
 //get config values
-        	$config = $this->container->getParameter('mlab');
+        	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
             
 //prepare file management service
 		    $file_mgmt = $this->get('file_management');
@@ -674,10 +674,11 @@ class AppController extends Controller
         $request = $this->container->get('request');
 
         $file_mgmt = $this->get('file_management');
-        $res = $file_mgmt->preCompileProcessingAction($app, $this->container->getParameter('mlab'));
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        $res = $file_mgmt->preCompileProcessingAction($app, $config);
         
         if ($res["result"] == "success") {
-            return $this->redirect($request->getSchemeAndHttpHost() . $this->container->getParameter('mlab')["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_cache/index.html");
+            return $this->redirect($request->getSchemeAndHttpHost() . $config["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_cache/index.html");
         } else {
             return new Response( "Unable to pre-process app: " . implode("<br>",$res) );
         }
@@ -692,7 +693,7 @@ class AppController extends Controller
 /*
     	
 // pick up config from parameters.yml, we use this mainly for paths
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
     	unset($config["replace_in_filenames"]);
     	unset($config["verify_uploads"]);
 
@@ -731,7 +732,7 @@ class AppController extends Controller
 
     	
 // pick up config from parameters.yml, we use this mainly for paths
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('app');
 
@@ -821,7 +822,7 @@ class AppController extends Controller
         }
     	
 //load all the components        
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
     	$file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
         
@@ -890,7 +891,7 @@ class AppController extends Controller
 //here we pick up a list of compiled apps, this has to come here rather than when app is opened as the URL is manipualted after app is opened
 //only happens if $app_open_mode = true, this is when we call this function from the mlab.dt.manage,ent.app_open function
 
-                $config = $this->container->getParameter('mlab');
+                $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
                 $comp_files = array();
                 foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
                     $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
@@ -1125,7 +1126,7 @@ class AppController extends Controller
     public function importFileAction (Request $request) {
         
 //get config values
-       	$config = $this->container->getParameter('mlab');
+       	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         
 //store values in array for easy access
         $temp_app_data = $request->request->all();
@@ -1262,7 +1263,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //get paths
         $path_app = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $path_component = $this->container->getParameter('mlab')['paths']['component'] . $comp_id . "/";
-        $replace_chars = $this->container->getParameter('mlab')['replace_in_filenames'];
+        $replace_chars = $this->container->getParameter('mlab_app')['replace_in_filenames'];
         $urls = array();
         
 //loop through list of files and determine mime type and folder, generate name and move or process file
@@ -1276,7 +1277,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             
 //check to see if the mime type is allowed
             $sub_folder = false;
-            foreach ($this->container->getParameter('mlab')['uploads_allowed'] as $folder => $formats) {
+            foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
                 if (in_array($f_mime, $formats)) {
                     $sub_folder = $folder;
                     break;
@@ -1305,7 +1306,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             if (class_exists($temp_class_name)) {
                 $component_class = new $temp_class_name();
                 if (method_exists($component_class, "onUpload")) {
-                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $this->container->getParameter('mlab'));
+                    $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $config);
                     if (!$url) {
                         return new JsonResponse(array(
                             'result' => 'failure',
@@ -1355,7 +1357,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
         $file_mgmt = $this->get('file_management');
-        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $this->container->getParameter('mlab')));
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $config));
     }
     
 /**
@@ -1378,7 +1381,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
 
 //get config etc
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $doc = "index.html";
         $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
 
@@ -1423,9 +1426,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
 //get config etc
-        $config = $this->container->getParameter('mlab');
-        $path_app_js = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "/js/";
-        $path_component = $this->container->getParameter('mlab')['paths']['component'] . $storage_plugin_id . "/";
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        $path_app_js = $app->calculateFullPath($config['paths']['app']) . "/js/";
+        $path_component = $config['paths']['component'] . $storage_plugin_id . "/";
         $path_app_include_file = $path_app_js . "include_comp.txt";
 
 //check if path to component and app exists
@@ -1469,9 +1472,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
 
 //get config etc
-        $config = $this->container->getParameter('mlab');
-        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']) . "$file_type/";
-        $file_url = $app->calculateFullPath($this->container->getParameter('mlab')["urls"]["app"]) . "$file_type/"; //we have reset the base path in the editor, so this will work
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        $app_path = $app->calculateFullPath($config['paths']['app']) . "$file_type/";
+        $file_url = $app->calculateFullPath($config["urls"]["app"]) . "$file_type/"; //we have reset the base path in the editor, so this will work
         $files = array();
         switch ($file_type) {
             case "video":
@@ -1559,7 +1562,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     	}
 
 //get config values
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 
 //get new version number and copy files before adding the version record 
         $file_mgmt = $this->get('file_management');
@@ -1618,7 +1621,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $new_version_num = floor($new_version_num + 1);
 
 //get config values
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 
 //get new version number and copy files before adding the version record 
         $file_mgmt = $this->get('file_management');

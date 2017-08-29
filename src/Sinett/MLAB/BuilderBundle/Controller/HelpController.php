@@ -278,7 +278,7 @@ class HelpController extends Controller
         			'message' => $this->get('translator')->trans('controller.help.msg.comp_id.empty')));
         }
         
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $help_basename = $config["paths"]["component"] . "/" . $comp_id . "/extended_tip";
         $help_generic = $help_basename . ".html";
         $help_locale = $help_basename . "_" . $this->container->getParameter('locale') . ".html";

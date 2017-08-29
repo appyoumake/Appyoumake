@@ -341,7 +341,7 @@ class ServicesController extends Controller
  */
     private function cmpGetAppStatus($app_id = NULL, $app_version = NULL, $platform = NULL) {
         error_log("  > cmpGetAppStatus");
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $passphrase = urlencode($config["compiler_service"]["passphrase"]);
         $protocol = $config["compiler_service"]["protocol"];
         $url = $protocol . "://" . $config["compiler_service"]["url"] . "/getAppStatus?passphrase=" . urlencode($passphrase);
@@ -383,7 +383,7 @@ class ServicesController extends Controller
      */
     public function cmpGetAppSourceAction($window_uid, $app_id, $app_version) {
 //check for valid variables first
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 
         if (intval($app_id) <= 0) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
@@ -454,7 +454,7 @@ class ServicesController extends Controller
     
     public function cmpUploadWebsite($window_uid, $app_id, $app_version) {
 //check for valid variables first
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 
         if (intval($app_id) <= 0) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
@@ -544,7 +544,7 @@ class ServicesController extends Controller
      */
     private function cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $remote_compiled_app_checksum, $platform) {
         error_log("  > cmpDownloadApp");
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "receiving"}}', $config), true);
         if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
 
@@ -602,7 +602,7 @@ class ServicesController extends Controller
         error_log("  > cmpGetAppProcessAction");
         
 //check for valid variables first
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 
         if (intval($app_id) <= 0) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.cmpGetAppProcessAction.1') . ': ' . $app_id));
@@ -701,7 +701,7 @@ class ServicesController extends Controller
         $result = strtolower($request->query->get("result"));
         $tag = $request->query->get("tag");
         
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));
@@ -753,7 +753,7 @@ class ServicesController extends Controller
     public function cbCmpVerifiedAppAction(Request $request) {
         error_log("  > cbCmpVerifiedAppAction");
 //parameters are passed as querystring, not symfony style URL as we cannot guarantee the order of them
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         
 //we therefore need to read them from the request object
 //Symfony_2.8        $request = $this->getRequest();
@@ -819,7 +819,7 @@ class ServicesController extends Controller
         $result = $request->query->get("result");
         $tag = $request->query->get("tag");
 
-        $config = $this->container->getParameter('mlab');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $local_passphrase = $config["compiler_service"]["passphrase"];
         if ($local_passphrase != $passphrase) {
             return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.passphrase.not.matching')));
