@@ -178,9 +178,6 @@ parameters:
         ws_socket:
             path_client: /messages/
             path_server: /messages/
-            
-        urls:
-            icon_font: /img/oswald_bold.ttf
 
         uploads_allowed:
           image: [image/gif, image/jpeg, image/png]

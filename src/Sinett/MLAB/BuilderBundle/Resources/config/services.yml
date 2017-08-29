@@ -11,7 +11,7 @@ parameters:
 services:
     file_management:
         class:        "%sinett_mlab_builder.file_management.class%"
-        arguments:    ["%mlab%", '@router', '@doctrine.orm.entity_manager', '%locale%']
+        arguments:    ["%mlab%", "%mlab_app%", '@router', '@doctrine.orm.entity_manager', '%locale%']
 #        scope: request
 
     update_default:

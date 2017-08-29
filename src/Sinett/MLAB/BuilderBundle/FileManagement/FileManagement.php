@@ -45,9 +45,9 @@ class FileManagement {
 	private $entity_type;
 	private $em;
     
-    public function __construct($mlab, $router, \Doctrine\ORM\EntityManager $em, $locale)
+    public function __construct($mlab, $mlab_app, $router, \Doctrine\ORM\EntityManager $em, $locale)
     {
-        $this->config = $mlab;
+        $this->config = array_merge_recursive($mlab, $mlab_app);
         $this->router = $router;
         $this->em = $em;
         $this->locale = $locale;
