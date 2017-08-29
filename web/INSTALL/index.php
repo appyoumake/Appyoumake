@@ -172,8 +172,8 @@ $pre_checks = array(
                                         "action"    => "Check Internet connection on the server"),
     
     "version_php" =>            array(  "label"     => "PHP version", 
-                                        "check"     => array("min" => $php_version_min, "max" => $php_version_max), 
-                                        "help"      => "PHP version 5.4 or higher is required, version 7 or higher is not supported at the present time",
+                                        "check"     => array("min" => $php_version_min), 
+                                        "help"      => "PHP version 5.4 or higher is required",
                                         "action"    => ""),
     
     "url_allowed_php_ini" =>    array(  "label"     => "URL functionality", 
@@ -493,7 +493,7 @@ function internet_present() {
 
 function version_php() {
     global $pre_checks;
-    if (PHP_VERSION_ID >= $pre_checks["version_php"]["check"]["min"] && PHP_VERSION_ID <= $pre_checks["version_php"]["check"]["max"]) {
+    if (PHP_VERSION_ID >= $pre_checks["version_php"]["check"]["min"]) {
         return true;
     } else {
         return "PHP is incorrect version";

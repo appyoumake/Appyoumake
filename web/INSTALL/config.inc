@@ -12,7 +12,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 //Lists version numbers, etc. to check for. Should be edited when Mlab or a library is updated
 
 $php_version_min = 50400; 
-$php_version_max = 60000;
 $mysql_version_min = 5.5;
 $composer_version_min = "1.2.4";
 $symfony_version_min = 2.8;

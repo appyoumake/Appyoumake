@@ -183,7 +183,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         
 <!--version_php-->
         <h2>1.2 Install PHP</h2>
-        <p>PHP 5.4+ or higher is required for the Mlab server. <b>The next major version of PHP, version 7.x is untested and unlikely to work out of the box!</b> We do therefore not recommend using version 7 or higher. </p>
+        <p>PHP 5.4+ or higher is required for the Mlab server. </p>
         <p>You can install PHP as a CGI, CLI or FPM process, we recommend FPM that runs a <a href="https://php-fpm.org/">FastCGI Process Manager</a>  server (for performance reasons). The examples here discus installing the FPM version, if you use another type you must adjust the commands accordingly.</p>
         <div class="tab">
             <button class="tablinks121 defaultOpen" onclick="openTab(event, 'Debian', '121')">Ubuntu 14.04</button>
@@ -485,15 +485,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 <!--timezone_php_ini-->
 <!--url_allowed_php_ini-->
         <h2>3.3 Configuring PHP</h2>
-        <p>If you have problems with PHP it could be that it is a higher version (typically 7.x) is installed. Mlab requires version 5.4 or higher, but lower than 7.0. See this for help: <a href="http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04">http://stackoverflow.com/questions/36788873/package-php5-have-no-installation-candidate-ubuntu-16-04</a></p>
-        <p>Symfony, the main framework used by Mlab, requires that the option date.timezone is set in your php.ini file(s). If you do not know which php.ini you are using you can run this command (if you run php-fpm)</li>
-
-        <pre>php5-fpm --ini </pre>
-
-        <p>Or this if you run PHP as a regular CGI server:</p>
-        <pre>php5-cgi --ini</pre>
-
-        <p>This will tell you the path to the relevant PHP file, open the php.ini file using nano or your favorite command line editor and search for the line containing date.timezone.  Uncomment the directive by removing the ; (semicolon) sign in the beginning of the line,  and add the <a href="http://php.net/manual/en/timezones.php">appropriate timezone</a>
+        <p>Symfony, the main framework used by Mlab, requires that the option date.timezone is set in your php.ini file(s). You need to determine which version of PHP you are running and which INI file is used.</p>
+        <p>See <a href="http://php.net/manual/en/configuration.file.php">here</a> to determine which file to edit. Open the php.ini file using your favorite text editor and search for the line containing date.timezone.  Uncomment the directive by removing the ; (semicolon) sign in the beginning of the line,  and add the <a href="http://php.net/manual/en/timezones.php">appropriate timezone</a>
             for your application. For example Europe/Oslo.</p>
 
         <pre>[Date]</pre>
