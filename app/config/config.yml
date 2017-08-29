@@ -179,7 +179,7 @@ parameters:
             path_client: /messages/
             path_server: /messages/
             
-        paths:
+        urls:
             icon_font: /img/oswald_bold.ttf
 
         uploads_allowed:
