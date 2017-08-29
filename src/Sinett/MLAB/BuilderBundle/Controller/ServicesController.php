@@ -174,16 +174,21 @@ class ServicesController extends Controller
             $protocol = "http";
         }
         
-        $opt = array($protocol =>
-            array(
-                'method' => 'GET',
-                'max_redirects' => '1',
-                'ignore_errors' => '1'
-            )
-        );
-
-        $context = stream_context_create($opt);
-        return file_get_contents($url, false, $context);
+        $opt = array(
+            CURLOPT_URL => $url, 
+            CURLOPT_CONNECTTIMEOUT => 2, 
+            CURLOPT_RETURNTRANSFER => 1, 
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
+            CURLOPT_MAXREDIRS => 1,
+            CURLOPT_FRESH_CONNECT => true,
+            CURLOPT_FORBID_REUSE => true
+            );
+            
+        $curl_handle = curl_init();
+        curl_setopt($curl_handle, $opt);
+        $result = curl_exec($curl_handle);
+        curl_close($curl_handle);
+        return $result;
     }
     
     /**
