@@ -24,7 +24,7 @@ parameters:
     
     mlab: 
         convert:
-            python_bin: 
+            python_bin: /usr/bin/python
 
         ws_socket:
             url_client: ws://url:8080/

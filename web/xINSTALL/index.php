@@ -128,7 +128,7 @@ switch ($_REQUEST['fix']) {
 
     case "save_parameters":
             
-//here we loop through the incoming data and create an array that matches th one from the YAML file
+//here we loop through the incoming data and create an array that matches the one from the YAML file
             $incoming_params = array();
             foreach ($_POST as $flat_key => $value) {
                 $arr = &$incoming_params;
@@ -149,13 +149,10 @@ switch ($_REQUEST['fix']) {
 //now load the other settings, merge and save
 //if the parameters.yml file already exists we read in these values and update them from the incoming data
 //otherwise we load the template parameters.yml.dist and add the values here
-// in the latter case we also need to remove the values prefixed by ___
             if (file_exists('app/config/parameters.yml')) {
                 $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
             } else {
-                $temp_yaml = file_get_contents('app/config/parameters.yml.dist');
-                $temp_yaml = str_replace("___", "", $temp_yaml);
-                $existing_params = Spyc::YAMLLoadString($temp_yaml);
+                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
             }
             $combined_params = array_replace_recursive($existing_params, $incoming_params);
 // generate   "secret" => "A random word or phrase that Symfony uses for CSRF tokens",

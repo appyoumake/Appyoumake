@@ -162,8 +162,8 @@ services:
 # Typically they are here so they can be changed without changing code in the app when, for instance, new converters are installed, etc.
 
 parameters:
-	supported_locales: {en_GB: 'English', nb_NO: 'Norsk'}
-	security.authentication.success_handler.class: Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
+    supported_locales: {en_GB: 'English', nb_NO: 'Norsk'}
+    security.authentication.success_handler.class: Sinett\MLAB\BuilderBundle\Handler\AuthenticationSuccessHandler
     mlab_app: 
         missing_icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEbgAABG4B0KOyaAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD4SURBVDiNpdO9LoRREMbx3/iqRaKREIVCoVETlmoLiauwjbgAvWvQqH1cgyhU3IBCoVJoZBUiFMIo9hSb17vvZplkknPm43+emeRAB13kiN5FJ8rhBNdGsxb2FFo7M/U7VnGAQ2wjKvl26f0NwFGJf+OznM8xORSAjRK7wwJmcVtiO1XAWM1sK3jHfmY+ZuYzrkpuuW4ZVQWBub77Gl7xhqWhCrJnTxARm7gs0N3MfKjWT9RJ6rPjUrOVmTd1BXU7UF4PzONiUHOjgszMiFjHfZPEJgVTOMPpnwAYxzRmmgBNI3xExCK+hgFe0OrtrN4G5Fql93/f+QdOZKfScs6QZgAAAABJRU5ErkJggg==
         save_interval: 60
@@ -172,7 +172,7 @@ parameters:
         convert:
             converter_bin: document2HTML.py
             config: config.json
-            converter_path: src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
+            converter_path: ../src/Sinett/MLAB/BuilderBundle/FileManagement/conv/
             filetype_allowed: [application/msword, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation]
 
         ws_socket:
