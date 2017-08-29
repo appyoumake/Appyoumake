@@ -124,7 +124,7 @@ class AppController extends Controller
             'app_icon_path' => $app_icon_path,
             'backgrounds' => $backgrounds,
             'foregrounds' => $foregrounds,
-            'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
+            'icon_font_url' => $this->container->getParameter('mlab')['urls']['icon_font'],
             'icon_text_maxlength' => $this->container->getParameter('mlab_app')['icon_text_maxlength'],
             'icon_default' => $this->container->getParameter('mlab_app')['compiler_service']['default_icon'],
             'tags' => $tags,
@@ -455,7 +455,7 @@ class AppController extends Controller
             'app_icon_path' => $app_icon_path,
             'backgrounds' => $backgrounds,
             'foregrounds' => $foregrounds,
-            'icon_font_url' => $this->container->getParameter('mlab')['urls']['app'],
+            'icon_font_url' => $this->container->getParameter('mlab')['urls']['icon_font'],
             'icon_text_maxlength' => $this->container->getParameter('mlab_app')['icon_text_maxlength'],
             'icon_default' => $this->container->getParameter('mlab_app')['compiler_service']['default_icon'],
         ));
