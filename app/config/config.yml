@@ -138,6 +138,9 @@ fos_user:
     user_class: Sinett\MLAB\BuilderBundle\Entity\User
     group:
         group_class: Sinett\MLAB\BuilderBundle\Entity\Group
+    from_email:
+        address: "%mailer_user%"
+        sender_name: "%mailer_user%"
 
 # additional services
 services:
