@@ -88,7 +88,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             }
         </style>
     </head>
-<!--internet_present -->
+<!--body -->
     <body>
         <h1>Mlab server setup</h1>
         <p>Before you can use Mlab you need to install the source code on a correctly configured webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features required, as long as your operating system supports the requirements below you should be able to run it. There are four main steps involved in this:</p>
@@ -215,27 +215,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         <p><b>The actual package names may vary between different operating systems and different versions of PHP and/or operating systems/distributions, please refer to your particular operating system.</b></p>
         <p>The extensions required are: 
             <ul class="columns" style="width: 700px; display: block; margin-bottom: 20px;">
-                <li>ereg</li>
-                <li>fileinfo</li>
-                <li>gd</li>
-                <li>gettext</li>
-                <li>iconv</li>
-                <li>intl</li>
-                <li>json</li>
-                <li>libxml</li>
-                <li> mbstring</li>
-                <li>mhash</li>
-                <li>mysqli</li>
-                <li>openssl</li>
-                <li>pcre</li>
-                <li>pdo_mysql</li>
-                <li>phar</li>
-                <li>readline</li>
-                <li>session</li>
-                <li>simplexml</li>
-                <li>soap</li>
-                <li>sockets</li>
-                <li>zip</li>
                 <li>dom</li>
                 <li>ereg</li>
                 <li>fileinfo</li>
@@ -257,11 +236,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 <li>simplexml</li>
                 <li>soap</li>
                 <li>sockets</li>
-                <li>zip</li>
-                <li>dom</li>
                 <li>xml</li>
                 <li>xmlreader</li>
                 <li>xmlwriter</li>
+                <li>zip</li>
             </ul>
         </p>
         <div style="width: 100%; display: block; clear: both; height: 20px; float: left;"></div>
@@ -485,15 +463,12 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 <!--timezone_php_ini-->
 <!--url_allowed_php_ini-->
         <h2>3.3 Configuring PHP</h2>
-        <p>Symfony, the main framework used by Mlab, requires that the option date.timezone is set in your php.ini file(s). You need to determine which version of PHP you are running and which INI file is used.</p>
-        <p>See <a href="http://php.net/manual/en/configuration.file.php">here</a> to determine which file to edit. Open the php.ini file using your favorite text editor and search for the line containing date.timezone.  Uncomment the directive by removing the ; (semicolon) sign in the beginning of the line,  and add the <a href="http://php.net/manual/en/timezones.php">appropriate timezone</a>
-            for your application. For example Europe/Oslo.</p>
-
+        <p>Symfony, the main framework used by Mlab, requires that the option date.timezone is set in your php.ini file(s). Open the {%php.ini%} file using your favorite text editor and search for the line containing date.timezone.  Uncomment the directive by removing the ; (semicolon) sign in the beginning of the line,  and add the <a href="http://php.net/manual/en/timezones.php">appropriate timezone</a>, for your application. For example Europe/Oslo.</p>
         <pre>[Date]</pre>
         <pre>; Defines the default timezone used by the date functions</pre>
         <pre>; http://php.net/date.timezone</pre>
         <pre>date.timezone = Europe/Oslo&nbsp;</pre>
-        <p><b>If you run the php-fpm version (and not php-cgi) you MUST restart the hardware server when you do a change! It is not enough to just restart the web server or PHP software.</b></p>
+        <p><b>If you run php-fpm (and not php-cgi) you MUST restart the hardware server when you do a change! It is not enough to just restart the web server or PHP software.</b></p>
 <!--/url_allowed_php_ini-->
 <!--/timezone_php_ini-->
 
@@ -621,7 +596,7 @@ for (x = 0; x < open.length; x++) {
         open[x].click();
     }
 </script>
-
+<!--/body -->
 </body>
 
 </html>

@@ -12,7 +12,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
-    database_name: 
+    database_name: mlab
     database_user: 
     database_password: 
     mailer_transport: smtp
@@ -20,35 +20,36 @@ parameters:
     mailer_user: null
     mailer_password: null
     locale: en_GB
-    secret: 
+    secret: abc123
     
     mlab: 
         convert:
             python_bin: /usr/bin/python
 
         ws_socket:
-            url_client: ws://url:8080/
-            url_server: http://url:8080/
+            url_client: ws://{mlab_url}:8080/
+            url_server: http://{compiler_service_url}:8080/
 
         paths:
-          app: 
-          component: 
-          template: 
-          icon: 
+            app: {%mlab_path%}/mlab_elements/apps/
+            component: {%mlab_path%}/mlab_elements/components/
+            template: {%mlab_path%}/mlab_elements/templates/
+            icon: {%mlab_path%}/mlab_elements/icons/
         
         urls:
-          app: 
-          component: 
-          template: 
-          icon: 
+            app: /mlab_elements/apps/
+            component: /mlab_elements/components/
+            template: /mlab_elements/templates/
+            icon: /mlab_elements/icons/
+            icon_font: /img/oswald_bold.ttf
           
         compiler_service:
             supported_platforms: [ios, android]
-            url: 
+            url: localhost:8282/
             protocol: http
             passphrase: 
             app_creator_identifier: com.test.apps
             target_version: {ios: 7, android: 18}
-            rsync_bin: 
+            rsync_bin: /usr/bin/rsync
             rsync_url: user@url::cs_inbox
             rsync_password: 
