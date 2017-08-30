@@ -28,7 +28,18 @@ function flatten_array($array, $prefix = '') {
         $flat_key = $prefix . (empty($prefix) ? '' : '__') . $key;
 
         if (is_array($value)) {
-            $result = array_merge($result, flatten_array($value, $existing_values, $flat_key));
+            $test_value = reset($value);
+            $first_key = key($value);
+            $test = gettype($test_value);
+
+//arrived at the innermost element IF next element is array of editable types and NOT an associative array
+            if ($first_key === 0 && in_array($test, $editable_types) ) {
+                $result[$flat_key] = implode(",", $value);
+                
+//still not at the end, recurse down
+            } else {
+                $result = array_merge($result, flatten_array($value, $flat_key));
+            }
         } else {
             $result[$flat_key] = $value;
         }

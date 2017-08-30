@@ -129,10 +129,9 @@ $params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
 
 //if parameters.yml exists, then we read in the values from that one
 if (file_exists('app/config/parameters.yml')) {
-    $params = array_merge_recursive($params, Spyc::YAMLLoad('app/config/parameters.yml'));
+    $params = Spyc::YAMLLoad('app/config/parameters.yml') + $params;
 }
-$params = flatten_array($params, $param_values);
-
+$params = flatten_array($params, '');
     
 $d = getcwd();
 $write_permissions = array(
