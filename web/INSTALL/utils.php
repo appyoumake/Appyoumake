@@ -20,7 +20,7 @@ mlab:
  * Will check if child property is string/number or not, if not it'll recurse until it arrives at final value
  * Also needs to check if the child property is just an array of possible values, in that case we need to stop at current level and store aray as comma delimited string
  */
-function flatten_array($array, $prefix = '') {
+function flatten_array($array, $prefix = '', $search, $replace) {
     
     $editable_types = array("boolean", "integer", "double", "string");
     $result = array();
@@ -34,14 +34,14 @@ function flatten_array($array, $prefix = '') {
 
 //arrived at the innermost element IF next element is array of editable types and NOT an associative array
             if ($first_key === 0 && in_array($test, $editable_types) ) {
-                $result[$flat_key] = implode(",", $value);
+                $result[$flat_key] = str_replace($search, $replace, implode(",", $value));
                 
 //still not at the end, recurse down
             } else {
                 $result = array_merge($result, flatten_array($value, $flat_key));
             }
         } else {
-            $result[$flat_key] = $value;
+            $result[$flat_key] = str_replace($search, $replace, $value);
         }
     }
     return $result;
@@ -162,6 +162,109 @@ function import_empty_database() {
     }
 }
 
+/***
+ * Run the four different checks for each page we display
+ */
+function run_checks($step, $params) {
+    global $data_checks, $software_version_checks, $write_permissions, $system_path;
+    $failed = false;
+    $cur_dir = getcwd();
+    putenv($system_path);
+//here we load the info file which is added to the arrays used to know what to check for
+    $info = file("web/INSTALL/info.html", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $info = str_replace("{%php.ini%}", php_ini_loaded_file(), $info);
+    
+//different steps have different set of checks, some are simple loops to check writable permissions, others have individual checks for different tasks
+    switch ($step) {
+        case STEP_CHECK_SOFTWARE:
+            foreach ($software_version_checks as $key => $value) {
+                if (function_exists($key)) {
+                    eval("\$software_version_checks['" . $key . "']['result'] = " . $key . "(\$value);");
+                } else {
+                    $software_version_checks[$key]['result'] = false;
+                }
+                if (!$failed) {
+                    $failed = ($software_version_checks[$key]['result'] !== true) ;
+                }
+
+//loop through the info.html content and assign help text. 
+//this is done by looking for comment lines with $key as the content
+                $update_help = false;
+
+                foreach ($info as $line) {
+                    if (!$update_help && $line == "<!--$key-->") {
+                        $update_help = true;
+                        $software_version_checks[$key]['action'] = '';
+                    } else if ($update_help) {
+                        if ($line == "<!--/$key-->") {
+                            $update_help = false;
+                        } else {
+                            $software_version_checks[$key]['action'] .= $line;
+                        }
+                    } 
+                }
+            }            
+            break;
+            
+            
+        case STEP_CHECK_PARAMS:
+            break;
+        case STEP_CHECK_PERMISSIONS:
+            $d = getcwd();
+            $write_permissions = array(
+                $d . "/app" => (is_writable($d . "/app") ? true : false), 
+                $d . "/app/config" => (is_writable($d . "/app/config") ? true : false), 
+                $d . "/app/config/parameters.yml" => (is_writable($d . "/app/config/parameters.yml") ? true : false), 
+                $d . "/bin" => (is_writable($d . "/bin") ? true : false),
+                $d . "/app/cache" => (is_writable($d . "/app/cache") ? true : false), 
+                $d . "/app/logs" => (is_writable($d . "/app/logs") ? true : false),
+                $params["parameters__mlab__paths__app"] => (is_writable($params["parameters__mlab__paths__app"]) ? true : false),
+                $params["parameters__mlab__paths__template"] => (is_writable($params["parameters__mlab__paths__template"]) ? true : false),
+                $params["parameters__mlab__paths__component"] => (is_writable($params["parameters__mlab__paths__component"]) ? true : false),
+                $params["parameters__mlab__paths__icon"] => (is_writable($params["parameters__mlab__paths__icon"]) ? true : false)
+                );
+            $fail[STEP_CHECK_PERMISSIONS] = in_array(false, $write_permissions);
+            return $write_permissions;
+            break;
+        
+//the final check is to see
+//a: if we are running the right mysql version
+//b: whether data has been loaded into the database, 
+//c: if there are no components or templates in the relevant folders 
+//d: if Javascript protection is in place
+        case STEP_CHECK_DATA:
+            foreach ($data_checks as $key => $value) {
+                if (function_exists($key)) {
+                    eval("\$data_checks['" . $key . "']['result'] = " . $key . "(\$value);");
+                } else {
+                    $data_checks[$key]['result'] = false;
+                }
+                if ($data_checks[$key]['result'] !== true) {
+                    $fail_versions = true;
+                }
+
+//loop through the info.html content and assign help text. 
+//this is done by looking for comment lines with $key as the content
+                $update_help = false;
+
+                foreach ($info as $line) {
+                    if (!$update_help && $line == "<!--$key-->") {
+                        $update_help = true;
+                        $data_checks[$key]['action'] = '';
+                    } else if ($update_help) {
+                        if ($line == "<!--/$key-->") {
+                            $update_help = false;
+                        } else {
+                            $data_checks[$key]['action'] .= $line;
+                        }
+                    } 
+                }
+            }            
+            break;
+    }
+    
+}
+
 function output_table_body($step) {
     switch ($step) {
         case STEP_CHECK_SOFTWARE:
@@ -207,18 +310,12 @@ function output_table_body($step) {
                 }
             }
             
-            echo "<tr>" . 
-                     "<td>" . htmlentities($params_help[$key]) . (in_array($key, $inputs) ? " <span style='color: red; '>&nbsp;*</span>" : "") . "</td>" .
-                     "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td>" .
-                     "<td title='$key'><img src='question.png'></td>" .
-                 "</tr>\n";
-            break;
     }
 }
 
-function output_table($step, $next_step, $colspan, $heading, $failed, $text) {
+function output_table($step, $current_step, $colspan, $heading, $failed, $text) {
 ?>
-                <table id="<?php print $step; ?>" <?php if ($next_step == $step ) { ?> style="display: block;" data-current="1" <?php } else { ?> style="display: none;" <?php } ?>>    
+                <table>    
                     <thead>
                         <tr class="infobar"><td colspan="<?php print $colspan; ?>"><h3>Step <?php print $step; ?>: <?php print $heading; ?></h3></td></tr>
                         <?php if ($failed) { ?>
@@ -226,7 +323,7 @@ function output_table($step, $next_step, $colspan, $heading, $failed, $text) {
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
                         <?php } else { ?>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct here, you can continue to the next step!</p></td></tr>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="move(1)">Continue</button></td></tr>
+                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
                         <?php } ?>
                         <tr><td><em>Item</em></td><td><em>Status</em></td></tr>
                     </thead>
@@ -235,7 +332,7 @@ function output_table($step, $next_step, $colspan, $heading, $failed, $text) {
                         <?php if ($failed) { ?>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="move(1)">Continue</button></td></tr>
+                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
                         <?php } ?>
                     </tbody>
                 </table>    

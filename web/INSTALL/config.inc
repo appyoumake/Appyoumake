@@ -11,8 +11,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 const STEP_INTRO = 0;
 const STEP_CHECK_SOFTWARE = 1;
-const STEP_CHECK_PERMISSIONS = 2;
-const STEP_CHECK_PARAMS = 3;
+const STEP_CHECK_PARAMS = 2;
+const STEP_CHECK_PERMISSIONS = 3;
 const STEP_CHECK_DATA = 4;
 
 //Lists version numbers, etc. to check for. Should be edited when Mlab or a library is updated
@@ -27,8 +27,8 @@ $nodejs_version_min = "6.0.0";
 $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 
 $params_help = array (
-    "parameters__database_driver" => "The name of the PHP database driver to use",
-    "parameters__database_host" => "URL/IP address of the database server to use",
+    "parameters__database_driver" => "Name of PHP database driver",
+    "parameters__database_host" => "URL/IP address of database server",
     "parameters__database_port" => "TCP/IP port of the database server, set to null if using sockets",
     "parameters__database_name" => "Name of the database (not server) to use on the database server, create this before adding it",
     "parameters__database_user" => "Name of user for database login",
@@ -37,7 +37,8 @@ $params_help = array (
     "parameters__mailer_host" => "URL/IP address of the email server to use",
     "parameters__mailer_user" => "Name of user for email server login",
     "parameters__mailer_password" => "Password of user for email server login",
-    "parameters__locale" => "Which locale to use, for instance en_UK. Can be overridden by individual Mlab users when they log in",
+    "parameters__locale" => "Which locale to use, for instance en_GB. Can be overridden by individual Mlab users when they log in",
+    "parameters__secret" => "A random string used to encrypt passwords, etc., on this site.",
     "parameters__mlab__convert__python_bin" => "Path to Python executable",
     "parameters__mlab__ws_socket__url_client" => "URL for web socket server used by Mlab editor to communicate with server",
     "parameters__mlab__ws_socket__url_server" => "URL for web socket server used to communicate with compiler and app market services",
@@ -52,6 +53,7 @@ $params_help = array (
     "parameters__mlab__urls__component" => "External URL to where Mlab components should be installed",
     "parameters__mlab__urls__template" => "External URL to where Mlab templates should be installed",
     "parameters__mlab__urls__icon" => "External URL to where images used to generate app icons should be installed",
+    "parameters__mlab__urls__icon_font" => "URL of a web font that can be used when creating icons for apps",
     "parameters__mlab__compiler_service__supported_platforms" => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
     "parameters__mlab__compiler_service__url" => "URL to compilation service",
     "parameters__mlab__compiler_service__protocol" => "Protocol (http/https) to use to connect to compilation service",
@@ -109,7 +111,7 @@ $software_version_checks = array(
     
     "libraries_php" =>          array(  "label"     => "PHP extensions", 
                                         "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
-                                        "check"     => "ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
+                                        "check"     => "curl,ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
                                         "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager."), 
         
 );
