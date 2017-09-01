@@ -51,5 +51,5 @@ parameters:
             app_creator_identifier: com.test.apps
             target_version: {ios: 7, android: 18}
             rsync_bin: /usr/bin/rsync
-            rsync_url: user@url::cs_inbox
+            rsync_url: user@{compiler_service_url}::cs_inbox
             rsync_password: 

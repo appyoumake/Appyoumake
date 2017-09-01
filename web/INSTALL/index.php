@@ -30,7 +30,7 @@ require_once "utils.php";
 //set up the core vairables, the fail array is used to determine if a step has had a failed check
     $www_user = posix_getpwuid(posix_geteuid())['name'];
     $fail = array(false, false, false, false, false);
-    $current_step = ($_REQUEST['next_step'] ? $_REQUEST['next_step'] : STEP_INTRO);
+    $current_step = ($_REQUEST['next_step'] ? intval($_REQUEST['next_step']) : STEP_INTRO);
 
     chdir("../../");
 

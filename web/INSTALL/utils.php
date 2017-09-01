@@ -61,11 +61,12 @@ function check_version($check_info) {
     }
     $info = explode(" ", $v);
     foreach ($info as $value) {
+        $value = preg_replace('/[^0-9,.-]/','',$value); 
         if (floatval(trim($value))) {
-            if (version_compare(trim($value), $ver, ">=")) {
+            if (version_compare(trim($value), $check_info["check"], ">=")) {
                 return true;
             } else {
-                return "Version " . trim($value) . " installed, requires $ver";
+                return "Version " . trim($value) . " installed, requires {$check_info["check"]}";
             }
         }
     }
@@ -79,6 +80,29 @@ function internet_present() {
     }else{
         return "No connection";
     }   
+}
+
+function is_valid_domain_or_ip($domain_name) {
+    $dom_ok = (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domain_name) //valid chars check
+            && preg_match("/^.{1,253}$/", $domain_name) //overall length check
+            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domain_name)   ); //length of each label
+    if (!$dom_ok) {
+        $dom_ok = preg_match("/^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/", $domain_name);
+    }
+    return $dom_ok;
+}
+
+function is_valid_ip($ip) {
+    return preg_match("/^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/", $ip);
+}
+
+function is_valid_port($port) {
+    return preg_match("/^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$/");
+    
+function is_valid_password($pass) {
+    return (!(preg_match('/^[A-Za-z0-9]{8,20}$/', $pass) &&  
+        preg_match('/[A-Z]/', $pass) &&
+        preg_match('/[0-9]/', $pass))) ;
 }
 
 function timezone_php_ini() {
@@ -178,13 +202,13 @@ function run_checks($step, $params) {
     switch ($step) {
         case STEP_CHECK_SOFTWARE:
             foreach ($software_version_checks as $key => $value) {
-                if (function_exists($key)) {
-                    eval("\$software_version_checks['" . $key . "']['result'] = " . $key . "(\$value);");
+                if (function_exists($software_version_checks[$key]["function"])) {
+                    eval("\$software_version_checks['" . $key . "']['result'] = " . $software_version_checks[$key]["function"] . "(\$value);");
                 } else {
                     $software_version_checks[$key]['result'] = false;
                 }
-                if (!$failed) {
-                    $failed = ($software_version_checks[$key]['result'] !== true) ;
+                if (!$failed && $software_version_checks[$key]['result'] !== true) {
+                    $failed = true;
                 }
 
 //loop through the info.html content and assign help text. 
@@ -203,12 +227,69 @@ function run_checks($step, $params) {
                         }
                     } 
                 }
-            }            
+            }     
+            return $failed;
             break;
             
-            
+
+//we check acceptable settings for the parameters.yml settings, done through the use of some contants or regex
         case STEP_CHECK_PARAMS:
+            foreach ($params_check as $key => $settings) {
+                switch ($settings["acceptable"]) {
+                    case "URL":
+                        $params_check[$key]['result'] = is_valid_domain_or_ip($params[$key]);
+                        break;
+                    
+                    case "URL_PORT":
+                        $parts = explode(":", $params[$key]);
+                        $params_check[$key]['result'] = (is_valid_domain_or_ip($parts[0]) && is_valid_port($parts[0]));
+                        break;
+                    
+                    case "WS_URL_PORT":
+                        $parts = explode(":", $params[$key]);
+                        $params_check[$key]['result'] = (is_valid_domain_or_ip($parts[1]) && is_valid_port($parts[2]));
+                        break;
+                    
+                    case "HTTP_URL_PORT":
+                        $parts = explode(":", $params[$key]);
+                        $params_check[$key]['result'] = (is_valid_domain_or_ip($parts[1]) && is_valid_port($parts[2]));
+                        break;
+                    
+                    case "RSYNC_URL":
+                        $parts = explode(":", $params[$key]);
+                        $params_check[$key]['result'] = is_valid_domain_or_ip($params[$key]);
+                        break;
+                    
+                    case "PORT":
+                        $params_check[$key]['result'] = is_valid_port($params[$key]);
+                        break;
+                    
+                    case "PATH":
+                        $params_check[$key]['result'] = file_exists($params[$key]);
+                        break;
+
+                    case "LOCALPATH":
+                        $params_check[$key]['result'] = file_exists("./web" . $params[$key]);
+                        break;
+
+                    case "PASSWORD":
+                        $params_check[$key]['result'] = is_valid_password($params[$key]);
+                        break;
+                    
+                    default:
+                        $params_check[$key]['result'] = preg_match("/" . $settings["acceptable"] . "/", $params[$key]);
+                        break;
+                    
+                }
+                if (!$failed && $params_check[$key]['result'] !== true) {
+                    $failed = true;
+                }            
+            }
+            
+            return $failed;
             break;
+        
+//we have an array of URLs that we need to access, check that they match the web server user access
         case STEP_CHECK_PERMISSIONS:
             $d = getcwd();
             $write_permissions = array(
@@ -223,8 +304,7 @@ function run_checks($step, $params) {
                 $params["parameters__mlab__paths__component"] => (is_writable($params["parameters__mlab__paths__component"]) ? true : false),
                 $params["parameters__mlab__paths__icon"] => (is_writable($params["parameters__mlab__paths__icon"]) ? true : false)
                 );
-            $fail[STEP_CHECK_PERMISSIONS] = in_array(false, $write_permissions);
-            return $write_permissions;
+            return in_array(false, $write_permissions);
             break;
         
 //the final check is to see
