@@ -24,8 +24,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 //include additional files/libraries
 require_once "config.inc";
-require_once "spyc.php";
-require_once "utils.php";
+require_once "spyc.php"  ;
+require_once "utils.php" ;
 
 //set up the core vairables, the fail array is used to determine if a step has had a failed check
     $www_user = posix_getpwuid(posix_geteuid())['name'];
@@ -126,7 +126,7 @@ require_once "utils.php";
     if (file_exists('app/config/parameters.yml')) {
         $params = Spyc::YAMLLoad('app/config/parameters.yml') + $params;
     }
-    $params = flatten_array($params, '', array("{%mlab_path%}"), array(getcwd()) );
+    $params = flatten_array($params, '', array("%mlab_path%"), array(getcwd()) );
 
     
 //step speficic checks, this solves the issue of logically grouping steps, like setting parameters, 
@@ -161,8 +161,6 @@ require_once "utils.php";
             <h1>Mlab installation</h1>
             <p><a href="info.html" target="_new">Click here for complete setup instructions.</a></p>
             <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8" id="parameters">
-  
-                
                 <?php 
                     switch ($current_step) {
                         case STEP_INTRO:

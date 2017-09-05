@@ -29,15 +29,15 @@ $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 $params_check = array (
     "parameters__database_driver" => array(
         "label"     => "Name of PHP database driver",
-        "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv"
-        ),
+        "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv"        ),
     "parameters__database_host" => array(  
         "label"     => "URL/IP address of database server",
         "acceptable" => "URL"
         ),
     "parameters__database_port" => array(  
         "label"     => "TCP/IP port of the database server, set to null if using sockets",
-        "acceptable" => "PORT"
+        "acceptable" => "PORT",
+        "null" => true
         ),
     "parameters__database_name" => array(  
         "label"     => "Name of the database to use, create this manually",
@@ -61,11 +61,12 @@ $params_check = array (
         ),
     "parameters__mailer_user" => array(  
         "label"     => "Name of user for email server login",
-        "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$"
+        "acceptable" => "EMAIL"
         ),
     "parameters__mailer_password" => array(  
         "label"     => "Password of user for email server login",
-        "acceptable" => "PASSWORD"
+        "acceptable" => "PASSWORD",
+        "null" => true
         ),
     "parameters__locale" => array(  
         "label"     => "Which locale to use, for instance en_GB. Can be overridden by individual Mlab users when they log in",
@@ -141,12 +142,8 @@ $params_check = array (
         ),
     "parameters__mlab__compiler_service__app_creator_identifier" => array(
         "label"     => "Unique, reverse domain, identifier, for instance 'com.test.app'",
-        "acceptable" => ""
+        "acceptable" => "URL"
     ),
-    "parameters__mlab__compiler_service__target_version" => array(
-        "label"     => "Which base/minimum version to compile apps for (typicall Android and iOS",
-        "acceptable" => ""
-        ),
     "parameters__mlab__compiler_service__rsync_bin" => array(
         "label"     => "Path to the Rsync executable file",
         "acceptable" => "PATH"
