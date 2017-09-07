@@ -31,10 +31,10 @@ parameters:
             url_server: http://{compiler_service_url}:8080/
 
         paths:
-            app: {%mlab_path%}/mlab_elements/apps/
-            component: {%mlab_path%}/mlab_elements/components/
-            template: {%mlab_path%}/mlab_elements/templates/
-            icon: {%mlab_path%}/mlab_elements/icons/
+            app: %mlab_path%/mlab_elements/apps/
+            component: %mlab_path%/mlab_elements/components/
+            template: %mlab_path%/mlab_elements/templates/
+            icon: %mlab_path%/mlab_elements/icons/
         
         urls:
             app: /mlab_elements/apps/
@@ -49,7 +49,6 @@ parameters:
             protocol: http
             passphrase: 
             app_creator_identifier: com.test.apps
-            target_version: {ios: 7, android: 18}
             rsync_bin: /usr/bin/rsync
             rsync_url: user@{compiler_service_url}::cs_inbox
             rsync_password: 

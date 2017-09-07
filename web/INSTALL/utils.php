@@ -38,7 +38,7 @@ function flatten_array($array, $prefix = '', $search, $replace) {
                 
 //still not at the end, recurse down
             } else {
-                $result = array_merge($result, flatten_array($value, $flat_key));
+                $result = array_merge($result, flatten_array($value, $flat_key, $search, $replace));
             }
         } else {
             $result[$flat_key] = str_replace($search, $replace, $value);
@@ -98,9 +98,10 @@ function is_valid_ip($ip) {
 
 function is_valid_port($port) {
     return preg_match("/^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$/");
-    
+}
+
 function is_valid_password($pass) {
-    return (!(preg_match('/^[A-Za-z0-9]{8,20}$/', $pass) &&  
+    return ((preg_match('/^[A-Za-z0-9]{8,20}$/', $pass) &&  
         preg_match('/[A-Z]/', $pass) &&
         preg_match('/[0-9]/', $pass))) ;
 }
@@ -190,7 +191,7 @@ function import_empty_database() {
  * Run the four different checks for each page we display
  */
 function run_checks($step, $params) {
-    global $data_checks, $software_version_checks, $write_permissions, $system_path;
+    global $params_check, $data_checks, $software_version_checks, $write_permissions, $system_path;
     $failed = false;
     $cur_dir = getcwd();
     putenv($system_path);
@@ -235,53 +236,62 @@ function run_checks($step, $params) {
 //we check acceptable settings for the parameters.yml settings, done through the use of some contants or regex
         case STEP_CHECK_PARAMS:
             foreach ($params_check as $key => $settings) {
-                switch ($settings["acceptable"]) {
-                    case "URL":
-                        $params_check[$key]['result'] = is_valid_domain_or_ip($params[$key]);
-                        break;
-                    
-                    case "URL_PORT":
-                        $parts = explode(":", $params[$key]);
-                        $params_check[$key]['result'] = (is_valid_domain_or_ip($parts[0]) && is_valid_port($parts[0]));
-                        break;
-                    
-                    case "WS_URL_PORT":
-                        $parts = explode(":", $params[$key]);
-                        $params_check[$key]['result'] = (is_valid_domain_or_ip($parts[1]) && is_valid_port($parts[2]));
-                        break;
-                    
-                    case "HTTP_URL_PORT":
-                        $parts = explode(":", $params[$key]);
-                        $params_check[$key]['result'] = (is_valid_domain_or_ip($parts[1]) && is_valid_port($parts[2]));
-                        break;
-                    
-                    case "RSYNC_URL":
-                        $parts = explode(":", $params[$key]);
-                        $params_check[$key]['result'] = is_valid_domain_or_ip($params[$key]);
-                        break;
-                    
-                    case "PORT":
-                        $params_check[$key]['result'] = is_valid_port($params[$key]);
-                        break;
-                    
-                    case "PATH":
-                        $params_check[$key]['result'] = file_exists($params[$key]);
-                        break;
+                if ($settings["null"] && empty($params[$key])) {
+                    $params_check[$key]['result'] = true;
+                } else {
+                    switch ($settings["acceptable"]) {
 
-                    case "LOCALPATH":
-                        $params_check[$key]['result'] = file_exists("./web" . $params[$key]);
-                        break;
+                        case "EMAIL":
+                            $params_check[$key]['result'] = (bool)filter_var($params[$key], FILTER_VALIDATE_EMAIL);
+                            break;
 
-                    case "PASSWORD":
-                        $params_check[$key]['result'] = is_valid_password($params[$key]);
-                        break;
-                    
-                    default:
-                        $params_check[$key]['result'] = preg_match("/" . $settings["acceptable"] . "/", $params[$key]);
-                        break;
-                    
+                        case "URL":
+                            $params_check[$key]['result'] = (bool)is_valid_domain_or_ip($params[$key]);
+                            break;
+
+                        case "URL_PORT":
+                            $parts = explode(":", $params[$key]);
+                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts[0]) && (bool)is_valid_port($parts[0]));
+                            break;
+
+                        case "WS_URL_PORT":
+                            $parts = explode(":", $params[$key]);
+                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts[1]) && (bool)is_valid_port($parts[2]));
+                            break;
+
+                        case "HTTP_URL_PORT":
+                            $parts = explode(":", $params[$key]);
+                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts[1]) && (bool)is_valid_port($parts[2]));
+                            break;
+
+                        case "RSYNC_URL":
+                            $parts = explode(":", $params[$key]);
+                            $params_check[$key]['result'] = (bool)is_valid_domain_or_ip($params[$key]);
+                            break;
+
+                        case "PORT":
+                            $params_check[$key]['result'] = (bool)is_valid_port($params[$key]);
+                            break;
+
+                        case "PATH":
+                            $params_check[$key]['result'] = (bool)file_exists($params[$key]);
+                            break;
+
+                        case "LOCALPATH":
+                            $params_check[$key]['result'] = (bool)file_exists("./web" . $params[$key]);
+                            break;
+
+                        case "PASSWORD":
+                            $params_check[$key]['result'] = (bool)is_valid_password($params[$key]);
+                            break;
+
+                        default:
+                            $params_check[$key]['result'] = (bool)preg_match("/" . $settings["acceptable"] . "/", $params[$key]);
+                            break;
+
+                    }
                 }
-                if (!$failed && $params_check[$key]['result'] !== true) {
+                if (!$failed && !$params_check[$key]['result']) {
                     $failed = true;
                 }            
             }
@@ -342,7 +352,6 @@ function run_checks($step, $params) {
             }            
             break;
     }
-    
 }
 
 function output_table_body($step) {
@@ -367,13 +376,17 @@ function output_table_body($step) {
             break;
 
         case STEP_CHECK_PARAMS:
-            global $params, $params_help, $inputs;
+            global $params, $params_check, $inputs;
             foreach ($params as $key => $value) {
                 echo "<tr>" . 
-                         "<td>" . htmlentities($params_help[$key]) . (in_array($key, $inputs) ? " <span style='color: red; '>&nbsp;*</span>" : "") . "</td>" .
-                         "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td>" .
-                         "<td title='$key'><img src='question.png'></td>" .
-                     "</tr>\n";
+                         "<td>{$params_check[$key]["label"]}</td>" .
+                         "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td>";
+                if ($params_check[$key]["result"] === true) {
+                    echo "<td><img src='ok.png'></td>";
+                } else {
+                    echo "<td><img src='fail.png'></td>";
+                }    
+                echo "</tr>\n";
             }            
             break;
 
@@ -389,7 +402,7 @@ function output_table_body($step) {
                     echo "<tr><td><details><summary>$value[label]</summary><p>Error: $value[result]<hr>$value[action]</p></details></td><td><img src='fail.png'></td></tr>\n";
                 }
             }
-            
+            break;
     }
 }
 
