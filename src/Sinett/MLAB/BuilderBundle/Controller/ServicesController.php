@@ -185,7 +185,7 @@ class ServicesController extends Controller
             );
             
         $curl_handle = curl_init();
-        curl_setopt($curl_handle, $opt);
+        curl_setopt_array($curl_handle, $opt);
         $result = curl_exec($curl_handle);
         curl_close($curl_handle);
         return $result;
