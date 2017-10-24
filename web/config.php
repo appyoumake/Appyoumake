@@ -1,15 +1,7 @@
 <?php
-/*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
-
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
-*******************************************************************************************************************************/
 
 if (!isset($_SERVER['HTTP_HOST'])) {
-    exit('This script cannot be run from the CLI. Run it from a browser.');
+    exit("This script cannot be run from the CLI. Run it from a browser.\n");
 }
 
 if (!in_array(@$_SERVER['REMOTE_ADDR'], array(
