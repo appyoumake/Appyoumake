@@ -950,16 +950,16 @@ Mlab_dt_management.prototype = {
             }
             
 // connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
-            var host = window.document.location.host.replace(/:.*/, '');
             mlab.dt.management.socket.connection = new WebSocket(mlab.dt.config.ws_socket.url_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);
 
-            mlab.dt.management.socket.connection.onerror = function(evt){
+            mlab.dt.management.socket.connection.onerror = function(evt) {
                 console.log("The following error occurred: " + evt.data);
                 mlab.dt.management.socket.connection = null;
                 alert(_tr["mlab.dt.management.js.websocket.error.connect"]);
             }
             
             mlab.dt.management.socket.connection.onopen = function() {
+                console.log("onopen");
                 callback(param);
             }
             
@@ -1239,10 +1239,13 @@ Mlab_dt_management.prototype = {
 
         },        
     
+//sets up a websocket connect to get information back during the compilation process
         get_app : function (platform) {
             mlab.dt.management.socket.setup(mlab.dt.management.compiler.get_app_callback, platform);
         },
         
+//callback function that is used when the websocket connection (see get_app above) is completed
+//this is where we start the actual process
         get_app_callback: function (platform) {
             var url = mlab.dt.urls.cmp_get_app_process.replace("_WINDOW_UID_", mlab.dt.uid);
             url = url.replace("_ID_", mlab.dt.app.id);

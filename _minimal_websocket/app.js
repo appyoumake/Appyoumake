@@ -31,19 +31,27 @@ console.log("Listening on localhost:" + config.port);
 
 //listen to incoming connections
 mlabServicesCallbackServer.on('connection', function(ws) {
-    console.log(ws.upgradeReq.url);
+    console.log(ws.upgradeReq);
     url_info = ws.upgradeReq.url.match(/[^/]+/g);
+    
+//we get two types of connections, a long term one from the browser which lasts until the app compilation is done, 
+//and temporary (i.e. one off) connections from PHP server with updates for the browser
     if (url_info[1] != 0) {
         console.log("Connection established from " + ws.upgradeReq.connection.remoteAddress + " (unique windows ID = " +  url_info[1] + ")");
         mlabEditorClients[url_info[1]] = ws;
         ws.send('{"data": {"status": "connected"}}', function(error){console.log(error);});
     } else {
         console.log("Temporary connection from " + ws.upgradeReq.connection.remoteAddress);
-        ws.send('{"data": {"status": "SUCCESS"}}', function(error){console.log(error);});
+        ws.send('{"data": {"status": "SUCCESS"}}', function(error) { console.log(error); } );
     }
     
+//all communication use the /message namespace
     ws.on('message', function(data, flags) {
-        console.log("Message received: " + data);
+        console.log("Message received: ");
+        console.log( data );
+        
+        
+//we use JSON to communicate, so we need to try to parse it.
         if (typeof data == "string") {
             try {
                 var objData = JSON.parse(data);
@@ -55,6 +63,7 @@ mlabServicesCallbackServer.on('connection', function(ws) {
             ws.send('{"data": {"status": "ERROR", "error": "received empty string"}}', function(error){console.log(error);});
             console.log('ERR: received empty string');
             return;
+            
         } else {
             var objData = data;
         }
@@ -70,6 +79,7 @@ mlabServicesCallbackServer.on('connection', function(ws) {
 
             ws.send('{"data": {"status": "SUCCESS"}}', function(error){console.log(error);});
             console.log('SENT TO: ' + objData.destination_id);
+            
         } else {
             if (typeof objData.destination_id == "undefined") {
                 console.log('No destination present, nothing sent');
@@ -83,6 +93,7 @@ mlabServicesCallbackServer.on('connection', function(ws) {
                 console.log('Mlab client ' + objData.destination_id + ' not connected');
                 ws.send('{"data": {"status": "ERROR", "error": "Mlab client ' + objData.destination_id + ' not connected"}}', function(error){console.log(error);});
             }
+            
         }
     });
 

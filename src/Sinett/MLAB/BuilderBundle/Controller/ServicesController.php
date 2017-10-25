@@ -306,7 +306,7 @@ class ServicesController extends Controller
         $params .= "passphrase=" . urlencode($config['compiler_service']["passphrase"]);
         $url = "$protocol://$url/$func_name?$params";
         
-        error_log(">> Calling remote function: " + $url);
+        error_log(">> Calling remote function: " . $url);
 
         return $this->getUrlContent($url);
     }

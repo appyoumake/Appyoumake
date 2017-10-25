@@ -15,7 +15,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
  *      Has relevant software versions installed
  *      PHP.ini must have date.timezone set
  *      Relevant PHP extensions must be loaded
- *      creates a salt, goes into security.yml
  *      edit parameters.yml
  *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
  */

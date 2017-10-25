@@ -282,6 +282,12 @@ Mlab_dt_api.prototype = {
             that.closeAllPropertyDialogs();
         }
         
+/**
+ * This function displays the tooltip DIV that will contain the HTML elements required to select a file for upload.
+ * @param {type} event
+ * @param {type} api
+ * @returns {Mlab_dt_api.prototype.uploadMedia.local_render_tooltip}
+ */
         function local_render_tooltip(event, api) {
             that.indicateWait(true);
             that_qtip = this;
