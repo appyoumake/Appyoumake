@@ -299,11 +299,12 @@ Mlab_dt_api.prototype = {
             
 //load existing files into dropdown box and make it ddslick
             var existing_files = that.getMedia(file_type);
-            debugger;
+
             $("#mlab_cp_select_file").html(existing_files)
                                      .on("change", local_set_media_source_existing)
                                      .ddslick({
-                                         width: 180,
+                                         width: 254,
+                                         height: 64,
                                          imagePosition: "left",
                                          selectText: "Select existing media file to use" });
 
@@ -320,19 +321,39 @@ Mlab_dt_api.prototype = {
                 autoSubmit: false,
                 fileName: "mlab_files",
                 showStatusAfterSuccess: true,
+                showPreview:true,
+                previewHeight: "100px",
+                previewWidth: "100px", 
+                statusBarWidth:254,
+                dragdropWidth:254,
                 onSuccess: function(files, data, xhr) {
                             if (data.result == "failure") {
                                 alert(data.msg);
                             } else {
-                                local_set_media_source(data.url);
+                                local_set_media_source(data.urls[0]);
+                                mlab.dt.api.closeAllPropertyDialogs();
                             }
                     }.bind(that_qtip.dt_component),
                 onError: function(files, status, errMsg) { alert(errMsg); }
             });
+            
+//assign close events and add mlab styles
+            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
+            $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
+            $('.new_but_line').addClass('mlab_dt_button_new_line');
+            $('.new_big_line').addClass('mlab_dt_large_new_line');
+            $('.new_small_line').addClass('mlab_dt_small_new_line');
+            $('.info').addClass('mlab_dt_text_info');
+            $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
+            $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
+
+
             that.indicateWait(false);
-        }
+        } // end local_render_tooltip
         
 
+//code that is executed when this function is called
+//
 //can be called from element or in response to event click, this decides who should "own" this tooltip
         var owner_element = (typeof event != "undefined") ? event.currentTarget : el;
 
@@ -352,15 +373,7 @@ Mlab_dt_api.prototype = {
             }
         });
         
-//assign close events and add mlab styles
-        $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
-        $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
-/*        $('.new_but_line').addClass('mlab_dt_button_new_line');
-        $('.new_big_line').addClass('mlab_dt_large_new_line');
-        $('.new_small_line').addClass('mlab_dt_small_new_line');
-        $('.info').addClass('mlab_dt_text_info');
-        $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
-        $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');*/
+
 
     },
     
@@ -959,7 +972,6 @@ Mlab_dt_api.prototype = {
     
         
     cancelLink: function () {
-         //debugger;
          $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); 
          mlab.dt.api.closeAllPropertyDialogs();
     },

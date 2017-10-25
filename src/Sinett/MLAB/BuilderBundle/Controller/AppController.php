@@ -142,9 +142,7 @@ class AppController extends Controller
      * 3: If template, 
      * 3.1: Try to create the relevant folder
      * 3.2: If successful, copy across base files from template
-     * 4: If 2 or 3.x is successful, contact compiler service to tell it to create such an app
-     * 5: When callback receives a success it upload the files from here, using RSYNC, SFTP, or similar tools.
-     * 6: When upload done, redirects to edit the app
+     * 4: Redirects to edit the app
      */
     public function createAction(Request $request) {
     	$entity = new App();
@@ -1235,7 +1233,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     public function componentUploadAction(Request $request, $app_id, $comp_id) {
         
 //check if upload successful and validate parameters
-        if (empty($request->files->parameters)) {
+        $test = empty($request->files->get('mlab_files'));
+        if ($test) {
     		return new JsonResponse(array(
     			'result' => 'failure',
     			'msg' => $this->get('translator')->trans('appController.msg.file.upload.error') . " " . ini_get('post_max_size') ));
@@ -1270,10 +1269,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //then return the file path
         foreach($request->files as $uploadedFile) {
             $width = $height = $type = $attr = null;
-            $f_name =  $file_mgmt->GUID_v4();
+            $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
+            $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
             $f_ext = $uploadedFile->guessExtension();
             $f_mime = $uploadedFile->getMimeType();
-            md5_file($file_uploaded);
             
 //check to see if the mime type is allowed
             $sub_folder = false;
@@ -1320,8 +1319,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             
 //no onupload processing, so we just copy the file            
             if (!$process_file) {            
-                $uploadedFile->move($path_app . $sub_folder, $f_name);
-                $urls[] = $sub_folder . "/" . $file_name;
+                $uploadedFile->move($path_app . $sub_folder, $f_name . "." . $f_ext);
+                $urls[] = $sub_folder . "/" . $f_name . "." . $f_ext;
             }
         }
 

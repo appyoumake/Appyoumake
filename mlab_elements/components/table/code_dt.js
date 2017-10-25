@@ -29,22 +29,17 @@
     };
     
 	this.onSave = function (el) {
-		$(el).find("th, td").removeAttr("contenteditable");
-        var temp_html = $(el).outerHTML;
-        $(el).find("th, td").attr("contenteditable", "true");
-        return temp_html;
+        var local_el = $(el).clone();
+        local_el.find("th, td").removeAttr("contenteditable");
+        return local_el[0].outerHTML;
     };
            
     this.getContentSize = function (el) {
         return $(el).find("tr").length;
     };
     
-    this.custom_add_link = function (el) {
-        link = this.api.getLink();
-        if (link) {
-            var newLink = document.execCommand('createlink', false, link);
-            newLink.target = "_new";
-        }
+    this.custom_add_link = function (el, event) {
+        this.api.setLink(el, event);
     };
 
     this.custom_remove_link = function (el) {

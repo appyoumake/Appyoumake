@@ -1,5 +1,7 @@
 //image component	
 
+    this.media_type = "image";
+
     this.onCreate = function (el) {
         this.onLoad (el);
         
@@ -78,7 +80,7 @@
     };
     
     this.custom_upload_image = function (el, event) {
-        this.api.uploadMedia(el, this.config, "jpg,jpeg,png,gif", this.cbSetImageSource, event);
+        this.api.uploadMedia(el, this.config, this.media_type, this.cbSetImageSource, event);
     };
     
 /**
@@ -90,7 +92,6 @@
     this.cbSetImageSource = function(el, img_url) {
         var img = $(el).find('img');
         img.attr('src', img_url);
-        $('.mlab_current_component').find('figure').css('width', '100%');
     };
 
     this.custom_decrease_size = function (el) {

@@ -461,3 +461,25 @@ color: black;
   top: 0;
   left: 0;
 }
+
+
+/* added arild oct 2017: IMAGE UPLOAD QTIP */
+#mlab_dt_form_upload #mlab_cp_select_file, #mlab_dt_form_upload #mlab_cp_select_file .dd-select {
+    height: 64px;
+    line-height: 64px;
+    width: 254px;
+}
+
+#mlab_dt_form_upload  form input {
+    z-index: inherit;
+    opacity: 1;
+}
+
+#mlab_dt_form_upload .ajax-file-upload-statusbar {
+    clear: both;
+}
+
+/* added arild oct 2017: TABLES */
+#mlab_editor table {
+    
+}
