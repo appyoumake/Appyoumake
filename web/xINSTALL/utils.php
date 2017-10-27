@@ -142,6 +142,33 @@ function libraries_js() {
     return true;
 }
 
+function libraries_npm() {
+    global $data_checks;
+    $libs = explode(",", $data_checks["libraries_npm"]["check"]);
+    $installed = json_decode(shell_exec("cd _minimal_websocket && npm ls -depth=0 -json=true"));
+/*
+    {
+      "name": "mlab.minimal_websocket.dev",
+      "version": "0.0.1",
+      "problems": [
+        "missing: ws@0.8.0, required by mlab.minimal_websocket.dev@0.0.1"
+      ],
+      "dependencies": {
+        "ws": {
+          "required": "0.8.0",
+          "missing": true
+        }
+      }
+    }
+*/    
+    foreach ($libs as $lib) { 
+        if ( $installed->dependencies->ws->missing ) { return "NodeJS library $lib not found"; } 
+    }
+    return true;
+}
+
+
+
 function bootstrap_symfony() {
     global $data_checks;
     if (file_exists($data_checks["bootstrap_symfony"]["check"])) {

@@ -212,29 +212,36 @@ $software_version_checks = array(
                                         "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
                                         "check"     => "curl,ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
                                         "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager.",
-                                        "function"  => "timezone_php_ini"), 
-        
+                                        "function"  => "libraries_php"), 
+
+    "libraries_npm" =>          array(  "label"     => "NodeJS libraries", 
+                                        "help"      => "These NodeJS libraries must be installed to be able to use Mlab: 'ws'",
+                                        "check"     => ["ws"], 
+                                        "action"    => "You can install this by running 'npm install' command in the _minimal_websocket directory.",
+                                        "function"  => "libraries_npm"), 
+    
+
 );
 
 // ARRAY OF VALUES TO CHECK FOR THAT WE CAN HELP THEM WITH
 $data_checks = array(
     
-    "bootstrap_symfony" =>       array( "label"     => "Boostrap file", 
+    "bootstrap_symfony" =>      array(  "label"     => "Boostrap file", 
                                         "help"      => "The app/bootstrap.php.cache must be created, this is usually done by Composer when the Symfony framework is installed.",
                                         "check"     => "app/bootstrap.php.cache", 
                                         "action"    => "You can <a href='index.php?fix=bootstrap_symfony'>click here</a> to try to generate this file, otherwise manually follow <a href='http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache'>these instructions</a>."), 
     
-    "libraries_js" =>            array( "label"     => "Javascript libraries", 
-                                        "help"      => "These Javascript and libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-1.9.0'",
+    "libraries_js" =>           array(  "label"     => "Javascript libraries", 
+                                        "help"      => "These Javascript libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-1.9.0'",
                                         "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-1.9.0.js", 
                                         "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
     
-    "assetic_update" =>            array( "label"     => "Javascript protection", 
+    "assetic_update" =>         array( "label"     => "Javascript protection", 
                                         "help"      => "The Javascript libraries created by FFI must be protected using UglifyJS as per your contractual obligations. To do this you need to generate a single combined 'asset' JavaScript file from the original code. If you do not do this Mlab will fail to work.",
                                         "check"     => "web/js/*.js", 
                                         "action"    => "You can <a href='index.php?fix=assetic_update'>click here</a> to run the Symfony assetic command which protects the source code, otherwise you can follow the manual instructions."), 
     
-    "import_empty_database" =>   array( "label"     => "Initial Mlab data", 
+    "import_empty_database" =>  array( "label"     => "Initial Mlab data", 
                                         "help"      => "To start using Mlab the basic database must be set up and an admin user must be added. ",
                                         "check"     => 14, 
                                         "action"    => "You can click <a href='index.php?fix=import_empty_database'>here</a> to do this, or you can manually import the 'INSTALL/mlab.sql' file into the designated database."), 
