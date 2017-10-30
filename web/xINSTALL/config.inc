@@ -29,7 +29,7 @@ $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 $params_check = array (
     "parameters__database_driver" => array(
         "label"     => "Name of PHP database driver",
-        "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv"        ),
+        "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv" ),
     "parameters__database_host" => array(  
         "label"     => "URL/IP address of database server",
         "acceptable" => "URL"
@@ -210,14 +210,14 @@ $software_version_checks = array(
     
     "libraries_php" =>          array(  "label"     => "PHP extensions", 
                                         "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
-                                        "check"     => "curl,ereg,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mhash,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,zip,dom", 
+                                        "check"     => "curl,dom,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,xml,xmlreader,xmlwriter,zip", 
                                         "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager.",
                                         "function"  => "libraries_php"), 
 
     "libraries_npm" =>          array(  "label"     => "NodeJS libraries", 
                                         "help"      => "These NodeJS libraries must be installed to be able to use Mlab: 'ws'",
-                                        "check"     => ["ws"], 
-                                        "action"    => "You can install this by running 'npm install' command in the _minimal_websocket directory.",
+                                        "check"     => "ws", 
+                                        "action"    => "You can install this by running 'npm install' command in the <em>" . dirname(dirname(getcwd())) . "/_minimal_websocket</em> directory.",
                                         "function"  => "libraries_npm"), 
     
 

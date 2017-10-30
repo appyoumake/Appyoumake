@@ -10,3 +10,14 @@ table .wrap { width: auto; }
 tr.infobar {background-color: #CAED9E; }
 button { background-color: green; color: white; font-size: 110%; }
 button.error { background-color: red; }
+label.override, input.override {
+    float: right;
+    line-height: 90%;
+    font-size: 80%;
+    margin-top: 10px;
+    display: block;
+}
+
+input.override {
+    clear:both;
+}

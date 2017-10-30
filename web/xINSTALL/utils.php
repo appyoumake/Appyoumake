@@ -82,12 +82,18 @@ function internet_present() {
     }   
 }
 
+//checks for regularly formatted domain ammes, app addresses + local domain names that can be anything (using gethostbyname($domain_name))
 function is_valid_domain_or_ip($domain_name) {
     $dom_ok = (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domain_name) //valid chars check
             && preg_match("/^.{1,253}$/", $domain_name) //overall length check
             && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domain_name)   ); //length of each label
     if (!$dom_ok) {
         $dom_ok = preg_match("/^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/", $domain_name);
+    }
+    if (!$dom_ok) {
+        print $domain_name;
+        die(gethostbyname($domain_name));
+        $dom_ok = gethostbyname($domain_name);
     }
     return $dom_ok;
 }
@@ -97,7 +103,7 @@ function is_valid_ip($ip) {
 }
 
 function is_valid_port($port) {
-    return preg_match("/^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$/");
+    return (int)$port > 0 && (int)$port <= 65535;
 }
 
 function is_valid_password($pass) {
@@ -105,6 +111,11 @@ function is_valid_password($pass) {
         preg_match('/[A-Z]/', $pass) &&
         preg_match('/[0-9]/', $pass))) ;
 }
+
+function is_valid_protocol($prot, $valid_prot) {
+    return  $prot == $valid_prot || $prot == ($valid_prot . "s");
+}
+
 
 function timezone_php_ini() {
     global $software_version_checks;
@@ -143,26 +154,13 @@ function libraries_js() {
 }
 
 function libraries_npm() {
-    global $data_checks;
-    $libs = explode(",", $data_checks["libraries_npm"]["check"]);
-    $installed = json_decode(shell_exec("cd _minimal_websocket && npm ls -depth=0 -json=true"));
-/*
-    {
-      "name": "mlab.minimal_websocket.dev",
-      "version": "0.0.1",
-      "problems": [
-        "missing: ws@0.8.0, required by mlab.minimal_websocket.dev@0.0.1"
-      ],
-      "dependencies": {
-        "ws": {
-          "required": "0.8.0",
-          "missing": true
-        }
-      }
-    }
-*/    
+    global $software_version_checks;
+    $libs = explode(",", $software_version_checks["libraries_npm"]["check"]);
+    $installed = json_decode(shell_exec("cd _minimal_websocket && npm ls -depth=0 -json=true"), true);
     foreach ($libs as $lib) { 
-        if ( $installed->dependencies->ws->missing ) { return "NodeJS library $lib not found"; } 
+        if (array_key_exists($lib, $installed["dependencies"]) && array_key_exists("missing", $installed["dependencies"][$lib])) {
+            if ( $installed["dependencies"][$lib]["missing"] ) { return "NodeJS library $lib not found"; } 
+        }
     }
     return true;
 }
@@ -217,13 +215,13 @@ function import_empty_database() {
 /***
  * Run the four different checks for each page we display
  */
-function run_checks($step, $params) {
+function run_checks($step, $params, $params_override) {
     global $params_check, $data_checks, $software_version_checks, $write_permissions, $system_path;
     $failed = false;
     $cur_dir = getcwd();
     putenv($system_path);
 //here we load the info file which is added to the arrays used to know what to check for
-    $info = file("web/INSTALL/info.html", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $info = file(__DIR__ . "/info.html", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $info = str_replace("{%php.ini%}", php_ini_loaded_file(), $info);
     
 //different steps have different set of checks, some are simple loops to check writable permissions, others have individual checks for different tasks
@@ -265,6 +263,8 @@ function run_checks($step, $params) {
             foreach ($params_check as $key => $settings) {
                 if ($settings["null"] && empty($params[$key])) {
                     $params_check[$key]['result'] = true;
+                } else if ($params_override[$key]) {
+                    $params_check[$key]['result'] = true;
                 } else {
                     switch ($settings["acceptable"]) {
 
@@ -277,23 +277,25 @@ function run_checks($step, $params) {
                             break;
 
                         case "URL_PORT":
-                            $parts = explode(":", $params[$key]);
-                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts[0]) && (bool)is_valid_port($parts[0]));
+                            $parts = parse_url($params[$key]);
+                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts["host"]) && (bool)is_valid_port($parts["port"]));
                             break;
 
                         case "WS_URL_PORT":
-                            $parts = explode(":", $params[$key]);
-                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts[1]) && (bool)is_valid_port($parts[2]));
+                            $parts = parse_url($params[$key]);
+                            $params_check[$key]['result'] = ((bool)is_valid_protocol($parts["scheme"], "ws") && (bool)is_valid_domain_or_ip($parts["host"]) && (bool)is_valid_port($parts["port"]));
                             break;
 
                         case "HTTP_URL_PORT":
-                            $parts = explode(":", $params[$key]);
-                            $params_check[$key]['result'] = ((bool)is_valid_domain_or_ip($parts[1]) && (bool)is_valid_port($parts[2]));
+                            $parts = parse_url($params[$key]);
+                            $params_check[$key]['result'] = ((bool)is_valid_protocol($parts["scheme"], "http") && (bool)is_valid_domain_or_ip($parts["host"]) && (bool)is_valid_port($parts["port"]));
                             break;
 
                         case "RSYNC_URL":
-                            $parts = explode(":", $params[$key]);
-                            $params_check[$key]['result'] = (bool)is_valid_domain_or_ip($params[$key]);
+                            $user = strtok($params[$key], "@:");
+                            $domain = strtok("@:");
+                            $dir = strtok("@:");
+                            $params_check[$key]['result'] = (strlen($user) > 0 && (bool)is_valid_domain_or_ip($domain) && strlen($dir) > 0);
                             break;
 
                         case "PORT":
@@ -405,15 +407,20 @@ function output_table_body($step) {
         case STEP_CHECK_PARAMS:
             global $params, $params_check, $inputs;
             foreach ($params as $key => $value) {
-                echo "<tr>" . 
-                         "<td>{$params_check[$key]["label"]}</td>" .
-                         "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td>";
                 if ($params_check[$key]["result"] === true) {
-                    echo "<td><img src='ok.png'></td>";
+                    echo "<tr>" . 
+                         "<td>{$params_check[$key]["label"]}</td>" .
+                         "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value'></td>" .
+                         "<td><img src='ok.png'></td>" . 
+                         "</tr>\n";
                 } else {
-                    echo "<td><img src='fail.png'></td>";
+                    echo "<tr>" . 
+                         "<td>{$params_check[$key]["label"]}</td>" .
+                         "<td><input type='text' name='$key' id='$key' value='$value' data-original-value='$value' >" .
+                         "<input type='checkbox' name='override_$key' id='override_$key' value='1' class='override'><label for='override_$key' class='override'>Override check</label></td>" .
+                         "<td><img src='fail.png'></td>" . 
+                         "</tr>\n";
                 }    
-                echo "</tr>\n";
             }            
             break;
 
@@ -440,17 +447,27 @@ function output_table($step, $current_step, $colspan, $heading, $failed, $text) 
                         <tr class="infobar"><td colspan="<?php print $colspan; ?>"><h3>Step <?php print $step; ?>: <?php print $heading; ?></h3></td></tr>
                         <?php if ($failed) { ?>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p><?php $text; ?></p></td></tr>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
+                            <?php if ($step == STEP_CHECK_PARAMS) { ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
+                            <?php } else { ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
+                            <?php }  ?>
+                                
                         <?php } else { ?>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct here, you can continue to the next step!</p></td></tr>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
                         <?php } ?>
+                            
                         <tr><td><em>Item</em></td><td><em>Status</em></td></tr>
                     </thead>
                     <tbody>
                         <?php output_table_body($step); ?>
                         <?php if ($failed) { ?>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
+                            <?php if ($step == STEP_CHECK_PARAMS) { ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
+                            <?php } else { ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
+                            <?php }  ?>
                         <?php } else { ?>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
                         <?php } ?>

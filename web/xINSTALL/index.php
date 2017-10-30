@@ -36,87 +36,95 @@ require_once "utils.php" ;
 //--- RUN VARIOUS TASKS (such as storing parameters) IN RESPONSE TO GET REQUESTS ---
 
 //if finished, delete all files
-    if ($_REQUEST['completed'] == 'ALL_OK') {
-        rmall("web/INSTALL");
-        header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
+    if (array_key_exists('completed', $_REQUEST) && $_REQUEST['completed'] == 'ALL_OK') {
         die("NOW THE FOLDER WOULD BE DELETED...");
+        //rmall("web/INSTALL");
+        header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
+        return;
     }
 
 //various tasks that can be done from within the installed
-    switch ($_REQUEST['fix']) {
+    if (array_key_exists('fix', $_REQUEST)) {
+        switch ($_REQUEST['fix']) {
 
-//this will merge the incoming parameters with existing app related values
-        case "save_parameters":
-//here we loop through the incoming data and create an array that matches the one from the YAML file
-            $incoming_params = array();
-            foreach ($_POST as $flat_key => $value) {
-                $arr = &$incoming_params;
-                $keys = explode('__', $flat_key);
-                $count = count($keys);
-                foreach ($keys as $key) {
-                    if (--$count <= 0) {
-                        $arr[$key] = (strpos($value, ",") ? implode(",", $value) : $value) ;
+    //this will merge the incoming parameters with existing app related values
+            case "save_parameters":
+    //here we loop through the incoming data and create an array that matches the one from the YAML file
+                $incoming_params = array();
+                $params_override = array();
+                foreach ($_POST as $flat_key => $value) {
+                    if (substr($flat_key, 0, 9) == "override_" && $value == 1) {
+                        $keys = explode('__', $flat_key);
+                        $params_override['parameters__' . $keys[1]] = $value;
                     } else {
-                        if (!key_exists($key, $arr)) {
-                            $arr[$key] = array();
+                        $arr = &$incoming_params;
+                        $keys = explode('__', $flat_key);
+                        $count = count($keys);
+                        foreach ($keys as $key) {
+                            if (--$count <= 0) {
+                                $arr[$key] = (strpos($value, ",") ? implode(",", $value) : $value) ;
+                            } else {
+                                if (!key_exists($key, $arr)) {
+                                    $arr[$key] = array();
+                                }
+                                $arr = &$arr[$key];
+                            }
                         }
-                        $arr = &$arr[$key];
                     }
                 }
-            }
 
-//now load the other settings, merge and save
-//if the parameters.yml file already exists we read in these values and update them from the incoming data
-//otherwise we load the template parameters.yml.dist and add the values here
-            if (file_exists('app/config/parameters.yml')) {
-                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
-            } else {
-                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
-            }
-            $combined_params = array_replace_recursive($existing_params, $incoming_params);
-// generate   "secret" => "A random word or phrase that Symfony uses for CSRF tokens",
-            if (!$combined_params["parameters"]["secret"]) {
-                $combined_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
-            }
-            file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params));
-            $current_step = STEP_CHECK_PARAMS;
-            break;
+    //now load the other settings, merge and save
+    //if the parameters.yml file already exists we read in these values and update them from the incoming data
+    //otherwise we load the template parameters.yml.dist and add the values here
+                if (file_exists('app/config/parameters.yml')) {
+                    $existing_params = Spyc::YAMLLoad('app/config/parameters.yml');
+                } else {
+                    $existing_params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
+                }
+                $combined_params = array_replace_recursive($existing_params, $incoming_params);
+    // generate   "secret" => "A random word or phrase that Symfony uses for CSRF tokens",
+                if (!$combined_params["parameters"]["secret"]) {
+                    $combined_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
+                }
+                file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params));
+                $current_step = STEP_CHECK_PARAMS;
+                break;
 
-//import the empty database
-        case "import_empty_database":
-//get password etc from YAML file
-            $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
-            $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab.sql");
-            $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
-            if ($mysqli->connect_errno) {
-                $error = "Database not found or user credentials incorrect: " . $mysqli->connect_error;
-            }
-            if ($result = $mysqli->query($sql)) {
-                $result->close();
-            }
-            $current_step = STEP_CHECK_DATA;
-            break;
+    //import the empty database
+            case "import_empty_database":
+    //get password etc from YAML file
+                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
+                $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab.sql");
+                $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
+                if ($mysqli->connect_errno) {
+                    $error = "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+                }
+                if ($result = $mysqli->query($sql)) {
+                    $result->close();
+                }
+                $current_step = STEP_CHECK_DATA;
+                break;
 
-        case "import_templates":
-            $current_step = STEP_CHECK_DATA;
-            break;
+            case "import_templates":
+                $current_step = STEP_CHECK_DATA;
+                break;
 
-        case "import_components":
-            $current_step = STEP_CHECK_DATA;
-            break;
+            case "import_components":
+                $current_step = STEP_CHECK_DATA;
+                break;
 
-        case "assetic_update":
-            putenv($system_path);
-            $p = trim(shell_exec("app/console --env=prod assetic:dump"));
-            $current_step = STEP_CHECK_DATA;
-            break;
+            case "assetic_update":
+                putenv($system_path);
+                $p = trim(shell_exec("app/console --env=prod assetic:dump"));
+                $current_step = STEP_CHECK_DATA;
+                break;
 
-        case "bootstrap_symfony":
-            $p = trim(shell_exec("bin/composer run-script post-update-cmd"));
-            $current_step = STEP_CHECK_DATA;
-            break;
-    } //finished with tasks, now display current state
-
+            case "bootstrap_symfony":
+                $p = trim(shell_exec("bin/composer run-script post-update-cmd"));
+                $current_step = STEP_CHECK_DATA;
+                break;
+        } //finished with tasks, now display current state
+    }
     
 //pick up parameters from dist file, then from install file to merge, and finally turn into a flat array
     $params = Spyc::YAMLLoad('app/config/parameters.yml.dist');
@@ -146,7 +154,7 @@ require_once "utils.php" ;
     }
     
 //run the individual tests 
-    $fail[$current_step] = run_checks($current_step, $params);
+    $fail[$current_step] = run_checks($current_step, $params, $params_override);
 
 ?><!DOCTYPE html>
 <html>
