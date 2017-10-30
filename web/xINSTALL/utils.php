@@ -178,15 +178,24 @@ function bootstrap_symfony() {
 
 function assetic_update() {
     global $data_checks;
+    $passed = false;
     $files = glob($data_checks["assetic_update"]["check"]);
     if (sizeof($files) > 0) {
+//check if assetic files hve been generatd, should do this when run "composer install"
         foreach($files as $file) {
             if (preg_match('/[0-9]{7,}/', basename($file))) {
-                return true;
+                $passed = true;
             }
         }
+//now we check that no MLAB Javascript files are directly accessible
+        foreach($files as $file) {
+            if (preg_match('/mlab.*\.js/', basename($file))) {
+                $passed = "One or more Mlab Javascript files found in " . getcwd() . "/" . dirname($data_checks["assetic_update"]["check"]) . ". These files must NOT be directly accessible to download.";
+            }
+        }
+        return $passed;
     }
-    return "Assetic file not found in " . $data_checks["assetic_update"]["check"];
+    return "Assetic file not found in " . getcwd() . "/" . dirname($data_checks["assetic_update"]["check"]);
 }
 
 //checking to see if the database exists and if the relevant tables have been created
@@ -210,6 +219,75 @@ function import_empty_database() {
     } else {
         return "Database not found or user credentials incorrect";
     }
+}
+
+/**
+ * Simple function to import template and component uploads
+ * IP file can be one or more folders, always with top level dir included!
+ * @param type $type
+ * @param type $upload_data
+ * @return type
+ */
+function import_files($type) {
+    $file_info = $_FILES["mlab_upload"];
+//check if a valid file has been uploaded
+    if ( !$file_info || $file_info["error"] ) {
+        die("Unable to process file, make sure you selected a valid file before trying to upload.");
+    }
+//load parameters, at this point we can assume it is kosher
+    $params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
+    $unzip_path = $params["mlab"]["paths"][$type];
+    $locale = $params["locale"];
+    $order_by_counter = 1;
+    $mysqli = new mysqli($params["database_host"], $params["database_user"], $params["database_password"], $params["database_name"]);
+    if ($mysqli->connect_errno) {
+        return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+    }
+    
+    $zip = new ZipArchive();
+    $res = $zip->open($file_info["tmp_name"]);
+    if (!$zip->extractTo($unzip_path)) {
+// clean up the file property, not persisted to DB
+        $zip->close();
+        return "Unable to unzip $type to $unzip_path";
+    }
+    $zip->close();
+
+//now loop through all the folders in the directory and populate the database
+    $fields = array("tooltip" => "description", "name" => "name", "version" => "version");
+    $data = array();
+    foreach (new DirectoryIterator($unzip_path) as $dir) {
+        if($dir->isDot()) continue;
+        $dir_name = $dir->getPathname();
+        if ( file_exists($dir_name . "/conf.yml") ) {
+            $yaml = new Parser();
+            $temp = $yaml->parse(@file_get_contents($dir_name . "/conf.yml"));
+            foreach ($fields as $yml_field => $db_field) {
+                 if (isset($temp[$yml_field])) {
+                    if (is_array($temp[$yml_field])) {
+                        if (isset($temp[$yml_field][$locale])) {
+                            $data[$db_field] = $temp[$yml_field][$locale];
+                        }
+                    } else {
+                        $data[$db_field] = $temp[$yml_field];
+                    }
+                }
+            }
+            $data["path"] = $dir->getFilename();
+            $data["enabled"] = 1;
+            if ($type == "component") {
+                $data["order_by"] = $order_by_counter;
+                $order_by_counter++;
+            }
+            $field_names = implode(",", array_keys($data));
+            $field_values = implode("','", array_values($data));
+            $sql = "INSERT INTO $type ($field_names) VALUES ('$field_values')";
+            if ($conn->query($sql) !== TRUE) {
+                return "Unable to import $type data";
+            }        
+        }
+    }
+
 }
 
 /***
@@ -356,10 +434,10 @@ function run_checks($step, $params, $params_override) {
                 if (function_exists($key)) {
                     eval("\$data_checks['" . $key . "']['result'] = " . $key . "(\$value);");
                 } else {
-                    $data_checks[$key]['result'] = false;
+                    $data_checks[$key]['result'] = $data_checks[$key]['help'];
                 }
-                if ($data_checks[$key]['result'] !== true) {
-                    $fail_versions = true;
+                if (!$failed && $data_checks[$key]['result'] !== true) {
+                    $failed = true;
                 }
 
 //loop through the info.html content and assign help text. 
@@ -378,7 +456,8 @@ function run_checks($step, $params, $params_override) {
                         }
                     } 
                 }
-            }            
+            }     
+            return $failed;
             break;
     }
 }
@@ -429,6 +508,7 @@ function output_table_body($step) {
 //  Data import
 // template/component import
         case STEP_CHECK_DATA:
+            global $data_checks;
             foreach ($data_checks as $key => $value) {
                 if ($value["result"] === true) {
                     echo "<tr><td>$value[label]</td><td><img src='ok.png'></td></tr>\n";
@@ -447,29 +527,38 @@ function output_table($step, $current_step, $colspan, $heading, $failed, $text) 
                         <tr class="infobar"><td colspan="<?php print $colspan; ?>"><h3>Step <?php print $step; ?>: <?php print $heading; ?></h3></td></tr>
                         <?php if ($failed) { ?>
                             <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p><?php $text; ?></p></td></tr>
-                            <?php if ($step == STEP_CHECK_PARAMS) { ?>
+                            <?php if ($step == STEP_CHECK_PARAMS) { // button must submit form, not go to next page  ?>
                                 <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
                             <?php } else { ?>
                                 <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
                             <?php }  ?>
                                 
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct here, you can continue to the next step!</p></td></tr>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
+                            <?php if ($step == STEP_CHECK_DATA) { // button must say finish, this will delete install dir   ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct, when you click 'Finish' the install folder will be removed and you will be forwarded to Mlab.</p></td></tr>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Finish</button></td></tr>
+                            <?php } else { ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct here, you can continue to the next step!</p></td></tr>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
+                            <?php }  ?>
                         <?php } ?>
                             
-                        <tr><td><em>Item</em></td><td><em>Status</em></td></tr>
+                        <tr><td><em>Item</em></td><?php if ($colspan > 2) { ?><td><em>Setting</em></td><?php }; ?><td><em>Status</em></td></tr>
                     </thead>
                     <tbody>
                         <?php output_table_body($step); ?>
                         <?php if ($failed) { ?>
-                            <?php if ($step == STEP_CHECK_PARAMS) { ?>
+                            <?php if ($step == STEP_CHECK_PARAMS) { // button must submit form, not go to next page ?>
                                 <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
                             <?php } else { ?>
                                 <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
                             <?php }  ?>
                         <?php } else { ?>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
+                            <?php if ($step == STEP_CHECK_DATA) { // button must say finish, this will delete install dir   ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Finish</button></td></tr>
+                            <?php } else { ?>
+                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
+                            <?php }  ?>
                         <?php } ?>
                     </tbody>
                 </table>    

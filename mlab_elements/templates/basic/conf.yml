@@ -1,3 +1,4 @@
+name: basic
 tooltip: Template for initial user by guests, no logo
 
 permissions: ["android.permission.INTERNET"] 

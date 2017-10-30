@@ -233,7 +233,7 @@ $data_checks = array(
     
     "libraries_js" =>           array(  "label"     => "Javascript libraries", 
                                         "help"      => "These Javascript libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-1.9.0'",
-                                        "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-1.9.0.js", 
+                                        "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-4.0.11.js", 
                                         "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
     
     "assetic_update" =>         array( "label"     => "Javascript protection", 
@@ -241,14 +241,22 @@ $data_checks = array(
                                         "check"     => "web/js/*.js", 
                                         "action"    => "You can <a href='index.php?fix=assetic_update'>click here</a> to run the Symfony assetic command which protects the source code, otherwise you can follow the manual instructions."), 
     
+    "version_mysql" =>          array(  "label"     => "MySQL version", 
+                                        "help"      => "A MySQL database server version 5.5 or higher is required to store Mlab user and app data",
+                                        "check"     => $mysql_version_min, 
+                                        "action"    => "Install an appropriate version of Mlab on the server."),
+    
     "import_empty_database" =>  array( "label"     => "Initial Mlab data", 
                                         "help"      => "To start using Mlab the basic database must be set up and an admin user must be added. ",
                                         "check"     => 14, 
                                         "action"    => "You can click <a href='index.php?fix=import_empty_database'>here</a> to do this, or you can manually import the 'INSTALL/mlab.sql' file into the designated database."), 
     
-    "version_mysql" =>          array(  "label"     => "MySQL version", 
-                                        "help"      => "A MySQL database server version 5.5 or higher is required to store Mlab usr and app data",
-                                        "check"     => $mysql_version_min, 
-                                        "action"    => "Install an appropriate version of Mlab on the server."), 
+    "import_templates" =>       array(  "label"     => "Import templates", 
+                                        "help"      => "To use Mlab you need at least one template. If you have one or more templates available as a ZIP file you can upload this file now." . 
+                                                       '<form action="index.php?fix=import_templates" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>' ),
+    
+    "import_components" =>      array(  "label"     => "Import components", 
+                                        "help"      => "To use Mlab you need at least one component. If you have one or more components available as a ZIP file you can upload this file now." . 
+                                                       '<form action="index.php?fix=import_components" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>' ),
     
 );

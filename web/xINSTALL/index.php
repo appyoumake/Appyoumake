@@ -54,8 +54,7 @@ require_once "utils.php" ;
                 $params_override = array();
                 foreach ($_POST as $flat_key => $value) {
                     if (substr($flat_key, 0, 9) == "override_" && $value == 1) {
-                        $keys = explode('__', $flat_key);
-                        $params_override['parameters__' . $keys[1]] = $value;
+                        $params_override[substr($flat_key, 9)] = $value;
                     } else {
                         $arr = &$incoming_params;
                         $keys = explode('__', $flat_key);
@@ -106,10 +105,12 @@ require_once "utils.php" ;
                 break;
 
             case "import_templates":
+                import_files('template');
                 $current_step = STEP_CHECK_DATA;
                 break;
 
             case "import_components":
+                import_files('component');
                 $current_step = STEP_CHECK_DATA;
                 break;
 
@@ -167,7 +168,6 @@ require_once "utils.php" ;
         <div>
             <h1>Mlab installation</h1>
             <p><a href="info.html" target="_new">Click here for complete setup instructions.</a></p>
-            <form action='index.php?fix=save_parameters' method="post" accept-charset="UTF-8" id="parameters">
                 <?php 
                     switch ($current_step) {
                         case STEP_INTRO:
@@ -189,7 +189,9 @@ require_once "utils.php" ;
                         
 //Then the permissions required for folders that are NOT created by symfony, we have checked for access in the init() function 
                         case STEP_CHECK_PERMISSIONS:
-                            output_table(STEP_CHECK_PERMISSIONS, $current_step, 3, "File and directory permissions", $fail[STEP_CHECK_PERMISSIONS], "For Mlab to work correctly, and for this installation page to be able to update settings, you must create the directories indicated below and assign the user <em>$www_user</em> as the owner of the files and directories listed here; and the owner must then have write access to these directories and files. Check the status of the access below and continue when all entries have write access."); 
+                            print "<form action='index.php?fix=save_parameters' method='post' accept-charset='UTF-8' id='parameters'>";
+                            output_table(STEP_CHECK_PERMISSIONS, $current_step, 2, "File and directory permissions", $fail[STEP_CHECK_PERMISSIONS], "For Mlab to work correctly, and for this installation page to be able to update settings, you must create the directories indicated below and assign the user <em>$www_user</em> as the owner of the files and directories listed here; and the owner must then have write access to these directories and files. Check the status of the access below and continue when all entries have write access."); 
+                            print "</form>";
                             break;
                 
 //third we get the parameters such as paths etc that we can update, if they are not specified we do not know what folders to check for permissions 
@@ -203,7 +205,6 @@ require_once "utils.php" ;
                             break;
                     }
                 ?>
-            </form>
         </div>
     </body>
 </html>
