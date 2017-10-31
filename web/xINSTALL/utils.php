@@ -134,6 +134,33 @@ function libraries_php() {
     return true;
 }
 
+function libraries_symfony() {
+    global $system_path;
+    $required_libs = array();
+    $missing_libs = array();
+
+    putenv($system_path);
+    putenv("COMPOSER_HOME=" . getcwd() . "/bin/");
+
+    $temp_libs = json_decode(file_get_contents('composer.lock'), true)["packages"];
+    foreach ($temp_libs as $lib) {
+        $required_libs[] = $lib["name"];
+    }
+
+    $temp_libs = explode("\n", shell_exec("./bin/composer.phar show"));
+    foreach($temp_libs as $lib) {
+        $installed_lib = strtok($lib, ' ');
+        if ($installed_lib && !in_array($installed_lib, $required_libs)) {
+            $missing_libs[] = $installed_lib;
+        }
+    }
+    
+    if(!empty($missing_libs)) {
+        return "Missing symfony libraries: " . implode(", ", $missing_libs);
+    }
+    return true;
+}
+
 function version_mysql() {
     global $software_version_checks;
     $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
@@ -239,8 +266,8 @@ function import_files($type) {
     $unzip_path = $params["mlab"]["paths"][$type];
     $locale = $params["locale"];
     $order_by_counter = 1;
-    $mysqli = new mysqli($params["database_host"], $params["database_user"], $params["database_password"], $params["database_name"]);
-    if ($mysqli->connect_errno) {
+    $db_conn = new mysqli($params["database_host"], $params["database_user"], $params["database_password"], $params["database_name"]);
+    if ($db_conn->connect_errno) {
         return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
     }
     
@@ -253,6 +280,12 @@ function import_files($type) {
     }
     $zip->close();
 
+//pick up IDs of all the groups that exists so we can create acces records for all of them
+    $sql = "SELECT id FROM grp";
+    if ($result = $db_conn->query($sql)) {
+        $group_ids = $result->fetch_all();
+    }    
+    
 //now loop through all the folders in the directory and populate the database
     $fields = array("tooltip" => "description", "name" => "name", "version" => "version");
     $data = array();
@@ -282,9 +315,24 @@ function import_files($type) {
             $field_names = implode(",", array_keys($data));
             $field_values = implode("','", array_values($data));
             $sql = "INSERT INTO $type ($field_names) VALUES ('$field_values')";
-            if ($conn->query($sql) !== TRUE) {
-                return "Unable to import $type data";
-            }        
+            
+            if ($db_conn->query($sql) !== TRUE) {
+                return "Unable to add $type data";
+            }
+            
+//now loop through the list of group ids and make sure all have access to the added template/component
+            $entity_id = $conn->insert_id;
+            foreach ($group_ids as $group_id) {
+                if ($type == "template") {
+                    $sql = "INSERT INTO {$type}s_groups ({$type}_id, groups_id) VALUES ($entity_id, $group_id)";
+                    $sql = "INSERT INTO {$type}s_groups_data ({$type}_id, groups_id, access_state) VALUES ($entity_id, $group_id, 3)";
+                } else {
+                    $sql = "INSERT INTO {$type}s_groups ({$type}_id, groups_id, access_state) VALUES ($entity_id, $group_id, 3)";
+                }
+                if ($db_conn->query($sql) !== TRUE) {
+                    return "Unable to give group access to $type";
+                }                
+            }
         }
     }
 

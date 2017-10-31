@@ -16,7 +16,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
  *      PHP.ini must have date.timezone set
  *      Relevant PHP extensions must be loaded
  *      edit parameters.yml
- *      create database (load SQL or use doctrine???) php bin/console doctrine:database:create
+ *      create database (load SQL or use doctrine???) php app/console doctrine:database:create
  */
 
 // EDIT SETTINGS IN config.inc FILE
@@ -121,7 +121,7 @@ require_once "utils.php" ;
                 break;
 
             case "bootstrap_symfony":
-                $p = trim(shell_exec("bin/composer run-script post-update-cmd"));
+                $p = trim(shell_exec("bin/composer.phar run-script post-update-cmd"));
                 $current_step = STEP_CHECK_DATA;
                 break;
         } //finished with tasks, now display current state

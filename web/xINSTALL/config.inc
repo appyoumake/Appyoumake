@@ -214,6 +214,11 @@ $software_version_checks = array(
                                         "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager.",
                                         "function"  => "libraries_php"), 
 
+    "libraries_symfony" =>      array(  "label"     => "Symfony libraries", 
+                                        "help"      => "These Symfony libraries must be available.",
+                                        "action"    => "Install the missing extensions using bin/composer.phar install from the command line.",
+                                        "function"  => "libraries_symfony"), 
+
     "libraries_npm" =>          array(  "label"     => "NodeJS libraries", 
                                         "help"      => "These NodeJS libraries must be installed to be able to use Mlab: 'ws'",
                                         "check"     => "ws", 
