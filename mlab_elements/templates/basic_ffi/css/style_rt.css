@@ -32,10 +32,6 @@
 #mlab_page_body .mlab_header {
     padding: 0;
     margin: 0;
-    //background-image: url('./img/logoFFI.svg');
-    //background-repeat:no-repeat;
-    //background-size: 14%;
-    //background-position: 50% 115%;
     border-width: 0;
     border-style: hidden;
     overflow: hidden;
