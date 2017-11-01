@@ -8,6 +8,7 @@
 Unauthorized copying of this file, via any medium is strictly prohibited 
 
 For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+TODO: Move to openmlab/docs
 -->
     <head>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
@@ -86,6 +87,16 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 border-top: none;
                 margin-bottom: 30px;
             }
+            
+            .important {
+                width: 100%;
+                background-color: lightsalmon;
+                color: darkblue;
+                border: 1px solid darkgray;
+                padding: 3px;
+                font-family: sans-serif;
+                text-align: justify;
+            }
         </style>
     </head>
 <!--body -->
@@ -98,11 +109,15 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <li>Configure the various server software and helper software (where required) to match the Mlab directory location.</li>
             <li>Run the Mlab installation script which will verify that the setup is correct and perform certain actions that will complete the setup.  
                 <ol type='a'> 
-                    <li>Alternatively you can manually install Mlab. The steps required are described in this document under the “<a href="#_5:_(Optional)_Install">Install Mlab manually</a>”  section toward the end of the document.</li>
+                    <li>The steps required are described in this document under the “<a href="#_5:_(Optional)_Install">Install Mlab manually</a>”  section toward the end of the document.</li>
                 </ol>
             </li>
+            <li>Optionally you ccan install the Mlab compiler service, this is documented in <a href="info_cs.html">the Mlab compiler service installation document</a> </li>
         </ol>
         <p><i>All examples in this document use a generic Debian/Ubuntu installation, thus all examples refer to apt-get as the package manager. Other Linux distributions may use rpm, yum or other package managers, modify the commands as required. On Windows there is no package manager. For each software installation you need to download the relevant software package and run the executable installer.</i></p>
+        <p class="important">
+            To install Mlab you need to be familiar with website setup in general, this includes knowledge about domains/host names/IP addresses and ports; manipulating files, folders and access permissions; issuing commands on the command line and scripts.
+        </p>
 
         <h1>1 Install server and helper software</h1>
         <p>Here we go through the installation of servers and related software that Mlab requires to operate correctly. This section only deals with the actual installation of the software, <b>notes on how to configure the servers to work with Mlab are given in <a href="#_3:_Configuration">step 3</a>.</b></p>
@@ -345,7 +360,11 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         <h1>2 Create directory and copy Mlab source code</h1>
         <p>After installing the servers and helper software in step 1, you need to copy over the Mlab source code. </p>
         <h2><a name="2_1"></a>2.1 Create directories/folders for Mlab</h2>
-        <p>First create a new directory in a suitable location for your OS/Web server. On Linux this is often /var/www, but refer to your OS information where is the best location for this. Below we will use {mlab_code} for this folder. You will also need to create another folder for the elements that make up an app and the apps themselves (apps, components, icons and templates), below we will use {mlab_elements} for these directories. Create the following directories:</p>
+        <p>First create a new directory in a suitable location for your OS/Web server. On Linux this is often /var/www, but refer to your OS information where is the best location for this. Below we will use {mlab_code} for this folder. You will also need to create another folder for the elements that make up an app and the apps themselves (apps, components, icons and templates), below we will use {mlab_elements} for these directories. </p>
+        <p>TODO: As a result of using the example paths in your directory structure you have created two folders for the mlab element files. One is inside the main mlab code directory as listed here. The other is outside the mlab code directory in '/var/www/mlab/{mlab_elements}/apps/'.
+
+If you want to use the directory outside the code directory you MUST make sure that it is accessible via a URL that shares the domain of the main site, this must be configured in your web server, AND in the “urls” settings in the next section of this file.</p>
+        <p>    Create the following directories:</p>
         <div class="tab">
             <button class="tablinks21 defaultOpen" onclick="openTab(event, 'Debian', '21')">Ubuntu 14.04, Mac and Linux/Unix/BSD variants</button>
             <button class="tablinks21" onclick="openTab(event, 'Windows', '21')">Windows</button>
@@ -573,7 +592,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 app/console --env=prod assetic:dump
     <h3 style="text-align: center;">---MLAB INSTALLATION COMPLETED---</h3>
-
+<!-- TODO: add about optional compiler service installation -->
+<!-- TODO: add about DEBUGGING: Links to info, app_dev.php, js console, php xdebug-->
+    
 <script>
 function openTab(evt, tabName, tabGroup) {
     var i, tabcontent, tablinks;

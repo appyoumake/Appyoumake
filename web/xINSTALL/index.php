@@ -175,7 +175,8 @@ require_once "utils.php" ;
                                 <tr>
                                     <td>
                                         <p>This installation page will help and verify the tasks required to configure your Mlab installation. For some tasks you have to access the server as root/administrator, other tasks you can do directly from this page.</p>
-                                        <p>Although this page will guide you through the correct setup, it is expeced that you are familiar with installing and setting up server software and know the basics about domain names, TCP/IP setup, etc. For specific settings you should refer to the vendors own help pages. This installation page provides links to these where possible.</p>
+                                        <p>Although this page will guide you through the correct setup, it is expeced that you are familiar with website setup in general, this includes knowledge about domains/host names/IP addresses and ports; manipulating files, folders and access permissions; issuing commands on the command line and scripts. For specific settings you should refer to the vendors own help pages. This installation page provides links to these where possible.</p>
+                                        
                                     </td>
                                 </tr>
                                 <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = \'index.php?next_step=1\';">Continue</button></td></tr>

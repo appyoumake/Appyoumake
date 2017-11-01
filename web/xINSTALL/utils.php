@@ -427,7 +427,7 @@ function run_checks($step, $params, $params_override) {
                         case "PORT":
                             $params_check[$key]['result'] = (bool)is_valid_port($params[$key]);
                             break;
-
+//TODO: add trailing slashes here
                         case "PATH":
                             $params_check[$key]['result'] = (bool)file_exists($params[$key]);
                             break;
@@ -477,7 +477,9 @@ function run_checks($step, $params, $params_override) {
 //b: whether data has been loaded into the database, 
 //c: if there are no components or templates in the relevant folders 
 //d: if Javascript protection is in place
-        case STEP_CHECK_DATA:
+        
+//TODO: Move [HELP ]help] to action from info.html like above
+       case STEP_CHECK_DATA:
             foreach ($data_checks as $key => $value) {
                 if (function_exists($key)) {
                     eval("\$data_checks['" . $key . "']['result'] = " . $key . "(\$value);");
@@ -551,10 +553,7 @@ function output_table_body($step) {
             }            
             break;
 
-//this will have 3 lines:
-//  MySQL version
-//  Data import
-// template/component import
+//check stuff that has to happen after config & permissions set, such as data import
         case STEP_CHECK_DATA:
             global $data_checks;
             foreach ($data_checks as $key => $value) {
@@ -570,44 +569,44 @@ function output_table_body($step) {
 
 function output_table($step, $current_step, $colspan, $heading, $failed, $text) {
 ?>
-                <table>    
-                    <thead>
-                        <tr class="infobar"><td colspan="<?php print $colspan; ?>"><h3>Step <?php print $step; ?>: <?php print $heading; ?></h3></td></tr>
-                        <?php if ($failed) { ?>
-                            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p><?php $text; ?></p></td></tr>
-                            <?php if ($step == STEP_CHECK_PARAMS) { // button must submit form, not go to next page  ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
-                            <?php } else { ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
-                            <?php }  ?>
-                                
-                        <?php } else { ?>
-                            <?php if ($step == STEP_CHECK_DATA) { // button must say finish, this will delete install dir   ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct, when you click 'Finish' the install folder will be removed and you will be forwarded to Mlab.</p></td></tr>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Finish</button></td></tr>
-                            <?php } else { ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct here, you can continue to the next step!</p></td></tr>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
-                            <?php }  ?>
-                        <?php } ?>
-                            
-                        <tr><td><em>Item</em></td><?php if ($colspan > 2) { ?><td><em>Setting</em></td><?php }; ?><td><em>Status</em></td></tr>
-                    </thead>
-                    <tbody>
-                        <?php output_table_body($step); ?>
-                        <?php if ($failed) { ?>
-                            <?php if ($step == STEP_CHECK_PARAMS) { // button must submit form, not go to next page ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
-                            <?php } else { ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
-                            <?php }  ?>
-                        <?php } else { ?>
-                            <?php if ($step == STEP_CHECK_DATA) { // button must say finish, this will delete install dir   ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Finish</button></td></tr>
-                            <?php } else { ?>
-                                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
-                            <?php }  ?>
-                        <?php } ?>
-                    </tbody>
-                </table>    
+    <table>    
+        <thead>
+            <tr class="infobar"><td colspan="<?php print $colspan; ?>"><h3>Step <?php print $step; ?>: <?php print $heading; ?></h3></td></tr>
+            <?php if ($failed) { ?>
+                <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p><?php $text; ?></p></td></tr>
+                <?php if ($step == STEP_CHECK_PARAMS) { // button must submit form, not go to next page  ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
+                <?php } else { ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
+                <?php }  ?>
+
+            <?php } else { ?>
+                <?php if ($step == STEP_CHECK_DATA) { // button must say finish, this will delete install dir   ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct, when you click 'Finish' the install folder will be removed and you will be forwarded to Mlab.</p></td></tr>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Finish</button></td></tr>
+                <?php } else { ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><p>All steps are correct here, you can continue to the next step!</p></td></tr>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
+                <?php }  ?>
+            <?php } ?>
+
+            <tr><td><em>Item</em></td><?php if ($colspan > 2) { ?><td><em>Setting</em></td><?php }; ?><td><em>Status</em></td></tr>
+        </thead>
+        <tbody>
+            <?php output_table_body($step); ?>
+            <?php if ($failed) { ?>
+                <?php if ($step == STEP_CHECK_PARAMS) { // button must submit form, not go to next page ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="document.getElementById('parameters').submit();" class="error">Retry</button></td></tr>
+                <?php } else { ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step; ?>';" class="error">Retry</button></td></tr>
+                <?php }  ?>
+            <?php } else { ?>
+                <?php if ($step == STEP_CHECK_DATA) { // button must say finish, this will delete install dir   ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?completed=ALL_OK';">Finish</button></td></tr>
+                <?php } else { ?>
+                    <tr class="infobar"><td colspan="<?php print $colspan; ?>"><button type="button" onclick="window.location.href = 'index.php?next_step=<?php print $step + 1; ?>';">Continue</button></td></tr>
+                <?php }  ?>
+            <?php } ?>
+        </tbody>
+    </table>    
 <?php } ?>

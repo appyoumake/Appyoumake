@@ -26,6 +26,8 @@ $uglifyjs_version_min = 2.4;
 $nodejs_version_min = "6.0.0";
 $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 
+//TODO: Update labels here to say when links to something else, what use for etc.
+//TODO: add about trailing slashes
 $params_check = array (
     "parameters__database_driver" => array(
         "label"     => "Name of PHP database driver",
