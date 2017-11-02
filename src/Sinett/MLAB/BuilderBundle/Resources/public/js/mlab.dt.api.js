@@ -249,7 +249,7 @@ Mlab_dt_api.prototype = {
  * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
  * @returns {undefined}
  */
-    uploadMedia : function (el, component_config, file_type, cb, event) {
+    uploadMedia : function (el, component_config, file_type, cb, event, multi) {
         
 //store for later when callbacks are executed in different contexts
         var that = this;
@@ -313,7 +313,7 @@ Mlab_dt_api.prototype = {
             var uploadObj = $("#mlab_cp_mediaupload_uploadfiles").uploadFile({
                 url: that.getUrlUploadAbsolute(that_qtip.dt_config.name),
                 formData: { comp_id: that_qtip.dt_component_id, app_path: that.parent.app.path },
-                multiple: false,
+                multiple: (multi === true),
                 dragDrop: true,
                 showCancel: true,
                 showAbort: true,
