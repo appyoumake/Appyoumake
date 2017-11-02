@@ -23,12 +23,6 @@ Sinett\MLAB\BuilderBundle\Entity\App:
       columns: [ created ]
     updated_index:
       columns: [ updated ]
-    category_1_index:
-      columns: [ category_1 ]
-    category_2_index:
-      columns: [ category_2 ]
-    category_3_index:
-      columns: [ category_3 ]
     updatedby_id_index:
       columns: [ updatedby_id ]
     template_id_index:
@@ -122,27 +116,6 @@ Sinett\MLAB\BuilderBundle\Entity\App:
 #the categories for this apps
           
   manyToOne:
-    categoryOne:
-      targetEntity: Category
-      inversedBy: apps
-      joinColumn:
-        name: category_1
-        referencedColumnName: id
-
-    categoryTwo:
-      targetEntity: Category
-      inversedBy: apps
-      joinColumn:
-        name: category_2
-        referencedColumnName: id
-
-    categoryThree:
-      targetEntity: Category
-      inversedBy: apps
-      joinColumn:
-        name: category_3
-        referencedColumnName: id
-
     template:
       targetEntity: Template
       inversedBy: apps

@@ -905,8 +905,8 @@ Mlab_dt_api.prototype = {
         if (link_type == "page") {
             link = $("#mlab_dt_link_app_pages").val();
             var num = parseInt(link);
-            if (parseInt(link) >= 0 && num < 1000) {
-                page_name = " onclick='mlab.api.navigation.pageDisplay(-1, " + num + "); return false;' ";
+            if (num >= 0 && num < 1000) {
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + num + '); return false;');
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
                 return false;
@@ -916,6 +916,7 @@ Mlab_dt_api.prototype = {
             link = $("#mlab_dt_link_app_url").val();
             if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
                 page_name = link.trim();
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
                 return false;
@@ -927,7 +928,6 @@ Mlab_dt_api.prototype = {
             
         }
         
-        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
         return true;
     },
         
@@ -943,10 +943,10 @@ Mlab_dt_api.prototype = {
             return;
         }
 
-//we need to create a temporary link straight away so that we can refer to it later, otherwise the selection wil disappear.
+//we need to create a temporary link straight away so that we can refer to it later, otherwise the selection will disappear.
         document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
-        //.mc_link.mc_text
-        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").addClass('mc_link mc_text').click(function(e) { e.preventDefault(); });
+//we set a data tag, because we'll use an API call if they link to another page, etc
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").addClass('mc_link mc_text').attr('data-mlab-islink', 1).click(function(e) { e.preventDefault(); });
 
 //we need to request the URL *OR* which page to link to
         var opt = "<option value='-1'></option>";
@@ -970,10 +970,15 @@ Mlab_dt_api.prototype = {
         
     },
     
-        
+
+// remove the link from the currently selected text
     cancelLink: function () {
-         $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); 
-         mlab.dt.api.closeAllPropertyDialogs();
+        var el = this.getSelTextParentLinkElement();
+        if (el.length > 0) {
+            el.select();
+            document.execCommand('unlink');
+        }
+        mlab.dt.api.closeAllPropertyDialogs();
     },
  
     removeLink: function () {
@@ -1208,6 +1213,28 @@ Mlab_dt_api.prototype = {
         },
         
 /**
+ * Called when we leave a component, either because another one is added/pasted, or they select another component
+ */
+        componentBlur : function (el) {
+            if (el.length == 0) {
+                return;
+            }
+            el.qtip('hide');
+            var comp_id= el.data("mlab-type")
+            el.removeClass("mlab_current_component");
+//same for any current sub components, such as a question in a quiz
+            el.find("mlab_current_component").css("outline-color", "").removeClass("mlab_current_component");
+            el.find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+            window.getSelection().removeAllRanges();
+            el.find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+            
+            if (typeof mlab.dt.components[comp_id].code.onBlur != "undefined") {
+                mlab.dt.components[comp_id].code.onBlur(el);
+            }
+            
+        },
+        
+/**
  * Updates either a single component, or all components on a page, using data attributes to determine the display
  * @param {type} el: Optional, the element to display. If not specified, then update all components
  * @returns {true if selected different component, false otherwise}
@@ -1219,14 +1246,9 @@ Mlab_dt_api.prototype = {
                 return false;
             }          
             
-            if (el[0] !== curComp[0]) {
+//            if (el[0] !== curComp[0]) {
 //Delete the outlines and tools for the last current component
-                curComp.qtip('hide');
-                curComp.removeClass("mlab_current_component");
-                curComp.find("mlab_current_component").css("outline-color", "").removeClass("mlab_current_component");
-                curComp.find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
-                window.getSelection().removeAllRanges();
-                curComp.find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+                this.componentBlur(curComp);
                 
 //Set the new current component
                 var pageBgColor = $("[data-role=page]").css( "background-color" );
@@ -1236,9 +1258,9 @@ Mlab_dt_api.prototype = {
                 $( el ).css("outline-color", pageBgColorInvert);
                 $( el ).addClass("mlab_current_component");
                 return true;
-            }
+/*            }
 
-            return false;
+            return false;*/
         },
         
 /**

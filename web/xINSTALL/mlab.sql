@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.6deb1
+-- version 4.5.4.1deb2ubuntu2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 01, 2017 at 08:25 PM
--- Server version: 5.5.37-0ubuntu0.13.10.1
--- PHP Version: 5.5.3-1ubuntu2.6
+-- Generation Time: 02. Nov, 2017 11:11 AM
+-- Server-versjon: 5.7.20-0ubuntu0.16.04.1
+-- PHP Version: 7.0.22-0ubuntu0.16.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,23 +14,20 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `mlab_installer`
+-- Database: `mlab`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `app`
+-- Tabellstruktur for tabell `app`
 --
 
-CREATE TABLE IF NOT EXISTS `app` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_1` int(11) DEFAULT NULL,
-  `category_2` int(11) DEFAULT NULL,
-  `category_3` int(11) DEFAULT NULL,
+CREATE TABLE `app` (
+  `id` int(11) NOT NULL,
   `template_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `updatedby_id` int(11) DEFAULT NULL,
@@ -44,192 +41,102 @@ CREATE TABLE IF NOT EXISTS `app` (
   `enabled` tinyint(1) DEFAULT '1',
   `published` int(11) DEFAULT '0',
   `uid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `tags` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name_index` (`name`),
-  KEY `path_index` (`path`),
-  KEY `created_index` (`created`),
-  KEY `updated_index` (`updated`),
-  KEY `enabled_index` (`enabled`),
-  KEY `active_version_index` (`active_version`),
-  KEY `category_1_index` (`category_1`),
-  KEY `category_2_index` (`category_2`),
-  KEY `category_3_index` (`category_3`),
-  KEY `updatedby_id_index` (`updatedby_id`),
-  KEY `template_id_index` (`template_id`),
-  KEY `user_id_index` (`user_id`),
-  KEY `uid_index` (`uid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=89 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `apps_groups`
---
-
-CREATE TABLE IF NOT EXISTS `apps_groups` (
-  `app_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`app_id`,`group_id`),
-  KEY `IDX_4ADA29A77987212D` (`app_id`),
-  KEY `IDX_4ADA29A7FE54D947` (`group_id`)
+  `tags` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `app_version`
+-- Tabellstruktur for tabell `apps_groups`
 --
 
-CREATE TABLE IF NOT EXISTS `app_version` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `apps_groups` (
+  `app_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur for tabell `app_version`
+--
+
+CREATE TABLE `app_version` (
+  `id` int(11) NOT NULL,
   `app_id` int(11) DEFAULT NULL,
   `version` double NOT NULL DEFAULT '1',
-  `enabled` int(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `app_index` (`app_id`),
-  KEY `enabled_index` (`enabled`),
-  KEY `version_index` (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `enabled` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `category`
+-- Tabellstruktur for tabell `component`
 --
 
-CREATE TABLE IF NOT EXISTS `category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `system` tinyint(1) DEFAULT '0',
-  `lft` int(11) NOT NULL,
-  `rgt` int(11) NOT NULL,
-  `root` int(11) DEFAULT NULL,
-  `lvl` int(11) NOT NULL,
-  `enabled` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `IDX_64C19C1727ACA70` (`parent_id`),
-  KEY `name_index` (`name`),
-  KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=37 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `component`
---
-
-CREATE TABLE IF NOT EXISTS `component` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `component` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `enabled` tinyint(1) DEFAULT '1',
   `version` double DEFAULT NULL,
-  `order_by` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `name_index` (`name`),
-  KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=31 ;
-
---
--- Dumping data for table `component`
---
-
-INSERT INTO `component` (`id`, `name`, `description`, `path`, `enabled`, `version`, `order_by`) VALUES
-(1, 'Headline', 'Headline', 'h1', 1, 1, 2),
-(4, 'Image', 'Use this to add images', 'img', 1, 1, 6),
-(6, 'Bullet points', 'Use this to create a list of un-numbered bullet points ', 'ul', 1, 1, 5),
-(7, 'Paragraph', 'General paragraph', 'p', 1, 1, 3),
-(8, 'Numbered list', 'Numbered list', 'ol', 1, 1, 4),
-(10, 'Youtube Video', 'Youtube Video', 'youtube', 1, 1, 8),
-(11, 'Chapter headline', 'Headline used to create index', 'chapter', 1, 1, 1),
-(12, 'App index', 'Index of chapters/pages', 'index', 1, 1, 12),
-(15, 'Google Maps', 'Google Maps', 'googlemap', 1, 1, 10),
-(16, 'Image and text', 'Use this to add a paragraph with an image in it', 'img_text', 1, 1, 7),
-(17, 'mysql_basic', 'mysql_basic', 'mysql_basic', 1, 1, 0),
-(18, 'quiz', 'quiz', 'quiz', 1, 1, 11);
+  `order_by` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `components_groups`
+-- Tabellstruktur for tabell `components_groups`
 --
 
-CREATE TABLE IF NOT EXISTS `components_groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `components_groups` (
+  `id` int(11) NOT NULL,
   `component_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   `credential` text COLLATE utf8_unicode_ci,
-  `access_state` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `component_index` (`component_id`),
-  KEY `group_index` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
-
---
--- Dumping data for table `components_groups`
---
-
-INSERT INTO `components_groups` (`id`, `component_id`, `group_id`, `credential`, `access_state`) VALUES
-(1, 1, 1, NULL, 3),
-(3, 4, 1, NULL, 3),
-(5, 6, 1, NULL, 3),
-(6, 7, 1, NULL, 3),
-(8, 8, 1, NULL, 3),
-(10, 10, 1, NULL, 3),
-(12, 11, 1, NULL, 3),
-(13, 12, 1, NULL, 3),
-(15, 15, 1, NULL, 3),
-(16, 16, 1, NULL, 3),
-(17, 17, 1, '{url: "urlit", username: "username"}', 3),
-(18, 18, 1, NULL, 3);
+  `access_state` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `grp`
+-- Tabellstruktur for tabell `grp`
 --
 
-CREATE TABLE IF NOT EXISTS `grp` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `grp` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci,
   `is_default` tinyint(1) DEFAULT '0',
   `enabled` tinyint(1) DEFAULT '1',
   `roles` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT '(DC2Type:array)',
-  `categories` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_FFD56EFF5E237E06` (`name`),
-  KEY `name_index` (`name`),
-  KEY `is_default_index` (`is_default`),
-  KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+  `categories` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `grp`
+-- Dataark for tabell `grp`
 --
 
 INSERT INTO `grp` (`id`, `name`, `description`, `is_default`, `enabled`, `roles`, `categories`) VALUES
-(1, 'General', 'Initial group', 1, 1, 'a:0:{}', '[{"text":"General app"}]');
+(1, 'Generell22', 'Generell gruppe for app tilgang', 1, 1, 'a:0:{}', '[{"text":"1","children":[{"text":"1.1"},{"text":"1.2"}]},{"text":"2"},{"text":"3","children":[{"text":"3.1","children":[{"text":"3.1.1"},{"text":"3.1.2"}]},{"text":"3.2"}]}]'),
+(2, 'Notemplate', 'test', NULL, 1, 'a:0:{}', ''),
+(3, 'werwer', 'werwer', NULL, 1, 'N;', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `help`
+-- Tabellstruktur for tabell `help`
 --
 
-CREATE TABLE IF NOT EXISTS `help` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `help` (
+  `id` int(11) NOT NULL,
   `route` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `message` longtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `route_index` (`route`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+  `message` longtext COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `help`
+-- Dataark for tabell `help`
 --
 
 INSERT INTO `help` (`id`, `route`, `message`) VALUES
@@ -243,11 +150,11 @@ INSERT INTO `help` (`id`, `route`, `message`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `menu`
+-- Tabellstruktur for tabell `menu`
 --
 
-CREATE TABLE IF NOT EXISTS `menu` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `menu` (
+  `id` int(11) NOT NULL,
   `content_html` longtext COLLATE utf8_unicode_ci,
   `class` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `help` longtext COLLATE utf8_unicode_ci,
@@ -256,16 +163,11 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `url` longtext COLLATE utf8_unicode_ci,
   `filter_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `content_php` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `filter_role` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `parent_id_index` (`parent_id`),
-  KEY `order_by_index` (`order_by`),
-  KEY `filter_role_index` (`filter_role`),
-  KEY `filter_url_index` (`filter_url`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=32 ;
+  `filter_role` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `menu`
+-- Dataark for tabell `menu`
 --
 
 INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_by`, `url`, `filter_url`, `content_php`, `filter_role`) VALUES
@@ -295,129 +197,96 @@ INSERT INTO `menu` (`id`, `content_html`, `class`, `help`, `parent_id`, `order_b
 -- --------------------------------------------------------
 
 --
--- Table structure for table `template`
+-- Tabellstruktur for tabell `template`
 --
 
-CREATE TABLE IF NOT EXISTS `template` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `template` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
   `compatible_with` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `enabled` tinyint(1) DEFAULT '1',
-  `version` double DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name_index` (`name`),
-  KEY `compatible_with_index` (`compatible_with`),
-  KEY `enabled_index` (`enabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `template`
---
-
-INSERT INTO `template` (`id`, `name`, `description`, `compatible_with`, `path`, `enabled`, `version`) VALUES
-(1, 'Basic template', 'This is a new template that has everything you''ll ever want.', NULL, 'basic_nologo', 1, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `templates_groups`
---
-
-CREATE TABLE IF NOT EXISTS `templates_groups` (
-  `template_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`template_id`,`group_id`),
-  KEY `IDX_F43FD2D35DA0FB8` (`template_id`),
-  KEY `IDX_F43FD2D3FE54D947` (`group_id`)
+  `version` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `templates_groups`
+-- Tabellstruktur for tabell `templates_groups`
 --
 
-INSERT INTO `templates_groups` (`template_id`, `group_id`) VALUES
-(1, 1);
+CREATE TABLE `templates_groups` (
+  `template_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `templates_groups_data`
+-- Tabellstruktur for tabell `templates_groups_data`
 --
 
-CREATE TABLE IF NOT EXISTS `templates_groups_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `templates_groups_data` (
+  `id` int(11) NOT NULL,
   `template_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
-  `access_state` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `template_id` (`template_id`),
-  KEY `group_id` (`group_id`),
-  KEY `access_state` (`access_state`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `templates_groups_data`
---
-
-INSERT INTO `templates_groups_data` (`id`, `template_id`, `group_id`, `access_state`) VALUES
-(1, 1, 1, 3);
+  `access_state` tinyint(4) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tracking`
+-- Tabellstruktur for tabell `tracking`
 --
 
-CREATE TABLE IF NOT EXISTS `tracking` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tracking` (
+  `id` int(11) NOT NULL,
   `component_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `app_id` int(11) DEFAULT NULL,
   `created` date NOT NULL,
   `action` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_A87C621CE2ABAFFF` (`component_id`),
-  UNIQUE KEY `UNIQ_A87C621CA76ED395` (`user_id`),
-  UNIQUE KEY `UNIQ_A87C621C7987212D` (`app_id`),
-  KEY `created_index` (`created`),
-  KEY `action_index` (`action`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  `payload` longtext COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users_groups`
+-- Tabellstruktur for tabell `users_groups`
 --
 
-CREATE TABLE IF NOT EXISTS `users_groups` (
+CREATE TABLE `users_groups` (
   `user_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`user_id`,`group_id`),
-  KEY `IDX_FF8AB7E0A76ED395` (`user_id`),
-  KEY `IDX_FF8AB7E0FE54D947` (`group_id`)
+  `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `users_groups`
+-- Dataark for tabell `users_groups`
 --
 
 INSERT INTO `users_groups` (`user_id`, `group_id`) VALUES
-(1, 1);
+(3, 1),
+(3, 3),
+(4, 1),
+(4, 3),
+(15, 1),
+(16, 1),
+(19, 1),
+(20, 1),
+(22, 1),
+(22, 2),
+(23, 2),
+(24, 3);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `usr`
+-- Tabellstruktur for tabell `usr`
 --
 
-CREATE TABLE IF NOT EXISTS `usr` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_1` int(11) DEFAULT NULL,
-  `category_2` int(11) DEFAULT NULL,
-  `category_3` int(11) DEFAULT NULL,
+CREATE TABLE `usr` (
+  `id` int(11) NOT NULL,
   `email` varchar(180) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `salt` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -436,78 +305,263 @@ CREATE TABLE IF NOT EXISTS `usr` (
   `roles` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT '(DC2Type:array)',
   `credentials_expired` tinyint(1) NOT NULL,
   `credentials_expire_at` datetime DEFAULT NULL,
-  `locale` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_1762498C92FC23A8` (`username_canonical`),
-  UNIQUE KEY `UNIQ_1762498CA0D96FBF` (`email_canonical`),
-  UNIQUE KEY `UNIQ_1762498CC05FB297` (`confirmation_token`),
-  KEY `email_index` (`email`),
-  KEY `password_index` (`password`),
-  KEY `created_index` (`created`),
-  KEY `updated_index` (`updated`),
-  KEY `username_index` (`username`),
-  KEY `IDX_1762498C9BAE1BDD` (`category_1`),
-  KEY `IDX_1762498C2A74A67` (`category_2`),
-  KEY `IDX_1762498C75A07AF1` (`category_3`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=25 ;
+  `locale` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `usr`
+-- Dataark for tabell `usr`
 --
 
-INSERT INTO `usr` (`id`, `category_1`, `category_2`, `category_3`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES
-(1, NULL, NULL, NULL, 'admin@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2015-07-17 11:59:14', 'admin', 'admin', 'admin@ffi.no', 1, '2015-07-17 11:59:14', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL, 'en_GB');
+INSERT INTO `usr` (`id`, `email`, `password`, `salt`, `created`, `updated`, `username`, `username_canonical`, `email_canonical`, `enabled`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `locale`) VALUES
+(3, 'arild.bergh@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2017-11-02 10:48:21', 'arild', 'arild', 'arild.bergh@ffi.no', 1, '2017-11-02 10:48:21', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL, 'en_GB'),
+(4, 'Cecilie.Jackbo.Gran@ffi.no', 'NfC70S55Mqgmq6eowT04hTJZPUjEMQFj4qsX7RIOhwm20xIJX3BgHqbhsF7B3y9RZ2XF7Ti2D3aHlVbBHNURoA==', 'l07vnpnyysgg4s0kggockgooc00skww', '2013-11-18', '2016-10-10 12:30:35', 'cecilie', 'cecilie', 'cecilie.jackbo.gran@ffi.no', 1, '2014-01-26 02:27:10', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, NULL),
+(15, 'mil1@ffi.no', 'HbsCt5NO1fLr4VAr9SrCxVKyxZl9YXoXXeNYEZa5wrMo5W72Y0vJRPg20zKFkj73rR+MBL21PSr89d9x29FxBA==', 'ijndw26m9m0occcs8k4g4c88gwsckoo', '2015-03-04', '2016-10-10 12:30:35', 'mil1@ffi.no', 'mil1@ffi.no', 'mil1@ffi.no', 1, '2015-03-09 09:19:30', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:9:"ROLE_USER";}', 0, NULL, NULL),
+(16, 'mil2@ffi.no', '7LJVJyx3oAotVO4JHmi7dOPZVakPxbs7FtY7Jk7uKiQDxnOlAp34pHOmAG5pgrv4/VJyXitor/dU/ht2naRpbQ==', '87e75y3sehwk4swg848ccockkwocw8s', '2015-03-04', '2016-10-10 12:30:35', 'mil2@ffi.no', 'mil2@ffi.no', 'mil2@ffi.no', 1, '2015-03-09 10:16:52', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:9:"ROLE_USER";}', 0, NULL, NULL),
+(19, 'test@fest.com', 'Qjh40ukB15xyOyzqOYHEja0FVwz0qF/BP+LMocOdDbGZhAokVhOtdkBivh3k0QUxNtqcJGTBlKcXjN4DBdvHMA==', 'tmdwkw6c9y8koc80gc8cg40sosg08ok', '2016-02-26', '2016-02-29 11:22:04', 'nestor', 'nestor', 'test@fest.com', 1, NULL, 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:9:"ROLE_USER";}', 0, NULL, NULL),
+(20, 'a@b.com', 'jirDquzBVnyzWessrvfl+jjklysxi4iuF567dnuczIyXo6TmlE+0rZ75Uc+oJSDwV46B5gBfOXY0L61jz0lsww==', 'g47qa380sdsscos00k0k4k4g0cs4kk0', '2016-02-26', '2016-02-29 11:22:04', 'testy', 'testy', 'a@b.com', 1, '2016-02-26 13:43:49', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL, NULL),
+(22, 'lk@gf.no', 'rlR61k7/T+4GeWSXUCvNgAlEMt9E3ll29Z/TIOS4vr2tpAkEtvmJy5NLFcXaTXpyFzvV6Xv+q8+8fqDdceLUfQ==', 'mqht5505ffkk48wskswgcc804s08004', '2016-10-06', '2016-10-06 15:51:26', 'lk@gf.no', 'lk@gf.no', 'lk@gf.no', 1, NULL, 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, NULL),
+(23, 'post@mail.com', 'WT5on/L7HStxJgJI7Q3FmHI0zkUDFZAmy102cUzX3VajwbIJW50/MhV1irGoC8SFqAW+b070KFDyb0zNWAlI2w==', 'kkklo9nq1o0sc0c00ocg4wsg0wcw08o', '2016-10-10', '2016-10-10 12:29:43', 'Snoozername', 'snoozername', 'post@mail.com', 1, NULL, 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, NULL),
+(24, 'waade@fsks.mil.no', '9rUaEWrKv7vhEzJmeXeBKzsd2QDf1Riko7Ct+uzdSWz2OO+1a+SQNMW5Mdf7aEdYPHqHWhV4wtUpMVaqsAUCMw==', 'qcjboez2pv4sks0s0swcwgo04gc888o', '2016-10-13', '2017-06-21 09:02:34', 'Stig W.', 'stig w.', 'waade@fsks.mil.no', 1, '2017-06-21 09:02:34', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:10:"ROLE_ADMIN";}', 0, NULL, 'nb_NO');
 
 --
--- Constraints for dumped tables
+-- Indexes for dumped tables
 --
 
 --
--- Constraints for table `app`
+-- Indexes for table `app`
 --
 ALTER TABLE `app`
-  ADD CONSTRAINT `FK_C96E70CF2A74A67` FOREIGN KEY (`category_2`) REFERENCES `category` (`id`),
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `name_index` (`name`),
+  ADD KEY `path_index` (`path`),
+  ADD KEY `created_index` (`created`),
+  ADD KEY `updated_index` (`updated`),
+  ADD KEY `enabled_index` (`enabled`),
+  ADD KEY `active_version_index` (`active_version`),
+  ADD KEY `updatedby_id_index` (`updatedby_id`),
+  ADD KEY `template_id_index` (`template_id`),
+  ADD KEY `user_id_index` (`user_id`),
+  ADD KEY `uid_index` (`uid`);
+
+--
+-- Indexes for table `apps_groups`
+--
+ALTER TABLE `apps_groups`
+  ADD PRIMARY KEY (`app_id`,`group_id`),
+  ADD KEY `IDX_4ADA29A77987212D` (`app_id`),
+  ADD KEY `IDX_4ADA29A7FE54D947` (`group_id`);
+
+--
+-- Indexes for table `app_version`
+--
+ALTER TABLE `app_version`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `app_index` (`app_id`),
+  ADD KEY `enabled_index` (`enabled`),
+  ADD KEY `version_index` (`version`);
+
+--
+-- Indexes for table `component`
+--
+ALTER TABLE `component`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `name_index` (`name`),
+  ADD KEY `enabled_index` (`enabled`);
+
+--
+-- Indexes for table `components_groups`
+--
+ALTER TABLE `components_groups`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `component_index` (`component_id`),
+  ADD KEY `group_index` (`group_id`);
+
+--
+-- Indexes for table `grp`
+--
+ALTER TABLE `grp`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_FFD56EFF5E237E06` (`name`),
+  ADD KEY `name_index` (`name`),
+  ADD KEY `is_default_index` (`is_default`),
+  ADD KEY `enabled_index` (`enabled`);
+
+--
+-- Indexes for table `help`
+--
+ALTER TABLE `help`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `route_index` (`route`);
+
+--
+-- Indexes for table `menu`
+--
+ALTER TABLE `menu`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `parent_id_index` (`parent_id`),
+  ADD KEY `order_by_index` (`order_by`),
+  ADD KEY `filter_role_index` (`filter_role`),
+  ADD KEY `filter_url_index` (`filter_url`);
+
+--
+-- Indexes for table `template`
+--
+ALTER TABLE `template`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `name_index` (`name`),
+  ADD KEY `compatible_with_index` (`compatible_with`),
+  ADD KEY `enabled_index` (`enabled`);
+
+--
+-- Indexes for table `templates_groups`
+--
+ALTER TABLE `templates_groups`
+  ADD PRIMARY KEY (`template_id`,`group_id`),
+  ADD KEY `IDX_F43FD2D35DA0FB8` (`template_id`),
+  ADD KEY `IDX_F43FD2D3FE54D947` (`group_id`);
+
+--
+-- Indexes for table `templates_groups_data`
+--
+ALTER TABLE `templates_groups_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `template_id` (`template_id`),
+  ADD KEY `group_id` (`group_id`),
+  ADD KEY `access_state` (`access_state`);
+
+--
+-- Indexes for table `tracking`
+--
+ALTER TABLE `tracking`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_A87C621CE2ABAFFF` (`component_id`),
+  ADD UNIQUE KEY `UNIQ_A87C621CA76ED395` (`user_id`),
+  ADD UNIQUE KEY `UNIQ_A87C621C7987212D` (`app_id`),
+  ADD KEY `created_index` (`created`),
+  ADD KEY `action_index` (`action`);
+
+--
+-- Indexes for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  ADD PRIMARY KEY (`user_id`,`group_id`),
+  ADD KEY `IDX_FF8AB7E0A76ED395` (`user_id`),
+  ADD KEY `IDX_FF8AB7E0FE54D947` (`group_id`);
+
+--
+-- Indexes for table `usr`
+--
+ALTER TABLE `usr`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_1762498C92FC23A8` (`username_canonical`),
+  ADD UNIQUE KEY `UNIQ_1762498CA0D96FBF` (`email_canonical`),
+  ADD UNIQUE KEY `UNIQ_1762498CC05FB297` (`confirmation_token`),
+  ADD KEY `email_index` (`email`),
+  ADD KEY `password_index` (`password`),
+  ADD KEY `created_index` (`created`),
+  ADD KEY `updated_index` (`updated`),
+  ADD KEY `username_index` (`username`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `app`
+--
+ALTER TABLE `app`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+--
+-- AUTO_INCREMENT for table `app_version`
+--
+ALTER TABLE `app_version`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `component`
+--
+ALTER TABLE `component`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+--
+-- AUTO_INCREMENT for table `components_groups`
+--
+ALTER TABLE `components_groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+--
+-- AUTO_INCREMENT for table `grp`
+--
+ALTER TABLE `grp`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `help`
+--
+ALTER TABLE `help`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `menu`
+--
+ALTER TABLE `menu`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+--
+-- AUTO_INCREMENT for table `template`
+--
+ALTER TABLE `template`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `templates_groups_data`
+--
+ALTER TABLE `templates_groups_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `tracking`
+--
+ALTER TABLE `tracking`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `usr`
+--
+ALTER TABLE `usr`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+--
+-- Begrensninger for dumpede tabeller
+--
+
+--
+-- Begrensninger for tabell `app`
+--
+ALTER TABLE `app`
   ADD CONSTRAINT `FK_C96E70CF5DA0FB8` FOREIGN KEY (`template_id`) REFERENCES `template` (`id`),
-  ADD CONSTRAINT `FK_C96E70CF75A07AF1` FOREIGN KEY (`category_3`) REFERENCES `category` (`id`),
-  ADD CONSTRAINT `FK_C96E70CF9BAE1BDD` FOREIGN KEY (`category_1`) REFERENCES `category` (`id`),
   ADD CONSTRAINT `FK_C96E70CFA43E35E8` FOREIGN KEY (`updatedby_id`) REFERENCES `usr` (`id`),
   ADD CONSTRAINT `FK_C96E70CFA76ED395` FOREIGN KEY (`user_id`) REFERENCES `usr` (`id`);
 
 --
--- Constraints for table `apps_groups`
+-- Begrensninger for tabell `apps_groups`
 --
 ALTER TABLE `apps_groups`
   ADD CONSTRAINT `FK_4ADA29A77987212D` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`),
   ADD CONSTRAINT `FK_4ADA29A7FE54D947` FOREIGN KEY (`group_id`) REFERENCES `grp` (`id`);
 
 --
--- Constraints for table `app_version`
+-- Begrensninger for tabell `app_version`
 --
 ALTER TABLE `app_version`
   ADD CONSTRAINT `FK_111` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`);
 
 --
--- Constraints for table `category`
---
-ALTER TABLE `category`
-  ADD CONSTRAINT `FK_64C19C1727ACA70` FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `components_groups`
+-- Begrensninger for tabell `components_groups`
 --
 ALTER TABLE `components_groups`
   ADD CONSTRAINT `FK_178B28C3E2ABAFFF` FOREIGN KEY (`component_id`) REFERENCES `component` (`id`),
   ADD CONSTRAINT `FK_178B28C3FE54D947` FOREIGN KEY (`group_id`) REFERENCES `grp` (`id`);
 
 --
--- Constraints for table `templates_groups`
+-- Begrensninger for tabell `templates_groups`
 --
 ALTER TABLE `templates_groups`
   ADD CONSTRAINT `FK_F43FD2D35DA0FB8` FOREIGN KEY (`template_id`) REFERENCES `template` (`id`),
   ADD CONSTRAINT `FK_F43FD2D3FE54D947` FOREIGN KEY (`group_id`) REFERENCES `grp` (`id`);
 
 --
--- Constraints for table `tracking`
+-- Begrensninger for tabell `tracking`
 --
 ALTER TABLE `tracking`
   ADD CONSTRAINT `FK_A87C621C7987212D` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`),
@@ -515,19 +569,11 @@ ALTER TABLE `tracking`
   ADD CONSTRAINT `FK_A87C621CE2ABAFFF` FOREIGN KEY (`component_id`) REFERENCES `component` (`id`);
 
 --
--- Constraints for table `users_groups`
+-- Begrensninger for tabell `users_groups`
 --
 ALTER TABLE `users_groups`
   ADD CONSTRAINT `FK_FF8AB7E0A76ED395` FOREIGN KEY (`user_id`) REFERENCES `usr` (`id`),
   ADD CONSTRAINT `FK_FF8AB7E0FE54D947` FOREIGN KEY (`group_id`) REFERENCES `grp` (`id`);
-
---
--- Constraints for table `usr`
---
-ALTER TABLE `usr`
-  ADD CONSTRAINT `FK_1762498C2A74A67` FOREIGN KEY (`category_2`) REFERENCES `category` (`id`),
-  ADD CONSTRAINT `FK_1762498C75A07AF1` FOREIGN KEY (`category_3`) REFERENCES `category` (`id`),
-  ADD CONSTRAINT `FK_1762498C9BAE1BDD` FOREIGN KEY (`category_1`) REFERENCES `category` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

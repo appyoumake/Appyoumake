@@ -1342,7 +1342,7 @@ class FileManagement {
 // - version of app
 // - name of creator
 // - based on template
-// - categories 1, 2 & 3
+// - tags
 // - last preprocessing (now)
 // - last time updated (from db)
 // - uid
@@ -1353,9 +1353,7 @@ class FileManagement {
             "num_pages" => $process->getnumberofpages($config, $app, $app_path),
             "app_title" => $metatags["mlab:app_uid"],
             "app_version" => $app->getActiveVersion(),
-            "app_categoryOne" => $app->getCategoryOne(),
-            "app_categoryTwo" => $app->getCategoryTwo(),
-            "app_categoryThree" => $app->getCategoryThree(),
+            "app_tags" => $app->getTags(),
             "app_creator" => $app->getUser(),
             "app_template" => $app->getTemplate(),
             "time_processed" => date("Y-m-d H:i:s"),

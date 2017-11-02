@@ -144,7 +144,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             {% for i in [1,2,3] %}
                 <div>
                     <label for="mlab_tag_{{i}}">{{ ('builder.new.app.classification.category' ~ i)|trans }}</label>
-                    <select id="mlab_tag_{{i}}" onclick="loadCategories(this, {{i}})">
+                    <select id="mlab_tag_{{i}}" onclick="loadTags(this, {{i}})">
                         {% if i == 1 %}
                             {{tag_level_1|join('')|raw}}
                         {% endif %}
@@ -376,7 +376,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     }
 
 //function to load sub categories when a higher level category is selected
-    function loadCategories(el, level) {
+    function loadTags(el, level) {
         if (level == 3) {
             return;
         }

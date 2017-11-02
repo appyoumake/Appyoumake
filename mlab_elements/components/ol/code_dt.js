@@ -123,7 +123,17 @@
             if($nxt.length !== 0){
                 $curr.insertAfter($nxt);
             }
+//down arrow + ctrl, move down witin current parent outline (i.e. not parent of parent)
+        } else if (e.keyCode == 8 || e.keyCode == 46) {
+            if ( $(e.target).find('li').length <= 1 && $(e.target).find('li').text().length == 0 ) {
+                e.preventDefault();
+            }
         }
     };
     
-    
+    this.onBlur = function (el) {
+        
+        if ( $(el).find('li').text().trim() == "" ) {
+            $(el).find('li').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "list"]));
+        }
+    }

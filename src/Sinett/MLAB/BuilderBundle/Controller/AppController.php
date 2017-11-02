@@ -350,38 +350,6 @@ class AppController extends Controller
                         ->add('uid', HiddenType::class, array('required' => false))
                         ->add('copyApp', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:App', 'placeholder' => '', 'required' => true))
 				    	->add('keywords', null, array('required' => true))
-                        ->add('categoryOne', 
-                                null, 
-                                array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c')->where('c.lvl = 0')->addOrderBy('c.name');
-                                      },
-                                      'label' => 'app.admin.users.new.or.edit.categoryOne',
-                                      'attr' => array('onchange' => 'loadCategories(this, 1);'),
-                                      'required' => true,
-                                      'empty_data'  => null,
-                                      'placeholder'  => '')
-                             )
-                        ->add('categoryTwo', 
-                                null, 
-                                array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c')->where('c.lvl = 1')->addOrderBy('c.name');
-                                      },
-                                      'label' => 'app.admin.users.new.or.edit.categoryTwo',
-                                      'attr' => array('onchange' => 'loadCategories(this, 2);'),
-                                      'required' => true,
-                                      'empty_data'  => null,
-                                      'placeholder'  => '')
-                             )
-                        ->add('categoryThree', 
-                                null, 
-                                array('query_builder' => function(EntityRepository $er) {
-                                          return $er->createQueryBuilder('c')->where('c.lvl = 2')->addOrderBy('c.name');
-                                      },
-                                      'label' => 'app.admin.users.new.or.edit.categoryThree',
-                                      'required' => true,
-                                      'empty_data' => null,
-                                      'placeholder'  => '')
-                             )                
 				    	->add('template', EntityType::class, array( 'class' => 'SinettMLABBuilderBundle:Template', 'placeholder' => '', 'required' => true))
 				    	->add('active_version')
 				    	->add("copy_app", HiddenType::class, array("mapped" => false))
@@ -389,7 +357,12 @@ class AppController extends Controller
 				    	->add('save', SubmitType::class)
 				    	->getForm();
     }
-
+/*TODO: Erase
+                        ->add('tagOne', ChoiceType::class, array( 'choices'  => array('Select' => null)))
+                        ->add('tagTwo', ChoiceType::class, array( 'choices'  => array('Select' => null)))
+                        ->add('tagThree', ChoiceType::class, array( 'choices'  => array('Select' => null)))
+ * 
+ */
     /**
      * Finds and displays a App entity.
      *
@@ -1652,9 +1625,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             $new_branch->setDescription($app->getDescription());
             $new_branch->setKeywords($app->getKeywords());
             $new_branch->setEnabled($app->getEnabled());
-            $new_branch->setCategoryOne($app->getCategoryOne());
-            $new_branch->setCategoryTwo($app->getCategoryTwo());
-            $new_branch->setCategoryThree($app->getCategoryThree());
+            $new_branch->setTags($app->getTags());
             $usr = $this->get('security.token_storage')->getToken()->getUser();
         	$new_branch->setUser($usr);
         	$new_branch->setUpdatedBy($usr);

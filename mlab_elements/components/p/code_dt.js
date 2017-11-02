@@ -59,3 +59,4 @@
             sel.modify("move", "forward", "character");
         }
     };
+    

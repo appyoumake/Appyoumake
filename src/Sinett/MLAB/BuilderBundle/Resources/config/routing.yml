@@ -14,10 +14,6 @@ SinettMLABBuilderBundle_app:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/app.yml"
     prefix:   /app
 
-SinettMLABBuilderBundle_category:
-    resource: "@SinettMLABBuilderBundle/Resources/config/routing/category.yml"
-    prefix:   /category
-
 SinettMLABBuilderBundle_component:
     resource: "@SinettMLABBuilderBundle/Resources/config/routing/component.yml"
     prefix:   /component

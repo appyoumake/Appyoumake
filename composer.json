@@ -67,8 +67,8 @@
                 "src/Sinett/MLAB/BuilderBundle/Resources/public/js/spin.js": "https://raw.githubusercontent.com/fgnass/spin.js/2.2.0/spin.js", 
                 "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.spin.js": "https://raw.githubusercontent.com/fgnass/spin.js/2.2.0/jquery.spin.js", 
                 "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery-ui.js|web/css/jquery-ui.css":  "https://jqueryui.com/resources/download/jquery-ui-1.11.4.zip", 
-                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.uploadfile-1.9.0.js": "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/js/jquery.uploadfile.js", 
-                "web/css/jquery.uploadfile.css": "https://raw.githubusercontent.com/hayageek/jquery-upload-file/1.0.0/css/uploadfile.css"
+                "src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.uploadfile-4.0.11.js": "https://raw.githubusercontent.com/hayageek/jquery-upload-file/master/js/jquery.uploadfile.js", 
+                "web/css/jquery.uploadfile.css": "https://raw.githubusercontent.com/hayageek/jquery-upload-file/master/css/uploadfile.css"
             }
         }
     }

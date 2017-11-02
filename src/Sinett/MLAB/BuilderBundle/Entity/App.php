@@ -68,21 +68,6 @@ class App
     private $updated;
 
     /**
-     * @var \Sinett\MLAB\BuilderBundle\Entity\Category
-     */
-    private $categoryOne;
-
-    /**
-     * @var \Sinett\MLAB\BuilderBundle\Entity\Category
-     */
-    private $categoryTwo;
-
-    /**
-     * @var \Sinett\MLAB\BuilderBundle\Entity\Category
-     */
-    private $categoryThree;
-
-    /**
      * @var \Sinett\MLAB\BuilderBundle\Entity\Template
      */
     private $template;
@@ -399,75 +384,6 @@ class App
     }
 
     /**
-     * Set categoryOne
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Category $categoryOne
-     * @return App
-     */
-    public function setCategoryOne(\Sinett\MLAB\BuilderBundle\Entity\Category $categoryOne = null)
-    {
-        $this->categoryOne = $categoryOne;
-    
-        return $this;
-    }
-
-    /**
-     * Get categoryOne
-     *
-     * @return \Sinett\MLAB\BuilderBundle\Entity\Category 
-     */
-    public function getCategoryOne()
-    {
-        return $this->categoryOne;
-    }
-
-    /**
-     * Set categoryTwo
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Category $categoryTwo
-     * @return App
-     */
-    public function setCategoryTwo(\Sinett\MLAB\BuilderBundle\Entity\Category $categoryTwo = null)
-    {
-        $this->categoryTwo = $categoryTwo;
-    
-        return $this;
-    }
-
-    /**
-     * Get categoryTwo
-     *
-     * @return \Sinett\MLAB\BuilderBundle\Entity\Category 
-     */
-    public function getCategoryTwo()
-    {
-        return $this->categoryTwo;
-    }
-
-    /**
-     * Set categoryThree
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Category $categoryThree
-     * @return App
-     */
-    public function setCategoryThree(\Sinett\MLAB\BuilderBundle\Entity\Category $categoryThree = null)
-    {
-        $this->categoryThree = $categoryThree;
-    
-        return $this;
-    }
-
-    /**
-     * Get categoryThree
-     *
-     * @return \Sinett\MLAB\BuilderBundle\Entity\Category 
-     */
-    public function getCategoryThree()
-    {
-        return $this->categoryThree;
-    }
-
-    /**
      * Set template
      *
      * @param \Sinett\MLAB\BuilderBundle\Entity\Template $template
@@ -654,9 +570,6 @@ class App
     		'active_version' => $this->active_version,
     		'created' => $this->created,
     		'updated' => $this->updated,
-    		'categoryOne' => $this->categoryOne,
-    		'categoryTwo' => $this->categoryTwo,
-    		'categoryThree' => $this->categoryThree,
     		'template' => $this->template,
             "template_config" => $config,
     		'user' => $this->user,
@@ -700,9 +613,6 @@ class App
     			'active_version' => $this->active_version,
     			'created' => $this->created->format('Y-m-d H:i:s'),
     			'updated' => $this->updated->format('Y-m-d H:i:s'),
-    			'categoryOne' => !empty($this->categoryOne) ? $this->categoryOne->getName() : "",
-    			'categoryTwo' => !empty($this->categoryTwo) ? $this->categoryTwo->getName() : "",
-    			'categoryThree' => !empty($this->categoryThree) ? $this->categoryThree->getName() : "",
     			'template' => $this->template->getName(),
                 "template_config" => $config,
     			'user' => $this->user->getUserName(),

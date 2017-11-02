@@ -116,3 +116,12 @@
             text.addClass("mc_large");
         }
     };
+    
+    this.onBlur = function (el) {
+        if ( $(el).find('p').text().trim() == "" ) {
+            $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
+        }
+        if ( $(el).find('figcaption').text().trim() == "" ) {
+            $(el).find('figcaption').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "caption"]));
+        }
+    }

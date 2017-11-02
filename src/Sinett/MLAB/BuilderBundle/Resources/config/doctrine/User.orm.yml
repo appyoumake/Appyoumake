@@ -48,26 +48,6 @@ Sinett\MLAB\BuilderBundle\Entity\User:
       fixed: false
       nullable: true
 
-#the branch they belong to, if any, used to define categories for apps
-          
-  manyToOne:
-    categoryOne:
-      targetEntity: Category
-      joinColumn:
-        name: category_1
-        referencedColumnName: id
-
-    categoryTwo:
-      targetEntity: Category
-      joinColumn:
-        name: category_2
-        referencedColumnName: id
-
-    categoryThree:
-      targetEntity: Category
-      joinColumn:
-        name: category_3
-        referencedColumnName: id
         
   oneToMany:
     apps:

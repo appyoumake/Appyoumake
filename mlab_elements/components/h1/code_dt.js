@@ -80,3 +80,9 @@
             e.preventDefault();
         }
     }
+    
+    this.onBlur = function (el) {
+        if ( $(el).find('p').text().trim() == "" ) {
+            $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
+        }
+    }
