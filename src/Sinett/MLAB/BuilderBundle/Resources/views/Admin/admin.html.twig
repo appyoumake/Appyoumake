@@ -71,6 +71,13 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
  */
   		function assignSubmitDataHandler(dialog_id) {
             console.log("Assign - #" + dialog_id + " form");
+            
+//TODO: major hack to stop password from being required for user when edit record. better to do on backend
+            var action = $( "#" + dialog_id + " form").attr("action");
+            if (action.search("/user/") >= 0 && action.search("/update") > 0) {
+                $( "#" + dialog_id + " form").find("#sinett_mlab_builderbundle_user_plainPassword").removeAttr("required");
+            }
+            
   			$( "#" + dialog_id + " form").submit(function( event ) {
                 console.log("Submit - #" + dialog_id + " form");
   				event.preventDefault();

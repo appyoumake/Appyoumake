@@ -13,7 +13,6 @@
 
     //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
-        var that = this;
         this.getHTMLElement(el).attr("contenteditable", "true");
               //  .bind("blur keyup paste copy cut mouseup", function() { if ($(this).text().trim() == "") { $(this).text(that.api.getLocaleComponentMessage(that.config.name, ["placeholder"])); that.highlight(that.getHTMLElement(el)); } } ) ;
     };
@@ -82,7 +81,8 @@
     }
     
     this.onBlur = function (el) {
-        if ( $(el).find('p').text().trim() == "" ) {
-            $(el).find('p').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "text"]));
+        var local_el = this.getHTMLElement(el);
+        if ( local_el.text().trim() == "" ) {
+            local_el.text(this.api.getLocaleComponentMessage(this.config.name, ["placeholder"]));
         }
     }

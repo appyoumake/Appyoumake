@@ -76,23 +76,6 @@
         
     };
     
-    this.custom_add_link = function (el, event) {
-        this.api.setLink(el, event);
-    };
-
-    this.custom_remove_link = function (el) {
-        this.api.removeLink();
-    };
-    
-    this.highlight = function (el) {
-        el.focus();
-        var range = document.createRange();
-        var sel = window.getSelection();
-        range.selectNodeContents(el[0]);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    };
-  
 //we need to use tab to create indents/outdents
     this.onKeyPress = function (e) {
         

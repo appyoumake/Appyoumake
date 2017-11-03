@@ -11,6 +11,7 @@ compatible: ["h1", "h2", "h3", "ul", "ol"]
 html: <p class='mc_text mc_display mc_medium'>Enter your body text here</p>
 inherit: h1
 filterhtml: ["p"]
+placeholder: { nb_NO: Legg inn brødteksten din her, en_GB: Add your body text here, default: Add your body text here }
 custom:
     decrease_size:
         tooltip: { nb_NO: Reduser størrelsen på teksten, en_GB: Decrease the size of the text, default: Decrease the size of the text }
@@ -25,5 +26,3 @@ custom:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAalJREFUeNrsVt1NxDAMbhEI3igbdISyQdmgGxA26AaECWCD3k1QmKAwQcsE7QbAG4iHwz45komc1LlXsGT11LPz2Z9/0iz7lxU5OT2rQHvQHdM30A609O1z5aHoiDp9f32+s/cGHl3EFW2vwGdyL46UieChA2idAIZSoB/PVAv4wiIOgS2gd6APzo6B3qZSWsFjRHqIWh9sIupcQAgyE9g+UPjvQp0h1cBFfR0DI3v8vfGyTKI0I7qWNTAmH6puBMUiW6JRsnEjMBJ1kk0BOvNRCQHWwjy1no1VgI3eOb3YNHRI41G3AGWLsrkKGh+fnUs3i3nE2bAGwRq9gpM9AOwG/DZrkRqPkn3NYmACjTsKOjsILFQz8lGDHQs0dgmt7+SJ6u6C2oZozIVtkgomLXk+8M+iv3DFaFrfeu9bGiV+Th2KjhvNyjnrI3ekpSVSagCtshsH2k6tdj+Gdul5wpyV/PpJAeSFNZzSCNjWNUdo98YAH73uwjreE72jYoM0qR9DpdBhITXMr3H11ODkws0+8AtTkF+ZEd1VypKXMu2EbHttnf62/AgwAAga3aqyrm3FAAAAAElFTkSuQmCC
         tooltip: { nb_NO: Fjern lenken ved tekstmarkøren, en_GB: Remove the link at the current cursor position, default: Remove the link at the current cursor position }
         order: 6
-messages:
-    text: { nb_NO: Legg inn brødteksten din her, en_GB: Add your body text here, default: Add your body text here }

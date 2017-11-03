@@ -3,12 +3,12 @@
 @license Proprietary and confidential
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
+.mlab_base Unauthorized copying of this file, via any medium is strictly prohibited 
 
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+.mlab_base For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 *******************************************************************************************************************************/
 /*
-MLAB
+.mlab_base MLAB
 */
 
 
@@ -18,12 +18,12 @@ MLAB
 
 
 
-html {
+.mlab_base html {
     font-family: Verdana,Arial,sans-serif;
     font-size: 100%;
 }
 
-body {
+.mlab_base body {
     margin: 0;
 }
 
@@ -32,9 +32,9 @@ body {
    Links
    ========================================================================== */
 
-a:focus,
-a:active,
-a:hover {
+.mlab_base a:focus,
+.mlab_base a:active,
+.mlab_base a:hover {
     outline: 0;
 }
 
@@ -42,35 +42,35 @@ a:hover {
    Typography
    ========================================================================== */
 
-h1 {
+.mlab_base h1 {
     font-size: 1.5em;
     color: #303030;
     margin: 0.67em 0;
 }
 
-h2 {
+.mlab_base h2 {
     font-size: 1.15em;
     margin: 0.83em 0;
 }
 
-h3 {
+.mlab_base h3 {
     font-size: 1.17em;
     margin: 1em 0;
 }
 
-h4 {
+.mlab_base h4 {
     font-size: 1em;
     color: #303030;
     margin: 0.5em 0 1.5em 0;
 }
 
 
-h5 {
+.mlab_base h5 {
     font-size: 0.83em;
     margin: 1.67em 0;
 }
 
-h6 {
+.mlab_base h6 {
     font-size: 0.67em;
     margin: 2.33em 0;
 }
@@ -80,13 +80,13 @@ h6 {
    Forms
    ========================================================================== */
 
-form {
+.mlab_base form {
     white-space: nowrap;
     width: 100%;
     margin: 0;
 }
 
-form label {
+.mlab_base form label {
     font-size: 0.7em !important;
     margin-bottom:0.6em;
     clear: both;
@@ -94,35 +94,35 @@ form label {
     width: 40%;
 }
 
-form input {
+.mlab_base form input {
     font-size: 0.7em !important;
     margin-bottom:0.6em;
     float: left;
     width: 55%;
 }
 
-form textarea {
+.mlab_base form textarea {
     font-size: 0.7em !important;
     margin-bottom:0.6em;
     float: left;
     width: 55%;
 }
  
-form select {
+.mlab_base form select {
     font-size: 0.7em !important;
     margin-bottom:0.6em;
     float: left;
     width: 55%;
 }
 
-form input[type="checkbox"] {
+.mlab_base form input[type="checkbox"] {
     font-size: 0.7em !important;
     margin-bottom: 0.6em;
     float: left;
     width: 6%;
 }
 
-form button {
+.mlab_base form button {
     font-size: 0.7em !important;
     margin-bottom: 0.6em;
     margin-top: 2em;
@@ -137,18 +137,18 @@ form button {
    Tables
    ========================================================================== */
 
-table {
+.mlab_base table {
     border-collapse: collapse;
     margin-bottom: 1.5em;
     font-size: 1.1em;
     min-width: 300px;
 }
 
-table.app_list{
+.mlab_base table.app_list{
     font-size: 1.23em    
 }
 
-th {
+.mlab_base th {
     font-size: 0.67em;
     display: table-cell;
     font-weight: bold;
@@ -157,47 +157,47 @@ th {
     text-align: left;
 }
 
-tr {
+.mlab_base tr {
     border-collapse: collapse;
     margin-bottom: 1.5em;
     color: #222222 !important;
 }
 
-tr a {
+.mlab_base tr a {
     color: #222222 !important;
 }
 
-tr.row_activ_1 {
+.mlab_base tr.row_activ_1 {
     color: #222222 !important;
 }
 
-tr.row_activ_1 a {
+.mlab_base tr.row_activ_1 a {
     color: #222222 !important;
 }
 
-tr.row_activ_0 {
+.mlab_base tr.row_activ_0 {
     color: #888888 !important;
 }
 
-tr.row_activ_0 a {
+.mlab_base tr.row_activ_0 a {
     color: #888888 !important;
 }
 
-tr.row_activ_ {
+.mlab_base tr.row_activ_ {
     color: #888888 !important;
 }
 
-tr.row_activ_ a {
+.mlab_base tr.row_activ_ a {
     color: #888888 !important;
 }
 
-td {
+.mlab_base td {
     font-size: 0.67em;
     padding-bottom: 0.5em;
     padding-right:2em;
 }
 
-td {
+.mlab_base td {
     font-size: 0.67em;
     padding-bottom: 0.5em;
     padding-right:2em;
@@ -208,59 +208,59 @@ td {
     vertical-align: middle;
 }
 
-td.mlab_max_width_short {
+.mlab_base td.mlab_max_width_short {
     max-width: 50px;
     word-wrap: break-word;
 }
 
-td.mlab_max_width_medium {
+.mlab_base td.mlab_max_width_medium {
     max-width: 250px;
     word-wrap: break-word;
 }
 
-td.mlab_max_width_long {
+.mlab_base td.mlab_max_width_long {
     max-width: 350px;
     word-wrap: break-word;
 }
 
-td.mlab_max_width_extra_long {
+.mlab_base td.mlab_max_width_extra_long {
     max-width: 450px;
     word-wrap: break-word;
 }
 
-td.mlab_min_width_short,
-th.mlab_min_width_short{
+.mlab_base td.mlab_min_width_short,
+.mlab_base th.mlab_min_width_short{
     min-width: 50px;
 }
 
-td.mlab_min_width_medium {
+.mlab_base td.mlab_min_width_medium {
     min-width: 200px;
 }
 
-td.mlab_min_width_long {
+.mlab_base td.mlab_min_width_long {
     min-width: 450px;
 }
 
-td.builder_app_name{
+.mlab_base td.builder_app_name{
     
 }
 
-td.builder_app_publish {
+.mlab_base td.builder_app_publish {
 	
 }
 
-td.builder_app_list_properties {
+.mlab_base td.builder_app_list_properties {
     vertical-align: text-top;
 }
 
-td.builder_app_list_name {
+.mlab_base td.builder_app_list_name {
 	padding-right: 5px;
 }
-img.builder_app_list_name_edit_img {
+.mlab_base img.builder_app_list_name_edit_img {
      padding-right: 3px;
 }
 
-td.builder_app_list_icon img {
+.mlab_base td.builder_app_list_icon img {
     width: 24px;
     height: 24px;
 }
@@ -310,11 +310,11 @@ td.builder_app_list_icon img {
    Buttons with icons
    ========================================================================== */
 
-a.mlab_button_new_user, 
-a.mlab_button_new_group, 
-a.mlab_button_new_template,
-a.mlab_button_new_component,
-a.mlab_button_new_category{
+.mlab_base a.mlab_button_new_user, 
+.mlab_base a.mlab_button_new_group, 
+.mlab_base a.mlab_button_new_template,
+.mlab_base a.mlab_button_new_component,
+.mlab_base a.mlab_button_new_category{
     color: #444;
     border: 1px solid #999; 
     background-color: #E6E6E6;
@@ -338,33 +338,33 @@ a.mlab_button_new_category{
     top: 0.4em;
 	}
 
-a.mlab_button_new_group {
+.mlab_base a.mlab_button_new_group {
     background-image: url("/img/new_group.png"), linear-gradient(transparent, rgba(0,0,0, 0.05) 70%, rgba(0,0,0, 0.10));
 }
 
-a.mlab_button_new_user {
+.mlab_base a.mlab_button_new_user {
     background-image: url("/img/new_user.png"), linear-gradient(transparent, rgba(0,0,0, 0.05) 70%, rgba(0,0,0, 0.10));
     margin-right: 1.4em;
 }
 
-a.mlab_button_new_category{
+.mlab_base a.mlab_button_new_category{
     float: left;
 }
     
-a.mlab_button_new_user:hover, 
-a.mlab_button_new_group:hover,
-a.mlab_button_new_template:hover,
-a.mlab_button_new_component:hover, 
-a.mlab_button_new_category:hover{
+.mlab_base a.mlab_button_new_user:hover, 
+.mlab_base a.mlab_button_new_group:hover,
+.mlab_base a.mlab_button_new_template:hover,
+.mlab_base a.mlab_button_new_component:hover, 
+.mlab_base a.mlab_button_new_category:hover{
     background-color: #efefef;
     background-image: url("/img/new_general.png"), linear-gradient(transparent, rgba(0,0,0, 0.05) 70%, rgba(0,0,0, 0.10));
 }
 
-a.mlab_button_new_group:hover {
+.mlab_base a.mlab_button_new_group:hover {
     background-image: url("/img/new_group.png"), linear-gradient(transparent, rgba(0,0,0, 0.05) 70%, rgba(0,0,0, 0.10));
 }
 
-a.mlab_button_new_user:hover {
+.mlab_base a.mlab_button_new_user:hover {
     background-image: url("/img/new_user.png"), linear-gradient(transparent, rgba(0,0,0, 0.05) 70%, rgba(0,0,0, 0.10));
 }
 
@@ -372,7 +372,7 @@ a.mlab_button_new_user:hover {
    Buttons without icon
    ========================================================================== */
 
-a.mlab_button_new_app {
+.mlab_base a.mlab_button_new_app {
     color: #212121;
     border: 1px solid #aaaaaa; 
     background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%,  rgba(180, 180, 180, 1) 100%);
@@ -395,7 +395,7 @@ a.mlab_button_new_app {
    Progressbar
    ========================================================================== */
    
-progress {
+.mlab_base progress {
     position: absolute;
     top: 12.8em;
     left: 6em;
@@ -1054,8 +1054,8 @@ body.mlab_base div.mlab_top_bar_back {
 }
 
 .ui-widget-overlay {
-background: #666666;
-opacity: 0.5;
+    background: #666666;
+    opacity: 0.5;
 }
 
 /*jQuery UI amendments, Arild dec. 2016*/
