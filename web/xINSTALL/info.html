@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <!--
 @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
@@ -8,137 +9,18 @@
 Unauthorized copying of this file, via any medium is strictly prohibited 
 
 For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
-TODO: Move to openmlab/docs
 -->
     <head>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
-        <style>
-            html, body {
-                width: 750px;
-                counter-reset: h1counter;
-            }
-            pre {
-                background-color: lightgrey;
-                margin: 0; 
-                padding: 0.3em 1em;
-                white-space: pre-wrap;
-            }
-            ol, ul {
-                list-style-position: outside;
-                margin-left: 1em; 
-                padding-left: 1em;
-            }
-            ul { list-style: outside disc none; }
-            li { padding-left: 1em; }
-            
-            .columns li {
-                line-height: 1.2em;
-                float: left;
-                display: inline;    
-                width:30%;
-            }
-            
-            h1, h2, h3, h4, h5 {
-                font-family: Arial, Helvetica, sans-serif;
-                padding-top: 1em;
-            }
-            h1 { counter-reset: h2counter; }
-            h2 { counter-reset: h3counter; }
-            h1:before {
-                content: counter(h1counter) ".\0000a0";
-                counter-increment: h1counter;
-            }
-            h2:before {
-                content: "\0000a0\0000a0" counter(h1counter) "." counter(h2counter) ".\0000a0\0000a0";
-                counter-increment: h2counter;
-            }
-            h3:before {
-                content: "\0000a0\0000a0\0000a0\0000a0" counter(h1counter) "." counter(h2counter) "." counter(h3counter) ".\0000a0\0000a0";
-                counter-increment: h3counter;
-            }             
-            
-            .nocounter:before {
-                content: none;
-                counter-increment: none;
-            }
-            
-            .nocounter {
-                font-size: 2.2em;
-                color: darkblue;
-            }
-            
-            
-/* Style the tab */
-            div.tab {
-                overflow: hidden;
-                height: 30px;
-                padding: 0px;
-                clear: both;
-                border-bottom: 1px solid #ccc
-            }
-
-            /* Style the buttons inside the tab */
-            div.tab button {
-                background-color: inherit;
-                float: left;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                padding: 14px 16px;
-                transition: 0.3s;
-                font-size: 17px;
-                padding: 3px 10px;
-                border-radius: 4px 4px 0px 0px;
-                border: 1px solid #ccc;
-                margin-top: 1px;
-                margin-right: 1px;
-                border-bottom: none;
-            }
-
-            /* Change background color of buttons on hover */
-            div.tab button:hover {
-                background-color: #ddd;
-            }
-
-            /* Create an active/current tablink class */
-            div.tab button.active {
-                background-color: #ccc;
-                border-color: #ccc;
-                margin-top: 2px;
-                margin-left: 1px;
-            }
-
-            /* Style the tab content */
-            .tabcontent {
-                display: none;
-                padding: 6px 12px;
-                border: 1px solid #ccc;
-                border-top: none;
-                margin-bottom: 30px;
-            }
-            
-            .important {
-                
-                background-color: lightsalmon;
-                color: darkblue;
-                border: 1px solid darkgray;
-                padding: 3px;
-                font-family: sans-serif;
-                text-align: justify;
-            }
-            
-            p, div, ul, ol, pre {
-                margin-left: 50px;
-            }
-            div p, div div, div ul, div ol, div pre {
-                margin-left: 0;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="info.css">
     </head>
 <!--body -->
     <body>
+<!--internet_present-->
         <h1 class="nocounter">Mlab server setup</h1>
-        <p>Before you can use Mlab you need to install the source code on a correctly configured webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features required, as long as your operating system supports the requirements below you should be able to run it. There are four main steps involved in this:</p>
+        <p>Before you can use Mlab you need to install the source code on a correctly configured webserver. Mlab is primarily tested on Linux, but there are no inherent Linux features required, as long as your operating system supports the requirements below you should be able to run it.</p>
+        <p>Mlab can be run without an Internet connection, but during installation of the server software a connection is required. Verify your Internet connection and rectify any issues before continuing.</p>
+        <p>There are four main steps involved in preparing Mlab:</p>
         <ol>
             <li>Install server software such as web server, database server, PHP, etc.</li>
             <li>Create a directory (folder) for Mlab and copy the source code into this directory.</li>
@@ -459,6 +341,7 @@ TODO: Move to openmlab/docs
         <p class="important">
             To complete this section you need to be familiar with manipulating files, folders and access permissions on your chosen operating system.
         </p>
+<!--directories-->
         <h2><a name="2_1"></a>Create directories/folders for Mlab</h2>
         <p>First create a new directory in a suitable location for your OS/Web server. On Linux this is often /var/www, refer to your OS information where is the best location for this. Below we will use the placeholder <em>{mlab_code}</em> for this folder. You will also need to create another folder for the elements that make up an app and the apps themselves (apps, components, icons and templates), below we will use the placeholder <em>{mlab_elements}</em> for these directories.</p>
         <p class="important">The placeholders used here should be replaced by directory names that are appropriate to your setup. For example, {mlab_code} could be something like <em>/var/www/mlab</em> and you may use <em>/srv/www/mlab_elements</em> for {mlab_elements}. You MUST make sure that the directory used for accessible via a URL that shares the domain of the main site, this must be configured in your web server, AND in the “urls” settings in the next section of this file.</p>
@@ -473,7 +356,7 @@ TODO: Move to openmlab/docs
         <div id="Windows21" class="tabcontent tabcontent21">
             <pre>mkdir {mlab_code}<br>mkdir {mlab_elements}<br>mkdir {mlab_elements}/apps/<br>mkdir {mlab_elements}/components/<br>mkdir {mlab_elements}/templates/<br>mkdir {mlab_elements}/icons/</pre>
         </div>
-        
+<!--/directories-->
         <h2>Install Mlab source code</h2>
         <p>Next get your Mlab zip file, typically named something like mlab-v.0.9.0.zip (the actual filename will vary depending on the version you install). Unzip it inside the new directory using the relevant utility for your operating system. </p>
         <p>Make sure that the Mlab code is inside the root of the directory you created, you should see something similar to this (over time files/directories may be added, renamed or removed):></p> 
@@ -500,12 +383,64 @@ TODO: Move to openmlab/docs
         
       
 <!--version_symfony-->
-        <h2 >Complete Symfony installation</h2>
-        <p> At this stage the composer package manager will be used to install the Symfony framework,  Symfony libraries and some Javascript libraries used by Mlab on the front end. The commands below are the same for all operating systems. <b>You may need to run them as an administrative/root user.</b></p>
+        <h2>Complete Symfony installation</h2>
+        <p> At this stage the composer package manager will be used to install the Symfony framework, Symfony libraries and some Javascript libraries used by Mlab on the front end. The commands below are the same for all operating systems. <b>You may need to run them as an administrative/root user.</b></p>
         <pre>cd /{mlab_code}/</pre>
         <pre>bin/composer.phar install</pre>
-        <p>This creates the parameters.yml file (in app/config) if it does not exist, using parameters.yml.dist as a template. </p>
-        <p>The Composer installer will also generate the cache in app/cache. You may need to correct permissions on the cache folder after running composer install</p>
+        <p>This will </p>
+        <ul>
+<!--libraries_symfony-->
+            <li>Install the Symfony framework and the following, required libraries (if some are missing try to install manually using composer and check any error messages for clues as to what is missing):
+                <ul class="columns" style="width: 700px; display: inline-block; padding-bottom: 20px; margin-left: -32px;">
+                    <li>doctrine/annotations</li>
+                    <li>doctrine/cache</li>
+                    <li>doctrine/collections</li>
+                    <li>doctrine/common</li>
+                    <li>doctrine/dbal</li>
+                    <li>doctrine/doctrine-bundle</li>
+                    <li>doctrine/doctrine-cache-bundle</li>
+                    <li>doctrine/inflector</li>
+                    <li>doctrine/instantiator</li>
+                    <li>doctrine/lexer</li>
+                    <li>doctrine/orm</li>
+                    <li>friendsofsymfony/user-bundle</li>
+                    <li>gedmo/doctrine-extensions</li>
+                    <li>incenteev/composer-parameter-handler</li>
+                    <li>ircmaxell/password-compat</li>
+                    <li>jdorn/sql-formatter</li>
+                    <li>kriswallsmith/assetic</li>
+                    <li>monolog/monolog</li>
+                    <li>paragonie/random_compat</li>
+                    <li>psr/log</li>
+                    <li>sensio/distribution-bundle</li>
+                    <li>sensio/framework-extra-bundle</li>
+                    <li>sensio/generator-bundle</li>
+                    <li>sensiolabs/security-checker</li>
+                    <li>swiftmailer/swiftmailer</li>
+                    <li>symfony/assetic-bundle</li>
+                    <li>symfony/monolog-bundle</li>
+                    <li>symfony/polyfill-apcu</li>
+                    <li>symfony/polyfill-intl-icu</li>
+                    <li>symfony/polyfill-mbstring</li>
+                    <li>symfony/polyfill-php54</li>
+                    <li>symfony/polyfill-php55</li>
+                    <li>symfony/polyfill-php56</li>
+                    <li>symfony/polyfill-php70</li>
+                    <li>symfony/polyfill-util</li>
+                    <li>symfony/security-acl</li>
+                    <li>symfony/swiftmailer-bundle</li>
+                    <li>symfony/symfony</li>
+                    <li>symfony/yaml</li>
+                    <li>twig/extensions</li>
+                    <li>twig/twig</li>
+                    <li>willdurand/js-translation-bundle</li>
+                </ul>
+            </li>
+<!--/libraries_symfony-->
+            <li style="clear: both;">Create the parameters.yml file (in app/config) if it does not exist, using parameters.yml.dist as a template.</li>
+            <li>Generate the cache in app/cache. You may need to correct permissions on the cache folder after running composer install, this is explained below</li>
+        </ul>
+        
         <p>Check that everything works OK and that versions of tools are correct by running this command (possibly as an administrative/root user):</p>
         <pre>php app/check.php</pre>
 
@@ -540,6 +475,7 @@ TODO: Move to openmlab/docs
         <pre>cd {mlab_code}/_minimal_websocket<br>npm install</pre>
 <!--/libraries_npm-->
 
+<!--directories-->
         <h2>Set access permissions</h2>
         <p>Set the right permissions to the directory you created. The owner of the Mlab directory and all files and directories inside the Mlab directory should       be the web server process/user. This is because Mlab will need to create files as users create apps or uploads new components, etc. </p>
         <p>In the text below the actual user name is indicated with <i>{webserveruser}</i>, you will need to replace this with the actual user name of your web server process user.</p>
@@ -555,6 +491,7 @@ TODO: Move to openmlab/docs
             <p>As an administrative user run the following commands:</p>
             <pre>icacls "{mlab_code}" /grant {webserveruser}:(OI)(CI)F /T<br>icacls "{mlab_elements}" /grant {webserveruser}:(OI)(CI)F /TR</pre>
         </div>
+<!--/directories-->
 <!--/source_code-->
 
         <h1><a name="_3:_Configuration"></a>Server configuration</h1>
@@ -656,13 +593,13 @@ TODO: Move to openmlab/docs
 <!--/url_allowed_php_ini-->
 <!--/timezone_php_ini-->
 
-<!--python-->        
+<!--python-->
         <h2>Configure PPT/DOC importer</h2>
         <p>The {mlab_code}/FileManagement/conv/config.json file has a setting that needs to be updated if you want to use a different installation of the <em>Unoconv</em> software than the one included with Mlab. The default settings is "./" which indicates that the included version should be used. The setting is shown below and can be edited using your preferred text editor.</p>
 <pre>"paths": {
     "unoconv": "./"
 }</pre>
-<!--/python-->        
+<!--/python-->
         <h2>Start Mlab web-sockets messaging</h2>
         <p>Mlab uses web-sockets to exchange messages between the Mlab editing tool and the app compilation and app market services. Run the following command to start it: </p>
         <pre>cd {mlab_folder}/_minimal_websocket<br>npm start</pre>
@@ -670,8 +607,7 @@ TODO: Move to openmlab/docs
 
         <h1>Complete the Mlab installation </h1>
         
-        <p>
-            You can now open the installation check page, open a web browser and go to http://{mlab_url}/INSTALL/index.php. Replace {mlab_url} with the URL you set up earlier in the step entitled "Specify host & domain name, test web server". Then follow the instructions on your screen.</p>
+        <p>You can now open the installation check page, open a web browser and go to http://{mlab_url}/INSTALL/index.php. Replace {mlab_url} with the URL you set up earlier in the step entitled "Specify host & domain name, test web server". Then follow the instructions on your screen.</p>
 
 <!--import_empty_database-->
         <h2 >Prepare the Mlab database</h2>
@@ -680,27 +616,16 @@ TODO: Move to openmlab/docs
         <p>First we create a database and a user for that database from the command line:</p>
         <pre>mysqladmin -u root -p create {mlab_database}</pre>
         <pre>mysql -u root -p -e "GRANT ALL PRIVILEGES ON mlab.* TO '{mlab_database}'@'localhost' IDENTIFIED BY '{mlab_db_password}'; FLUSH PRIVILEGES;"</pre>
-        <p>Next we need to upload some data into the new database. You now have two options. You can start from scratch with no data apart from a user that you can log in as. With this option you need to manually install all the components and templates to use in your Mlab installation. If, however, you do not want to load all templates and components manually, you may load a database with the basic Mlab templates and components already in it.</p>
-        <p>Empty database command:</p>
+        <p>Next we need to upload the table defisitions and basic login data data into the new database.</p>
         <pre>mysql -u root -p mlab &lt; /{mlab_code}/mlab_empty.sql</pre>
-        <p>Database with basic templates and components command:</p>
-        <pre>mysql -u root -p mlab &lt; /{mlab_code}/mlab.sql</pre>
         <p>Both databases contains a user with "superadmin" credentials, the initial login is &quot;admin@mlab.domain&quot; with password &quot;mlab_password&quot;. Use this to add your own super admin user and delete the default user, or at the very least change the password for the default user.</p>
-
-        <p><b>If you chose the database with the templates and components loaded, you also need to copy the related template and component files.</b></p>
-        <p>Use your preferred copy method to move files from</p>
-        <pre>/{mlab_code}/mlab_elements/components/*</pre>
-        <pre>/{mlab_code}/mlab_elements/templates/* </pre>
-        <p>to</p>
-        <pre>/{mlab_elements}/components</pre>
-        <pre>/{mlab_elements}/templates</pre>
 <!--/import_empty_database-->
         
 
-<!--parameters-->        
+<!--parameters-->
         <h2>Edit parameters.yml, clear the cache and set directory permissions</h2>
         <p>The Composer installer should have created a parameters.yml in the /app/config directory. Edit this file according to your setup, pay particular attention to paths and login/password details. The database settings must match the database you set up using MySQL earlier.</p>
-        <p class="important">If you edit the parameter.yml file by hand you must ensure that all paths end with a trailing slash.</p>
+        <p class="important">If you edit the parameter.yml file by hand you must ensure that all directory paths end with a trailing slash, i.e. /my/directory/ and not /my/directory</p>
         <p>Next you need to clear the cache that Symfony creates and update the access permissions for the cache and log folders (commands may need to be run as administrator/root user):</p>
         <br>
         <div class="tab">
@@ -724,6 +649,19 @@ icacls "{mlab_code}/app/cache" /grant {webserveruser}:(OI)(CI)F /T
 icacls "{mlab_code}/app/logs" /grant {webserveruser}:(OI)(CI)F /TR</pre>
         </div>        
 <!--/parameters-->
+
+        <h2>Preparing the Mlab app building blocks</h2>
+<!--import_templates-->
+        <h3>Importing Mlab templates</h3>
+        <p>Templates are used to set the look and feel of an application as well as the basic navigation, thus supporting consistency across different pages in an app and across different apps. It may have headers and footers that are present on all pages and it acts as the container for components (see below) that are added to pages in apps, in effect framing the content. In addition to providing repeatable elements and formatting there is a third aspect of templates, the content check facility. The idea behind this is that there are certain "best practices" to be followed, depending on the type of app that is being created. </p>
+        <p>To start using Mlab you must have at least one template installed, you should have been supplied with a ZIP file containing one or more Mlab templates. You can add these to Mlab at this point by uploading them here.</p>
+<!--/import_templates-->
+<!--import_components-->
+        <h3>Importing Mlab components</h3>
+        <p>Components can be a single HTML5 element (h1) for a headline, more advanced components that displays videos, or complex components such as multipage quizzes that store data for verification on a remote server. Components are added within the body of a template and through them an app creator can share information in a variety of ways, from simple headlines to complex map displays. Each component consist of (at minimum) an icon that is displayed in Mlab, a configuration file, a Javascript file for design time interaction with the app builder and optionally additional Javascript, CSS and HTML code to complete the component at runtime.</p>
+        <p>To start using Mlab you need a few basic components. These are supplied as a a ZIP file and are part of the default Mlab installation. You can add these components to Mlab at this point by uploading them here.</p>
+<!--/import_components-->
+
 
 <h1>Additional tasks</h1>
 <h2>Optional Mlab compiler service</h2>

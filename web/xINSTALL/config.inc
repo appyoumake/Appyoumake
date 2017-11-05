@@ -30,142 +30,208 @@ $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 //TODO: add about trailing slashes
 $params_check = array (
     "parameters__database_driver" => array(
-        "label"     => "Name of PHP database driver",
-        "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv" ),
+        "label"     => "DATABASE: PHP database driver to use <span>Can be one of pdo_mysql, pdo_sqlite, pdo_pgsql, pdo_oci, oci8, ibm_db2, pdo_ibm, pdo_sqlsrv, mysqli, drizzle_pdo_mysql or sqlsrv</span>",
+        "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv",
+        "header" => "Database"
+        ),
+    
     "parameters__database_host" => array(  
-        "label"     => "URL/IP address of database server",
-        "acceptable" => "URL"
+        "label"     => "DATABASE: URL/IP address of server<span>This is the server that will store the Mlab data, if it is on the same server as the Mlab webserver you use localhost here</span>",
+        "acceptable" => "URL",
+        "header" => "Database"
         ),
+    
     "parameters__database_port" => array(  
-        "label"     => "TCP/IP port of the database server, set to null if using sockets",
+        "label"     => "TCP/IP port of the database server that will store the Mlab data, set to null if using sockets",
         "acceptable" => "PORT",
-        "null" => true
+        "null" => true,
+        "header" => "Database"
         ),
+    
     "parameters__database_name" => array(  
         "label"     => "Name of the database to use, create this manually",
-        "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$"
+        "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$",
+        "header" => "Database"
         ),
+    
     "parameters__database_user" => array(  
         "label"     => "Name of user for database login",
-        "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$"
+        "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$",
+        "header" => "Database"
         ),
+    
     "parameters__database_password" => array(  
         "label"     => "Password of user for database login",
-        "acceptable" => "PASSWORD"
+        "acceptable" => "PASSWORD",
+        "header" => "Database"
         ),
+    
     "parameters__mailer_transport" => array(  
         "label"     => "How to send emails (smtp, mail, sendmail or gmail)",
-        "acceptable" => "smtp|mail|sendmail|gmail"
+        "acceptable" => "smtp|mail|sendmail|gmail",
+        "header" => "Email"
         ),
+    
     "parameters__mailer_host" => array(  
         "label"     => "URL/IP address of the email server to use",
-        "acceptable" => "URL"
+        "acceptable" => "URL",
+        "header" => "Email"
         ),
+    
     "parameters__mailer_user" => array(  
         "label"     => "Name of user for email server login",
-        "acceptable" => "EMAIL"
+        "acceptable" => "EMAIL",
+        "header" => "Email"
         ),
+    
     "parameters__mailer_password" => array(  
         "label"     => "Password of user for email server login",
         "acceptable" => "PASSWORD",
-        "null" => true
+        "null" => true,
+        "header" => "Email"
         ),
+    
     "parameters__locale" => array(  
         "label"     => "Which locale to use, for instance en_GB. Can be overridden by individual Mlab users when they log in",
-        "acceptable" => "nb_NO|en_GB"
+        "acceptable" => "nb_NO|en_GB",
+        "header" => "Language & security"
         ),
+    
     "parameters__secret" => array(  
         "label"     => "A random string used to encrypt passwords, etc., on this site.",
-        "acceptable" => "PASSWORD"
+        "acceptable" => "PASSWORD",
+        "header" => "Language & security"
         ),
-    "parameters__mlab__convert__python_bin" => array(  
-        "label"     => "Path to Python executable",
-        "acceptable" => "PATH"
-        ),
-    "parameters__mlab__ws_socket__url_client" => array(  
-        "label"     => "URL for web socket server used by Mlab editor to communicate with server",
-        "acceptable" => "WS_URL_PORT"
-        ),
-    "parameters__mlab__ws_socket__url_server" => array(
-        "label"     => "URL for web socket server used to communicate with compiler and app market services",
-        "acceptable" => "HTTP_URL_PORT"
-        ),
+    
     "parameters__mlab__paths__app" => array(
         "label"     => "Full path to where Mlab created apps should be stored",
-        "acceptable" => "PATH"
+        "acceptable" => "PATH",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__paths__component" => array(
         "label"     => "Full path to where Mlab components should be installed",
-        "acceptable" => "PATH"
+        "acceptable" => "PATH",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__paths__template" => array(
         "label"     => "Full path to where Mlab templates should be installed",
-        "acceptable" => "PATH"
+        "acceptable" => "PATH",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__paths__icon" => array(
         "label"     => "Full path to where images used to generate app icons should be installed",
-        "acceptable" => "PATH"
+        "acceptable" => "PATH",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__urls__app" => array(
         "label"     => "Path of URL to where Mlab created apps are found",
-        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$"
+        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__urls__component" => array(
         "label"     => "External URL to where Mlab components should be installed",
-        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$"
+        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__urls__template" => array(
         "label"     => "External URL to where Mlab templates should be installed",
-        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$"
+        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__urls__icon" => array(
         "label"     => "External URL to where images used to generate app icons should be installed",
-        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$"
+        "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
     "parameters__mlab__urls__icon_font" => array(
         "label"     => "Path of URL of a web font that can be used when creating icons for apps",
-        "acceptable" => "LOCALPATH"
+        "acceptable" => "LOCALPATH",
+        "header" => "Paths and URLs to Mlab elements"
         ),
+    
+    "parameters__mlab__ws_socket__url_client" => array(  
+        "label"     => "URL for web socket server used by Mlab editor to communicate with server",
+        "acceptable" => "WS_URL_PORT",
+        "header" => "Compiler service"
+        ),
+    
+    "parameters__mlab__ws_socket__url_server" => array(
+        "label"     => "URL for web socket server used to communicate with compiler and app market services",
+        "acceptable" => "HTTP_URL_PORT",
+        "header" => "Compiler service"
+        ),
+    
     "parameters__mlab__compiler_service__supported_platforms" => array(
         "label"     => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
-        "acceptable" => "ios|android"
+        "acceptable" => "ios|android",
+        "header" => "Compiler service"
         ),
+    
     "parameters__mlab__compiler_service__url" => array(
         "label"     => "URL to compilation service",
-        "acceptable" => "URL_PORT"
+        "acceptable" => "URL_PORT",
+        "header" => "Compiler service"
         ),
+    
     "parameters__mlab__compiler_service__protocol" => array(  
         "label"     => "Protocol (http/https) to use to connect to compilation service",
-        "acceptable" => "http|https"
+        "acceptable" => "http|https",
+        "header" => "Compiler service"
         ),
+    
     "parameters__mlab__compiler_service__passphrase" => array(  
         "label"     => "Unique passphrase to access compilation service",
-        "acceptable" => "PASSWORD"
+        "acceptable" => "PASSWORD",
+        "header" => "Compiler service"
         ),
+    
     "parameters__mlab__compiler_service__app_creator_identifier" => array(
         "label"     => "Unique, reverse domain, identifier, for instance 'com.test.app'",
-        "acceptable" => "URL"
+        "acceptable" => "URL",
+        "header" => "Compiler service"
     ),
-    "parameters__mlab__compiler_service__rsync_bin" => array(
-        "label"     => "Path to the Rsync executable file",
-        "acceptable" => "PATH"
-        ),
+    
     "parameters__mlab__compiler_service__rsync_url" => array(
         "label"     => "URL to use to upload files to compiler service",
-        "acceptable" => "RSYNC_URL"
+        "acceptable" => "RSYNC_URL",
+        "header" => "Compiler service"
         ),
+    
     "parameters__mlab__compiler_service__rsync_password" => array(
         "label"     => "Password to use to upload files to compiler service",
-        "acceptable" => "PASSWORD"
+        "acceptable" => "PASSWORD",
+        "header" => "Compiler service"
         ),
+    
+    "parameters__mlab__convert__python_bin" => array(  
+        "label"     => "Path to Python executable",
+        "acceptable" => "PATH",
+        "header" => "Paths to system utilities"
+        ),
+    
+    "parameters__mlab__compiler_service__rsync_bin" => array(
+        "label"     => "Path to the Rsync executable file",
+        "acceptable" => "PATH",
+        "header" => "Paths to system utilities"
+        ),
+    
+
+
 );
 
 
 // ARRAY OF PRE-REQUISITE VALUES TO CHECK FOR
 $software_version_checks = array(
     "internet_present" =>       array(  "label"     => "Internet connection", 
-                                        "help"      => "Mlab can be run without an Internet connection, but during installation a connection is required",
-                                        "action"    => "Check Internet connection on the server",
+                                        "action"    => "",
                                         "function"  => "internet_present"),
     
     
@@ -176,55 +242,47 @@ $software_version_checks = array(
                                         "value"     => PHP_VERSION_ID,
                                         "function"  => "check_version"),
     
-    "version_uglifyjs" =>        array( "label"     => "UglifyJS version", 
-                                        "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
-                                        "check"     => $uglifyjs_version_min, 
-                                        "action"    => "Install UglifyJS using the following command line as the 'root' user (make sure NPM is installed first): 'npm&nbsp;install&nbsp;uglifyjs&nbsp;-g'.",
-                                        "exec"      => "uglifyjs --version",
-                                        "function"  => "check_version"), 
-    
-    "version_nodejs" =>          array( "label"     => "Node JS version", 
-                                        "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
-                                        "check"     => $nodejs_version_min, 
-                                        "action"    => "Install Node JS using your operating system's standard package management installation, see <a href='https://nodejs.org/en/download/'>here</a> for more information.",
-                                        "exec"      => "nodejs --version",
-                                        "function"  => "check_version"), 
+    "libraries_php" =>          array(  "label"     => "PHP extensions", 
+                                        "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
+                                        "check"     => "curl,dom,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,xml,xmlreader,xmlwriter,zip", 
+                                        "function"  => "libraries_php"), 
+
+    "timezone_php_ini" =>       array(  "label"     => "Timezone", 
+                                        "help"      => "The timezone must be set in the relevant PHP.INI file on the server",
+                                        "check"     => "date.timezone",
+                                        "function"  => "timezone_php_ini"), 
     
     "version_composer" =>       array(  "label"     => "Composer version", 
                                         "help"      => "Composer is a library manager used by Mlab to install the Symfony framework and Javascript libraries. Version 1.3 or higher is required",
                                         "check"     => $composer_version_min, 
-                                        "action"    => "You can <a href='index.php?fix=version_composer'>click here</a> to try to install the correct version of composer, otherwise manually follow <a href='https://getcomposer.org/'>these instructions</a>.",
                                         "exec"      => "composer -V",
                                         "function"  => "check_version"), 
     
-    "version_symfony" =>         array( "label"     => "Symfony framework", 
+    "version_symfony" =>        array( "label"     => "Symfony framework", 
                                         "help"      => "Mlab requires the Symfony framework to be installed, during the installation a number of PHP and HTML files will be downloaded to the Mlab folder on the server.",
                                         "check"     => $symfony_version_min, 
-                                        "action"    => "Manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>.",
                                         "exec"      => "app/console --version",
                                         "function"  => "check_version"), 
     
-    "timezone_php_ini" =>       array(  "label"     => "Timezone", 
-                                        "help"      => "The timezone must be set in the relevant PHP.INI file on the server",
-                                        "check"     => "date.timezone",
-                                        "action"    => "Update the " . php_ini_loaded_file() . " file with a <a href='http://php.net/manual/en/timezones.php'>valid timezone setting</a>.",
-                                        "function"  => "timezone_php_ini"), 
-    
-    "libraries_php" =>          array(  "label"     => "PHP extensions", 
-                                        "help"      => "These PHP extensions must be available. Check your PHP installation & php.ini",
-                                        "check"     => "curl,dom,fileinfo,gd,gettext,iconv,intl,json,libxml,mbstring,mysqli,openssl,pcre,pdo_mysql,phar,readline,session,simplexml,soap,sockets,xml,xmlreader,xmlwriter,zip", 
-                                        "action"    => "Install the missing extensions using either <a href='http://php.net/manual/en/install.pecl.intro.php'>PECL</a> or through your Linux server's package manager.",
-                                        "function"  => "libraries_php"), 
-
     "libraries_symfony" =>      array(  "label"     => "Symfony libraries", 
                                         "help"      => "These Symfony libraries must be available.",
-                                        "action"    => "Install the missing extensions using bin/composer.phar install from the command line.",
                                         "function"  => "libraries_symfony"), 
 
+    "version_nodejs" =>         array( "label"     => "Node JS version", 
+                                        "help"      => "Node JS is used to run a small web socket server for compiler and app store messaging. Version 0.10.29 or higher is required.",
+                                        "check"     => $nodejs_version_min, 
+                                        "exec"      => "nodejs --version",
+                                        "function"  => "check_version"), 
+    
+    "version_uglifyjs" =>       array( "label"     => "UglifyJS version", 
+                                        "help"      => "UglifyJS is used to compress and protect Javascript file. Version 2.4 or higher is required",
+                                        "check"     => $uglifyjs_version_min, 
+                                        "exec"      => "uglifyjs --version",
+                                        "function"  => "check_version"), 
+    
     "libraries_npm" =>          array(  "label"     => "NodeJS libraries", 
                                         "help"      => "These NodeJS libraries must be installed to be able to use Mlab: 'ws'",
                                         "check"     => "ws", 
-                                        "action"    => "You can install this by running 'npm install' command in the <em>" . dirname(dirname(getcwd())) . "/_minimal_websocket</em> directory.",
                                         "function"  => "libraries_npm"), 
     
 
@@ -235,28 +293,23 @@ $data_checks = array(
     
     "bootstrap_symfony" =>      array(  "label"     => "Boostrap file", 
                                         "help"      => "The app/bootstrap.php.cache must be created, this is usually done by Composer when the Symfony framework is installed.",
-                                        "check"     => "app/bootstrap.php.cache", 
-                                        "action"    => "You can <a href='index.php?fix=bootstrap_symfony'>click here</a> to try to generate this file, otherwise manually follow <a href='http://stackoverflow.com/questions/6072081/symfony2-updating-bootstrap-php-cache'>these instructions</a>."), 
+                                        "check"     => "app/bootstrap.php.cache"), 
     
     "libraries_js" =>           array(  "label"     => "Javascript libraries", 
                                         "help"      => "These Javascript libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-4.0.11'",
-                                        "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-4.0.11.js", 
-                                        "action"    => "You can <a href='index.php?fix=libraries_js'>click here</a> to try to install these libraries, otherwise manually follow <a href='https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies'>these instructions</a>."), 
+                                        "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-4.0.11.js"), 
     
     "assetic_update" =>         array( "label"     => "Javascript protection", 
                                         "help"      => "The Javascript libraries created by FFI must be protected using UglifyJS as per your contractual obligations. To do this you need to generate a single combined 'asset' JavaScript file from the original code. If you do not do this Mlab will fail to work.",
-                                        "check"     => "web/js/*.js", 
-                                        "action"    => "You can <a href='index.php?fix=assetic_update'>click here</a> to run the Symfony assetic command which protects the source code, otherwise you can follow the manual instructions."), 
+                                        "check"     => "web/js/*.js"), 
     
     "version_mysql" =>          array(  "label"     => "MySQL version", 
                                         "help"      => "A MySQL database server version 5.5 or higher is required to store Mlab user and app data",
-                                        "check"     => $mysql_version_min, 
-                                        "action"    => "Install an appropriate version of Mlab on the server."),
+                                        "check"     => $mysql_version_min),
     
     "import_empty_database" =>  array( "label"     => "Initial Mlab data", 
                                         "help"      => "To start using Mlab the basic database must be set up and an admin user must be added. ",
-                                        "check"     => 14, 
-                                        "action"    => "You can click <a href='index.php?fix=import_empty_database'>here</a> to do this, or you can manually import the 'INSTALL/mlab.sql' file into the designated database."), 
+                                        "check"     => 14), 
     
     "import_templates" =>       array(  "label"     => "Import templates", 
                                         "help"      => "To use Mlab you need at least one template. If you have one or more templates available as a ZIP file you can upload this file now." . 

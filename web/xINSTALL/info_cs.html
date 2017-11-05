@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<!--
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.lastname@ffi.no)
+
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+-->
+    <head>
+        <title>Installing Mlab compiler service</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="info.css">
+    </head>
+    <body>
+        <h1><a href="#mlab-compiler-service---installation" aria-hidden="true" class="anchor" id="user-content-mlab-compiler-service---installation"></a>Mlab compiler service - Installation</h1>
+<blockquote>
+<p>Version: 1.0 (October 2017, first public release)<br>
+Copyright: © Norwegian Defence Research Institute (FFI) 2013 - 2016<br>
+Initial author: Arild Bergh, Sinett 3.0, FFI<br>
+Updating authors: <br>
+Comment: <em>Only update the version number above when compiler API changes</em></p>
+</blockquote>
+<h2><a href="#integrate" aria-hidden="true" class="anchor" id="user-content-integrate"></a>INTEGRATE</h2>
+<p>"URL to compilation service" is the URL of the server that runs the compilation service. The compilation service is a relatively small wrapper API written in NodeJS on top of Cordova which lets us send files from the Mlab editing tool to Cordova for compilation. The purpose of having a service API instead of using Cordova directly is to not have to worry if you are compiling for iOS or Android, etc., so you could run Mlab on a windows server and just have the compiler service run on a Mac to compile for iOS.</p>
+<p>You will know this URL when you have installed the compiler server code (this was part of the files you got from the Norwegian ADL office).</p>
+<p>"Unique passphrase to access compilation service " is simply a password that the Mlab editor code uses to verify to the compiler server that it is allowed to connect, you would use the same password on the compiler server.</p>
+<h2><a href="#background" aria-hidden="true" class="anchor" id="user-content-background"></a>Background</h2>
+<p>MLAB is using the Cordova framework which takes an HTML5 app (consisting of HTML/CSS/ Javascript + media files) and compiles this to a native app for a wide range of mobile operating systems. It does this by creating a skeleton app that bootstraps a web viewer and then load the HTML5 files so it can be run on mobile devices such as Android and iOS. As MLAB is meant to provide a simple way for regular users to create apps in a web browser, a key challenge is to provide a seamless way to compile the HTML5 apps that the user has created into apps on the different platforms supported by Cordova.</p>
+<p>Sinett will use a "compiler service" (CS) for this purpose, this service is developed in NodeJS and runs on the server that undertakes the compilation, presenting a very simple API through HTTP to the MLAB builder. This service does NOT require any database access, it relies on the file system / Cordova file structure.</p>
+<p>The interaction between the different elements involved is as follows:</p>
+<ul>
+<li><em>Mlab app editor</em>, uses HTTP to talk to the <em>Mlab compiler service</em> API
+<ul>
+<li><em>Mlab compiler service</em> uses local command line commands to control <em>Cordova</em>
+<ul>
+<li><em>Cordova</em> uses command line to run various <em>SDK</em> specific functions such a start new app or compile app</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><a href="#important-regrading-user-access" aria-hidden="true" class="anchor" id="user-content-important-regrading-user-access"></a>Important regrading user access</h2>
+<p>The key issue with the compiler service is that Cordova is meant to be run by a "regular" user on a computer, i.e. a user that has a home directory that Cordova can write to.</p>
+<p>To get around this problem the compiler service must be run as a user that has a home directory and access to environment variables. The compiler service is written in NodeJS, you can therefore start the compiler service app as a different user with a command such as this:</p>
+<p><code>sudo -H -u otheruser npm start app.js</code></p>
+<hr>
+<h2><a href="#general-installation-instructions-for-mlab-compiler-service" aria-hidden="true" class="anchor" id="user-content-general-installation-instructions-for-mlab-compiler-service"></a>General installation instructions for Mlab compiler service</h2>
+<h3><a href="#requirements" aria-hidden="true" class="anchor" id="user-content-requirements"></a>Requirements</h3>
+<p>The following software must be installed and tested before continuing with these instructions. Refer to relevant information for your operating system as to how to install these.</p>
+<ul>
+<li>
+<p>Git (only required if you have access to the Mlab git hub account)</p>
+<p><strong>or</strong></p>
+</li>
+<li>
+<p>Unzip (only required if you have the software delivered as a ZIP file without access to GitHub)</p>
+</li>
+<li>
+<p>Rsync (used to upload file changes, this must be run as a service/daemon)</p>
+</li>
+<li>
+<p>Npm (required to install NodeJS as well as the Javascript libraries used in the compiler service app)</p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Oracle Java  (do <strong>NOT</strong> use OpenJDK or similar open source replacements)</p>
+</li>
+</ul>
+<h3><a href="#installing-sdks" aria-hidden="true" class="anchor" id="user-content-installing-sdks"></a>Installing SDKs</h3>
+<p><a href="https://cordova.apache.org">Cordova</a> supports a wide range of mobile operating systems. iOS and Android are the most commonly used. Android can be compiled on Linux, Windows and OS X (Mac), whereas iOS apps can only be created on a Mac running OS X.</p>
+<p>The location of, and specifications of, the different SDKs often change, we therefore refer you to the online documentation for the respective SDKs: <a href="https://developer.apple.com/xcode/">https://developer.apple.com/xcode/</a> and <a href="https://developer.android.com/">https://developer.android.com/</a>. Once these SDKs are installed you should make a note of their location. This location needs to be put in the /config/config.json file after you have installed the SDKs</p>
+<p>To make sure Cordova will find the SDK, the safest is to add the <code>/MYPATH/android-sdk/tools</code> and <code>/MYPATH/android-sdk/platform-tools</code> to the path of your environment settings, refer to OS documentation on how to do this.</p>
+<p><strong>Please note that the SDKs may at various times require changes to their setup dependig on what OS you are using. If you have problems with Cordova and/or the SDKs please google the error messages you find to find out how to solve the issue(s).</strong></p>
+<h3><a href="#installing-cordova" aria-hidden="true" class="anchor" id="user-content-installing-cordova"></a>Installing Cordova</h3>
+<ul>
+<li>Refer to the current installation instructions for Cordova on <a href="https://cordova.apache.org">https://cordova.apache.org</a>. <strong>Make sure you install Cordova <em>globally</em>, so all users can access the installation</strong></li>
+<li>Test that the SDK(s) you have installed work with Cordova. The online Cordova documentation provides information on how to do this.</li>
+</ul>
+<h3><a href="#create-a-user-and-group-for-the-compiler-service-app--cordova" aria-hidden="true" class="anchor" id="user-content-create-a-user-and-group-for-the-compiler-service-app--cordova"></a>Create a user and group for the compiler service app &amp; Cordova</h3>
+<ul>
+<li>Create user and group <code>mlab_cs</code>.</li>
+<li>Set password for the user and make a note of this password for later.</li>
+<li>Later you will add the user details to the config/config.json file. This is because all Cordova commands should be executed as this user.</li>
+</ul>
+<h3><a href="#preparing-the-file-system" aria-hidden="true" class="anchor" id="user-content-preparing-the-file-system"></a>Preparing the file system</h3>
+<p>The compiler service will receive files from the <a href="/Sinettlab/openMLAB/blob/master/DOCS/Mlab%20explained.md">Mlab editor</a> through Rsync, these go into an "inbox" folder. Cordova uses a "working" directory to perform the actual compilation. From this working directory a symbolic link is created to the uploaded code, this create a link from the www/ directory that Cordova expects to find in its working directory, the link goes to the inbox directory for the uploaded code.</p>
+<p>Inside these directories Mlab uses a hierarchy:</p>
+<ul>
+<li>each app has a top level folder name created by combining
+<ul>
+<li>the reverse domain name specified in the parameters.yml file in the Mlab editor</li>
+<li>a unique, random 32 byte ID generated in the Mlab editor when the app is first created</li>
+</ul>
+</li>
+</ul>
+<p>For instance: /var/local/mlab_cs/working/no.ffi.sinett.fffa9cd9X664aX45ffX9833X54472e173a40/1/www points to /var/local/mlab_cs/inbox/no.ffi.sinett.fffa9cd9X664aX45ffX9833X54472e173a40/1/www/.</p>
+<p>You need to create these two driectories (inside a shared top level directory is a good idea) and make them accessible for the mlab_cs user. An example of this for Linux would be as follows:</p>
+<div class="highlight highlight-source-shell"><pre>mkdir /var/local/mlab_cs
+mkdir /var/local/mlab_cs/inbox
+mkdir /var/local/mlab_cs/working
+chown -R root:mlab_cs /var/local/mlab_cs 
+chmod -R 770 /var/local/mlab_cs</pre></div>
+<h3><a href="#configure-the-rsync-servicedaemon" aria-hidden="true" class="anchor" id="user-content-configure-the-rsync-servicedaemon"></a>Configure the rsync service/daemon</h3>
+<p>You should edit your default rsync configuration file, on Linux this is <code>/etc/rsyncd.conf</code>. The edit is required to make the shared <code>cs_inbox</code> read and writable for user <code>mlab</code>. At the end of the config file add the following, adjusting the paths to fit your installation:</p>
+<pre><code>[cs_inbox]passphrase
+comment = Compiler server inbox, where to put the app to be compiled
+path = /mypath/mlab_cs/inbox
+read only = no
+list = yes
+uid = mlab_cs
+gid = mlab_cs
+auth users = mlab_cs
+secrets file = /etc/rsyncd.secrets
+</code></pre>
+<p>Create /etc/rsyncd.secrets for the mlab-cs user's password. Replace <code>password</code> with a suitable password.</p>
+<pre><code>sudo vim /etc/rsyncd.secrets 
+mlab_cs:password
+</code></pre>
+<p>Restart and test rsync. Run the following command to check if everything is ok. You will be asked for the password and the output would be the content of the share (initially empty).</p>
+<pre><code>rsync mlab_cs@localhost::cs_inbox
+</code></pre>
+<h3><a href="#download-and-setup-the-compiler-service-code" aria-hidden="true" class="anchor" id="user-content-download-and-setup-the-compiler-service-code"></a>Download and setup the compiler service code</h3>
+<p>We are now ready to copy across the actual compiler service code.</p>
+<ul>
+<li>Logg in as mlab_cs and make sure you are in your home directory</li>
+<li>If you have access to the Github repository issue the following command at the command line:
+<pre><code>git clone https://github.com/Sinettlab/mlab_compiler.git mlab_cs_app
+</code></pre>
+</li>
+<li>If you were given a Zip file with the code unzip it into a directory name mlab_cs_app
+<pre><code>mkdir mlab_cs_app
+unzip /mypath/mlab_cs.zip -d mlab_cs_app
+</code></pre>
+</li>
+<li>Install dependencies using npm, on Linux this would be:
+<pre><code>cd mlab_cs_app
+npm install
+</code></pre>
+This will install node.js dependencies in a <code>node_modules</code> folder within the <code>mlab_compiler</code> folder</li>
+</ul>
+<h3><a href="#edit-configconfigjson" aria-hidden="true" class="anchor" id="user-content-edit-configconfigjson"></a>Edit config/config.json</h3>
+<p>Inside the mlab_cs_app directory there is a directory called config. Inside this directory you should rename the file <em>config.dist.json</em> to <em>config.json</em> and edit the settings to match your setup.</p>
+<p><strong>Settings</strong></p>
+<ul>
+<li><em>callback_server</em>: "<a href="http://127.0.0.1">http://127.0.0.1</a>"	(the server URL to contact when a task has been completed)</li>
+<li><em>callback_server_port</em>: 80	(the server port to contact when a task has been completed)</li>
+<li><em>compile_check_interval</em>: 10 (how often, in seconds, to check if a compilation has been completed)</li>
+<li><em>compile_check_max</em>: 600 (how many times to check if a compilation has been completed before assuming it failed)</li>
+<li><em>compile_lock_timeout</em>: 600	(how long, in seconds, to lock a file for)</li>
+<li><em>cordova_apps_path</em>: "/var/local/mlab_cs/working"	()</li>
+<li><em>cordova_bin_path</em>: "cordova"</li>
+<li><em>cordova_user</em>: "mlab_cs"	the user that should run the Cordova commands. Use the <code>mlab_cs</code> user created in previous steps</li>
+<li><em>environment</em>: {}</li>
+<li><em>exclude_from_checksum</em>: ["conf.json"]</li>
+<li><em>filenames</em>: {"icon_: "icon.png" "splashscreen_: "splash" "mlab_app_config_: "conf.json"}</li>
+<li><em>inbox_path</em>: "/var/local/mlab_cs/inbox"	(the path of the rsync directory where uploaded files will be picked up and compiled through the working directory specified in the <code>cordova_apps_path</code> directory)</li>
+<li><em>key</em>: "RLjYNDVQEh6fA*;zthtftc9m"	(a passphrase used in calls back and forth between the compiler service server and the Mlab app editor to verify that it is allowed to use the compiler service. <em>This must match the setting in the Mlab editor /app/config/parameterr.yml file under parameters:mlab:compiler_service:passphrase</em>)</li>
+<li><em>listen_on_ip</em>: "0.0.0.0"	(the IP address that the compiler service should listen on. Set to <code>0.0.0.0</code> if the compiler service should listen on all ports)</li>
+<li><em>log_level</em>: "DEBUG"	(can be DEBUG or ERRROR, indicates whether the compiler service only outputs error messages or debug messages as well)</li>
+<li><em>os</em>: "linux"	(platform we're running on)</li>
+<li><em>platforms</em>: ["android" "ios"]	(array of mobile platforms that can be compiled through this service)</li>
+<li><em>port_number</em>: 8282	(the IP address that the compiler service should listen on, combined with <em>listen_on_ip</em> to determine where the app listens for incoming messages)</li>
+</ul>
+<p><strong>Platform specific settings</strong></p>
+<p>These settings are passed directly on to the SDKs/Cordova compiler. They are shown here for completeness, refer to the relevant SDK documentation to see what you should specify here:</p>
+<pre><code> &nbsp; &nbsp;"android": {
+        "environment": {
+            "ANDROID_HOME": "/opt/android-sdk/",
+            "JAVA_HOME": "/usr/lib/jvm/java-8-oracle/jre/"
+        },
+        "executable_path": "build/outputs/apk/",
+        "executable_filename": "android-debug",
+        "executable_extension": "apk",
+        "executable_mime_type": "application/vnd.android.package-archive"
+    },
+    "ios": {
+        "provisioning_profile": "MLAB dev",
+        "executable_path": "out",
+        "executable_extension": "ipa",
+        "executable_mime_type": "application/octet-stream",
+        "permission_translation": {
+            "ACCESS_LOCATION_EXTRA_COMMANDS": "",
+            ......
+            "WRITE_VOICEMAIL": ""
+        }
+    }
+}
+</code></pre>
+<h3><a href="#test-and-run-the-compiler-service-app" aria-hidden="true" class="anchor" id="user-content-test-and-run-the-compiler-service-app"></a>Test and run the compiler service app</h3>
+<ul>
+<li>
+<p>From the command line:</p>
+<ul>
+<li>cd into directory</li>
+<li><code>node app.js</code> or <code>npm start</code>
+You should see details on what port the compiler service will listen to and some basic startup information. If you get any error messages you should follow the debug steps below.</li>
+</ul>
+</li>
+<li>
+<p>Run as a service/daemon:
+There are a number of ways to achieve this, you can use tools such as PM2, Forever, etc. We suggest you search for current solutions to this as there are a number of ways this can be achieved, so you need to select the one that suits your operating environment.</p>
+</li>
+</ul>
+<h3><a href="#debugging-the-mlab-compiler-service" aria-hidden="true" class="anchor" id="user-content-debugging-the-mlab-compiler-service"></a>Debugging the Mlab compiler service</h3>
+<p>If you run Mlab from the command line, and not as a service, you will see a lot of debug messages as well as error messages. If you get error messages you should google them. Most of the time you can figure out what caused it based on other people's experiences, the debug messages will tell you where it happened (i.e. as a result of what input).</p>
+<p>You can also debug the Mlab compiler service using the Google Chrome or Chromium browsers. For details on how to debug the code see here: <a href="https://nodejs.org/api/debugger.html">https://nodejs.org/api/debugger.html</a>.</p>
+<h2><a href="#code-signing--certificates" aria-hidden="true" class="anchor" id="user-content-code-signing--certificates"></a>Code signing &amp; certificates</h2>
+<p>TBC: Code signing identity and provisioning profile set up (name of provisioning profile goes into config file)</p>
+
+    </body>
+</html>

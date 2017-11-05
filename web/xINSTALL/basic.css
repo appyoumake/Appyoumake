@@ -21,3 +21,7 @@ label.override, input.override {
 input.override {
     clear:both;
 }
+/* some specific settings for page 2, parameters.yml */
+.step_2 td:nth-child(1) span { font-size: 75%; display: block; line-height: 1em; color: dimgray; }
+.step_2 tr:nth-child(4) { display: none ; }
+.param_heading { font-weight: bold; border: none;padding-top: 2em;}

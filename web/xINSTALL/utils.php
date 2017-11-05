@@ -241,7 +241,7 @@ function import_empty_database() {
         if ($info["num_tables"] >= $data_checks["import_empty_database"]["check"]) {
             return true;
         } else {
-            return "Incorrect number of tables, please verify by comparing database '$mysql_database' with the content of 'web/INSTALL/mlab.sql'.";
+            return "Incorrect number of tables, please verify by comparing database '$mysql_database' with the content of 'web/INSTALL/mlab_empty.sql'.";
         }
     } else {
         return "Database not found or user credentials incorrect";
@@ -342,7 +342,7 @@ function import_files($type) {
  * Run the four different checks for each page we display
  */
 function run_checks($step, $params, $params_override) {
-    global $params_check, $data_checks, $software_version_checks, $write_permissions, $system_path;
+    global $params_check, $data_checks, $software_version_checks, $write_permissions, $permissions_info, $system_path;
     $failed = false;
     $cur_dir = getcwd();
     putenv($system_path);
@@ -427,9 +427,12 @@ function run_checks($step, $params, $params_override) {
                         case "PORT":
                             $params_check[$key]['result'] = (bool)is_valid_port($params[$key]);
                             break;
-//TODO: add trailing slashes here
+//add trailing slashes here
                         case "PATH":
                             $params_check[$key]['result'] = (bool)file_exists($params[$key]);
+                            if ($params_check[$key]['result'] && is_dir($params[$key]) && substr($params[$key], -1) != "/") {
+                                $params[$key] = $params[$key] . "/";
+                            }
                             break;
 
                         case "LOCALPATH":
@@ -469,6 +472,21 @@ function run_checks($step, $params, $params_override) {
                 $params["parameters__mlab__paths__component"] => (is_writable($params["parameters__mlab__paths__component"]) ? true : false),
                 $params["parameters__mlab__paths__icon"] => (is_writable($params["parameters__mlab__paths__icon"]) ? true : false)
                 );
+            
+//load in help text
+                $update_help = false;
+                $permissions_info = '';
+                foreach ($info as $line) {
+                    if (!$update_help && $line == "<!--directories-->") {
+                        $update_help = true;
+                    } else if ($update_help) {
+                        if ($line == "<!--/directories-->") {
+                            $update_help = false;
+                        } else {
+                            $permissions_info .= $line;
+                        }
+                    } 
+                }
             return in_array(false, $write_permissions);
             break;
         
@@ -478,7 +496,6 @@ function run_checks($step, $params, $params_override) {
 //c: if there are no components or templates in the relevant folders 
 //d: if Javascript protection is in place
         
-//TODO: Move [HELP ]help] to action from info.html like above
        case STEP_CHECK_DATA:
             foreach ($data_checks as $key => $value) {
                 if (function_exists($key)) {
@@ -525,17 +542,28 @@ function output_table_body($step) {
             }
             break;
             
-//TODO: check JS protection, uglify
         case STEP_CHECK_PERMISSIONS:
-            global $write_permissions;
+            global $write_permissions, $permissions_info;
             foreach ($write_permissions as $dir => $write_ok) {
-                echo "<tr><td>$dir</td><td><img src='" . (!$write_ok ? "fail" : "ok") . ".png'></td></tr>\n";
+                if ($write_ok) {
+                    print "<tr><td>$dir</td><td><img src='ok.png'></td></tr>\n";
+                } else {
+                    print "<tr><td><details><summary>$dir</summary><div>Error: Does not exist or is not writable by web server<hr>$permissions_info</div></details></td><td><img src='fail.png'></td></tr>\n";
+                }
             }
             break;
 
         case STEP_CHECK_PARAMS:
             global $params, $params_check, $inputs;
+            $h = "";
             foreach ($params as $key => $value) {
+                 if ($h != $params_check[$key]["header"]) {
+                    echo "<tr>" . 
+                         "<td colspan=3 class='param_heading'>{$params_check[$key]["header"]}</td>" .
+                         "</tr>\n" .
+                         "<tr><td><em>Item</em></td><td><em>Setting</em></td><td><em>Status</em></td></tr>";
+                 }
+
                 if ($params_check[$key]["result"] === true) {
                     echo "<tr>" . 
                          "<td>{$params_check[$key]["label"]}</td>" .
@@ -550,6 +578,7 @@ function output_table_body($step) {
                          "<td><img src='fail.png'></td>" . 
                          "</tr>\n";
                 }    
+                $h = $params_check[$key]["header"];
             }            
             break;
 

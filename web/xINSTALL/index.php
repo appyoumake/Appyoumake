@@ -164,7 +164,7 @@ require_once "utils.php" ;
         <meta charset="UTF-8" />
         <title>Mlab installation</title>
     </head>
-    <body>
+    <body class="step_<?php print $_REQUEST['next_step']; ?>">
         <div>
             <h1>Mlab installation</h1>
             <p><a href="info.html" target="_new">Click here for complete setup instructions.</a></p>
