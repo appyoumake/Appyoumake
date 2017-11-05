@@ -1,8 +1,9 @@
+
 (function($) {
 
   $.fn.gCalReader = function(options) {
     var $div = $(this);
-
+console.log("here");
     var defaults = $.extend({
         calendarId: 'en.usa#holiday@group.v.calendar.google.com',
         apiKey: 'Public_API_Key',
@@ -32,17 +33,18 @@
         data.items = data.items.slice(0, defaults.maxEvents);
 
         $.each(data.items, function(e, item) {
+console.log("here");
           var eventdate = item.start.dateTime || item.start.date ||'';
           var summary = item.summary || '';
 					var description = item.description;
 					var location = item.location;
-					s ='<div class="eventtitle">' + summary + '</div>';
-					s +='<div class="eventdate"> When: '+ formatDate(eventdate, defaults.dateFormat.trim()) +'</div>';
+					s ='<span class="mlab_ct_cal_eventtitle">' + summary + '</span>';
+					s +='<span class="mlab_ct_cal_eventdate">'+ formatDate(eventdate, defaults.dateFormat.trim()) +'</span>';
 					if(location) {
-						s +='<div class="location">Where: ' + location + '</div>';
+						s +='<span class="mlab_ct_cal_location">' + location + '</span>';
 					}
 					if(description) {
-						s +='<div class="description">'+ description +'</div>';
+						s +='<span class="mlab_ct_cal_description">'+ description +'</span>';
 					}
 					$($div).append('<li>' + s + '</li>');
         });
@@ -95,7 +97,7 @@
 
       } else {
         arrDate = /(\d+)\-(\d+)\-(\d+)/.exec(strDate);
-        time = 'Time not present in feed.';
+        time = '';
       }
 
       var year = parseInt(arrDate[1]);

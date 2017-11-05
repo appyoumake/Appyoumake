@@ -1,0 +1,29 @@
+/* main design */
+ul.mlab_ct_cal {
+    max-height: 50%;
+    overflow-y: auto;
+}
+
+ul.mlab_ct_cal li span.mlab_ct_cal_eventtitle {
+    display: block;
+    float: left;
+    clear: both;
+    max-width: 49%;
+    margin-top: 12px;
+}
+
+ul.mlab_ct_cal li span.mlab_ct_cal_eventdate {
+    display: block;
+    float: right;
+    max-width: 49%;
+}
+
+
+ul.mlab_ct_cal li span.mlab_ct_cal_location, ul.mlab_ct_cal li span.mlab_ct_cal_description {
+    display: block;
+    float: left;
+    clear: both;
+    width: 100%;
+    
+}
+

@@ -781,6 +781,8 @@ class FileManagement {
                     rename($files[0], str_replace($oldname, $newname, $files[0]));
                 }
             }
+            
+//here we handle pages when the move a page up the list (i.e. to a lower page number)
         } else if ($from_page > $to_page) {
             for ($p = $from_page; $p > $to_page; $p--) {
                 $oldname = substr("000" . ($p - 1), -3) . ".html";
@@ -800,8 +802,56 @@ class FileManagement {
         if ($locked) {
             file_put_contents($app_path . "$newname.$uid.lock", "");
         }
+        $this->updatePageLinks($app_path, $from_page, $to_page);
         return true;
     }    
+
+/**
+ * Updates all pages in an app when a page has been moved
+ * We always add internal links as this: mlab.api.navigation.pageDisplay(x); 
+ *    here x can be index, first, last, next, previous or a page number
+ *    we are only concerned with actual numbers, the rest are 
+ * 
+ * Need to loop through all pages, but only replace links of pages that have been moved
+ * We have pages 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 
+ * If 7 is moved to 3
+ *    7 = 3
+ *    3 to 6 = +1
+ * If 4 is moved to 9
+ *    4 = 9
+ *    5 to 9 = -1
+ */    
+    public function updatePageLinks($app_path, $from_page, $to_page) {
+        $match = "mlab.api.navigation.pageDisplay";
+        $files = glob ( $app_path . "/*.html" );
+        foreach ($files as $file) {
+            $lines = file($file);
+            for($i = 0; $i < sizeof($lines); $i++) {
+                if (strpos($lines[$i], $match) > 0) {
+                    $lines[$i] = preg_replace_callback(  "/$match\s*\((\d+)\)/", 
+                                            function($page) use ($from_page, $to_page, $match) {
+                                                $orig_page = intval($page[1]);
+                                                if ($orig_page == $from_page) {
+                                                    $new_page = $to_page;
+//moved a page "up", that is to a lower page number
+                                                } else if ($from_page > $to_page && $orig_page >= $to_page && $orig_page < $from_page) {
+                                                    $new_page = $orig_page + 1;
+                                                    
+//moved a page "down", that is to a higher page number
+                                                } else if ($from_page < $to_page && $orig_page > $from_page && $orig_page <= $to_page) {
+                                                    $new_page = $orig_page - 1;
+                                                } else {
+                                                    $new_page = $orig_page;
+                                                }
+                                                return "$match($new_page)";
+                                            },
+                                            $lines[$i]
+                        );
+                }
+                file_put_contents( $file, implode("", $lines)); //we carry along newlines, etc, so no need to add anything between lines here. Preserves win to lin/lin to win differences.
+            }
+        }
+    }
     
 /**
  * returns an associative array of file names and titles of the pages for an app
@@ -1582,6 +1632,7 @@ class FileManagement {
         return md5_file($outfile);
     }
  
+    
 //functions that replicate linux commands
     
 /**

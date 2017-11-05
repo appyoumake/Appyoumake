@@ -577,7 +577,7 @@ Mlab_dt_api.prototype = {
             solo: false,
             content:    {text: content, title: title, button: true },
             position:   { my: myPosQtip, at: 'rightMiddle', viewport: $(window) },
-            show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
+            show:       { ready: true, modal: { on: true, blur: false, escape: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c, tip: true },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el, event, api) } },
@@ -973,11 +973,7 @@ Mlab_dt_api.prototype = {
 
 // remove the link from the currently selected text
     cancelLink: function () {
-        var el = this.getSelTextParentLinkElement();
-        if (el.length > 0) {
-            el.select();
-            document.execCommand('unlink');
-        }
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents().unwrap();
         mlab.dt.api.closeAllPropertyDialogs();
     },
  
