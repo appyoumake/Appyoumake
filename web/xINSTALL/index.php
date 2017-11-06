@@ -37,8 +37,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 //if finished, delete all files
     if (array_key_exists('completed', $_REQUEST) && $_REQUEST['completed'] == 'ALL_OK') {
-        die("NOW THE FOLDER WOULD BE DELETED...");
-        //rmall("web/INSTALL");
+        rmall("web/INSTALL");
         header("Location: http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://" . "{$_SERVER['HTTP_HOST']}/");
         return;
     }
@@ -87,21 +86,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 }
                 file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params));
                 $current_step = STEP_CHECK_PARAMS;
-                break;
-
-    //import the empty database
-            case "import_empty_database":
-    //get password etc from YAML file
-                $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
-                $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab_empty.sql");
-                $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
-                if ($mysqli->connect_errno) {
-                    $error = "Database not found or user credentials incorrect: " . $mysqli->connect_error;
-                }
-                if ($result = $mysqli->query($sql)) {
-                    $result->close();
-                }
-                $current_step = STEP_CHECK_DATA;
                 break;
 
             case "import_templates":
@@ -203,7 +187,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 //Then the libs and server versions checks
                         case STEP_CHECK_DATA;
-                            output_table(STEP_CHECK_DATA, $current_step, 2, "Mlab data", $fail[STEP_CHECK_DATA], "Mlab requires a basic database and a set of templates and components to work correctly. Upload the files containing the data, templates and components below"); 
+                            output_table(STEP_CHECK_DATA, $current_step, 2, "Mlab data", $fail[STEP_CHECK_DATA], "Mlab requires a basic database and a set of templates and components to work correctly. Upload the files containing the data, templates and components below."); 
                             break;
                     }
                 ?>

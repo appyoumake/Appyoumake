@@ -241,9 +241,55 @@ function import_empty_database() {
         if ($info["num_tables"] >= $data_checks["import_empty_database"]["check"]) {
             return true;
         } else if ($info["num_tables"] == 0) {
-            return "Empty database, import Mlab data manually following the instructions below or <a href='index.php?fix=import_empty_database'>click here</a>.";
+            return "Empty database, import Mlab data manually following the instructions below.";
         } else {
-            return "Incorrect number of tables, please verify by comparing database '" . $existing_params[database_name] . "' with the content of 'web/INSTALL/mlab_empty.sql'.";
+            return "Incorrect number of tables, please verify by comparing database '" . $existing_params[database_name] . "' with the content of 'web/INSTALL/mlab.sql'.";
+        }
+    } else {
+        return "Database not found or user credentials incorrect";
+    }
+}
+
+//checking to see if a template has been added
+function import_templates() {
+    global $data_checks;
+//get password etc from YAML file
+    $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
+    $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
+    if ($mysqli->connect_errno) {
+        return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+    }
+    $sql = "SELECT count(*) AS num_templates FROM template";
+    if ($result = $mysqli->query($sql)) {
+        $info = $result->fetch_array(MYSQLI_ASSOC);
+        $result->close();
+        if ($info["num_templates"] >= $data_checks["import_templates"]["check"]) {
+            return true;
+        } else {
+            return 'To use Mlab you need at least one template. If you have one or more templates available as a ZIP file you can upload this file now. <form action="index.php?fix=import_templates" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>';
+        }
+    } else {
+        return "Problem connecting to the database.";
+    }
+}
+
+//checking to see if one or more components has been added
+function import_components() {
+    global $data_checks;
+//get password etc from YAML file
+    $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
+    $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
+    if ($mysqli->connect_errno) {
+        return "Database not found or user credentials incorrect: " . $mysqli->connect_error;
+    }
+    $sql = "SELECT count(*) AS num_components FROM component";
+    if ($result = $mysqli->query($sql)) {
+        $info = $result->fetch_array(MYSQLI_ASSOC);
+        $result->close();
+        if ($info["num_components"] >= $data_checks["import_components"]["check"]) {
+            return true;
+        } else {
+            return 'To use Mlab you need at least one component. If you have one or more components available as a ZIP file you can upload this file now. <form action="index.php?fix=import_components" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>';
         }
     } else {
         return "Database not found or user credentials incorrect";
@@ -285,57 +331,67 @@ function import_files($type) {
 //pick up IDs of all the groups that exists so we can create acces records for all of them
     $sql = "SELECT id FROM grp";
     if ($result = $db_conn->query($sql)) {
-        $group_ids = $result->fetch_all();
-    }    
+        $group_ids = $result->fetch_all(MYSQLI_ASSOC);
+    }
     
 //now loop through all the folders in the directory and populate the database
     $fields = array("tooltip" => "description", "name" => "name", "version" => "version");
     $data = array();
     foreach (new DirectoryIterator($unzip_path) as $dir) {
         if($dir->isDot()) continue;
-        $dir_name = $dir->getPathname();
-        if ( file_exists($dir_name . "/conf.yml") ) {
-            $yaml = new Parser();
-            $temp = $yaml->parse(@file_get_contents($dir_name . "/conf.yml"));
-            foreach ($fields as $yml_field => $db_field) {
-                 if (isset($temp[$yml_field])) {
-                    if (is_array($temp[$yml_field])) {
-                        if (isset($temp[$yml_field][$locale])) {
-                            $data[$db_field] = $temp[$yml_field][$locale];
+        
+//only add if not already in DB
+        $existing = false;
+        $sql = "SELECT count(*) AS num FROM $type WHERE path = '" . $dir->getFilename() . "'";
+        if ($result = $db_conn->query($sql)) {
+            $existing = $result->fetch_array(MYSQLI_ASSOC)["num"];
+//            $existing = $info["exists"];
+            $result->close();
+        }
+        if (!$existing) {
+            $dir_name = $dir->getPathname();
+            if ( file_exists($dir_name . "/conf.yml") ) {
+                $temp = Spyc::YAMLLoad($dir_name . "/conf.yml");
+                foreach ($fields as $yml_field => $db_field) {
+                     if (isset($temp[$yml_field])) {
+                        if (is_array($temp[$yml_field])) {
+                            if (isset($temp[$yml_field][$locale])) {
+                                $data[$db_field] = $temp[$yml_field][$locale];
+                            }
+                        } else {
+                            $data[$db_field] = $temp[$yml_field];
                         }
-                    } else {
-                        $data[$db_field] = $temp[$yml_field];
                     }
                 }
-            }
-            $data["path"] = $dir->getFilename();
-            $data["enabled"] = 1;
-            if ($type == "component") {
-                $data["order_by"] = $order_by_counter;
-                $order_by_counter++;
-            }
-            $field_names = implode(",", array_keys($data));
-            $field_values = implode("','", array_values($data));
-            $sql = "INSERT INTO $type ($field_names) VALUES ('$field_values')";
-            
-            if ($db_conn->query($sql) !== TRUE) {
-                return "Unable to add $type data";
-            }
-            
-//now loop through the list of group ids and make sure all have access to the added template/component
-            $entity_id = $conn->insert_id;
-            foreach ($group_ids as $group_id) {
-                if ($type == "template") {
-                    $sql = "INSERT INTO {$type}s_groups ({$type}_id, groups_id) VALUES ($entity_id, $group_id)";
-                    $sql = "INSERT INTO {$type}s_groups_data ({$type}_id, groups_id, access_state) VALUES ($entity_id, $group_id, 3)";
-                } else {
-                    $sql = "INSERT INTO {$type}s_groups ({$type}_id, groups_id, access_state) VALUES ($entity_id, $group_id, 3)";
+                $data["path"] = $dir->getFilename();
+                $data["enabled"] = 1;
+                if ($type == "component") {
+                    $data["order_by"] = $order_by_counter;
+                    $order_by_counter++;
                 }
+                $field_names = implode(",", array_keys($data));
+                $field_values = implode("','", array_values($data));
+                $sql = "INSERT INTO $type ($field_names) VALUES ('$field_values')";
+
                 if ($db_conn->query($sql) !== TRUE) {
-                    return "Unable to give group access to $type";
-                }                
-            }
-        }
+                    return "Unable to add $type data";
+                }
+
+    //now loop through the list of group ids and make sure all have access to the added template/component
+                $entity_id = $db_conn->insert_id;
+                foreach ($group_ids as $row) {
+                    if ($type == "template") {
+                        $sql = "INSERT INTO {$type}s_groups ({$type}_id, group_id) VALUES ($entity_id, $row[id]);" .
+                               "INSERT INTO {$type}s_groups_data ({$type}_id, group_id, access_state) VALUES ($entity_id, $row[id], 3);";
+                    } else {
+                        $sql = "INSERT INTO {$type}s_groups ({$type}_id, group_id, access_state) VALUES ($entity_id, $row[id], 3);";
+                    }
+                    if ($db_conn->multi_query($sql) !== TRUE) {
+                        return "Unable to give group access to $type";
+                    }                
+                }
+            } //end for loop through directory
+        } //end check if already exists
     }
 
 }

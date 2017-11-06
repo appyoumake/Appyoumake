@@ -21,8 +21,8 @@ Sinett\MLAB\BuilderBundle\Entity\Component:
     properties:
         zip_file:
             - File:
-                maxSize: 10M
-                maxSizeMessage: Maximum size for upload is 10MB
+                maxSize: 20M
+                maxSizeMessage: Maximum size for upload is 20MB
                 mimeTypes: application/zip
                 mimeTypesMessage: You can only upload ZIP files for components
                 
@@ -30,8 +30,8 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
     properties:
         zip_file:
             - File:
-                maxSize: 5M
-                maxSizeMessage: Maximum size for upload is 5MB
+                maxSize: 20M
+                maxSizeMessage: Maximum size for upload is 20MB
                 mimeTypes: application/zip
                 mimeTypesMessage: You can only upload ZIP files for templates
                 

@@ -617,7 +617,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         <pre>mysqladmin -u root -p create {mlab_database}</pre>
         <pre>mysql -u root -p -e "GRANT ALL PRIVILEGES ON mlab.* TO '{mlab_database}'@'localhost' IDENTIFIED BY '{mlab_db_password}'; FLUSH PRIVILEGES;"</pre>
         <p>Next we need to upload the table defisitions and basic login data data into the new database.</p>
-        <pre>mysql -u root -p mlab &lt; /{mlab_code}/mlab_empty.sql</pre>
+        <pre>mysql -u root -p mlab &lt; /{mlab_code}/web/INSTALL/mlab.sql</pre>
         <p>Both databases contains a user with "superadmin" credentials, the initial login is &quot;admin@mlab.domain&quot; with password &quot;mlab_password&quot;. Use this to add your own super admin user and delete the default user, or at the very least change the password for the default user.</p>
 <!--/import_empty_database-->
         

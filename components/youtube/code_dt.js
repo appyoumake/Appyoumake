@@ -88,7 +88,7 @@
             $.youtubeAPI( $('input#mlab_cp_youtube_search').val() );
         });
 
-/* Youtube Arama Fonksiyonu */
+//main search function
         $.youtubeAPI = function(search_term){
             var results = $('#mlab_cp_youtube_results');
             results.html('Searching...');
@@ -118,9 +118,16 @@
 // Add youtube code to app, and resize it to fill whole width
         $.youtubeSelect = function(youtube_id){
             var container = mlab.dt.components.youtube.code.getHTMLElement(local_el);
-            container.html('<iframe class="mc_figure mc_interactive mc_timebased" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen ></iframe>');
-            mlab.dt.api.display.setAspectRatio(local_el, "16:9");
-            mlab.dt.api.display.setSize(local_el, "large");
+//if they have already added a vide here we just replace the ID
+            var iframe = container.find("iframe");
+            if (iframe.length > 0) {
+                iframe.attr("src", '//www.youtube.com/embed/' + youtube_id);
+                mlab.dt.api.closeAllPropertyDialogs();
+            } else {
+                container.html('<iframe class="mc_figure mc_interactive mc_timebased" src="//www.youtube.com/embed/' + youtube_id + '" frameborder="0" allowfullscreen ></iframe>');
+                mlab.dt.api.display.setAspectRatio(local_el, "16:9");
+                mlab.dt.api.display.setSize(local_el, "large"); 
+            }
         }
     };
     

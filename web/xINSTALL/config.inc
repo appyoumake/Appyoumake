@@ -313,10 +313,12 @@ $data_checks = array(
     
     "import_templates" =>       array(  "label"     => "Import templates", 
                                         "help"      => "To use Mlab you need at least one template. If you have one or more templates available as a ZIP file you can upload this file now." . 
-                                                       '<form action="index.php?fix=import_templates" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>' ),
+                                                       '<form action="index.php?fix=import_templates" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>',
+                                        "check"     => 1),
     
     "import_components" =>      array(  "label"     => "Import components", 
                                         "help"      => "To use Mlab you need at least one component. If you have one or more components available as a ZIP file you can upload this file now." . 
-                                                       '<form action="index.php?fix=import_components" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>' ),
+                                                       '<form action="index.php?fix=import_components" method="post" accept-charset="UTF-8" enctype="multipart/form-data"><input type="file" name="mlab_upload" accept=".zip"><input type="submit"></form>',
+                                        "check"     => 1 ),
     
 );
