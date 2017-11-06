@@ -30,195 +30,195 @@ $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 //TODO: add about trailing slashes
 $params_check = array (
     "parameters__database_driver" => array(
-        "label"     => "DATABASE: PHP database driver to use <span>Can be one of pdo_mysql, pdo_sqlite, pdo_pgsql, pdo_oci, oci8, ibm_db2, pdo_ibm, pdo_sqlsrv, mysqli, drizzle_pdo_mysql or sqlsrv</span>",
+        "label"     => "PHP database driver to use <span>This selection depends on what database server you plan to use with Mlab. It can be one of these: pdo_mysql, pdo_sqlite, pdo_pgsql, pdo_oci, oci8, ibm_db2, pdo_ibm, pdo_sqlsrv, mysqli, drizzle_pdo_mysql or sqlsrv.</span>",
         "acceptable" => "pdo_mysql|pdo_sqlite|pdo_pgsql|pdo_oci|oci8|ibm_db2|pdo_ibm|pdo_sqlsrv|mysqli|drizzle_pdo_mysql|sqlsrv",
         "header" => "Database"
         ),
     
     "parameters__database_host" => array(  
-        "label"     => "DATABASE: URL/IP address of server<span>This is the server that will store the Mlab data, if it is on the same server as the Mlab webserver you use localhost here</span>",
+        "label"     => "URL/IP address of database server<span>This is the server that will store the Mlab data. If it is on the same server as the Mlab webserver you use localhost here.</span>",
         "acceptable" => "URL",
         "header" => "Database"
         ),
     
     "parameters__database_port" => array(  
-        "label"     => "TCP/IP port of the database server that will store the Mlab data, set to null if using sockets",
+        "label"     => "TCP/IP port of the database server<span>This is the server that will store the Mlab data. If you are using sockets (this is the most common setup for MySQL for instance) leave this empty.</span>",
         "acceptable" => "PORT",
         "null" => true,
         "header" => "Database"
         ),
     
     "parameters__database_name" => array(  
-        "label"     => "Name of the database to use, create this manually",
+        "label"     => "Name of the database to use<span>You need to create this database manually, using the relevant database management tools for your chosen database server.</span>",
         "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$",
         "header" => "Database"
         ),
     
     "parameters__database_user" => array(  
-        "label"     => "Name of user for database login",
+        "label"     => "Name of user for database login<span>You need to create this user using the relevant database management tools for your chosen database server. You must ensure that the user is set up with full access to the database you named in the setting above.</span>",
         "acceptable" => "^[a-zA-Z][a-zA-Z0-9_]{0,63}$",
         "header" => "Database"
         ),
     
     "parameters__database_password" => array(  
-        "label"     => "Password of user for database login",
+        "label"     => "User password for database login<span>The password specified for the user you named in the setting above. By default Mlab requires a password between 8 and 20 characters which should include upper and lower letters and numbers. If you need to use a specific password that does not fit this pattern or you are using on a local PC for development only you can override this requirement.</span>",
         "acceptable" => "PASSWORD",
         "header" => "Database"
         ),
     
-    "parameters__mailer_transport" => array(  
-        "label"     => "How to send emails (smtp, mail, sendmail or gmail)",
-        "acceptable" => "smtp|mail|sendmail|gmail",
-        "header" => "Email"
+    "parameters__mailer_host" => array(  
+        "label"     => "URL/IP address of email server for password reset<span>You can set up Mlab to allow users to re-set their login passwords if they forget it. When this feature is enabled, users will receive an email with a link to click to reset their password. If it is on the same server as the Mlab webserver you use localhost here.</span>",
+        "acceptable" => "URL",
+        "header" => "Email details for user registration and password reset"
         ),
     
-    "parameters__mailer_host" => array(  
-        "label"     => "URL/IP address of the email server to use",
-        "acceptable" => "URL",
-        "header" => "Email"
+    "parameters__mailer_transport" => array(  
+        "label"     => "How to send emails<span>Here you specify how the server from the previous step sends verification emails. You can use smtp, mail, sendmail or gmail. If you do not plan to use this feature you can use smtp.</span>",
+        "acceptable" => "smtp|mail|sendmail|gmail",
+        "header" => "Email details for user registration and password reset"
         ),
     
     "parameters__mailer_user" => array(  
-        "label"     => "Name of user for email server login",
+        "label"     => "Name of user for email server login<span>Depending on which method for sending you selected above, you may need to specify a user account that has access to send emails. If no user is required (for instance with SMTP) leave this empty.</span>",
         "acceptable" => "EMAIL",
-        "header" => "Email"
+        "header" => "Email details for user registration and password reset"
         ),
     
     "parameters__mailer_password" => array(  
-        "label"     => "Password of user for email server login",
+        "label"     => "Password of user for email server login<span>The password specified for the user you named in the setting above, if required. Leave this empty if no user is required. By default Mlab requires a password between 8 and 20 characters which should include upper and lower letters and numbers. If you need to use a specific password that does not fit this pattern or you are using on a local PC for development only you can override this requirement.</span>",
         "acceptable" => "PASSWORD",
         "null" => true,
-        "header" => "Email"
+        "header" => "Email details for user registration and password reset"
         ),
     
     "parameters__locale" => array(  
-        "label"     => "Which locale to use, for instance en_GB. Can be overridden by individual Mlab users when they log in",
+        "label"     => "Which locale to use<span>Mlab support the use of different languages in the user interface, for instance en_GB. You can specify the default language to use here, it can be overridden by individual Mlab users when they log in. Currently nb_NO and en_GB is supported, otehr languages can be supported by providing your own translations</span>",
         "acceptable" => "nb_NO|en_GB",
         "header" => "Language & security"
         ),
     
     "parameters__secret" => array(  
-        "label"     => "A random string used to encrypt passwords, etc., on this site.",
+        "label"     => "A random string used for security purposes<span>The string specified here is used as a 'salt' to encrypt passwords, etc. on this site. If you leave this empty, Mlab will generate a random string for you. By default Mlab requires a string between 8 and 20 characters which should include upper and lower letters and numbers. If you need to use a specific string that does not fit this pattern or you are using on a local PC for development only you can override this requirement.</span>",
         "acceptable" => "PASSWORD",
         "header" => "Language & security"
         ),
     
     "parameters__mlab__paths__app" => array(
-        "label"     => "Full path to where Mlab created apps should be stored",
-        "acceptable" => "PATH",
-        "header" => "Paths and URLs to Mlab elements"
-        ),
-    
-    "parameters__mlab__paths__component" => array(
-        "label"     => "Full path to where Mlab components should be installed",
-        "acceptable" => "PATH",
-        "header" => "Paths and URLs to Mlab elements"
-        ),
-    
-    "parameters__mlab__paths__template" => array(
-        "label"     => "Full path to where Mlab templates should be installed",
-        "acceptable" => "PATH",
-        "header" => "Paths and URLs to Mlab elements"
-        ),
-    
-    "parameters__mlab__paths__icon" => array(
-        "label"     => "Full path to where images used to generate app icons should be installed",
+        "label"     => "Full path to where Mlab created apps should be stored<span>For each app that is created in Mlab, Mlab uses a top level directory to store files in. This is the path to the directory where Mlab generates these directories. For instance /var/www/mlab_elements/apps/.</span>",
         "acceptable" => "PATH",
         "header" => "Paths and URLs to Mlab elements"
         ),
     
     "parameters__mlab__urls__app" => array(
-        "label"     => "Path of URL to where Mlab created apps are found",
+        "label"     => "Path of URL to where Mlab created apps are found<span>This is the part of the URL used in the web browser that maps to the directory specified in the previous setting. For instance, if you specify /mlab_elements/apps/ here, then this path (appended to the URL of your Mlab installation, for example https://mlab.mydomain.com) should point to /var/www/mlab_elements/apps/.</span>",
         "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
+        "header" => "Paths and URLs to Mlab elements"
+        ),
+    
+    "parameters__mlab__paths__component" => array(
+        "label"     => "Full path to where Mlab components should be installed<span>Mlab uses components to build an app. Each component is stored in a separate directory. This is the path to the directory where Mlab stores these component directories. For instance /var/www/mlab_elements/components/.</span>",
+        "acceptable" => "PATH",
         "header" => "Paths and URLs to Mlab elements"
         ),
     
     "parameters__mlab__urls__component" => array(
-        "label"     => "External URL to where Mlab components should be installed",
+        "label"     => "External URL to where Mlab components should be installed<span>This is the part of the URL used in the web browser that maps to the directory specified in the previous setting. For instance, if you specify /mlab_elements/components/ here, then this path (appended to the URL of your Mlab installation, for example https://mlab.mydomain.com) should point to /var/www/mlab_elements/components/.</span>",
         "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
+        "header" => "Paths and URLs to Mlab elements"
+        ),
+    
+    "parameters__mlab__paths__template" => array(
+        "label"     => "Full path to where Mlab templates should be installed<span>Mlab uses templates to provide the look and feel to different apps. Each template is stored in a separate directory. This is the path to the directory where Mlab stores these template directories. For instance /var/www/mlab_elements/templates/</span>",
+        "acceptable" => "PATH",
         "header" => "Paths and URLs to Mlab elements"
         ),
     
     "parameters__mlab__urls__template" => array(
-        "label"     => "External URL to where Mlab templates should be installed",
+        "label"     => "External URL to where Mlab templates should be installed<span>This is the part of the URL used in the web browser that maps to the directory specified in the previous setting. For instance, if you specify /mlab_elements/templates/ here, then this path (appended to the URL of your Mlab installation, for example https://mlab.mydomain.com) should point to /var/www/mlab_elements/templates/.</span>",
         "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
         "header" => "Paths and URLs to Mlab elements"
         ),
     
+    "parameters__mlab__paths__icon" => array(
+        "label"     => "Full path to where images used to generate app icons should be installed<span>Mlab can use a combination of foreground and background PNG files to create icons for different apps. This is the path to the directory where Mlab stores these image files, inside this directory there should be a foreground and background directory with the relevant icons. For instance /var/www/mlab_elements/icons/</span>",
+        "acceptable" => "PATH",
+        "header" => "Paths and URLs to Mlab elements"
+        ),
+    
     "parameters__mlab__urls__icon" => array(
-        "label"     => "External URL to where images used to generate app icons should be installed",
+        "label"     => "External URL to where images used to generate app icons should be installed<span>This is the part of the URL used in the web browser that maps to the directory specified in the previous setting. For instance, if you specify /mlab_elements/icons/ here, then this path (appended to the URL of your Mlab installation, for example https://mlab.mydomain.com) should point to /var/www/mlab_elements/icons/.</span>",
         "acceptable" => "^\/[a-zA-Z0-9_]{1,32}\/[a-zA-Z0-9_]{1,32}\/$",
         "header" => "Paths and URLs to Mlab elements"
         ),
     
     "parameters__mlab__urls__icon_font" => array(
-        "label"     => "Path of URL of a web font that can be used when creating icons for apps",
+        "label"     => "Path of URL of a web font that can be used when creating icons for apps<span>Typically this would be put in the /web/css directory that is created as part of the Mlab source code installation. You can find free, open source, OTF fonts on the Internet, download this and place it in the suggested directory and update this URL with the full path to teh font, including the filename of the font. For instance /css/oswald.otf.</span>",
         "acceptable" => "LOCALPATH",
         "header" => "Paths and URLs to Mlab elements"
         ),
     
     "parameters__mlab__ws_socket__url_client" => array(  
-        "label"     => "URL for web socket server used by Mlab editor to communicate with server",
+        "label"     => "URL for web socket server used by Mlab editor to communicate with server<span>A small Websockets server is included with Mlab, this is required to talk to other Mlab services such as the app compilation service. Here you specify the URL, including the protocol (ws or wss) and port, that the web browser will use to connect to this websocket server. For example ws://mlab.mydomain.com:8080/</span>",
         "acceptable" => "WS_URL_PORT",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__ws_socket__url_server" => array(
-        "label"     => "URL for web socket server used to communicate with compiler and app market services",
+        "label"     => "URL for web socket server used to communicate with compiler and app market services<span>Same as the previous setting, but for the server side connection using http. If you run this websocket server on the same server as Mlab is running you wopuld use something like this: http://localhost:8080/. As you see the ports are the same on this and the previous setting.</span>",
         "acceptable" => "HTTP_URL_PORT",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__compiler_service__supported_platforms" => array(
-        "label"     => "List of mobile platforms (for instance Android) supported by Cordova for this installation of Mlab",
+        "label"     => "List of mobile platforms (for instance Android) that have been installed<span>Mlab is using Cordova to create native apps from the HTML5 code generated in Mlab. The user that is building an app will see a list of mobile platforms they can create the app for, this list uses this setting to determine which platforms are available. Separate multiple options with a comma, for example ios,android.</span>",
         "acceptable" => "ios|android",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__compiler_service__url" => array(
-        "label"     => "URL to compilation service",
+        "label"     => "URL to compilation service<span>The compilation service is a NodeJS app, Mlab needs to know where to find it to control it through an API. You specify the domain name and port here, for instance localhost:8282 or cs.mlab.no:8000.</span>",
         "acceptable" => "URL_PORT",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__compiler_service__protocol" => array(  
-        "label"     => "Protocol (http/https) to use to connect to compilation service",
+        "label"     => "Protocol (http or https) to use to connect to compilation service<span>Here you enter http or https (for secure connections), depending on your setup. If you are running the compiler service on a remote computer we recommend using https.</span>",
         "acceptable" => "http|https",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__compiler_service__passphrase" => array(  
-        "label"     => "Unique passphrase to access compilation service",
+        "label"     => "Unique passphrase to access compilation service<span>The passphrase specified here is use when communicating with the Mlab <a href='info_cs.html'>compiler service</a>. You need to specify a matching passphrase in the configuration of the compiler service, otherwise you cannot compile apps. By default Mlab requires a password between 8 and 20 characters which should include upper and lower letters and numbers. If you need to use a specific password that does not fit this pattern or you are using on a local PC for development only you can override this requirement.</span>",
         "acceptable" => "PASSWORD",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__compiler_service__app_creator_identifier" => array(
-        "label"     => "Unique, reverse domain, identifier, for instance 'com.test.app'",
+        "label"     => "Unique, reverse domain, identifier<span>This is used, together with a unique ID Mlab generates for each app, to identify your apps on different mobile app vendors market places (App Store, Google Play, etc). This is like a URL, but 'back to front', and typically uses your company name + a app 'suffix'. So for apps developed by ffi.no we would use, this would be no.ffi.apps</span>",
         "acceptable" => "URL",
         "header" => "Compiler service"
     ),
     
     "parameters__mlab__compiler_service__rsync_url" => array(
-        "label"     => "URL to use to upload files to compiler service",
+        "label"     => "URL to use to upload files to compiler service<span>The URL should be in the format username@url::cs_inbox. username = the name of the user to log in as, url = the URL to connect to, for instance localhost or my.server.com. cs_inbox = the name of the heading in the rsync config file that has all the settings for receiving uploaded file. See the <a href='info_cs.html#user-content-configure-the-rsync-servicedaemon'>compiler service documentation</a>.</span>",
         "acceptable" => "RSYNC_URL",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__compiler_service__rsync_password" => array(
-        "label"     => "Password to use to upload files to compiler service",
+        "label"     => "Password to use to upload files to compiler service<span>The password specified here must match the password specified in the rsync config file (for instance /etc/rsyncd.conf) on the server running the <a href='info_cs.html#user-content-configure-the-rsync-servicedaemon'>compiler service</a>. By default Mlab requires a password between 8 and 20 characters which should include upper and lower letters and numbers. If you need to use a specific password that does not fit this pattern or you are using on a local PC for development only you can override this requirement.</span>",
         "acceptable" => "PASSWORD",
         "header" => "Compiler service"
         ),
     
     "parameters__mlab__convert__python_bin" => array(  
-        "label"     => "Path to Python executable",
+        "label"     => "Path to Python executable<span>The full path to the Python executable on your system. For instance /usr/bin/python.</span>",
         "acceptable" => "PATH",
         "header" => "Paths to system utilities"
         ),
     
     "parameters__mlab__compiler_service__rsync_bin" => array(
-        "label"     => "Path to the Rsync executable file",
+        "label"     => "Path to the Rsync executable file<span>The full path to the rsync executable on your system. For instance /usr/bin/rsync. This is used to upload app source code to the compiler service.</span>",
         "acceptable" => "PATH",
         "header" => "Paths to system utilities"
         ),

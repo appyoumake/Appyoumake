@@ -73,13 +73,13 @@ function check_version($check_info) {
 }
 
 function internet_present() {
-    $conn = @fsockopen("www.google.com", 80); 
-    if ($conn){
+    $conn = @fsockopen("www.google.com", 80);
+    if ($conn) {
         fclose($conn);
         return true;
-    }else{
+    } else {
         return "No connection";
-    }   
+    } 
 }
 
 //checks for regularly formatted domain ammes, app addresses + local domain names that can be anything (using gethostbyname($domain_name))
@@ -240,8 +240,10 @@ function import_empty_database() {
         $result->close();
         if ($info["num_tables"] >= $data_checks["import_empty_database"]["check"]) {
             return true;
+        } else if ($info["num_tables"] == 0) {
+            return "Empty database, import Mlab data manually following the instructions below or <a href='index.php?fix=import_empty_database'>click here</a>.";
         } else {
-            return "Incorrect number of tables, please verify by comparing database '$mysql_database' with the content of 'web/INSTALL/mlab_empty.sql'.";
+            return "Incorrect number of tables, please verify by comparing database '" . $existing_params[database_name] . "' with the content of 'web/INSTALL/mlab_empty.sql'.";
         }
     } else {
         return "Database not found or user credentials incorrect";

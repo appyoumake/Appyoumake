@@ -22,9 +22,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 // EDIT SETTINGS IN config.inc FILE
 
 //include additional files/libraries
-require_once "config.inc";
-require_once "spyc.php"  ;
-require_once "utils.php" ;
+    require_once "config.inc";
+    require_once "spyc.php"  ;
+    require_once "utils.php" ;
 
 //set up the core vairables, the fail array is used to determine if a step has had a failed check
     $www_user = posix_getpwuid(posix_geteuid())['name'];
@@ -93,7 +93,7 @@ require_once "utils.php" ;
             case "import_empty_database":
     //get password etc from YAML file
                 $existing_params = Spyc::YAMLLoad('app/config/parameters.yml')["parameters"];
-                $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab.sql");
+                $sql = file_get_contents(getcwd() . "/web/INSTALL/mlab_empty.sql");
                 $mysqli = new mysqli($existing_params["database_host"], $existing_params["database_user"], $existing_params["database_password"], $existing_params["database_name"]);
                 if ($mysqli->connect_errno) {
                     $error = "Database not found or user credentials incorrect: " . $mysqli->connect_error;
@@ -114,16 +114,17 @@ require_once "utils.php" ;
                 $current_step = STEP_CHECK_DATA;
                 break;
 
-            case "assetic_update":
+/*            case "assetic_update":
                 putenv($system_path);
                 $p = trim(shell_exec("app/console --env=prod assetic:dump"));
+                $p = trim(shell_exec("app/console --env=dev assetic:dump"));
                 $current_step = STEP_CHECK_DATA;
                 break;
 
             case "bootstrap_symfony":
                 $p = trim(shell_exec("bin/composer.phar run-script post-update-cmd"));
                 $current_step = STEP_CHECK_DATA;
-                break;
+                break;*/
         } //finished with tasks, now display current state
     }
     
@@ -190,14 +191,14 @@ require_once "utils.php" ;
                         
 //Then the permissions required for folders that are NOT created by symfony, we have checked for access in the init() function 
                         case STEP_CHECK_PERMISSIONS:
-                            print "<form action='index.php?fix=save_parameters' method='post' accept-charset='UTF-8' id='parameters'>";
                             output_table(STEP_CHECK_PERMISSIONS, $current_step, 2, "File and directory permissions", $fail[STEP_CHECK_PERMISSIONS], "For Mlab to work correctly, and for this installation page to be able to update settings, you must create the directories indicated below and assign the user <em>$www_user</em> as the owner of the files and directories listed here; and the owner must then have write access to these directories and files. Check the status of the access below and continue when all entries have write access."); 
-                            print "</form>";
                             break;
                 
 //third we get the parameters such as paths etc that we can update, if they are not specified we do not know what folders to check for permissions 
                         case STEP_CHECK_PARAMS:
+                            print "<form action='index.php?fix=save_parameters' method='post' accept-charset='UTF-8' id='parameters'>";
                             output_table(STEP_CHECK_PARAMS, $current_step, 3, "Mlab configuration settings", $fail[STEP_CHECK_PARAMS], "Mlab uses various settings to let it know where to store files, how to connect to databases etc. Please fill in and verify all the required entries below and save them before going to next step."); 
+                            print "</form>";
                             break;
 
 //Then the libs and server versions checks
