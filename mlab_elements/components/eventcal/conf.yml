@@ -1,0 +1,40 @@
+# Configuration file for calendar component
+
+autorun_on_create: custom_set_options
+category: serviceconnections
+category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
+# compatible (array of Strings, optional)
+credentials: ["apiKy"]
+# custom (Object (key/value style), required if custom functions are written in the code_dt.js code, see comment)
+developer: Arild Bergh @ Sinett/FFI.no
+# display_dependent (Boolean, optional)
+extended_name: { nb_NO: Google Kalender, en_GB: Google Calendar, default: Google Calendar }
+# extended_tooltip 
+# feature (Boolean, optional)
+footer_tip: { nb_NO: Google Kalender brukes for a vise en offentlig kalender, en_GB: Google calendar is used to share a public calendar, default: Google calendar is used to share a public calendar }
+html: <ul class="mlab_ct_cal mc_text mc_display mc_medium"></ul>
+# inherit (String, optional)
+# messages (Array of objects of strings, optional)
+name: eventcal
+# paste_allowed (Boolean, optional)
+# placeholder (String, optional)
+# plugins cordova-sms-plugin
+# process_keypress (Boolean, optional)
+required_libs: { designtime: ["cal.css"], runtime: ["cal.css"]}
+# storage_plugin (Boolean or array of strings, required if component is a storage plugin)
+tooltip: { nb_NO: Google Kalender, en_GB: Google Calendar, default: Google Calendar }
+# unique (Boolean, optional)
+version: 0.9
+# visible (Boolean)
+
+custom:
+    dateFormat: ShortDate+ShortTime
+    apiKey: AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE
+#    calendar: hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com
+# 2017-11-01T00:00:00Z
+    calendarId: 'en.usa#holiday@group.v.calendar.google.com'
+    errorMsg: 'No events in calendar'
+    set_options:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Rediger alternativer, en_GB: Edit options, default: Edit options }
+        order: 1

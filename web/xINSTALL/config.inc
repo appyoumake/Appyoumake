@@ -296,8 +296,8 @@ $data_checks = array(
                                         "check"     => "app/bootstrap.php.cache"), 
     
     "libraries_js" =>           array(  "label"     => "Javascript libraries", 
-                                        "help"      => "These Javascript libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.uploadfile-4.0.11'",
-                                        "check"     => "bowser.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-4.0.11.js"), 
+                                        "help"      => "These Javascript libraries must be installed to be able to use Mlab: 'bowser, jquery.contextmenu, jquery, jquery.ddslick, jquery.mobile, jquery-qrcode, jquery.qtip, spin.js, jquery.spin, jquery-ui, jquery.form.js, jquery.uploadfile-4.0.11'",
+                                        "check"     => "bowser.js,jquery.form.js,jquery.contextmenu-1.0.0.js,jquery-2.1.4.js,jquery.ddslick-1.0.0.js,jquery.mobile-1.4.5.js,jquery.qrcode-0.12.0.js,jquery.qtip-2.2.0.js,spin.js,jquery.spin.js,jquery.ui-1.11.4.js,jquery.uploadfile-4.0.11.js"), 
     
     "assetic_update" =>         array( "label"     => "Javascript protection", 
                                         "help"      => "The Javascript libraries created by FFI must be protected using UglifyJS as per your contractual obligations. To do this you need to generate a single combined 'asset' JavaScript file from the original code. If you do not do this Mlab will fail to work.",
