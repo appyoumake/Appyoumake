@@ -263,7 +263,7 @@ Mlab_dt_api.prototype = {
             content.append( $('<p />',      {                                          class: "mlab_dt_text_info",                  text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"] }) );
             content.append( $('<select />', { id: "mlab_cp_select_file",               class: "mlab_dt_select" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_uploadfiles",   class: "mlab_dt_picture mlab_dt_left" }) );
-            content.append( $('<div />',    {                                          class: "mlab_dt_large_new_line",             html: "&nbsp;" }) );
+            content.append( $('<div />',    {                                          class: "mlab_dt_tiny_new_line",             html: "&nbsp;" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_ok",     class: "mlab_dt_button_ok mlab_dt_left",     text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"] }) );
 //            content.append( $('<img />',    { id: "mlab_cp_mediaupload_spinner",       class: "right",                                                               src:  "/img/spinner.gif" }) );

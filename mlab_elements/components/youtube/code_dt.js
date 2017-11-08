@@ -101,12 +101,12 @@
                     if( veri.items ) {
                         results.empty();
                         $.each( veri.items, function(i, data) {
-                            results.append('<div class="youtube">\
+                            results.append('<a href="javascript:void(0)" onclick="$.youtubeSelect(\'' + data.id.videoId + '\')"><div class="youtube">\
                                 <img src="' + data.snippet.thumbnails.default.url + '" alt="" />\
-                                <h3><a href="javascript:void(0)" onclick="$.youtubeSelect(\'' + data.id.videoId + '\')">' + data.snippet.title + '</a></h3>\
+                                <h3>' + data.snippet.title + '</h3>\
                                 <p>' + data.snippet.description + '</p>\
                             </div>\
-                            <div class="mlab_dt_text_list" id="' + data.id.videoId + '"></div>');
+                            <div class="mlab_dt_text_list" id="' + data.id.videoId + '"></div></a>');
                         });
                     } else {
                         results.html('<div class="mlab_dt_error">No vidoes found for <strong>"' + search_term + '"</strong></div>');

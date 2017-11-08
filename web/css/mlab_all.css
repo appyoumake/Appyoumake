@@ -564,6 +564,95 @@
 #mlab_app_new_summary span {
     width: 45%;
 }
+
+/* ==========================================================================
+     General styling of the qtip and dialogboks 
+   ========================================================================== */
+
+#mlab_editor .qtip,
+#mlab_editor .ui-dialog {
+    background-color: white  !important;
+    border: solid orange 2px; 
+    box-shadow: 10px 10px 5px #888888;
+    padding-bottom: 5px;
+    margin-bottom: 60px;
+    z-index: 2001;
+}
+
+#mlab_editor .qtip.mlab_dt_wide_qtip_box {
+    max-width: 500px;
+}
+
+#mlab_editor .qtip-titlebar,
+#mlab_editor .ui-dialog-titlebar {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+    direction: ltr;
+    margin: 0.5em;
+}
+
+#mlab_editor .qtip-titlebar,
+#mlab_editor .ui-dialog-titlebar {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding-left: 0.5em;
+    padding-right: 2.5em;
+    background-color: rgba(255,165,0,0.2);
+}
+
+#mlab_editor .ui-dialog-titlebar {
+    background-color: rgba(255,165,0,0.5);
+    padding: 3px;
+}
+
+#mlab_editor .qtip-titlebar .qtip-close {
+    top: 1px;
+    background-color: white;
+    height: 14px;
+    padding-top: 2px;
+    padding-right: 1px;
+    font-size: 16px;
+}
+
+#mlab_editor .ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
+#mlab_editor .ui-state-default .ui-icon {
+    background-image: url(images/ui-icons_888888_256x240.png);
+    margin-top: -8px;
+    margin-left: -8px;
+}
+
+#mlab_editor .ui-accordion .ui-state-default .ui-icon {
+    background-image: none;
+}
+
+#mlab_editor .ui-icon-alert {
+    background-position: 0 -145px;
+    background-image: url(images/ui-icons_222222_256x240.png);
+    float: left;
+    margin-right: 5px;
+}
+
+#mlab_editor .ui-dialog #mlab_dialog_delete {
+    min-height: 10px !important;
+    padding: 10px;
+    padding-top: 20px;
+    font-size: 13px;
+}
+
+#mlab_editor .ui-dialog .ui-button-text{
+   padding: 2px 5px;
+    font-size: 13px; 
+}
+
+
 /* ==========================================================================
      Help qTip
    ========================================================================== */
