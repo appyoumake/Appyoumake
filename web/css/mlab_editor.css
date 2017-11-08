@@ -225,7 +225,6 @@ made smaler than the min width */
 }
 #mlab_toolbar_components .ui-corner-all, #mlab_toolbar_components .ui-corner-top, #mlab_toolbar_components .ui-corner-right, #mlab_toolbar_components .ui-corner-tr {
     border-top-right-radius: 0;
-    //margin-bottom: 10px;
 }
 
 #mlab_toolbar_components .ui-accordion.ui-widget{
@@ -609,6 +608,7 @@ made smaler than the min width */
     z-index: 15000; 
     background-color: wheat;
     border: 1px solid gray;
+    padding: 2px;
 }
 
 #mlab_editor .ui-state-active a, #mlab_editor .ui-state-active a:link, #mlab_editor .ui-state-active a:visited {
