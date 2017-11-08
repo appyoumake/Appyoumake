@@ -4,7 +4,7 @@ autorun_on_create: custom_set_options
 category: serviceconnections
 category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
 # compatible (array of Strings, optional)
-credentials: ["apiKy"]
+credentials: ["apikey"]
 # custom (Object (key/value style), required if custom functions are written in the code_dt.js code, see comment)
 developer: Arild Bergh @ Sinett/FFI.no
 # display_dependent (Boolean, optional)
@@ -28,12 +28,12 @@ version: 0.9
 # visible (Boolean)
 
 custom:
-    settings: {apiKey: AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE, calenderId: hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com, fromDate: '', toDate: ''}
+    settings: {calendarId: hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com, fromDate: '', toDate: ''}
 #AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE
 #hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com
 #2017-11-06T00:00:00Z
 #2017-11-08T23:59:59Z
-    
+# apiKey: AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE, 
 #    calendar: hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com
 # 2017-11-01T00:00:00Z
     calendarId: 'en.usa#holiday@group.v.calendar.google.com'

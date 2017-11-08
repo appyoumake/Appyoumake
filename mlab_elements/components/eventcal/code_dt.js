@@ -1,5 +1,6 @@
 /**
  * Basic calendar component based on jQueryGCal
+ * https://developers.google.com/google-apps/calendar/v3/reference/events/list
  */
 
 /*
@@ -31,67 +32,69 @@
     
     
     this.onLoad = function (el) {
+        this.readCalendar(el);
     };
 
-    this.onSave = function (el) {
-        return this.config.html;
-    };
-    
     this.getOptionsHtml = function() {
-        var apikey_html = "";
-        if (!this.config.apikey) {
-            apikey_html = '<label>API Key</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="apiKey" />';
-        }
-        return $('<div/>' +
-                 apikey_html +
-                 '<label>Calendar to use</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="calenderId" />' + 
-                 '<label>From date</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="fromDate" />' +
-                 '<label>To date</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="toDate" />' +
+        return $('<div>' +
+                 '<label>Calendar to use</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="calendarId" >' + 
+                 '<label>From date</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="fromDate" >' +
+                 '<label>To date</label><input class="mlab_dt_input" data-mlab-dt-eventcal-setting="toDate" >' +
                  '<button class="mlab_dt_button_cancel mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">Cancel</button>' +
-                 '<button class="mlab_dt_button_ok mlab_dt_right" data-mlab-dt-eventcal-setting="update">OK</button>');
+                 '<button class="mlab_dt_button_ok mlab_dt_right" data-mlab-dt-eventcal-setting="update">OK</button>' +
+                 '</div>');
     };
     
     this.custom_set_options = function (el, event) {
         var content = this.getOptionsHtml();
-        console.log(content);
         var settings = mlab.dt.api.getVariable(el, "settings");
         var default_settings = this.config.custom.settings;
         var valid_settings = (typeof settings != "undefined");
         for (name in default_settings) {
             if (valid_settings && typeof settings[name] != "undefined") {
-                $(content).find("[data-mlab-dt-eventcal-property='" + name + "']").val(settings[name]);
+                $(content).find("[data-mlab-dt-eventcal-setting='" + name + "']").val(settings[name]);
             } else {
-                $(content).find("[data-mlab-dt-eventcal-property='" + name + "']").val(default_settings[name]);
+                $(content).find("[data-mlab-dt-eventcal-setting='" + name + "']").val(default_settings[name]);
             }
         }
-
+        
 //when click on OK we want to save the data using the standard Mlab API call, and then display the calendar
         content.on("click", "[data-mlab-dt-eventcal-setting='update']", {component: el, default_settings: default_settings }, function(e){ 
-                debugger;
                 e.preventDefault(); 
                 var settings = {};
+                var dlg = $(e.currentTarget).parent();
                 for (name in e.data.default_settings) {
-                    settings[name] = e.data.component.find("[data-mlab-dt-eventcal-property='" + name + "']").val();
+                    settings[name] = dlg.find("[data-mlab-dt-eventcal-setting='" + name + "']").val();
                 }
                 mlab.dt.api.setVariable(e.data.component, "settings", settings);
                 mlab.dt.api.closeAllPropertyDialogs();
-                greet.call(i);
-                mlab.dt.components.eventcal.code.read_calendar.call(mlab.dt.components.eventcal.code, e.data.component);
+                mlab.dt.components.eventcal.code.readCalendar.call(mlab.dt.components.eventcal.code, e.data.component);
             });
 
         this.api.displayPropertyDialog(el, "Calendar details", content, null, null, null, null, false, event);        
         
     };
+    
+    this.getApiKey = function (el) {
+        var temp = this.api.getVariable(el, "credentials");
+        if (typeof temp != "undefined" && typeof temp["apikey"] != "undefined") {
+            return temp["apikey"];
+        } else {
+            alert("No Google Calendar API key specified, will not be able to request calendar info. Contact the Mlab administrator to obtain a Google Calendar API key");
+        }
+    }
         
     this.readCalendar = function (el) {
+        debugger;
         var that = this;
-        var settings = mlab.dt.api.setVariable(el, "settings");
+        var settings = mlab.dt.api.getVariable(el, "settings");
+        var apikey = this.getApiKey(el);
         var feedUrl = 'https://www.googleapis.com/calendar/v3/calendars/' +
                       encodeURIComponent(settings.calendarId.trim()) +
-                      '/events?key=' + settings.apikey +
+                      '/events?key=' + apikey +
                       '&orderBy=startTime&singleEvents=true' +
-                      '&timeMax=' + settings.toDate + 
-                      '&timeMin=' + settings.fromDate;
+                      '&timeMin=' + settings.fromDate +
+                      '&timeMax=' + settings.toDate ;
               
         $.ajax({
             url: feedUrl,
@@ -111,13 +114,14 @@
     this.displayCalendar = function (el, data) {
         var cal_content = '';
         var cal_container = $(el).find("table");
+        var that = this;
         $.each(data.items, function(e, item) {
               var eventdate = item.start.dateTime || item.start.date ||'';
               var summary = item.summary || '';
                         var description = item.description;
                         var location = item.location;
                         cal_content +='<tr><td class="mlab_ct_cal_eventtitle">' + summary + '</td>';
-                        cal_content +='<td class="mlab_ct_cal_eventdate">'+ this.formatDate(eventdate, defaults.dateFormat.trim()) +'</td></tr>';
+                        cal_content +='<td class="mlab_ct_cal_eventdate">'+ that.formatDate(eventdate, 'ShortDate+ShortTime') +'</td></tr>';
                         if(location) {
                             cal_content +='<tr><td class="mlab_ct_cal_location">' + location + '</td></tr>';
                         }
@@ -188,19 +192,16 @@
           fd = month + '/' + dayNum + '/' + year;
           break;
         case 'LongDate':
-          fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.full[
-            month] + ' ' + dayNum + ', ' + year;
+          fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.full[month] + ' ' + dayNum + ', ' + year;
           break;
         case 'LongDate+ShortTime':
-          fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.full[
-            month] + ' ' + dayNum + ', ' + year + ' ' + time;
+          fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.full[month] + ' ' + dayNum + ', ' + year + ' ' + time;
           break;
         case 'ShortDate+ShortTime':
           fd = month + '/' + dayNum + '/' + year + ' ' + time;
           break;
         case 'DayMonth':
-          fd = calendar.days.short[d.getDay()] + ', ' + calendar.months.full[
-            month] + ' ' + dayNum;
+          fd = calendar.days.short[d.getDay()] + ', ' + calendar.months.full[month] + ' ' + dayNum;
           break;
         case 'MonthDay':
           fd = calendar.months.full[month] + ' ' + dayNum;
@@ -209,8 +210,7 @@
           fd = calendar.months.full[month] + ' ' + year;
           break;
         default:
-          fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.short[
-            month] + ' ' + dayNum + ', ' + year + ' ' + time;
+          fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.short[month] + ' ' + dayNum + ', ' + year + ' ' + time;
       }
 
       return fd;
