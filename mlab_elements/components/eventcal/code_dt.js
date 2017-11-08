@@ -52,78 +52,80 @@
     };
     
     this.custom_set_options = function (el, event) {
-
         var content = this.getOptionsHtml();
+        console.log(content);
         var settings = mlab.dt.api.getVariable(el, "settings");
-        if (typeof settings != "undefined") {
-            var setting_keys = ["apiKey", "calenderId", "fromDate", "toDate"];
-            for (name in setting_keys) {
-                if (typeof settings[setting_keys[name]] != "undefined") {
-                    $(content).find("[data-mlab-dt-eventcal-property='" + setting_keys[name] + "']").val(settings[setting_keys[name]]);
-                } else {
-                    $(content).find("[data-mlab-dt-eventcal-property='" + setting_keys[name] + "']").val(this.config.custom[setting_keys[name]]);
-                }
+        var default_settings = this.config.custom.settings;
+        var valid_settings = (typeof settings != "undefined");
+        for (name in default_settings) {
+            if (valid_settings && typeof settings[name] != "undefined") {
+                $(content).find("[data-mlab-dt-eventcal-property='" + name + "']").val(settings[name]);
+            } else {
+                $(content).find("[data-mlab-dt-eventcal-property='" + name + "']").val(default_settings[name]);
             }
         }
 
-        $(content).on("click", "[data-mlab-dt-eventcal-setting='update']", function() {
-            var settings = {};
-            var settings_div = $(this).parent();
-            for (name in setting_keys) {
-                settings[setting_keys[name]] = settings_div.find("[data-mlab-dt-eventcal-property='" + setting_keys[name] + "']").val();
-            }
-            mlab.dt.api.setVariable(el, "settings", settings);
-            mlab.dt.api.closeAllPropertyDialogs();
-        }); 
+//when click on OK we want to save the data using the standard Mlab API call, and then display the calendar
+        content.on("click", "[data-mlab-dt-eventcal-setting='update']", {component: el, default_settings: default_settings }, function(e){ 
+                debugger;
+                e.preventDefault(); 
+                var settings = {};
+                for (name in e.data.default_settings) {
+                    settings[name] = e.data.component.find("[data-mlab-dt-eventcal-property='" + name + "']").val();
+                }
+                mlab.dt.api.setVariable(e.data.component, "settings", settings);
+                mlab.dt.api.closeAllPropertyDialogs();
+                greet.call(i);
+                mlab.dt.components.eventcal.code.read_calendar.call(mlab.dt.components.eventcal.code, e.data.component);
+            });
 
         this.api.displayPropertyDialog(el, "Calendar details", content, null, null, null, null, false, event);        
         
     };
         
-    this.display_calendar = function (el){
+    this.readCalendar = function (el) {
+        var that = this;
+        var settings = mlab.dt.api.setVariable(el, "settings");
+        var feedUrl = 'https://www.googleapis.com/calendar/v3/calendars/' +
+                      encodeURIComponent(settings.calendarId.trim()) +
+                      '/events?key=' + settings.apikey +
+                      '&orderBy=startTime&singleEvents=true' +
+                      '&timeMax=' + settings.toDate + 
+                      '&timeMin=' + settings.fromDate;
+              
+        $.ajax({
+            url: feedUrl,
+            dataType: 'json',
+            success: function(data) {
+//              data.items = data.items.reverse();
+//              data.items = data.items.slice(0, defaults.maxEvents);
+              that.displayCalendar(el, data);
+
+            },
+            error: function(error) {
+              console.log(error);
+            }
+        });
+    };
+    
+    this.displayCalendar = function (el, data) {
+        var cal_content = '';
+        var cal_container = $(el).find("table");
         $.each(data.items, function(e, item) {
               var eventdate = item.start.dateTime || item.start.date ||'';
               var summary = item.summary || '';
                         var description = item.description;
                         var location = item.location;
-                        s ='<span class="mlab_ct_cal_eventtitle">' + summary + '</span>';
-                        s +='<span class="mlab_ct_cal_eventdate">'+ formatDate(eventdate, defaults.dateFormat.trim()) +'</span>';
+                        cal_content +='<tr><td class="mlab_ct_cal_eventtitle">' + summary + '</td>';
+                        cal_content +='<td class="mlab_ct_cal_eventdate">'+ this.formatDate(eventdate, defaults.dateFormat.trim()) +'</td></tr>';
                         if(location) {
-                            s +='<span class="mlab_ct_cal_location">' + location + '</span>';
+                            cal_content +='<tr><td class="mlab_ct_cal_location">' + location + '</td></tr>';
                         }
                         if(description) {
-                            s +='<span class="mlab_ct_cal_description">'+ description +'</span>';
+                            cal_content +='<tr><td class="mlab_ct_cal_description">' + description + '</td></tr>';
                         }
-                        $($div).append('<li>' + s + '</li>');
             });
-    };
-    
-    this.read_calendar = function (el){
-        var $div = $(el);
-        var that = this;
-        var s = '';
-        var feedUrl = 'https://www.googleapis.com/calendar/v3/calendars/' +
-          encodeURIComponent(this.config.calendarId.trim()) +'/events?key=' + this.config.apikey +
-          '&orderBy=startTime&singleEvents=true';
-          if(defaults.futureEventsOnly) {
-            feedUrl+='&timeMin='+ new Date().toISOString();
-        }
-
-        $.ajax({
-          url: feedUrl,
-          dataType: 'json',
-          success: function(data) {
-//            data.items = data.items.reverse();
-            data.items = data.items.slice(0, defaults.maxEvents);
-            that.display_calendar(el);
-            
-          },
-          error: function(error) {
-            $($div).append('<p>' + defaults.errorMsg + ' | ' + error + '</p>');
-          }
-        });
-
-
+        cal_container.html(cal_content);
     };
     
     this.formatDate = function(strDate, strFormat) {

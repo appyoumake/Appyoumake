@@ -749,7 +749,6 @@ this.editAlternativeText = function(alternative) {
             return false;
         }
     });
-
 };
 
 
