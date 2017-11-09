@@ -111,6 +111,7 @@ updated : "2017-10-23T03:30:20.725Z"
         var cal_container = $(el).find("[data-mlab-cp='eventcal']");
         var that = this;
         var template = this.config.custom.html_event;
+        debugger;
         $.each( data.items, function(e, item) {
             var summary = item.summary || 'UNKNOWN';
             var time = that.formatDate( item.start.dateTime || item.start.date || '', that.config.custom.time_format ) + " - " + that.formatDate( item.end.dateTime || item.end.date || '', that.config.custom.time_format );
