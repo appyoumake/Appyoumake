@@ -177,7 +177,6 @@ app.builder.page.tooltip.new: New page
 app.builder.page.tooltip.import: Import a Powerpoint or Word file
 
 
-
 #-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
@@ -269,7 +268,7 @@ app.admin.templates.name: Name
 app.admin.templates.version: Version
 app.admin.templates.description: Description
 app.admin.templates.compatiblewith: Compatible with
-app.admin.templates.groups: Groups
+app.admin.templates.groups: Group access
 
 app.admin.templates.tooltip.group: Edit groups for template
 app.admin.templates.tooltip.enabled: Enabled template
@@ -284,7 +283,7 @@ app.admin.templates.enabled: Enabled
 #-----------------------------------------------------
 app.admin.templates.new.heading: Create new template
 app.admin.templates.new.enabled: Enabled
-app.admin.templates.new.groups: Groups
+app.admin.templates.new.groups: Group access
 app.admin.templates.new.file: Zip file
 app.admin.templates.new.create.button: Save
 
@@ -300,7 +299,7 @@ app.admin.components: Components
 app.admin.components.name: Name
 app.admin.components.version: Version
 app.admin.components.description: Description
-app.admin.components.groups: Groups
+app.admin.components.groups: Group access
 
 app.admin.components.tooltip.group: Edit groups for components
 app.admin.components.tooltip.enabled: Enabled components
@@ -319,6 +318,8 @@ app.admin.components.new.enabled: Enabled
 app.admin.components.new.groups: Groups
 app.admin.components.new.file: Zip file
 app.admin.components.new.create.button: Save
+app.admin.components.new.componentgroups: Group access
+app.admin.components.new.order_by: Order
 
 app.admin.components.edit.groups.heading: Edit groups for
 app.admin.components.edit.groups.credential: Credential

@@ -30,10 +30,10 @@ version: 0.9
 custom:
     settings: {calendarId: bergh.fm_pp32s7pjv942pac8uhbgc4o0ng@group.calendar.google.com, fromDate: '', toDate: ''}
     html_event: |
-        <details>
-            <summary class="mc_heading">
-                <div class="mc_text mc_info mc_large mlab_eventcal_summary">%%summary%%</div>
-                <div class="mc_text mc_info mc_small mlab_eventcal_time">%%time%%</div>
+        <details class="mlab_eventcal_block">
+            <summary class="mc_heading mlab_eventcal_summary_block">
+                <span class="mc_text mc_info mc_small mlab_eventcal_time">%%time%%</span>
+                <span class="mc_text mc_info mc_large mlab_eventcal_summary">%%summary%%</span>
             </summary>
             <div class="mc_text mc_info mc_medium mlab_eventcal_description">%%description%%</div>
             <div class="mc_text mc_info mc_medium mlab_eventcal_location">%%location%%</div>

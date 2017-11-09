@@ -176,6 +176,7 @@ app.builder.page.tooltip.pagelist: Klikk for å få opp oversikten over sidene i
 app.builder.page.tooltip.new: Ny side
 app.builder.page.tooltip.import: Importer en Powerpoint eller Word fil
 
+
 #-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
@@ -267,7 +268,7 @@ app.admin.templates.name: Navn
 app.admin.templates.version: Versjon
 app.admin.templates.description: Beskrivelse
 app.admin.templates.compatiblewith: Kompatibel med
-app.admin.templates.groups: Grupper
+app.admin.templates.groups: Gruppetilgang
 
 app.admin.templates.tooltip.group: Rediger grupper til mal
 app.admin.templates.tooltip.enabled: Aktiver mal
@@ -282,7 +283,7 @@ app.admin.templates.enabled: Aktiv
 #-----------------------------------------------------
 app.admin.templates.new.heading: Opprett ny mal
 app.admin.templates.new.enabled: Aktiv
-app.admin.templates.new.groups: Grupper
+app.admin.templates.new.groups: Gruppetilgang
 app.admin.templates.new.file: Zip-fil
 app.admin.templates.new.create.button: Lagre
 
@@ -298,7 +299,7 @@ app.admin.components: Komponenter
 app.admin.components.name: Navn
 app.admin.components.version: Versjon
 app.admin.components.description: Beskrivelse
-app.admin.components.groups: Grupper
+app.admin.components.groups: Gruppetilgang
 
 app.admin.components.tooltip.group: Rediger grupper til komponent
 app.admin.components.tooltip.enabled: Aktiver komponent
@@ -317,6 +318,8 @@ app.admin.components.new.enabled: Aktiv
 app.admin.components.new.groups: Grupper
 app.admin.components.new.file: Zip-fil
 app.admin.components.new.create.button: Lagre
+app.admin.components.new.componentgroups: Gruppetilgang
+app.admin.components.new.order_by: Rekkefølge
 
 app.admin.components.edit.groups.heading: Rediger grupper for
 app.admin.components.edit.groups.credential: Tilgangsinformasjon

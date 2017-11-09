@@ -1,4 +1,12 @@
 /* main design */
+mlab_eventcal_block {
+    
+}
+
+mlab_eventcal_summary_block{
+    
+}
+
 div.mlab_cp_eventcal {
     max-height: calc(width*2);
     overflow-y: auto;
