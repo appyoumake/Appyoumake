@@ -42,7 +42,7 @@ custom:
     html_days: |
         <div data-role="tabs" id="tabs">
             <div data-role="navbar">
-                <ul>
+                <ul class="mc_text mc_info mc_large mlab_cp_eventcal_tab_list">
                     %%TABS%%
                 </ul>
             </div>

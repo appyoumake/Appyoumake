@@ -125,7 +125,7 @@ updated : "2017-10-23T03:30:20.725Z"
 //we also create a DIV with content for each 
         while (end_date.getTime() >= check_date.getTime()) {
 //tabs
-            tabs += '<li><a href="#' + guid + i + '" data-ajax="false">' + this.formatDate(check_date.toISOString(), 'TabDate') + '</a></li>\n';
+            tabs += '<li class="mlab_cp_eventcal_tab"><a href="#' + guid + i + '" data-ajax="false">' + this.formatDate(check_date.toISOString(), 'TabDate') + '</a></li>\n';
             
 //events
             cal_content = '';
