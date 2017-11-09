@@ -101,25 +101,53 @@ updated : "2017-10-23T03:30:20.725Z"
         }
     };
     
-//new Date(data.items[0].start.dateTime)
-//Thu Nov 09 2017 10:00:00 GMT+0100 (CET)
-//new Date(data.items[0].start.dateTime).getMonth()
-//10
-
+/**
+ * Here we do the actual display, at the top we have tabs for the days, inside we display each day's events
+ * @param {type} el
+ * @param {type} data
+ * @returns {undefined}
+ */
     this.displayCalendar = function (el, data) {
-        var cal_content = '';
-        var cal_container = $(el).find("[data-mlab-cp='eventcal']");
-        var that = this;
-        var template = this.config.custom.html_event;
-        debugger;
-        $.each( data.items, function(e, item) {
-            var summary = item.summary || 'UNKNOWN';
-            var time = that.formatDate( item.start.dateTime || item.start.date || '', that.config.custom.time_format ) + " - " + that.formatDate( item.end.dateTime || item.end.date || '', that.config.custom.time_format );
-            var description = item.description;
-            var location = item.location;
-            cal_content += template.replace('%%summary%%', summary).replace('%%time%%', time).replace('%%description%%', description).replace('%%location%%', location) + "\n";
-        });
-        cal_container.html(cal_content);
+        var cal_content = '',
+            tabs = '',
+            tab_content = '',
+            cal_container = $(el).find("[data-mlab-cp='eventcal']"),
+            settings = mlab.dt.api.getVariable(el, "settings"),
+            that = this,
+            event_template = this.config.custom.html_event,
+            tabs_template = this.config.custom.html_days,
+            check_date = new Date(settings.fromDate),
+            end_date = new Date(settings.toDate),
+            guid = mlab.dt.api.getGUID(),
+            i = 0;
+    
+//loop through the days that this component shall cover and prepare HTML for LI items which will be used as tabs
+//we also create a DIV with content for each 
+        while (end_date.getTime() >= check_date.getTime()) {
+//tabs
+            tabs += '<li><a href="#' + guid + i + '" data-ajax="false">' + this.formatDate(check_date.toISOString(), 'TabDate') + '</a></li>\n';
+            
+//events
+            cal_content = '';
+            $.each( data.items, function(e, item) {
+                event_date = new Date(item.start.dateTime || item.start.date);
+                if (event_date.toLocaleDateString() == check_date.toLocaleDateString()) {
+                    var summary = item.summary || 'UNKNOWN';
+                    var time = that.formatDate( item.start.dateTime || item.start.date, that.config.custom.time_format ) + " - " + that.formatDate( item.end.dateTime || item.end.date, that.config.custom.time_format );
+                    var description = item.description;
+                    var location = item.location;
+                    cal_content += event_template.replace('%%summary%%', summary).replace('%%time%%', time).replace('%%description%%', description).replace('%%location%%', location) + "\n";
+                }                   
+            });
+            tab_content += '<div id="' + guid + i + '">' + cal_content + '</div>';
+            
+//update looping variables
+            check_date.setDate(check_date.getDate() + 1);
+            i++;
+
+        }
+        cal_container.html(tabs_template.replace('%%TABS%%', tabs).replace('%%TAB_CONTENT%%', tab_content))
+        $(el).trigger("create");
     };
     
     this.formatDate = function(strDate, strFormat) {
@@ -179,7 +207,10 @@ updated : "2017-10-23T03:30:20.725Z"
           fd = time;
           break;
         case 'ShortDate':
-          fd = month + '/' + dayNum + '/' + year;
+          fd = dayNum + '/' + month + '/' + year;
+          break;
+        case 'TabDate':
+          fd = calendar.days.short[d.getDay()] + ' ' + dayNum + '.' + month;
           break;
         case 'LongDate':
           fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.full[month] + ' ' + dayNum + ', ' + year;
@@ -188,7 +219,7 @@ updated : "2017-10-23T03:30:20.725Z"
           fd = calendar.days.full[d.getDay()] + ' ' + calendar.months.full[month] + ' ' + dayNum + ', ' + year + ' ' + time;
           break;
         case 'ShortDate+ShortTime':
-          fd = month + '/' + dayNum + '/' + year + ' ' + time;
+          fd = dayNum + '/' + month + '/' + year + ' ' + time;
           break;
         case 'DayMonth':
           fd = calendar.days.short[d.getDay()] + ', ' + calendar.months.full[month] + ' ' + dayNum;
