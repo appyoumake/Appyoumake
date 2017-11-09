@@ -1,0 +1,22 @@
+/* main design */
+div.mlab_cp_cal {
+    max-height: calc(width*2);
+    overflow-y: auto;
+}
+
+div.mlab_cp_cal div {
+    display: block;
+    float: left;
+    clear: both;
+    padding: 3px;
+}
+
+div.mlab_cp_cal div.mlab_eventcal_time {
+    float: right;
+    width: 19%;
+    clear: none;
+}
+
+div.mlab_cp_cal div.mlab_eventcal_summary {
+    width: 79%;
+}

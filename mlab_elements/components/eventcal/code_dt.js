@@ -4,27 +4,23 @@
  */
 
 /*
-<div data-role="tabs" id="tabs">
-  <div data-role="navbar">
-    <ul>
-      <li><a href="#one" data-ajax="false">one</a></li>
-      <li><a href="#two" data-ajax="false">two</a></li>
-      <li><a href="ajax-content-ignore.html" data-ajax="false">three</a></li>
-    </ul>
-  </div>
-  <div id="one" class="ui-body-d ui-content">
-    <h1>First tab contents</h1>
-  </div>
-  <div id="two">
-    <ul data-role="listview" data-inset="true">
-        <li><a href="#">Acura</a></li>
-        <li><a href="#">Audi</a></li>
-        <li><a href="#">BMW</a></li>
-        <li><a href="#">Cadillac</a></li>
-        <li><a href="#">Ferrari</a></li>
-    </ul>
-  </div>
-</div>
+
+created : "2017-10-23T03:30:20.000Z"
+creator : {email: "imdbreleases@gmail.com"}
+description : "Una Mujer Fantástica (2017)↵Runtime : 104↵Rating : 7.5 (votes 1296)↵Genre : Drama↵Plot : Marina, a waitress who moonlights as a nightclub singer, is bowled over by the death of her older boyfriend.↵IMDB : http://www.imdb.com/title/tt5639354/"
+end : {date: "2017-11-09"}
+etag : ""3017458841450000""
+htmlLink : "https://www.google.com/calendar/event?eid=dW82YTYwbGFhYWJ1N3RwcjY0dDNwamRkajAgaHZ1OXU0cGtmMXJtZXE5cjc0ZGo0ZGYxbzhAZw"
+iCalUID : "uo6a60laaabu7tpr64t3pjddj0@google.com"
+id : "uo6a60laaabu7tpr64t3pjddj0"
+kind : "calendar#event"
+location : "Norway"
+organizer : {email: "hvu9u4pkf1rmeq9r74dj4df1o8@group.calendar.google.com", displayName: "Movie Releases for Norway", self: true}
+sequence : 0
+start : {date: "2017-11-09"}
+status : "confirmed"
+summary : "Una Mujer Fantástica"
+updated : "2017-10-23T03:30:20.725Z"
 */
     this.onCreate = function (el) {
         this.onLoad(el);
@@ -85,50 +81,43 @@
     }
         
     this.readCalendar = function (el) {
-        debugger;
         var that = this;
         var settings = mlab.dt.api.getVariable(el, "settings");
         var apikey = this.getApiKey(el);
-        var feedUrl = 'https://www.googleapis.com/calendar/v3/calendars/' +
-                      encodeURIComponent(settings.calendarId.trim()) +
-                      '/events?key=' + apikey +
-                      '&orderBy=startTime&singleEvents=true' +
-                      '&timeMin=' + settings.fromDate +
-                      '&timeMax=' + settings.toDate ;
-              
-        $.ajax({
-            url: feedUrl,
-            dataType: 'json',
-            success: function(data) {
-//              data.items = data.items.reverse();
-//              data.items = data.items.slice(0, defaults.maxEvents);
-              that.displayCalendar(el, data);
+        if (settings && apikey && settings.calendarId && settings.fromDate && settings.toDate) {
+            var feedUrl = 'https://www.googleapis.com/calendar/v3/calendars/' +
+                          encodeURIComponent(settings.calendarId.trim()) +
+                          '/events?key=' + apikey +
+                          '&orderBy=startTime&singleEvents=true' +
+                          '&timeMin=' + settings.fromDate +
+                          '&timeMax=' + settings.toDate ;
 
-            },
-            error: function(error) {
-              console.log(error);
-            }
-        });
+            $.ajax({
+                url: feedUrl,
+                dataType: 'json',
+                success: function(data) { that.displayCalendar(el, data); },
+                error: function(error) { console.log(error); }
+            });
+        }
     };
     
+//new Date(data.items[0].start.dateTime)
+//Thu Nov 09 2017 10:00:00 GMT+0100 (CET)
+//new Date(data.items[0].start.dateTime).getMonth()
+//10
+
     this.displayCalendar = function (el, data) {
         var cal_content = '';
-        var cal_container = $(el).find("table");
+        var cal_container = $(el).find("[data-mlab-cp='eventcal']");
         var that = this;
-        $.each(data.items, function(e, item) {
-              var eventdate = item.start.dateTime || item.start.date ||'';
-              var summary = item.summary || '';
-                        var description = item.description;
-                        var location = item.location;
-                        cal_content +='<tr><td class="mlab_ct_cal_eventtitle">' + summary + '</td>';
-                        cal_content +='<td class="mlab_ct_cal_eventdate">'+ that.formatDate(eventdate, 'ShortDate+ShortTime') +'</td></tr>';
-                        if(location) {
-                            cal_content +='<tr><td class="mlab_ct_cal_location">' + location + '</td></tr>';
-                        }
-                        if(description) {
-                            cal_content +='<tr><td class="mlab_ct_cal_description">' + description + '</td></tr>';
-                        }
-            });
+        var template = this.config.custom.html_event;
+        $.each( data.items, function(e, item) {
+            var summary = item.summary || 'UNKNOWN';
+            var time = that.formatDate( item.start.dateTime || item.start.date || '', that.config.custom.time_format ) + " - " + that.formatDate( item.end.dateTime || item.end.date || '', that.config.custom.time_format );
+            var description = item.description;
+            var location = item.location;
+            cal_content += template.replace('%%summary%%', summary).replace('%%time%%', time).replace('%%description%%', description).replace('%%location%%', location) + "\n";
+        });
         cal_container.html(cal_content);
     };
     
