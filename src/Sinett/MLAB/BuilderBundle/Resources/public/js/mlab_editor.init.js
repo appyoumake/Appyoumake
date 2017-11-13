@@ -237,11 +237,16 @@ $(document).ready(function() {
 //now loop through all components and for those that inherit another we transfer properties
                     mlab.dt.utils.process_inheritance(mlab.dt.components);
 
-//finally we assign the API object to teh component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
+//finally we assign the API object to the component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
 //when trying to merge properties in the previous code block
                     for (index in mlab.dt.components) {
                         if (typeof mlab.dt.components[index].code != "undefined" && mlab.dt.components[index].code !== false) {
                             mlab.dt.components[index].code.api = mlab.dt.api;
+                        }
+                        
+//added to inherit HTML to the additional mlab.dt.components.html which is set in loadSingleComponent in /src/Sinett/MLAB/BuilderBundle/FileManagement/FileManagement.php
+                        if (!mlab.dt.components[index].html && mlab.dt.components.img_quiz.conf.inherit) {
+                            mlab.dt.components[index].html = mlab.dt.components[mlab.dt.components.img_quiz.conf.inherit].html;
                         }
                     }
 

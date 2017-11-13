@@ -172,6 +172,7 @@ $params_check = array (
     "parameters__mlab__compiler_service__supported_platforms" => array(
         "label"     => "List of mobile platforms (for instance Android) that have been installed<span>Mlab is using Cordova to create native apps from the HTML5 code generated in Mlab. The user that is building an app will see a list of mobile platforms they can create the app for, this list uses this setting to determine which platforms are available. Separate multiple options with a comma, for example ios,android.</span>",
         "acceptable" => "ios|android",
+        "type" => "array",
         "header" => "Compiler service"
         ),
     

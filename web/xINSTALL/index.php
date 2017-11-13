@@ -51,6 +51,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     //here we loop through the incoming data and create an array that matches the one from the YAML file
                 $incoming_params = array();
                 $params_override = array();
+                global $params_check;
+                
+//asked to ignore check, store this state and use further down
                 foreach ($_POST as $flat_key => $value) {
                     if (substr($flat_key, 0, 9) == "override_" && $value == 1) {
                         $params_override[substr($flat_key, 9)] = $value;
@@ -60,7 +63,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                         $count = count($keys);
                         foreach ($keys as $key) {
                             if (--$count <= 0) {
-                                $arr[$key] = (strpos($value, ",") ? implode(",", $value) : $value) ;
+                                $arr[$key] = ( (strpos($value, ",") || $params_check[$flat_key]["type"] === "array" ) ? explode(",", $value) : $value) ;
                             } else {
                                 if (!key_exists($key, $arr)) {
                                     $arr[$key] = array();
@@ -84,7 +87,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 if (!$combined_params["parameters"]["secret"]) {
                     $combined_params["parameters"]["secret"] = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"), 0, 1).substr(md5(time()),1);
                 }
-                file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params));
+//create a YAML dump, important to use 0 for third param (wordwrap) otherwise Mlab fails
+                file_put_contents('app/config/parameters.yml', Spyc::YAMLDump($combined_params, false, 0, true));
                 $current_step = STEP_CHECK_PARAMS;
                 break;
 
