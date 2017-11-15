@@ -139,7 +139,7 @@ updated : "2017-10-23T03:30:20.725Z"
                     cal_content += event_template.replace('%%summary%%', summary).replace('%%time%%', time).replace('%%description%%', description).replace('%%location%%', location) + "\n";
                 }                   
             });
-            tab_content += '<div id="' + guid + i + '">' + cal_content + '</div>';
+            tab_content += '<div id="' + guid + i + '" class="mlab_cp_eventcal_div_block">' + cal_content + '</div>';
             
 //update looping variables
             check_date.setDate(check_date.getDate() + 1);
