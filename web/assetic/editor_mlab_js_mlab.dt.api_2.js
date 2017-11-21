@@ -249,7 +249,7 @@ Mlab_dt_api.prototype = {
  * @param {type} cb: Callback function when file is uploaded successfully OR a file is selected
  * @returns {undefined}
  */
-    uploadMedia : function (el, component_config, file_type, cb, event) {
+    uploadMedia : function (el, component_config, file_type, cb, event, multi) {
         
 //store for later when callbacks are executed in different contexts
         var that = this;
@@ -263,7 +263,7 @@ Mlab_dt_api.prototype = {
             content.append( $('<p />',      {                                          class: "mlab_dt_text_info",                  text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"] }) );
             content.append( $('<select />', { id: "mlab_cp_select_file",               class: "mlab_dt_select" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_uploadfiles",   class: "mlab_dt_picture mlab_dt_left" }) );
-            content.append( $('<div />',    {                                          class: "mlab_dt_large_new_line",             html: "&nbsp;" }) );
+            content.append( $('<div />',    {                                          class: "mlab_dt_tiny_new_line",             html: "&nbsp;" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_ok",     class: "mlab_dt_button_ok mlab_dt_left",     text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"] }) );
 //            content.append( $('<img />',    { id: "mlab_cp_mediaupload_spinner",       class: "right",                                                               src:  "/img/spinner.gif" }) );
@@ -299,11 +299,12 @@ Mlab_dt_api.prototype = {
             
 //load existing files into dropdown box and make it ddslick
             var existing_files = that.getMedia(file_type);
-            debugger;
+
             $("#mlab_cp_select_file").html(existing_files)
                                      .on("change", local_set_media_source_existing)
                                      .ddslick({
-                                         width: 180,
+                                         width: 254,
+                                         height: 64,
                                          imagePosition: "left",
                                          selectText: "Select existing media file to use" });
 
@@ -312,7 +313,7 @@ Mlab_dt_api.prototype = {
             var uploadObj = $("#mlab_cp_mediaupload_uploadfiles").uploadFile({
                 url: that.getUrlUploadAbsolute(that_qtip.dt_config.name),
                 formData: { comp_id: that_qtip.dt_component_id, app_path: that.parent.app.path },
-                multiple: false,
+                multiple: (multi === true),
                 dragDrop: true,
                 showCancel: true,
                 showAbort: true,
@@ -320,19 +321,39 @@ Mlab_dt_api.prototype = {
                 autoSubmit: false,
                 fileName: "mlab_files",
                 showStatusAfterSuccess: true,
+                showPreview:true,
+                previewHeight: "100px",
+                previewWidth: "100px", 
+                statusBarWidth:254,
+                dragdropWidth:254,
                 onSuccess: function(files, data, xhr) {
                             if (data.result == "failure") {
                                 alert(data.msg);
                             } else {
-                                local_set_media_source(data.url);
+                                local_set_media_source(data.urls[0]);
+                                mlab.dt.api.closeAllPropertyDialogs();
                             }
                     }.bind(that_qtip.dt_component),
                 onError: function(files, status, errMsg) { alert(errMsg); }
             });
+            
+//assign close events and add mlab styles
+            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
+            $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
+            $('.new_but_line').addClass('mlab_dt_button_new_line');
+            $('.new_big_line').addClass('mlab_dt_large_new_line');
+            $('.new_small_line').addClass('mlab_dt_small_new_line');
+            $('.info').addClass('mlab_dt_text_info');
+            $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
+            $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');
+
+
             that.indicateWait(false);
-        }
+        } // end local_render_tooltip
         
 
+//code that is executed when this function is called
+//
 //can be called from element or in response to event click, this decides who should "own" this tooltip
         var owner_element = (typeof event != "undefined") ? event.currentTarget : el;
 
@@ -352,15 +373,7 @@ Mlab_dt_api.prototype = {
             }
         });
         
-//assign close events and add mlab styles
-        $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
-        $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
-/*        $('.new_but_line').addClass('mlab_dt_button_new_line');
-        $('.new_big_line').addClass('mlab_dt_large_new_line');
-        $('.new_small_line').addClass('mlab_dt_small_new_line');
-        $('.info').addClass('mlab_dt_text_info');
-        $('.ajax-file-upload-filename').addClass('mlab_dt_text_filename');
-        $('.ajax-file-upload-statusbar').addClass('mlab_dt_progress_bar');*/
+
 
     },
     
@@ -564,7 +577,7 @@ Mlab_dt_api.prototype = {
             solo: false,
             content:    {text: content, title: title, button: true },
             position:   { my: myPosQtip, at: 'rightMiddle', viewport: $(window) },
-            show:       { ready: true, modal: { on: true, blur: false }, autofocus: focus_selector },
+            show:       { ready: true, modal: { on: true, blur: false, escape: false }, autofocus: focus_selector },
             hide:       false,
             style:      { classes: c, tip: true },
             events:     {   render: function(event, api) { if (func_render) { that.executeCallback (func_render, el, event, api) } },
@@ -892,8 +905,8 @@ Mlab_dt_api.prototype = {
         if (link_type == "page") {
             link = $("#mlab_dt_link_app_pages").val();
             var num = parseInt(link);
-            if (parseInt(link) >= 0 && num < 1000) {
-                page_name = " onclick='mlab.api.navigation.pageDisplay(-1, " + num + "); return false;' ";
+            if (num >= 0 && num < 1000) {
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + num + '); return false;');
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
                 return false;
@@ -903,6 +916,7 @@ Mlab_dt_api.prototype = {
             link = $("#mlab_dt_link_app_url").val();
             if (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(link)) {
                 page_name = link.trim();
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
                 return false;
@@ -914,7 +928,6 @@ Mlab_dt_api.prototype = {
             
         }
         
-        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
         return true;
     },
         
@@ -930,10 +943,10 @@ Mlab_dt_api.prototype = {
             return;
         }
 
-//we need to create a temporary link straight away so that we can refer to it later, otherwise the selection wil disappear.
+//we need to create a temporary link straight away so that we can refer to it later, otherwise the selection will disappear.
         document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
-        //.mc_link.mc_text
-        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").addClass('mc_link mc_text').click(function(e) { e.preventDefault(); });
+//we set a data tag, because we'll use an API call if they link to another page, etc
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").addClass('mc_link mc_text').attr('data-mlab-islink', 1).click(function(e) { e.preventDefault(); });
 
 //we need to request the URL *OR* which page to link to
         var opt = "<option value='-1'></option>";
@@ -957,11 +970,11 @@ Mlab_dt_api.prototype = {
         
     },
     
-        
+
+// remove the link from the currently selected text
     cancelLink: function () {
-         //debugger;
-         $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").replaceWith( $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents() ); 
-         mlab.dt.api.closeAllPropertyDialogs();
+        $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents().unwrap();
+        mlab.dt.api.closeAllPropertyDialogs();
     },
  
     removeLink: function () {
@@ -1196,6 +1209,28 @@ Mlab_dt_api.prototype = {
         },
         
 /**
+ * Called when we leave a component, either because another one is added/pasted, or they select another component
+ */
+        componentBlur : function (el) {
+            if (el.length == 0) {
+                return;
+            }
+            el.qtip('hide');
+            var comp_id= el.data("mlab-type")
+            el.removeClass("mlab_current_component");
+//same for any current sub components, such as a question in a quiz
+            el.find("mlab_current_component").css("outline-color", "").removeClass("mlab_current_component");
+            el.find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
+            window.getSelection().removeAllRanges();
+            el.find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+            
+            if (typeof mlab.dt.components[comp_id].code.onBlur != "undefined") {
+                mlab.dt.components[comp_id].code.onBlur(el);
+            }
+            
+        },
+        
+/**
  * Updates either a single component, or all components on a page, using data attributes to determine the display
  * @param {type} el: Optional, the element to display. If not specified, then update all components
  * @returns {true if selected different component, false otherwise}
@@ -1207,14 +1242,9 @@ Mlab_dt_api.prototype = {
                 return false;
             }          
             
-            if (el[0] !== curComp[0]) {
+//            if (el[0] !== curComp[0]) {
 //Delete the outlines and tools for the last current component
-                curComp.qtip('hide');
-                curComp.removeClass("mlab_current_component");
-                curComp.find("mlab_current_component").css("outline-color", "").removeClass("mlab_current_component");
-                curComp.find(".mlab_current_component_editable").css("outline-color", "").removeClass("mlab_current_component_editable").attr("contenteditable", false);
-                window.getSelection().removeAllRanges();
-                curComp.find(".mlab_current_component_child").css("outline-color", "").removeClass("mlab_current_component_child");
+                this.componentBlur(curComp);
                 
 //Set the new current component
                 var pageBgColor = $("[data-role=page]").css( "background-color" );
@@ -1224,9 +1254,9 @@ Mlab_dt_api.prototype = {
                 $( el ).css("outline-color", pageBgColorInvert);
                 $( el ).addClass("mlab_current_component");
                 return true;
-            }
+/*            }
 
-            return false;
+            return false;*/
         },
         
 /**
