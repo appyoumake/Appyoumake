@@ -245,8 +245,8 @@ $(document).ready(function() {
                         }
                         
 //added to inherit HTML to the additional mlab.dt.components.html which is set in loadSingleComponent in /src/Sinett/MLAB/BuilderBundle/FileManagement/FileManagement.php
-                        if (!mlab.dt.components[index].html && mlab.dt.components.img_quiz.conf.inherit) {
-                            mlab.dt.components[index].html = mlab.dt.components[mlab.dt.components.img_quiz.conf.inherit].html;
+                        if (!mlab.dt.components[index].html && mlab.dt.components[index].conf.inherit) {
+                            mlab.dt.components[index].html = mlab.dt.components[mlab.dt.components[index].conf.inherit].html;
                         }
                     }
 

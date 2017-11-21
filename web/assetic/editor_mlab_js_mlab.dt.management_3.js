@@ -236,9 +236,7 @@ Mlab_dt_management.prototype = {
         $("#mlab_edit_app_title").text(this.parent.app.name);
         $("#mlab_edit_app_description").text(this.parent.app.description);
         $("#mlab_edit_app_keywords").text(this.parent.app.keywords);
-        $("#mlab_edit_app_category1").text(this.parent.app.categoryOne);
-        $("#mlab_edit_app_category2").text(this.parent.app.categoryTwo);
-        $("#mlab_edit_app_category3").text(this.parent.app.categoryThree);
+        $("#mlab_edit_app_tags").text(this.parent.app.tags);
     },
 
 
@@ -341,6 +339,9 @@ Mlab_dt_management.prototype = {
         $("#panel_left").css("background-image", $("#panel_left").css("background-image"));
         $("#panel_right").css("background-image", $("#panel_right").css("background-image"));
 
+//stop links from being opened up in design mode, links always have this data attribute
+        $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-islink='1']").click(function(e) { e.preventDefault(); });
+
     },
 
 
@@ -390,6 +391,8 @@ Mlab_dt_management.prototype = {
             console.log(err.message);
         }
         mlab.dt.api.display.updateDisplay()
+//stop links from being opened up in design mode, links always have this data attribute
+        $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-islink='1']").click(function(e) { e.preventDefault(); });
     },
 
 
@@ -500,7 +503,6 @@ Mlab_dt_management.prototype = {
                 $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
                     that.index_page_process ( data.html, "index", true );
-                    $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").click(function(e) { e.preventDefault(); });
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
                     that.parent.utils.timer_start();
                     if ( $("#mlab_overlay").is(':visible') ) {
@@ -727,9 +729,7 @@ Mlab_dt_management.prototype = {
                     that.parent.app.name = data.app_info.mlab_app.name;
                     that.parent.app.description = data.app_info.mlab_app.description;
                     that.parent.app.keywords = data.app_info.mlab_app.keywords;
-                    that.parent.app.categoryOne = data.app_info.mlab_app.categoryOne;
-                    that.parent.app.categoryTwo = data.app_info.mlab_app.categoryTwo;
-                    that.parent.app.categoryThree = data.app_info.mlab_app.categoryThree;
+                    that.parent.app.tags = data.app_info.mlab_app.tags;
                     that.app_update_gui_metadata();
 
                 };

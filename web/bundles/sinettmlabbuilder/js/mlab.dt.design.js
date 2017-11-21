@@ -359,8 +359,9 @@ Mlab_dt_design.prototype = {
             alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
-        $(".mlab_current_component").qtip('hide');
-        $(".mlab_current_component").removeClass("mlab_current_component");
+//remove selections, highlight, etc for previously selected component
+        this.componentBlur(curComp);
+        
         $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
         if (this.parent.api.display.componentHighlightSelected(mlab.dt.clipboard)) {
             this.component_menu_prepare();

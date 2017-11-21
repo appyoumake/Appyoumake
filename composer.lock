@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "99c53cdf1ac7eba08b3f5927e457f1b0",
-    "content-hash": "873ab9c32cc7a9fba288a858ad193d9f",
+    "hash": "0d6f50c279049de440152bb0d701a1aa",
+    "content-hash": "f81fb35f82bd46523558312d8179062b",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -826,12 +826,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "715e6f149fa5c835900c7eeb3beea2867578f77e"
+                "reference": "8fa15f48e85a99b22d81f43f4ec671e316a946f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/715e6f149fa5c835900c7eeb3beea2867578f77e",
-                "reference": "715e6f149fa5c835900c7eeb3beea2867578f77e",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/8fa15f48e85a99b22d81f43f4ec671e316a946f1",
+                "reference": "8fa15f48e85a99b22d81f43f4ec671e316a946f1",
                 "shasum": ""
             },
             "require": {
@@ -895,7 +895,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2017-10-24 09:06:59"
+            "time": "2017-11-15 14:38:08"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -2344,16 +2344,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.8.28",
+            "version": "v2.8.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "074ae55c3e8029655bfcf2577c89844784cf6518"
+                "reference": "fa9fa59d7bf9d5c73a264d348f0da793cafdc73c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/074ae55c3e8029655bfcf2577c89844784cf6518",
-                "reference": "074ae55c3e8029655bfcf2577c89844784cf6518",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/fa9fa59d7bf9d5c73a264d348f0da793cafdc73c",
+                "reference": "fa9fa59d7bf9d5c73a264d348f0da793cafdc73c",
                 "shasum": ""
             },
             "require": {
@@ -2425,6 +2425,7 @@
                 "symfony/yaml": "self.version"
             },
             "require-dev": {
+                "doctrine/annotations": "~1.0",
                 "doctrine/data-fixtures": "1.0.*",
                 "doctrine/dbal": "~2.4",
                 "doctrine/doctrine-bundle": "~1.2",
@@ -2478,7 +2479,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-10-05 23:24:20"
+            "time": "2017-11-16 17:44:10"
         },
         {
             "name": "symfony/yaml",
