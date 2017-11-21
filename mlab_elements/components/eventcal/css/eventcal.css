@@ -1,12 +1,26 @@
 /* main design */
-#mlab_editor .mlab_cp_eventcal_tab_list {
+
+#mlab_editor .mlab_cp_eventcal [data-role="tabs"],
+.mlab_main_body_content .mlab_cp_eventcal [data-role="tabs"]{
+    display: block;
+    width: 100%;
+}
+
+#mlab_editor .mlab_cp_eventcal [data-role="navbar"],
+.mlab_main_body_content .mlab_cp_eventcal [data-role="navbar"]{
+    display: inline-block;
+}
+
+#mlab_editor .mlab_cp_eventcal_tab_list,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list {
     border-bottom: 1px solid lightgray;
     padding-top: 0.5em;
     margin-bottom: 0.5em;   
     display: flex;
 }
 
-#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab {
+#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab {
     font-size: 0.9em;
     font-family: Arial,Helvetica,sans-serif;
     padding: 0.3em;
@@ -16,44 +30,91 @@
     background-color: grey;
     border-bottom: 0;
     cursor: pointer;
+    width: 100%;
+    list-style: none;
+    float: left;
+    position: relative;
+    top: 0;
+    white-space: nowrap;
+    border-top-left-radius: 0;
+    box-sizing: border-box;
+    border-top-right-radius: 3px;
 }
 
-#mlab_editor .mlab_eventcal_block summary::-webkit-details-marker {
+#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+}
+
+#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    font-weight: normal;
+    color: #212121;
+    font-family: Verdana,Arial,sans-serif;
+    text-decoration-line: none;
+    padding-right: 5px;
+}
+
+#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab.ui-state-active a,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab.ui-state-active a {
+    color: white;
+}
+
+#mlab_editor .mlab_eventcal_summary_block,
+.mlab_main_body_content .mlab_eventcal_summary_block {
+    border: none;
+}
+
+#mlab_editor .mlab_cp_eventcal details[open],
+.mlab_main_body_content .mlab_cp_eventcal details[open] {
+    border: none;
+}
+
+#mlab_editor .mlab_cp_eventcal details[open] summary,
+.mlab_main_body_content .mlab_cp_eventcal details[open] summary {
+    border: none;
+}
+
+#mlab_editor .mlab_cp_eventcal_block summary::-webkit-details-marker,
+.mlab_main_body_content .mlab_cp_eventcal_block summary::-webkit-details-marker {
     color: grey;
 }
 
-.mlab_eventcal_summary_block{
-    
+#mlab_editor .mlab_cp_eventcal_div_block,
+.mlab_main_body_content .mlab_cp_eventcal_div_block {
+    width: 100%;
 }
 
-div.mlab_cp_eventcal {
-    max-height: calc(width*2);
-    overflow-y: auto;
+#mlab_editor .mlab_cp_eventcal_time,
+.mlab_main_body_content .mlab_cp_eventcal_time {
+    white-space: nowrap;
+    display: inline-block;
+    border: #555555 1px dotted;
+    padding: 2px;
+    width: 123px;
 }
 
-div.mlab_cp_eventcal div {
-    display: block;
-    float: left;
-    clear: both;
-    padding: 3px;
+#mlab_editor .mlab_cp_eventcal_summary,
+.mlab_main_body_content .mlab_cp_eventcal_summary {
+    padding-left: 5px;
 }
 
-#mlab_editor .mlab_eventcal_time {
-    width: 19%;
-}
-
-#mlab_editor .mlab_eventcal_summary {
-    width: 79%;
-    padding-left: 10px;
-}
-
-#mlab_editor .mlab_eventcal_description {
+#mlab_editor .mlab_cp_eventcal_description,
+.mlab_main_body_content .mlab_cp_eventcal_description {
+    width: 97%;
     border: dotted 2px grey;
     padding: 4px;
     margin: 2px;
 }
 
-#mlab_editor .mlab_eventcal_location {
+#mlab_editor .mlab_cp_eventcal_location,
+.mlab_main_body_content .mlab_cp_eventcal_location {
+    min-width: 97%;
     background: grey;
     padding: 4px;
     margin-left: 4px;
