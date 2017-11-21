@@ -23,7 +23,7 @@ $composer_version_min = "1.0.0";
 $symfony_version_min = 2.8;
 $symfony_version_max = 3.0;
 $uglifyjs_version_min = 2.4;
-$nodejs_version_min = "6.0.0";
+$nodejs_version_min = "5.12.0";
 $system_path = "PATH='/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'";
 
 //TODO: Update labels here to say when links to something else, what use for etc.
@@ -256,7 +256,7 @@ $software_version_checks = array(
     "version_composer" =>       array(  "label"     => "Composer version", 
                                         "help"      => "Composer is a library manager used by Mlab to install the Symfony framework and Javascript libraries. Version 1.3 or higher is required",
                                         "check"     => $composer_version_min, 
-                                        "exec"      => "composer -V",
+                                        "exec"      => "bin/composer.phar -V",
                                         "function"  => "check_version"), 
     
     "version_symfony" =>        array( "label"     => "Symfony framework", 

@@ -176,7 +176,7 @@ function version_mysql() {
 function libraries_js() {
     global $data_checks;
     $libs = explode(",", $data_checks["libraries_js"]["check"]);
-    foreach ($libs as $lib) { if (!file_exists("web/js/$lib")) { return "Library web/js/$lib not found"; } }
+    foreach ($libs as $lib) { if (!file_exists("web/js/$lib") && !file_exists("./src/Sinett/MLAB/BuilderBundle/Resources/public/js/$lib")) { return "Library web/js/$lib not found"; } }
     return true;
 }
 
