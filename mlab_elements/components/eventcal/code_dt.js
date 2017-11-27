@@ -115,6 +115,8 @@ updated : "2017-10-23T03:30:20.725Z"
             settings = mlab.dt.api.getVariable(el, "settings"),
             that = this,
             event_template = this.config.custom.html_event,
+            desc_template = this.config.custom.html_desc,
+            loc_template = this.config.custom.html_loc,
             tabs_template = this.config.custom.html_days,
             check_date = new Date(settings.fromDate),
             end_date = new Date(settings.toDate),
@@ -122,32 +124,37 @@ updated : "2017-10-23T03:30:20.725Z"
             i = 0;
     
 //loop through the days that this component shall cover and prepare HTML for LI items which will be used as tabs
+//the HTML tamplates come from the config file
 //we also create a DIV with content for each 
+        var state = 'active';
         while (end_date.getTime() >= check_date.getTime()) {
 //tabs
-            tabs += '<li class="mlab_cp_eventcal_tab"><a href="#' + guid + i + '" data-ajax="false">' + this.formatDate(check_date.toISOString(), 'TabDate') + '</a></li>\n';
+            tabs += '<li class="mlab_cp_eventcal_tab ' + state + '" onclick=\'$(this).addClass("active").siblings().removeClass("active"); $(this).closest("ul").siblings("div").hide().filter("#' + guid + i + '").show();\'>' + this.formatDate(check_date.toISOString(), 'TabDate') + '</li>\n';
             
 //events
             cal_content = '';
             $.each( data.items, function(e, item) {
                 event_date = new Date(item.start.dateTime || item.start.date);
                 if (event_date.toLocaleDateString() == check_date.toLocaleDateString()) {
-                    var summary = item.summary || 'UNKNOWN';
                     var time = that.formatDate( item.start.dateTime || item.start.date, that.config.custom.time_format ) + " - " + that.formatDate( item.end.dateTime || item.end.date, that.config.custom.time_format );
-                    var description = item.description;
-                    var location = item.location;
-                    cal_content += event_template.replace('%%summary%%', summary).replace('%%time%%', time).replace('%%description%%', description).replace('%%location%%', location) + "\n";
+                    var temp = event_template.replace('%%time%%', time).replace('%%summary%%', item.summary || 'UNKNOWN');
+                    var description = (item.description ? desc_template.replace('%%description%%', item.description) : "");
+                    var location = (item.location ? loc_template.replace('%%location%%', item.location) : "");
+                    cal_content += temp.replace('%%description%%', description).replace('%%location%%', location) + "\n";
                 }                   
             });
-            tab_content += '<div id="' + guid + i + '" class="mlab_cp_eventcal_div_block">' + cal_content + '</div>';
+            if (state != 'active') {
+                tab_content += '<div id="' + guid + i + '" class="mlab_cp_eventcal_div_block" style="display: none">' + cal_content + '</div>';
+            } else {
+                tab_content += '<div id="' + guid + i + '" class="mlab_cp_eventcal_div_block">' + cal_content + '</div>';
+            }
             
 //update looping variables
             check_date.setDate(check_date.getDate() + 1);
             i++;
-
+            state = '';
         }
         cal_container.html(tabs_template.replace('%%TABS%%', tabs).replace('%%TAB_CONTENT%%', tab_content))
-        $(el).trigger("create");
     };
     
     this.formatDate = function(strDate, strFormat) {

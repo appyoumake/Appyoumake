@@ -34,24 +34,23 @@ custom:
         <details class="mlab_cp_eventcal_block">
             <summary class="mc_heading mlab_eventcal_summary_block">
                 <span class="mc_text mc_info mc_small mlab_cp_eventcal_time">%%time%%</span>
-                <span class="mc_text mc_info mc_large mlab_cp_eventcal_summary">%%summary%%</span>
+                <span class="mc_text mc_info mc_medium mlab_cp_eventcal_summary">%%summary%%</span>
             </summary>
-            <div class="mc_text mc_info mc_medium mlab_cp_eventcal_description">%%description%%</div>
-            <div class="mc_text mc_info mc_medium mlab_cp_eventcal_location">%%location%%</div>
+            %%description%%
+            %%location%%
         </details>
-        
+
+    html_desc: <div class="mc_text mc_info mc_small mlab_cp_eventcal_description">%%description%%</div>
+    html_loc: <div class="mc_text mc_info mc_small mlab_cp_eventcal_location">Sted: %%location%%</div>
+
     html_days: |
-        <div data-role="tabs" id="tabs">
-            <div data-role="navbar">
-                <ul class="mc_text mc_info mc_large mlab_cp_eventcal_tab_list">
-                    %%TABS%%
-                </ul>
-            </div>
+        <div data-role="tabs">
+            <ul class="mc_text mc_info mc_large mlab_cp_eventcal_tab_list">
+                %%TABS%%
+            </ul>
             %%TAB_CONTENT%%
         </div>
-        
-#2017-11-29T00:00:00Z
-#2017-11-30T23:59:59Z
+
     errorMsg: 'No events in calendar'
     time_format: ShortTime
     set_options:

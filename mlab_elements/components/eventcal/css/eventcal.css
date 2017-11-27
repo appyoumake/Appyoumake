@@ -1,4 +1,6 @@
-/* main design */
+/* main design 
+Developer: Cecilie Jackbo Gran @ FFI
+*/
 
 #mlab_editor .mlab_cp_eventcal [data-role="tabs"],
 .mlab_main_body_content .mlab_cp_eventcal [data-role="tabs"]{
@@ -25,7 +27,7 @@
     font-family: Arial,Helvetica,sans-serif;
     padding: 0.3em;
     margin: 0.7px;
-    margin-bottom: 0;
+    margin-bottom: 5px;
     border: 1px solid lightgray;
     background-color: grey;
     border-bottom: 0;
@@ -38,18 +40,11 @@
     white-space: nowrap;
     border-top-left-radius: 0;
     box-sizing: border-box;
-    border-top-right-radius: 3px;
+    border-top-right-radius: 7px;
 }
 
-#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a,
-.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a {
-    margin: 0;
-    padding: 0;
-    font-size: 100%;
-}
-
-#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a,
-.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab a {
+#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab li,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab li {
     margin: 0;
     padding: 0;
     font-size: 100%;
@@ -60,9 +55,11 @@
     padding-right: 5px;
 }
 
-#mlab_editor .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab.ui-state-active a,
-.mlab_main_body_content .mlab_cp_eventcal_tab_list .mlab_cp_eventcal_tab.ui-state-active a {
+#mlab_editor .mlab_cp_eventcal_tab_list li.active,
+.mlab_main_body_content .mlab_cp_eventcal_tab_list li.active {
     color: white;
+    margin-top: calc(+5px);
+    margin-bottom: calc(-0px);
 }
 
 #mlab_editor .mlab_eventcal_summary_block,
@@ -97,27 +94,28 @@
     border: #555555 1px dotted;
     padding: 2px;
     width: 123px;
+    vertical-align: middle;
 }
 
 #mlab_editor .mlab_cp_eventcal_summary,
 .mlab_main_body_content .mlab_cp_eventcal_summary {
     padding-left: 5px;
+    vertical-align: middle;
 }
 
 #mlab_editor .mlab_cp_eventcal_description,
-.mlab_main_body_content .mlab_cp_eventcal_description {
-    width: 97%;
-    border: dotted 2px grey;
-    padding: 4px;
-    margin: 2px;
-}
-
+.mlab_main_body_content .mlab_cp_eventcal_description,
 #mlab_editor .mlab_cp_eventcal_location,
 .mlab_main_body_content .mlab_cp_eventcal_location {
+    width: calc(97% - 156px);
+    padding: 0 4px;
+    margin-left: 156px;
     min-width: 97%;
-    background: grey;
-    padding: 4px;
-    margin-left: 4px;
 }
-    
+
+#mlab_editor .mlab_cp_eventcal_block div:last-child,
+.mlab_main_body_content .mlab_cp_eventcal_block div:last-child {
+    padding-bottom: 8px;
+    border-bottom: 1px solid lightgray;
+}
 
