@@ -532,7 +532,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         &lt;IfModule mod_rewrite.c&gt;
             RewriteEngine On
             RewriteCond %{REQUEST_FILENAME} !-f
-            RewriteRule ^(.*)$ /app.php [QSA,L]
+            RewriteRule ^(.*)$ app.php [QSA,L]
         &lt;/IfModule&gt;
     &lt;/Directory&gt;
     ErrorLog ${APACHE_LOG_DIR}/error.log
