@@ -41,7 +41,16 @@ this.checkAnswer = function(page) {
 
 
     this.displayAnswers = function (el) {
-        var container = el.find("figcaption").html('');
+        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var image_count = container.find("img").length;
+        if (image_count === 0) {
+            alert("You must add one or more images before trying to set the possible answers for the image.");
+            return;
+        }
+        var curr_img = container.find(".active").index() + 1;
+        
+        var temp_answers = mlab.dt.api.getVariable(el, "answers_" + curr_img);
+        
         var temp_answers = mlab.dt.api.getVariable(el, "answers");
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
             var correct_answer = temp_answers[0];

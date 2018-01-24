@@ -91,8 +91,6 @@ function is_valid_domain_or_ip($domain_name) {
         $dom_ok = preg_match("/^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/", $domain_name);
     }
     if (!$dom_ok) {
-        print $domain_name;
-        die(gethostbyname($domain_name));
         $dom_ok = gethostbyname($domain_name);
     }
     return $dom_ok;

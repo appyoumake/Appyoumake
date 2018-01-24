@@ -2,6 +2,10 @@
    
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
+        var that = this;
+        var that_el = el;
+        $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.showImage(that_el, -1); } );
+        $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.showImage(that_el, 1); } );
         this.displayAnswers(el);
     };
 
@@ -19,17 +23,25 @@
                         '<button class="mlab_dt_button_ok mlab_dt_right" data-mlab-dt-img_quiz-answers="update">OK</button>' +
                         '</div>');
                 
-        var temp_answers = mlab.dt.api.getVariable(el, "answers");
+        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var image_count = container.find("img").length;
+        if (image_count === 0) {
+            alert("You must add one or more images before trying to set the possible answers for the image.");
+            return;
+        }
+        var curr_img = container.find(".active").index() + 1;
+        
+        var temp_answers = mlab.dt.api.getVariable(el, "answers_" + curr_img);
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
             content.find("[data-mlab-dt-img_quiz-answers='answers']").val(temp_answers.join('\n'));
         }
         
-//when click on OK we want to save the data using the standard Mlab API call, and then display the calendar
-        content.on("click", "[data-mlab-dt-img_quiz-answers='update']", {component: el }, function(e){ 
+//when click on OK we want to save the data using the standard Mlab API call, and then display the responses
+        content.on("click", "[data-mlab-dt-img_quiz-answers='select_answers']", {component: el }, function(e){ 
                 e.preventDefault(); 
                 var dlg = $(e.currentTarget).parent();
                 var answers = dlg.find("[data-mlab-dt-img_quiz-answers='answers']").val().split('\n');
-                mlab.dt.api.setVariable(e.data.component, "answers", answers);
+                mlab.dt.api.setVariable(e.data.component, "answers_" + curr_img, answers);
                 mlab.dt.api.closeAllPropertyDialogs();
                 mlab.dt.components.img_quiz.code.displayAnswers.call(mlab.dt.components.img_quiz.code, e.data.component);
             });

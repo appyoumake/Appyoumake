@@ -91,6 +91,7 @@
         indicator.find("span").removeClass("active");
         $("<img src='" + img_url + "' class='active'>").appendTo(container);
         $("<span data-mlab-ct-multi_img-role='current' class='active'></span>").appendTo(indicator);
+        $(el).css("background-image", '');
     };
 
     this.custom_show_image_previous = function (el) {
