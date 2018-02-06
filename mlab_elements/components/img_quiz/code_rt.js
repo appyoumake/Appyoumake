@@ -1,65 +1,79 @@
 /*
-    Function fired when page loads. Sets up the quiz.
+    Function fired when page loads. Does the following:
+        - Assigns event handlers 
+        - Moves to first image
+        - Loads answers for the first image
     @param {DOM object} el Component element
 */
-this.onPageLoad = function(el) {
-    var self = this;
-    self.domRoot = $(el);
-    self.deviceId = self.api.getDeviceId(); 
-    self.settings = self.api.getVariable(this.domRoot, "settings");
-    this.di
-};
+    this.onPageLoad = function(el) {
+        this.displayAnswers(el);    
+    };
 
-this.loadAnswers = function() {
+/**
+ * Identical to the same function inthe parent multi_img, except it also displays the answers
+ * @param {type} el
+ * @returns {undefined}
+ */
+    this.custom_show_image_previous = function (el) {
+        this.showImage(el, -1);
+        this.displayAnswers(el);
+    }
     
-    mlab.api.db.getAllResult(mlab.api.components.quiz.deviceId, mlab.api.components.quiz.domRoot.attr("id"), mlab.api.components.quiz.processAnswers);
-};
-
-
-//the answer check utilises the "data-mlab-cp-quiz-correct-response=true" we use for checkboxes, radio boxes and options to 
-this.checkAnswer = function(page) {
-    if (typeof page == "undefined") {
-        return;
+    this.custom_show_image_next = function (el) {
+        this.showImage(el, 1);
+        this.displayAnswers(el);
     }
 
-//first erase all previous markings
-    $(page).find("input[type='radio'], input[type='checkbox']").parent().css("background-color", "");
-    $(page).find("option").css("background-color", "");
-    $(page).find("input[type='text']").css("background-color", "");
-
-
-    $(page).find("input[data-mlab-cp-quiz-correct-response='true']").filter(":checked").parent().css("background-color", "orange");
-    $(page).find("option[data-mlab-cp-quiz-correct-response='true']").filter(":selected").css("background-color", "orange");
-    $(page).find(":text").each( function () {
-        if ($(this).attr("data-mlab-cp-quiz-correct-response").toLowerCase().trim() == $(this).val().toLowerCase().trim()) {
-            $(this).css("background-color", "orange");
-        }
-    });
-    
-};
-
-
-
-    this.displayAnswers = function (el) {
+/**
+ * This does the actual task of displaying next/previous image.
+ * If no previous/next image exists we just bail
+ * @param {type} el
+ * @param {type} direction
+ * @returns {undefined}
+ */
+    this.showImage = function (el, direction) {
         var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
-        var image_count = container.find("img").length;
-        if (image_count === 0) {
-            alert("You must add one or more images before trying to set the possible answers for the image.");
-            return;
+        var curr_img = container.find(".active");
+        if (direction == 1) {
+            var move_to = curr_img.next();
+            if (move_to.length == 0) {
+                alert("Quiz finished");
+            }
+        } else {
+            var move_to = curr_img.prev();
+            if (move_to.length == 0) {
+                return;
+            }
+        }  
+        curr_img.removeClass("active");
+        move_to.addClass("active");
+        var num_active = move_to.index() + 1;
+        $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+    }
+    
+/**
+ * Function that will display one for button each answer that has been entered
+ * It randomises the order because the first answer entered is always the correct one
+ * @param {type} el
+ * @param {type} image_index
+ * @returns {undefined}
+ */
+    this.displayAnswers = function (el, image_index) {
+        if (typeof image_index == "undefined") {
+            image_index = $(el).find("[data-mlab-ct-multi_img-role='display']").find(".active").data("mlab-ct-multi_img-id");
         }
-        var curr_img = container.find(".active").index() + 1;
+        var answer_container = $(el).find("[data-mlab-ct-multi_img-role='display_answers']");
+        answer_container.html("");
+        var temp_answers = mlab.api.getVariable(el, "answers_" + image_index);
         
-        var temp_answers = mlab.dt.api.getVariable(el, "answers_" + curr_img);
-        
-        var temp_answers = mlab.dt.api.getVariable(el, "answers");
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
             var correct_answer = temp_answers[0];
             var answers = this.shuffleAnswers(temp_answers);
             for (i in answers) {
                 if (correct_answer != answers[i]) {
-                    container.append("<a class='mc_button mc_medium mc_left' onclick='return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
                 } else {
-                    container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mc_correct' onclick='return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input' data-mlab-ct-multi_img-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
                 }
             }
         }
@@ -68,19 +82,28 @@ this.checkAnswer = function(page) {
 //simple shuffle: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
     this.shuffleAnswers = function(answers) { 
       var currentIndex = answers.length, temporaryValue, randomIndex;
-
-      // While there remain elements to shuffle...
       while (0 !== currentIndex) {
-
-        // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
-
-        // And swap it with the current element.
         temporaryValue = answers[currentIndex];
         answers[currentIndex] = answers[randomIndex];
         answers[randomIndex] = temporaryValue;
       }
-
       return answers;
+    }
+    
+/**
+ * Checks the answer for 
+ */
+    this.checkAnswers = function(button) {
+        var btn_clicked = $(button);
+        if (btn_clicked.data("mlab-ct-multi_img-answer_type") == "correct") {
+            btn_clicked.addClass("mc_correct");
+            alert("Correct answer");
+            this.showImage(btn_clicked.parent().parent(), 1);
+        } else {
+            btn_clicked.parent().find("[data-mlab-ct-multi_img-answer_type='correct']").addClass("mc_correct");
+            alert("Wrong answer");
+            this.showImage(btn_clicked.parent().parent(), 1);
+        }
     }

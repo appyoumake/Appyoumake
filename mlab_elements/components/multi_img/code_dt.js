@@ -14,12 +14,15 @@
 	this.onLoad = function (el) {
         var that = this;
         var that_el = el;
-        $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.showImage(that_el, -1); } );
-        $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.showImage(that_el, 1); } );
+        $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
+        $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
     };
 
 	this.onSave = function (el) {
-        return el.outerHTML;
+        var local_el = $(el).clone();
+        local_el.find("img").removeClass("active").first().addClass("active");
+        local_el.find("span").removeClass("active").first().addClass("active");
+        return local_el[0].outerHTML;
     };
     
 	this.onDelete = function () {
@@ -31,48 +34,14 @@
         return { "width": ctrl.width(), "height": ctrl.height() }
     };
     
-      
-    this.custom_scale_decrease = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        var w = fig[0].style.width;
-        if (w == "" || w.slice(-1) != "%") {
-            var scale = 100;
-        } else {
-            var scale = parseInt(w);
-        }
-        if (scale >= 20) {
-            fig.css('width', (scale - 10).toString() + '%');
-        }
+    this.custom_move_image_left = function (el) {
+        this.moveImage(el, -1);
     };
     
-    this.custom_scale_increase = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        var w = fig[0].style.width;
-        if (w == "" || w.slice(-1) != "%") {
-            var scale = 100;
-        } else {
-            var scale = parseInt(w);
-        }
-        if (scale <= 90) {
-            fig.css('width', (scale + 10).toString() + '%');
-        }
+    this.custom_move_image_right = function (el) {
+        this.moveImage(el, 1);
     };
-    
-    this.custom_position_left = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css({'float': 'left', 'margin-left': '', 'margin-right': ''});
-    };
-    
-    this.custom_position_right = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css({'float': 'right', 'margin-left': '', 'margin-right': ''});
-    };
-    
-    this.custom_position_centre = function (el) {
-        var fig = $('.mlab_current_component').find('figure');
-        fig.css({'float': 'none', 'margin-left': 'auto', 'margin-right': 'auto'});
-    };
-    
+
     this.custom_upload_images = function (el, event) {
         this.api.uploadMedia(el, this.config, this.media_type, this.cbAddImage, event, true);
     };
@@ -85,11 +54,13 @@
      * @returns {undefined}
      */
     this.cbAddImage = function(el, img_url) {
+        var guid = mlab.dt.api.getGUID();
         var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
         var indicator = $(el).find("[data-mlab-ct-multi_img-role='indicator']");
+        container.css("background-image", "");
         container.find("img").removeClass("active");
         indicator.find("span").removeClass("active");
-        $("<img src='" + img_url + "' class='active'>").appendTo(container);
+        $("<img src='" + img_url + "' data-mlab-ct-multi_img-id='" + guid + "' data class='active' style='height: 100%; width: auto;'>").appendTo(container);
         $("<span data-mlab-ct-multi_img-role='current' class='active'></span>").appendTo(indicator);
         $(el).css("background-image", '');
     };
@@ -100,7 +71,7 @@
     
     this.custom_show_image_next = function (el) {
         this.showImage(el, 1);
-    }    
+    }
 
     this.custom_delete_image = function (el) {
         var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
@@ -142,4 +113,27 @@
         move_to.addClass("active");
         var num_active = move_to.index() + 1;
         $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+    }
+    
+/**
+ * This task moves the currently view image to the left or right depending on the direction 
+ * @param {type} el
+ * @param {type} direction
+ * @returns {undefined}
+ */
+    this.moveImage = function (el, direction) {
+        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var curr_img = container.find(".active");
+        if (direction == 1) {
+            var move_to = curr_img.next();
+            if (move_to.length != 0) {
+                move_to.after(curr_img);
+            }
+        } else {
+            var move_to = curr_img.prev();
+            if (move_to.length != 0) {
+                move_to.before(curr_img);
+            }
+        }  
+        
     }

@@ -11,6 +11,7 @@ placeholder: data:image/jpeg;base64,/9j/4SDyRXhpZgAATU0AKgAAAAgABwESAAMAAAABAAEA
 paste_allowed: false
 autorun_on_create: custom_upload_images
 required_libs: { designtime: ["multi_img.css"], runtime: ["multi_img.css"]}
+resizeable: true
 
 html: |
     <div class="mc_container mc_picture">
@@ -21,43 +22,21 @@ html: |
     </div>
     <div style="clear: both;"></div>
 custom:
-    scale_decrease:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAdRJREFUeNpiZACC/0DAQEPw4eNHBgF+fjCbEUSwsLPT1EIY+P3jBwMTAx0ByKcMMB+CMDXBhYsX/4uKi/9nZef4j2w+C07vf3nB8OXRUYZ/v74ysPCIM/CruBPtk4uXLjG4urkxfPgAjDsBfob3Hz7A5VDiEBTGIPDz3V2GRzuKgJZ9gStkF1JmkPPoY2Bi4yHJst27djGYmJnhj8On++pQLIM54v21dSRbpq+nh6IGw0KQwaDgxAa+vbiAIWZqbs7w8OFDoiwDhyalKe/ixUsMLm7uDB8/fiBoGVYLQXHFyiOB1ZdcEgZYDQH5EAQIWYY1SEFA2qkJI3GAHCKoFYQidujQIRQ+P78AuEQBRcvNBc5gmqggBRmuHLKU4TMwW/z58hLM55GzJhi8oGBtbmllqA+GOPbVqakMssCUjQywZgtSSg5QcCIHISgq7q2JhvNBFvIrmMOzBYoPWTk4SC4bBdDi6+2FRSj8T3d2Eo5DSgAoGlCCGc1CFB+ePXWaKEONzUyxxyHQcPQCg6hUSi5ADz6aWghKLN9eXKSfhYTKWapb+JGI4KTYwhdHuohOLFQpvEEWcUroA4NzLdF6KK4tYL4kFtC1ETUgFg7vdumAAIAAAwCk9TQwvCbCGgAAAABJRU5ErkJggg==
-        tooltip: { nb_NO: Skaler bildet ned med 10%, en_GB: Scale image down by 10%, default: Scale image down by 10% }
-        order: 3
-        newline: true
-    scale_increase:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXtJREFUeNpiYKAzYAQRFy9e+k8Py/T19RiZaG3J2XPnGD5//gzns1DbgpLSUobPX74wnD17Fi42c8YMBmMjIzCb6j708fFhuHXrFooYLw8PnE11C6UkJVGCEATU1NRoYyHIZ+mZmai+4+VF4bNQ2zKQ70CWzJw+neHZ8+cMy1esoH62wGYZcjBSNVsQaxlV4pBUyyiykBzLyLaQXMvgqdTYzJQsX/Lx8pFkGcVxSKplGPnw948fRGli5eDAKEHIs/DLC4YHm9IZ/v36wiCoFcwgZpZF9dqDCdXCl2DLQODLo6MoCkH8B5vSqGshK484AxMbpGTnkbNGUfjxzk6Gn+/uMnx7cZEiC1lQLZRgUA5ZCvYpu5AyXBzka5iPPwEtppqFYC8DfcguxIMi9hkpeD+jBTVFQYoMXhzpgsfn+2trUXxLVR/C4guEQalWwqYMHHc0SaUw8PbCIjANSiBP99XRLlvAfAfyGQxQ03eYqRRagtAS0LxdOuAAIMAAYTW6PTOxU0YAAAAASUVORK5CYII=
-        tooltip: { nb_NO: Skaler bildet opp med 10%, en_GB: Scale image up by 10%, default: Scale image up by 10% }
-        order: 4
-    decrease_size:
-        tooltip: { nb_NO: Reduser størrelsen på underteksten, en_GB: Decrease the size of the caption, default: Decrease the size of the caption }
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
-        order: 5
-    increase_size:
-        tooltip: { nb_NO: Øk størrelsen på underteksten, en_GB: Increase the size of the caption, default: Increase the size of the caption }
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASRJREFUeNrUltENgyAQhu1D0z46gt3AERzBERiBEdjAERjBETqC3YAR6AZXTI6EEE7wwIde8r8g+Am5/8eu+5OSTkNu0v3x1LtaAK2TysCkE6BkDUw4AUJ7AiYCmNfMBRoEAsJTQJsAWg5sCmCA8EvrHQF3zVfBhgQM8CMuKU0AocQirXbnpVsDVXB8FLRvBevRcyZhi1CqFVBEL1QE0LYCmihV/I5TUFELm4mmoDp2a2X04UTXTlyYj7GVeL4SwLXW6FNhrlYFQc7owA2CGzG+4K3+cfpmPDomxvc1r8xa0uglt39VEEhcIE/GHnDvSnP0+0CcCHCDQDJbW3N2GUaWYiZSSpKywRYF8RkvyQOgjTtZZyYvBGTE6NsKvVmds6z6CTAAwDrVj6+nmH8AAAAASUVORK5CYII=
-        order: 6
-    position_left:
-        newline: true
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OURCNzRCNDA5NDEyMTFFNUJERkVDRTI5N0NDNzBEODAiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OURCNzRCNDE5NDEyMTFFNUJERkVDRTI5N0NDNzBEODAiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5REI3NEIzRTk0MTIxMUU1QkRGRUNFMjk3Q0M3MEQ4MCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5REI3NEIzRjk0MTIxMUU1QkRGRUNFMjk3Q0M3MEQ4MCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnvxBIQAAABuSURBVHjaYvz//z8DPQETA53B8LeQBcZgZGTsB1IGNLLnAjCtFKJYCLXMgdY+ZBz2qZRacbgQiBfgUwALSWrF4cHROByB+RDoQ5paBLNn4OIQCGiaD7FZOJoPR/PhaBxStz4EhtRoPhyYOAQIMAAJijgYMay79AAAAABJRU5ErkJggg==
-        tooltip: { nb_NO: Juster bildet til venstre, en_GB: Align image to the left, default: Align image to the left }
-        order: 7
-        newline: true
-    position_centre:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzEzQzQwNzg5NDEzMTFFNUFDNTRFQzdFQjlGQ0NDM0MiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzEzQzQwNzk5NDEzMTFFNUFDNTRFQzdFQjlGQ0NDM0MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozMTNDNDA3Njk0MTMxMUU1QUM1NEVDN0VCOUZDQ0MzQyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDozMTNDNDA3Nzk0MTMxMUU1QUM1NEVDN0VCOUZDQ0MzQyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PojE7p4AAAB1SURBVHjaYvz//z8DPQETA53B8LeQBcZgZGTsB1IGNLLnAjCtFKJYCLXMgdY+ZBz2qZQFp9cpi9OFQLwAWQAWkix4NFESpwdH43AE5EOgD2lqEcyegYtD9NRK7XxIMOOP5sPRfDgah1SvD4EhN5oP6QMAAgwABts7GFZDQNsAAAAASUVORK5CYII=
-        tooltip: { nb_NO: Juster bildet på midten av siden, en_GB: Align image in the centre of the page, default: Align image in the centre of the page }
-        order: 8
-    position_right:
-        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTI0OTU1M0Q5NDEzMTFFNUIwQTdGRDgzNjIyRkI1MUQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTI0OTU1M0U5NDEzMTFFNUIwQTdGRDgzNjIyRkI1MUQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1MjQ5NTUzQjk0MTMxMUU1QjBBN0ZEODM2MjJGQjUxRCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1MjQ5NTUzQzk0MTMxMUU1QjBBN0ZEODM2MjJGQjUxRCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk56QQ8AAABsSURBVHjaYvz//z8DPQETA53B8LeQBcZgZGTsB1IGNLLnAjCtFKJYCLXMgdY+ZBz2qZSF6KCgLI4XAkNyAUkWUhjHB0dgHA7/fAj0IU0tgtkzcHFIKLVSmg+BeDQfjubD0fpwtD4crnEIEGAAPTw7GLSSmD4AAAAASUVORK5CYII=
-        tooltip: { nb_NO: Juster bildet til høyre, en_GB: Align image to the right, default: Align image to the right }
-        order: 9
     upload_images:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAcJJREFUeNq8VttxgkAUXVYz8RM7gApCCVJB4l/+ohWgFUgqMKlAO1AqgBLSgXQQP5PJ89yZK1kJ+8DXnTnDDOzes/d1FiEc7eq6twJ+NJi4+pHC3e4M325OSogIfMuS4NQRRkd+/0+IKCIgB+ZAoLwf4DGz+PGxLlUzQfuABfus3nvKghyPgeKkAEpg1KLOW+AZeKil+fHj/S2tCEFGThfivBaCtJQc7kyc3xa7Gk7adNkRRjUdeDS4LWu0BDJqFOCW59N33F94Dc2isxcgRh22tRml7KwcR2Ms4SCmLrIsLJvIyKgR8Bhy9KbMDLF2KWpz86rRypGDGs01ezfqXEvlpIXB39ohXZkuO5yFRmnzz92qe9JmqINLU+nWBKq0SSaj1s4NESYOt0liuEk2zCE6fHmSCvRM10+n2w2+vz4zDVluEQ/yfQ8fUdvBL3mESuVaStooFRGmF9JSsiePU7K5QIdSQ4aS1WN6geimxCV56JeslfUTrQ9wXCg1rnR4J2vq4E8VVRljQR8gjYzZiUtDkd4SQtbXdc333y+GZc4CrrPJYos8uhMyqW18+k23yTE/wqbTb13I2hKWBx5mz34FGAB536FMT5pnwQAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Last opp et eller flere bilder eller velg bilder allerede i denne appen, en_GB: Upload one ore more pictures or select pictures already in the app, default: Upload one ore more pictures or select pictures already in the app }
-        order: 10
+        order: 1
         newline: true
     delete_image:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAR1JREFUeNqs0z9Lw0AcxvGkFa110MHVOnTxNbRDJ9+AXQPSxVXdnLp3cKyIiyBZBN+Ao6OCS9+CdCgKoqC1Ter1e/Ac1PRqhfqDD3ck5Lm/CY0xwSKVCxasJdeJomiF5gCbCt5FGQPc4xEFvOEqjuPnHwFUC4czBtoTVxXUswFbGulzzqzXsDq1BCoPO615u2oHePEF1LDxx73r+E7hGO+4xK2eXeAOfZzhAV00fAE9Te8I13jVxp7jCSe4QaqQqQB7jCGGMkKi9lv9ob4p/HaR8goK9T6X6f/vTcwGGE03yLRmwswA99Lu+BeWtanJxPNUywl898BWEW2UsI4mdrCNU1Q1UOIL6OvoGvqB7K3c1xI+9KO5S5S6j8YCDAArO0imo31J5wAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Slett bilde , en_GB: Delete picture, default: Delete picture }
-        order: 11
+        order: 12
+    move_image_left:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAATJJREFUSMfNVbFtwzAQPJokyNIjsEwXj+CMkAlidS6dDbJBsoG9QZwylZMNtIG9gV2SoCSnCBUIiV6iBArIAwRU8O9Px79/YOLgQy5LpedciDUX4qYqizwpE6n0Qip9lEpfw1nF5M0iwVcADgBMcg2l0k8N1s1jUoBvCfBzLIagHjNIsiDy8tEFwq+/doADwGdXpzVyc/a7UwLzeQ+xx8ad2/BtWppgz0aAD4mP2YTg3z6YErw22sNU4ADAq7J450KYnq4ZGycOAFVZvE1U5PTjA+9sJpUGgJghtguy1tIuqQKsxSgbAM89BTLv7I4wae0FA2BPTk+p9JmYQ1ep9HZIF/2JwO4OwIXIi34r1rfBqKHnnWUpd0Lb2F4m22je2QzAfYdk4yQiJNsAuHhnX/Af4gtLjFkb+n7ptwAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Flytt bilde til venstre, en_GB: Move image to the left, default: Move image to the left }
+        order: 13
+        newline: true
+    move_image_right:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAUJJREFUSMe1VctNxDAQfcRjeY6hg5QQOsjeOO7eOHo7gA7oAFEBoQJK2D1yDBWwHRBujvJZLrYUIAlOiC2NoljjeZ7PewYCL+HrKBXfCqJrQVR0bWNWvYVUnEnFZ2sfUvHW92y0AC8G8CIVP/k4X8zI4jywXQDY1JUp18igGNhLAbxLxWkoAFeyg1SsB6dIKo4F0Y0gigVRIojQtc2vlAXRJYCx5jKArSD67Nrm9VsPbLP0yMGj/ZbWtEemeV2ZvfshAMmEc7ZgyrRUDAcSBSKwdmNMAVVCS8VlFBCgBPAcBQy+qStTRCGDux4M0fxkrQTw1jv4MCe4A9gDeHRsHdMVqfjeg+m7ujKnpWJ3mODFqOjN6UE6wdyrKUX1uX3Se3D69lfZvImWDTTzrq5MvhbAzwnb9SdlrRdNW+3P/1XvtdcXQmZypI7uwD8AAAAASUVORK5CYII=
+        tooltip: { nb_NO: Flytt bilde til høyre, en_GB: Move image to the right, default: Move image to the right }
+        order: 14
