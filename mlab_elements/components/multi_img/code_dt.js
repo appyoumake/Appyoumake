@@ -60,7 +60,7 @@
         container.css("background-image", "");
         container.find("img").removeClass("active");
         indicator.find("span").removeClass("active");
-        $("<img src='" + img_url + "' data-mlab-ct-multi_img-id='" + guid + "' data class='active' style='height: 100%; width: auto;'>").appendTo(container);
+        $("<img src='" + img_url + "' data-mlab-ct-multi_img-id='" + guid + "' data class='active'>").appendTo(container);
         $("<span data-mlab-ct-multi_img-role='current' class='active'></span>").appendTo(indicator);
         $(el).css("background-image", '');
     };
@@ -117,6 +117,7 @@
     
 /**
  * This task moves the currently view image to the left or right depending on the direction 
+ * It also udates the "active" status of the image navigation dots so the correct one is highlighted
  * @param {type} el
  * @param {type} direction
  * @returns {undefined}
@@ -124,16 +125,23 @@
     this.moveImage = function (el, direction) {
         var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
         var curr_img = container.find(".active");
+        var num_active;
         if (direction == 1) {
             var move_to = curr_img.next();
             if (move_to.length != 0) {
                 move_to.after(curr_img);
+            } else {
+                return;
             }
         } else {
             var move_to = curr_img.prev();
             if (move_to.length != 0) {
                 move_to.before(curr_img);
+            } else {
+                return;
             }
-        }  
-        
+        }
+//update navigation dot
+        var num_active = curr_img.index() + 1;
+        $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     }

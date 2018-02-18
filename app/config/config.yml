@@ -198,6 +198,7 @@ parameters:
             config_uid_tag: widget
             config_uid_attribute: id
             app_uid_metatag_placeholder: %%%%APP_UID%%%%
+            app_name_placeholder: %%%%APP_NAME%%%%
             file_extensions: {ios: 'ipa', android: 'apk'}
             rsync_suffix: /www/
 

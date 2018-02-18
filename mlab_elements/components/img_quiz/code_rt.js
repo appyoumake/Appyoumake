@@ -52,7 +52,7 @@
     }
     
 /**
- * Function that will display one for button each answer that has been entered
+ * Function that will display one button for each answer that has been entered
  * It randomises the order because the first answer entered is always the correct one
  * @param {type} el
  * @param {type} image_index

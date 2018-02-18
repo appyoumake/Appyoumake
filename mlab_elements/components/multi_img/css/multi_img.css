@@ -12,26 +12,30 @@ and open the template in the editor.
         Light grey - #f1f1f1
         Black - #000000
         Dark grey: #cccccc
+        Wrong (red): #f66060
+        Correct (green): #42cb8c
 */
 .mlab_ct_multi_img_carousel {
-    width: 100%;
-    height: calc(width * 1.8);
+    height: calc(100%);
+    width: calc(100%);
 }
 
-.mlab_ct_multi_img_carousel img {
-    width: 100%;
+#mlab_editor .mlab_ct_multi_img_carousel img, .mlab_main_body_content .mlab_ct_multi_img_carousel img {
+    max-width: 100%;
+    max-height: 100%;
+    margin-left: auto;
+    margin-right: auto;
     display: none;
 }
 
-.mlab_ct_multi_img_carousel img.active {
+#mlab_editor .mlab_ct_multi_img_carousel img.active, .mlab_main_body_content .mlab_ct_multi_img_carousel img.active {
     display: block;
 }
 
 .mlab_ct_multi_img_btn_page {
     position: absolute;
-    top: 50%;
+    top: calc((100% / 2) - 30px);
     right: 0%;
-    transform: translate(0%, -50%);
     z-index: 10;
     width: 61px;
     height: 61px;
@@ -64,4 +68,9 @@ and open the template in the editor.
     width: 20px;
     height: 20px;
     background-color: #59caca !important;
+}
+
+.mc_container.mc_picture {
+    height: calc(100% - 30px);
+    position: relative;
 }

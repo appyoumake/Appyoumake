@@ -4,8 +4,6 @@
 	this.onLoad = function (el) {
         var that = this;
         var that_el = el;
-        $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
-        $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
         this.displayAnswers(el);
     };
 
@@ -33,6 +31,7 @@
         this.showImage(el, 1);
         this.displayAnswers(el);
     }
+    
 /**
  * Basic function to request a list of possible answers. This is done is a simple dialog where they add one question per line
  * The questions are linked to the current image, so the control may have 10 images and they set the answers for each in turn.
@@ -112,19 +111,13 @@
 //simple shuffle: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
     this.shuffleAnswers = function(answers) { 
       var currentIndex = answers.length, temporaryValue, randomIndex;
-
-      // While there remain elements to shuffle...
       while (0 !== currentIndex) {
-
-        // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
-
-        // And swap it with the current element.
         temporaryValue = answers[currentIndex];
         answers[currentIndex] = answers[randomIndex];
         answers[randomIndex] = temporaryValue;
       }
-
       return answers;
+      
     }

@@ -288,6 +288,8 @@ class AppController extends Controller
             
 //update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
             $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_uid_metatag_placeholder"], $entity->getUid());
+//same for name
+            $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_name_placeholder"], $entity->getName());
                         
 //finally we save the database record
         	$em->persist($entity);

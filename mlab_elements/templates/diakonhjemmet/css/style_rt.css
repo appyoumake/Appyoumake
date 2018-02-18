@@ -1,0 +1,201 @@
+/* Style Sheet for Diakonhjemmet Mlab template
+    Created on : 02.nov.2017, 17:39:40
+    Author     : Arild Bergh, based on design by "Design by Maia" and an original template by Cecilie Jackbo Gran @ Sinett/FFI.no
+        Colours used in this design are:
+        Dark blue (navy) - #627895
+        Aqua - #59caca
+        Light grey - #f1f1f1
+        Black - #000000
+        Dark grey: #cccccc
+        Wrong (red): #f66060
+        Correct (green): #42cb8c
+*/
+
+
+/* ==========================================================================
+   Page
+   ========================================================================== */
+#mlab_page_body .mlab_content_wrapper {
+   margin-top: 2%;
+   margin-bottom: 2%;
+   margin-left: 5%;
+   margin-right: 5%;
+}
+
+#mlab_page_body .mlab_main_body_content {
+    overflow-y: visible;
+}
+
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+#mlab_page_body .mlab_main_body_content {
+    font-size: 100%;
+}
+
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+#mlab_page_body .mlab_header {
+    padding: 0;
+    margin: 0;
+    border: none;
+    overflow: hidden;
+    opacity: 1;
+    z-index: 120 !important;
+    background-color: #f1f1f1;
+    height: 80px;
+}
+
+#mlab_page_body .mlab_header_box {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+#mlab_page_body .mlab_header_name {
+    font: 2em Arial;
+    line-height: normal;
+    color: #59caca;
+    width: 1em;
+    height: 60px;
+    float: left;
+    line-height: 1em;
+    margin: 10px;
+}
+    
+#mlab_page_body .mlab_page_name {
+    float: left;
+    max-width: 50%;
+    width: 50%;
+    margin-top: 4%;
+    margin-left: 2%;
+    margin-bottom: 1%;
+    font-size: 100%;
+    font-size: 4vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+    font-family: Arial,sans-serif;
+}
+
+#mlab_page_body .mlab_btn_menu,
+#mlab_page_body .mlab_logo {
+    background-image: url('./img/microscope.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    float: left;
+    width: 60px;
+    height: 60px;
+    margin: 10px 0 10px 30px;
+}
+
+#mlab_page_body .mlab_btn_menu {
+    background-image: url('./img/hamburger.svg');
+    float: right;
+    width: 40px;
+    height: 40px;
+    margin: 20px 30px 15px 0;
+}
+
+/* ==========================================================================
+   Menu and Settings Panel
+   ========================================================================== */
+#mlab_page_body .mlab_menu_panel, 
+#mlab_page_body .mlab_settings_panel {
+    padding: 1%;
+    background-color: #ffffff;
+    color: #333333; 
+    opacity: 0.92;
+}
+
+#mlab_page_body .mlab_settings_heading,
+#mlab_page_body .mlab_menu_heading {
+    font-size: 1.4em;
+    font-weight: bold;
+    padding-top: 1.2em;
+    cursor: alias;
+}
+
+#mlab_page_body .mlab_settings_heading {
+    padding-top: 2em;
+}
+
+#mlab_page_body .mlab_hr_panel {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+#mlab_page_body .mlab_settings_text,
+#mlab_page_body .mlab_menu_text {
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    cursor: alias;
+}
+
+#mlab_page_body .mlab_btn_color_toggle, 
+#mlab_page_body .mlab_btn_txsize_toggle,
+#mlab_page_body .mlab_btn_close,
+#mlab_page_body .mlab_btn_close_menu {
+    padding: 0;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding-bottom: 4em;
+    width: 4em;
+    float: left; 
+    background-image: url('./img/btn_color_toggle.svg');
+    cursor: pointer;
+}
+
+#mlab_page_body .mlab_btn_txsize_toggle {
+    background-image: url('./img/btn_txsize.svg');
+}
+
+#mlab_page_body .mlab_btn_close,
+#mlab_page_body .mlab_btn_close_menu {
+    background-image: url('./img/btn_close.svg');
+    float: right;
+    margin-top: 0em;
+    width: 1.7em;
+    cursor: pointer;
+}
+
+#mlab_page_body .mlab_btn_close_menu {
+    float: left;
+}
+
+#mlab_page_body .mlab_creators {
+    font-size: 0.7em;
+    cursor: alias;
+}
+
+#mlab_page_body.mlab_color_toggle {
+    background-color: white;
+}
+
+#mlab_page_body .mlab_main_body_content .mc_text.mlab_color{
+    color: black;
+}
+
+#mlab_page_body .mlab_main_body_content.mlab_large_text{
+    font-size: 130%;
+}
+
+#mlab_page_body .mlab_hide {
+    visibility:hidden !important;
+}
+
+/* ==========================================================================
+  To hide an element from the app builder - add the class "mlab_hide_in_app_builder"
+  to the element - the App Builder will have a stylesheet with the syntax:
+
+.mlab_hide_in_app_builder {
+    display: none !important;
+}
+========================================================================== */
