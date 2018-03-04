@@ -100,9 +100,9 @@
             var answers = this.shuffleAnswers(temp_answers);
             for (i in answers) {
                 if (correct_answer != answers[i]) {
-                    answer_container.append("<a class='mc_button mc_medium mc_left' onclick='return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_wrong' onclick='return false;'>" + answers[i] + "</a>");
                 } else {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mc_correct' onclick='return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_correct' onclick='return false;'>" + answers[i] + "</a>");
                 }
             }
         }

@@ -175,6 +175,11 @@ part of a list */
 }
 
 /*  */
+#mlab_editor .mc_text.mc_heading,
+.mlab_main_body_content .mc_text.mc_heading {
+    color: #627895;
+}
+
 #mlab_editor .mc_text.mc_heading.mc_small,
 .mlab_main_body_content .mc_text.mc_heading.mc_small {
     font-size: 1.12em !important;
@@ -232,7 +237,7 @@ part of a list */
 /* A chapter display element */
 #mlab_editor .mc_display.mc_chapter,
 .mlab_main_body_content .mc_display.mc_chapter {
-    color: #0C365C;
+    color: #627895;
 }
 
 /* An ingress display element - typically below a heading */
@@ -339,7 +344,8 @@ part of a list */
 .mlab_main_body_content .mc_link.mc_text {
     text-decoration: underline;  
     cursor: pointer;
-    color: lightblue;
+    color: #59caca;
+    font-weight: bold;
 }
 
 /* For figure elements (ex. an image) that are going to be a link */
@@ -373,7 +379,7 @@ part of a list */
 /* */
 #mlab_editor .mc_interactive,
 .mlab_main_body_content .mc_interactive {
-    //color: blueviolet;
+    /*color: blueviolet;*/
     cursor: pointer;
 }
 
@@ -412,10 +418,7 @@ part of a list */
 /* ? */
 #mlab_editor .mc_entry.mc_input,
 .mlab_main_body_content .mc_entry.mc_input {
-    background-color: white;
-    border: 2px inset;
-    color: black;
-    top:0;
+
 }
 
 /* ? For entry elements that will give an output to display */
@@ -433,7 +436,7 @@ part of a list */
 /* Text for entry elements (typically labels) */
 #mlab_editor .mc_entry.mc_info,
 .mlab_main_body_content .mc_entry.mc_info {
-    color: #0C365C;
+    color: #000000;
 }
 
 /* highlight */
@@ -456,49 +459,47 @@ part of a list */
 /* */
 #mlab_editor .mc_button,
 .mlab_main_body_content .mc_button {
-    padding: 0.3em;
-    margin: 0;
-    height: 1.6em;
-    font-size: 0.8em;
-    background-color: #0C365C;
+    border-radius: 1em;
+    width: calc((100% / 2) - 2em);
+    margin: 0.3em;
+    display: block;
+    float: left;
+    height: auto;
+    background-color: white;
+    color: #627895;
+    border: 2px solid #627895;
+    line-height: 0.8em;
     background-image: none;
-    border: none;
     outline: none;
-    border-radius: 2px;
-    color: #ffffff;
     font-family: Arial,Helvetica,sans-serif;
     text-align: center;
     text-decoration: none;
     text-shadow: none;
-    vertical-align: top;
+    vertical-align: middle;
     word-wrap: break-word;
     cursor: pointer;
     box-shadow: none;
-    width: auto;
 }
 
 /*  */
 #mlab_editor .mc_button.mc_small,
 .mlab_main_body_content .mc_button.mc_small {
     padding: 0.2em;
-    height: 1.4em;
     font-size: 0.7em;
 }
 
 /* */
 #mlab_editor .mc_button.mc_medium,
 .mlab_main_body_content .mc_button.mc_medium {
-    padding: 0.3em;
-    height: 1.6em;
-    font-size: 0.8em;
+    padding: 0.5em;
+    font-size: 1em;
 }
 
 /*  */
 #mlab_editor .mc_button.mc_large,
 .mlab_main_body_content .mc_button.mc_large {
-    padding: 0.5em;
-    height: 2em;
-    font-size: 1.1em;
+    padding: 0.7em;
+    font-size: 1.3em;
 }
 
 

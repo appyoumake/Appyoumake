@@ -10,21 +10,6 @@
     };
 
 /**
- * Identical to the same function inthe parent multi_img, except it also displays the answers
- * @param {type} el
- * @returns {undefined}
- */
-    this.custom_show_image_previous = function (el) {
-        this.showImage(el, -1);
-        this.displayAnswers(el);
-    }
-    
-    this.custom_show_image_next = function (el) {
-        this.showImage(el, 1);
-        this.displayAnswers(el);
-    }
-
-/**
  * This does the actual task of displaying next/previous image.
  * If no previous/next image exists we just bail
  * @param {type} el
@@ -49,6 +34,7 @@
         move_to.addClass("active");
         var num_active = move_to.index() + 1;
         $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+        this.displayAnswers(el);
     }
     
 /**
@@ -61,19 +47,21 @@
     this.displayAnswers = function (el, image_index) {
         if (typeof image_index == "undefined") {
             image_index = $(el).find("[data-mlab-ct-multi_img-role='display']").find(".active").data("mlab-ct-multi_img-id");
+            console.log(image_index);
         }
         var answer_container = $(el).find("[data-mlab-ct-multi_img-role='display_answers']");
         answer_container.html("");
         var temp_answers = mlab.api.getVariable(el, "answers_" + image_index);
-        
+        console.log(el);
+        console.log("answers_" + image_index);
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
             var correct_answer = temp_answers[0];
             var answers = this.shuffleAnswers(temp_answers);
             for (i in answers) {
                 if (correct_answer != answers[i]) {
-                    answer_container.append("<a class='mc_button mc_medium mc_left' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
                 } else {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input' data-mlab-ct-multi_img-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-multi_img-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
                 }
             }
         }
@@ -100,10 +88,9 @@
         if (btn_clicked.data("mlab-ct-multi_img-answer_type") == "correct") {
             btn_clicked.addClass("mc_correct");
             alert("Correct answer");
-            this.showImage(btn_clicked.parent().parent(), 1);
         } else {
-            btn_clicked.parent().find("[data-mlab-ct-multi_img-answer_type='correct']").addClass("mc_correct");
+            btn_clicked.addClass("mc_wrong").parent().find("[data-mlab-ct-multi_img-answer_type='correct']").addClass("mc_correct");
             alert("Wrong answer");
-            this.showImage(btn_clicked.parent().parent(), 1);
         }
+        this.showImage(btn_clicked.parents('[data-mlab-type="img_quiz"]'), 1);
     }

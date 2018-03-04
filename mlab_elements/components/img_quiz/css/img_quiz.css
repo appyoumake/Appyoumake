@@ -74,3 +74,13 @@ and open the template in the editor.
     height: calc(100% - 30px);
     position: relative;
 }
+
+a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_correct {
+    background-color:  #42cb8c;
+    border-color:  #42cb8c;
+}
+
+a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_wrong {
+    background-color:  #f66060;
+    border-color:  #f66060;
+}

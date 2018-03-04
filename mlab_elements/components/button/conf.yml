@@ -1,0 +1,28 @@
+# Configuration file for link component
+version: 0.1
+developer: Arild Bergh @ Sinett/FFI.no
+category: text
+category_name: {nb_NO: Tekst, en_GB: Text}
+name: button
+extended_name: { nb_NO: Lenke, en_GB: Link, default: Link }
+tooltip: { nb_NO: Lenketekst, en_GB: Body text, default: Body text }
+footer_tip: { nb_NO: Setter inn lenke i appen, en_GB: Inserts link on a page, default: Inserts link on a page }
+compatible: ["h1", "h2", "h3", "p"]
+html: <a href="" class='mc_link mc_text'>Enter your link text here</a>
+inherit: h1
+filterhtml: ["a"]
+placeholder: { nb_NO: Legg inn lenketeksten din her, en_GB: Add your link text here, default: Add your link text here }
+custom:
+    decrease_size:
+        tooltip: { nb_NO: Reduser størrelsen på teksten, en_GB: Decrease the size of the text, default: Decrease the size of the text }
+    increase_size:
+        tooltip: { nb_NO: Øk størrelsen på teksten, en_GB: Increase the size of the text, default: Increase the size of the text }
+    set_link:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAddJREFUeNrsVr1SwkAQjoJjythRamcZOzuh0w7fADs79Q3CEzB2dqGjhDcIpVbQWsEbEDsYf+K3zt7M5sglx5mSnfkmP7d3393ut5t43t4q7OjY7wEzIBNYABEQ1EkUAGONSAdtJJTzDlzJcEmA0MJ9DnQ+N+uUHho1kg2BPvAGXAI+v28Bm5/vr6lrGPV8rYB2gd9K5tQppGLhgE94BTwhXPMC30dcBuoZPn9cTUfNUD4mWCQq8Vn+R5GRFiIp/65hTix9d8lZUiH9jMOXC71eHmrs0EKNbYu9DVR+ue7G2vhzKWGJ9En2Z8AF5VDLacpkCYtKGeV6aFSpgYwW7KiFVRFTp+EIdNhPJ8sV/dYJK8jIKBexGLvj01qRbXWaRrM50nKmyJa8IHWNc/iFwDv79ICR6CxGslxIqetru0950pwFkVhWkZEsd0LsOOYTKLvBpFe6QR9cYvwDt9cVZFOel9rUnKyb2ODT5WLPCvppZHN8GVLZDW6xy0nJ5kIpEPhafwlMhX9qIqLOg9uupkinfrnQQhQUtKtVwRd9J2IpmhNREiTxe7zbAD7wgOcXW+nb5tD5t8HphJD+GidRvwetkjkTFlXq1WH8SYoK5D/j5rC3UvsVYAD7ENo13pqynAAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Rediger lenken, en_GB: Edit link, default: Edit link }
+        order: 5
+        newline: true
+    toggle_button:
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAalJREFUeNrsVt1NxDAMbhEI3igbdISyQdmgGxA26AaECWCD3k1QmKAwQcsE7QbAG4iHwz45komc1LlXsGT11LPz2Z9/0iz7lxU5OT2rQHvQHdM30A609O1z5aHoiDp9f32+s/cGHl3EFW2vwGdyL46UieChA2idAIZSoB/PVAv4wiIOgS2gd6APzo6B3qZSWsFjRHqIWh9sIupcQAgyE9g+UPjvQp0h1cBFfR0DI3v8vfGyTKI0I7qWNTAmH6puBMUiW6JRsnEjMBJ1kk0BOvNRCQHWwjy1no1VgI3eOb3YNHRI41G3AGWLsrkKGh+fnUs3i3nE2bAGwRq9gpM9AOwG/DZrkRqPkn3NYmACjTsKOjsILFQz8lGDHQs0dgmt7+SJ6u6C2oZozIVtkgomLXk+8M+iv3DFaFrfeu9bGiV+Th2KjhvNyjnrI3ekpSVSagCtshsH2k6tdj+Gdul5wpyV/PpJAeSFNZzSCNjWNUdo98YAH73uwjreE72jYoM0qR9DpdBhITXMr3H11ODkws0+8AtTkF+ZEd1VypKXMu2EbHttnf62/AgwAAga3aqyrm3FAAAAAElFTkSuQmCC
+        tooltip: { nb_NO: , en_GB: Veksle mellom knapp og lenke, default: Toggle between link and button }
+        order: 6
