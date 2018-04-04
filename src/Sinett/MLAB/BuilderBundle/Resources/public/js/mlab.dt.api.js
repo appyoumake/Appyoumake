@@ -879,11 +879,12 @@ Mlab_dt_api.prototype = {
  * @returns {String|Boolean}
  */
     checkSelTextValid: function () {
+        debugger;
         var el, sel, node;
         sel = window.getSelection();
         if (sel.toString() != "") {
             el = sel.getRangeAt(0).commonAncestorContainer;
-            if ($(el).parents("div.mlab_current_component").length > 0) {
+            if ($(el).hasClass("mlab_current_component") || $(el).parents("div.mlab_current_component").length > 0) {
                 return true;
             }
         }

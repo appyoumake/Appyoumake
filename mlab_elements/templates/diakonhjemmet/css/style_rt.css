@@ -210,3 +210,10 @@
 div.mlab_menu_text h2 {
     display: none;
 }
+
+/* modern clearfix, needed for image quiz, but good in general */
+div[data-mlab-type]:after {
+    content: "";
+    display: table;
+    clear: both;
+}

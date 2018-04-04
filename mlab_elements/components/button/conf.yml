@@ -8,7 +8,7 @@ extended_name: { nb_NO: Lenke, en_GB: Link, default: Link }
 tooltip: { nb_NO: Lenketekst, en_GB: Body text, default: Body text }
 footer_tip: { nb_NO: Setter inn lenke i appen, en_GB: Inserts link on a page, default: Inserts link on a page }
 compatible: ["h1", "h2", "h3", "p"]
-html: <a href="" class='mc_link mc_text'>Enter your link text here</a>
+html: <a href="" class='mc_link mc_text mc_button mc_medium'>Enter your link text here</a>
 inherit: h1
 filterhtml: ["a"]
 placeholder: { nb_NO: Legg inn lenketeksten din her, en_GB: Add your link text here, default: Add your link text here }

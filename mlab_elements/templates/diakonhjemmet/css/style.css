@@ -21,3 +21,10 @@
 #mlab_editor_chrome .mlab_main_body_content {
     padding: 0.6em;
 }
+
+/* modern clearfix, needed for image quiz, but good in general */
+div[data-mlab-type]:after {
+    content: "";
+    display: table;
+    clear: both;
+}

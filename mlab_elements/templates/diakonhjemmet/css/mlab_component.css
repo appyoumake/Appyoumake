@@ -1,6 +1,6 @@
 /*
 
-Designd by: Cecilie Jackbo Gran
+Designed by: Cecilie Jackbo Gran
 Use this classes as a base when designing new templates, as theese classes are 
 used by all the standard Mlab components and componenetes that are developed 
 by the Mlab guiedlines. We used the prefix mc where mc stands for mlab component.
@@ -532,4 +532,12 @@ part of a list */
 .mlab_main_body_content .mc_container .mc_list .mc_item {
     outline: 1px dotted lightblue;
     width: 30px;
+}
+
+#mlab_editor [data-mlab-type="button"] a.mc_link.mc_text ,
+.mlab_main_body_content [data-mlab-type="button"] a.mc_link.mc_text {
+    background-color: #59caca;
+    border-color: #59caca;
+    color: white;
+    text-decoration: none;
 }

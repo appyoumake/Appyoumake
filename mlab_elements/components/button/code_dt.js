@@ -14,6 +14,7 @@
     };
     
     this.custom_set_link = function (el, event) {
+        this.highlight(el); //inherited from H1 component
         this.api.setLink(el, event);
     };
 
