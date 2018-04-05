@@ -165,7 +165,7 @@
     background-repeat: no-repeat;
     background-position-x: right;
     background-position-y: center;
-    background-size: 2em;
+    background-size: 1.8em;
 }
 
 #mlab_page_body .mlab_btn_close_menu {
@@ -173,6 +173,7 @@
     height: 4em;
     padding: 0 0 1em 0;
     margin-top: -1em;
+    margin-left: -0.8em;
 }
 
 #mlab_page_body .mlab_creators {
@@ -205,7 +206,7 @@
 }
 ========================================================================== */
 
-/* hide the title of teh app in menu */
+/* hide the title of teh a1empp in menu */
 div.mlab_menu_text h2 {
     display: none;
 }
@@ -218,22 +219,39 @@ div[data-mlab-type]:after {
 }
 
 div[data-mlab-type] .mc_index details > p {
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: normal;
     line-height: 1rem;
     cursor: pointer;
     color: white;
-    padding: 0 0 0 3em;
-    margin: 0.3em 0;
+    padding: 0 0 0 3rem;
+    margin: 0.3rem 0;
 }
 
 div[data-mlab-type] .mc_index details > summary {
     font-size: 1.45rem;
     font-weight: bold;
-    border-top: 1px solid white;
     color: white;
     list-style: none;
-    padding: 1em;
+    padding: 0.5rem 2rem;
+    outline: none;
+    cursor: pointer;
+}
+
+div[data-mlab-type] .mc_index details > summary:before {
+    content: "";
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    display: block;
+    padding: 0.7rem 0 0.5rem 0;
+    margin: 0 -0.5rem;
+}
+
+div[data-mlab-type] .mc_index details:last-child::after {
+    content: "";
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    display: block;
+    padding: 0.7rem 0 0 0;
+    margin: 0 1.5rem;
 }
 
 div[data-mlab-type] .mc_index details[open] > summary:after {
@@ -243,7 +261,7 @@ div[data-mlab-type] .mc_index details[open] > summary:after {
     height: 12px;
     width: 12px;
     float: right;
-    margin: 5px 12px;
+    margin: 3px 12px;
     transform: rotate(225deg);
 }
 
@@ -263,5 +281,5 @@ div[data-mlab-type] .mc_index details > summary:after {
     width: 12px;
     transform: rotate(45deg);
     float: right;
-    margin: 5px 12px;
+    margin: 3px 12px;
 }
