@@ -33,7 +33,7 @@
      * @type type
      */
     function mlabInitialiseApp() {
-        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");  
+        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
     };
   
     $(document).on('pagecreate', '#mlab_index_page', function(e) {
@@ -58,8 +58,9 @@
                 <a href="#" data-rel="close"><span class="mlab_btn_close_menu"></span></a>
                 <div class="mlab_menu_logo"></div>
                 <hr class="mlab_hr_panel">
-                <div class="mlab_menu_text">%%MLAB_CT_COMP_INDEX%%</div>
             </div>
+            <br>
+            <div class="mlab_menu_text">%%MLAB_CT_COMP_INDEX|{"style":"folding"}%%</div>
         </div><!-- /Menu panel -->
         
         <!-- The HEADER with logo, name and menu -->

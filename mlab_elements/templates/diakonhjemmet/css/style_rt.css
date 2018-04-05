@@ -118,7 +118,7 @@
     font-size: 1.4em;
     font-weight: bold;
     padding-top: 1.2em;
-    cursor: alias;
+    cursor: pointer;
 }
 
 #mlab_page_body .mlab_settings_heading {
@@ -166,7 +166,6 @@
     background-position-x: right;
     background-position-y: center;
     background-size: 2em;
-    border-bottom: 1px solid white;
 }
 
 #mlab_page_body .mlab_btn_close_menu {
@@ -216,4 +215,53 @@ div[data-mlab-type]:after {
     content: "";
     display: table;
     clear: both;
+}
+
+div[data-mlab-type] .mc_index details > p {
+    font-size: 1em;
+    font-weight: normal;
+    line-height: 1rem;
+    cursor: pointer;
+    color: white;
+    padding: 0 0 0 3em;
+    margin: 0.3em 0;
+}
+
+div[data-mlab-type] .mc_index details > summary {
+    font-size: 1.45rem;
+    font-weight: bold;
+    border-top: 1px solid white;
+    color: white;
+    list-style: none;
+    padding: 1em;
+}
+
+div[data-mlab-type] .mc_index details[open] > summary:after {
+    content: "";
+    border-right: 3px solid;
+    border-bottom: 3px solid;
+    height: 12px;
+    width: 12px;
+    float: right;
+    margin: 5px 12px;
+    transform: rotate(225deg);
+}
+
+div[data-mlab-type] .mc_index details[open] > summary {
+    padding-bottom: 0;
+}
+
+div[data-mlab-type] .mc_index details > summary::-webkit-details-marker {
+    display: none;
+}
+
+div[data-mlab-type] .mc_index details > summary:after {
+    content: "";
+    border-right: 3px solid;
+    border-bottom: 3px solid;
+    height: 12px;
+    width: 12px;
+    transform: rotate(45deg);
+    float: right;
+    margin: 5px 12px;
 }

@@ -1248,7 +1248,16 @@ class FileManagement {
 //start with the component placeholders
         foreach ($placeholders as $placeholder) {
             if (strpos($placeholder, "MLAB_CT_COMP_") !== false) {
-                $comp_name = strtolower(str_replace("MLAB_CT_COMP_", "", $placeholder));
+                
+//extract name of component plus variables
+                $temp_data = explode("|", $placeholder);
+                $comp_name = strtolower(str_replace("MLAB_CT_COMP_", "", $temp_data[0]));
+                if (sizeof($temp_data) > 1) {
+                    $variables = '<script type="application/json" class="mlab_storage">' . $temp_data[1] . '</script>';
+                } else {
+                    $variables = '';
+                }
+                
                 if (array_key_exists($comp_name, $components)) {
                       
 //here we insert the html of the component in place of the placeholder
@@ -1257,7 +1266,10 @@ class FileManagement {
                     if ( (array_key_exists("resize", $components[$comp_name]) && $components[$comp_name]["resize"]) || (array_key_exists("display_dependent", $components[$comp_name]) && $components[$comp_name]["display_dependent"] == true ) ) {
                         $disp = "data-mlab-displaydependent='true'";
                     }
-                    $frontpage_content = str_replace("%%$placeholder%%", "<div data-mlab-type='" . $comp_name . "' " . $disp . " style='display: block;'>" . $components[$comp_name]["html"] . "</div>", $frontpage_content);
+                    
+                    $s = '/%%' . $temp_data[0] . '.*?%%/i';
+                    $r = "<div data-mlab-type='" . $comp_name . "' " . $disp . " style='display: block;'>" . $components[$comp_name]["html"] . $variables . "</div>";
+                    $frontpage_content = preg_replace($s, $r, $frontpage_content);
                     $res = $this->componentAdded($app->getId(), $app, $comp_name, $config);
                     if ($res["result"] != "success") {
                         error_log("Failed to run ComponentAdded code for $comp_name");

@@ -91,8 +91,7 @@ class mlab_ct_index {
         
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
         if ($style == "folding") {
-            $html .= "<div data-role='collapsible-set' data-theme='a' data-content-theme='a' data-mini='true'>\n";
-
+            $html .= "<div class='mc_container mc_index mc_list'>\n";
 //outer loop for chapter
             foreach ($index as $chapter => $titles) {
                 if ($chapter === "___") {
@@ -101,17 +100,17 @@ class mlab_ct_index {
                     $head = trim($chapter);
                 }
                 reset($titles);
-                $html .= "  <div data-role='collapsible'>\n";
-                $html .= "    <h3>$head</h3>\n";
+                $html .= "<details>\n";
+                $html .= "    <summary>$head</summary>\n";
                 foreach ($titles as $page_num => $title) {
                     $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></p>\n";
                 }
-                $html .= "  </div>\n";
+                $html .= "</details>\n";
             }
-            $html .= "</div>\n";
-                
+            $html .= "</div>";
+            
         } else {
-            $html .= "<ul class='mc_container mc_list'>\n";
+            $html .= "<ul class='mc_container mc_index mc_list'>\n";
 
             foreach ($index as $chapter => $titles) {
                 if ($chapter === "___") {
