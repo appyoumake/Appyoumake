@@ -78,9 +78,26 @@ and open the template in the editor.
 a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_correct {
     background-color:  #42cb8c;
     border-color:  #42cb8c;
+    color: white;
 }
 
 a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_wrong {
     background-color:  #f66060;
     border-color:  #f66060;
+    color: white;
+}
+
+[data-mlab-ct-img_quiz-role="explain"]  {
+    background-color: rgba(246,96,96, 0.8);
+    width: 300px;
+    z-index: 20000;
+    display: block;
+    position: absolute;
+    top: 30px;
+    border-radius: 5px;
+    padding: 10px;
+    left: 50%;
+    margin-left: -160px;
+    font-family: arial;
+    color: white;
 }

@@ -861,12 +861,12 @@ Mlab_api.prototype = {
             var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
             
             components.each( function() {
-                var device_width = $('[data-role="page"]').first().innerWidth();
+                var parent_width = $(this).parents('[role="main"]').first().width();
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
                 
-                var w = (device_width * times);
+                var w = (parent_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
                 $(this).css( {"width": w + "px", "height": h + "px"} );
 

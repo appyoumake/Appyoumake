@@ -43,10 +43,10 @@
         
 //prepare the HTML for the dialog box requesting input
         var content = $('<div>' +
-                        '<label>Please enter a list of possible answers here.<em>Enter correct answer first, the order will be set randomly when the user sees the quiz</em></label><br>' + 
-                        '<textarea class="mlab_dt_input" data-mlab-dt-img_quiz-answers="answers" ></textarea>' +
-                        '<button class="mlab_dt_button_cancel mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">Cancel</button>' +
+                        '<label>Please enter a list of possible answers here, on answer per line.<br><br><em>Enter correct answer first, the order will be set randomly when the user sees the quiz</em></label><br>' + 
+                        '<textarea class="mlab_dt_input mlab_dt_medium_textarea" data-mlab-dt-img_quiz-answers="answers" ></textarea>' +
                         '<button class="mlab_dt_button_ok mlab_dt_right" data-mlab-dt-img_quiz-answers="update">OK</button>' +
+                        '<button class="mlab_dt_button_cancel mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">Cancel</button>' +
                         '</div>');
 
 //set HTML element variables
@@ -96,13 +96,15 @@
         var temp_answers = mlab.dt.api.getVariable(el, "answers_" + image_index);
         
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
+            var answer_text;
             var correct_answer = temp_answers[0];
             var answers = this.shuffleAnswers(temp_answers);
             for (i in answers) {
+                answer_text = answers[i].substring(answers[i].indexOf(',') + 1);
                 if (correct_answer != answers[i]) {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_wrong' onclick='return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_wrong' onclick='return false;'>" + answer_text + "</a>");
                 } else {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_correct' onclick='return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_correct' onclick='return false;'>" + answer_text + "</a>");
                 }
             }
         }

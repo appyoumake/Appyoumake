@@ -5,6 +5,7 @@
         - Loads answers for the first image
     @param {DOM object} el Component element
 */
+
     this.onPageLoad = function(el) {
         this.displayAnswers(el);    
     };
@@ -52,16 +53,17 @@
         var answer_container = $(el).find("[data-mlab-ct-multi_img-role='display_answers']");
         answer_container.html("");
         var temp_answers = mlab.api.getVariable(el, "answers_" + image_index);
-        console.log(el);
-        console.log("answers_" + image_index);
+        
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
+            var answer_text;
             var correct_answer = temp_answers[0];
             var answers = this.shuffleAnswers(temp_answers);
             for (i in answers) {
+                var answer_and_text = answers[i].split(/\,(.+)/);
                 if (correct_answer != answers[i]) {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-multi_img-explanation='" + answer_and_text[1].replace(/'/g, "\\'") + "' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
                 } else {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-multi_img-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answers[i] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-multi_img-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
                 }
             }
         }
@@ -92,5 +94,7 @@
             btn_clicked.addClass("mc_wrong").parent().find("[data-mlab-ct-multi_img-answer_type='correct']").addClass("mc_correct");
             alert("Wrong answer");
         }
+        
+        $('[data-mlab-ct-img_quiz-role="explain"]').text().slideDown()
         this.showImage(btn_clicked.parents('[data-mlab-type="img_quiz"]'), 1);
     }

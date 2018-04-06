@@ -543,3 +543,7 @@ color: black;
   top: 0;
   left: 0;
 }
+
+#mlab_editor .mlab_property_dlg .qtip-content {
+    padding: 0.4em;
+}

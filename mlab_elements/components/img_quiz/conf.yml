@@ -10,7 +10,9 @@ required_libs: { designtime: ["img_quiz.css"], runtime: ["img_quiz.css"]}
 html: |
     <div class="mc_container mc_picture">
       <div class="mlab_ct_multi_img_indicators" data-mlab-ct-multi_img-role="indicator"></div>
-      <div class='mc_figure mc_display mlab_ct_multi_img_carousel' data-mlab-ct-multi_img-role='display'></div>
+      <div class='mc_figure mc_display mlab_ct_multi_img_carousel' data-mlab-ct-multi_img-role='display'>
+        <div data-mlab-ct-multi_img-role='explain'></div>
+      </div>
       <div class="" data-mlab-ct-multi_img-role='display_answers'></div>
     </div>
     <div style="clear: both;"></div>
