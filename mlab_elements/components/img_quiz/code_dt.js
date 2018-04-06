@@ -10,7 +10,7 @@
 //we remove answers for any quizzes before we save, they are generated on the fly at runtime and design time
 	this.onSave = function (el) {
         var local_el = $(el).clone();
-        var answer_container = $(local_el).find("[data-mlab-ct-multi_img-role='display_answers']");
+        var answer_container = $(local_el).find("[data-mlab-ct-" + this.config.name + "-role='display_answers']");
         answer_container.html("");
         local_el.find("img").removeClass("active").first().addClass("active");
         local_el.find("span").removeClass("active").first().addClass("active");
@@ -43,20 +43,20 @@
         
 //prepare the HTML for the dialog box requesting input
         var content = $('<div>' +
-                        '<label>Please enter a list of possible answers here, on answer per line.<br><br><em>Enter correct answer first, the order will be set randomly when the user sees the quiz</em></label><br>' + 
+                        '<label>Please enter a list of possible answers here, with an optional explanation for why an incorrect answer might have been selected. Add one answer per line and use a comma between the answer and the explanation.<br><br><em>Enter the correct answer first, the order will be set randomly when the user sees the quiz</em></label><br>' + 
                         '<textarea class="mlab_dt_input mlab_dt_medium_textarea" data-mlab-dt-img_quiz-answers="answers" ></textarea>' +
                         '<button class="mlab_dt_button_ok mlab_dt_right" data-mlab-dt-img_quiz-answers="update">OK</button>' +
                         '<button class="mlab_dt_button_cancel mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">Cancel</button>' +
                         '</div>');
 
 //set HTML element variables
-        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         var image_count = container.find("img").length;
         if (image_count === 0) {
             alert("You must add one or more images before trying to set the possible answers for the image.");
             return;
         }
-        var curr_img = container.find(".active").data("mlab-ct-multi_img-id");
+        var curr_img = container.find(".active").data("mlab-ct-" + this.config.name + "-id");
         
 //load existing answers, if any
         var temp_answers = mlab.dt.api.getVariable(el, "answers_" + curr_img);
@@ -89,18 +89,19 @@
  */
     this.displayAnswers = function (el, image_index) {
         if (typeof image_index == "undefined") {
-            image_index = $(el).find("[data-mlab-ct-multi_img-role='display']").find(".active").data("mlab-ct-multi_img-id");
+            image_index = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']").find(".active").data("mlab-ct-" + this.config.name + "-id");
         }
-        var answer_container = $(el).find("[data-mlab-ct-multi_img-role='display_answers']");
+        var answer_container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display_answers']");
         answer_container.html("");
         var temp_answers = mlab.dt.api.getVariable(el, "answers_" + image_index);
         
         if (typeof temp_answers != "undefined" && temp_answers.constructor == Array) {
-            var answer_text;
+            var answer_text, pos;
             var correct_answer = temp_answers[0];
             var answers = this.shuffleAnswers(temp_answers);
             for (i in answers) {
-                answer_text = answers[i].substring(answers[i].indexOf(',') + 1);
+                pos = answers[i].indexOf(',');
+                answer_text = (pos >= 0 ? answers[i].substring(0, pos) : answers[i]);
                 if (correct_answer != answers[i]) {
                     answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer mc_wrong' onclick='return false;'>" + answer_text + "</a>");
                 } else {

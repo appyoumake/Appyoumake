@@ -4,7 +4,7 @@
 
     this.onCreate = function (el) {
         this.onLoad(el);
-        var comp = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var comp = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         if (comp.find("img").length == 0) {
             comp.css("background-image", "url(" + this.config.placeholder + ")");
         }
@@ -14,8 +14,8 @@
 	this.onLoad = function (el) {
         var that = this;
         var that_el = el;
-        $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
-        $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
+        $(el).find("[data-mlab-ct-" + this.config.name + "-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
+        $(el).find("[data-mlab-ct-" + this.config.name + "-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
     };
 
 	this.onSave = function (el) {
@@ -54,14 +54,15 @@
      * @returns {undefined}
      */
     this.cbAddImage = function(el, img_url) {
+        var config_name = $(el).data("mlab-type");
         var guid = mlab.dt.api.getGUID();
-        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
-        var indicator = $(el).find("[data-mlab-ct-multi_img-role='indicator']");
+        var container = $(el).find("[data-mlab-ct-" + config_name + "-role='display']");
+        var indicator = $(el).find("[data-mlab-ct-" + config_name + "-role='indicator']");
         container.css("background-image", "");
         container.find("img").removeClass("active");
         indicator.find("span").removeClass("active");
-        $("<img src='" + img_url + "' data-mlab-ct-multi_img-id='" + guid + "' data class='active'>").appendTo(container);
-        $("<span data-mlab-ct-multi_img-role='current' class='active'></span>").appendTo(indicator);
+        $("<img src='" + img_url + "' data-mlab-ct-" + config_name + "-id='" + guid + "' data class='active'>").appendTo(container);
+        $("<span data-mlab-ct-" + config_name + "-role='current' class='active'></span>").appendTo(indicator);
         $(el).css("background-image", '');
     };
 
@@ -74,7 +75,7 @@
     }
 
     this.custom_delete_image = function (el) {
-        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         var image_count = container.find("img").length;
         var curr_img = container.find(".active");
         if (image_count > 0) {
@@ -83,7 +84,7 @@
             }
             var num_active = curr_img.index() + 1;
             curr_img.remove();
-            $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").remove();
+            $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").remove();
         }
     }
     
@@ -96,7 +97,7 @@
  * @returns {undefined}
  */
     this.showImage = function (el, direction) {
-        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         var curr_img = container.find(".active");
         if (direction == 1) {
             var move_to = curr_img.next();
@@ -112,7 +113,7 @@
         curr_img.removeClass("active");
         move_to.addClass("active");
         var num_active = move_to.index() + 1;
-        $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+        $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     }
     
 /**
@@ -123,7 +124,7 @@
  * @returns {undefined}
  */
     this.moveImage = function (el, direction) {
-        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         var curr_img = container.find(".active");
         var num_active;
         if (direction == 1) {
@@ -143,5 +144,5 @@
         }
 //update navigation dot
         var num_active = curr_img.index() + 1;
-        $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+        $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     }

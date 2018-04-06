@@ -215,7 +215,7 @@ part of a list */
 /* */
 #mlab_editor .mc_right,
 .mlab_main_body_content .mc_right {
-    
+    float: right;
 }
 
 /*  ???? skal vi legge inn dette her? Blir i forhold til knappene til komponenten */

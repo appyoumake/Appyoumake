@@ -13,7 +13,7 @@ this.onPageLoad = function(el) {
 };
 
 /**
- * Identical to the same function inthe parent multi_img, except it also displays the answers
+ * Flips between the images
  * @param {type} el
  * @returns {undefined}
  */

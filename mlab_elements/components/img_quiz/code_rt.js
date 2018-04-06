@@ -18,7 +18,12 @@
  * @returns {undefined}
  */
     this.showImage = function (el, direction) {
-        var container = $(el).find("[data-mlab-ct-multi_img-role='display']");
+        if (!el) {
+            el = $('[data-mlab-type="img_quiz"]').filter(":visible");
+            el.find('[data-mlab-ct-img_quiz-role="explain"]').slideUp();
+
+        }
+        var container = $(el).find("[data-mlab-ct-img_quiz-role='display']");
         var curr_img = container.find(".active");
         if (direction == 1) {
             var move_to = curr_img.next();
@@ -34,7 +39,7 @@
         curr_img.removeClass("active");
         move_to.addClass("active");
         var num_active = move_to.index() + 1;
-        $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+        $(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
         this.displayAnswers(el);
     }
     
@@ -47,10 +52,10 @@
  */
     this.displayAnswers = function (el, image_index) {
         if (typeof image_index == "undefined") {
-            image_index = $(el).find("[data-mlab-ct-multi_img-role='display']").find(".active").data("mlab-ct-multi_img-id");
+            image_index = $(el).find("[data-mlab-ct-img_quiz-role='display']").find(".active").data("mlab-ct-img_quiz-id");
             console.log(image_index);
         }
-        var answer_container = $(el).find("[data-mlab-ct-multi_img-role='display_answers']");
+        var answer_container = $(el).find("[data-mlab-ct-img_quiz-role='display_answers']");
         answer_container.html("");
         var temp_answers = mlab.api.getVariable(el, "answers_" + image_index);
         
@@ -61,9 +66,9 @@
             for (i in answers) {
                 var answer_and_text = answers[i].split(/\,(.+)/);
                 if (correct_answer != answers[i]) {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-multi_img-explanation='" + answer_and_text[1].replace(/'/g, "\\'") + "' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-img_quiz-explanation='" + answer_and_text[1].replace(/'/g, "\\'") + "' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
                 } else {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-multi_img-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-img_quiz-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
                 }
             }
         }
@@ -87,14 +92,15 @@
  */
     this.checkAnswers = function(button) {
         var btn_clicked = $(button);
-        if (btn_clicked.data("mlab-ct-multi_img-answer_type") == "correct") {
+        if (btn_clicked.data("mlab-ct-img_quiz-answer_type") == "correct") {
             btn_clicked.addClass("mc_correct");
-            alert("Correct answer");
+            this.showImage(btn_clicked.parents('[data-mlab-type="img_quiz"]'), 1);
         } else {
-            btn_clicked.addClass("mc_wrong").parent().find("[data-mlab-ct-multi_img-answer_type='correct']").addClass("mc_correct");
-            alert("Wrong answer");
+            btn_clicked.addClass("mc_wrong").parent().find("[data-mlab-ct-img_quiz-answer_type='correct']").addClass("mc_correct");
+            $('[data-mlab-ct-img_quiz-role="explain"]')
+                .html(btn_clicked.data("mlab-ct-img_quiz-explanation") + "<br><div class='mc_button mc_medium mlab_ct_img_quiz_button_next' onclick='mlab.api.components[\"img_quiz\"].showImage(false, 1);'>Next</div>")
+                .slideDown();
         }
         
-        $('[data-mlab-ct-img_quiz-role="explain"]').text().slideDown()
-        this.showImage(btn_clicked.parents('[data-mlab-type="img_quiz"]'), 1);
+        
     }
