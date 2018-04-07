@@ -7,7 +7,7 @@
 */
 
     this.onPageLoad = function(el) {
-        this.displayAnswers(el);    
+        this.displayAnswers(el);
     };
 
 /**
@@ -91,16 +91,23 @@
  * Checks the answer for 
  */
     this.checkAnswers = function(button) {
-        var btn_clicked = $(button);
+        var btn_clicked = $(button),
+            el = btn_clicked.parents('[data-mlab-type="img_quiz"]'),
+            res = msg = "";
+        
+        
         if (btn_clicked.data("mlab-ct-img_quiz-answer_type") == "correct") {
             btn_clicked.addClass("mc_correct");
-            this.showImage(btn_clicked.parents('[data-mlab-type="img_quiz"]'), 1);
+            res = "Correct";
         } else {
             btn_clicked.addClass("mc_wrong").parent().find("[data-mlab-ct-img_quiz-answer_type='correct']").addClass("mc_correct");
-            $('[data-mlab-ct-img_quiz-role="explain"]')
-                .html(btn_clicked.data("mlab-ct-img_quiz-explanation") + "<br><div class='mc_button mc_medium mlab_ct_img_quiz_button_next' onclick='mlab.api.components[\"img_quiz\"].showImage(false, 1);'>Next</div>")
-                .slideDown();
+            res = "Incorrect";
+            msg = btn_clicked.data("mlab-ct-img_quiz-explanation");
         }
+        debugger;
+        el.find("[data-mlab-ct-img_quiz-role='result']").text(res);
+        el.find('[data-mlab-ct-img_quiz-role="explain"] > p').text(msg);
+        el.find('[data-mlab-ct-img_quiz-role="explain"]').slideDown();
         
         
     }

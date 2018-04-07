@@ -9,9 +9,12 @@ footer_tip: { nb_NO: Bilde basert quiz, en_GB: Image based quiz, default: Image 
 required_libs: { designtime: ["img_quiz.css"], runtime: ["img_quiz.css"]}
 html: |
     <div class="mc_container mc_picture">
-      <div data-mlab-ct-img_quiz-role='explain'></div>
       <div class="mlab_ct_img_quiz_indicators" data-mlab-ct-img_quiz-role="indicator"></div>
       <div class='mc_figure mc_display mlab_ct_img_quiz_carousel' data-mlab-ct-img_quiz-role='display'></div>
+      <div data-mlab-ct-img_quiz-role='explain'>
+        <p class="mc_text"></p>
+        <a class="mc_button mc_medium mlab_ct_img_quiz_button_next" onclick="mlab.api.components['img_quiz'].showImage(false, 1); return false;"><span data-mlab-ct-img_quiz-role='result'></span><strong>Next question&nbsp;&nbsp;&nbsp;❯</strong></a>
+      </div>
       <div class="" data-mlab-ct-img_quiz-role='display_answers'></div>
     </div>
     <div style="clear: both;"></div>
