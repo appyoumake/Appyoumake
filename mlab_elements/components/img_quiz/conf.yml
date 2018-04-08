@@ -7,6 +7,7 @@ inherit: multi_img
 tooltip: { nb_NO: Bilde basert quiz, en_GB: Image based quiz, default: Image based quiz }
 footer_tip: { nb_NO: Bilde basert quiz, en_GB: Image based quiz, default: Image based quiz }
 required_libs: { designtime: ["img_quiz.css"], runtime: ["img_quiz.css"]}
+category: media
 html: |
     <div class="mc_container mc_picture">
       <div class="mlab_ct_img_quiz_indicators" data-mlab-ct-img_quiz-role="indicator"></div>
