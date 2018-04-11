@@ -5,12 +5,12 @@
         - Loads answers for the first image
     @param {DOM object} el Component element
 */
-this.onPageLoad = function(el) {
-    var that = this;
-    var that_el = el;
-    $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
-    $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
-};
+    this.onPageLoad = function(el) {
+        var that = this;
+        var that_el = el;
+        $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
+        $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
+    };
 
 /**
  * Flips between the images
@@ -50,5 +50,22 @@ this.onPageLoad = function(el) {
         move_to.addClass("active");
         var num_active = move_to.index() + 1;
         $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+    }
+    
+    this.zoomImage = function (el) {
+        var cid = mlab.api.getGUID();
+        //mlab.api.setAppVariable('multi_img', 'canvas_id', cid)
+        var canvas = $("<canvas class='mlab_ct_multi-img_zoom-canvas' onclick='$(this).remove();' id='" + cid + "'>").appendTo("body");
+        ctx = canvas.getContext("2d");
+
+        /*canvas.width = 903;
+        canvas.height = 657;*/
+
+        /*var img = $(el);
+        ctx.drawImage(img,0,0);   */
+        var gesturableImg = new ImgTouchCanvas({
+            canvas: $('#' + cid),
+            path: $(el).attr('src')
+        });        
     }
     

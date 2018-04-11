@@ -74,3 +74,11 @@ and open the template in the editor.
     height: calc(100% - 30px);
     position: relative;
 }
+
+.mlab_ct_multi-img_zoom-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(width);
+    height: calc(height);
+}
