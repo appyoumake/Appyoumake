@@ -306,7 +306,12 @@ Mlab_dt_api.prototype = {
                                          width: 254,
                                          height: 64,
                                          imagePosition: "left",
-                                         selectText: "Select existing media file to use" });
+                                         selectText: "Select existing media file to use",
+                                        onSelected: function (data) {
+                                        if (data.selectedIndex > 0) {
+                                            createIcon.buildIcon();
+                                        }
+                                    }});
 
 
 //prepare upload files jquery plugin
@@ -338,7 +343,7 @@ Mlab_dt_api.prototype = {
             });
             
 //assign close events and add mlab styles
-            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
+            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { debugger; uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
             $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
             $('.new_but_line').addClass('mlab_dt_button_new_line');
             $('.new_big_line').addClass('mlab_dt_large_new_line');

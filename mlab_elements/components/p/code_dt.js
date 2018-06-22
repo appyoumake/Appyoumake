@@ -23,7 +23,6 @@
     
     this.onKeyPress = function (e) {
         if (e.keyCode == 13) {
-            console.log("here");
             e.preventDefault();
             var sel, range, html;
             sel = window.getSelection();
@@ -31,7 +30,10 @@
             range.deleteContents();
             var linebreak = document.createElement("br") ;
             range.insertNode(linebreak);
-            sel.modify("move", "forward", "character");
+            var linebreak = document.createElement("br") ;
+            range.insertNode(linebreak);
+            range.setStartAfter(linebreak);
+            range.setEndAfter(linebreak); 
         }
     };
     
