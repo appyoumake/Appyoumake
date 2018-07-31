@@ -22,7 +22,8 @@ class mlab_ct_index {
         $xpath = new DOMXPath($doc);
         $chapter = $xpath->query("//div[@data-mlab-type='chapter']");
         if ($chapter->length > 0 ) {
-            error_log($chapter->item(0)->nodeValue);
+            //error_log($chapter->item(0)->nodeValue);
+            //TODO: Return level (from text size?? No, use a data tag in addition: data-ct-index-level)
             return $chapter->item(0)->nodeValue;
         } else {
             return false;
@@ -58,7 +59,7 @@ class mlab_ct_index {
         } 
         
         if (preg_match('/<title>(.+)<\/title>/', $page_content, $matches) && isset($matches[1])) {
-            error_log($matches[1]);
+            //error_log($matches[1]);
             $index[$current_chapter][0] = $matches[1];
         } else {
             $index[$current_chapter][0] = "Front page";
@@ -79,7 +80,7 @@ class mlab_ct_index {
 //ALWAYS process page to list with page number
             $pnum = intval(basename($file));
             if (preg_match('/<title>(.+)<\/title>/', $page_content, $matches) && isset($matches[1])) {
-                error_log($matches[1]);
+                //error_log($matches[1]);
                 $index[$current_chapter][$pnum] = $matches[1];
             } else {
                 $index[$current_chapter][$pnum] = "Page " . $pnum;
