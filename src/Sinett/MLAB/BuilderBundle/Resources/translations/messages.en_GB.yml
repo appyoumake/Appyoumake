@@ -646,7 +646,7 @@ mlab_editor.init.js.compiling.failed.loading.var: Unable to load variables from 
 
 mlab.dt.api.js.getMedia.fail: Unable to obtain files
 
-mlab.dt.api.js.uploadMedia.qtip.content.1: Select an image from the list or click 'Add file' to upload an image
+mlab.dt.api.js.uploadMedia.qtip.content.1: Select an image from the list or click the file selection button to select an image to upload. Then click OK to update your image component.
 mlab.dt.api.js.uploadMedia.qtip.content.2: ...loading image...
 mlab.dt.api.js.uploadMedia.qtip.content.3: Add file
 mlab.dt.api.js.uploadMedia.qtip.content.4: Cancel

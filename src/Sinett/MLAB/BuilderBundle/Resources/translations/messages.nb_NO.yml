@@ -646,7 +646,7 @@ mlab_editor.init.js.compiling.failed.loading.var: Kan ikke laste inn verdier fra
 
 mlab.dt.api.js.getMedia.fail: Kan ikke hente filer
 
-mlab.dt.api.js.uploadMedia.qtip.content.1: Velg ønsket bilde fra listen eller klikk 'velg fil' for å søke frem et bilde
+mlab.dt.api.js.uploadMedia.qtip.content.1: Velg et bilde fra listen eller klikk på filvalgknappen for å velge et bilde du vil laste opp. Klikk deretter OK for å oppdatere bildekomponenten.
 mlab.dt.api.js.uploadMedia.qtip.content.2: ...laster inn bilde...
 mlab.dt.api.js.uploadMedia.qtip.content.3: Velg fil
 mlab.dt.api.js.uploadMedia.qtip.content.4: Avbryt

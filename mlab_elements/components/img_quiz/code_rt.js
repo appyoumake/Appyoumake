@@ -66,7 +66,13 @@
             for (i in answers) {
                 var answer_and_text = answers[i].split(/\,(.+)/);
                 if (correct_answer != answers[i]) {
-                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-img_quiz-explanation='" + answer_and_text[1].replace(/'/g, "\\'") + "' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
+//they may not have specified a message to display
+                    if (answer_and_text.length > 1) {
+                        var expl = answer_and_text[1].replace(/'/g, "\\'");
+                    } else {
+                        var expl = "";
+                    }
+                    answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-img_quiz-explanation='" + expl + "' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
                 } else {
                     answer_container.append("<a class='mc_button mc_medium mc_left mc_entry mc_input mlab_ct_img_quiz_answer' data-mlab-ct-img_quiz-answer_type='correct' onclick='mlab.api.components.img_quiz.checkAnswers(this); return false;'>" + answer_and_text[0] + "</a>");
                 }
