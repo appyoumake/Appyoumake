@@ -22,8 +22,6 @@ class mlab_ct_index {
         $xpath = new DOMXPath($doc);
         $chapter = $xpath->query("//div[@data-mlab-type='chapter']");
         if ($chapter->length > 0 ) {
-            //error_log($chapter->item(0)->nodeValue);
-            //TODO: Return level (from text size?? No, use a data tag in addition: data-ct-index-level)
             return $chapter->item(0)->nodeValue;
         } else {
             return false;
@@ -36,6 +34,13 @@ class mlab_ct_index {
  * They all rely on the user having used the chapter component, if this is not found in any of the files we list pages on a single level
  */
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
+//get level variable, 1, 2 and 3 = Chapter heading with large, medium or small font wiht 0 indendt, one indent or double indent
+        if (!isset($variables) || !isset($variables["level"])) {
+            $level = 1;
+        } else {
+            $level = $variables["level"];
+        }
+        
         if (!isset($variables) || !isset($variables["style"])) {
             $style = "detailed";
         } else {

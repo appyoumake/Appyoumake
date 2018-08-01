@@ -547,3 +547,17 @@ color: black;
 #mlab_editor .mlab_property_dlg .qtip-content {
     padding: 0.4em;
 }
+
+/* added to have blinking "please wait" type text */
+.mlab_blink {
+    animation-duration: 1s;
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes mlab_blink {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
