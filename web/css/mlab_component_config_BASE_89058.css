@@ -404,11 +404,10 @@ color: black;
 
 #mlab_dt_form_upload #mlab_cp_select_file, 
 #mlab_dt_form_upload #mlab_cp_select_file .dd-select {
-    height: auto;
+    height: 40px;
     line-height: 40px;
     width: 250px;
-    padding: 6px;
-    min-height: 40px;
+    padding-left: 6px;
 }
 #mlab_editor #mlab_dt_form_upload .ajax-file-upload:hover,
 #mlab_editor #mlab_dt_form_upload .ajax-file-upload-cancel:hover {

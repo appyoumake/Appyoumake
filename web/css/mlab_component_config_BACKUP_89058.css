@@ -548,3 +548,26 @@ color: black;
 #mlab_editor .mlab_property_dlg .qtip-content {
     padding: 0.4em;
 }
+
+<<<<<<< HEAD
+#mlab_editor .ajax-file-upload-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+    max-height: 300px;
+}
+=======
+/* added to have blinking "please wait" type text */
+.mlab_blink {
+    animation-duration: 1s;
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes mlab_blink {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+>>>>>>> 83a04de480959638050edede66be7877c9c8279f

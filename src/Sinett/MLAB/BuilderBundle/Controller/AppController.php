@@ -747,6 +747,8 @@ class AppController extends Controller
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+FINISH                                        
+                    "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
                                         "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_type' => '_FILETYPE_', 'app_id' => '_APPID_')),
@@ -1428,6 +1430,36 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             return new JsonResponse(array('result' => 'success', 'storage_plugin_id' => $storage_plugin_id));
         }
         
+    }
+    
+/**
+ * Sometimes a component may need to/want to run random, backend code. This is a wrapper for code in the server_code.php file
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function componentRunFunctionAction($app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+        
+        if ( !isset($comp_id) ) {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
+        }
+
+        $file_mgmt = $this->get('file_management');
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $config));
     }
     
 //function to return all files of a certain type (video, audio, image) to the front end so 
