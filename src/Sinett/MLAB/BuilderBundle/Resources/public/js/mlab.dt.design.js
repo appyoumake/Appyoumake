@@ -210,6 +210,24 @@ Mlab_dt_design.prototype = {
             this.parent.components[comp_id].code.onLoad(el);
         }
     },
+    
+    component_run_backend_code : function (el, comp_id, func_name, callback) {
+    //execute specified backend code for this component
+        var url = this.parent.urls.component_run_function.replace("_APPID_", this.parent.app.id);
+        url = url.replace("_COMPID_", comp_id);
+        url = url.replace("_FUNCNAME_", func_name);
+        var local_callback = callback,
+            local_el = el;
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function(data) { local_callback(local_el, data); },
+            error: function(error) { console.log(error); }
+        });
+    },
+
 
     component_moveup : function (el) {
         if (typeof el == "undefined") {

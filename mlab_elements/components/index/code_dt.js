@@ -7,11 +7,11 @@
 //here we replace some placeholders
     this.onCreate = function(el) {
         this.api.setVariable(el, "level", LEVEL_1);
-        this.updatePreview(el);
+        this.getPreview(el);
     }
     
     this.onLoad = function(el) {
-        this.updatePreview(el);
+        this.getPreview(el);
     }
     
 //avoid any keyboard input
@@ -19,19 +19,12 @@
         e.preventDefault();
     }
 
-    this.updatePreview = function(el, html) {
-        var local_el = el;
-        $.ajax({
-            type: 'GET',
-            url: componentRunFunctionAction,
-                    //mlab.dt.api.getUrlComponentAbsolute() + this.conf.name,
-            dataType: 'html',
-            success: function(data) { $(local_el).html(data); },
-            error: function(error) { console.log(error); }
-        });
-            
-        
-        
+    this.getPreview = function(el) {
+        mlab.dt.design.component_run_code(el, this.conf.name, "getIndex", this.updatePreview);
+    }
+    
+    this.updatePreview = function(el, data) {
+        $(el).html(data.html);
     }
 
 /*

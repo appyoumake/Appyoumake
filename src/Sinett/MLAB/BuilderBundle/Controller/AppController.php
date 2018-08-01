@@ -747,8 +747,7 @@ class AppController extends Controller
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
-FINISH                                        
-                    "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+                                        "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'func_name' => '_FUNCNAME_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
                                         "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_type' => '_FILETYPE_', 'app_id' => '_APPID_')),
@@ -1438,7 +1437,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  * @param type $comp_id
  * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
  */
-    public function componentRunFunctionAction($app_id, $comp_id) {
+    public function componentRunFunctionAction($app_id, $comp_id, $func_name) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1460,6 +1459,63 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $file_mgmt = $this->get('file_management');
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $config));
+        
+/*
+
+
+$path_component = $comp_dir . $comp_name . "/";
+                        if (file_exists($path_component . "server_code.php")) {
+                            if (!class_exists("mlab_ct_" . $comp_name) && !@(include($path_component . "server_code.php"))) {
+                                return array(
+                                        'result' => 'failure',
+                                        'msg' => "Unable to load server_code.php file");
+                            } 
+
+                            if (class_exists("mlab_ct_" . $comp_name)) {
+//store the variables and code script tags for later storage
+                                $temp_variables = $temp_code = "";
+                                $temp_class_name = "mlab_ct_" . $comp_name;
+                                $component_class = new $temp_class_name();
+                                if (method_exists($component_class, "onCompile")) {
+//get variables from the JSON data structure saved as a script, also store it for later
+                                    $variables = array();
+                                    foreach ($page_component->childNodes as $child_element) {
+                                        if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_storage") {
+                                            $variables = json_decode($child_element->textContent, true);
+                                            $temp_variables = $doc->saveHtml($child_element);
+                                        } else if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_code") {
+                                            $temp_code = $doc->saveHtml($child_element);
+                                        }
+                                    }
+                                    $processed_html = $component_class->onCompile($tmp_existing_config, $page_component, $doc->saveHTML($page_component), $app_path, $variables);
+
+                                    if (!$processed_html) {
+                                        return array(
+                                            'result' => 'failure',
+                                            'msg' => "Unable to run application on server");
+                                    } 
+//plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page, together with the (optional) variables and code
+                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
+                                    $temp_doc->loadHTML('<?xml encoding="UTF-8">' . $processed_html . $temp_variables . $temp_code);
+                                    $temp_comp = $temp_doc->getElementsByTagName('body')->item(0);
+
+//erase old nodes
+                                    while($page_component->childNodes->length){
+                                        $page_component->removeChild($page_component->firstChild);
+                                    }
+
+//insert the new nodes from the transformed HTML
+                                    foreach($temp_comp->childNodes as $transfer_node){
+                                        $page_component->appendChild($doc->importNode($transfer_node,TRUE));
+                                    }
+
+
+                                } //end method exists
+                            } //end class exists
+                        } //end file server_code.php exists
+
+ */        
+        
     }
     
 //function to return all files of a certain type (video, audio, image) to the front end so 

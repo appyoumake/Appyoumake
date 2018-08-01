@@ -93,6 +93,10 @@ app_builder_component_added:
     path:   /builder/{app_id}/{comp_id}/component_added
     defaults: { _controller: "SinettMLABBuilderBundle:App:componentAdded" }
 
+app_builder_component_run_function:
+    path:   /builder/{app_id}/{comp_id}/{func_name}/component_run_function
+    defaults: { _controller: "SinettMLABBuilderBundle:App:componentRunFunction" }
+
 app_builder_component_upload:
     path:   /builder/{app_id}/{comp_id}/component_upload
     defaults: { _controller: "SinettMLABBuilderBundle:App:componentUpload" }
