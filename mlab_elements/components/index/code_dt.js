@@ -1,13 +1,12 @@
-//index component, mainly a placeholder at design time, generated in pre-compile process
+//index component, generated on the backend, either for a preview or in the pre-compile process
 
-    var LEVEL_1 = 1;
-    var LEVEL_2 = 2;
-    var LEVEL_3 = 2;
+    this.local_el = null,
 
 //here we replace some placeholders
     this.onCreate = function(el) {
-        this.api.setVariable(el, "level", LEVEL_1);
-        this.getPreview(el);
+        this.local_el = el;
+        that = this;
+        mlab.dt.management.page_save( function() { that.getPreview(that.local_el); } );
     }
     
     this.onLoad = function(el) {
@@ -20,39 +19,35 @@
     }
 
     this.getPreview = function(el) {
-        mlab.dt.design.component_run_code(el, this.conf.name, "getIndex", this.updatePreview);
+        mlab.dt.design.component_run_backend_code(el, this.config.name, "onCompile", this.updatePreview);
     }
     
-    this.updatePreview = function(el, data) {
-        $(el).html(data.html);
+    this.updatePreview = function(el, html) {
+        $(el).find("[data-mlab-ct-index='content']").html(html).css("pointer-events", "none");
     }
 
-/*
- * Following two functions change the level of the chapter heading and updates text size as well.
- * When the compile time index is created, then we use level to set indents
- */
     this.custom_decrease_size = function (el) {
-        var level = this.api.getVariable(el, "level");
-        if (level == LEVEL_1) {
-            text.removeClass("mc_large").addClass("mc_medium");
+        if (el.hasClass("mc_large")) {
+            el.removeClass("mc_large").addClass("mc_medium");
             this.api.setVariable(el, "textsize", "mc_medium");
-            this.api.setVariable(el, "level", LEVEL_2);
-        } else {
-            text.removeClass("mc_medium").addClass("mc_small");
+        } else if (el.hasClass("mc_medium")) {
+            el.removeClass("mc_medium").addClass("mc_small");
             this.api.setVariable(el, "textsize", "mc_small");
-            this.api.setVariable(el, "level", LEVEL_3);
-        } 
+        } else {
+            el.addClass("mc_small");
+            this.api.setVariable(el, "textsize", "mc_small");
+        }
     };
 
     this.custom_increase_size = function (el) {
-		var level = this.api.getVariable(el, "level");
-        if (level == LEVEL_3) {
-            text.removeClass("mc_small").addClass("mc_medium");
+        if (el.hasClass("mc_small")) {
+            el.removeClass("mc_small").addClass("mc_medium");
             this.api.setVariable(el, "textsize", "mc_medium");
-            this.api.setVariable(el, "level", LEVEL_2);
-        } else {
-            text.removeClass("mc_medium").addClass("mc_large");
+        } else if (el.hasClass("mc_medium")) {
+            el.removeClass("mc_medium").addClass("mc_large");
             this.api.setVariable(el, "textsize", "mc_large");
-            this.api.setVariable(el, "level", LEVEL_1);
-        } 
+        } else {
+            el.addClass("mc_large");
+            this.api.setVariable(el, "textsize", "mc_large");
+        }
     };

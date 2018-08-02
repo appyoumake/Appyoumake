@@ -7,6 +7,8 @@
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 %Users%: brukere
 
+mlab.error.unknown: Det oppsto en ukjent feil
+
 #-----------------------------------------------------
 # Titel of the pages in Mlab
 #-----------------------------------------------------
@@ -506,7 +508,8 @@ appController.msg.deleteAction.2: Kan ikke slette app som har blitt publisert ti
 
 appController.msg.app.id.not.specified: Applikasjons-ID ikke spesifisert
 appController.msg.page.not.specified: Side ikke spesifisert
-appController.msg.component.type.not.specified: Komponent type ikke spesifisert
+appController.msg.component.type.not.specified: Komponent type er ikke spesifisert
+appController.msg.component.type.function.not.specified: Komponent type, side nummer eller funksjon er ikke spesifisert
 
 appController.msg.getPageAction: Fil eksisterer ikke
 appController.msg.putPageAction: Kan ikke lagre fil, prøve igjen

@@ -11,5 +11,16 @@ inherit: h1
 unique: true
 placeholder: { nb_NO: Rediger kapittel overskriften her, en_GB: Enter your chapter headline here, default: Enter your chapter headline here }
 category: text
+
 messages:
     headline: { nb_NO: Legg til kapitteloverskriften her, en_GB: Add your chapter title here, default: Add your chapter title here }
+    
+custom:
+    decrease_size:
+        tooltip: { nb_NO: Reduser størrelsen på innholdslisten, en_GB: Decrease the size of the index, default: Decrease the size of the index }
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
+        order: 4
+    increase_size:
+        tooltip: { nb_NO: Øk størrelsen på overskriften, en_GB: Increase the size of the headline, default: Increase the size of the headline }
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASRJREFUeNrUltENgyAQhu1D0z46gt3AERzBERiBEdjAERjBETqC3YAR6AZXTI6EEE7wwIde8r8g+Am5/8eu+5OSTkNu0v3x1LtaAK2TysCkE6BkDUw4AUJ7AiYCmNfMBRoEAsJTQJsAWg5sCmCA8EvrHQF3zVfBhgQM8CMuKU0AocQirXbnpVsDVXB8FLRvBevRcyZhi1CqFVBEL1QE0LYCmihV/I5TUFELm4mmoDp2a2X04UTXTlyYj7GVeL4SwLXW6FNhrlYFQc7owA2CGzG+4K3+cfpmPDomxvc1r8xa0uglt39VEEhcIE/GHnDvSnP0+0CcCHCDQDJbW3N2GUaWYiZSSpKywRYF8RkvyQOgjTtZZyYvBGTE6NsKvVmds6z6CTAAwDrVj6+nmH8AAAAASUVORK5CYII=
+        order: 5

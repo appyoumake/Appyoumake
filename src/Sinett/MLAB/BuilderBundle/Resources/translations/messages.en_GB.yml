@@ -7,8 +7,10 @@
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 %Users%: brukere
 
+mlab.error.unknown: Unknown error occured
+
 #-----------------------------------------------------
-# Titel of the pages in Mlab
+# Title of the pages in Mlab
 #-----------------------------------------------------
 mlab.page.title.index: Welcome to MLAB
 mlab.page.title.app.bulider.index: MLAB apps
@@ -507,6 +509,7 @@ appController.msg.deleteAction.2: Cannot delete apps that have been sent to the 
 appController.msg.app.id.not.specified: Application ID not specified
 appController.msg.page.not.specified: Page not specified
 appController.msg.component.type.not.specified: Component type not specified
+appController.msg.component.type.function.not.specified: Component type, page number or function name not specified
 
 appController.msg.getPageAction: File does not exists, contact support
 appController.msg.putPageAction: Unable to save file, please try again

@@ -211,11 +211,21 @@ Mlab_dt_design.prototype = {
         }
     },
     
+/**
+ * Runs a random function in the backend code of a component, i.e. in the server_code.php file.
+ * @param {type} el
+ * @param {type} comp_id
+ * @param {type} func_name
+ * @param {type} callback
+ * @returns {undefined}
+ */
     component_run_backend_code : function (el, comp_id, func_name, callback) {
     //execute specified backend code for this component
         var url = this.parent.urls.component_run_function.replace("_APPID_", this.parent.app.id);
         url = url.replace("_COMPID_", comp_id);
         url = url.replace("_FUNCNAME_", func_name);
+        url = url.replace("_PAGENUM_", this.parent.app.curr_page_num);
+        
         var local_callback = callback,
             local_el = el;
 
@@ -223,8 +233,8 @@ Mlab_dt_design.prototype = {
             type: 'GET',
             url: url,
             dataType: 'json',
-            success: function(data) { local_callback(local_el, data); },
-            error: function(error) { console.log(error); }
+            success: function(data) { if (data.result == "success") { local_callback(local_el, data.html); } else { local_callback(local_el, "<h1>failed</h1>"); } },
+            error: function(error) { console.log(error); local_callback(local_el, "<h1>failed</h1>"); }
         });
     },
 

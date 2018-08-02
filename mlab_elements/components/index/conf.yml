@@ -13,7 +13,7 @@ process_keypress: true
 required_libs: {"designtime": ["index.css"], "runtime": ["index.css"]}
 
 html: 
-    designtime:
+    designtime: <div data-mlab-ct-index='content'><span class='blink'>...creating index...</span></div>
     runtime: |
         %%MLAB_CT_INDEX_LIST%%
 custom:

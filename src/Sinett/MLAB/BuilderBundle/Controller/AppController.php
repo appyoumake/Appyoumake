@@ -747,7 +747,7 @@ class AppController extends Controller
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
-                                        "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'func_name' => '_FUNCNAME_')),
+                                        "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'page_num' => '_PAGENUM_', 'func_name' => '_FUNCNAME_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
                                         "uploaded_files" => $this->generateUrl('app_builder_get_uploaded_files',  array('file_type' => '_FILETYPE_', 'app_id' => '_APPID_')),
@@ -1437,10 +1437,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  * @param type $comp_id
  * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
  */
-    public function componentRunFunctionAction($app_id, $comp_id, $func_name) {
+    public function componentRunFunctionAction($app_id, $comp_id, $page_num, $func_name) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
-    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            
+//check if allowed to access this app.
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
                 die($this->get('translator')->trans('appController.die.no.access'));
             }
@@ -1450,72 +1452,67 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
-        if ( !isset($comp_id) ) {
+        if ( empty($comp_id) || empty($page_num) || empty($func_name) ) {
     		return new JsonResponse(array(
     			'result' => 'failure',
-    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.function.page.not.specified') . ": %s", $comp_id)));
         }
 
-        $file_mgmt = $this->get('file_management');
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $config));
-        
-/*
+        $comp_dir = $config["paths"]["component"];
+        $app_path = $app->calculateFullPath($config['paths']['app']);
+        $path_component = $comp_dir . $comp_id . "/";
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = true;
+        $doc->loadHTMLFile($app_path . substr("000" . $page_num, -3) . ".html");
+        libxml_clear_errors();
+        $xpath = new \DOMXPath($doc);
+        $page_component = $xpath->query("//div[@data-mlab-type='{$comp_id}']");
+                
+//check if code file exists, if so, load it into memory so it becomes executable
+        if (file_exists($path_component . "server_code.php")) {
+            if (!class_exists("mlab_ct_" . $comp_id) && !@(include($path_component . "server_code.php"))) {
+                return new JsonResponse(array(
+                        'result' => 'failure',
+                        'msg' => "Unable to load server_code.php file"));
+            };
 
-
-$path_component = $comp_dir . $comp_name . "/";
-                        if (file_exists($path_component . "server_code.php")) {
-                            if (!class_exists("mlab_ct_" . $comp_name) && !@(include($path_component . "server_code.php"))) {
-                                return array(
-                                        'result' => 'failure',
-                                        'msg' => "Unable to load server_code.php file");
-                            } 
-
-                            if (class_exists("mlab_ct_" . $comp_name)) {
+//check if the code is loaded OK
+            if (class_exists("mlab_ct_" . $comp_id)) {
 //store the variables and code script tags for later storage
-                                $temp_variables = $temp_code = "";
-                                $temp_class_name = "mlab_ct_" . $comp_name;
-                                $component_class = new $temp_class_name();
-                                if (method_exists($component_class, "onCompile")) {
+                $temp_variables = $temp_code = "";
+                $temp_class_name = "mlab_ct_" . $comp_id;
+                $path_app_config = $app_path . $config['filenames']["app_config"];
+                $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
+                $component_class = new $temp_class_name();
+                
+//check if function exists, and then execute it
+                if (method_exists($component_class, $func_name)) {
 //get variables from the JSON data structure saved as a script, also store it for later
-                                    $variables = array();
-                                    foreach ($page_component->childNodes as $child_element) {
-                                        if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_storage") {
-                                            $variables = json_decode($child_element->textContent, true);
-                                            $temp_variables = $doc->saveHtml($child_element);
-                                        } else if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_code") {
-                                            $temp_code = $doc->saveHtml($child_element);
-                                        }
-                                    }
-                                    $processed_html = $component_class->onCompile($tmp_existing_config, $page_component, $doc->saveHTML($page_component), $app_path, $variables);
-
-                                    if (!$processed_html) {
-                                        return array(
-                                            'result' => 'failure',
-                                            'msg' => "Unable to run application on server");
-                                    } 
-//plain text HTML has been returned, we need to convert it to DomNodeElement and insert into page, together with the (optional) variables and code
-                                    $temp_doc = new \DOMDocument("1.0", "utf-8");
-                                    $temp_doc->loadHTML('<?xml encoding="UTF-8">' . $processed_html . $temp_variables . $temp_code);
-                                    $temp_comp = $temp_doc->getElementsByTagName('body')->item(0);
-
-//erase old nodes
-                                    while($page_component->childNodes->length){
-                                        $page_component->removeChild($page_component->firstChild);
-                                    }
-
-//insert the new nodes from the transformed HTML
-                                    foreach($temp_comp->childNodes as $transfer_node){
-                                        $page_component->appendChild($doc->importNode($transfer_node,TRUE));
-                                    }
-
-
-                                } //end method exists
-                            } //end class exists
-                        } //end file server_code.php exists
-
- */        
-        
+                    $variables = array();
+                    foreach ($page_component[0]->childNodes as $child_element) {
+                        if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_storage") {
+                            $variables = json_decode($child_element->textContent, true);
+                            $temp_variables = $doc->saveHtml($child_element);
+                        } else if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_code") {
+                            $temp_code = $doc->saveHtml($child_element);
+                        }
+                    }
+                    
+                    $processed_html = $component_class->{$func_name}($tmp_existing_config, $page_component[0], $doc->saveHTML($page_component[0]), $app_path, $variables);
+                    if ($processed_html) {
+                        return new JsonResponse(array(
+                            'result' => 'success',
+                            'html' => $processed_html));
+                    } 
+                } //end method exists
+            } //end class exists
+        } //end file server_code.php exists
+       
+        return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => $this->get('translator')->trans('mlab.error.unknown')));  
     }
     
 //function to return all files of a certain type (video, audio, image) to the front end so 
