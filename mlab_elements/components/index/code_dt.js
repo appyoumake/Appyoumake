@@ -25,6 +25,44 @@
     this.updatePreview = function(el, html) {
         $(el).find("[data-mlab-ct-index='content']").html(html).css("pointer-events", "none");
     }
+    
+    this.custom_summary_style = function (el) {
+        var textsize = this.api.getVariable(el, "textsize");
+        if (typeof textsize == "undefined"  || textsize == "") {
+            textsize = "mc_medium";
+        }        
+        this.api.setVariable(el, "style", "summary");
+        this.api.setVariable(el, "textsize", textsize);
+        that = this;
+        local_el = el;
+        mlab.dt.management.page_save( function() { that.getPreview(local_el); } );
+    };
+    
+    this.custom_detailed_style = function (el) {
+        var textsize = this.api.getVariable(el, "textsize");
+        if (typeof textsize == "undefined"  || textsize == "") {
+            textsize = "mc_medium";
+        }
+        
+        this.api.setVariable(el, "style", "detailed");
+        this.api.setVariable(el, "textsize", textsize);
+        that = this;
+        local_el = el;
+        mlab.dt.management.page_save( function() { that.getPreview(local_el); } );
+    };
+    
+    this.custom_folding_style = function (el) {
+        var textsize = this.api.getVariable(el, "textsize");
+        if (typeof textsize == "undefined"  || textsize == "") {
+            textsize = "mc_medium";
+        }
+        
+        this.api.setVariable(el, "style", "folding");
+        this.api.setVariable(el, "textsize", textsize);
+        that = this;
+        local_el = el;
+        mlab.dt.management.page_save( function() { that.getPreview(local_el); } );
+    };    
 
     this.custom_decrease_size = function (el) {
         if (el.hasClass("mc_large")) {

@@ -32,7 +32,7 @@ class mlab_ct_index {
 //check if there is a chapter heading here
         $chapter = $xpath->query("//div[@data-mlab-type='chapter']");
         if ($chapter->length > 0 ) {
-            $page_info["chapter"] = $chapter->item(0)->nodeValue;
+            $page_info["chapter"] = $chapter->item(0)->firstChild->textContent;
             foreach ($chapter[0]->childNodes as $child_element) {
                 if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_storage") {
                     $vars = json_decode($child_element->textContent, true);
@@ -93,7 +93,8 @@ class mlab_ct_index {
         if ($style == "folding") {
             $html .= "<div class='mc_container mc_index mc_list " . $textsize . "'>\n";
             $curr_level = false;
-//outer loop for chapter
+            
+//loop through all pages, insert new details tag for each chapter, can be neted.
             foreach ($index as $page_num => $chapter_info) {
                 if ($chapter_info["chapter"]) { 
                     for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened details tag
@@ -109,27 +110,33 @@ class mlab_ct_index {
             $html .= "</div>";
         } else {
             $html .= "<ul class='mc_container mc_index mc_list " . $textsize . "'>\n";
-
-            foreach ($index as $chapter => $titles) {
-                if ($chapter === "___") {
-                    $head = "Frontpage";
-                } else {
-                    $head = trim($chapter);
-                }
-                reset($titles);
-                $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . key($titles) . "); return false;'>$head</a>\n";
-                if ($style == "detailed") {
-                    $html .= "    <ul>\n";
-                    foreach ($titles as $page_num => $title) {
-//adds page names for detailed index
-                        $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>$title</a></li>\n";
-                    } 
-                    $html .= "    </ul>\n";
-                }
-                $html .= "  </li>\n";
-            }
-            $html .= "</ul>\n";
+            $curr_level = false;
             
+//loop through all pages, insert new details tag for each chapter, can be neted.
+            foreach ($index as $page_num => $chapter_info) {
+                if ($chapter_info["chapter"]) {
+//close container for page names if detailed index
+                    if ($style == "detailed") {
+                        $html .= "    </ul>\n";
+                    }
+                    for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened list tag
+                        $html .= "</li>\n";
+                    }
+                    $curr_chapter = $chapter_info["chapter"];
+                    $curr_level = $chapter_info["level"];
+                    $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>" . $chapter_info["chapter"] . "</a>\n";
+//prepare container for page names if detailed index
+                    if ($style == "detailed") {
+                        $html .= "    <ul>\n";
+                    }
+                }
+//adds page names for detailed index
+                if ($style == "detailed") {
+                    $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>" . $chapter_info["title"] . "</a></li>\n";
+                }
+            }
+
+            $html .= "</ul>\n";
         }
 
         return $html;
