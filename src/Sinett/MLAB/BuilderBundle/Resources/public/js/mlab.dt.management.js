@@ -42,7 +42,6 @@ Mlab_dt_management.prototype = {
             if (data.result == "success") {
                 that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
                 
-                
 //set the compiler qTip to show QR code and link when hower over compile icon
 //Burde endre ikonet til grønt eller noe....
 //TODO use api.elements.tooltip
@@ -200,15 +199,16 @@ Mlab_dt_management.prototype = {
 //List of all pages
 //#mlab_existing_pages is a <div> which is populated with a <ol> with a <li> element for each page
         var list = $('<ol></ol>')
-        var currpage = this.parent.app.curr_page_num;
+        var currpage = this.parent.app.curr_page_index;
         var span = "";
         if (currpage == "index") {
             currpage = 0;
         }
         
         for (i in this.parent.app.page_names) {
+            page_num = parseInt(this.parent.app.page_names[i]["filename"]);
             if (i > 0) {
-                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
+                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " " + page_num + "' onclick='mlab.dt.management.page_copy(\"" + page_num + "\");' >&nbsp;</span>";
             }
 
             if (i == 0){ //index
@@ -216,9 +216,9 @@ Mlab_dt_management.prototype = {
             }
 
             if (i == currpage) {
-                list.append("<li data-mlab-page-num='" + i + "' data-mlab-page-open='" + i + "'>" + span + this.parent.app.page_names[i] + "</li>");
+                list.append("<li data-mlab-page-num='" + page_num + "' data-mlab-page-open='" + page_num + "'>" + span + this.parent.app.page_names[i]["title"] + "</li>");
             } else {
-                list.append("<li data-mlab-page-num='" + i + "'>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
+                list.append("<li data-mlab-page-num='" + page_num + "'>" + span + "<a data-mlab-page-open='" + page_num + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + page_num + "\");'>" + this.parent.app.page_names[i]["title"] + "</a></li>");
             }
         }
 
@@ -314,7 +314,7 @@ Mlab_dt_management.prototype = {
         
 //Page name is picked up from title tag in head
         this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        this.parent.app.curr_page_num = page_num;
+        this.parent.app.curr_page_index = page_num;
         $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
 
         this.app_update_gui_metadata();
@@ -374,7 +374,7 @@ Mlab_dt_management.prototype = {
 
 //Page name is picked up from title tag in head
         this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        this.parent.app.curr_page_num = page_num;
+        this.parent.app.curr_page_index = page_num;
         $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
 
         this.app_update_gui_metadata();
@@ -407,7 +407,7 @@ Mlab_dt_management.prototype = {
  */
     page_move_to : function (direction) {
         var curr_num = 0;
-        (this.parent.app.curr_page_num == "index") ? curr_num = 0 : curr_num = parseInt(this.parent.app.curr_page_num);
+        (this.parent.app.curr_page_index == "index") ? curr_num = 0 : curr_num = parseInt(this.parent.app.curr_page_index);
         if ( direction < 0 && curr_num > 0 ) {
             curr_num--;
         } else if ( direction > 0 ) {
@@ -457,7 +457,7 @@ Mlab_dt_management.prototype = {
             if (data.result == "success") {
 //update the list of pages to the new order, the page numbers have changed so we need to do that
                 that.parent.app.page_names = data.page_names;
-                that.parent.app.curr_page_num = data.to_page;
+                that.parent.app.curr_page_index = data.to_page;
             } else {
                 alert("Unable to move page");
             }
@@ -587,14 +587,14 @@ Mlab_dt_management.prototype = {
             return;
         }
 
-        if (this.parent.app.curr_page_num == "index") {
+        if (this.parent.app.curr_page_index == "index") {
             var pagenum = 0;
         } else {
-            var pagenum = this.parent.app.curr_page_num;
+            var pagenum = parseInt(this.parent.app.page_names[this.parent.app.curr_page_index]["filename"]);
         }
         this.parent.flag_dirty = true;
         this.parent.app.curr_pagetitle = $("#mlab_page_control_title").text();
-        this.parent.app.page_names[this.parent.app.curr_page_num] = this.parent.app.curr_pagetitle;
+        this.parent.app.page_names[this.parent.app.curr_page_index]["title"] = this.parent.app.curr_pagetitle;
         $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
         $("#mlab_existing_pages [data-mlab-page-open='" + pagenum + "']").html("<span class='mlab_copy_file' onclick='this.page_copy(\"" + pagenum + "\");' >&nbsp;</span>" + this.parent.app.curr_pagetitle);
 
@@ -632,7 +632,7 @@ Mlab_dt_management.prototype = {
 
 //this is called from a timer, so we also need to check if an app has been created, etc
 //also if any changes have occurred
-        if (typeof this.parent.app.curr_page_num == "undefined" || typeof this.parent.app.id == "undefined") {
+        if (typeof this.parent.app.curr_page_index == "undefined" || typeof this.parent.app.id == "undefined") {
             require_save = false;
         }
 
@@ -652,7 +652,7 @@ Mlab_dt_management.prototype = {
         var curr_el = $("#" + this.parent.config["app"]["content_id"] + " .mlab_current_component");
         curr_el.removeClass("mlab_current_component");
         var app_id = this.parent.app.id;
-        var page_num = this.parent.app.curr_page_num;
+        var page_num = this.parent.app.curr_page_index;
         var page_content = "";
         var component_categories = new Object();
         var template_best_practice_msg = new Array();
@@ -823,9 +823,9 @@ Mlab_dt_management.prototype = {
                 that.parent.utils.update_status("completed");
                 $("#" + that.parent.config["app"]["content_id"]).empty();
                 that.parent.app.curr_pagetitle = title;
-                that.parent.app.curr_page_num = data.page_num_real;
+                that.parent.app.curr_page_index = data.page_num_real;
                 $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
-                that.parent.app.page_names[that.parent.app.curr_page_num] = title;
+                that.parent.app.page_names[that.parent.app.curr_page_index]["title"] = title;
                 that.app_update_gui_metadata();
 
                 that.parent.flag_dirty = true;
@@ -866,7 +866,8 @@ Mlab_dt_management.prototype = {
             if (data.result == "success") {
                 that.parent.app.curr_pagetitle = data.page_title;
                 $("#mlab_page_control_title").text(data.page_title);
-                that.parent.app.page_names[data.page_num_real] = data.page_title;
+                debugger;
+                that.parent.app.page_names[data.page_num_real]["title"] = data.page_title;
                 that.regular_page_process ( data.html, data.page_num_real );
             } else {
                 alert(data.msg);
@@ -876,7 +877,7 @@ Mlab_dt_management.prototype = {
     },
 
     page_delete  : function () {
-        if (this.parent.app.curr_page_num == "0" || this.parent.app.curr_page_num == "index") {
+        if (this.parent.app.curr_page_index == "0" || this.parent.app.curr_page_index == "index") {
             alert(_tr["mlab.dt.management.js.page_copy.alert.not.delete.index.page"]);
             return;
         }
@@ -889,21 +890,23 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.deleting.page"], true);
 
         var url = this.parent.urls.page_delete.replace("_ID_", this.parent.app.id);
-        url = url.replace("_PAGE_NUM_", this.parent.app.curr_page_num);
+        url = url.replace("_PAGE_NUM_", this.parent.app.curr_page_index);
         url = url.replace("_UID_", this.parent.uid);
         var that = this;
 
         $.get( url, function( data ) {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").remove();
-                that.parent.app.page_names.splice(that.parent.app.curr_page_num, 1);
+                $("#mlab_existing_pages [data-mlab-page-open='" + parseInt(that.parent.app.page_names[that.parent.app.curr_page_index]["filename"]) + "']").remove();
+                
+                that.parent.app.page_names.splice(that.parent.app.curr_page_index, 1);
+                
                 that.regular_page_process ( data.html, data.page_num_real );
 
-                if (that.parent.app.curr_page_num == "index") {
-                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").html(that.parent.app.curr_pagetitle);
+                if (that.parent.app.curr_page_index == "index") {
+                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_index + "']").html(that.parent.app.curr_pagetitle);
                 } else {
-                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab.dt.management.page_copy(\"" + that.parent.app.curr_page_num + "\");' >&nbsp;</span>" + that.parent.app.curr_pagetitle);
+                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_index + "']").html("<span class='mlab_copy_file' onclick='mlab.dt.management.page_copy(\"" + that.parent.app.curr_page_index + "\");' >&nbsp;</span>" + that.parent.app.curr_pagetitle);
                 }
 
             } else {

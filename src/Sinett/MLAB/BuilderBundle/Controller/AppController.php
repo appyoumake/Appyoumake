@@ -226,13 +226,7 @@ class AppController extends Controller
                     } 
 
 //update the title of the app in the conf.json file
-                    if (file_exists($app_destination . "conf.json")) {
-                        $app_conf = json_decode(file_get_contents($app_destination . "conf.json"), true);
-                        $app_conf["title"] = $entity->getName();
-                    } else {
-                        $app_conf = array("title" => $entity->getName());
-                    }
-                    file_put_contents($app_destination . "conf.json", json_encode($app_conf));
+                    $file_mgmt->updateAppConfigFile($app, $config, array("title" => $entity->getName()));
                     break;
         
 //otherwise we use the template they specified 
@@ -702,7 +696,6 @@ class AppController extends Controller
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
             die($this->get('translator')->trans('appController.die.no.access'));
         }
-
     	
 // pick up config from parameters.yml, we use this mainly for paths
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
@@ -714,7 +707,7 @@ class AppController extends Controller
         $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
 
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
-        $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+        $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app, $config);
 
 //get checksum for app, excluding the file we just opened
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
@@ -947,7 +940,8 @@ class AppController extends Controller
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+            $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app, $config);
             $app_info = array(
                 "result" => "file_changes",
     			"mlab_app" => $mlab_app_data,
@@ -1072,7 +1066,7 @@ class AppController extends Controller
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
     	
-//get the name of the file to delete
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
         
@@ -1085,7 +1079,7 @@ class AppController extends Controller
         } else {
             
 //update file counter variable in JS
-            $total_pages = $file_mgmt->getTotalPageNum($app);
+//not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
             return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $res, 'uid' => $uid, 'app_open_mode' => 'false')));
             
@@ -1143,12 +1137,12 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     }
                     
                     
-    /**
-     * Moves a page to a different position
-     * @param type $app_id
-     * @param type $page_num
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
+/**
+ * Moves a page to a different position. The actual page is not touched, the order in a list in the conf.json file is changed.
+ * @param type $app_id
+ * @param type $page_num
+ * @return \Symfony\Component\HttpFoundation\JsonResponse
+ */
     public function reorderPageAction ($app_id, $from_page, $to_page, $uid) {
         
 //for the time being do not allow them to change the index page
@@ -1170,26 +1164,18 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
     	
+//get config values
+       	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+
 //get the name of the file to delete
 	    $file_mgmt = $this->get('file_management');
-        $file_mgmt->setConfig('app');
         
 //renames the individual page files, returns page from and to variables so frontend can update variables
-        $res = $file_mgmt->reorderPage($app, $from_page, $to_page, $uid);
-        if ($res === false) {
-            return new JsonResponse(array(
-                    'result' => 'error',
-                    'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionError'),
-                    'from_page' => $from_page,
-                    'to_page' => $to_page));
-        } else {
-            return new JsonResponse(array(
-                    'result' => 'success',
-                    'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
-                    'from_page' => $from_page,
-                    'to_page' => $to_page,
-                    'page_names' => $file_mgmt->getPageIdAndTitles($app)));
-        }
+        $res = $file_mgmt->reorderPage($app, $config, $from_page, $to_page, $uid);
+        return new JsonResponse(array(
+                'result' => 'success',
+                'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
+                'page_names' => $file_mgmt->getPageIdAndTitles($app, $config)));
     }
     
     function removeLocksAction() {

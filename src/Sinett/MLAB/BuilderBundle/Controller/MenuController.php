@@ -48,18 +48,19 @@ class MenuController extends Controller
     /**
      * Utility function to get name of app specified in URL
      */
-    private function getAppPages($path) {
+    /*private function getAppPages($path) {
         $elements = explode("/", $path);
         $em = $this->getDoctrine()->getManager();
 		
 		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($elements[3]);
         if ($app) {
+            $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
             $file_mgmt = $this->get('file_management');
 		    $file_mgmt->setConfig('app');
-    		$pages = $file_mgmt->getPageIdAndTitles($app);
+    		$pages = $file_mgmt->getPageIdAndTitles($app, $config);
             return $this->renderView('SinettMLABBuilderBundle:App:pages.html.twig', array('app_id' => $elements[3], 'pages' => $pages));
         }
-    }
+    }*/
 
 
 	/**

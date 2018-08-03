@@ -648,6 +648,13 @@ class FileManagement {
         }
 
         if (file_put_contents ($new_page["new_page_path"], "") !== false) {
+//update links with the new page
+            $current_order = $this->getAppConfigValue($app, $this->config, "page_order");
+            if (!$current_order) {
+                $current_order = array_map("basename", glob( $app_path . "/???.html" ));
+            }
+            $current_order[] = basename($new_page["new_page_path"]);
+            $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
             return $new_page["new_page_num"];
         } else {
             return false;
@@ -691,6 +698,13 @@ class FileManagement {
         $temp = file_get_contents($source_path);
         $temp = preg_replace('/<title>(.+)<\/title>/', '<title>Copy of $1</title>', $temp);
         if (file_put_contents ($new_page["new_page_path"], $temp)) {
+//update links with the new page
+            $current_order = $this->getAppConfigValue($app, $this->config, "page_order");
+            if (!$current_order) {
+                $current_order = array_map("basename", glob( $app_path . "/???.html" ));
+            }
+            $current_order[] = basename($new_page["new_page_path"]);
+            $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
             return $new_page["new_page_num"];
         } else {
             return false;
@@ -698,11 +712,7 @@ class FileManagement {
     }
     
     /**
-     * deletes a page, when this is done it renames remaining pages so always sequatial.
-     * But it cannot do this if one of the remaining pages are locked
-     * So, if we have page Index+1, and 1 is deleted, we return 0 for index page
-     * If we have pages index+1+2+3 and 1 is deleted we return 1
-     * If we have pages index+1+2+3 and 3 is deleted we return 2
+     * "deletes" a page, simply removes from list of pages, but leaves file untouched so can recover it later.
      * 
      * @param type $app
      * @param type $page_num
@@ -712,40 +722,32 @@ class FileManagement {
 //get path of file to delete
         $app_path = $app->calculateFullPath($this->config['paths']['app']);
         $page_to_delete = $this->getPageFileName($app_path, $page_num);
-        
-//check if it is locked, we get a list of all locks, if one of them is "higher" then the one we want to delete, then we bail as we need to rename files to have 
-//single list of filenames, i.e. if we have 001, 002, 003, 004; and we try to delete 003, then 004 will be renamed to 003
-        $locked_pages = $this->getAppLockStatus($app_path, $uid);
-        foreach ($locked_pages as $page) {
-            if ($page > $page_to_delete) {
-                return false;
-            }
+
+//update links, we don't actually delete files! This way we can undelete easily afterwards
+        $current_order = $this->getAppConfigValue($app, $this->config, "page_order");
+        if (!$current_order) {
+            $current_order = array_map("basename", glob( $app_path . "/???.html" ));
         }
         
-        if (unlink("$app_path/$page_to_delete")) {
-            $pages = glob ( $app_path . "/???.html" );
-            foreach ($pages as $page) {
-                $page = basename($page);
-                if ($page > $page_to_delete) {
-                    $newname = substr("000" . (intval($page) - 1), -3) . ".html";
-                    rename("$app_path/$page", "$app_path/$newname");
-                } 
-                
-            }
-            
-            if (file_exists("$app_path/$page_to_delete")) {
-                return intval($page_to_delete);
-            } else {
-                $page_to_open = substr("000" . (intval($page_to_delete) - 1), -3) . ".html";
-                if (file_exists("$app_path/$page_to_open")) {
-                    return intval($page_to_open);
-                } else {
-                    return 0;
-                }
-            }
+//find entry to delete and set which entry to open next
+        $key = array_search(basename($page_to_delete), $current_order);
+        $max = sizeof($current_order) - 2;
+	
+        if ($max === 0) { //only one page left when done
+            $open = 0;
+        } else if ($key > $max) { //deleting last record
+            $open = $max;
         } else {
-            return false;
-        } //end try to unlink
+            $open = $key;
+        }
+        unset($current_order[$key]);
+        $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
+        $page_to_open = $current_order[$open]["filename"];
+        if (file_exists("$app_path/$page_to_open")) {
+            return intval($page_to_open);
+        } else {
+            return 0;
+        }
     }    
     
     /**
@@ -755,54 +757,21 @@ class FileManagement {
      * @param type $page_num
      * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
      */
-    public function reorderPage($app, $from_page, $to_page, $uid) {
+    public function reorderPage($app, $config, $from_page, $to_page, $uid) {
         
-//get path of files to reorder 
+//get path of files to reorder
         $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        
-//get full pathname of the file that is being moved, then rename temporarily the file to move and delete the lock
-        $page_to_move = $this->getPageFileName($app_path, $from_page);
-        $tmp_name = $this->GUID_v4();
-        $locked = file_exists("$app_path$page_to_move.$uid.lock");
-        rename($app_path . $page_to_move, $app_path . $tmp_name);
-        if ($locked) {
-            unlink("$app_path$page_to_move.$uid.lock");
+        $current_order = $this->getAppConfigValue($app, $config, "page_order");
+        if (!$current_order) {
+            $current_order = array_map("basename", glob( $app_path . "/???.html" ));
         }
-        
-//now loop through all pages from the lowest to the highest as they want to move the page down the list (i.e. to a higher page number)
-        if ($from_page < $to_page) {
-            for ($p = $from_page; $p < $to_page; $p++) {
-                $oldname = substr("000" . ($p + 1), -3) . ".html";
-                $newname = substr("000" . ($p), -3) . ".html";
-                rename("$app_path/$oldname", "$app_path/$newname");
-                $lockname = "$app_path/$oldname.*.lock";
-                $files = glob($lockname);
-                if ($files) {
-                    rename($files[0], str_replace($oldname, $newname, $files[0]));
-                }
-            }
-            
-//here we handle pages when the move a page up the list (i.e. to a lower page number)
-        } else if ($from_page > $to_page) {
-            for ($p = $from_page; $p > $to_page; $p--) {
-                $oldname = substr("000" . ($p - 1), -3) . ".html";
-                $newname = substr("000" . ($p), -3) . ".html";
-                rename("$app_path/$oldname", "$app_path/$newname");
-                $lockname = "$app_path/$oldname.*.lock";
-                $files = glob($lockname);
-                if ($files) {
-                    rename($files[0], str_replace($oldname, $newname, $files[0]));
-                }
-            }
-        } else {
-            return false;
-        }
-        $newname = substr("000" . ($to_page), -3) . ".html";
-        rename($app_path . $tmp_name, $app_path . $newname);
-        if ($locked) {
-            file_put_contents($app_path . "$newname.$uid.lock", "");
-        }
-        $this->updatePageLinks($app_path, $from_page, $to_page);
+
+//rearrange the array so the page is "moved" in the list        
+        $temp_order = array_splice($current_order, $from_page, 1);
+        array_splice($current_order, $to_page, 0, $temp_order);
+
+//update the order and return it.
+        $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
         return true;
     }    
 
@@ -821,6 +790,9 @@ class FileManagement {
  *    4 = 9
  *    5 to 9 = -1
  */    
+    
+/* redundant as we never move pages anymore 
+
     public function updatePageLinks($app_path, $from_page, $to_page) {
         $match = "mlab.api.navigation.pageDisplay";
         $files = glob ( $app_path . "/*.html" );
@@ -852,29 +824,38 @@ class FileManagement {
             }
         }
     }
+ */
+
     
 /**
- * returns an associative array of file names and titles of the pages for an app
+ * returns an associative array of file positions (the key), filenames and titles of the pages for an app
  * @param type $app
- * @return types
+ * @return $pages
  */
-    public function getPageIdAndTitles($app) {
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
-
+    public function getPageIdAndTitles($app, $config) {
         
+//get list of the file order
+        $page_order = $this->getAppConfigValue($app, $config, "page_order");
+        if (!$page_order) {
+            $page_order = array_map("basename", glob( $app_path . "/???.html" ));
+        }
+
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
-            $pages = array(0 => $matches[1]);
+            $pages = array(0 => array("filename" => "index.html", "title" => $matches[1]));
         } else {
-            $pages = array(0 => "Untitled");
+            $pages = array(0 => array("filename" => "index.html", "title" => "Untitled"));
         }
         
         $files = glob ( $app_path . "/???.html" );
+        
         foreach ($files as $file) {
-            $pnum = intval(basename($file)); 
-            if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$file"), $matches) && isset($matches[1])) {
-                $pages[$pnum] = "{$matches[1]}";
+//get the page position for this page
+            $pnum = array_search(basename($file), $page_order);
+            if (preg_match('/<title>(.+)<\/title>/', file_get_contents($file), $matches) && isset($matches[1])) {
+                $pages[$pnum] = array("filename" => basename($file), "title" => $matches[1]);
             } else {
-                $pages[$pnum] = "Untitled";
+                $pages[$pnum] = array("filename" => basename($file), "title" => "Untitled");
             }
         }
         return $pages;

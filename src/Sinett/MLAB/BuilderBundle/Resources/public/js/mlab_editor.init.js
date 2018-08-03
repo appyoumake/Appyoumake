@@ -114,7 +114,7 @@ $(document).ready(function() {
 
 //current app/page information, this will be updated when they create a new app or edit properties
             mlab.dt.app = data.mlab_app;
-            mlab.dt.app.curr_page_num = data.mlab_app_page_num;
+            mlab.dt.app.curr_page_index = data.mlab_app_page_num;
 //checksum of current file
             mlab.dt.app.app_checksum = data.mlab_app_checksum;
 

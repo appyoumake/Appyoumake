@@ -730,7 +730,7 @@ Mlab_api.prototype = {
             switch (move_to) {
                 case 0:
                 case "index":
-                    filename = "000.html";
+                    filename = "index.html";
                     new_location = 0;
                     break;
 

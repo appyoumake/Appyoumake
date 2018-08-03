@@ -903,19 +903,20 @@ Mlab_dt_api.prototype = {
 /**
  * 
  * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
+ * In the option list in the dialog box pages are listed with filename as value and title as displayed text
  * @param {type} link
  * @returns {Boolean}
  */
-    updateLink: function (link) {
+    updateLink: function () {
         var link_type = $("input:radio[name=mlab_dt_getlink_choice]:checked").val();
         var link = "";
         var page_name;
 
         if (link_type == "page") {
             link = $("#mlab_dt_link_app_pages").val();
-            var num = parseInt(link);
-            if (num >= 0 && num < 1000) {
-                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + num + '); return false;');
+            if (link) {
+                page_num = parseInt(link);
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + page_num + '); return false;');
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
                 return false;
@@ -959,8 +960,8 @@ Mlab_dt_api.prototype = {
 
 //we need to request the URL *OR* which page to link to
         var opt = "<option value='-1'></option>";
-        for (page in mlab.dt.app.page_names) {
-            opt = opt + "<option value='" + page + "'>" + mlab.dt.app.page_names[page] + "</option>";
+        for (pos in mlab.dt.app.page_names) {
+            opt = opt + "<option value='" + mlab.dt.app.page_names[pos]["filename"] + "'>" + mlab.dt.app.page_names[pos]["title"] + "</option>";
         }
         var that = this;
         var content = $('<div id="mlab_dt_link_dialog">' + 
