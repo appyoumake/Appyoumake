@@ -208,7 +208,7 @@ Mlab_dt_management.prototype = {
         for (i in this.parent.app.page_names) {
             page_num = parseInt(this.parent.app.page_names[i]["filename"]);
             if (i > 0) {
-                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " " + page_num + "' onclick='mlab.dt.management.page_copy(\"" + page_num + "\");' >&nbsp;</span>";
+                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " \"" + this.parent.app.page_names[i]["title"] + "\"' onclick='mlab.dt.management.page_copy(\"" + page_num + "\");' >&nbsp;</span>";
             }
 
             if (i == 0){ //index

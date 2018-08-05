@@ -57,7 +57,7 @@ class MenuController extends Controller
             $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
             $file_mgmt = $this->get('file_management');
 		    $file_mgmt->setConfig('app');
-    		$pages = $file_mgmt->getPageIdAndTitles($app, $config);
+    		$pages = $file_mgmt->getPageIdAndTitles($app);
             return $this->renderView('SinettMLABBuilderBundle:App:pages.html.twig', array('app_id' => $elements[3], 'pages' => $pages));
         }
     }*/

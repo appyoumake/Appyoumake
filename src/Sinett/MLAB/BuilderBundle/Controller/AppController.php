@@ -226,7 +226,7 @@ class AppController extends Controller
                     } 
 
 //update the title of the app in the conf.json file
-                    $file_mgmt->updateAppConfigFile($app, $config, array("title" => $entity->getName()));
+                    $file_mgmt->updateAppConfigFile($app, array("title" => $entity->getName()));
                     break;
         
 //otherwise we use the template they specified 
@@ -642,7 +642,7 @@ class AppController extends Controller
 
         $file_mgmt = $this->get('file_management');
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-        $res = $file_mgmt->preCompileProcessingAction($app, $config);
+        $res = $file_mgmt->preCompileProcessingAction($app);
         
         if ($res["result"] == "success") {
             return $this->redirect($request->getSchemeAndHttpHost() . $config["urls"]["app"] . $app->getPath() . "/" . $app->getActiveVersion() . "_cache/index.html");
@@ -707,7 +707,7 @@ class AppController extends Controller
         $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
 
         $mlab_app_data = $app->getArrayFlat($config["paths"]["template"]);
-        $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app, $config);
+        $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
 
 //get checksum for app, excluding the file we just opened
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
@@ -716,7 +716,7 @@ class AppController extends Controller
 //pick up previously compiled files
         $comp_files = array();
         foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
-            $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
+            $compiled_app = $file_mgmt->getAppConfigValue($app, "latest_executable_" . $platform);
             if ($compiled_app !== false) {
                 $comp_files[$platform] = $compiled_app;
             }
@@ -861,7 +861,7 @@ class AppController extends Controller
                 $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
                 $comp_files = array();
                 foreach ($config["compiler_service"]["supported_platforms"] as $platform) {
-                    $compiled_app = $file_mgmt->getAppConfigValue($app, $config, "latest_executable_" . $platform);
+                    $compiled_app = $file_mgmt->getAppConfigValue($app, "latest_executable_" . $platform);
                     if ($compiled_app !== false) {
                         $comp_files[$platform] = $compiled_app;
                     }
@@ -941,7 +941,7 @@ class AppController extends Controller
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
             $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app, $config);
+            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
             $app_info = array(
                 "result" => "file_changes",
     			"mlab_app" => $mlab_app_data,
@@ -1164,18 +1164,15 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
     	
-//get config values
-       	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-
 //get the name of the file to delete
 	    $file_mgmt = $this->get('file_management');
         
 //renames the individual page files, returns page from and to variables so frontend can update variables
-        $res = $file_mgmt->reorderPage($app, $config, $from_page, $to_page, $uid);
+        $res = $file_mgmt->reorderPage($app, $from_page, $to_page, $uid);
         return new JsonResponse(array(
                 'result' => 'success',
                 'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
-                'page_names' => $file_mgmt->getPageIdAndTitles($app, $config)));
+                'page_names' => $file_mgmt->getPageIdAndTitles($app)));
     }
     
     function removeLocksAction() {
@@ -1318,8 +1315,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
 
         $file_mgmt = $this->get('file_management');
-        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id, $config));
+        return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id));
     }
     
 /**

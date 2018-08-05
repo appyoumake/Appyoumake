@@ -340,11 +340,11 @@ class FileManagement {
 		return $component;
 	}
     
-    public function componentAdded($app_id, $app, $comp_id, $config) {
-        $path_component = $config['paths']['component'] . $comp_id . "/";
-        $path_app = $app->calculateFullPath($config['paths']['app']);
+    public function componentAdded($app_id, $app, $comp_id) {
+        $path_component = $this->config['paths']['component'] . $comp_id . "/";
+        $path_app = $app->calculateFullPath($this->config['paths']['app']);
         $path_app_js = $path_app . "js/";
-        $path_app_config = $path_app . $config['filenames']["app_config"];
+        $path_app_config = $path_app . $this->config['filenames']["app_config"];
         
 //check if path to component and app exists
         if ( is_dir($path_component) && is_dir($path_app) ) {
@@ -374,11 +374,11 @@ class FileManagement {
 //https://cordova.apache.org/docs/en/5.1.1/cordova_plugins_pluginapis.md.html#Plugin%20APIs.
             if (file_exists($path_component . "conf.yml")) {
                 $yaml = new Parser();
-                $config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                $comp_config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
                 
-                if (isset($config["plugins"])) {
+                if (isset($comp_config["plugins"])) {
 
-                    $new_plugins = $config["plugins"];
+                    $new_plugins = $comp_config["plugins"];
 
 //TODO: replace these with getAppConfigValue & updateAppConfigFile
                     if (!file_exists( $path_app_config)) {
@@ -395,10 +395,10 @@ class FileManagement {
                 }
 
 //2.5: copy across any runtime dependencies, can be JS or CSS
-                if (isset($config["required_libs"])) {
-                    if (isset($config["required_libs"]["runtime"])) {
+                if (isset($comp_config["required_libs"])) {
+                    if (isset($comp_config["required_libs"]["runtime"])) {
 
-                        foreach ($config["required_libs"]["runtime"] as $dependency) {
+                        foreach ($comp_config["required_libs"]["runtime"] as $dependency) {
                             $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
                             if ($filetype == "") {
                                 $filetype = "js";
@@ -526,9 +526,9 @@ class FileManagement {
  * @param type $app
  * @param type $values = associative array
  */
-    public function updateAppConfigFile($app, $config, $values) {
-        $path_app = $app->calculateFullPath($config['paths']['app']);
-        $path_app_config = $path_app . $config['filenames']["app_config"];
+    public function updateAppConfigFile($app, $values) {
+        $path_app = $app->calculateFullPath($this->config['paths']['app']);
+        $path_app_config = $path_app . $this->config['filenames']["app_config"];
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
         } else {
@@ -543,13 +543,12 @@ class FileManagement {
 /**
  * Simple function to retrieve a value from the app specific config file
  * @param type $app
- * @param type $config
  * @param type $key
  * @return any requested value
  */
-    public function getAppConfigValue($app, $config, $key) {
-        $path_app = $app->calculateFullPath($config['paths']['app']);
-        $path_app_config = $path_app . $config['filenames']["app_config"];
+    public function getAppConfigValue($app, $key) {
+        $path_app = $app->calculateFullPath($this->config['paths']['app']);
+        $path_app_config = $path_app . $this->config['filenames']["app_config"];
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
             if (array_key_exists($key, $tmp_existing_config)) {
@@ -649,12 +648,12 @@ class FileManagement {
 
         if (file_put_contents ($new_page["new_page_path"], "") !== false) {
 //update links with the new page
-            $current_order = $this->getAppConfigValue($app, $this->config, "page_order");
+            $current_order = $this->getAppConfigValue($app, "page_order");
             if (!$current_order) {
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
             }
             $current_order[] = basename($new_page["new_page_path"]);
-            $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
+            $this->updateAppConfigFile($app, array("page_order" => $current_order));
             return $new_page["new_page_num"];
         } else {
             return false;
@@ -699,12 +698,12 @@ class FileManagement {
         $temp = preg_replace('/<title>(.+)<\/title>/', '<title>Copy of $1</title>', $temp);
         if (file_put_contents ($new_page["new_page_path"], $temp)) {
 //update links with the new page
-            $current_order = $this->getAppConfigValue($app, $this->config, "page_order");
+            $current_order = $this->getAppConfigValue($app, "page_order");
             if (!$current_order) {
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
             }
             $current_order[] = basename($new_page["new_page_path"]);
-            $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
+            $this->updateAppConfigFile($app, array("page_order" => $current_order));
             return $new_page["new_page_num"];
         } else {
             return false;
@@ -724,7 +723,7 @@ class FileManagement {
         $page_to_delete = $this->getPageFileName($app_path, $page_num);
 
 //update links, we don't actually delete files! This way we can undelete easily afterwards
-        $current_order = $this->getAppConfigValue($app, $this->config, "page_order");
+        $current_order = $this->getAppConfigValue($app, "page_order");
         if (!$current_order) {
             $current_order = array_map("basename", glob( $app_path . "/???.html" ));
         }
@@ -741,7 +740,7 @@ class FileManagement {
             $open = $key;
         }
         unset($current_order[$key]);
-        $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
+        $this->updateAppConfigFile($app, array("page_order" => $current_order));
         $page_to_open = $current_order[$open]["filename"];
         if (file_exists("$app_path/$page_to_open")) {
             return intval($page_to_open);
@@ -757,21 +756,24 @@ class FileManagement {
      * @param type $page_num
      * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
      */
-    public function reorderPage($app, $config, $from_page, $to_page, $uid) {
+    public function reorderPage($app, $from_page, $to_page, $uid) {
         
 //get path of files to reorder
         $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        $current_order = $this->getAppConfigValue($app, $config, "page_order");
+        $current_order = $this->getAppConfigValue($app, "page_order");
         if (!$current_order) {
             $current_order = array_map("basename", glob( $app_path . "/???.html" ));
         }
+        
+        $from_page = array_search(substr("000" . $from_page, -3) . ".html", $current_order);
+        $to_page = array_search(substr("000" . $to_page, -3) . ".html", $current_order);
 
 //rearrange the array so the page is "moved" in the list        
         $temp_order = array_splice($current_order, $from_page, 1);
         array_splice($current_order, $to_page, 0, $temp_order);
 
 //update the order and return it.
-        $this->updateAppConfigFile($app, $config, array("page_order" => $current_order));
+        $this->updateAppConfigFile($app, array("page_order" => $current_order));
         return true;
     }    
 
@@ -832,15 +834,15 @@ class FileManagement {
  * @param type $app
  * @return $pages
  */
-    public function getPageIdAndTitles($app, $config) {
+    public function getPageIdAndTitles($app) {
         
 //get list of the file order
-        $page_order = $this->getAppConfigValue($app, $config, "page_order");
+        $page_order = $this->getAppConfigValue($app, "page_order");
+        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         if (!$page_order) {
             $page_order = array_map("basename", glob( $app_path . "/???.html" ));
         }
 
-        $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
             $pages = array(0 => array("filename" => "index.html", "title" => $matches[1]));
         } else {
@@ -1161,26 +1163,25 @@ class FileManagement {
  * Function that will go through each page in an app and run various processing functions
  * Returns array that is status and the checksum of the code output (not original code!)
  * @param type $app
- * @param type $config
  * 
  * 
  */
-    public function preCompileProcessingAction($app, $config) {
+    public function preCompileProcessingAction($app) {
         
 //get basic objects and variables ready
-        $comp_dir = $config["paths"]["component"];
-        $components = $this->loadComponents(array(), $comp_dir, $config["component_files"], $app->getId());
-        $app_path = $app->calculateFullPath($config['paths']['app']);
-        $path_app_config = $app_path . $config['filenames']["app_config"];
+        $comp_dir = $this->config["paths"]["component"];
+        $components = $this->loadComponents(array(), $comp_dir, $this->config["component_files"], $app->getId());
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
+        $path_app_config = $app_path . $this->config['filenames']["app_config"];
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
-        $app_checksum = $this->getAppMD5($app, $config['filenames']["app_config"]);
+        $app_checksum = $this->getAppMD5($app, $this->config['filenames']["app_config"]);
         
 // check to see if this has already been processed, if so just return
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
             if (array_key_exists("processed_checksum", $tmp_existing_config)) {
                 if ($tmp_existing_config["processed_checksum"] == $app_checksum) {
-                    return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
+                    return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $this->config['filenames']["app_config"]));
                 }
             }
         } else {
@@ -1208,13 +1209,13 @@ class FileManagement {
         libxml_clear_errors();
         
         $content = ""; 
-        $element = $doc->getElementById($config["app"]["content_id"]);
+        $element = $doc->getElementById($this->config["app"]["content_id"]);
         $children  = $element->childNodes;
         foreach ($children as $child) { 
             $content .= $element->ownerDocument->saveHTML($child);
         }
 
-        //$content = $doc->saveHtml($doc->getElementById($config["app"]["content_id"]));
+        //$content = $doc->saveHtml($doc->getElementById($this->config["app"]["content_id"]));
         $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
 
 //get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
@@ -1251,7 +1252,7 @@ class FileManagement {
                     $s = '/%%' . $temp_data[0] . '.*?%%/i';
                     $r = "<div data-mlab-type='" . $comp_name . "' " . $disp . " style='display: block;'>" . $components[$comp_name]["html"] . $variables . "</div>";
                     $frontpage_content = preg_replace($s, $r, $frontpage_content);
-                    $res = $this->componentAdded($app->getId(), $app, $comp_name, $config);
+                    $res = $this->componentAdded($app->getId(), $app, $comp_name);
                     if ($res["result"] != "success") {
                         error_log("Failed to run ComponentAdded code for $comp_name");
                     }
@@ -1270,7 +1271,7 @@ class FileManagement {
                 if (method_exists($process, $func_name)) {
                     
 //here we run the function and obtain the result
-                    $value = call_user_func_array(array($process, $func_name), array($config, $app, $app_path));
+                    $value = call_user_func_array(array($process, $func_name), array($this->config, $app, $app_path));
                     
 //to avoid javascript errors we set empty values to -1
 //(for instance code may be: var x = %%MLAB_CT_FUNC_GET_NUM%%; , with an empty value this would cause all javascript below to fail at runtime
@@ -1302,7 +1303,7 @@ class FileManagement {
             if (substr($page, -10) == "index.html") {
                 $doc->loadHTML($frontpage_content);
                 libxml_clear_errors();
-                $content = $doc->getElementById($config["app"]["content_id"]);
+                $content = $doc->getElementById($this->config["app"]["content_id"]);
                 $content->parentNode->removeChild($content);
                  
             } else {
@@ -1393,7 +1394,7 @@ class FileManagement {
         date_default_timezone_set('UTC');
 
         $app_vars = array(
-            "num_pages" => $process->getnumberofpages($config, $app, $app_path),
+            "num_pages" => $process->getnumberofpages($this->config, $app, $app_path),
             "app_title" => $metatags["mlab:app_uid"],
             "app_version" => $app->getActiveVersion(),
             "app_tags" => $app->getTags(),
@@ -1442,7 +1443,7 @@ class FileManagement {
             }
         }
         
-        return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $config['filenames']["app_config"]));
+        return array("result" => "success", "checksum" => $this->getProcessedAppMD5($app, $this->config['filenames']["app_config"]));
         
     }
     

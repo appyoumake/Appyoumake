@@ -421,7 +421,7 @@ class ServicesController extends Controller
         
 //run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
 //the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
-        $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
+        $res_precompile = $file_mgmt->preCompileProcessingAction($app);
         if ($res_precompile["result"] != "success") {
             return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
         }
@@ -492,7 +492,7 @@ class ServicesController extends Controller
         
 //run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
 //the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
-        $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
+        $res_precompile = $file_mgmt->preCompileProcessingAction($app);
         if ($res_precompile["result"] != "success") {
             return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
         }
@@ -659,7 +659,7 @@ class ServicesController extends Controller
         $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
         if (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
         
-        $res_precompile = $file_mgmt->preCompileProcessingAction($app, $config);
+        $res_precompile = $file_mgmt->preCompileProcessingAction($app);
         if ($res_precompile["result"] != "success") {
             $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation_failed", "platform": "' . $platform . '", "text": "' . $res_precompile["msg"] . '"}}', $config), true);
             return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
@@ -852,7 +852,7 @@ class ServicesController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
                 $file_mgmt = $this->get('file_management');
-                $file_mgmt->updateAppConfigFile($app, $config, array("latest_executable_" . $platform => $file_name));
+                $file_mgmt->updateAppConfigFile($app, array("latest_executable_" . $platform => $file_name));
                 
                 $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '", "platform": "' . $platform . '"}}', $config), true);
             } else {
