@@ -672,11 +672,15 @@ class AppController extends Controller
             die($this->get('translator')->trans('appController.die.no.access'));
         }
         
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $yaml = new Parser();
         $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->getUser()->getLocale() . '.yml'));
+        $file_mgmt = $this->get('file_management');
+        $real_page_filename = $file_mgmt->getPageFileName($app_path, $page_num);
 
     	return $this->render('SinettMLABBuilderBundle:App:build_app.html.twig', array(
-    			"mlab_app_page_num" => $page_num,
+    			"mlab_app_page_num" => intVal($real_page_filename),
     			"mlab_app_id" => $id, 
                 "mlab_appbuilder_root_url" => $this->generateUrl('app_builder_index'),
                 "mlab_translations" => json_encode($temp)
@@ -841,7 +845,7 @@ class AppController extends Controller
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
 
-//if a page does not eist, then go to last
+//if a page does not exist, then go to last
         if (!file_exists("$app_path$doc")) {
             $doc = $file_mgmt->getPageFileName($app_path, "last");
         }
@@ -873,10 +877,10 @@ class AppController extends Controller
     				'html' => $page["html"],
     				'lock_status' => $page["lock_status"],
                     'page_num_sent' => $page_num,
-                    'page_num_real' => intval($doc),
+                    'page_num_real' => intval($doc), //this is the page that is being opened, typically different from previous when delete page. index.html = 0
                     'app_id' => $app_id,
                     'page_title' => $title,
-                    'only_index' => !file_exists("$app_path" . "001.html"),
+                    'only_index' => !file_exists($app_path . "001.html"),
                     "compiled_files" => $comp_files
                 ));
     		 
@@ -906,7 +910,7 @@ class AppController extends Controller
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
-        if (!$page_num) {
+        if (!isset($page_num) || $page_num < 0) {
             return new JsonResponse(array(
     					'result' => 'error',
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
@@ -940,7 +944,6 @@ class AppController extends Controller
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
-            $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
             $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
             $app_info = array(
                 "result" => "file_changes",
@@ -1029,6 +1032,13 @@ class AppController extends Controller
     			'result' => 'error',
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
+        
+        if (!isset($page_num) || $page_num < 0) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+        }
+
     	
 //create the name of the file to create
 	    $file_mgmt = $this->get('file_management');
@@ -1040,8 +1050,8 @@ class AppController extends Controller
         }
         
 //update file counter variable in JS
-        $total_pages = $file_mgmt->getTotalPageNum($app);
-        /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
+        /*$total_pages = $file_mgmt->getTotalPageNum($app);
+        $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
 
     	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
         
@@ -1065,14 +1075,20 @@ class AppController extends Controller
     			'result' => 'error',
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
+        
+        if (!isset($page_num) || $page_num < 0) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+        }
+        
     	
-        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
         
 //delete file, returns number of file to open if successful
-        $res = $file_mgmt->deletePage($app, $page_num, $uid);
-        if ($res === false) {
+        $page_to_open = $file_mgmt->deletePage($app, $page_num, $uid);
+        if ($page_to_open === false) {
             return new JsonResponse(array(
                     'result' => 'error',
                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
@@ -1081,8 +1097,7 @@ class AppController extends Controller
 //update file counter variable in JS
 //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
-            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $res, 'uid' => $uid, 'app_open_mode' => 'false')));
-            
+            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_to_open, 'uid' => $uid, 'app_open_mode' => 'false')));
         }
     }    
     
@@ -1434,20 +1449,21 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
-        if ( empty($comp_id) || empty($page_num) || empty($func_name) ) {
+        if ( !isset($comp_id) || !isset($page_num) || !isset($func_name) ) {
     		return new JsonResponse(array(
     			'result' => 'failure',
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.function.page.not.specified') . ": %s", $comp_id)));
         }
 
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        $file_mgmt = $this->get('file_management');
         $comp_dir = $config["paths"]["component"];
         $app_path = $app->calculateFullPath($config['paths']['app']);
         $path_component = $comp_dir . $comp_id . "/";
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
         $doc->validateOnParse = true;
-        $doc->loadHTMLFile($app_path . substr("000" . $page_num, -3) . ".html");
+        $doc->loadHTMLFile($app_path . $file_mgmt->getPageFileName($page_num));
         libxml_clear_errors();
         $xpath = new \DOMXPath($doc);
         $page_component = $xpath->query("//div[@data-mlab-type='{$comp_id}']");

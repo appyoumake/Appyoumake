@@ -647,7 +647,7 @@ class FileManagement {
         }
 
         if (file_put_contents ($new_page["new_page_path"], "") !== false) {
-//update links with the new page
+//update order with the new page
             $current_order = $this->getAppConfigValue($app, "page_order");
             if (!$current_order) {
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
@@ -662,7 +662,7 @@ class FileManagement {
     
     public function savePage($app, $page_num, $title, $html) {
 //get path of file to save
-        if ($page_num == "index") {
+        if ($page_num == 0) {
             $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
             return file_put_contents ($file_path, $html);
         } else {
@@ -685,7 +685,7 @@ class FileManagement {
      * @return boolean
      */
     public function copyPage($app, $page_num) {
-//get path of file to copy
+//get path of file to copy, we do not allow them to copy the index.html page, so will always be numeric.
         $source_path = $app->calculateFullPath($this->config['paths']['app']) .  substr("000" . $page_num, -3) . ".html";;
         
 //create the name of the file to create
@@ -730,7 +730,7 @@ class FileManagement {
         
 //find entry to delete and set which entry to open next
         $key = array_search(basename($page_to_delete), $current_order);
-        $max = sizeof($current_order) - 2;
+        $max = sizeof($current_order) - 1;
 	
         if ($max === 0) { //only one page left when done
             $open = 0;
@@ -741,7 +741,7 @@ class FileManagement {
         }
         unset($current_order[$key]);
         $this->updateAppConfigFile($app, array("page_order" => $current_order));
-        $page_to_open = $current_order[$open]["filename"];
+        $page_to_open = $current_order[$open];
         if (file_exists("$app_path/$page_to_open")) {
             return intval($page_to_open);
         } else {
@@ -836,28 +836,25 @@ class FileManagement {
  */
     public function getPageIdAndTitles($app) {
         
-//get list of the file order
+//get list of the file order, this ALWAYS exclude the index.html file as it is non-deletable, non-moveable
         $page_order = $this->getAppConfigValue($app, "page_order");
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         if (!$page_order) {
             $page_order = array_map("basename", glob( $app_path . "/???.html" ));
         }
-
+//first store the index file details
         if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/index.html"), $matches) && isset($matches[1])) {
             $pages = array(0 => array("filename" => "index.html", "title" => $matches[1]));
         } else {
             $pages = array(0 => array("filename" => "index.html", "title" => "Untitled"));
         }
-        
-        $files = glob ( $app_path . "/???.html" );
-        
-        foreach ($files as $file) {
-//get the page position for this page
-            $pnum = array_search(basename($file), $page_order);
-            if (preg_match('/<title>(.+)<\/title>/', file_get_contents($file), $matches) && isset($matches[1])) {
-                $pages[$pnum] = array("filename" => basename($file), "title" => $matches[1]);
+
+//now loop through the remaining pages which will exclude "deleted" pages although they are on the disk
+        foreach ($page_order as $filename) {
+            if (preg_match('/<title>(.+)<\/title>/', file_get_contents("$app_path/$filename"), $matches) && isset($matches[1])) {
+                $pages[] = array("filename" => $filename, "title" => $matches[1]);
             } else {
-                $pages[$pnum] = array("filename" => basename($file), "title" => "Untitled");
+                $pages[] = array("filename" => $filename, "title" => "Untitled");
             }
         }
         return $pages;
@@ -888,8 +885,7 @@ class FileManagement {
             }
     		
     	} else if ($page_num == '0' || $page_num == 'index') {
-    		return 'index.html';
-    		
+    		return 'index.html';    		
     	} else {
     		if ($page_num > 0 ) {
     			return substr("000" . $page_num, -3) . ".html";

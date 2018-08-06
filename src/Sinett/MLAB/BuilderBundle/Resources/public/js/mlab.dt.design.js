@@ -224,7 +224,7 @@ Mlab_dt_design.prototype = {
         var url = this.parent.urls.component_run_function.replace("_APPID_", this.parent.app.id);
         url = url.replace("_COMPID_", comp_id);
         url = url.replace("_FUNCNAME_", func_name);
-        url = url.replace("_PAGENUM_", this.parent.app.curr_page_index);
+        url = url.replace("_PAGENUM_", this.parent.app.curr_page_num);
         
         var local_callback = callback,
             local_el = el;
@@ -451,7 +451,7 @@ Mlab_dt_design.prototype = {
 
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
-        if (this.parent.app.curr_page_index != "0" && this.parent.app.curr_page_index != "index") {
+        if (this.parent.app.curr_page_num != 0) {
             var url = this.parent.urls.feature_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
