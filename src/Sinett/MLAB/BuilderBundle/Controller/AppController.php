@@ -1463,7 +1463,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
         $doc->validateOnParse = true;
-        $doc->loadHTMLFile($app_path . $file_mgmt->getPageFileName($page_num));
+        $doc->loadHTMLFile($app_path . $file_mgmt->getPageFileName($app_path, $page_num));
         libxml_clear_errors();
         $xpath = new \DOMXPath($doc);
         $page_component = $xpath->query("//div[@data-mlab-type='{$comp_id}']");

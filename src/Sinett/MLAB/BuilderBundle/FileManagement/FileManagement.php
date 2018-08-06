@@ -730,18 +730,19 @@ class FileManagement {
         
 //find entry to delete and set which entry to open next
         $key = array_search(basename($page_to_delete), $current_order);
-        $max = sizeof($current_order) - 1;
-	
-        if ($max === 0) { //only one page left when done
-            $open = 0;
-        } else if ($key > $max) { //deleting last record
-            $open = $max;
-        } else {
-            $open = $key;
-        }
-        unset($current_order[$key]);
+        $max = sizeof($current_order) - 2; //max index AFTER removed an element, -2 because base 0 array
+        array_splice($current_order, $key, 1);
         $this->updateAppConfigFile($app, array("page_order" => $current_order));
-        $page_to_open = $current_order[$open];
+	
+        if ($max < 0) { //no pages left when done, need to open index
+            $page_to_open = "index.html";
+        } else if ($max === 0) { //no pages left when done
+            $page_to_open = $current_order[0];
+        } else if ($key > $max) { //deleting last record
+            $page_to_open = $current_order[$max];;
+        } else {
+            $page_to_open = $current_order[$key];;
+        }
         if (file_exists("$app_path/$page_to_open")) {
             return intval($page_to_open);
         } else {
@@ -1286,7 +1287,15 @@ class FileManagement {
         }
 
 //loop through all pages to process the components that have a matching onCompile function
-        $pages = glob ( $app_path . "???.html" );
+//OLD         $pages = glob ( $app_path . "???.html" );
+        $func = function($val){ return $app_path . $val; };
+        $pages = $this->getAppConfigValue($app, "page_order");
+        if ($pages) {
+            $pages = array_map($func, $pages);
+        } else if (!$pages) {
+            $pages = glob( $app_path . "/???.html" );
+        }
+        
         array_unshift($pages, $cached_app_path . "000.html"); //fake placeholder to make loop below work neater
         array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
 
