@@ -650,6 +650,7 @@ class FileManagement {
 //update order with the new page
             $current_order = $this->getAppConfigValue($app, "page_order");
             if (!$current_order) {
+                $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
             }
             $current_order[] = basename($new_page["new_page_path"]);
@@ -662,7 +663,7 @@ class FileManagement {
     
     public function savePage($app, $page_num, $title, $html) {
 //get path of file to save
-        if ($page_num == 0) {
+        if ($page_num === 0) {
             $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
             return file_put_contents ($file_path, $html);
         } else {
@@ -700,6 +701,7 @@ class FileManagement {
 //update links with the new page
             $current_order = $this->getAppConfigValue($app, "page_order");
             if (!$current_order) {
+                $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
             }
             $current_order[] = basename($new_page["new_page_path"]);
@@ -1207,7 +1209,7 @@ class FileManagement {
         $content = ""; 
         $element = $doc->getElementById($this->config["app"]["content_id"]);
         $children  = $element->childNodes;
-        foreach ($children as $child) { 
+        foreach ($children as $child) {
             $content .= $element->ownerDocument->saveHTML($child);
         }
 
@@ -1269,10 +1271,10 @@ class FileManagement {
 //here we run the function and obtain the result
                     $value = call_user_func_array(array($process, $func_name), array($this->config, $app, $app_path));
                     
-//to avoid javascript errors we set empty values to -1
+//to avoid javascript errors we set empty values to 0
 //(for instance code may be: var x = %%MLAB_CT_FUNC_GET_NUM%%; , with an empty value this would cause all javascript below to fail at runtime
-                    if (empty($value)) {
-                        $value = -1;
+                    if (!isset($value)) {
+                        $value = 0;
                     }
                     
                     $frontpage_content = str_replace("%%$placeholder%%", $value, $frontpage_content);

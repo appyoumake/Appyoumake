@@ -1,10 +1,14 @@
-/** 
- * API funksjoner som er tilgjengelige for runtime
- * @author Arild Bergh (FFI) - rewrite/implementation of all functionality
- * @author Morten Krane (Snapper) - first version
- * @copyright FFI.no
- */
+/*******************************************************************************************************************************
+@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
+@license Proprietary and confidential
+@author Morten Krane (Snapper) - first version 
+@author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no) rewrite/implementation of all functionality
+@author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no) additional functionality
 
+Unauthorized copying of this file, via any medium is strictly prohibited 
+
+For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+*******************************************************************************************************************************/
 
 /**
 Core functionality for the component API, all features here are local
@@ -253,6 +257,12 @@ Mlab_api.prototype = {
     },
 
     
+/**
+ * Object that deals with all database related activity. 
+ * Internally it has code for storing data using HTML5 we storage, 
+ * all functions check to see if a storage plugin is loaded, if so it will call the matching function in the plugin to store data remotely.
+ * @type object
+ */
     db: {
 
 /* Pointer to main mlab object */
@@ -730,7 +740,7 @@ Mlab_api.prototype = {
             switch (move_to) {
                 case 0:
                 case "index":
-                    filename = "index.html";
+                    filename = "000.html";
                     new_location = 0;
                     break;
 
@@ -851,12 +861,12 @@ Mlab_api.prototype = {
             var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
             
             components.each( function() {
-                var device_width = $('[data-role="page"]').first().innerWidth();
+                var parent_width = $(this).parents('[role="main"]').first().width();
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
                 
-                var w = (device_width * times);
+                var w = (parent_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
                 $(this).css( {"width": w + "px", "height": h + "px"} );
 
@@ -912,11 +922,9 @@ if (typeof mlab == "undefined") {
 }
 
 
-/*$( document ).on( "mobileinit" , function () {
-    console.log("EVENT: mobileinit");
-    $.mobile.ignoreContentEnabled = true;
-});*/
-  
+/**
+ * Function called when document is ready, prepares the jQuery mobile callbacks, initialises diaplsy and database functions
+ */  
 $(document).ready(function() {
     
     console.log("EVENT: ready");

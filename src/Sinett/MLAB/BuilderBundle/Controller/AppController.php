@@ -910,7 +910,7 @@ class AppController extends Controller
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
 
-        if (!isset($page_num) || $page_num < 0) {
+        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
             return new JsonResponse(array(
     					'result' => 'error',
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
@@ -926,7 +926,7 @@ class AppController extends Controller
         $temp_data = $request->request->all();
         $html = $temp_data["html"];
         $title = $temp_data["title"];
-        $res = $file_mgmt->savePage($app, $page_num, $title, $html);
+        $res = $file_mgmt->savePage($app, intval($page_num), $title, $html);
         if ($res === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
@@ -1033,13 +1033,12 @@ class AppController extends Controller
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
-        if (!isset($page_num) || $page_num < 0) {
+        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
             return new JsonResponse(array(
     					'result' => 'error',
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
-
-    	
+        
 //create the name of the file to create
 	    $file_mgmt = $this->get('file_management');
         $new_page_num = $file_mgmt->copyPage($app, $page_num);
@@ -1076,12 +1075,11 @@ class AppController extends Controller
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
-        if (!isset($page_num) || $page_num < 0) {
+        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
             return new JsonResponse(array(
     					'result' => 'error',
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
-        
     	
 	    $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
@@ -1244,7 +1242,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         foreach($request->files as $uploadedFile) {
             $width = $height = $type = $attr = null;
             $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
-            $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
+            
+//replace "european" characters with plain ASCII 7 bit characters
+			$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
+            $f_name = $temp_f_name . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
+//OLD             $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
             $f_ext = $uploadedFile->guessExtension();
             $f_mime = $uploadedFile->getMimeType();
             
