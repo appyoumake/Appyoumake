@@ -353,7 +353,7 @@ Mlab_dt_management.prototype = {
     Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    regular_page_process  : function (page, page_num) {
+    regular_page_process: function (page, page_num) {
         var comp_id, temp_comp, temp_link;
         var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
