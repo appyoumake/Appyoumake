@@ -719,12 +719,12 @@ Mlab_api.prototype = {
  * (added by arild)
  */
     navigation: {
-        current_page: 0,
-        max_pages: 0,
+        current_page_index: 0,
+        page_list: 0,
         self: this,
         
-        initialise: function (app_start_page, app_max_pages) {
-            this.max_pages = app_max_pages;
+        initialise: function (app_start_page, app_page_list) {
+            this.page_list = app_page_list;
             this.pageDisplay(app_start_page);
         },
 /**
@@ -738,57 +738,52 @@ Mlab_api.prototype = {
             var filename = "";
             var new_location = 0;
             switch (move_to) {
-                case 0:
-                case "index":
+                case "first" : //000 is ALWAYS the first page, it is the content of index.html and we do not allow the user to move or delete the index.html page
                     filename = "000.html";
-                    new_location = 0;
-                    break;
-
-                case "first" :
-                    filename = "001.html";
-                    new_location = 1;
+                    this.current_page_index = 0;
                     break;
 
                 case "last" :
-                    filename = ("000" + this.max_pages).slice(-3) + ".html";
-                    new_location = this.max_pages;
+                    filename = ("000" + this.page_list[this.page_list.length -1]).slice(-3) + ".html";
+                    this.current_page_index = this.page_list.length -1;
                     break;
 
                 case "next" :
-                    if (this.current_page >= this.max_pages) {
-                        return this.current_page;
+                    if (this.current_page_index >= (this.page_list.length -1)) {
+                        this.current_page_index = (this.page_list.length -1);
+                        return this.current_page_index;
                     }
-                    this.current_page++;
-                    filename = ("000" + this.current_page).slice(-3) + ".html";
-                    new_location = this.current_page;
+                    this.current_page_index++;
+                    filename = ("000" + this.page_list[this.current_page_index]).slice(-3) + ".html";
                     break;
 
                 case "previous" :
-                    if (this.current_page === 0 || this.current_page === "index") {
-                        return this.current_page;
+                    if (this.current_page_index < 1) {
+                        this.current_page_index = 0;
+                        return this.current_page_index;
                     }
-                    this.current_page--;
-                    if (this.current_page < 0) {
-                        this.current_page = 0;
+                    this.current_page_index--;
+                    if (this.current_page_index < 0) {
+                        this.current_page_index = 0;
                     }
-                    filename = ("000" + this.current_page).slice(-3) + ".html";
-                    new_location = this.current_page;
+                    filename = ("000" + this.page_list[this.current_page_index]).slice(-3) + ".html";
                     break;
 
 //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {
-                        return this.current_page;
+                        return this.current_page_index;
                     }
                     if (move_to < 0 || move_to > this.max_pages) {
-                        return this.current_page;
+                        return this.current_page_index;
                     }
                     filename = ("000" + move_to).slice(-3) + ".html";
                     new_location = move_to;
                     break;
             }
-
+            
+//have calculated the file name, now we need to try to load it
 //Adds a differens between swipe and click
             if (swipe){
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
@@ -796,9 +791,8 @@ Mlab_api.prototype = {
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
             }
             
-//have calculated the file name, now we need to try to load it
-            this.current_page = new_location;
-            return this.current_page;
+
+            return this.current_page_index;
         },
         
     },

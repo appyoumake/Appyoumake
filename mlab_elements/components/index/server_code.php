@@ -21,7 +21,7 @@ class mlab_ct_index {
      * @param type $page
      * @return int|string
      */
-    private function findChapterHeading($page, $def_title) {
+    private function findChapterHeading($page, $page_id, $def_title) {
         $page_info = array();
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
@@ -56,6 +56,8 @@ class mlab_ct_index {
             $page_info["title"] = $def_title;
         }
         
+        $page_info["page_id"] = $page_id;
+        
         return $page_info;
     }
 /**
@@ -72,7 +74,7 @@ class mlab_ct_index {
         
 //first process index.html file. We check to see if this starts a new chapter through the chapter component, 
 //then we add the page title to the chapter element in the index array. 0 = no chapter specified
-        $index[] = $this->findChapterHeading("$app_path/index.html", "Front page");
+        $index[] = $this->findChapterHeading("$app_path/index.html", 0, "Front page");
         
 /*
  * now we process all the other files in the app
@@ -81,9 +83,8 @@ class mlab_ct_index {
  * 2 - Extract page title
  * 3 - Build multi-dim array which is [chapter]{[page|another chapter]}{[page|another chapter]}[page]
  */
-        $files = glob ( $app_path . "/???.html" );
-        foreach ($files as $file) {
-            $index[] = $this->findChapterHeading($file, "Page " . intval(basename($file)));
+        foreach ($app_config["page_order"] as $file) {
+            $index[] = $this->findChapterHeading($app_path . $file, intval($file), "Page " . intval($file));
         }
         
 //now we generate the index, we always add app title as top level and link to first page 
@@ -95,7 +96,7 @@ class mlab_ct_index {
             $curr_level = false;
             
 //loop through all pages, insert new details tag for each chapter, can be neted.
-            foreach ($index as $page_num => $chapter_info) {
+            foreach ($index as $i => $chapter_info) {
                 if ($chapter_info["chapter"]) { 
                     for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened details tag
                         $html .= "</details>\n";
@@ -105,7 +106,7 @@ class mlab_ct_index {
                     $html .= "<details>\n";
                     $html .= "    <summary>" . trim($chapter_info["chapter"]) . "</summary>\n";
                 }
-                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
+                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
             }
             $html .= "</div>";
         } else {
@@ -113,7 +114,7 @@ class mlab_ct_index {
             $curr_level = false;
             
 //loop through all pages, insert new details tag for each chapter, can be neted.
-            foreach ($index as $page_num => $chapter_info) {
+            foreach ($index as $i => $chapter_info) {
                 if ($chapter_info["chapter"]) {
 //close container for page names if detailed index
                     if ($style == "detailed") {
@@ -124,7 +125,7 @@ class mlab_ct_index {
                     }
                     $curr_chapter = $chapter_info["chapter"];
                     $curr_level = $chapter_info["level"];
-                    $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>" . $chapter_info["chapter"] . "</a>\n";
+                    $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"]  . "); return false;'>" . $chapter_info["chapter"] . "</a>\n";
 //prepare container for page names if detailed index
                     if ($style == "detailed") {
                         $html .= "    <ul>\n";
@@ -132,7 +133,7 @@ class mlab_ct_index {
                 }
 //adds page names for detailed index
                 if ($style == "detailed") {
-                    $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $page_num . "); return false;'>" . $chapter_info["title"] . "</a></li>\n";
+                    $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></li>\n";
                 }
             }
 

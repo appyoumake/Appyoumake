@@ -22,10 +22,26 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 //one example is a class to 
 class CustomPreProcessing {
     
-    public function getnumberofpages($config, $app, $app_path) {
-   		$pages = glob ( $app_path . "/???.html" );
-   		$page_num = intval(basename(array_pop($pages)));
-        return $page_num;
+//gets total number of pages in an app
+    public function getnumberofpages($file_mgmt, $config, $app, $app_path) {
+   		$pages = $file_mgmt->getAppConfigValue($app, "page_order");
+        if (!$pages) {
+            $pages = glob( $app_path . "/???.html" );
+        }
+        return sizeof($pages); //when we get the complete list of pages (see getpageorder() below) we add page 0 (index) hence this is correct return value, normally we need to reduce by one
+    }
+    
+//returns list of pages in the order they are to be displayed
+    public function getpageorder($file_mgmt, $config, $app, $app_path) {
+        
+        $pages = $file_mgmt->getAppConfigValue($app, "page_order");
+        if (!$pages) {
+            $pages = array_map("basename", glob( $app_path . "/???.html" ));
+        }
+        $page_order = array_map(function($val){return intval($val); }, $pages);
+        
+        array_unshift($page_order, 0);
+        return json_encode($page_order);
     }
     
 }
@@ -1270,7 +1286,7 @@ class FileManagement {
                 if (method_exists($process, $func_name)) {
                     
 //here we run the function and obtain the result
-                    $value = call_user_func_array(array($process, $func_name), array($this->config, $app, $app_path));
+                    $value = call_user_func_array(array($process, $func_name), array($this, $this->config, $app, $app_path));
                     
 //to avoid javascript errors we set empty values to 0
 //(for instance code may be: var x = %%MLAB_CT_FUNC_GET_NUM%%; , with an empty value this would cause all javascript below to fail at runtime
@@ -1290,7 +1306,7 @@ class FileManagement {
 
 //loop through all pages to process the components that have a matching onCompile function
 //OLD         $pages = glob ( $app_path . "???.html" );
-        $func = function($val){ return $app_path . $val; };
+        $func = function($val) use ($app_path) { return $app_path . $val; };
         $pages = $this->getAppConfigValue($app, "page_order");
         if ($pages) {
             $pages = array_map($func, $pages);
@@ -1401,7 +1417,7 @@ class FileManagement {
         date_default_timezone_set('UTC');
 
         $app_vars = array(
-            "num_pages" => $process->getnumberofpages($this->config, $app, $app_path),
+            "num_pages" => $process->getnumberofpages($this, $this->config, $app, $app_path),
             "app_title" => $metatags["mlab:app_uid"],
             "app_version" => $app->getActiveVersion(),
             "app_tags" => $app->getTags(),
