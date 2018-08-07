@@ -1191,6 +1191,20 @@ class FileManagement {
         $cached_app_path = substr_replace($app_path, "_cache/", -1); 
         $app_checksum = $this->getAppMD5($app, $this->config['filenames']["app_config"]);
         
+//prepare list of pages here, this also updates the conf.json so we sen through the correct app config to any external functions
+//OLD         $pages = glob ( $app_path . "???.html" );
+        $pages = $this->getAppConfigValue($app, "page_order");
+        if (!$pages) {
+            $pages = array_map("basename", glob( $app_path . "/???.html" ));
+            $this->updateAppConfigFile($app, array("page_order" => $pages));
+        }
+//add app path to all paths, we never store paths in config file.
+        $func = function($val) use ($app_path) { return $app_path . $val; };
+        $pages = array_map($func, $pages);        
+        
+        array_unshift($pages, $cached_app_path . "000.html"); //fake placeholder to make loop below work neater
+        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
+        
 // check to see if this has already been processed, if so just return
         if (file_exists($path_app_config)) {
             $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
@@ -1305,17 +1319,7 @@ class FileManagement {
         }
 
 //loop through all pages to process the components that have a matching onCompile function
-//OLD         $pages = glob ( $app_path . "???.html" );
-        $func = function($val) use ($app_path) { return $app_path . $val; };
-        $pages = $this->getAppConfigValue($app, "page_order");
-        if ($pages) {
-            $pages = array_map($func, $pages);
-        } else if (!$pages) {
-            $pages = glob( $app_path . "/???.html" );
-        }
-        
-        array_unshift($pages, $cached_app_path . "000.html"); //fake placeholder to make loop below work neater
-        array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
+
 
         foreach ($pages as $page) {
             

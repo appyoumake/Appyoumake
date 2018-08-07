@@ -668,11 +668,13 @@ controller.help.msg.file.notfound: Component help file not found
 
 mlab.dt.api.js.getLink.heading: Add link
 mlab.dt.api.js.getLink.app_page: I want to link to a page in my app
+mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it. Enter title of page below.
 mlab.dt.api.js.getLink.url: I want to link to an external website
 mlab.dt.api.js.getLink.ok: OK
 mlab.dt.api.js.getLink.cancel: Cancel
 mlab.dt.api.js.getLink.alert_url_wrong: The URL you entered is not a valid URL, please check and try again
 mlab.dt.api.js.getLink.alert_no_page: You must select a page to link to
+mlab.dt.api.js.getLink.alert_no_title: You must enter a title for the new page to link to
 mlab.dt.api.js.getLink.alert_choose_type: Choose a link type to add
 mlab.dt.api.js.getLink.no_selection: Please select som text inside the current component to add link to
 

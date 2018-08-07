@@ -668,11 +668,13 @@ controller.help.msg.file.notfound: Komponent hjelpefil ikke funnet
 
 mlab.dt.api.js.getLink.heading: Legg til link
 mlab.dt.api.js.getLink.app_page: Jeg ønsker å linke til en side i min app
+mlab.dt.api.js.getLink.new_page: Jeg ønsker å lage en ny side og linke til denne. Skriv inn tittel på ny side nedenfor.
 mlab.dt.api.js.getLink.url: Jeg ønsker å linke til en ekstern nettside
 mlab.dt.api.js.getLink.ok: OK
 mlab.dt.api.js.getLink.cancel: Avbryt
 mlab.dt.api.js.getLink.alert_url_wrong: Nettadressen du skrev inn er ikke en gyldig URL, sjekk og prøv igjen
 mlab.dt.api.js.getLink.alert_no_page: Du må velge en side å linke til
+mlab.dt.api.js.getLink.alert_no_title: Du må legge inn en tittel for den nye siden du vil linke til
 mlab.dt.api.js.getLink.alert_choose_type: Velg en link type du vil legge til
 mlab.dt.api.js.getLink.no_selection: Vennligst velg noe tekst i den gjeldende komponenten som linken skal legges til
 

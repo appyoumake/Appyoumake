@@ -859,6 +859,33 @@ Mlab_dt_management.prototype = {
      },
 
 /**
+* Creates a new file on the server, does NOT open it but calls a callback function with the id of the page
+* title string, title of page
+* cb: callback function
+*/
+    page_new_in_background : function (title, cb) {
+        $("body").css("cursor", "wait");
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
+        var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
+        url = url.replace("_UID_", this.parent.uid);
+
+        var that = this;
+        $.post( url, {}, function( data ) {
+            if (data.result == "success") {
+//update staus
+                that.parent.utils.update_status("completed");
+                that.parent.flag_dirty = true;
+            } else {
+                that.parent.utils.update_status("temporary", data.msg, false);
+            }
+            cb(data);
+            $("body").css("cursor", "default");
+            that.parent.utils.timer_start();
+
+        });
+     },
+
+/**
  * Creates a new file on the server and opens it
  */
     page_copy : function (page_num) {

@@ -19,12 +19,18 @@
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
         $(el).find("figcaption").attr("contenteditable", "true");
+        $(el).find("p").attr("contenteditable", "true");
     };
 
 	this.onSave = function (el) {
         $(el).find("figcaption").removeAttr("contenteditable");
+        $(el).find("p").removeAttr("contenteditable");
+        
         var temp_html = el.outerHTML;
+
         $(el).find("figcaption").attr("contenteditable", "true");
+        $(el).find("p").attr("contenteditable", "true");
+        
         return temp_html;
     };
     
@@ -125,3 +131,43 @@
             $(el).find('figcaption').text(this.api.getLocaleComponentMessage(this.config.name, ["messages", "caption"]));
         }
     }
+    
+    this.custom_add_link = function (el, event) {
+        this.api.setLink(el, event);
+    };
+
+    this.custom_remove_link = function (el) {
+        this.api.removeLink();
+    };
+    
+    this.custom_bold = function (el) {
+		document.execCommand('bold', null, null);
+    };
+
+    this.custom_italic = function (el) {
+		document.execCommand('italic', null, null);
+    };
+
+    this.toggle = function (el, type, tag, after, html) {
+        var text = $(el).find(tag);
+        if (text.length > 0) {
+            if (confirm("Are you sure you want to turn off the " + type + " on this image? The content of the " + type + " will be lost")) {
+                text.remove();
+            }
+        } else {
+            $(el).find(after).after(html);
+            $(el).find(tag).attr("contenteditable", "true");
+        }
+    }
+
+//adds or removes the para html element, see html definition in conf.yml for the corect HTML to use
+    this.custom_toggle_text = function (el) {
+        this.toggle(el, "text", "p", "figure", "<p class='mc_text mc_display mc_medium'>Your text goes here</p>");
+    };
+
+
+//adds or removes the para html element, see html definition in conf.yml for the corect HTML to use
+    this.custom_toggle_caption = function (el) {
+        this.toggle(el, "caption", "figcaption", "img", "<figcaption class='mc_text mc_display mc_figure_text' contenteditable='true'>Caption</figcaption>");
+    };
+    

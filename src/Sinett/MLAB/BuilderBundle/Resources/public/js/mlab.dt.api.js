@@ -900,6 +900,14 @@ Mlab_dt_api.prototype = {
         return false;
     },
 
+    update_newpage_link: function (data) {
+        if (data.result == "success") {
+            $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + data.new_page_num + '); return false;');
+        } else {
+            $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents().unwrap();
+        }
+    },
+
 /**
  * 
  * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
@@ -929,6 +937,15 @@ Mlab_dt_api.prototype = {
                 $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
+                return false;
+            }
+            
+        } else if (link_type == "newpage") {
+            var page_title = $("#mlab_dt_link_app_new_page").val();
+            if (page_title) {
+                mlab.dt.management.page_new_in_background(page_title, this.update_newpage_link);
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_no_title"]);
                 return false;
             }
             
@@ -969,6 +986,8 @@ Mlab_dt_api.prototype = {
             '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + opt + '</select><br>' + 
             '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
             '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
+            '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label><br>' + 
+            '<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input">' + '<br>' + 
           '</div>');
   
         content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick=" if (that.updateLink()) {mlab.dt.api.closeAllPropertyDialogs();}">' + _tr["mlab.dt.api.js.getLink.ok"] + '</button>');
