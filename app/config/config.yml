@@ -235,9 +235,23 @@ parameters:
             content_id: mlab_editable_area
 #            html_header: <!DOCTYPE html>\n<html>\n<head><title>%%TITLE%%</title></head>\n<body>\n
 #            html_footer: \n</body></html>
-            html_header: <!DOCTYPE html>\n<html>\n<head>\n<title>%%TITLE%%</title>\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n</head>\n<body>\n<div data-role="page" data-title="%%TITLE%%">\n<div class="mlab_content_wrapper">\n<div role="main" class="mlab_main_body_content">\n</div>\n</div>\n</div>
-            html_footer: \n</body></html>
-
+            html_header: |
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>%%TITLE%%</title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                    </head>
+                    <body>
+                        <div data-role="page" data-title="%%TITLE%%">
+                        <div class="mlab_content_wrapper">
+                        <div role="main" class="mlab_main_body_content">
+                        </div>
+                        </div>
+                        </div>
+            html_footer: |
+                </body>
+                </html>
             
         replace_in_filenames: { a: '/[ÂÃÄÀÁÅàáâãäå]/', ae: '/[Ææ]/', c: '/[Çç]/', e: '/[ÈÉÊËèéêë]/', i: '/[ÌÍÎÏìíîï]/', o: '/[ÒÓÔÕÖØòóôõöø]/', n: '/[Ññ]/', u: '/[ÙÚÛÜùúûü]/', y: '/[Ýýÿ]/', _: '/[^A-Za-z0-9]/' }    
 

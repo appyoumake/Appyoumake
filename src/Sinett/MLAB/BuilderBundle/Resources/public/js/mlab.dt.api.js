@@ -903,6 +903,8 @@ Mlab_dt_api.prototype = {
     update_newpage_link: function (data) {
         if (data.result == "success") {
             $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + data.new_page_num + '); return false;');
+            mlab.dt.app.page_names = data.page_names;
+            mlab.dt.management.app_update_gui_metadata(true);
         } else {
             $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents().unwrap();
         }

@@ -654,15 +654,22 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function newPage($app) {
+    public function newPage($app, $title) {
         
 //create the name of the file to create
 	    $new_page = $this->getNewPageNum($app);
         if ($new_page["new_page_num"] === false) {
             return false;
         }
+        
+//if title is specified we store the page WITH content, otherwise it is just an emopty placeholder that is filled in with data from front end when user saves it next time.
+        if ($title) {
+            $content = str_replace("%TITLE%", $title, $this->config["app"]["html_header"]) . $this->config["app"]["html_footer"];
+        } else {
+            $content = "";
+        }
 
-        if (file_put_contents ($new_page["new_page_path"], "") !== false) {
+        if (file_put_contents ($new_page["new_page_path"], $content) !== false) {
 //update order with the new page
             $current_order = $this->getAppConfigValue($app, "page_order");
             if (!$current_order) {

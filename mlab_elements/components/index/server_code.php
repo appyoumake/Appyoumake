@@ -34,7 +34,9 @@ class mlab_ct_index {
         if ($chapter->length > 0 ) {
             $page_info["chapter"] = $chapter->item(0)->firstChild->textContent;
             foreach ($chapter[0]->childNodes as $child_element) {
-                if (get_class($child_element) == "DOMElement" && $child_element->getAttribute("class") == "mlab_storage") {
+                $php_class = get_class($child_element);
+                $class_pos = strpos($child_element->getAttribute("class"), "mlab_storage");
+                if ($php_class == "DOMElement" && $class_pos !== false) {
                     $vars = json_decode($child_element->textContent, true);
                     if (isset($vars["level"])) {
                         $page_info["level"] = $vars["level"];

@@ -867,7 +867,7 @@ Mlab_dt_management.prototype = {
         $("body").css("cursor", "wait");
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
         var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
-        url = url.replace("_UID_", this.parent.uid);
+        url = url.replace("_UID_", this.parent.uid) + "/0/" + encodeURI(title);
 
         var that = this;
         $.post( url, {}, function( data ) {

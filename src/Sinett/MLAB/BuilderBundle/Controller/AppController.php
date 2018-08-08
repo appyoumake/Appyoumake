@@ -981,7 +981,7 @@ class AppController extends Controller
      * the app it will not create two with the same name
      * @param type $app_id
      */
-    public function newPageAction (Request $request, $app_id, $uid) {
+    public function newPageAction (Request $request, $app_id, $uid, $redirect_to_open, $title) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -998,7 +998,7 @@ class AppController extends Controller
 //copy the template file to the app
 // not required anymore        $title = $request->request->all()["title"];
         $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app);
+        $new_page_num = $file_mgmt->newPage($app, $title);
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
@@ -1011,7 +1011,14 @@ class AppController extends Controller
          
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
 */
-    	return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
+        if ($redirect_to_open) {
+            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
+        } else {
+            return new JsonResponse(array(
+                'result' => 'success',
+                'new_page_num' => $new_page_num,
+                "page_names" => $file_mgmt->getPageIdAndTitles($app)));
+        }
     }
 
     /**
