@@ -623,6 +623,7 @@ made smaler than the min width */
     outline: 1px dotted ;
 }
 
+/*TODO: Fix this so on top of fixed elements such as div.mlab_permanent_top_menu */
 .mlab_zindex_regular_tooltip {
     z-index: 400 !important;
 }

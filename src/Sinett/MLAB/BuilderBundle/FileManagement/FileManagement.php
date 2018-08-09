@@ -356,11 +356,83 @@ class FileManagement {
 		return $component;
 	}
     
+/**
+ * Helper function that will copy across all required files for the current component + any components it is inherited from
+ */
+    public function copyRequiredFiles($comp_config, $path_app, $path_components_root) {
+        $yaml = new Parser();
+        $required_file_list = array();
+        $temp_comp = $comp_config["name"];
+
+//first compile a list of all required files, we do this by recursively following the "inherit" setting and 
+//add ing the required/runtime files for each step in the chain         
+        while ($temp_comp) {
+            $file_name = "{$path_components_root}{$temp_comp}/conf.yml";
+            if (file_exists($file_name)) {
+                $temp_config = $yaml->parse(@file_get_contents($file_name));
+                if (isset($temp_config["required_libs"]) && isset($temp_config["required_libs"]["runtime"])) {
+                    $required_file_list[$temp_comp] = $temp_config["required_libs"]["runtime"];
+                }
+                $temp_comp = (array_key_exists("inherit", $temp_config) ? $temp_config["inherit"] : false);
+            } else {
+                $temp_comp = false;
+            }
+        }
+        
+//now loop through the list of dependencies
+        foreach ($required_file_list as $component => $dependencies) {
+            $path_component = "{$path_components_root}{$component}/";
+            foreach ($dependencies as $dependency) {
+                $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
+                if ($filetype == "") {
+                    $filetype = "js";
+                } 
+
+//if this is a URL we just add it to the include file, no need to copy the file
+                if(!filter_var($dependency, FILTER_VALIDATE_URL)) {
+                    if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app/$filetype/$dependency" )) {
+//if we fail we bail
+                        if (!@copy( "$path_component/$filetype/$dependency", "$path_app/$filetype/{$component}_{$dependency}" )) {
+                            return array(
+                                'result' => 'failure',
+                                'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id));
+                        }
+                    }
+                }
+
+//we need to update the include files of the app
+                if (file_exists("$path_app/$filetype/include.$filetype")) {
+                    $include_items = file("$path_app/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                } else {
+                    $include_items = array();
+                }
+
+                if ($filetype == "css") {
+                    if (!in_array("@import url('../css/{$component}_{$dependency}');", $include_items)) {
+                        $include_items[] = "@import url('../css/{$component}_{$dependency}');";
+                    }
+                } else {
+                    if (substr($dependency, 0, 4) == "http") {
+                        if (!in_array("$.getScript('$dependency');", $include_items)) {
+                            $include_items[] = "$.getScript('$dependency');";
+                        }
+                    } else {
+                        if (!in_array("$.getScript('js/{$component}_{$dependency}');", $include_items)) {
+                            $include_items[] = "$.getScript('js/{$component}_{$dependency}');";
+                        }
+                    }
+                }
+                file_put_contents("$path_app/$filetype/include.$filetype", implode("\n", $include_items));
+            } //end inner loop to copy and add runtime scripts 
+        } //end outer component loop
+
+        
+    }
+    
     public function componentAdded($app_id, $app, $comp_id) {
         $path_component = $this->config['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($this->config['paths']['app']);
         $path_app_js = $path_app . "js/";
-        $path_app_config = $path_app . $this->config['filenames']["app_config"];
         
 //check if path to component and app exists
         if ( is_dir($path_component) && is_dir($path_app) ) {
@@ -396,70 +468,16 @@ class FileManagement {
 
                     $new_plugins = $comp_config["plugins"];
 
-//TODO: replace these with getAppConfigValue & updateAppConfigFile
-                    if (!file_exists( $path_app_config)) {
-                        file_put_contents($path_app_config, json_encode(array("title" => $app->getName(), "plugins" => $new_plugins)));
-                    } else {
-                        $tmp_existing_config = json_decode(file_get_contents($path_app_config), true);
-                        if (array_key_exists("plugins", $tmp_existing_config)) {
-                            $tmp_existing_config["plugins"] = array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]));
-                        } else {
-                            $tmp_existing_config["plugins"] = $new_plugins;
-                        }
-                        file_put_contents($path_app_config, json_encode($tmp_existing_config));;
+//update config file for app with the list of plugins, Used when we compile the app using Cordova
+                    $tmp_existing_config = $this->getAppConfigValue($app, "plugins");
+                    if (!$tmp_existing_config) {
+                        $tmp_existing_config = array();
                     }
+                    $this->updateAppConfigFile($app, array("title" => $app->getName(), "plugins" => array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]))));
                 }
 
 //2.5: copy across any runtime dependencies, can be JS or CSS
-                if (isset($comp_config["required_libs"])) {
-                    if (isset($comp_config["required_libs"]["runtime"])) {
-
-                        foreach ($comp_config["required_libs"]["runtime"] as $dependency) {
-                            $filetype = pathinfo($dependency, PATHINFO_EXTENSION);
-                            if ($filetype == "") {
-                                $filetype = "js";
-                            } 
-
-//if this is a URL we just add it to the include file, no need to copy the file
-                            if(!filter_var($dependency, FILTER_VALIDATE_URL)) {
-                                if (file_exists( "$path_component/$filetype/$dependency" ) && !file_exists( "$path_app/$filetype/$dependency" )) {
-//if we fail we bail
-                                    if (!@copy( "$path_component/$filetype/$dependency", "$path_app/$filetype/$dependency" )) {
-                                        return array(
-                                            'result' => 'failure',
-                                            'msg' => sprintf("Unable to copy dependency file %s for this component: %s", $dependency , $comp_id));
-                                    } 
-                                }
-                            }
-
-//we need to update the include files of the app
-                            if (file_exists("$path_app/$filetype/include.$filetype")) {
-                                $include_items = file("$path_app/$filetype/include.$filetype", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                            } else {
-                                $include_items = array();
-                            }
-
-                            if ($filetype == "css") {
-                                if (!in_array("@import url('../css/$dependency');", $include_items)) {
-                                    $include_items[] = "@import url('../css/$dependency');";
-                                }
-                            } else {
-                                if (substr($dependency, 0, 4) == "http") {
-                                    if (!in_array("$.getScript('$dependency');", $include_items)) {
-                                        $include_items[] = "$.getScript('$dependency');";
-                                    }
-                                } else {
-                                    if (!in_array("$.getScript('js/$dependency');", $include_items)) {
-                                        $include_items[] = "$.getScript('js/$dependency');";
-                                    }
-                                }
-                            }
-                            file_put_contents("$path_app/$filetype/include.$filetype", implode("\n", $include_items));
-
-                        } //end loop for runtime scripts to copy and add
-
-                    } // end if runtime libs defined
-                }// end required libs handling
+                $this->copyRequiredFiles($comp_config, $path_app, $this->config['paths']['component']);
 
             } //end conf file exists
 
