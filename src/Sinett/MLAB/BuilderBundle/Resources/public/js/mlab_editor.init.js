@@ -174,9 +174,9 @@ $(document).ready(function() {
                     var comp_type;
 
 //loop to clean up components so that there are no duplicate order_by entries and also generate JS code from text in code_dt.js file
-                    var temp_comp_order = array();
+                    var temp_comp_order = [];
                     for (comp_id in mlab.dt.components) {
-                        temp_comp_order.push(mlab.dt.components[comp_id].order_by);
+                        temp_comp_order.push(parseInt(mlab.dt.components[comp_id].order_by));
 //we need to attach the code_dt.js content to an object so we can use it as JS code
                         if (mlab.dt.components[comp_id].code !== false) {
                             eval("mlab.dt.components['" + comp_id + "'].code = new function() { " + mlab.dt.components[comp_id].code + "};");
@@ -211,7 +211,9 @@ $(document).ready(function() {
                                 comp_type = "component";
                             }
                             
-                            components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + comp_id + "' " +
+                            var pos = temp_comp_order.indexOf(parseInt(c.order_by));
+                            delete temp_comp_order[pos];
+                            components_html[c.conf.category][pos] = "<div data-mlab-type='" + comp_id + "' " +
                                         "onclick='mlab.dt.design." + comp_type + "_add(\"" + comp_id + "\");' " +
                                         "title='" + tt + "' " +
                                         "class='mlab_button_components' " +
