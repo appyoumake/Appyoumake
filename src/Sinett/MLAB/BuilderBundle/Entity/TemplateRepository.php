@@ -32,14 +32,17 @@ class TemplateRepository extends EntityRepository
 		foreach ($groups as $group) {
 			$temp_templates = $group->getTemplates();
 			foreach ($temp_templates as $temp_template) {
+//we have used a duplicate access record with a new field 
+//(long fricking story, but basically due to having spent far too lon converting another table from koin table to join+additional data table)
+//if there is a record for the current user (as defined in the list of groups we receive) AND access > 0, then they can use this template
+//in the admin pages the value of the field (1 = regular user, 3 = admin only) has different meaning, if 3 the admin user can allow access by setting to 1
+//see https://github.com/Sinettlab/MLAB/issues/305                
                 $access_record = $repository->findOneBy(array('template_id' => $temp_template->getId(), 'group_id' => $group->getId()));
                 if ($access_record) {
                     $access_state = $access_record->getAccessState();
-                } else {
-                    $access_state = 0;
-                }
-                if ( ($access_state & 2) > 0) {
-                    $templates[$temp_template->getId()] = $temp_template->getArray();
+                    if ($access_state > 0) {
+                        $templates[$temp_template->getId()] = $temp_template->getArray();
+                    }
                 }
 			}
 		}

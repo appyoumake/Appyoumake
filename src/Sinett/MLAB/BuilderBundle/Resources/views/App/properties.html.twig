@@ -548,9 +548,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.descriptionLab{% endtrans %}:</span> " + $('#form_description').val() +
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.keywords{% endtrans %}:</span> " + $('#form_keywords').val() + 
                                       "<br><span class='mlab_app_new_summary'>{% trans %}builder.new.app.submit.category{% endtrans %}:</span> " + 
-                                      $('#mlab_tag_1 option:selected').html() + " - " +
-                                      $('#mlab_tag_2 option:selected').html() + " - " +
-                                      $('#mlab_tag_3 option:selected').html() + "</div>" +
+                                      $('#mlab_tag_1 option:selected').html() +
+                                      ($('#mlab_tag_2 option:selected').html() ? " - " + $('#mlab_tag_2 option:selected').html() : "") +
+                                      ($('#mlab_tag_3 option:selected').html() ? " - " + $('#mlab_tag_3 option:selected').html() : "") + "</div>" +
                                       "<div class='hidden mlab_splash'><img id='mlab_splash_preview' width='128' height='128'><span class='hidden mlab_app_new_summary'>{% trans %}builder.new.app.submit.splashScreen{% endtrans %}</span></div>" + 
                                       "</fieldset>" +
                                       "<p>{% trans %}builder.new.app.submit.description{% endtrans %}</p>";

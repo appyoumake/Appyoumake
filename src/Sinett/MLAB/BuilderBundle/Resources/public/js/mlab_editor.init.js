@@ -173,32 +173,36 @@ $(document).ready(function() {
                     var additional_html = "";
                     var comp_type;
 
-                    for (type in mlab.dt.components) {
+//loop to clean up components so that there are no duplicate order_by entries and also generate JS code from text in code_dt.js file
+                    var temp_comp_order = array();
+                    for (comp_id in mlab.dt.components) {
+                        temp_comp_order.push(mlab.dt.components[comp_id].order_by);
 //we need to attach the code_dt.js content to an object so we can use it as JS code
-                        if (mlab.dt.components[type].code !== false) {
-                            eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].code + "};");
+                        if (mlab.dt.components[comp_id].code !== false) {
+                            eval("mlab.dt.components['" + comp_id + "'].code = new function() { " + mlab.dt.components[comp_id].code + "};");
                         }
                     }
+                    temp_comp_order.sort(function(a, b) {return a - b;});
 
 //now loop through all components and for those that inherit another we transfer properties
                     mlab.dt.utils.process_inheritance(mlab.dt.components);
 
 //second loop which is for displaying the tools loaded & prepared above in the editor page
-                    for (type in mlab.dt.components) {
+                    for (comp_id in mlab.dt.components) {
 //here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
-                        mlab.dt.components[type].code.config = mlab.dt.components[type].conf;
-                        var c = mlab.dt.components[type];
+                        mlab.dt.components[comp_id].code.config = mlab.dt.components[comp_id].conf;
+                        var c = mlab.dt.components[comp_id];
                         if (c.accessible && !(c.is_storage_plugin)) {
 
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
-                            var tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
-                            var tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
-                            var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
+                            var tt = mlab.dt.api.getLocaleComponentMessage(comp_id, ["tooltip"]);
+                            var tte = mlab.dt.api.getLocaleComponentMessage(comp_id, ["footer_tip"]);
+                            var eName = mlab.dt.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
 
 //the category setting in the conf.yml files
                             if (typeof components_html[c.conf.category] == "undefined") {
                                 components_html[c.conf.category] = [];
-                                category_translations[c.conf.category] = mlab.dt.api.getLocaleComponentMessage(type, ["category_name"]);
+                                category_translations[c.conf.category] = mlab.dt.api.getLocaleComponentMessage(comp_id, ["category_name"]);
                             }                                
 
                             if (c.is_feature) {
@@ -207,17 +211,17 @@ $(document).ready(function() {
                                 comp_type = "component";
                             }
                             
-                            components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
-                                        "onclick='mlab.dt.design." + comp_type + "_add(\"" + type + "\");' " +
+                            components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + comp_id + "' " +
+                                        "onclick='mlab.dt.design." + comp_type + "_add(\"" + comp_id + "\");' " +
                                         "title='" + tt + "' " +
                                         "class='mlab_button_components' " +
-                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
+                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + comp_id + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                     "</div>" + 
                                     "<div class='mlab_component_footer_tip'>" +
                                             tte +
                                      "</div>";
                         } else if (c.accessible && c.is_storage_plugin) {
-                            mlab.dt.storage_plugins[type] = eName;
+                            mlab.dt.storage_plugins[comp_id] = eName;
                         }
                     }
 
@@ -243,7 +247,7 @@ $(document).ready(function() {
 //now loop through all components and for those that inherit another we transfer properties
                     mlab.dt.utils.process_inheritance(mlab.dt.components);
 
-//finally we assign the API object to the component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
+//finally we assign the API object to the component, cannot do this earlier as it would create a loop to parents, etc 
 //when trying to merge properties in the previous code block
                     for (index in mlab.dt.components) {
                         if (typeof mlab.dt.components[index].code != "undefined" && mlab.dt.components[index].code !== false) {
