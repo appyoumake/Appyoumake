@@ -28,11 +28,11 @@ custom:
     italic:
         tooltip: { nb_NO: Legg til eller fjern kursiv for valgt tekst, en_GB: Add or remove italics for current selection, default: Add or remove italics for current selection }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMlJREFUeNpiYBgFmEAAiPcD8X0g/o8Fv4fKG9DC8vlolu2HOohmIADNQoKWMVFoIXKwbQDiD7S20B6JvZEeiYek4KTUhw5I7AvEBCelFvrTMzgZoPkNFpwGtLbMAMmy+6RoZKIg/8HAAXoE53kkHwYMyuxASZCiB+cHWls4oNlBgdaWOZCbHcgNUn+02oHm4D49s4MCWjOCgdZBOqClSwI9U+d/tLqQJMBMhJoEaOuMA038IRC/INVCRgJNQGIydiCpxRtdAUCAAQBE0kOkYsGxTAAAAABJRU5ErkJggg==
-        order: 2
+        order: 1
     scale_decrease:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAdRJREFUeNpiZACC/0DAQEPw4eNHBgF+fjCbEUSwsLPT1EIY+P3jBwMTAx0ByKcMMB+CMDXBhYsX/4uKi/9nZef4j2w+C07vf3nB8OXRUYZ/v74ysPCIM/CruBPtk4uXLjG4urkxfPgAjDsBfob3Hz7A5VDiEBTGIPDz3V2GRzuKgJZ9gStkF1JmkPPoY2Bi4yHJst27djGYmJnhj8On++pQLIM54v21dSRbpq+nh6IGw0KQwaDgxAa+vbiAIWZqbs7w8OFDoiwDhyalKe/ixUsMLm7uDB8/fiBoGVYLQXHFyiOB1ZdcEgZYDQH5EAQIWYY1SEFA2qkJI3GAHCKoFYQidujQIRQ+P78AuEQBRcvNBc5gmqggBRmuHLKU4TMwW/z58hLM55GzJhi8oGBtbmllqA+GOPbVqakMssCUjQywZgtSSg5QcCIHISgq7q2JhvNBFvIrmMOzBYoPWTk4SC4bBdDi6+2FRSj8T3d2Eo5DSgAoGlCCGc1CFB+ePXWaKEONzUyxxyHQcPQCg6hUSi5ADz6aWghKLN9eXKSfhYTKWapb+JGI4KTYwhdHuohOLFQpvEEWcUroA4NzLdF6KK4tYL4kFtC1ETUgFg7vdumAAIAAAwCk9TQwvCbCGgAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Skaler bildet ned med 10%, en_GB: Scale image down by 10%, default: Scale image down by 10% }
-        order: 3
+        order: 4
         newline: true
     scale_increase:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAXtJREFUeNpiYKAzYAQRFy9e+k8Py/T19RiZaG3J2XPnGD5//gzns1DbgpLSUobPX74wnD17Fi42c8YMBmMjIzCb6j708fFhuHXrFooYLw8PnE11C6UkJVGCEATU1NRoYyHIZ+mZmai+4+VF4bNQ2zKQ70CWzJw+neHZ8+cMy1esoH62wGYZcjBSNVsQaxlV4pBUyyiykBzLyLaQXMvgqdTYzJQsX/Lx8pFkGcVxSKplGPnw948fRGli5eDAKEHIs/DLC4YHm9IZ/v36wiCoFcwgZpZF9dqDCdXCl2DLQODLo6MoCkH8B5vSqGshK484AxMbpGTnkbNGUfjxzk6Gn+/uMnx7cZEiC1lQLZRgUA5ZCvYpu5AyXBzka5iPPwEtppqFYC8DfcguxIMi9hkpeD+jBTVFQYoMXhzpgsfn+2trUXxLVR/C4guEQalWwqYMHHc0SaUw8PbCIjANSiBP99XRLlvAfAfyGQxQ03eYqRRagtAS0LxdOuAAIMAAYTW6PTOxU0YAAAAASUVORK5CYII=
