@@ -87,11 +87,12 @@
  */
     this.custom_set_number_to_display = function (el, event) {
         
-//get number
-        var num = prompt("How many questions do you want to display at a time?")
-        mlab.dt.api.setVariable(el, "display_num_questions", num);
+//get number from user
+        var num = prompt("How many questions do you want to display at a time?");
+	if (parseInt(num) > 0) {
+	    mlab.dt.api.setVariable(el, "display_num_questions", num);
+	}
     };    
-    
     
     
 /**
