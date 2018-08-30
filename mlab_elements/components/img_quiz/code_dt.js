@@ -79,6 +79,20 @@
         
     };
     
+/**
+ * Simple function to ask how many questions to ask in each quiz.
+ * @param {type} el
+ * @param {type} event
+ * @returns {undefined}
+ */
+    this.custom_set_number_to_display = function (el, event) {
+        
+//get number
+        var num = prompt("How many questions do you want to display at a time?")
+        mlab.dt.api.setVariable(el, "display_num_questions", num);
+    };    
+    
+    
     
 /**
  * Function that will display one for button each answer that has been entered
