@@ -14,7 +14,7 @@
         function getRandomInts(num, max) {
           var ints = [];
           while (ints.length < num-1) {
-            var randNum = getRandomInt(0, max);
+            var randNum = getRandomInt(1, max); //start from 1 because we use nth-child in jQuery and this is 1-indexed: https://api.jquery.com/nth-child-selector/
             if(!ints.indexOf(randNum) > -1){
               ints.push(randNum);
             }
@@ -26,16 +26,15 @@
         var display_num_questions = parseInt(mlab.dt.api.getVariable(el, "display_num_questions")),
             total_num_questions = $(el).find("[data-mlab-ct-img_quiz-role='display']").length;
         if (display_num_questions != 0 && display_num_questions < total_num_questions) {
-            this.selected_questions = getRandomInts(el, display_num_questions, total_num_questions - 1);
+            this.selected_questions = getRandomInts(el, display_num_questions, total_num_questions);
             this.selected_questions.sort();
-            
+            this.showImage(el);
+        } else {
+            this.selected_questions = Array.from({length: total_num_questions}, (v, k) => k+1); 
         }
         this.displayAnswers(el);
     };
 
-    this.selectQuestions(el, display_num_questions, total_num_questions) {
-        
-    }
 
 /**
  * This does the actual task of displaying next/previous image.
@@ -52,16 +51,18 @@
         }
         var container = $(el).find("[data-mlab-ct-img_quiz-role='display']");
         var curr_img = container.find(".active");
-        if (direction == 1) {
+        if (direction === 1) {
             var move_to = curr_img.next();
             if (move_to.length == 0) {
                 alert("Quiz finished");
             }
-        } else {
+        } else if (direction === -1) {
             var move_to = curr_img.prev();
             if (move_to.length == 0) {
                 return;
             }
+        } else { //kicks in when no direction value is defined, means we want to display first one
+            var move_to = $(el).find("[data-mlab-ct-img_quiz-role='display'] img:nth-child(" + this.selected_questions[0] + ")")
         }  
         curr_img.removeClass("active");
         move_to.addClass("active");
