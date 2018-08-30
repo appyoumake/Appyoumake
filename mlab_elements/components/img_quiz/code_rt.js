@@ -1,3 +1,4 @@
+    this.selected_questions = [];
 /*
     Function fired when page loads. Does the following:
         - Assigns event handlers 
@@ -5,10 +6,36 @@
         - Loads answers for the first image
     @param {DOM object} el Component element
 */
-
     this.onPageLoad = function(el) {
+        
+        function getRandomInt(min, max) {
+          return Math.floor(Math.random() * (max - min)) + min;
+        }
+        function getRandomInts(num, max) {
+          var ints = [];
+          while (ints.length < num-1) {
+            var randNum = getRandomInt(0, max);
+            if(!ints.indexOf(randNum) > -1){
+              ints.push(randNum);
+            }
+          }
+          return ints;
+        }
+        
+//first we get the number of questions they want to display
+        var display_num_questions = parseInt(mlab.dt.api.getVariable(el, "display_num_questions")),
+            total_num_questions = $(el).find("[data-mlab-ct-img_quiz-role='display']").length;
+        if (display_num_questions != 0 && display_num_questions < total_num_questions) {
+            this.selected_questions = getRandomInts(el, display_num_questions, total_num_questions - 1);
+            this.selected_questions.sort();
+            
+        }
         this.displayAnswers(el);
     };
+
+    this.selectQuestions(el, display_num_questions, total_num_questions) {
+        
+    }
 
 /**
  * This does the actual task of displaying next/previous image.
