@@ -3,10 +3,6 @@
     };	
 	
 
-    this.onCreate = function (el) {
-        this.onLoad (el);
-    };
-    
 //el = element this is initialising, config = global config from conf.yml
 	this.onLoad = function (el) {
         this.getHTMLElement(el).attr("contenteditable", "true").bind("blur keyup paste copy cut mouseup")
