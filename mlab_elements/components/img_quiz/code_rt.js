@@ -23,6 +23,7 @@
         if (display_num_questions != 0 && display_num_questions < total_num_questions) {
             this.selected_questions = getRandomInts(display_num_questions, total_num_questions);
             this.selected_questions.sort();
+            console.log(this.selected_questions);
         } else {
             this.selected_questions = Array.from({length: total_num_questions}, (v, k) => k+1); 
         }
@@ -45,11 +46,13 @@
         }
         
         var container = $(el).find("[data-mlab-ct-img_quiz-role='indicator']");
-        for (var i = 1, max = this.selected_questions.length; i < max; i++) {
-            if ( !(this.selected_questions.indexOf(i) > -1) ) { //hide the non-selected questions
-                container.find("span:nth-child(" + i + ")").hide();
+        for (var i = 1, max = container.find("span").length; i < max + 1; i++) {
+            if ( this.selected_questions.indexOf(i) < 0 ) { //hide the non-selected questions
+                container.find("span:nth-child(" + i + ")").addClass("mlab_hide");
+                console.log("hide" + i);
             } else {
-                container.find("span:nth-child(" + i + ")").show();
+                container.find("span:nth-child(" + i + ")").removeClass("mlab_hide");
+                console.log("show" + i);
             }
         }
     }
@@ -65,27 +68,27 @@
         if (!el) {
             el = $('[data-mlab-type="img_quiz"]').filter(":visible");
             el.find('[data-mlab-ct-img_quiz-role="explain"]').slideUp();
-
         }
-        var container = $(el).find("[data-mlab-ct-img_quiz-role='display']");
-        var curr_img = container.find(".active");
-        if (direction === 1) {
-            var move_to = curr_img.next();
-            if (move_to.length == 0) {
-                alert("Quiz finished");
-            }
-        } else if (direction === -1) {
-            var move_to = curr_img.prev();
-            if (move_to.length == 0) {
-                return;
-            }
+        
+        var container = $(el).find("[data-mlab-ct-img_quiz-role='display']"),
+            curr_img = container.find(".active"),
+            num_active = curr_img.index() + 1,
+            selected_index = this.selected_questions.indexOf(num_active);
+    
+        if (direction === 1 && selected_index === (this.selected_questions.length - 1)) {
+            alert("Quiz finished");
+            return;
+        } else if (direction === 1 && selected_index < (this.selected_questions.length - 1)) {
+            selected_index++;
+        } else if (direction === -1 && selected_index > 0) {
+            selected_index--;
         } else { //kicks in when no direction value is defined, means we want to display first one
-            var move_to = $(el).find("[data-mlab-ct-img_quiz-role='display'] img:nth-child(" + this.selected_questions[0] + ")")
-        }  
+            selected_index = 0;
+        }
+        var move_to = container.find("img:nth-child(" + this.selected_questions[selected_index] + ")");
         curr_img.removeClass("active");
         move_to.addClass("active");
-        var num_active = move_to.index() + 1;
-        $(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
+        $(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + this.selected_questions[selected_index] + ")").addClass("active").siblings().removeClass("active");
         this.displayAnswers(el);
     }
     
