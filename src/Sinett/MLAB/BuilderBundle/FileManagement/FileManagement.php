@@ -693,8 +693,9 @@ class FileManagement {
             if (!$current_order) {
                 $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
+            } else {
+                $current_order[] = basename($new_page["new_page_path"]);
             }
-            $current_order[] = basename($new_page["new_page_path"]);
             $this->updateAppConfigFile($app, array("page_order" => $current_order));
             return $new_page["new_page_num"];
         } else {
@@ -744,8 +745,9 @@ class FileManagement {
             if (!$current_order) {
                 $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
                 $current_order = array_map("basename", glob( $app_path . "/???.html" ));
+            } else {
+                $current_order[] = basename($new_page["new_page_path"]);
             }
-            $current_order[] = basename($new_page["new_page_path"]);
             $this->updateAppConfigFile($app, array("page_order" => $current_order));
             return $new_page["new_page_num"];
         } else {
