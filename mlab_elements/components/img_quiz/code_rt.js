@@ -8,33 +8,51 @@
 */
     this.onPageLoad = function(el) {
         
-        function getRandomInt(min, max) {
-          return Math.floor(Math.random() * (max - min)) + min;
-        }
         function getRandomInts(num, max) {
-          var ints = [];
-          while (ints.length < num-1) {
-            var randNum = getRandomInt(1, max); //start from 1 because we use nth-child in jQuery and this is 1-indexed: https://api.jquery.com/nth-child-selector/
-            if(!ints.indexOf(randNum) > -1){
-              ints.push(randNum);
+            var ints = [];
+            while (ints.length < num) {
+                var randNum = Math.floor(Math.random() * (max - 1)) + 1; //start from 1 because we use nth-child in jQuery and this is 1-indexed: https://api.jquery.com/nth-child-selector/
+                if (!(ints.indexOf(randNum) > -1)) { ints.push(randNum); }
             }
-          }
-          return ints;
+            return ints;
         }
-        
+        debugger;
 //first we get the number of questions they want to display
-        var display_num_questions = parseInt(mlab.dt.api.getVariable(el, "display_num_questions")),
-            total_num_questions = $(el).find("[data-mlab-ct-img_quiz-role='display']").length;
+        var display_num_questions = parseInt(mlab.api.getVariable(el, "display_num_questions")),
+            total_num_questions = $(el).find("[data-mlab-ct-img_quiz-role='display'] > img").length;
         if (display_num_questions != 0 && display_num_questions < total_num_questions) {
-            this.selected_questions = getRandomInts(el, display_num_questions, total_num_questions);
+            this.selected_questions = getRandomInts(display_num_questions, total_num_questions);
             this.selected_questions.sort();
-            this.showImage(el);
         } else {
             this.selected_questions = Array.from({length: total_num_questions}, (v, k) => k+1); 
         }
+        this.prepareImages(el);
+        this.showImage(el);
         this.displayAnswers(el);
     };
 
+/**
+ * This prepares the images to show, we only use a subset as listed in the this.selected_questions array
+ * The others we hide for this quiz session
+ * @param {type} el
+ * @param {type} direction
+ * @returns {undefined}
+ */
+    this.prepareImages = function (el) {
+        if (!el) {
+            el = $('[data-mlab-type="img_quiz"]').filter(":visible");
+            el.find('[data-mlab-ct-img_quiz-role="explain"]').slideUp();
+        }
+        
+        var container = $(el).find("[data-mlab-ct-img_quiz-role='indicator']");
+        for (var i = 0, max = this.selected_questions.length; i < max; i++) {
+            if ( !(this.selected_questions.indexOf(i) > -1) ) { //hide the non-selected questions
+                container.find("span:nth-child(" + i + ")").hide();
+            } else {
+                container.find("span:nth-child(" + i + ")").show();
+            }
+        }
+    }
 
 /**
  * This does the actual task of displaying next/previous image.

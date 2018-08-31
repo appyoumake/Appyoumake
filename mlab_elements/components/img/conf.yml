@@ -15,9 +15,7 @@ autorun_on_create: custom_upload_image
 html: |
     <figure class="mc_container mc_picture_and_text">
       <img class='mc_figure mc_display mc_figure_with_caption mc_figure_in_text' alt="sample image">
-      <figcaption class='mc_text mc_display mc_figure_text' contenteditable="true">Caption</figcaption>
     </figure>
-    <p class='mc_text mc_display mc_medium'>Your text goes here</p>
     <div style="clear: both;"></div>
     
 custom:
