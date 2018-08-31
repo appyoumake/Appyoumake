@@ -736,7 +736,6 @@ Mlab_api.prototype = {
  */
         pageDisplay: function (move_to, swipe) {
             var filename = "";
-            var new_location = 0;
             switch (move_to) {
                 case "first" : //000 is ALWAYS the first page, it is the content of index.html and we do not allow the user to move or delete the index.html page
                     filename = "000.html";
@@ -778,8 +777,8 @@ Mlab_api.prototype = {
                     if (move_to < 0 || move_to > this.max_pages) {
                         return this.current_page_index;
                     }
+                    this.current_page_index = this.page_list.indexOf(pg);
                     filename = ("000" + move_to).slice(-3) + ".html";
-                    new_location = move_to;
                     break;
             }
             

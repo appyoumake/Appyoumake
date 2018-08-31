@@ -45,7 +45,7 @@
         }
         
         var container = $(el).find("[data-mlab-ct-img_quiz-role='indicator']");
-        for (var i = 0, max = this.selected_questions.length; i < max; i++) {
+        for (var i = 1, max = this.selected_questions.length; i < max; i++) {
             if ( !(this.selected_questions.indexOf(i) > -1) ) { //hide the non-selected questions
                 container.find("span:nth-child(" + i + ")").hide();
             } else {
