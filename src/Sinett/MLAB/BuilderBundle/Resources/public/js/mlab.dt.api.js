@@ -468,10 +468,10 @@ Mlab_dt_api.prototype = {
                         
 //"local", i.e. file that is part of Mlab a component 
                     } else if (file.substr(-3) == ".js") {
-                        js_stack.push(comp_url + comp_path + "/js/" + file);
+                        js_stack.push(file); //the local path is already set on the backend in FileManagement::loadSingleComponent
                     } else if (file.substr(-4) == ".css") {
                         if ($("link[href*='" + file + "']").length < 1) {
-                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >"));
+                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + file + "' >")); //the local path is already set on the backend in FileManagement::loadSingleComponent
                         }
                     }
                 }

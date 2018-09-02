@@ -346,7 +346,31 @@ class FileManagement {
                     $component["conf"]["urls"][$url_key] = $this->router->generate($url_name, array('app_id' => $app_id, 'comp_id' => $comp_id));
                 }
             }
-              
+
+//required_libs require the prefix for the URL added here, this way one component can inherit another component's complete set of files
+            if (isset($component["conf"]) && isset($component["conf"]["required_libs"])) {
+                if (isset($component["conf"]["required_libs"]["designtime"])) {
+                    $component["conf"]["required_libs"]["designtime"] = array_map(function($filename) use ($comp_id) {
+                            if(!filter_var($filename, FILTER_VALIDATE_URL)) { 
+                                $path_parts = pathinfo($filename);
+                                return $this->config['urls']['component'] . $comp_id . "/" . $path_parts['extension'] . "/" . $filename; 
+                            } else {
+                                return $filename;
+                            }
+                        }, $component["conf"]["required_libs"]["designtime"]);
+                }
+                if (isset($component["conf"]["required_libs"]["runtime"])) {
+                    $component["conf"]["required_libs"]["runtime"] = array_map(function($filename) use ($comp_id) {
+                            if(!filter_var($filename, FILTER_VALIDATE_URL)) { 
+                                $path_parts = pathinfo($filename);
+                                return $this->config['urls']['component'] . $comp_id . "/" . $path_parts['extension'] . "/" . $filename; 
+                            } else {
+                                return $filename;
+                            }
+                        }, $component["conf"]["required_libs"]["runtime"]);
+                }
+            }
+            
 //tooltips are in the conf file (or not!), so add it here, or blank if none
             $component["tooltip"] = isset($component["conf"]["tooltip"]) ? $component["conf"]["tooltip"] : "";
         } else {

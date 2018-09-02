@@ -1,4 +1,4 @@
-# Configuration file for image and text component
+# Configuration file for image quiz component
 name: img_quiz
 extended_name: { nb_NO: Bilde basert quiz, en_GB: Image based quiz, default: Image based quiz }
 version: 0.9

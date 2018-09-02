@@ -10,6 +10,57 @@
         var that_el = el;
         $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
         $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
+
+//from http://demos.jquerymobile.com/1.4.5/popup-dynamic/
+        $(el).find("[data-mlab-ct-multi_img-role='display'] > img").on( "click", function() {
+            var target = $( this ),
+                image_name = target.attr( "src" ),
+                short = image_name.substring(6, image_name.length - 37),
+                img = '<img src="' + image_name + '" alt="' + short + '" class="photo">',
+                popup = '<div data-role="popup" id="popup-' + short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="15"></div>';
+
+            // Create the popup.
+            $( img )
+                .appendTo( $( popup )
+                .appendTo( $.mobile.activePage )
+                .popup() )
+                .toolbar();
+
+// Wait with opening the popup until the popup image has been loaded in the DOM.
+// This ensures the popup gets the correct size and position
+            $( ".photo", "#popup-" + short ).load(function() {
+// Open the popup
+                $( "#popup-" + short ).popup( "open" );
+                $( "#popup-" + short + " > img").imgViewer2();
+// Clear the fallback
+                clearTimeout( fallback );
+            });
+// Fallback in case the browser doesn't fire a load event
+            var fallback = setTimeout(function() {
+                $( "#popup-" + short ).popup( "open" );
+            }, 2000);
+        });
+
+        // Set a max-height to make large images shrink to fit the screen.
+        $( document ).on( "popupbeforeposition", ".ui-popup", function() {
+            var image = $( this ).children( "img" ),
+                height = image.height(),
+                width = image.width();
+
+            // Set height and width attribute of the image
+            $( this ).attr({ "height": height, "width": width });
+
+            // 68px: 2 * 15px for top/bottom tolerance, 38px for the header.
+            var maxHeight = $( window ).height() - 68 + "px";
+
+            $( "img.photo", this ).css( "max-height", maxHeight );
+        });
+
+        // Remove the popup after it has been closed to manage DOM size
+        $( document ).on( "popupafterclose", ".ui-popup", function() {
+            $( this ).remove();
+        });
+
     };
 
 /**
@@ -51,21 +102,4 @@
         var num_active = move_to.index() + 1;
         $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     }
-    
-    this.zoomImage = function (el) {
-        var cid = mlab.api.getGUID();
-        //mlab.api.setAppVariable('multi_img', 'canvas_id', cid)
-        var canvas = $("<canvas class='mlab_ct_multi-img_zoom-canvas' onclick='$(this).remove();' id='" + cid + "'>").appendTo("body");
-        ctx = canvas.getContext("2d");
-
-        /*canvas.width = 903;
-        canvas.height = 657;*/
-
-        /*var img = $(el);
-        ctx.drawImage(img,0,0);   */
-        var gesturableImg = new ImgTouchCanvas({
-            canvas: $('#' + cid),
-            path: $(el).attr('src')
-        });        
-    }
-    
+        
