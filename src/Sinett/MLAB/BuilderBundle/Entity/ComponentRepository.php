@@ -52,11 +52,9 @@ class ComponentRepository extends EntityRepository
                     $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
                     if ($access_record) {
                         $access_state = $access_record->getAccessState();
-                    } else {
-                        $access_state = 0;
-                    }
-                    if ( ($access_state & 2) > 0) {
-                        $components[] = $temp_component->getPath();
+                        if ( $access_state > 0 ) {
+                            $components[] = $temp_component->getPath();
+                        }
                     }
                 }
 			}
