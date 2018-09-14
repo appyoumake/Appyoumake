@@ -26,7 +26,7 @@ class TemplateRepository extends EntityRepository
      * The TemplateGroupData::access_state field has bit 1 set to 1 if user access is set up for this person's group access
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
-	public function findAllByGroups ( $groups ) {
+	public function findAllByGroups ( $role, $groups ) {
 		$templates = array();
         $repository = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:TemplateGroupData');
 		foreach ($groups as $group) {
@@ -34,15 +34,21 @@ class TemplateRepository extends EntityRepository
 			foreach ($temp_templates as $temp_template) {
 //we have used a duplicate access record with a new field 
 //(long fricking story, but basically due to having spent far too lon converting another table from koin table to join+additional data table)
-//if there is a record for the current user (as defined in the list of groups we receive) AND access > 0, then they can use this template
-//in the admin pages the value of the field (1 = regular user, 3 = admin only) has different meaning, if 3 the admin user can allow access by setting to 1
-//see https://github.com/Sinettlab/MLAB/issues/305                
-                $access_record = $repository->findOneBy(array('template_id' => $temp_template->getId(), 'group_id' => $group->getId()));
-                if ($access_record) {
-                    $access_state = $access_record->getAccessState();
-                    if ($access_state > 0) {
-                        $templates[$temp_template->getId()] = $temp_template->getArray();
-                    }
+//if the user is superadmin, then they always see the tempate
+                if ($role == "ROLE_SUPER_ADMIN") {
+                    $templates[$temp_template->getId()] = $temp_template->getArray();
+                } else {
+                    $access_record = $repository->findOneBy(array('template_id' => $temp_template->getId(), 'group_id' => $group->getId()));
+//admin access is determined by bit 0
+                    if ($access_record) {
+                        $access_state = $access_record->getAccessState();
+                        if ( $role == "ROLE_ADMIN" & ( $access_state & 1 ) ) {
+                            $templates[$temp_template->getId()] = $temp_template->getArray();
+//user access is determined by bit 1
+                        } else if ( $role == "ROLE_USER" & ( $access_state & 2 ) ) {
+                            $templates[$temp_template->getId()] = $temp_template->getArray();
+                        }
+                    }                    
                 }
 			}
 		}

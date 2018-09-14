@@ -42,19 +42,29 @@ class ComponentRepository extends EntityRepository
 	 * This path = the internal component type/name which = the folder name of the component
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
-	public function findAccessByGroups ( $groups) {
+	public function findAccessByGroups ( $role, $groups) {
 		$components = array();
         $comp_group_repo = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:ComponentGroup');
 		foreach ($groups as $group) {
 			$temp_components = $group->getComponents();
 			foreach ($temp_components as $temp_component) {
                 if ($temp_component->getEnabled()) {
-                    $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
-                    if ($access_record) {
-                        $access_state = $access_record->getAccessState();
-                        if ( $access_state > 0 ) {
-                            $components[] = $temp_component->getPath();
-                        }
+
+//if the user is superadmin, then they always see the tempate
+                    if ($role == "ROLE_SUPER_ADMIN") {
+                        $components[] = $temp_component->getPath();
+                    } else {
+                        $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
+//admin access is determined by bit 0
+                        if ($access_record) {
+                            $access_state = $access_record->getAccessState();
+                            if ( $role == "ROLE_ADMIN" & ( $access_state & 1 ) ) {
+                                $components[] = $temp_component->getPath();
+//user access is determined by bit 1
+                            } else if ( $role == "ROLE_USER" & ( $access_state & 2 ) ) {
+                                $components[] = $temp_component->getPath();
+                            }
+                        }                    
                     }
                 }
 			}

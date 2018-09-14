@@ -88,8 +88,9 @@ class AppController extends Controller
         $temp_groups = $this->getUser()->getGroups();
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
+        $temp_roles = $this->getUser()->getRoles();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($temp_groups);
-    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_groups);
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_roles[0], $temp_groups);
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
     	$app_icon_path = $this->container->getParameter('mlab_app')['filenames']['app_icon'];
@@ -403,8 +404,9 @@ class AppController extends Controller
 
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
+        $temp_roles = $this->getUser()->getRoles();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
-    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($this->getUser()->getGroups());
+    	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_roles[0], $this->getUser()->getGroups());
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
     	$app_icon_path = $this->container->getParameter('mlab_app')['filenames']['app_icon'];
@@ -796,8 +798,8 @@ class AppController extends Controller
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
     	$file_mgmt = $this->get('file_management');
     	$file_mgmt->setConfig('component');
-        
-    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($this->getUser()->getGroups());
+        $temp_roles = $this->getUser()->getRoles();
+    	$accessible_components = $em->getRepository('SinettMLABBuilderBundle:Component')->findAccessByGroups($temp_roles[0], $this->getUser()->getGroups());
     	$components = $file_mgmt->loadComponents($accessible_components, $config["paths"]["component"], $config["component_files"], $app_id);
     	
     	return new JsonResponse(array("result" => "success", "mlab_components" => $components));
