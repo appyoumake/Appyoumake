@@ -1075,7 +1075,7 @@ class FileManagement {
     public function addFeature($filename, $comp_id, $component) {
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
-        $doc->validateOnParse = true;
+        $doc->validateOnParse = false;
         $doc->loadHTMLFile($filename);
         libxml_clear_errors();
 
@@ -1115,7 +1115,7 @@ class FileManagement {
         
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
-        $doc->validateOnParse = true;
+        $doc->validateOnParse = false;
         $doc->loadHTMLFile($filename);
         libxml_clear_errors();
 
@@ -1283,7 +1283,7 @@ class FileManagement {
 //we extract the content of the index.html file and store it in 000.html, otherwise the content will always be displayed
         $doc = new \DOMDocument("1.0", "utf-8");
         libxml_use_internal_errors(true);
-        $doc->validateOnParse = true;
+        $doc->validateOnParse = false;
 
         $doc->loadHTML($frontpage_content);
         libxml_clear_errors();
@@ -1377,7 +1377,7 @@ class FileManagement {
 //parse pages and loop through the components for each page
             $doc = new \DOMDocument("1.0", "utf-8");
             libxml_use_internal_errors(true);
-            $doc->validateOnParse = true;
+            $doc->validateOnParse = false;
             if (substr($page, -10) == "index.html") {
                 $doc->loadHTML($frontpage_content);
                 libxml_clear_errors();
