@@ -377,13 +377,14 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 //function to load sub categories when a higher level category is selected
     function loadTags(el, level) {
+        debugger;   
         if (level == 3) {
             return;
         }
 
         var sel_val = $(el).val();
 //if they select the empty one we clear out the select boxes below this level
-        if ( parseInt(sel_val) == 0 || isNaN(parseInt(sel_val)) )  {
+        if ( sel_val == "" )  {
             if (level == 1 ) {
                 $("#mlab_tag_2").html("");
                 $("#mlab_tag_3").html("");
