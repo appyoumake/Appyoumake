@@ -1251,13 +1251,15 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         foreach($request->files as $uploadedFile) {
             $width = $height = $type = $attr = null;
             $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
+            $f_ext = $uploadedFile->guessExtension();
+            $f_mime = $uploadedFile->getMimeType();
             
 //replace "european" characters with plain ASCII 7 bit characters
 			$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
-            $f_name = $temp_f_name . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
+//android allows max 100 char filenames, use config variable for this in case changes in future
+            $max_len = $this->container->getParameter('mlab_app')['verify_uploads']['max_filename_length'];
+            $f_name = substr($temp_f_name, 0, $max_len - (strlen($f_ext) + 1))  . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
 //OLD             $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
-            $f_ext = $uploadedFile->guessExtension();
-            $f_mime = $uploadedFile->getMimeType();
             
 //check to see if the mime type is allowed
             $sub_folder = false;

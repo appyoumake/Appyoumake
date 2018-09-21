@@ -301,7 +301,8 @@ app.admin.components: Components
 app.admin.components.name: Name
 app.admin.components.version: Version
 app.admin.components.description: Description
-app.admin.components.groups: Group access
+app.admin.components.groups: Group access users
+app.admin.components.groups_admin: Group access admin
 
 app.admin.components.tooltip.group: Edit groups for components
 app.admin.components.tooltip.enabled: Enabled components

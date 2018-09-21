@@ -41,8 +41,7 @@ class ComponentController extends Controller
      * In addition find out which components have been used and do NOT allow them to be deleted
      *
      */
-    public function indexAction()
-    {
+    public function indexAction() {
 
         $em = $this->getDoctrine()->getManager();
         
@@ -68,16 +67,18 @@ class ComponentController extends Controller
             
             foreach ($entities as $entity) {
                 $group_user_access = array();
-//pick up group access names, we show admin access (bit 0 = 1) in red
+                $group_admin_access = array();
+//pick up group access names, we show admin access (bit 0 = 1) in separate column
                 foreach ($entity->getGroups() as $group) {
                     $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $entity->getId(), 'group' => $group->getId()))->getAccessState();
                     if ( ($access_state & 1) > 0) {
-                        $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
+                        $group_admin_access[] = $group->getName();
                     } else if ( ($access_state & 2) > 0) {
                         $group_user_access[] = $group->getName();
                     }
                 }
-                $entity->setGroupNames(implode(", ", $group_user_access));
+                $entity->setGroupNamesAdmin(implode(", ", $group_admin_access));
+                $entity->setGroupNamesUser(implode(", ", $group_user_access));
             }
             
 //for regular admin only list the ones they have access to through group membership
@@ -116,7 +117,7 @@ class ComponentController extends Controller
                 }
                 if ($add_entity) {
                     $entities[] = $entity;
-                    $entities[sizeof($entities) - 1]->setGroupNames(implode(", ", $group_user_access));
+                    $entities[sizeof($entities) - 1]->setGroupNamesUser(implode(", ", $group_user_access));
                 }
             }
         }

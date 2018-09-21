@@ -226,6 +226,7 @@ parameters:
                 - www
             template_required_strings:
                 frontpage.html: '/\<div .*id\=.mlab_editable_area.*?\>/'
+            max_filename_length: 95
             
         component_files: { ICON: icon.png, CONFIG: conf.yml, SCRIPTS: code_dt.js, PHP: server_code.php }
         

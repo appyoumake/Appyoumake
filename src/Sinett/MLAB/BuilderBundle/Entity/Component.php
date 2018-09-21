@@ -268,9 +268,16 @@ class Component
     private $path;
     
     /**
+     * used to store list of groups that have access in comma delimited string format
      * @var string
      */
     private $group_names;
+    
+    /**
+     * used to store list of groups that DO NOT have access in comma delimited string format
+     * @var string
+     */
+    private $group_names_blocked;
     
     
     /**
@@ -297,26 +304,49 @@ class Component
     }
     
     /**
-     * Set enabled
+     * Set group_names_admin
      *
-     * @param string $enabled
+     * @param string $names
      * @return Component
      */
-    public function setGroupNames($names)
+    public function setGroupNamesAdmin($names)
     {
-        $this->group_names = $names;
+        $this->group_names_admin = $names;
     
         return $this;
     }
 
     /**
-     * Get group_names
+     * Get group_names_admin
      *
      * @return string 
      */
-    public function getGroupNames()
+    public function getGroupNamesAdmin()
     {
-        return $this->group_names;
+        return $this->group_names_admin;
+    }
+    
+    /**
+     * Set group_names_user
+     *
+     * @param string $names
+     * @return Component
+     */
+    public function setGroupNamesUser($names)
+    {
+        $this->group_names_user = $names;
+    
+        return $this;
+    }
+
+    /**
+     * Get group_names_user
+     *
+     * @return string 
+     */
+    public function getGroupNamesUser()
+    {
+        return $this->group_names_user;
     }
     
     /**
