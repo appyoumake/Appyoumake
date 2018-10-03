@@ -22,3 +22,5 @@
 /src/Sinett/MLAB/BuilderBundle/Resources/public/js/j*.js
 !/src/Sinett/MLAB/BuilderBundle/Resources/public/js/jquery.ddslick-1.0.0.js
 /web/bundles/
+/_minimal_websocket/npm-debug.log
+/_minimal_websocket/node_modules/
