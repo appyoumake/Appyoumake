@@ -262,6 +262,7 @@ Mlab_dt_api.prototype = {
             content = $('<form />', {"id": "mlab_dt_form_upload" } );
             content.append( $('<p />',      {                                          class: "mlab_dt_text_info",                  text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"] }) );
             content.append( $('<select />', { id: "mlab_cp_select_file",               class: "mlab_dt_select" }) );
+            content.append( $('<input />',  { id: "mlab_cp_selected_file",             type: "hidden" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_uploadfiles",   class: "mlab_dt_picture mlab_dt_left" }) );
             content.append( $('<div />',    {                                          class: "mlab_dt_tiny_new_line",             html: "&nbsp;" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
@@ -306,7 +307,8 @@ Mlab_dt_api.prototype = {
                                          width: 254,
                                          height: 64,
                                          imagePosition: "left",
-                                         selectText: "Select existing media file to use" });
+                                         selectText: "Select existing media file to use"
+                                     });
 
 
 //prepare upload files jquery plugin
@@ -338,7 +340,14 @@ Mlab_dt_api.prototype = {
             });
             
 //assign close events and add mlab styles
-            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
+            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { 
+                    var sel_existing = $("#mlab_cp_select_file").data('ddslick').selectedData.value;
+                    if (sel_existing) {
+                        local_set_media_source(sel_existing);
+                    } else {
+                        uploadObj.startUpload(); 
+                    }
+                }.bind(that_qtip.dt_component) );
             $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
             $('.new_but_line').addClass('mlab_dt_button_new_line');
             $('.new_big_line').addClass('mlab_dt_large_new_line');
@@ -459,10 +468,10 @@ Mlab_dt_api.prototype = {
                         
 //"local", i.e. file that is part of Mlab a component 
                     } else if (file.substr(-3) == ".js") {
-                        js_stack.push(comp_url + comp_path + "/js/" + file);
+                        js_stack.push(file); //the local path is already set on the backend in FileManagement::loadSingleComponent
                     } else if (file.substr(-4) == ".css") {
                         if ($("link[href*='" + file + "']").length < 1) {
-                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >"));
+                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + file + "' >")); //the local path is already set on the backend in FileManagement::loadSingleComponent
                         }
                     }
                 }
@@ -883,7 +892,7 @@ Mlab_dt_api.prototype = {
         sel = window.getSelection();
         if (sel.toString() != "") {
             el = sel.getRangeAt(0).commonAncestorContainer;
-            if ($(el).parents("div.mlab_current_component").length > 0) {
+            if ($(el).hasClass("mlab_current_component") || $(el).parents("div.mlab_current_component").length > 0) {
                 return true;
             }
         }
@@ -891,22 +900,33 @@ Mlab_dt_api.prototype = {
         return false;
     },
 
+    update_newpage_link: function (data) {
+        if (data.result == "success") {
+            $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + data.new_page_num + '); return false;');
+            mlab.dt.app.page_names = data.page_names;
+            mlab.dt.management.app_update_gui_metadata(true);
+        } else {
+            $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents().unwrap();
+        }
+    },
+
 /**
  * 
  * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
+ * In the option list in the dialog box pages are listed with filename as value and title as displayed text
  * @param {type} link
  * @returns {Boolean}
  */
-    updateLink: function (link) {
+    updateLink: function () {
         var link_type = $("input:radio[name=mlab_dt_getlink_choice]:checked").val();
         var link = "";
         var page_name;
 
         if (link_type == "page") {
             link = $("#mlab_dt_link_app_pages").val();
-            var num = parseInt(link);
-            if (num >= 0 && num < 1000) {
-                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + num + '); return false;');
+            if (link) {
+                page_num = parseInt(link);
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + page_num + '); return false;');
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
                 return false;
@@ -919,6 +939,15 @@ Mlab_dt_api.prototype = {
                 $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
+                return false;
+            }
+            
+        } else if (link_type == "newpage") {
+            var page_title = $("#mlab_dt_link_app_new_page").val();
+            if (page_title) {
+                mlab.dt.management.page_new_in_background(page_title, this.update_newpage_link);
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_no_title"]);
                 return false;
             }
             
@@ -950,8 +979,8 @@ Mlab_dt_api.prototype = {
 
 //we need to request the URL *OR* which page to link to
         var opt = "<option value='-1'></option>";
-        for (page in mlab.dt.app.page_names) {
-            opt = opt + "<option value='" + page + "'>" + mlab.dt.app.page_names[page] + "</option>";
+        for (pos in mlab.dt.app.page_names) {
+            opt = opt + "<option value='" + mlab.dt.app.page_names[pos]["filename"] + "'>" + mlab.dt.app.page_names[pos]["title"] + "</option>";
         }
         var that = this;
         var content = $('<div id="mlab_dt_link_dialog">' + 
@@ -959,6 +988,8 @@ Mlab_dt_api.prototype = {
             '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + opt + '</select><br>' + 
             '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
             '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
+            '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label><br>' + 
+            '<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input">' + '<br>' + 
           '</div>');
   
         content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick=" if (that.updateLink()) {mlab.dt.api.closeAllPropertyDialogs();}">' + _tr["mlab.dt.api.js.getLink.ok"] + '</button>');

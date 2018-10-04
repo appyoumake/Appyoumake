@@ -210,6 +210,34 @@ Mlab_dt_design.prototype = {
             this.parent.components[comp_id].code.onLoad(el);
         }
     },
+    
+/**
+ * Runs a random function in the backend code of a component, i.e. in the server_code.php file.
+ * @param {type} el
+ * @param {type} comp_id
+ * @param {type} func_name
+ * @param {type} callback
+ * @returns {undefined}
+ */
+    component_run_backend_code : function (el, comp_id, func_name, callback) {
+    //execute specified backend code for this component
+        var url = this.parent.urls.component_run_function.replace("_APPID_", this.parent.app.id);
+        url = url.replace("_COMPID_", comp_id);
+        url = url.replace("_FUNCNAME_", func_name);
+        url = url.replace("_PAGENUM_", this.parent.app.curr_page_num);
+        
+        var local_callback = callback,
+            local_el = el;
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function(data) { if (data.result == "success") { local_callback(local_el, data.html); } else { local_callback(local_el, "<h1>failed</h1>"); } },
+            error: function(error) { console.log(error); local_callback(local_el, "<h1>failed</h1>"); }
+        });
+    },
+
 
     component_moveup : function (el) {
         if (typeof el == "undefined") {
@@ -423,7 +451,7 @@ Mlab_dt_design.prototype = {
 
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
-        if (this.parent.app.curr_page_num != "0" && this.parent.app.curr_page_num != "index") {
+        if (this.parent.app.curr_page_num != 0) {
             var url = this.parent.urls.feature_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
@@ -568,13 +596,27 @@ Mlab_dt_design.prototype = {
         
 
         if (typeof conf.custom != "undefined") {
+            
+//preliminary loop to create a lookuptable for the position of tools that handles duplicate order numbers
+            var temp_comp_order = [];
+            for(var index in this.parent.components[comp_name].code) {
+                if (index.substr(0, 7) == "custom_") {
+                    title = index.slice(7);
+                    temp_comp_order.push( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 );
+                }
+            }
+            temp_comp_order.sort(function(a, b) {return a - b;});
+            
             for(var index in this.parent.components[comp_name].code) {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
                     if (typeof conf.custom[title] != "undefined") {
                         var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
                         var tt = this.parent.api.getLocaleComponentMessage(comp_name, ["custom", title, "tooltip"]);
-                        var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
+
+//get unique position
+                        var order = temp_comp_order.indexOf(parseInt( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 ));
+                        delete temp_comp_order[order];
 
                         if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
                             var cl = "mlab_newline";

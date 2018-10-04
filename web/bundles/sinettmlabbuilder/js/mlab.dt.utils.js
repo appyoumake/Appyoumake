@@ -16,6 +16,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 function Mlab_dt_utils () {
     this.parent = null;
     this.timer_save = null;
+    this.concat_not_replace = ["required_libs"]; //gah! gory hack to treat the required_libs setting differently when handle inheritance... TODO:Fix!
 };
 
 Mlab_dt_utils.prototype = {
@@ -81,19 +82,27 @@ Mlab_dt_utils.prototype = {
     },
 
 //utility to merge two objects, but only ADD non-existing properties to the to_obj
-    merge_objects : function (from_obj, to_obj) {
+//properties that exist are merged, otherwise it is added as a new object property
+//UPDATE: For the required_libs we concatenate and dedupe, otherwise we end up using numbered index for comparison...
+    merge_objects : function (from_obj, to_obj, parent_name) {
         for (var p in from_obj) {
-// Property in destination object set; update its value.
-            if ( typeof from_obj[p] == "object") {
-                if (typeof to_obj[p] == "undefined") {
+            if (Array.isArray(from_obj[p]) && this.concat_not_replace.indexOf(parent_name) > -1) {
+                if (typeof to_obj[p] === "undefined") { //if the receiving object does not have a matching object, then it must be created or it will fail
+                    to_obj[p] = from_obj[p];
+                } else {
+                    //to_obj[p] = from_obj[p].concat(to_obj[p]); //for arrays we always merge
+                    to_obj[p] = [...new Set([...from_obj[p] ,...to_obj[p]])]; 
+                }
+            } else if ( typeof from_obj[p] === "object") { //incoming property is a "sub" object, not a value
+                if (typeof to_obj[p] === "undefined") { //if the receiving object does not have a matching object, then it must be created or it will fail
                     to_obj[p] = new Object();
                 }
-                to_obj[p] = this.merge_objects(from_obj[p], to_obj[p]);
-            } else if (typeof to_obj[p] == "undefined") {
+                to_obj[p] = this.merge_objects(from_obj[p], to_obj[p], p); //as this is a object we then merge this sub-object
+            } else if (typeof to_obj[p] === "undefined") { //this is a value, not an object and it does NOT exist in receiving object, so we add it.
                 to_obj[p] = from_obj[p];
             }
         }
-        return to_obj;        
+        return to_obj;
     },
     
     process_inheritance_helper : function (components, index) {
@@ -105,12 +114,12 @@ Mlab_dt_utils.prototype = {
                 if (typeof components[from] != "undefined") {
                     
 
-//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first first
+//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first 
                     if (!components[from].inheritance_processed && components[from].conf["inherit"] != "undefined") {
                         this.process_inheritance_helper(components, from);
                     }
 //we copy top level objects and objects within the code and and code.config objects
-                    components[index] = this.merge_objects(components[from], components[index]); 
+                    components[index] = this.merge_objects(components[from], components[index], from); 
                     components[index].inheritance_processed = true;
 
                 } else {

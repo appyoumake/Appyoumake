@@ -19,7 +19,7 @@ if (file_exists(__DIR__.'/../web/INSTALL/index.php')) {
 }
 
 //DO NOT REMOVE, YOUR LICENSE REQUIRES THIS CHECK TO BE PRESENT
-$uglifycheck = false;
+/*$uglifycheck = false;
 $info = shell_exec("uglifyjs --version");
 if ($info) {
     $info = explode(" ", $info);
@@ -32,9 +32,12 @@ if ($info) {
 
 if (!$uglifycheck) {
     die("UglifyJS version 2 or higher must be installed for Mlab to work properly! Refer to Mlab license and documentation.");
+}*/
+
+require __DIR__.'/../vendor/autoload.php';
+if (PHP_VERSION_ID < 70000) {
+    $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 }
-    
-$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 
 // Use APC for autoloading to improve performance.
 // Change 'sf2' to a unique prefix in order to prevent cache key conflicts
@@ -48,8 +51,13 @@ require_once __DIR__.'/../app/AppKernel.php';
 //require_once __DIR__.'/../app/AppCache.php';
 
 $kernel = new AppKernel('prod', false);
-$kernel->loadClassCache();
+if (PHP_VERSION_ID < 70000) {
+    $kernel->loadClassCache();
+}
 //$kernel = new AppCache($kernel);
+
+// When using the HttpCache, you need to call the method in your front controller instead of relying on the configuration parameter
+//Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();

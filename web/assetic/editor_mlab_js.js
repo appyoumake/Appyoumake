@@ -719,12 +719,12 @@ Mlab_api.prototype = {
  * (added by arild)
  */
     navigation: {
-        current_page: 0,
-        max_pages: 0,
+        current_page_index: 0,
+        page_list: 0,
         self: this,
         
-        initialise: function (app_start_page, app_max_pages) {
-            this.max_pages = app_max_pages;
+        initialise: function (app_start_page, app_page_list) {
+            this.page_list = app_page_list;
             this.pageDisplay(app_start_page);
         },
 /**
@@ -736,59 +736,53 @@ Mlab_api.prototype = {
  */
         pageDisplay: function (move_to, swipe) {
             var filename = "";
-            var new_location = 0;
             switch (move_to) {
-                case 0:
-                case "index":
+                case "first" : //000 is ALWAYS the first page, it is the content of index.html and we do not allow the user to move or delete the index.html page
                     filename = "000.html";
-                    new_location = 0;
-                    break;
-
-                case "first" :
-                    filename = "001.html";
-                    new_location = 1;
+                    this.current_page_index = 0;
                     break;
 
                 case "last" :
-                    filename = ("000" + this.max_pages).slice(-3) + ".html";
-                    new_location = this.max_pages;
+                    filename = ("000" + this.page_list[this.page_list.length -1]).slice(-3) + ".html";
+                    this.current_page_index = this.page_list.length -1;
                     break;
 
                 case "next" :
-                    if (this.current_page >= this.max_pages) {
-                        return this.current_page;
+                    if (this.current_page_index >= (this.page_list.length -1)) {
+                        this.current_page_index = (this.page_list.length -1);
+                        return this.current_page_index;
                     }
-                    this.current_page++;
-                    filename = ("000" + this.current_page).slice(-3) + ".html";
-                    new_location = this.current_page;
+                    this.current_page_index++;
+                    filename = ("000" + this.page_list[this.current_page_index]).slice(-3) + ".html";
                     break;
 
                 case "previous" :
-                    if (this.current_page === 0 || this.current_page === "index") {
-                        return this.current_page;
+                    if (this.current_page_index < 1) {
+                        this.current_page_index = 0;
+                        return this.current_page_index;
                     }
-                    this.current_page--;
-                    if (this.current_page < 0) {
-                        this.current_page = 0;
+                    this.current_page_index--;
+                    if (this.current_page_index < 0) {
+                        this.current_page_index = 0;
                     }
-                    filename = ("000" + this.current_page).slice(-3) + ".html";
-                    new_location = this.current_page;
+                    filename = ("000" + this.page_list[this.current_page_index]).slice(-3) + ".html";
                     break;
 
 //pages are always saved as nnn.html, i.e. 001.html, and so on, so need to format the number
                 default:
                     var pg = parseInt(move_to);
                     if (isNaN(pg)) {
-                        return this.current_page;
+                        return this.current_page_index;
                     }
                     if (move_to < 0 || move_to > this.max_pages) {
-                        return this.current_page;
+                        return this.current_page_index;
                     }
+                    this.current_page_index = this.page_list.indexOf(pg);
                     filename = ("000" + move_to).slice(-3) + ".html";
-                    new_location = move_to;
                     break;
             }
-
+            
+//have calculated the file name, now we need to try to load it
 //Adds a differens between swipe and click
             if (swipe){
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
@@ -796,9 +790,8 @@ Mlab_api.prototype = {
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
             }
             
-//have calculated the file name, now we need to try to load it
-            this.current_page = new_location;
-            return this.current_page;
+
+            return this.current_page_index;
         },
         
     },
@@ -861,12 +854,12 @@ Mlab_api.prototype = {
             var components = (typeof el == "undefined") ? $('[data-mlab-size][data-mlab-aspectratio]') : $(el);
             
             components.each( function() {
-                var device_width = $('[data-role="page"]').first().innerWidth();
+                var parent_width = $(this).parents('[role="main"]').first().width();
                 var aspect_ratio = $(this).attr("data-mlab-aspectratio").split(":");
                 var size = $(this).attr("data-mlab-size");
                 var times = (size == "small") ? 0.33 : ((size == "medium") ? 0.67 : 1);
                 
-                var w = (device_width * times);
+                var w = (parent_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
                 $(this).css( {"width": w + "px", "height": h + "px"} );
 
@@ -1235,6 +1228,7 @@ Mlab_dt_api.prototype = {
             content = $('<form />', {"id": "mlab_dt_form_upload" } );
             content.append( $('<p />',      {                                          class: "mlab_dt_text_info",                  text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.1"] }) );
             content.append( $('<select />', { id: "mlab_cp_select_file",               class: "mlab_dt_select" }) );
+            content.append( $('<input />',  { id: "mlab_cp_selected_file",             type: "hidden" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_uploadfiles",   class: "mlab_dt_picture mlab_dt_left" }) );
             content.append( $('<div />',    {                                          class: "mlab_dt_tiny_new_line",             html: "&nbsp;" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
@@ -1279,7 +1273,8 @@ Mlab_dt_api.prototype = {
                                          width: 254,
                                          height: 64,
                                          imagePosition: "left",
-                                         selectText: "Select existing media file to use" });
+                                         selectText: "Select existing media file to use"
+                                     });
 
 
 //prepare upload files jquery plugin
@@ -1311,7 +1306,14 @@ Mlab_dt_api.prototype = {
             });
             
 //assign close events and add mlab styles
-            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { uploadObj.startUpload(); }.bind(that_qtip.dt_component) );
+            $('#mlab_cp_mediaupload_button_ok').on("click", function(e) { 
+                    var sel_existing = $("#mlab_cp_select_file").data('ddslick').selectedData.value;
+                    if (sel_existing) {
+                        local_set_media_source(sel_existing);
+                    } else {
+                        uploadObj.startUpload(); 
+                    }
+                }.bind(that_qtip.dt_component) );
             $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
             $('.new_but_line').addClass('mlab_dt_button_new_line');
             $('.new_big_line').addClass('mlab_dt_large_new_line');
@@ -1432,10 +1434,10 @@ Mlab_dt_api.prototype = {
                         
 //"local", i.e. file that is part of Mlab a component 
                     } else if (file.substr(-3) == ".js") {
-                        js_stack.push(comp_url + comp_path + "/js/" + file);
+                        js_stack.push(file); //the local path is already set on the backend in FileManagement::loadSingleComponent
                     } else if (file.substr(-4) == ".css") {
                         if ($("link[href*='" + file + "']").length < 1) {
-                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + comp_url + comp_path + "/css/" + file +"' >"));
+                            $("head").append($("<link rel='stylesheet' type='text/css' href='" + file + "' >")); //the local path is already set on the backend in FileManagement::loadSingleComponent
                         }
                     }
                 }
@@ -1856,7 +1858,7 @@ Mlab_dt_api.prototype = {
         sel = window.getSelection();
         if (sel.toString() != "") {
             el = sel.getRangeAt(0).commonAncestorContainer;
-            if ($(el).parents("div.mlab_current_component").length > 0) {
+            if ($(el).hasClass("mlab_current_component") || $(el).parents("div.mlab_current_component").length > 0) {
                 return true;
             }
         }
@@ -1864,22 +1866,33 @@ Mlab_dt_api.prototype = {
         return false;
     },
 
+    update_newpage_link: function (data) {
+        if (data.result == "success") {
+            $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + data.new_page_num + '); return false;');
+            mlab.dt.app.page_names = data.page_names;
+            mlab.dt.management.app_update_gui_metadata(true);
+        } else {
+            $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").contents().unwrap();
+        }
+    },
+
 /**
  * 
  * Links to pages must use the api call navigation.pageDisplay, links to external pages must use _new as the target value.
+ * In the option list in the dialog box pages are listed with filename as value and title as displayed text
  * @param {type} link
  * @returns {Boolean}
  */
-    updateLink: function (link) {
+    updateLink: function () {
         var link_type = $("input:radio[name=mlab_dt_getlink_choice]:checked").val();
         var link = "";
         var page_name;
 
         if (link_type == "page") {
             link = $("#mlab_dt_link_app_pages").val();
-            var num = parseInt(link);
-            if (num >= 0 && num < 1000) {
-                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + num + '); return false;');
+            if (link) {
+                page_num = parseInt(link);
+                $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", "#").attr("onclick", 'mlab.api.navigation.pageDisplay(' + page_num + '); return false;');
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_no_page"]);
                 return false;
@@ -1892,6 +1905,15 @@ Mlab_dt_api.prototype = {
                 $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").attr("href", page_name);
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_url_wrong"]);
+                return false;
+            }
+            
+        } else if (link_type == "newpage") {
+            var page_title = $("#mlab_dt_link_app_new_page").val();
+            if (page_title) {
+                mlab.dt.management.page_new_in_background(page_title, this.update_newpage_link);
+            } else {
+                alert(_tr["mlab.dt.api.js.getLink.alert_no_title"]);
                 return false;
             }
             
@@ -1923,8 +1945,8 @@ Mlab_dt_api.prototype = {
 
 //we need to request the URL *OR* which page to link to
         var opt = "<option value='-1'></option>";
-        for (page in mlab.dt.app.page_names) {
-            opt = opt + "<option value='" + page + "'>" + mlab.dt.app.page_names[page] + "</option>";
+        for (pos in mlab.dt.app.page_names) {
+            opt = opt + "<option value='" + mlab.dt.app.page_names[pos]["filename"] + "'>" + mlab.dt.app.page_names[pos]["title"] + "</option>";
         }
         var that = this;
         var content = $('<div id="mlab_dt_link_dialog">' + 
@@ -1932,6 +1954,8 @@ Mlab_dt_api.prototype = {
             '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + opt + '</select><br>' + 
             '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
             '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
+            '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label><br>' + 
+            '<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input">' + '<br>' + 
           '</div>');
   
         content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick=" if (that.updateLink()) {mlab.dt.api.closeAllPropertyDialogs();}">' + _tr["mlab.dt.api.js.getLink.ok"] + '</button>');
@@ -2318,18 +2342,17 @@ Mlab_dt_management.prototype = {
         
         $.get(url, function( data ) {
             if (data.result == "success") {
-                that.index_page_process ( data.html, "index", ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
-                
+                that.index_page_process ( data.html, ( local_page_num == "0" || local_page_num == "index" || that.parent.app.page_names.length == 1 ) );
                 
 //set the compiler qTip to show QR code and link when hower over compile icon
-//Burde endre ikonet til grønt eller noe....
-//TODO use api.elements.tooltip
+//TODO: Burde endre ikonet til grønt eller noe....
+//TODO: use api.elements.tooltip
 //any existing compiled files for this app
                 mlab.dt.app.compiled_files = data.compiled_files;
                 
                 $.each(mlab.dt.config.compiler_service.supported_platforms, function(index, platform) {
                     if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
-//TODO skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
+//TODO: skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
                         $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
                         $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
@@ -2473,30 +2496,28 @@ Mlab_dt_management.prototype = {
 /**
  * Function to update content of GUI elements with the current app's metadata
  */
-    app_update_gui_metadata : function () {
+    app_update_gui_metadata : function (only_list) {
 
 //List of all pages
 //#mlab_existing_pages is a <div> which is populated with a <ol> with a <li> element for each page
-        var list = $('<ol></ol>')
-        var currpage = this.parent.app.curr_page_num;
-        var span = "";
-        if (currpage == "index") {
-            currpage = 0;
-        }
+        var list = $('<ol></ol>'),
+            span = ""
+            curr_filename = this.page_filenum2filename(this.parent.app.curr_page_num);
         
+//loop through list of pages in this app and display them
         for (i in this.parent.app.page_names) {
-            if (i > 0) {
-                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " " + i + "' onclick='mlab.dt.management.page_copy(\"" + i + "\");' >&nbsp;</span>";
-            }
-
-            if (i == 0){ //index
+            if (i == 0){ //always index.html file 
+                page_num = 0;
                 span = "<span class='mlab_not_copy_file'>&nbsp;</span>";
+            } else {
+                page_num = parseInt(this.parent.app.page_names[i]["filename"]);
+                span = "<span class='mlab_copy_file' title='" + _tr["mlab.dt.management.js.app_update_gui_metadata.copy.pages"] + " \"" + this.parent.app.page_names[i]["title"] + "\"' onclick='mlab.dt.management.page_copy(\"" + page_num + "\");' >&nbsp;</span>";
             }
 
-            if (i == currpage) {
-                list.append("<li data-mlab-page-num='" + i + "' data-mlab-page-open='" + i + "'>" + span + this.parent.app.page_names[i] + "</li>");
+            if (this.parent.app.page_names[i]["filename"] == curr_filename) {
+                list.append("<li data-mlab-page-num='" + page_num + "' data-mlab-page-open='" + page_num + "'>" + span + this.parent.app.page_names[i]["title"] + "</li>");
             } else {
-                list.append("<li data-mlab-page-num='" + i + "'>" + span + "<a data-mlab-page-open='" + i + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + i + "\");'>" + this.parent.app.page_names[i] + "</a></li>");
+                list.append("<li data-mlab-page-num='" + page_num + "'>" + span + "<a data-mlab-page-open='" + page_num + "' href='javascript:mlab.dt.management.page_open(" + this.parent.app.id + ", \"" + page_num + "\");'>" + this.parent.app.page_names[i]["title"] + "</a></li>");
             }
         }
 
@@ -2510,6 +2531,8 @@ Mlab_dt_management.prototype = {
                 }
             }).disableSelection();
 
+        if (only_list) { return; }
+        
 //Various app meta data
         $("#mlab_edit_app_title").text(this.parent.app.name);
         $("#mlab_edit_app_description").text(this.parent.app.description);
@@ -2533,7 +2556,7 @@ Mlab_dt_management.prototype = {
     Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    index_page_process  : function (page, page_num, is_final_destination) {
+    index_page_process  : function (page, is_final_destination) {
         var comp_id, temp_comp, temp_link;
         var temp_stylesheets = "";
         var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
@@ -2592,7 +2615,7 @@ Mlab_dt_management.prototype = {
         
 //Page name is picked up from title tag in head
         this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        this.parent.app.curr_page_num = page_num;
+        this.parent.app.curr_page_num = 0;
         $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
 
         this.app_update_gui_metadata();
@@ -2632,7 +2655,7 @@ Mlab_dt_management.prototype = {
     Process the top level DIVs inside DIV with ID = this.parent.config["app"]["content_id"] (by default mlab_editable_area) so they are moveable/sortable
 */
 
-    regular_page_process  : function (page, page_num) {
+    regular_page_process: function (page, page_num) {
         var comp_id, temp_comp, temp_link;
         var start_dir = this.parent.config.urls.app + this.parent.app.path + "/" + this.parent.app.active_version + "/";
 
@@ -2679,23 +2702,42 @@ Mlab_dt_management.prototype = {
 ************************************************************/
 
 /*
- * Open previous or next page depending on direction. If on first or last page does nothing
- * @param {type} direction
- * @returns {undefined}
+ * Utility function to find index in mlab.dt.app.page_names by filename
+ * @param string|int filename/number 
+ * @returns int index
  */
-    page_move_to : function (direction) {
-        var curr_num = 0;
-        (this.parent.app.curr_page_num == "index") ? curr_num = 0 : curr_num = parseInt(this.parent.app.curr_page_num);
-        if ( direction < 0 && curr_num > 0 ) {
-            curr_num--;
-        } else if ( direction > 0 ) {
-            curr_num++;
+    page_filenum2index : function (page_id) {
+        if (typeof page_id != "number") {
+            page_id = parseInt(page_id);
+        } 
+        if (page_id == 0) {
+            page_id = "index.html"
         } else {
-            return;
+            page_id = ("000" + page_id).slice(-3) + ".html"
         }
-        this.page_open(this.parent.app.id, curr_num);
-
+        for (var i in this.parent.app.page_names) {
+            if (this.parent.app.page_names[i].filename == page_id) {
+                return i;
+            }
+        }
     },
+
+/*
+ * Utility function to create a filename from a number
+ * @param string|int filename/number 
+ * @returns int index
+ */
+    page_filenum2filename : function (page_id) {
+        if (typeof page_id != "number") {
+            page_id = parseInt(page_id);
+        } 
+        if (page_id == 0) {
+            return "index.html"
+        } else {
+            return ("000" + page_id).slice(-3) + ".html"
+        }
+    },
+
 
 /*
  * Move the selected page to a new position int he app, this is done on backend by renaming the actual file
@@ -2707,20 +2749,19 @@ Mlab_dt_management.prototype = {
     page_reorder : function (event, ui) {
         
 //bail if it has not been moved
-        if (ui.item.find("a").data("mlab-page-open") == ui.item.index()) {
+        if (ui.item.find("a").data("mlab-page-open") == parseInt(mlab.dt.app.page_names[ui.item.index()].filename)) {
             console.log("not moved");
             return;
         }
         that = this;
 //turn off automatic saving before moving file
-        this.page_save( function() { mlab.dt.utils.timer_stop(); that.page_reorder_process(event, ui); } );
+        this.page_save( function() { mlab.dt.utils.timer_stop(); that.page_reorder_process(event, ui); }, undefined, true );
     },
 
     page_reorder_process : function (event, ui) {
-
         var app_id = this.parent.app.id;
-        var from_page = ui.item.data("mlab-page-num");
-        var to_page = ui.item.index();
+        var from_page = ui.item.data("mlab-page-num"); //the filenames are stored in the data tag mlab-page-num
+        var to_page = parseInt(mlab.dt.app.page_names[ui.item.index()].filename); //calculate the page it will push down by using the new index of the moved item and look up filename in internal page_names array 
         var that = this;
 
         var url = this.parent.urls.page_reorder.replace("_ID_", app_id);
@@ -2735,7 +2776,6 @@ Mlab_dt_management.prototype = {
             if (data.result == "success") {
 //update the list of pages to the new order, the page numbers have changed so we need to do that
                 that.parent.app.page_names = data.page_names;
-                that.parent.app.curr_page_num = data.to_page;
             } else {
                 alert("Unable to move page");
             }
@@ -2780,7 +2820,7 @@ Mlab_dt_management.prototype = {
                 that.parent.utils.update_status("permanent", that.parent.app.name);
                 $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
                 if (data.page_num_sent == 0 || data.page_num_sent == "index" ) {
-                    that.index_page_process ( data.html, "index", true );
+                    that.index_page_process ( data.html, true );
                 } else if (data.page_num_sent == "last" && data.page_num_real == 0) {
                     that.parent.utils.timer_start();
                     if ( $("#mlab_overlay").is(':visible') ) {
@@ -2855,7 +2895,6 @@ Mlab_dt_management.prototype = {
         });
     },
 
-
 /**
  * This will update the title of the currently open page and also update relevant items other places
  */
@@ -2865,16 +2904,13 @@ Mlab_dt_management.prototype = {
             return;
         }
 
-        if (this.parent.app.curr_page_num == "index") {
-            var pagenum = 0;
-        } else {
-            var pagenum = this.parent.app.curr_page_num;
-        }
+        var page_index = this.page_filenum2index(this.parent.app.curr_page_num);
+        
         this.parent.flag_dirty = true;
         this.parent.app.curr_pagetitle = $("#mlab_page_control_title").text();
-        this.parent.app.page_names[this.parent.app.curr_page_num] = this.parent.app.curr_pagetitle;
+        this.parent.app.page_names[page_index]["title"] = this.parent.app.curr_pagetitle;
         $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
-        $("#mlab_existing_pages [data-mlab-page-open='" + pagenum + "']").html("<span class='mlab_copy_file' onclick='this.page_copy(\"" + pagenum + "\");' >&nbsp;</span>" + this.parent.app.curr_pagetitle);
+        this.app_update_gui_metadata(true);
 
     },
 
@@ -2896,7 +2932,7 @@ Mlab_dt_management.prototype = {
  * @param {type} fnc
  * @returns {undefined}
  */
-    page_save : function (fnc, override) {
+    page_save : function (fnc, override, no_display_update) {
         this.parent.utils.timer_stop();
         var require_save = true;
         var res = false;
@@ -2957,7 +2993,7 @@ Mlab_dt_management.prototype = {
         this.parent.bestpractice.page_check_content(component_categories, template_best_practice_msg);
 
 //if this is the index page we add the full HTML page, if not we only require a very simple header/footer
-        if (page_num == 0 || page_num == "index" ) {
+        if (page_num == 0) {
             var final_doc = this.parent.app.curr_indexpage_html;
             final_doc.getElementById(this.parent.config["app"]["content_id"]).innerHTML = page_content;
             final_doc.title = this.parent.app.curr_pagetitle;
@@ -3008,7 +3044,9 @@ Mlab_dt_management.prototype = {
                     that.parent.app.description = data.app_info.mlab_app.description;
                     that.parent.app.keywords = data.app_info.mlab_app.keywords;
                     that.parent.app.tags = data.app_info.mlab_app.tags;
-                    that.app_update_gui_metadata();
+                    if (!no_display_update) {
+                        that.app_update_gui_metadata();
+                    }
 
                 };
 
@@ -3098,22 +3136,52 @@ Mlab_dt_management.prototype = {
         var that = this;
         $.post( url, {}, function( data ) {
             if (data.result == "success") {
-                that.parent.utils.update_status("completed");
-                $("#" + that.parent.config["app"]["content_id"]).empty();
+//prepare variables
+                that.parent.app.page_names.push({title: title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
                 that.parent.app.curr_pagetitle = title;
                 that.parent.app.curr_page_num = data.page_num_real;
+                
+//update page content area and HTML display of meta data
+                $("#" + that.parent.config["app"]["content_id"]).empty();
                 $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle);
-                that.parent.app.page_names[that.parent.app.curr_page_num] = title;
                 that.app_update_gui_metadata();
 
+//update staus
+                that.parent.utils.update_status("completed");
                 that.parent.flag_dirty = true;
-                $("body").css("cursor", "default");
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
-                $("body").css("cursor", "default");
             }
 
+            $("body").css("cursor", "default");
+            that.parent.utils.timer_start();
+
+        });
+     },
+
+/**
+* Creates a new file on the server, does NOT open it but calls a callback function with the id of the page
+* title string, title of page
+* cb: callback function
+*/
+    page_new_in_background : function (title, cb) {
+        $("body").css("cursor", "wait");
+        this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
+        var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
+        url = url.replace("_UID_", this.parent.uid) + "/0/" + encodeURI(title);
+
+        var that = this;
+        $.post( url, {}, function( data ) {
+            if (data.result == "success") {
+//update staus
+                that.parent.utils.update_status("completed");
+                that.parent.flag_dirty = true;
+            } else {
+                that.parent.utils.update_status("temporary", data.msg, false);
+            }
+            cb(data);
+            $("body").css("cursor", "default");
             that.parent.utils.timer_start();
 
         });
@@ -3132,7 +3200,6 @@ Mlab_dt_management.prototype = {
     },
 
     page_copy_process : function (page_num) {
-
         var url = this.parent.urls.page_copy.replace("_ID_", this.parent.app.id);
         url = url.replace("_PAGE_NUM_", page_num);
         url = url.replace("_UID_", this.parent.uid);
@@ -3144,7 +3211,7 @@ Mlab_dt_management.prototype = {
             if (data.result == "success") {
                 that.parent.app.curr_pagetitle = data.page_title;
                 $("#mlab_page_control_title").text(data.page_title);
-                that.parent.app.page_names[data.page_num_real] = data.page_title;
+                that.parent.app.page_names.push({title: data.page_title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
                 that.regular_page_process ( data.html, data.page_num_real );
             } else {
                 alert(data.msg);
@@ -3154,7 +3221,7 @@ Mlab_dt_management.prototype = {
     },
 
     page_delete  : function () {
-        if (this.parent.app.curr_page_num == "0" || this.parent.app.curr_page_num == "index") {
+        if (this.parent.app.curr_page_num == 0) {
             alert(_tr["mlab.dt.management.js.page_copy.alert.not.delete.index.page"]);
             return;
         }
@@ -3166,23 +3233,19 @@ Mlab_dt_management.prototype = {
         this.parent.utils.timer_stop();
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.deleting.page"], true);
 
-        var url = this.parent.urls.page_delete.replace("_ID_", this.parent.app.id);
+        var that = this,
+            url = this.parent.urls.page_delete.replace("_ID_", this.parent.app.id);
         url = url.replace("_PAGE_NUM_", this.parent.app.curr_page_num);
         url = url.replace("_UID_", this.parent.uid);
-        var that = this;
 
         $.get( url, function( data ) {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").remove();
-                that.parent.app.page_names.splice(that.parent.app.curr_page_num, 1);
+                $("#mlab_existing_pages [data-mlab-page-num='" + data.page_num_sent).remove();
+                
+                that.parent.app.page_names.splice(that.page_filenum2index(that.parent.app.curr_page_num), 1);
                 that.regular_page_process ( data.html, data.page_num_real );
-
-                if (that.parent.app.curr_page_num == "index") {
-                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").html(that.parent.app.curr_pagetitle);
-                } else {
-                    $("#mlab_existing_pages [data-mlab-page-open='" + that.parent.app.curr_page_num + "']").html("<span class='mlab_copy_file' onclick='mlab.dt.management.page_copy(\"" + that.parent.app.curr_page_num + "\");' >&nbsp;</span>" + that.parent.app.curr_pagetitle);
-                }
+                that.app_update_gui_metadata(true);
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
@@ -3861,6 +3924,34 @@ Mlab_dt_design.prototype = {
             this.parent.components[comp_id].code.onLoad(el);
         }
     },
+    
+/**
+ * Runs a random function in the backend code of a component, i.e. in the server_code.php file.
+ * @param {type} el
+ * @param {type} comp_id
+ * @param {type} func_name
+ * @param {type} callback
+ * @returns {undefined}
+ */
+    component_run_backend_code : function (el, comp_id, func_name, callback) {
+    //execute specified backend code for this component
+        var url = this.parent.urls.component_run_function.replace("_APPID_", this.parent.app.id);
+        url = url.replace("_COMPID_", comp_id);
+        url = url.replace("_FUNCNAME_", func_name);
+        url = url.replace("_PAGENUM_", this.parent.app.curr_page_num);
+        
+        var local_callback = callback,
+            local_el = el;
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function(data) { if (data.result == "success") { local_callback(local_el, data.html); } else { local_callback(local_el, "<h1>failed</h1>"); } },
+            error: function(error) { console.log(error); local_callback(local_el, "<h1>failed</h1>"); }
+        });
+    },
+
 
     component_moveup : function (el) {
         if (typeof el == "undefined") {
@@ -4074,7 +4165,7 @@ Mlab_dt_design.prototype = {
 
 //if we are not working on the index page we need to tell the back end to update the index.html file
 //otherwise this will be lost
-        if (this.parent.app.curr_page_num != "0" && this.parent.app.curr_page_num != "index") {
+        if (this.parent.app.curr_page_num != 0) {
             var url = this.parent.urls.feature_add.replace("_APPID_", this.parent.app.id);
             url = url.replace("_COMPID_", comp_id);
             if (!silent) {
@@ -4219,13 +4310,27 @@ Mlab_dt_design.prototype = {
         
 
         if (typeof conf.custom != "undefined") {
+            
+//preliminary loop to create a lookuptable for the position of tools that handles duplicate order numbers
+            var temp_comp_order = [];
+            for(var index in this.parent.components[comp_name].code) {
+                if (index.substr(0, 7) == "custom_") {
+                    title = index.slice(7);
+                    temp_comp_order.push( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 );
+                }
+            }
+            temp_comp_order.sort(function(a, b) {return a - b;});
+            
             for(var index in this.parent.components[comp_name].code) {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
                     if (typeof conf.custom[title] != "undefined") {
                         var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
                         var tt = this.parent.api.getLocaleComponentMessage(comp_name, ["custom", title, "tooltip"]);
-                        var order = ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0;
+
+//get unique position
+                        var order = temp_comp_order.indexOf(parseInt( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 ));
+                        delete temp_comp_order[order];
 
                         if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
                             var cl = "mlab_newline";
@@ -4342,6 +4447,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 function Mlab_dt_utils () {
     this.parent = null;
     this.timer_save = null;
+    this.concat_not_replace = ["required_libs"]; //gah! gory hack to treat the required_libs setting differently when handle inheritance... TODO:Fix!
 };
 
 Mlab_dt_utils.prototype = {
@@ -4407,19 +4513,27 @@ Mlab_dt_utils.prototype = {
     },
 
 //utility to merge two objects, but only ADD non-existing properties to the to_obj
-    merge_objects : function (from_obj, to_obj) {
+//properties that exist are merged, otherwise it is added as a new object property
+//UPDATE: For the required_libs we concatenate and dedupe, otherwise we end up using numbered index for comparison...
+    merge_objects : function (from_obj, to_obj, parent_name) {
         for (var p in from_obj) {
-// Property in destination object set; update its value.
-            if ( typeof from_obj[p] == "object") {
-                if (typeof to_obj[p] == "undefined") {
+            if (Array.isArray(from_obj[p]) && this.concat_not_replace.indexOf(parent_name) > -1) {
+                if (typeof to_obj[p] === "undefined") { //if the receiving object does not have a matching object, then it must be created or it will fail
+                    to_obj[p] = from_obj[p];
+                } else {
+                    //to_obj[p] = from_obj[p].concat(to_obj[p]); //for arrays we always merge
+                    to_obj[p] = [...new Set([...from_obj[p] ,...to_obj[p]])]; 
+                }
+            } else if ( typeof from_obj[p] === "object") { //incoming property is a "sub" object, not a value
+                if (typeof to_obj[p] === "undefined") { //if the receiving object does not have a matching object, then it must be created or it will fail
                     to_obj[p] = new Object();
                 }
-                to_obj[p] = this.merge_objects(from_obj[p], to_obj[p]);
-            } else if (typeof to_obj[p] == "undefined") {
+                to_obj[p] = this.merge_objects(from_obj[p], to_obj[p], p); //as this is a object we then merge this sub-object
+            } else if (typeof to_obj[p] === "undefined") { //this is a value, not an object and it does NOT exist in receiving object, so we add it.
                 to_obj[p] = from_obj[p];
             }
         }
-        return to_obj;        
+        return to_obj;
     },
     
     process_inheritance_helper : function (components, index) {
@@ -4431,12 +4545,12 @@ Mlab_dt_utils.prototype = {
                 if (typeof components[from] != "undefined") {
                     
 
-//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first first
+//need to check that the object to inherit is either top level, or already inherited, if not we recursively process those inheriances first 
                     if (!components[from].inheritance_processed && components[from].conf["inherit"] != "undefined") {
                         this.process_inheritance_helper(components, from);
                     }
 //we copy top level objects and objects within the code and and code.config objects
-                    components[index] = this.merge_objects(components[from], components[index]); 
+                    components[index] = this.merge_objects(components[from], components[index], from); 
                     components[index].inheritance_processed = true;
 
                 } else {
@@ -4586,7 +4700,13 @@ $(document).ready(function() {
 
 //current app/page information, this will be updated when they create a new app or edit properties
             mlab.dt.app = data.mlab_app;
-            mlab.dt.app.curr_page_num = data.mlab_app_page_num;
+            if (isNaN(data.mlab_app_page_num)) {
+                console.log("Error, expecting page number");
+                alert("Error, expecting page number, try to refresh");
+                return;
+            } else {
+                mlab.dt.app.curr_page_num = data.mlab_app_page_num;
+            }
 //checksum of current file
             mlab.dt.app.app_checksum = data.mlab_app_checksum;
 
@@ -4639,32 +4759,36 @@ $(document).ready(function() {
                     var additional_html = "";
                     var comp_type;
 
-                    for (type in mlab.dt.components) {
+//loop to clean up components so that there are no duplicate order_by entries and also generate JS code from text in code_dt.js file
+                    var temp_comp_order = [];
+                    for (comp_id in mlab.dt.components) {
+                        temp_comp_order.push(parseInt(mlab.dt.components[comp_id].order_by));
 //we need to attach the code_dt.js content to an object so we can use it as JS code
-                        if (mlab.dt.components[type].code !== false) {
-                            eval("mlab.dt.components['" + type + "'].code = new function() { " + mlab.dt.components[type].code + "};");
+                        if (mlab.dt.components[comp_id].code !== false) {
+                            eval("mlab.dt.components['" + comp_id + "'].code = new function() { " + mlab.dt.components[comp_id].code + "};");
                         }
                     }
+                    temp_comp_order.sort(function(a, b) {return a - b;});
 
 //now loop through all components and for those that inherit another we transfer properties
                     mlab.dt.utils.process_inheritance(mlab.dt.components);
 
 //second loop which is for displaying the tools loaded & prepared above in the editor page
-                    for (type in mlab.dt.components) {
+                    for (comp_id in mlab.dt.components) {
 //here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
-                        mlab.dt.components[type].code.config = mlab.dt.components[type].conf;
-                        var c = mlab.dt.components[type];
+                        mlab.dt.components[comp_id].code.config = mlab.dt.components[comp_id].conf;
+                        var c = mlab.dt.components[comp_id];
                         if (c.accessible && !(c.is_storage_plugin)) {
 
 //prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
-                            var tt = mlab.dt.api.getLocaleComponentMessage(type, ["tooltip"]);
-                            var tte = mlab.dt.api.getLocaleComponentMessage(type, ["footer_tip"]);
-                            var eName = mlab.dt.api.getLocaleComponentMessage(type, ["extended_name"]);
+                            var tt = mlab.dt.api.getLocaleComponentMessage(comp_id, ["tooltip"]);
+                            var tte = mlab.dt.api.getLocaleComponentMessage(comp_id, ["footer_tip"]);
+                            var eName = mlab.dt.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
 
 //the category setting in the conf.yml files
                             if (typeof components_html[c.conf.category] == "undefined") {
                                 components_html[c.conf.category] = [];
-                                category_translations[c.conf.category] = mlab.dt.api.getLocaleComponentMessage(type, ["category_name"]);
+                                category_translations[c.conf.category] = mlab.dt.api.getLocaleComponentMessage(comp_id, ["category_name"]);
                             }                                
 
                             if (c.is_feature) {
@@ -4673,17 +4797,19 @@ $(document).ready(function() {
                                 comp_type = "component";
                             }
                             
-                            components_html[c.conf.category][parseInt(c.order_by)] = "<div data-mlab-type='" + type + "' " +
-                                        "onclick='mlab.dt.design." + comp_type + "_add(\"" + type + "\");' " +
+                            var pos = temp_comp_order.indexOf(parseInt(c.order_by));
+                            delete temp_comp_order[pos];
+                            components_html[c.conf.category][pos] = "<div data-mlab-type='" + comp_id + "' " +
+                                        "onclick='mlab.dt.design." + comp_type + "_add(\"" + comp_id + "\");' " +
                                         "title='" + tt + "' " +
                                         "class='mlab_button_components' " +
-                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + type + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
+                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + comp_id + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
                                     "</div>" + 
                                     "<div class='mlab_component_footer_tip'>" +
                                             tte +
                                      "</div>";
                         } else if (c.accessible && c.is_storage_plugin) {
-                            mlab.dt.storage_plugins[type] = eName;
+                            mlab.dt.storage_plugins[comp_id] = eName;
                         }
                     }
 
@@ -4706,10 +4832,7 @@ $(document).ready(function() {
                     } 
 
 
-//now loop through all components and for those that inherit another we transfer properties
-                    mlab.dt.utils.process_inheritance(mlab.dt.components);
-
-//finally we assign the API object to the component, cannot do this earlier as it wolud otherwise create a loop to parents, etc 
+//finally we assign the API object to the component, cannot do this earlier as it would create a loop to parents, etc 
 //when trying to merge properties in the previous code block
                     for (index in mlab.dt.components) {
                         if (typeof mlab.dt.components[index].code != "undefined" && mlab.dt.components[index].code !== false) {

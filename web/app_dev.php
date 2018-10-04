@@ -9,8 +9,8 @@ Unauthorized copying of this file, via any medium is strictly prohibited
 For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 *******************************************************************************************************************************/
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
+use Symfony\Component\HttpFoundation\Request;
 
 //Mlab hack, before do ANYTHING we check if the install directory exists, and if so redirect them promptly
 if (file_exists(__DIR__.'/../web/INSTALL/index.php')) {
@@ -19,7 +19,7 @@ if (file_exists(__DIR__.'/../web/INSTALL/index.php')) {
 }
 
 //DO NOT REMOVE, YOUR LICENSE REQUIRES THIS CHECK TO BE PRESENT
-$uglifycheck = false;
+/*$uglifycheck = false;
 $info = shell_exec("uglifyjs --version");
 if ($info) {
     $info = explode(" ", $info);
@@ -32,7 +32,7 @@ if ($info) {
 
 if (!$uglifycheck) {
     die("UglifyJS version 2 or higher must be installed for Mlab to work properly! Refer to Mlab license and documentation.");
-}
+}*/
 
 // If you don't want to setup permissions the proper way, just uncomment the following PHP line
 // read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
@@ -49,14 +49,16 @@ if (!$uglifycheck) {
 }*/
 
 //$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
-$loader = require_once __DIR__.'/../app/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 Debug::enable();
 
 require_once __DIR__.'/../app/AppKernel.php';
 
 $kernel = new AppKernel('dev', true);
+if (PHP_VERSION_ID < 70000) {
+    $kernel->loadClassCache();
+}
 
-//$kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
