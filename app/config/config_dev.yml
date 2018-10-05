@@ -30,13 +30,3 @@ monolog:
         chromephp:
             type:  chromephp
             level: info
-
-# arild removed and put in main config so both prod and dev uses it.
-#assetic:
-#    use_controller: true
-
-#swiftmailer:
-#    delivery_address: me@example.com
-
-assetic:
-    use_controller: true

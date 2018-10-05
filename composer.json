@@ -25,8 +25,8 @@
         "friendsofsymfony/user-bundle": "dev-master",
         "gedmo/doctrine-extensions": "dev-master",
         "symfony/yaml": "~3.4.17",
-        "symfony/assetic-bundle": "^2.8",
-        "willdurand/js-translation-bundle": "~2.6.6"
+        "willdurand/js-translation-bundle": "~2.6.6",
+        "symfony/webpack-encore-pack": "^1.0"
     },
     "scripts": {
         "post-install-cmd": [

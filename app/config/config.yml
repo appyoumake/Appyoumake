@@ -43,68 +43,6 @@ twig:
 #        resources:
 #            - 'SinettMLABBuilderBundle:Form:selectElement.html.twig'
 
-# Assetic Configuration
-assetic:
-    filters:
-        cssrewrite: ~
-        uglifyjs2:
-            bin: /usr/bin/uglifyjs
-            mangle: true
-            compress: true
-    debug:          %kernel.debug%
-    bundles: [ SinettMLABBuilderBundle, FOSUserBundle ]
-            
-    assets:
-#        common_jquery_js:
-#            inputs:
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery-2.1.4.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.ui-1.11.4.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.uploadfile-4.0.11.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.qtip-2.2.0.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/bowser.js'
-#                
-#        applist_mlab_js:
-#            inputs:
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.ddslick-1.0.0.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.contextmenu.js'
-#                
-#        editor_jquery_js:
-#            inputs:
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.mobile-1.4.5.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.ddslick-1.0.0.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.qrcode-0.12.0.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/spin.js'
-#                - '@SinettMLABBuilderBundle/Resources/public/js/jquery.spin.js'
-        
-        editor_mlab_js:
-            inputs:
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab.api.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab.dt.api.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab.dt.management.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab.dt.bestpractice.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab.dt.design.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab.dt.utils.js'
-                - '@SinettMLABBuilderBundle/Resources/public/js/mlab_editor.init.js'
-                
-#        common_jquery_css:
-#            inputs:
-#                - '@SinettMLABBuilderBundle/Resources/public/css/jquery-ui.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/jquery-qtip.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/jquery.uploadfile.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/jquery.contextmenu.css'
-#                
-#        general_mlab_css:
-#            inputs:
-#                - '@SinettMLABBuilderBundle/Resources/public/css/mlab_menu.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/mlab_all.css'
-#
-#        editor_mlab_css:
-#            inputs:
-#                - '@SinettMLABBuilderBundle/Resources/public/css/mlab_reset_editor.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/mlab_menu.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/mlab_editor.css'
-#                - '@SinettMLABBuilderBundle/Resources/public/css/mlab_component_config.css'
-
 # Doctrine Configuration
 doctrine:
     dbal:

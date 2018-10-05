@@ -29,5 +29,3 @@ monolog:
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
 
-assetic:
-    use_controller: false
