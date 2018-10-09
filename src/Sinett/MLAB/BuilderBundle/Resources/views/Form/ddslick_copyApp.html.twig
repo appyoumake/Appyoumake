@@ -12,13 +12,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 {% block choice_widget %}
     {% spaceless %}
-        {% if required and empty_value is none and not empty_value_in_choices %}
-            {% set required = false %}
-        {% endif %}
         <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
-            {% if empty_value is not none %}
-                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
-            {% endif %}
+            <option value=""></option>
             {% if preferred_choices|length > 0 %}
                 {% set options = preferred_choices %}
                 {{ block('choice_widget_options') }}

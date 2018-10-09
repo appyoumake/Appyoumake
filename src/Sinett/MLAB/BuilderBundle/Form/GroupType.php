@@ -12,6 +12,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 namespace Sinett\MLAB\BuilderBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,7 +30,7 @@ class GroupType extends AbstractType
             ->add('description', null, array('label' => 'app.admin.groups.new.or.edit.description'))
             ->add('enabled', null, array('label' => 'app.admin.groups.new.or.edit.enabled'))
             ->add('users', null, array('label' => 'app.admin.groups.new.or.edit.users'))
-            ->add('categories', "hidden")
+            ->add('categories', HiddenType::class)
         ;
     }
     

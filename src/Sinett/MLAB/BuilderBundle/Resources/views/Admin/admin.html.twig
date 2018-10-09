@@ -43,7 +43,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     
 {% block javascripts %}
 	{{ parent() }}
-    <script src='{{ asset('/js/jstree-3.3.3.js') }}'></script>
+    <script src='{{ asset("/build/admin.js") }}'></script>
 	<script>
 
         function getTreeAsArray(obj, tags) {
@@ -114,6 +114,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                 ); // end each function 
                                
   	  			    		} else if (data.action == 'EDIT' || data.action == 'UPDATE') {
+                                debugger;
   	  			    			$("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
                                 $("#row_" + data.db_table + "_" + data.db_id).find("a").each(function () {
                                     prepare_links(this, "ui-id-" + ($('#tabs_admin_apps').tabs('option','active') + 1));

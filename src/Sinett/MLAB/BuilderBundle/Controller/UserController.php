@@ -99,7 +99,7 @@ class UserController extends Controller
         ));
         
 //need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
@@ -206,7 +206,7 @@ class UserController extends Controller
         ));
 
 //need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
@@ -239,7 +239,7 @@ class UserController extends Controller
 
 //if this is a regular admin we must not lose the group memberships that this admin does not control. 
 //I.e. if admin is member of A and B and the user being edite is set to be member of B and is already member of C then need to keep C
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $preserve_groups = array();
             $temp_groups = $this->getUser()->getGroupsIdArray();
             foreach($entity->getGroups() as $group) {
@@ -257,7 +257,7 @@ class UserController extends Controller
             $this->get('fos_user.user_manager')->updateUser($entity, false);
             
 //re-add missing groups here
-            if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && !empty($preserve_groups)) {
+            if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && !empty($preserve_groups)) {
                 foreach ($preserve_groups as $group) {
                     $entity->addGroup($group);
                 }

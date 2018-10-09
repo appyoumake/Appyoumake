@@ -67,7 +67,7 @@ class GroupController extends Controller
             }
             
 //if regular admin, add themselves as a user in this group, regardless of whether they did this through the dialog box.
-            if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+            if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                 $entity->addUser($this->getUser());
 //                $this->getUser()->addGroup($entity);
             }
@@ -103,7 +103,7 @@ class GroupController extends Controller
         ));
         
 //need to create custom form for regular admin because we want to filter out and only show users that the current admin controls.
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
@@ -195,7 +195,7 @@ class GroupController extends Controller
             'method' => 'PUT',
         ));
         
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);
@@ -227,7 +227,7 @@ class GroupController extends Controller
         }
 
 //remove all old groups from DB record IF they are in the group of the currently editing user
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $users = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:User')->findByRoleAndGroup($temp_roles[0], $temp_groups);

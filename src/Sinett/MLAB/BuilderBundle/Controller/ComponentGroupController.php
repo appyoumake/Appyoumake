@@ -160,16 +160,16 @@ class ComponentGroupController extends Controller
         
 //set group to enabled if it is in the componentGroup entities
         foreach ($groups as $group) {
-            if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') || in_array($group->getId(), $group_access)) { //only deal with groups that we have access to
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') || in_array($group->getId(), $group_access)) { //only deal with groups that we have access to
                 $group_id = $group->getId();
                 $group->isEnabled = "false";
                 $group->credential = array();
                 $entity = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component_id, 'group' => $group_id));
                 if ($entity) {
 //check if group is enabled, this is done by checking if a record exists for this group in the componentgroup table
-                    if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 1) > 0) {
+                    if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 1) > 0) {
                         $group->isEnabled = "true";
-                    } else if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 2) > 0) {
+                    } else if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 2) > 0) {
                         $group->isEnabled = "true";
                     }
                     $cred = $entity->getCredential();
@@ -289,7 +289,7 @@ class ComponentGroupController extends Controller
 //next we check if this group access setting has an existing record in the database and if the toggle bit is true or not for user (if regular admin) or admin (if super user)
             $existing_component_group = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component_id, 'group' => $group_id));
             if ($existing_component_group) {
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $existing_access = (($existing_component_group->getAccessState() & 1) > 0);
                 } else {
                     $existing_access = (($existing_component_group->getAccessState() & 2) > 0);
@@ -302,7 +302,7 @@ class ComponentGroupController extends Controller
 //If the remaining value is 0 it means admin does not have access, if it is 1 then admin has access
 //this allows us to preserve admin access info between turning on an off user access
             if (!$isEnabled && $existing_access) {
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $existing_component_group->setAccessState($existing_component_group->getAccessState() ^ 1);
                 } else if (($existing_component_group->getAccessState() & 2) > 0) {
                     $existing_component_group->setAccessState($existing_component_group->getAccessState() ^ 2);
@@ -318,7 +318,7 @@ class ComponentGroupController extends Controller
             } elseif ($isEnabled && !$existing_component_group) {
                 $new_entity = new ComponentGroup();
                 $new_entity->setGroup($group);
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $new_entity->setAccessState(1);
                 } else {
                     $new_entity->setAccessState(2);
@@ -333,7 +333,7 @@ class ComponentGroupController extends Controller
                 
 //did not have access before, got it now, need to update existing record
             } elseif ($isEnabled && !$existing_access) {
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $existing_component_group->setAccessState($existing_component_group->getAccessState() | 1);
                 } else {
                     $existing_component_group->setAccessState($existing_component_group->getAccessState() | 2);
@@ -344,17 +344,19 @@ class ComponentGroupController extends Controller
         }
         
 //format the group access details
+        $group_admin_access = array();
         $group_user_access = array();
 //pick up group access names, we show admin access (bit 0 = 1) in red
         foreach ($component->getGroups() as $group) {
             $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component->getId(), 'group' => $group->getId()))->getAccessState();
-            if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
-                $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
+                $group_admin_access[] = $group->getName();
             } else if ( ($access_state & 2) > 0) {
                 $group_user_access[] = $group->getName();
             }
         }
-        $component->setGroupNames(implode(", ", $group_user_access));   
+        $component->setGroupNamesAdmin(implode(", ", $group_admin_access));   
+        $component->setGroupNamesUser(implode(", ", $group_user_access));   
         
         return new JsonResponse(array('db_table' => 'component',
                     'action' => 'UPDATE',

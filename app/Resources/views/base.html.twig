@@ -27,13 +27,7 @@ Core page template for all pages except the app editor page
         {% endblock %}
                 
         {% block javascripts %}
-            <script src='{{ asset('/js/jquery-2.1.4.js') }}'></script>
-            <script src='{{ asset('/js/jquery.ui-1.11.4.js') }}'></script>
-            <script src='{{ asset('/js/jquery.form.js') }}'></script>
-            <script src='{{ asset('/js/jquery.uploadfile-4.0.11.js') }}'></script>
-            <script src='{{ asset('/js/jquery.qtip-3.0.3.js') }}'></script>
-            <script src='{{ asset('/js/bowser.js') }}'></script>
-
+            <script src='{{ asset("/build/mlab.js") }}'></script>
             <script type="text/javascript">
                 $(document).ready(function() {
 

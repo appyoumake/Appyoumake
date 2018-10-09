@@ -17,23 +17,45 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
-    .addEntry('app', './assets/js/app.js')
-    .addEntry('page1', './assets/js/builder.js')
-    //.addEntry('page2', './assets/js/page2.js')
+    
+    //used on all pages, incl. app builder
+    .addEntry('mlab', './assets/js/mlab.js')
+    
+    //used on all admin pages
+    .addEntry('admin', './assets/js/admin.js')
+    
+    //used only on the page listing the apps
+    .addEntry('applist', './assets/js/applist.js')
+    
+    //used on app builder page
+    .addEntry('builder', './assets/js/builder.js')
+    
+    // see https://symfony.com/doc/current/frontend/encore/legacy-apps.html re what this does.
+    // in short makes $ and jQuery global vars
+    .autoProvidejQuery()
 
     .cleanupOutputBeforeBuild()
     .enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
-    // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    // first, install any presets you want to use (e.g. yarn add babel-preset-es2017)
+    // then, modify the default Babel configuration
+    .configureBabel(function(babelConfig) {
+        // add additional presets
+        babelConfig.presets.push('es2017');
 
-    // uncomment if you use Sass/SCSS files
-    //.enableSassLoader()
-
-    // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+        // no plugins are added by default, but you can add some
+        // babelConfig.plugins.push('styled-jsx/babel');
+    })
 ;
 
-module.exports = Encore.getWebpackConfig();
+var config = Encore.getWebpackConfig();
+
+// add alias for jquery ui. See following for info
+//how to in encore: https://symfony.com/doc/3.4/frontend/encore/advanced-config.html
+// why use alias: https://github.com/symfony/webpack-encore/issues/122
+// why use dist and not plain jquery-ui: https://stackoverflow.com/questions/47622786/how-to-prevent-jquery-from-importing-twice-with-webpack-typescript
+config.resolve.alias["jquery-ui"] = 'jquery-ui-dist/jquery-ui.js';
+
+module.exports = config;

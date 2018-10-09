@@ -58,7 +58,7 @@ class ComponentController extends Controller
 //now pick up the components, and set canDelete for those who have not been used
         
 //for superadmin we list all components
-        if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             if (is_array($all_comps_used)) {
                 $entities = $em->getRepository('SinettMLABBuilderBundle:Component')->findAllCheckDeleteable($all_comps_used);
             } else {

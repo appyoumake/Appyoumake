@@ -28,20 +28,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         {% endblock %}
             
         {% block javascripts %}
-            <script src='{{ asset('/js/jquery-2.1.4.js') }}'></script>
-            <script src='{{ asset('/js/jquery.mobile-1.4.5.js') }}'></script>
-            <script src='{{ asset('/js/jquery.ui-1.11.4.js') }}'></script>
-            <!-- <script src='{{ asset('/js/jquery.uploadfile-4.0.11.js') }}'></script> -->
-            <script src='{{ asset('/js/jquery.form.js') }}'></script>
-            <script src='{{ asset('/js/jquery.uploadfile-4.0.11.js') }}'></script>
-            <script src='{{ asset('/js/jquery.qtip.nightly.js') }}'></script>
-            <script src='{{ asset('/js/jquery.ddslick-1.0.0.js') }}'></script>
-            <script src='{{ asset('/js/jquery.qrcode-0.12.0.js') }}'></script>
-            <script src='{{ asset('/js/jquery.contextmenu-1.0.0.js') }}'></script>
-            <script src='{{ asset('/js/spin.js') }}'></script>
-            <script src='{{ asset('/js/jquery.spin.js') }}'></script>
-            <script src='{{ asset('/js/bowser.js') }}'></script>
-
+            <script src='{{ asset("/build/mlab.js") }}'></script>
+            <script src='{{ asset("/build/applist.js") }}'></script>
+            <script src='{{ asset("/build/builder.js") }}'></script>
             <script type='text/javascript'>
                 //these vars are generated from backend and are required for the initialisation of the mlab object later
                 document.mlab_temp_vars = {locale: '{{ app.request.locale }}', app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };
@@ -74,7 +63,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     });
                 }
             </script>
-            {% if app.debug %}
+            {# {% if app.debug %}
                 {% javascripts '@editor_mlab_js' %}
                     <script src="{{ asset_url }}"></script>
                 {% endjavascripts %}
@@ -82,7 +71,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 {% javascripts '@editor_mlab_js' filter='uglifyjs2' %}
                     <script src="{{ asset_url }}"></script>
                 {% endjavascripts %}
-            {% endif %}
+            {% endif %} #}
         {% endblock %}
             
             

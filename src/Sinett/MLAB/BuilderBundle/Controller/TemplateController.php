@@ -39,7 +39,7 @@ class TemplateController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         
-        if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllCheckDeleteable();
             foreach ($entities as $entity) {
                 $group_user_access = array();
@@ -131,7 +131,7 @@ class TemplateController extends Controller
                     $new_entity = new TemplateGroupData();
                     $new_entity->setGroupId($group->getId());
                     $new_entity->setTemplateId($entity->getId());
-                    if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                    if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                         $new_entity->setAccessState(1);
                     } else {
                         $new_entity->setAccessState(2);
@@ -145,7 +145,7 @@ class TemplateController extends Controller
 //pick up group access names, we show admin access (bit 0 = 1) in red
                 foreach ($entity->getGroups() as $group) {
                     $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()))->getAccessState();
-                    if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
+                    if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
                         $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
                     } else if ( ($access_state & 2) > 0) {
                         $group_user_access[] = $group->getName();
@@ -248,14 +248,14 @@ class TemplateController extends Controller
         
 //set group to enabled if it is in the group entities
         foreach ($groups as $group) {
-            if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') || in_array($group->getId(), $group_access)) { //only deal with groups that we have access to
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') || in_array($group->getId(), $group_access)) { //only deal with groups that we have access to
                 $group->isEnabled = "false";
                 $entity = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template_entity->getId(), 'group_id' => $group->getId()));
                 if ($entity) {
 //check if group is enabled, this is done by checking if a record exists for this group in the componentgroup table
-                    if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 1) > 0) {
+                    if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 1) > 0) {
                         $group->isEnabled = "true";
-                    } else if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 2) > 0) {
+                    } else if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 2) > 0) {
                         $group->isEnabled = "true";
                     }
                 }
@@ -305,7 +305,7 @@ class TemplateController extends Controller
         ));
         
 //need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
-        if (!$this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
             $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
@@ -366,7 +366,7 @@ class TemplateController extends Controller
                         $new_entity = new TemplateGroupData();
                         $new_entity->setGroupId($group->getId());
                         $new_entity->setTemplateId($entity->getId());
-                        if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                             $new_entity->setAccessState(1);
                         } else {
                             $new_entity->setAccessState(2);
@@ -434,7 +434,7 @@ class TemplateController extends Controller
 //next we check if this group access setting has an existing record in the database and if the toggle bit is true or not for user (if regular admin) or admin (if super user)
             $existing_template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template_id, 'group_id' => $group_id));
             if ($existing_template_group_data) {
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $existing_access = (($existing_template_group_data->getAccessState() & 1) > 0);
                 } else {
                     $existing_access = (($existing_template_group_data->getAccessState() & 2) > 0);
@@ -447,7 +447,7 @@ class TemplateController extends Controller
 //If the remaining value is 0 it means admin does not have access, if it is 1 then admin has access
 //this allows us to preserve admin access info between turning on an off user access
             if (!$isEnabled && $existing_access) {
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() ^ 1);
                 } else if (($existing_template_group_data->getAccessState() & 2) > 0) {
                     $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() ^ 2);
@@ -460,7 +460,7 @@ class TemplateController extends Controller
                 $new_entity = new TemplateGroupData();
                 $new_entity->setGroupId($group_id);
                 $new_entity->setTemplateId($template->getId());
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $new_entity->setAccessState(1);
                 } else {
                     $new_entity->setAccessState(2);
@@ -475,7 +475,7 @@ class TemplateController extends Controller
                 
 //did not have access before, got it now, need to update existing record
             } elseif ($isEnabled && !$existing_access) {
-                if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                     $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() | 1);
                 } else {
                     $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() | 2);
@@ -490,7 +490,7 @@ class TemplateController extends Controller
 //pick up group access names, we show admin access (bit 0 = 1) in red
         foreach ($template->getGroups() as $group) {
             $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template->getId(), 'group_id' => $group->getId()))->getAccessState();
-            if ($this->get('security.context')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
                 $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
             } else if ( ($access_state & 2) > 0) {
                 $group_user_access[] = $group->getName();
