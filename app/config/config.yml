@@ -30,6 +30,9 @@ framework:
     session:         ~
     fragments:       ~
     http_method_override: true
+    assets:
+        # feature is supported in Symfony 3.3 and higher
+        json_manifest_path: '%kernel.project_dir%/web/build/manifest.json'
 
 # Twig Configuration
 twig:

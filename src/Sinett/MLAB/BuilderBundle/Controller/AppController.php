@@ -630,7 +630,7 @@ class AppController extends Controller
  * @param type $app_id
  * @return \Symfony\Component\HttpFoundation\Response
  */
-    public function appPreviewAction($app_id) {
+    public function appPreviewAction(Request $request, $app_id) {
         if ($app_id < 1) {
     		return new Response("No app id specified");
     	}
@@ -640,7 +640,6 @@ class AppController extends Controller
         }
 
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-        $request = $this->container->get('request');
 
         $file_mgmt = $this->get('file_management');
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));

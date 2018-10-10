@@ -28,9 +28,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         {% endblock %}
             
         {% block javascripts %}
-            <script src='{{ asset("/build/mlab.js") }}'></script>
-            <script src='{{ asset("/build/applist.js") }}'></script>
-            <script src='{{ asset("/build/builder.js") }}'></script>
+            <script src='{{ asset("build/builder.js") }}'></script>
             <script type='text/javascript'>
                 //these vars are generated from backend and are required for the initialisation of the mlab object later
                 document.mlab_temp_vars = {locale: '{{ app.request.locale }}', app_id: {{ mlab_app_id }}, page_num: '{{ mlab_app_page_num }}', appbuilder_root_url: '{{ mlab_appbuilder_root_url }}' };

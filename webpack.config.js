@@ -41,13 +41,20 @@ Encore
 
     // first, install any presets you want to use (e.g. yarn add babel-preset-es2017)
     // then, modify the default Babel configuration
+    // see https://symfony.com/doc/current/frontend/encore/babel.html
     .configureBabel(function(babelConfig) {
         // add additional presets
         babelConfig.presets.push('es2017');
+        /* babelConfig.presets[0][1].targets = {
+            browsers: '> 15%',
+            uglify: true
+        };*/
 
         // no plugins are added by default, but you can add some
         // babelConfig.plugins.push('styled-jsx/babel');
     })
+    
+    // !Encore.isProduction()
 ;
 
 var config = Encore.getWebpackConfig();
