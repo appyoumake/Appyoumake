@@ -1,4 +1,7 @@
 var Encore = require('@symfony/webpack-encore');
+// Put back in when update encore to use webpack 4.x
+// var webpack = require('webpack');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 Encore
     // directory where compiled assets will be stored
@@ -39,25 +42,49 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
+    // we add the uglifyjs plugin to protect source. We do NOT use babel.
+    // Although it used uglifyjs it is more difficult to configure and Babael creates backwards compatible code which we do not need
+    // https://symfony.com/doc/3.4/frontend/encore/custom-loaders-plugins.html 
+    // https://webpack.js.org/plugins/uglifyjs-webpack-plugin/
+    
+
     // first, install any presets you want to use (e.g. yarn add babel-preset-es2017)
     // then, modify the default Babel configuration
     // see https://symfony.com/doc/current/frontend/encore/babel.html
+
+    // REMOVE THIS WHEN Encore is updated to work with Webpack 4.x
     .configureBabel(function(babelConfig) {
         // add additional presets
         babelConfig.presets.push('es2017');
-        /* babelConfig.presets[0][1].targets = {
-            browsers: '> 15%',
-            uglify: true
-        };*/
+        // debug info: console.log(babelConfig.presets[0][1]);
 
         // no plugins are added by default, but you can add some
         // babelConfig.plugins.push('styled-jsx/babel');
     })
     
-    // !Encore.isProduction()
+    
 ;
 
 var config = Encore.getWebpackConfig();
+
+/* Waiting for we4bpack encore to be updated to version after 0.12.1: 
+ * https://github.com/symfony/webpack-encore/tree/master and https://github.com/symfony/webpack-encore/issues/250
+ * 
+config.optimization = { minimiser: [new UglifyJsPlugin({
+    test: /\.js(\?.*)?$/i,
+    uglifyOptions: {
+        warnings: false,
+        parse: {},
+        compress: {},
+        mangle: true, // Note `mangle.properties` is `false` by default.
+        output: null,
+        toplevel: false,
+        nameCache: null,
+        ie8: false,
+        keep_fnames: false,
+        ecma: 6
+    }
+})]}; */
 
 // add alias for jquery ui. See following for info
 //how to in encore: https://symfony.com/doc/3.4/frontend/encore/advanced-config.html
