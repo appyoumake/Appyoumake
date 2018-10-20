@@ -602,11 +602,16 @@ Mlab_dt_design.prototype = {
             for(var index in this.parent.components[comp_name].code) {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
-                    temp_comp_order.push( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 );
+                    
+//we may have a case where the custom code is written, but we have forgotten to create a matching conf.yml entry
+                    if (typeof conf.custom[title] != "undefined") {
+                        temp_comp_order.push( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 );
+                    }
                 }
             }
             temp_comp_order.sort(function(a, b) {return a - b;});
             
+//repeating loop that generates the tool buttons for the custom code
             for(var index in this.parent.components[comp_name].code) {
                 if (index.substr(0, 7) == "custom_") {
                     title = index.slice(7);
@@ -629,6 +634,8 @@ Mlab_dt_design.prototype = {
                                          "class='" + cl + "' " + 
                                          "data-mlab-comp-tool-id='" + index + "' " + 
                                          icon + " >";
+                    } else {
+                        console.log("Missing conf.yml entry for custom:" + title);
                     }
                 }
             }
