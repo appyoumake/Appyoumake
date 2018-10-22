@@ -27,23 +27,25 @@
  * When the compile time index is created, then we use level to set indents
  */
     this.custom_decrease_size = function (el) {
+        var content = this.getHTMLElement(el);
         var level = this.api.getVariable(el, "level");
         if (level == this.LEVEL_1) {
-            el.removeClass("mc_large").addClass("mc_medium");
+            content.removeClass("mc_large").addClass("mc_medium");
             this.api.setVariable(el, "level", this.LEVEL_2);
         } else {
-            el.removeClass("mc_medium").addClass("mc_small");
+            content.removeClass("mc_medium").addClass("mc_small");
             this.api.setVariable(el, "level", this.LEVEL_3);
-        } 
+        }
     };
 
     this.custom_increase_size = function (el) {
-		var level = this.api.getVariable(el, "level");
+        var content = this.getHTMLElement(el);
+        var level = this.api.getVariable(el, "level");
         if (level == this.LEVEL_3) {
-            el.removeClass("mc_small").addClass("mc_medium");
+            content.removeClass("mc_small").addClass("mc_medium");
             this.api.setVariable(el, "level", this.LEVEL_2);
         } else {
-            el.removeClass("mc_medium").addClass("mc_large");
+            content.removeClass("mc_medium").addClass("mc_large");
             this.api.setVariable(el, "level", this.LEVEL_1);
         } 
     };
