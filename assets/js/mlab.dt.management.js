@@ -302,6 +302,12 @@ Mlab_dt_management.prototype = {
 //here we insert the body MINUS the editable area (which was just removed) which is stored in the divs variable, into the editor_chrome
         $("#mlab_editor_chrome").append(body.innerHTML);
 
+//Page name is picked up from title tag in head
+        this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
+//        must be called before this.parent.design.prepare_editable_area()
+        this.parent.app.curr_page_num = 0;
+        $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
+
 //now we need to make the internal code editable, but only if they actually want to edit this page
         if (is_final_destination) {
             $("#" + this.parent.config["app"]["content_id"]).html(divs);
@@ -310,12 +316,6 @@ Mlab_dt_management.prototype = {
         }
 
         this.parent.app.curr_indexpage_html = doc;
-        
-//Page name is picked up from title tag in head
-        this.parent.app.curr_pagetitle = head.getElementsByTagName("title")[0].innerText;
-        this.parent.app.curr_page_num = 0;
-        $("#mlab_page_control_title").text(this.parent.app.curr_pagetitle);
-
         this.app_update_gui_metadata();
 
 //finally we need to initialise the jQuery mobile stuff on the page we loaded, otherwise it will not display correctly
@@ -527,11 +527,12 @@ Mlab_dt_management.prototype = {
                     return;
                 } else {
                     that.regular_page_process ( data.html, data.page_num_real );
-                    var path = window.location.pathname.split("/");
-                    path[path.length - 3] = data.app_id;
-                    path[path.length - 2] = data.page_num_real;
-                    history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
                 }
+                
+                var path = window.location.pathname.split("/");
+                path[path.length - 3] = data.app_id;
+                path[path.length - 2] = data.page_num_real;
+                history.pushState({id: data.app_id, page: data.page_num_real }, that.parent.app.curr_pagetitle, path.join("/"));
 
                 if (data.lock_status == "locked") {
                     that.parent.app.locked = true;
@@ -547,7 +548,7 @@ Mlab_dt_management.prototype = {
                     $("#mlab_overlay").slideUp();
                 }
                 
-//turn off clikability of links
+//turn off clickability of links
                 $("#mlab_editable_area").find("a").click(function(e) { e.preventDefault(); });
 
                 that.parent.utils.timer_start();
