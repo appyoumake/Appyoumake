@@ -40,3 +40,7 @@
     font-size: 1.45em !important;
     margin: 0.8em 0; 
 }
+
+#mlab_editor [data-mlab-type="index"] ul {
+    padding: 0 2em 0 1.25em;
+}

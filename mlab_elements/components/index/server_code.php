@@ -112,38 +112,60 @@ class mlab_ct_index {
             }
             $html .= "</div>";
         } else {
-            $html .= "<ul class='mc_container mc_index mc_list " . $textsize . "'>\n";
-            $curr_level = false;
-            
-//loop through all pages, insert new details tag for each chapter, can be neted.
-            foreach ($index as $i => $chapter_info) {
-                if ($chapter_info["chapter"]) {
-//close container for page names if detailed index
-                    if ($style == "detailed") {
-                        $html .= "    </ul>\n";
-                    }
-                    for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened list tag
-                        $html .= "</li>\n";
-                    }
-                    $curr_chapter = $chapter_info["chapter"];
-                    $curr_level = $chapter_info["level"];
-                    $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"]  . "); return false;'>" . $chapter_info["chapter"] . "</a>\n";
-//prepare container for page names if detailed index
-                    if ($style == "detailed") {
-                        $html .= "    <ul>\n";
-                    }
-                }
-//adds page names for detailed index
-                if ($style == "detailed") {
-                    $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></li>\n";
-                }
-            }
-
-            $html .= "</ul>\n";
+            $html .= $this->detailedListHtml($index, $textsize);
         }
 
         return $html;
         
+    }
+    
+    protected function detailedListHtml($indexes, $textsize) {
+        $this->buildTree($indexes);
+        $html = "<ul class='" . 'mc_container mc_index mc_list ' . $textsize . "'>\n";;
+        foreach ($indexes as $index) {
+            $html .= $this->indexLevelHtml($index);
+        }
+        $html .= "</ul>\n";
+        
+        return $html;
+    }
+
+    protected function indexLevelHtml($index) {
+        $html = "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+        $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
+        if(!empty($index['children'])){
+            $html .= "<ul>\n";
+            foreach ($index['children'] as $child) {
+                $html .= $this->indexLevelHtml($child);
+            }
+            $html .= "</ul>\n";
+        }
+        $html .= "</li>\n";
+        return $html;
+    }
+
+    protected function buildTree(array &$nodes) {
+        $activeNodes = [];
+        $parentLevel = 0;
+
+        foreach ($nodes as $index => &$node) {
+            $node['children'] = [];
+            $level = intval($node['level']);
+            $activeNodes[$level] = &$node;
+
+            if ($level > 0) {
+                $insertLevel = 0;
+                if ($level > $parentLevel) {
+                    $insertLevel = $parentLevel;
+                } else if (isset($activeNodes[$level - 1])){
+                    $insertLevel = $level - 1;
+                }
+                
+                $activeNodes[$insertLevel]['children'][] = &$node;
+                unset($nodes[$index]);
+            }
+            $parentLevel = $level;
+        }
     }
     
 }
