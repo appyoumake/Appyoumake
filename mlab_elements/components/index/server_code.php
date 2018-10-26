@@ -12,6 +12,8 @@ class mlab_ct_index {
     const LEVEL_2 = 2;
     const LEVEL_3 = 3;
 
+    private $displayPageTitle = true;
+    
     /**
      * Simple function to parse a page and look for/extract the following
      * 1 - a chapter component, if found it returns thw following
@@ -118,54 +120,83 @@ class mlab_ct_index {
         return $html;
         
     }
-    
+
     protected function detailedListHtml($indexes, $textsize) {
-        $this->buildTree($indexes);
+        $chapters = $this->chapterTree($indexes);
         $html = "<ul class='" . 'mc_container mc_index mc_list ' . $textsize . "'>\n";;
-        foreach ($indexes as $index) {
-            $html .= $this->indexLevelHtml($index);
+        foreach ($chapters as $index) {
+            $html .= $this->detailedIndexLevelHtml($index);
         }
         $html .= "</ul>\n";
         
         return $html;
     }
 
-    protected function indexLevelHtml($index) {
-        $html = "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
-        $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
-        if(!empty($index['children'])){
-            $html .= "<ul>\n";
-            foreach ($index['children'] as $child) {
-                $html .= $this->indexLevelHtml($child);
-            }
-            $html .= "</ul>\n";
+    
+    protected function detailedIndexLevelHtml($index) {
+        $html = '';
+        $childrenHtml = '';
+
+        foreach ($index['children'] as $child) {
+            $childrenHtml .= $this->detailedIndexLevelHtml($child);
         }
-        $html .= "</li>\n";
+
+        if ($index['chapter']) {
+            $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+            $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["chapter"] . "</a>";
+            
+            if($this->displayPageTitle) {
+                $html .= "<ul>\n";
+                $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+                $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
+                $html .= "</li>";
+                $html .= $childrenHtml;
+                $html .= "</ul>\n";
+            } else {
+                $html .= "<ul>\n";
+                $html .= $childrenHtml;
+                $html .= "</ul>\n";
+            }
+
+            $html .= "</li>";
+        } else if($this->displayPageTitle) {
+            $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+            $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
+            $html .= "<ul>\n";
+            $html .= $childrenHtml;
+            $html .= "</ul>\n";
+            $html .= "</li>";
+        } else {
+            $html .= $childrenHtml;
+        }
+
         return $html;
     }
 
-    protected function buildTree(array &$nodes) {
+    protected function chapterTree(array $nodes) {
         $activeNodes = [];
-        $parentLevel = 0;
+        $currentLevel = 0;
 
         foreach ($nodes as $index => &$node) {
             $node['children'] = [];
             $level = intval($node['level']);
-            $activeNodes[$level] = &$node;
-
-            if ($level > 0) {
-                $insertLevel = 0;
-                if ($level > $parentLevel) {
-                    $insertLevel = $parentLevel;
-                } else if (isset($activeNodes[$level - 1])){
-                    $insertLevel = $level - 1;
+            if($level > 0) {
+                $activeNodes[$level] = &$node;
+                if(isset($activeNodes[$level - 1])) {
+                    $activeNodes[$level - 1]['children'][] = &$node;
+                } else {
+                    $activeNodes[$currentLevel]['children'][] = &$node;
                 }
-                
-                $activeNodes[$insertLevel]['children'][] = &$node;
                 unset($nodes[$index]);
+                $currentLevel = $level;
+            } elseif ($currentLevel > 0) {
+                $activeNodes[$currentLevel]['children'][] = &$node;
+                unset($nodes[$index]);
+            } else {
+                $activeNodes[$level] = &$node;
             }
-            $parentLevel = $level;
         }
+        return $nodes;
     }
-    
+
 }
