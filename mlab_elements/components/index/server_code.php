@@ -12,7 +12,7 @@ class mlab_ct_index {
     const LEVEL_2 = 2;
     const LEVEL_3 = 3;
 
-    private $displayPageTitle = true;
+    private $displayChapterPageTitle = true;
     
     /**
      * Simple function to parse a page and look for/extract the following
@@ -134,41 +134,23 @@ class mlab_ct_index {
 
     
     protected function detailedIndexLevelHtml($index) {
-        $html = '';
-        $childrenHtml = '';
-
-        foreach ($index['children'] as $child) {
-            $childrenHtml .= $this->detailedIndexLevelHtml($child);
-        }
-
-        if ($index['chapter']) {
-            $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
-            $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["chapter"] . "</a>";
-            
-            if($this->displayPageTitle) {
-                $html .= "<ul>\n";
-                $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
-                $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
-                $html .= "</li>";
-                $html .= $childrenHtml;
-                $html .= "</ul>\n";
-            } else {
-                $html .= "<ul>\n";
-                $html .= $childrenHtml;
-                $html .= "</ul>\n";
-            }
-
-            $html .= "</li>";
-        } else if($this->displayPageTitle) {
+        $html = "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+        $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" .
+            ($index['chapter'] ? $index['chapter'] : $index["title"]) . "</a>";
+        
+        $html .= "<ul>\n";
+        if($index['chapter'] && $this->displayChapterPageTitle){
             $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
             $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
-            $html .= "<ul>\n";
-            $html .= $childrenHtml;
-            $html .= "</ul>\n";
             $html .= "</li>";
-        } else {
-            $html .= $childrenHtml;
         }
+        
+        foreach ($index['children'] as $child) {
+            $html .= $this->detailedIndexLevelHtml($child);
+        }
+        
+        $html .= "</ul>\n";
+        $html .= "</li>";
 
         return $html;
     }
