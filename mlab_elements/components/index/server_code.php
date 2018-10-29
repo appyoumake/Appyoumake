@@ -12,7 +12,7 @@ class mlab_ct_index {
     const LEVEL_2 = 2;
     const LEVEL_3 = 3;
 
-    private $displayChapterPageTitle = true;
+    private $displayChapterPageTitle = false;
     
     /**
      * Simple function to parse a page and look for/extract the following
@@ -108,9 +108,15 @@ class mlab_ct_index {
                     $curr_chapter = $chapter_info["chapter"];
                     $curr_level = $chapter_info["level"];
                     $html .= "<details>\n";
-                    $html .= "    <summary>" . trim($chapter_info["chapter"]) . "</summary>\n";
+                    $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $chapter_info["page_id"] . '); return false;}">' . trim($chapter_info["chapter"]) . "</summary>\n";
+                    
+                    if($this->displayChapterPageTitle){
+                        $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
+                    }
+                } else {
+                    $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
                 }
-                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
+                    
             }
             $html .= "</div>";
         } else {
