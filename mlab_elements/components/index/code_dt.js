@@ -37,6 +37,15 @@
         local_el = el;
         mlab.dt.management.page_save( function() { that.getPreview(local_el); } );
     };
+
+    
+    this.custom_display_chapter_page_titles = function (el) {
+        var that = this;
+        var displayChapterPageTitle = this.api.getVariable(el, 'displayChapterPageTitle');
+        this.api.setVariable(el, 'displayChapterPageTitle', !displayChapterPageTitle);
+        
+        mlab.dt.management.page_save( function() { that.getPreview(el); } );
+    };
     
     this.custom_detailed_style = function (el) {
         var textsize = this.api.getVariable(el, "textsize");

@@ -12,6 +12,12 @@ class mlab_ct_index {
     const LEVEL_2 = 2;
     const LEVEL_3 = 3;
 
+    private $variables = [
+        'style' => 'detailed',
+        'textsize' => 'mc_medium',
+        'displayChapterPageTitle' => true
+    ];
+    
     /**
      * Simple function to parse a page and look for/extract the following
      * 1 - a chapter component, if found it returns thw following
@@ -69,10 +75,9 @@ class mlab_ct_index {
  * They all rely on the user having used the chapter component, if this is not found in any of the files we list pages on a single level
  */
     public function onCompile($app_config, $html_node, $html_text, $app_path, $variables) {
+        $this->variables = array_merge($this->variables, $variables);
         $index = array();
-        if (!isset($variables) || !isset($variables["style"])) { $style = "detailed"; } else { $style = $variables["style"]; }
-        if (!isset($variables) || !isset($variables["textsize"])) { $textsize = "mc_medium"; } else { $textsize = $variables["textsize"]; }
-        
+
         
 //first process index.html file. We check to see if this starts a new chapter through the chapter component, 
 //then we add the page title to the chapter element in the index array. 0 = no chapter specified
@@ -88,13 +93,13 @@ class mlab_ct_index {
         foreach ($app_config["page_order"] as $file) {
             $index[] = $this->findChapterHeading($app_path . $file, intval($file), "Page " . intval($file));
         }
-        
+
 //now we generate the index, we always add app title as top level and link to first page 
-        $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $textsize . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
+        $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $this->variables['textsize'] . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
         
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
-        if ($style == "folding") {
-            $html .= "<div class='mc_container mc_index mc_list " . $textsize . "'>\n";
+        if ($this->variables['style'] == "folding") {
+            $html .= "<div class='mc_container mc_index mc_list " . $this->variables['textsize'] . "'>\n";
             $curr_level = false;
             
 //loop through all pages, insert new details tag for each chapter, can be neted.
@@ -106,44 +111,83 @@ class mlab_ct_index {
                     $curr_chapter = $chapter_info["chapter"];
                     $curr_level = $chapter_info["level"];
                     $html .= "<details>\n";
-                    $html .= "    <summary>" . trim($chapter_info["chapter"]) . "</summary>\n";
+                    $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $chapter_info["page_id"] . '); return false;}">' . trim($chapter_info["chapter"]) . "</summary>\n";
+                    
+                    if($this->variables['displayChapterPageTitle']){
+                        $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
+                    }
+                } else {
+                    $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
                 }
-                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
+                    
             }
             $html .= "</div>";
         } else {
-            $html .= "<ul class='mc_container mc_index mc_list " . $textsize . "'>\n";
-            $curr_level = false;
-            
-//loop through all pages, insert new details tag for each chapter, can be neted.
-            foreach ($index as $i => $chapter_info) {
-                if ($chapter_info["chapter"]) {
-//close container for page names if detailed index
-                    if ($style == "detailed") {
-                        $html .= "    </ul>\n";
-                    }
-                    for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened list tag
-                        $html .= "</li>\n";
-                    }
-                    $curr_chapter = $chapter_info["chapter"];
-                    $curr_level = $chapter_info["level"];
-                    $html .= "  <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"]  . "); return false;'>" . $chapter_info["chapter"] . "</a>\n";
-//prepare container for page names if detailed index
-                    if ($style == "detailed") {
-                        $html .= "    <ul>\n";
-                    }
-                }
-//adds page names for detailed index
-                if ($style == "detailed") {
-                    $html .= "      <li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'><a onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></li>\n";
-                }
-            }
-
-            $html .= "</ul>\n";
+            $html .= $this->detailedListHtml($index);
         }
 
         return $html;
         
     }
+
+    protected function detailedListHtml($indexes) {
+        $chapters = $this->chapterTree($indexes);
+        $html = "<ul class='" . 'mc_container mc_index mc_list ' . $this->variables['textsize'] . "'>\n";;
+        foreach ($chapters as $index) {
+            $html .= $this->detailedIndexLevelHtml($index);
+        }
+        $html .= "</ul>\n";
+        
+        return $html;
+    }
+
     
+    protected function detailedIndexLevelHtml($index) {
+        $html = "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+        $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" .
+            ($index['chapter'] ? $index['chapter'] : $index["title"]) . "</a>";
+        
+        $html .= "<ul>\n";
+        if($index['chapter'] && $this->variables['displayChapterPageTitle']){
+            $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+            $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
+            $html .= "</li>";
+        }
+        
+        foreach ($index['children'] as $child) {
+            $html .= $this->detailedIndexLevelHtml($child);
+        }
+        
+        $html .= "</ul>\n";
+        $html .= "</li>";
+
+        return $html;
+    }
+
+    protected function chapterTree(array $nodes) {
+        $activeNodes = [];
+        $currentLevel = 0;
+
+        foreach ($nodes as $index => &$node) {
+            $node['children'] = [];
+            $level = intval($node['level']);
+            if($level > 0) {
+                $activeNodes[$level] = &$node;
+                if(isset($activeNodes[$level - 1])) {
+                    $activeNodes[$level - 1]['children'][] = &$node;
+                } else {
+                    $activeNodes[$currentLevel]['children'][] = &$node;
+                }
+                unset($nodes[$index]);
+                $currentLevel = $level;
+            } elseif ($currentLevel > 0) {
+                $activeNodes[$currentLevel]['children'][] = &$node;
+                unset($nodes[$index]);
+            } else {
+                $activeNodes[$level] = &$node;
+            }
+        }
+        return $nodes;
+    }
+
 }
