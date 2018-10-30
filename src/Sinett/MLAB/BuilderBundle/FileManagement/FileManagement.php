@@ -481,24 +481,29 @@ class FileManagement {
                 file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
             }
 
+            $appConfig = $appConfigUpdate['config'] = $this->getAppConfig($app);
+                
 //2: Add plugins to the local conf file. We store these as the compiler service will later add these through CLI commands
 //https://cordova.apache.org/docs/en/5.1.1/guide_cli_index.md.html
 //https://cordova.apache.org/docs/en/5.1.1/cordova_plugins_pluginapis.md.html#Plugin%20APIs.
             if (file_exists($path_component . "conf.yml")) {
                 $yaml = new Parser();
                 $comp_config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
-                
-                if (isset($comp_config["plugins"])) {
 
+                if (isset($comp_config["plugins"])) {
                     $new_plugins = $comp_config["plugins"];
 
 //update config file for app with the list of plugins, Used when we compile the app using Cordova
-                    $tmp_existing_config = $this->getAppConfigValue($app, "plugins");
-                    if (!$tmp_existing_config) {
-                        $tmp_existing_config = array();
-                    }
-                    $this->updateAppConfigFile($app, array("title" => $app->getName(), "plugins" => array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]))));
+                    $appConfigUpdate['config']["title"] = $app->getName();
+                    $appConfigUpdate['config']["plugins"] = array_unique(array_merge($new_plugins, $appConfig["plugins"]));
                 }
+                
+                if (isset($comp_config["requires_network"]) && $comp_config["requires_network"] != 'none') {
+                    $counter = 'count' . ucfirst($comp_config["requires_network"]) . 'Comp';
+                    isset($appConfigUpdate['config'][$counter]) OR $appConfigUpdate['config'][$counter] = 0;
+                    $appConfigUpdate['config'][$counter] += 1;
+                }
+                $this->componentUpdateConfig($app, $comp_id, $appConfigUpdate);
 
 //2.5: copy across any runtime dependencies, can be JS or CSS
                 $this->copyRequiredFiles($comp_config, $path_app, $this->config['paths']['component']);
@@ -538,6 +543,46 @@ class FileManagement {
                             'msg' => $error);
         }        
     }
+	
+        public function componentUpdateConfig($app, $comp_id, $update) {
+            $path_component = $this->config['paths']['component'] . $comp_id . "/";
+            $path_app = $app->calculateFullPath($this->config['paths']['app']);
+            $path_app_config = $path_app . $this->config['filenames']["app_config"];
+
+            if(!is_dir($path_component) || !is_dir($path_app)) {
+                $error = "";
+                if (!is_dir($path_component)) { $error .= "Component not found\n"; }
+                if (!is_dir($path_app)) { $error .= "App not found\n"; }
+                return array(
+                            'result' => 'failure',
+                            'msg' => $error);
+            }
+            
+            $config = $prevConfig = $this->getAppConfig($app);
+            
+            if (file_exists($path_component . "conf.yml")) {
+                $yaml = new Parser();
+                $component = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+            }
+
+            if(isset($update['config'])) {
+                $config = array_merge($config, $update['config']);
+            }
+
+            if(isset($update['execute'])) {
+                $execute = $update['execute'];
+                $config = call_user_func(function() use ($component, $config, $execute) {
+                    eval($execute);
+                    return $config;
+                });
+            }
+
+            if($config != $prevConfig) {
+                file_put_contents($path_app_config, json_encode($config));   
+            }
+
+            return array('result' => 'success', 'config' => $config);
+        }
 	
 	/**
 	 * Function called to create a new app, copies across relevant template files 
@@ -615,6 +660,20 @@ class FileManagement {
         }
         return false;
 
+    }
+
+/**
+ * Get application config json
+ * @param type $app
+ */
+    public function getAppConfig($app) {
+        $path_app = $app->calculateFullPath($this->config['paths']['app']);
+        $path_app_config = $path_app . $this->config['filenames']["app_config"];
+        if (file_exists($path_app_config)) {
+            return json_decode(file_get_contents($path_app_config), true);
+        }
+        
+        return [];
     }
     
 	/**

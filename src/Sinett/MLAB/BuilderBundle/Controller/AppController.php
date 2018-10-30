@@ -745,6 +745,7 @@ class AppController extends Controller
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+                                        "component_update_config" => $this->generateUrl('app_builder_component_update_config',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'page_num' => '_PAGENUM_', 'func_name' => '_FUNCNAME_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
@@ -1344,7 +1345,36 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $file_mgmt = $this->get('file_management');
         return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id));
     }
-    
+
+
+/**
+ * Whenever a component is deleted on the front end this function is called
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function componentUpdateConfigAction(Request $request, $app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+        
+        if ( !isset($comp_id) ) {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
+        }
+
+        $file_mgmt = $this->get('file_management');
+        return new JsonResponse($file_mgmt->componentUpdateConfig($app, $comp_id, $request->request->all()));
+    }
 /**
  * This will add the HTML code for a feature to the index.html file if this is not being edited right now
  * @param type $app_id
