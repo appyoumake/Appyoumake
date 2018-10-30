@@ -160,7 +160,7 @@ Mlab_dt_design.prototype = {
 
         request.done(function( result ) {
             if (result.result == "success") {
-//XXXX                
+                that.parent.utils.update_app_title_bar(result.config)
             } else {
                 alert(result.msg + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
                 $(new_comp).remove();
@@ -326,7 +326,10 @@ Mlab_dt_design.prototype = {
             } 
             this.parent.flag_dirty = true;
             if(requestDelete) {
-                $.ajax(requestDelete);
+                $.ajax(requestDelete)
+                    .done(function(data) {
+                        that.parent.utils.update_app_title_bar(data.config)
+                    })
             }
             return true; 
         }
@@ -362,7 +365,10 @@ Mlab_dt_design.prototype = {
                                     }
                                 } 
                                 if(requestDelete) {
-                                    $.ajax(requestDelete);
+                                    $.ajax(requestDelete)
+                                    .done(function(data) {
+                                        that.parent.utils.update_app_title_bar(data.config)
+                                    });
                                 }
                                 that.parent.flag_dirty = true;
                             } 
@@ -404,6 +410,7 @@ Mlab_dt_design.prototype = {
 //when they past we need to go through similar checks as we do when adding a component, like is it unique, etc.
 //also need to attach event handlers, etc, they are lost as 
     component_paste : function() {
+        var that = this;
         if(typeof mlab.dt.clipboard == 'undefined' ) {
             return true;
         }
@@ -441,6 +448,9 @@ Mlab_dt_design.prototype = {
                 },
                 url: this.parent.urls.component_update_config.replace("_APPID_", this.parent.app.id).replace("_COMPID_", comp_id),
                 dataType: "json"
+            })
+            .done(function(data) {
+                that.parent.utils.update_app_title_bar(data.config)
             });
         }
 

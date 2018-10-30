@@ -726,6 +726,8 @@ class AppController extends Controller
                 $comp_files[$platform] = $compiled_app;
             }
         }
+        
+        $appConfig =  $file_mgmt->getAppConfig($app);
 
 //dont need everything in config file when return config settings
     	unset($config["replace_in_filenames"]);
@@ -740,6 +742,7 @@ class AppController extends Controller
                 "mlab_current_user_email" => $this->getUser()->getEmail(),
                 "mlab_app_checksum" => $mlab_app_checksum,
                 "mlab_compiled_files" => $comp_files,
+                "mlab_app_config" => $appConfig,
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),

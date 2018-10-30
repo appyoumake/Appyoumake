@@ -532,7 +532,7 @@ class FileManagement {
                 }
             }
 
-            return array('result' => 'success');
+            return array('result' => 'success', 'config' => $appConfigUpdate['config']);
 
         } else {
                 $error = "";

@@ -108,6 +108,8 @@ Mlab_dt_management.prototype = {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }
             
+            that.parent.utils.update_app_title_bar(mlab.dt.app.config);
+            
 //set the trap for the paste function so we force plain text
             $("#" + mlab.dt.config["app"]["content_id"]).on("paste", function(e) {
 // stop original paste from happening
