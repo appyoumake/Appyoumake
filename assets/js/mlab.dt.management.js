@@ -947,6 +947,7 @@ Mlab_dt_management.prototype = {
                 that.parent.app.page_names.splice(that.page_filenum2index(that.parent.app.curr_page_num), 1);
                 that.regular_page_process ( data.html, data.page_num_real );
                 that.app_update_gui_metadata(true);
+                that.parent.utils.update_app_title_bar(data.appConfig)
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);

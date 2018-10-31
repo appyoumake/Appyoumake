@@ -297,6 +297,7 @@ Mlab_dt_design.prototype = {
                     execute: '\n\
                         if(isset($component["requires_network"]) && $component["requires_network"] != "none"){\n\
                             $counter = \'count\' . ucfirst($component["requires_network"]) . \'Comp\';\n\
+                            isset($config[$counter]) OR $config[$counter] = 0;\n\
                             $config[$counter] = max(0, $config[$counter]-1);\n\
                         }'
                 },
@@ -443,6 +444,7 @@ Mlab_dt_design.prototype = {
                     execute: '\n\
                         if(isset($component["requires_network"]) && $component["requires_network"] != "none"){\n\
                             $counter = \'count\' . ucfirst($component["requires_network"]) . \'Comp\';\n\
+                            isset($config[$counter]) OR $config[$counter] = 0;\n\
                             $config[$counter] += 1;\n\
                         }'
                 },
