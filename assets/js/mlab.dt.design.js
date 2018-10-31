@@ -91,7 +91,7 @@ Mlab_dt_design.prototype = {
     },
     
     component_add_html : function (id) {
-        
+
         this.parent.flag_dirty = true;
         var data_resize = (typeof this.parent.components[id].conf.resizeable != "undefined" && this.parent.components[id].conf.resizeable == true) ? "data-mlab-aspectratio='4:3' data-mlab-size='medium'" : "";
         var data_display_dependent = (typeof this.parent.components[id].conf.display_dependent != "undefined" && this.parent.components[id].conf.display_dependent == true) ? "data-mlab-displaydependent='true'" : "";
@@ -160,7 +160,7 @@ Mlab_dt_design.prototype = {
 
         request.done(function( result ) {
             if (result.result == "success") {
-//XXXX                
+                that.parent.utils.update_app_title_bar(result.config)
             } else {
                 alert(result.msg + "'\n\n" + _tr["mlab.dt.design.js.alert.add.comp"]);
                 $(new_comp).remove();
@@ -287,11 +287,29 @@ Mlab_dt_design.prototype = {
     
     component_delete : function (cut) {
         var that = this;
+        var el = $(".mlab_current_component");
+        var comp_id = el.data("mlab-type");
+        
+        if (typeof this.parent.components[comp_id].conf.requires_network != "undefined" && this.parent.components[comp_id].conf.requires_network != "none") {
+            var requestDelete = {
+                type: "POST",
+                data: {
+                    execute: '\n\
+                        if(isset($component["requires_network"]) && $component["requires_network"] != "none"){\n\
+                            $counter = \'count\' . ucfirst($component["requires_network"]) . \'Comp\';\n\
+                            isset($config[$counter]) OR $config[$counter] = 0;\n\
+                            $config[$counter] = max(0, $config[$counter]-1);\n\
+                        }'
+                },
+                url: this.parent.urls.component_update_config.replace("_APPID_", this.parent.app.id).replace("_COMPID_", comp_id),
+                dataType: "json"
+            }
+        }
+
         if (cut){
             if (el.length == 0) {
                 return;
             }
-            var comp_id = el.data("mlab-type");
             if (typeof this.parent.components[comp_id].code.onDelete != "undefined") {
                 this.parent.components[comp_id].code.onDelete(el);
             }
@@ -308,6 +326,12 @@ Mlab_dt_design.prototype = {
                 }
             } 
             this.parent.flag_dirty = true;
+            if(requestDelete) {
+                $.ajax(requestDelete)
+                    .done(function(data) {
+                        that.parent.utils.update_app_title_bar(data.config)
+                    })
+            }
             return true; 
         }
         
@@ -319,7 +343,6 @@ Mlab_dt_design.prototype = {
                             click:function () { 
                                 $(this).dialog('destroy'); 
 //Deletes
-                                var el = $(".mlab_current_component");
                                 if (el.length == 0) {
                                     return;
                                 }
@@ -342,6 +365,12 @@ Mlab_dt_design.prototype = {
                                         that.component_menu_prepare();
                                     }
                                 } 
+                                if(requestDelete) {
+                                    $.ajax(requestDelete)
+                                    .done(function(data) {
+                                        that.parent.utils.update_app_title_bar(data.config)
+                                    });
+                                }
                                 that.parent.flag_dirty = true;
                             } 
                         },
@@ -382,14 +411,16 @@ Mlab_dt_design.prototype = {
 //when they past we need to go through similar checks as we do when adding a component, like is it unique, etc.
 //also need to attach event handlers, etc, they are lost as 
     component_paste : function() {
-        var comp_id = mlab.dt.clipboard.data("mlab-type")
+        var that = this;
+        if(typeof mlab.dt.clipboard == 'undefined' ) {
+            return true;
+        }
+
+        var comp_id = mlab.dt.clipboard.data("mlab-type");
         if (this.parent.components[comp_id].conf.unique && $("#" + this.parent.config["app"]["content_id"]).find("[data-mlab-type='" + comp_id + "']").length > 0) {
             alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
             return;
         }
-//remove selections, highlight, etc for previously selected component
-        this.componentBlur(curComp);
-        
         $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
         if (this.parent.api.display.componentHighlightSelected(mlab.dt.clipboard)) {
             this.component_menu_prepare();
@@ -406,8 +437,28 @@ Mlab_dt_design.prototype = {
         if (typeof this.parent.components[comp_id].conf.process_keypress != "undefined" && this.parent.components[comp_id].conf.process_keypress) {
             $(mlab.dt.clipboard).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
         }
-        
+        if (typeof this.parent.components[comp_id].conf.requires_network != "undefined" && this.parent.components[comp_id].conf.requires_network != "none") {
+            $.ajax({
+                type: "POST",
+                data: {
+                    execute: '\n\
+                        if(isset($component["requires_network"]) && $component["requires_network"] != "none"){\n\
+                            $counter = \'count\' . ucfirst($component["requires_network"]) . \'Comp\';\n\
+                            isset($config[$counter]) OR $config[$counter] = 0;\n\
+                            $config[$counter] += 1;\n\
+                        }'
+                },
+                url: this.parent.urls.component_update_config.replace("_APPID_", this.parent.app.id).replace("_COMPID_", comp_id),
+                dataType: "json"
+            })
+            .done(function(data) {
+                that.parent.utils.update_app_title_bar(data.config)
+            });
+        }
+
+               
         this.parent.flag_dirty = true;
+        mlab.dt.clipboard = undefined;
     },
     
     component_edit_credentials : function () {

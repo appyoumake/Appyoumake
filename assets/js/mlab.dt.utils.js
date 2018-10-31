@@ -54,6 +54,12 @@ Mlab_dt_utils.prototype = {
         }
     },
 
+    update_app_title_bar: function (appConfig) {
+        $requiresNetworkStatus = $('#mlab_statusbar_requires_network');
+        
+        appConfig.countInternetComp > 0 ? $requiresNetworkStatus.addClass('internet') : $requiresNetworkStatus.removeClass('internet');
+        appConfig.countNetworkComp > 0 ? $requiresNetworkStatus.addClass('network') : $requiresNetworkStatus.removeClass('network');
+    },
 /**
  * Simple wrapper function to clear a temporary status
  * @returns {undefined} */

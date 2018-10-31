@@ -132,6 +132,8 @@ $(document).ready(function() {
 
 //URLs can be changed using routes in MLAB, make sure we always use the latest from Symfony and don't have hardwired ones
             mlab.dt.urls = data.mlab_urls;
+            
+            mlab.dt.app.config = data.mlab_app_config;
 
 
 /**** Finished preparing variables, now we set up rest of environment ****/

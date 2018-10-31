@@ -726,6 +726,8 @@ class AppController extends Controller
                 $comp_files[$platform] = $compiled_app;
             }
         }
+        
+        $appConfig =  $file_mgmt->getAppConfig($app);
 
 //dont need everything in config file when return config settings
     	unset($config["replace_in_filenames"]);
@@ -740,11 +742,13 @@ class AppController extends Controller
                 "mlab_current_user_email" => $this->getUser()->getEmail(),
                 "mlab_app_checksum" => $mlab_app_checksum,
                 "mlab_compiled_files" => $comp_files,
+                "mlab_app_config" => $appConfig,
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+                                        "component_update_config" => $this->generateUrl('app_builder_component_update_config',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'page_num' => '_PAGENUM_', 'func_name' => '_FUNCNAME_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
@@ -874,15 +878,16 @@ class AppController extends Controller
             }
             
     		return new JsonResponse(array(
-    				'result' => 'success',
-    				'html' => $page["html"],
-    				'lock_status' => $page["lock_status"],
+                    'result' => 'success',
+                    'html' => $page["html"],
+                    'lock_status' => $page["lock_status"],
                     'page_num_sent' => $page_num,
                     'page_num_real' => intval($doc), //this is the page that is being opened, typically different from previous when delete page. index.html = 0
                     'app_id' => $app_id,
                     'page_title' => $title,
                     'only_index' => !file_exists($app_path . "001.html"),
-                    "compiled_files" => $comp_files
+                    "compiled_files" => $comp_files,
+                    "appConfig" => $file_mgmt->getAppConfig($app)
                 ));
     		 
     	} else {
@@ -1099,7 +1104,7 @@ class AppController extends Controller
                     'result' => 'error',
                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
         } else {
-            
+
 //update file counter variable in JS
 //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
@@ -1344,7 +1349,36 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $file_mgmt = $this->get('file_management');
         return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id));
     }
-    
+
+
+/**
+ * Whenever a component is deleted on the front end this function is called
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function componentUpdateConfigAction(Request $request, $app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+        
+        if ( !isset($comp_id) ) {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
+        }
+
+        $file_mgmt = $this->get('file_management');
+        return new JsonResponse($file_mgmt->componentUpdateConfig($app, $comp_id, $request->request->all()));
+    }
 /**
  * This will add the HTML code for a feature to the index.html file if this is not being edited right now
  * @param type $app_id
