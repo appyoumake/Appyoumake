@@ -878,15 +878,16 @@ class AppController extends Controller
             }
             
     		return new JsonResponse(array(
-    				'result' => 'success',
-    				'html' => $page["html"],
-    				'lock_status' => $page["lock_status"],
+                    'result' => 'success',
+                    'html' => $page["html"],
+                    'lock_status' => $page["lock_status"],
                     'page_num_sent' => $page_num,
                     'page_num_real' => intval($doc), //this is the page that is being opened, typically different from previous when delete page. index.html = 0
                     'app_id' => $app_id,
                     'page_title' => $title,
                     'only_index' => !file_exists($app_path . "001.html"),
-                    "compiled_files" => $comp_files
+                    "compiled_files" => $comp_files,
+                    "appConfig" => $file_mgmt->getAppConfig($app)
                 ));
     		 
     	} else {
@@ -1103,7 +1104,7 @@ class AppController extends Controller
                     'result' => 'error',
                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
         } else {
-            
+
 //update file counter variable in JS
 //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
