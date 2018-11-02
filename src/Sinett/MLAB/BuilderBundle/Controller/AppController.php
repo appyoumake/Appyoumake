@@ -947,10 +947,11 @@ class AppController extends Controller
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
         $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
         $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+            $mlab_app_data["page_names"] = $page_names;
             $app_info = array(
                 "result" => "file_changes",
     			"mlab_app" => $mlab_app_data,
@@ -965,7 +966,15 @@ class AppController extends Controller
 
         $app->setUpdated(new \DateTime());
         $em->flush();
-                
+            
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'pages' => $page_names,
+        ]]);
+
         return new JsonResponse(array(
             'result' => 'success',
             'app_info' => $app_info));
@@ -1002,9 +1011,8 @@ class AppController extends Controller
     	}
         
 //copy the template file to the app
-// not required anymore        $title = $request->request->all()["title"];
         $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app, $title);
+        $new_page_num = $file_mgmt->newPage($app, $request->request->get('title'));
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
@@ -1017,13 +1025,22 @@ class AppController extends Controller
          
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
 */
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'pages' => $page_names,
+        ]]);
+
         if ($redirect_to_open) {
             return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
         } else {
             return new JsonResponse(array(
                 'result' => 'success',
                 'new_page_num' => $new_page_num,
-                "page_names" => $file_mgmt->getPageIdAndTitles($app)));
+                "page_names" => $page_names));
         }
     }
 
@@ -1104,6 +1121,14 @@ class AppController extends Controller
                     'result' => 'error',
                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
         } else {
+            $page_names = $file_mgmt->getPageIdAndTitles($app);
+            $websocketService = $this->get('websocket_service');
+            $websocketService->send(['data' => [
+                '_type' => 'app_pages_update',
+                '_feedId' => 'app_' . $app->getUid(),
+                '_sender' => $uid,
+                'pages' => $page_names,
+            ]]);
 
 //update file counter variable in JS
 //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
@@ -1169,7 +1194,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  * @param type $page_num
  * @return \Symfony\Component\HttpFoundation\JsonResponse
  */
-    public function reorderPageAction ($app_id, $from_page, $to_page, $uid) {
+    public function reorderPageAction (Request $request, $app_id, $from_page, $to_page, $uid) {
         
 //for the time being do not allow them to change the index page
         if ($from_page == "index" || $to_page == "index") {
@@ -1195,10 +1220,20 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         
 //renames the individual page files, returns page from and to variables so frontend can update variables
         $res = $file_mgmt->reorderPage($app, $from_page, $to_page, $uid);
+
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $uid,
+            'pages' => $page_names,
+        ]]);        
+        
         return new JsonResponse(array(
                 'result' => 'success',
                 'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
-                'page_names' => $file_mgmt->getPageIdAndTitles($app)));
+                'page_names' => $page_names));
     }
     
     function removeLocksAction() {

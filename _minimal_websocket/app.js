@@ -31,24 +31,42 @@ console.log("Listening on localhost:" + config.port);
 
 //listen to incoming connections
 mlabServicesCallbackServer.on('connection', function(ws) {
-    console.log(ws.upgradeReq);
+    ws.isAlive = true;
+//    console.log(ws.upgradeReq);
     url_info = ws.upgradeReq.url.match(/[^/]+/g);
     
 //we get two types of connections, a long term one from the browser which lasts until the app compilation is done, 
 //and temporary (i.e. one off) connections from PHP server with updates for the browser
-    if (url_info[1] != 0) {
-        console.log("Connection established from " + ws.upgradeReq.connection.remoteAddress + " (unique windows ID = " +  url_info[1] + ")");
-        mlabEditorClients[url_info[1]] = ws;
-        ws.send('{"data": {"status": "connected"}}', function(error){console.log(error);});
-    } else {
-        console.log("Temporary connection from " + ws.upgradeReq.connection.remoteAddress);
-        ws.send('{"data": {"status": "SUCCESS"}}', function(error) { console.log(error); } );
-    }
+//    if (url_info[1] != 0) {
+//        console.log("Connection established from " + ws.upgradeReq.connection.remoteAddress + " (unique windows ID = " +  url_info[1] + ")");
+//        mlabEditorClients[url_info[1]] = ws;
+//        ws.send('{"data": {"status": "connected"}}', function(error){console.log(error);});
+//    } else {
+//        console.log("Temporary connection from " + ws.upgradeReq.connection.remoteAddress);
+//        ws.send('{"data": {"status": "SUCCESS"}}', function(error) { console.log(error); } );
+//    }
+//    ws.send('{"data": {"status": "SUCCESS"}}', function(error) { console.log(error); } );
     
 //all communication use the /message namespace
     ws.on('message', function(data, flags) {
-        console.log("Message received: ");
-        console.log( data );
+        console.log("Message received: " + data);
+        
+        try {
+            var objData = JSON.parse(data);
+        } catch (error) {
+            console.log('Unable to parse JSON data ' + error);
+            return
+        }
+         
+        if (typeof actions[objData.data._type] != "undefined") {
+            actions[objData.data._type](objData, ws);
+        } else if (objData.data._feedId) {
+            actions.toFeed(objData.data._feedId, objData, ws);
+        } else {
+            console.error('Unknown data type received: ' + objData.data._type);
+        }
+
+        return;
         
         
 //we use JSON to communicate, so we need to try to parse it.
@@ -97,10 +115,9 @@ mlabServicesCallbackServer.on('connection', function(ws) {
         }
     });
 
-    ws.on('close', function() {
+    ws.on('close', function(a,b,c,d) {
+        ws.isAlive = false;
         console.log('Client disconnected');
-
-
     });
 
     ws.on('error', function() {
@@ -113,3 +130,48 @@ mlabServicesCallbackServer.on('connection', function(ws) {
 mlabServicesCallbackServer.on('open', function open() {
   console.log("opening");
 });
+
+var subscriptions = [];
+
+var actions = {
+    subscribe: function(data, ws) {
+        var feed = data.data.feed;
+        var subscriber = data.data.subscriber;
+//        !(feed in subscriptions) && (subscriptions[feedId] = [])
+        subscriptions.push({subscriber, feed, ws});
+    }, 
+    
+    toFeed: function(feedId, data, ws) {
+        subscriptions
+            .filter(function(subscription){
+                return subscription.feed == feedId
+            })
+            .map(function(subscription){
+                subscription.ws.send(JSON.stringify(data), function(error){console.log(error);})
+            });
+    }, 
+//    
+//    app_pages_updated: function(data, ws) {
+//        var subscriptionId = 'app_' + data.data.app_uid;
+//        var message = {
+//            data: {
+//                _status: 'SUCCESS',
+//                _type: 'app_pages_update',
+//                pages: data.data.pages
+//            }
+//        };
+//        
+//        [...subscriptions[subscriptionId]].forEach(function(connection) {
+//            connection.send(JSON.stringify(message), function(error){console.log(error);})
+//        });
+//
+//    }, 
+}
+
+const interval = setInterval(function ping() {
+    subscriptions.forEach((subscription, index, object) => {
+        if (subscription.ws.isAlive === false) {
+            object.splice(index, 1);
+        }
+    });
+}, 10000);

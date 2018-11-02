@@ -7,12 +7,17 @@
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 parameters:
     sinett_mlab_builder.file_management.class: Sinett\MLAB\BuilderBundle\FileManagement\FileManagement
+    sinett_mlab_builder.websocket_service.class: Sinett\MLAB\BuilderBundle\Service\WebSocketService
 
 services:
     file_management:
         class:        "%sinett_mlab_builder.file_management.class%"
         arguments:    ["%mlab%", "%mlab_app%", '@router', '@doctrine.orm.entity_manager', '%locale%']
 #        scope: request
+    websocket_service:
+        class:        "%sinett_mlab_builder.websocket_service.class%"
+        arguments:    ["%mlab%", '@logger']
+        public: true
 
     update_default:
         class: Sinett\MLAB\BuilderBundle\Listener\EventListener

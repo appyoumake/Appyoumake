@@ -36,7 +36,11 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.app"], true);
         var that = this;
         var local_app_id = app_id;
-        
+
+        mlab.dt.management.socket.send('subscribe',{
+            feed: 'app_' + mlab.dt.app.uid,
+            subscriber: mlab.dt.uid,
+        });
         
         $.get(url, function( data ) {
             if (data.result == "success") {
@@ -707,7 +711,7 @@ Mlab_dt_management.prototype = {
 
 //finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
         var that = this;
-        $.post( url, {title: this.parent.app.curr_pagetitle, html: html}, function( data ) {
+        $.post( url, {title: this.parent.app.curr_pagetitle, html: html, _sender: this.parent.uid}, function( data ) {
 
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
             that.parent.counter_saving_page--;
@@ -835,7 +839,7 @@ Mlab_dt_management.prototype = {
         }
 
         var that = this;
-        $.post( url, {}, function( data ) {
+        $.post( url, {_sender: this.parent.uid, title}, function( data ) {
             if (data.result == "success") {
 //prepare variables
                 that.parent.app.page_names.push({title: title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
@@ -986,6 +990,59 @@ Mlab_dt_management.prototype = {
         
         connection: null,
 
+        send: function (type, data) {
+            this.connect().then(function(ws){
+                var json = Object.assign({}, {_type: type}, data);
+                return ws.send(JSON.stringify({data: json}))
+            })
+        },
+        
+
+        connect: function () {
+            var socketObject = this;
+            
+            return new Promise(function(resolve, reject) {
+                
+                if(socketObject.connection) {
+                    resolve(socketObject.connection);
+                }
+                
+                socketObject.connection = new WebSocket(mlab.dt.config.ws_socket.url_client);
+                
+                socketObject.connection.onopen = function() {
+//                    window.onbeforeunload = function() {
+//
+//                    };
+                    
+                    resolve(socketObject.connection);
+                };
+                socketObject.connection.onerror = function(err) {
+                    reject(err);
+                };
+                
+                socketObject.connection.onclose = function(e) {
+//                    alert('kosio');
+                };
+                
+                socketObject.connection.onmessage = function (event) {
+                    var data = JSON.parse(event.data);
+                    socketObject.messages[data.data._type](data.data)
+                };
+            });
+        },
+        
+        messages: {
+            app_pages_update: function(data, obj) {
+                if(data._sender == mlab.dt.uid) {
+                    return;
+                }
+                
+                mlab.dt.app.page_names = data.pages;
+                mlab.dt.management.app_update_gui_metadata();
+                console.log('pages update received', data);
+            },
+        },
+        
         setup: function (callback, param) {
 //first close any existing connections
             if (mlab.dt.management.socket.connection) {
@@ -1004,8 +1061,8 @@ Mlab_dt_management.prototype = {
             mlab.dt.management.socket.connection.onopen = function() {
                 console.log("onopen");
                 callback(param);
-            }
-            
+                        }
+
             mlab.dt.management.socket.connection.onmessage = function (event) {
                 data = JSON.parse(event.data);
                 switch (data.status) {
