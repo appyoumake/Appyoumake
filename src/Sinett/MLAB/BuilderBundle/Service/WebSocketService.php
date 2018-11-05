@@ -17,4 +17,11 @@ class WebSocketService
         $this->socket->send(json_encode($data));
     }
     
+    
+    public function receive()
+    {
+        $data = $this->socket->receive();
+        return json_decode($data, true);
+    }
+    
 }

@@ -147,8 +147,29 @@ var actions = {
                 return subscription.feed == feedId
             })
             .map(function(subscription){
-                subscription.ws.send(JSON.stringify(data), function(error){console.log(error);})
+                try {
+                    subscription.ws.send(JSON.stringify(data), function(error){console.log(error);})
+                } catch (error) {
+                    console.log('Trying to relay message to disconnected client' + error);
+                }
+                
             });
+    }, 
+    
+    app_build_update: function(data, ws) {
+        this.toFeed(data._feedId, data, ws);
+        ws.send('{"data": {"status": "SUCCESS"}}', function(error){console.log(error);});
+    }, 
+    
+    ping: function(data, ws) {
+        var ret = {
+            data: {
+                pong: true,
+                request: data,
+            }
+        };
+        
+        ws.send(JSON.stringify(ret), function(error){console.log(error);});
     }, 
 //    
 //    app_pages_updated: function(data, ws) {
