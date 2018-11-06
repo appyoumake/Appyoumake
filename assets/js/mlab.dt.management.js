@@ -1065,6 +1065,7 @@ Mlab_dt_management.prototype = {
                         break;
 
                     case "creating":
+                        $("#mlab_progressbar").show();
                         $("#mlab_progressbar").val(10);
                         $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.creating"]);
                         //createApp is called, this creates the empty app
