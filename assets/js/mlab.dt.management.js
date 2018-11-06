@@ -997,7 +997,6 @@ Mlab_dt_management.prototype = {
             })
         },
         
-
         connect: function () {
             var socketObject = this;
             
@@ -1032,6 +1031,10 @@ Mlab_dt_management.prototype = {
         },
         
         messages: {
+            error: function(data, obj) {
+                console.error('Socket error: ' + data.message);
+            },
+            
             app_pages_update: function(data, obj) {
                 if(data._sender == mlab.dt.uid) {
                     return;
@@ -1039,10 +1042,8 @@ Mlab_dt_management.prototype = {
                 
                 mlab.dt.app.page_names = data.pages;
                 mlab.dt.management.app_update_gui_metadata();
-                console.log('pages update received', data);
             },
             app_build_update: function(data, obj) {
-                console.log('app build update received', data);
                 switch (data.status) {
 
 //1: When click on menu, then it should indicate that the app is requested ( mlab.dt.management.js  -  compiler: {  get_app :)
@@ -1144,134 +1145,6 @@ Mlab_dt_management.prototype = {
                 
             },
         },
-        
-        setup: function (callback, param) {
-//first close any existing connections
-            if (mlab.dt.management.socket.connection) {
-                mlab.dt.management.socket.connection.close();            
-            }
-            
-// connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
-            mlab.dt.management.socket.connection = new WebSocket(mlab.dt.config.ws_socket.url_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);
-
-            mlab.dt.management.socket.connection.onerror = function(evt) {
-                console.log("The following error occurred: " + evt.data);
-                mlab.dt.management.socket.connection = null;
-                alert(_tr["mlab.dt.management.js.websocket.error.connect"]);
-            }
-            
-            mlab.dt.management.socket.connection.onopen = function() {
-                console.log("onopen");
-                callback(param);
-                        }
-
-            mlab.dt.management.socket.connection.onmessage = function (event) {
-                data = JSON.parse(event.data);
-                switch (data.status) {
-
-//1: When click on menu, then it should indicate that the app is requested ( mlab.dt.management.js  -  compiler: {  get_app :)
-//2: When the request has been processed by the PHP backend it should indicate one stage has passed (? -  case "connected"?)
-//3: Then it should indicate that precompilation has taken place (may not be required, so a numeric is not good) (case "precompilation")
-//4: createApp is called, this creates the empty app (case "creating"....case "created"?)
-//5: Then files are uploaded (lengthy) (case "uploading"? (hoppe vider på case "verifying" og  case "verification_ok"- tar tid----)
-//6: App upload finished, compilation starts (case "compiling"...case "compilation_ok")
-//7: App is being (case "receiving":)
-//8: App is ready (case "ready")
-
-//Sette en grå versjon av iconet om siste versjon er kopilert?
-// kan Andoid og iOS kopileres på samme tid?
-// hva om man lagrer en ny versjon mens kompiler
-
-                    case "connected":
-                        $("#mlab_progressbar").val(5);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.connected"]);
-                        break;
-
-                    case "creating":
-                        $("#mlab_progressbar").val(10);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.creating"]);
-                        //createApp is called, this creates the empty app
-                        break;
-
-                    case "created":
-                        $("#mlab_progressbar").val(15);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.created"]);
-                        break;
-
-                    case "precompilation":
-                        $("#mlab_progressbar").val(20);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.precompilation"]);
-                        break;
-
-                    case "uploading":
-                        $("#mlab_progressbar").val(25);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.uploading"]);
-                        break;
-
-                    case "verifying":
-                        $("#mlab_progressbar").val(30);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verifying"]);
-                        break;
-
-                    case "verification_ok":
-                        $("#mlab_progressbar").val(35);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verification_ok"]);
-                        break;
-
-                    case "compiling":
-                        $("#mlab_progressbar").val(40);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compiling"]);
-                        break;
-
-                    case "compilation_ok":
-                        $("#mlab_progressbar").val(80);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compilation_ok"]);
-                        break;
-
-                    case "failed":
-                    case "precompilation_failed":
-                    case "compilation_failed":
-                    case "verification_failed":
-                    case "create_failed":
-                        $("#mlab_statusbar_compiler").text("");
-                        $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
-                        $("#mlab_download_" + data.platform + "_icon").find("img").hide();
-                        $("#mlab_progressbar").hide();
-                        mlab.dt.utils.update_status("temporary", data.fail_text, false);
-                        mlab.dt.management.socket.connection.close();
-                        mlab.dt.management.socket.connection = null;
-                        break;
-
-                    case "receiving":
-                        $("#mlab_progressbar").val(90);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.receiving"]);
-                        break;
-
-                    case "ready":
-                        $("#mlab_progressbar").val(100);
-                        $("#mlab_statusbar_compiler").text("");
-                        $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
-                        $("#mlab_download_" + data.platform + "_icon").find("img").hide();
-                        $("#mlab_progressbar").hide();
-
-//inserting the QR code and url to the compiled app in the menu
-                        if (typeof data.filename != "undefined" && data.filename != null && data.filename != "") {
-                            mlab.dt.app.compiled_files[data.platform] = data.filename;
-                            var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
-                            $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
-                            $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
-                            mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.ready"], false);
-                        } else {
-                            mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.failed"], false);
-                        }
-                        mlab.dt.management.socket.connection.close();
-                        mlab.dt.management.socket.connection = null;
-                        break;
-
-                }
-
-            };
-        }, //end function setup
     }, //end socket object
     
     market: {

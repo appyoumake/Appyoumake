@@ -26,28 +26,12 @@ console.log = function (data){
     this.logCopy(timestamp, data);
 }
 
-
 console.log("Listening on localhost:" + config.port);
 
 //listen to incoming connections
 mlabServicesCallbackServer.on('connection', function(ws) {
     ws.isAlive = true;
-//    console.log(ws.upgradeReq);
-    url_info = ws.upgradeReq.url.match(/[^/]+/g);
-    
-//we get two types of connections, a long term one from the browser which lasts until the app compilation is done, 
-//and temporary (i.e. one off) connections from PHP server with updates for the browser
-//    if (url_info[1] != 0) {
-//        console.log("Connection established from " + ws.upgradeReq.connection.remoteAddress + " (unique windows ID = " +  url_info[1] + ")");
-//        mlabEditorClients[url_info[1]] = ws;
-//        ws.send('{"data": {"status": "connected"}}', function(error){console.log(error);});
-//    } else {
-//        console.log("Temporary connection from " + ws.upgradeReq.connection.remoteAddress);
-//        ws.send('{"data": {"status": "SUCCESS"}}', function(error) { console.log(error); } );
-//    }
-//    ws.send('{"data": {"status": "SUCCESS"}}', function(error) { console.log(error); } );
-    
-//all communication use the /message namespace
+
     ws.on('message', function(data, flags) {
         console.log("Message received: " + data);
         
@@ -55,6 +39,7 @@ mlabServicesCallbackServer.on('connection', function(ws) {
             var objData = JSON.parse(data);
         } catch (error) {
             console.log('Unable to parse JSON data ' + error);
+            ws.send(JSON.stringify({data: {_type: 'error', message: error.message}}), function(error){console.log(error);})
             return
         }
          
@@ -64,54 +49,6 @@ mlabServicesCallbackServer.on('connection', function(ws) {
             actions.toFeed(objData.data._feedId, objData, ws);
         } else {
             console.error('Unknown data type received: ' + objData.data._type);
-        }
-
-        return;
-        
-        
-//we use JSON to communicate, so we need to try to parse it.
-        if (typeof data == "string") {
-            try {
-                var objData = JSON.parse(data);
-            } catch (error) {
-                console.log('Unable to parse JSON data ' + error);
-            }
-            
-        } else if (typeof data == "undefined") {
-            ws.send('{"data": {"status": "ERROR", "error": "received empty string"}}', function(error){console.log(error);});
-            console.log('ERR: received empty string');
-            return;
-            
-        } else {
-            var objData = data;
-        }
-        
-        if (typeof objData.destination_id != "undefined" && typeof objData.data != "undefined" && typeof mlabEditorClients[objData.destination_id] != "undefined") {
-            console.log('DATA: ' + JSON.stringify(objData.data));
-
-            try {
-                mlabEditorClients[objData.destination_id].send(JSON.stringify(objData.data));
-            } catch (error) {
-                console.log('Trying to relay message to disconnected client' + error);
-            }
-
-            ws.send('{"data": {"status": "SUCCESS"}}', function(error){console.log(error);});
-            console.log('SENT TO: ' + objData.destination_id);
-            
-        } else {
-            if (typeof objData.destination_id == "undefined") {
-                console.log('No destination present, nothing sent');
-                ws.send('{"data": {"status": "ERROR", "error": "No destination present, nothing sent"}}', function(error){console.log(error);});
-            }
-            if (typeof objData.data == "undefined") {
-                console.log('No data payload present, nothing sent');
-                ws.send('{"data": {"status": "ERROR", "error": "No data payload present, nothing sent"}}', function(error){console.log(error);});
-            }
-            if (typeof mlabEditorClients[objData.destination_id] == "undefined") {
-                console.log('Mlab client ' + objData.destination_id + ' not connected');
-                ws.send('{"data": {"status": "ERROR", "error": "Mlab client ' + objData.destination_id + ' not connected"}}', function(error){console.log(error);});
-            }
-            
         }
     });
 
@@ -137,7 +74,6 @@ var actions = {
     subscribe: function(data, ws) {
         var feed = data.data.feed;
         var subscriber = data.data.subscriber;
-//        !(feed in subscriptions) && (subscriptions[feedId] = [])
         subscriptions.push({subscriber, feed, ws});
     }, 
     
@@ -157,7 +93,7 @@ var actions = {
     }, 
     
     app_build_update: function(data, ws) {
-        this.toFeed(data._feedId, data, ws);
+        this.toFeed(data.data._feedId, data, ws);
         ws.send('{"data": {"status": "SUCCESS"}}', function(error){console.log(error);});
     }, 
     
@@ -189,6 +125,7 @@ var actions = {
 //    }, 
 }
 
+// clean up connections that are not Alive
 const interval = setInterval(function ping() {
     subscriptions.forEach((subscription, index, object) => {
         if (subscription.ws.isAlive === false) {
