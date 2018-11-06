@@ -288,7 +288,15 @@ class ServicesController extends Controller
  * @return \Symfony\Component\HttpFoundation\JsonResponse
  */
     private function cmpCallRemoteFunction($config, $window_uid, $status, $service, $parameters, $func_name) {
-        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '"}}', $config), true);
+        $websocketService = $this->get('websocket_service');
+
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $parameters['app_uid'],
+            '_sender' => $window_uid,
+            'status' =>  $status,
+        ]]);
+        $res_socket = $websocketService->receive();
         if ($res_socket["data"]["status"] != "SUCCESS") { 
             return new JsonResponse(array('result' => 'error', 'msg' => $res_socket["data"]["error"])); 
         }
@@ -315,7 +323,15 @@ class ServicesController extends Controller
 //this is done in two rounds, first without the config file, icon file and splash screen, and then afterwards only with these files
     private function cmpUploadFiles($from_path, $window_uid, $app_uid, $app_version, $config) {
         error_log("  > cmpUploadFiles");
-        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "uploading"}}', $config), true);
+        $websocketService = $this->get('websocket_service');
+
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $app_uid,
+            '_sender' => $window_uid,
+            'status' =>  'uploading',
+        ]]);
+        $res_socket = $websocketService->receive();
         if ($res_socket["data"]["status"] != "SUCCESS") {
             return new JsonResponse(array('result' => 'error'));
         }
@@ -550,7 +566,15 @@ class ServicesController extends Controller
     private function cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $remote_compiled_app_checksum, $platform) {
         error_log("  > cmpDownloadApp");
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "receiving"}}', $config), true);
+        $websocketService = $this->get('websocket_service');
+
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $app_uid,
+            '_sender' => $window_uid,
+            'status' =>  'receiving',
+        ]]);
+        $res_socket = $websocketService->receive();
         if ($res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
 
 //prepare app variables and calculate som paths
@@ -625,6 +649,8 @@ class ServicesController extends Controller
         
 //get the app database record
         $file_mgmt = $this->get('file_management');
+        $websocketService = $this->get('websocket_service');
+
         $em = $this->getDoctrine()->getManager();
         if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
             die("You have no access to this app");
@@ -649,19 +675,42 @@ class ServicesController extends Controller
         $app_filename = $processed_app_checksum . $config["compiler_service"]["file_extensions"][$platform];
         
         if (file_exists($compiled_app_path . $app_filename)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "platform": "' . $platform . '", "checksum": "' . $processed_app_checksum . '", "filename": "' . $app_filename . '"}}', $config), true);
+            $websocketService->send(['data' => [
+                '_type' => 'app_build_update',
+                '_feedId' => 'app_' . $app_uid,
+                '_sender' => $window_uid,
+                'status' => 'ready',
+                'platform' => $platform,
+                'checksum' => $processed_app_checksum,
+                'filename' => $app_filename,
+            ]]);
+            $res_socket = $websocketService->receive();
             (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") ? $arr = array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')) : $arr = array('result' => 'success');
             return new JsonResponse($arr);
         }
         
 //run the precompile process, it will return the same whether it runs the whole process, or if the app has already been processed
 //the return contains the status and the checksum (if status = success) of the code resulting from the precompile process
-        $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation"}}', $config), true);
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $app_uid,
+            '_sender' => $window_uid,
+            'status' => 'precompilation',
+        ]]);
+        $res_socket = $websocketService->receive();
         if (!$res_socket || $res_socket["data"]["status"] != "SUCCESS") { return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket'))); }
         
         $res_precompile = $file_mgmt->preCompileProcessingAction($app);
         if ($res_precompile["result"] != "success") {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "precompilation_failed", "platform": "' . $platform . '", "text": "' . $res_precompile["msg"] . '"}}', $config), true);
+            $websocketService->send(['data' => [
+                '_type' => 'app_build_update',
+                '_feedId' => 'app_' . $app_uid,
+                '_sender' => $window_uid,
+                'status' => 'precompilation_failed',
+                'platform' => $platform,
+                'text' => $res_precompile["msg"],
+            ]]);
+            $res_socket = $websocketService->receive();
             return new JsonResponse(array('result' => 'error', 'msg' => $res_precompile["msg"]));
         }
         $processed_app_checksum = $res_precompile["checksum"];
@@ -715,12 +764,19 @@ class ServicesController extends Controller
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         $fail_text = $this->get('translator')->trans('servicesController.msg.cbCmpCreatedAppAction.1');
         $status = ($result == "true") ? "created" : "create_failed";
-        
-        if (!is_null($window_uid)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "platform": "' . $platform . '"}}', $config), true);
-            if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
-            }
+
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $app_uid,
+            '_sender' => $window_uid,
+            'status' =>  $status,
+            'fail_text' =>  $fail_text,
+            'platform' =>  $platform,
+        ]]);
+        $res_socket = $websocketService->receive();
+        if ($res_socket["data"]["status"] != "SUCCESS") {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
         }
         
         if ($result != "true") {
@@ -779,22 +835,32 @@ class ServicesController extends Controller
         $status = ($result != "true" ? "verification_failed" : "verification_ok" );
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
-        if (!is_null($window_uid)) {
-            $local_processed_app_checksum = $remote_processed_app_checksum;
-            if ($result != "true") {
-                $em = $this->getDoctrine()->getManager();
-                $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
-                if ($app) {
-                    $file_mgmt = $this->get('file_management');
-                    $local_processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
-                }
-            }
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "remote_checksum": "' . $remote_processed_app_checksum . '", "local_checksum": "' . $local_processed_app_checksum . '", "platform": "' . $platform . '"}}', $config), true);
-            if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
+
+        $local_processed_app_checksum = $remote_processed_app_checksum;
+        if ($result != "true") {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
+            if ($app) {
+                $file_mgmt = $this->get('file_management');
+                $local_processed_app_checksum = $file_mgmt->getProcessedAppMD5($app, $config['filenames']["app_config"]);
             }
         }
-        
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $app_uid,
+            '_sender' => $window_uid,
+            'status' =>  $status,
+            'fail_text' =>  $fail_text,
+            'remote_checksum' =>  $remote_processed_app_checksum,
+            'local_checksum' =>  $local_processed_app_checksum,
+            'platform' =>  $platform,
+        ]]);
+        $res_socket = $websocketService->receive();
+        if ($res_socket["data"]["status"] != "SUCCESS") {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
+        }
+
 //this is called externally from compiler service, we reuse the app related variables and call the next step, compiling the app
         if ($action == "multistep" && $result == "true") {
 //files are verified, now we need to compile the app. The final step, download app, is called inside the callback from verify
@@ -834,13 +900,20 @@ class ServicesController extends Controller
         $status = ($result != "true" ? "compilation_failed" : "compilation_ok" );
         list($action, $window_uid, $platform) = array_pad(explode("-", $tag), 3, NULL);
         
-        if (!is_null($window_uid)) {
-            $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "' . $status . '","fail_text": "' . $fail_text . '", "platform": "' . $platform . '"}}', $config), true);
-            if ($res_socket["data"]["status"] != "SUCCESS") {
-                return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
-            }
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_build_update',
+            '_feedId' => 'app_' . $app_uid,
+            '_sender' => $window_uid,
+            'status' =>  $status,
+            'fail_text' =>  $fail_text,
+            'platform' =>  $platform,
+        ]]);
+        $res_socket = $websocketService->receive();
+        if ($res_socket["data"]["status"] != "SUCCESS") {
+            return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));
         }
-        
+
 //files are compiled, now we need to download the app.
         if ($action == "multistep" && $result == "true") {
             $download_checksum = $this->cmpDownloadApp($window_uid, $app_uid, $app_version, $app_checksum, $exec_file_checksum, $platform);
@@ -853,10 +926,25 @@ class ServicesController extends Controller
                 $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneByUid($app_uid);
                 $file_mgmt = $this->get('file_management');
                 $file_mgmt->updateAppConfigFile($app, array("latest_executable_" . $platform => $file_name));
-                
-                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "ready", "filename": "' . $file_name . '", "platform": "' . $platform . '"}}', $config), true);
+                $websocketService->send(['data' => [
+                    '_type' => 'app_build_update',
+                    '_feedId' => 'app_' . $app_uid,
+                    '_sender' => $window_uid,
+                    'status' =>  'ready',
+                    'filename' =>  $file_name,
+                    'platform' =>  $platform,
+                ]]);
+                $res_socket = $websocketService->receive();
             } else {
-                $res_socket = json_decode($this->sendWebsocketMessage('{"destination_id": "' . $window_uid . '", "data": {"status": "failed", "fail_text": "' . $this->get('translator')->trans('servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage') . '", "platform": "' . $platform . '"}}', $config), true);
+                $websocketService->send(['data' => [
+                    '_type' => 'app_build_update',
+                    '_feedId' => 'app_' . $app_uid,
+                    '_sender' => $window_uid,
+                    'status' =>  'failed',
+                    'fail_text' =>  $this->get('translator')->trans('servicesController.msg.cbCmpCompiledAppAction.sendWebsocketMessage'),
+                    'platform' =>  $platform,
+                ]]);
+                $res_socket = $websocketService->receive();
             }
             if ($res_socket["data"]["status"] != "SUCCESS") {
                 return new JsonResponse(array('result' => 'error', 'msg' => $this->get('translator')->trans('servicesController.msg.unable.update.websocket')));

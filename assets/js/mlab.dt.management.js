@@ -36,7 +36,11 @@ Mlab_dt_management.prototype = {
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.app"], true);
         var that = this;
         var local_app_id = app_id;
-        
+
+        mlab.dt.management.socket.send('subscribe',{
+            feed: 'app_' + mlab.dt.app.uid,
+            subscriber: mlab.dt.uid,
+        });
         
         $.get(url, function( data ) {
             if (data.result == "success") {
@@ -707,7 +711,7 @@ Mlab_dt_management.prototype = {
 
 //finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
         var that = this;
-        $.post( url, {title: this.parent.app.curr_pagetitle, html: html}, function( data ) {
+        $.post( url, {title: this.parent.app.curr_pagetitle, html: html, _sender: this.parent.uid}, function( data ) {
 
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
             that.parent.counter_saving_page--;
@@ -835,7 +839,7 @@ Mlab_dt_management.prototype = {
         }
 
         var that = this;
-        $.post( url, {}, function( data ) {
+        $.post( url, {_sender: this.parent.uid, title}, function( data ) {
             if (data.result == "success") {
 //prepare variables
                 that.parent.app.page_names.push({title: title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
@@ -986,28 +990,60 @@ Mlab_dt_management.prototype = {
         
         connection: null,
 
-        setup: function (callback, param) {
-//first close any existing connections
-            if (mlab.dt.management.socket.connection) {
-                mlab.dt.management.socket.connection.close();            
-            }
+        send: function (type, data) {
+            this.connect().then(function(ws){
+                var json = Object.assign({}, {_type: type}, data);
+                return ws.send(JSON.stringify({data: json}))
+            })
+        },
+        
+        connect: function () {
+            var socketObject = this;
             
-// connect to the websocket server, this returns data from server callback functions used when connectng to market or compiler services
-            mlab.dt.management.socket.connection = new WebSocket(mlab.dt.config.ws_socket.url_client + mlab.dt.config.ws_socket.path_client + '/' + mlab.dt.uid);
-
-            mlab.dt.management.socket.connection.onerror = function(evt) {
-                console.log("The following error occurred: " + evt.data);
-                mlab.dt.management.socket.connection = null;
-                alert(_tr["mlab.dt.management.js.websocket.error.connect"]);
-            }
+            return new Promise(function(resolve, reject) {
+                
+                if(socketObject.connection) {
+                    resolve(socketObject.connection);
+                }
+                
+                socketObject.connection = new WebSocket(mlab.dt.config.ws_socket.url_client);
+                
+                socketObject.connection.onopen = function() {
+//                    window.onbeforeunload = function() {
+//
+//                    };
+                    
+                    resolve(socketObject.connection);
+                };
+                socketObject.connection.onerror = function(err) {
+                    reject(err);
+                };
+                
+                socketObject.connection.onclose = function(e) {
+//                    alert('kosio');
+                };
+                
+                socketObject.connection.onmessage = function (event) {
+                    var data = JSON.parse(event.data);
+                    socketObject.messages[data.data._type](data.data)
+                };
+            });
+        },
+        
+        messages: {
+            error: function(data, obj) {
+                console.error('Socket error: ' + data.message);
+            },
             
-            mlab.dt.management.socket.connection.onopen = function() {
-                console.log("onopen");
-                callback(param);
-            }
-            
-            mlab.dt.management.socket.connection.onmessage = function (event) {
-                data = JSON.parse(event.data);
+            app_pages_update: function(data, obj) {
+                if(data._sender == mlab.dt.uid) {
+                    return;
+                }
+                
+                mlab.dt.app.page_names = data.pages;
+                mlab.dt.management.app_update_gui_metadata();
+            },
+            app_build_update: function(data, obj) {
                 switch (data.status) {
 
 //1: When click on menu, then it should indicate that the app is requested ( mlab.dt.management.js  -  compiler: {  get_app :)
@@ -1029,6 +1065,7 @@ Mlab_dt_management.prototype = {
                         break;
 
                     case "creating":
+                        $("#mlab_progressbar").show();
                         $("#mlab_progressbar").val(10);
                         $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.creating"]);
                         //createApp is called, this creates the empty app
@@ -1079,8 +1116,6 @@ Mlab_dt_management.prototype = {
                         $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                         $("#mlab_progressbar").hide();
                         mlab.dt.utils.update_status("temporary", data.fail_text, false);
-                        mlab.dt.management.socket.connection.close();
-                        mlab.dt.management.socket.connection = null;
                         break;
 
                     case "receiving":
@@ -1105,14 +1140,12 @@ Mlab_dt_management.prototype = {
                         } else {
                             mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.failed"], false);
                         }
-                        mlab.dt.management.socket.connection.close();
-                        mlab.dt.management.socket.connection = null;
                         break;
 
                 }
-
-            };
-        }, //end function setup
+                
+            },
+        },
     }, //end socket object
     
     market: {
@@ -1284,7 +1317,8 @@ Mlab_dt_management.prototype = {
     
 //sets up a websocket connect to get information back during the compilation process
         get_app : function (platform) {
-            mlab.dt.management.socket.setup(mlab.dt.management.compiler.get_app_callback, platform);
+//            mlab.dt.management.socket.setup(mlab.dt.management.compiler.get_app_callback, platform);
+            mlab.dt.management.compiler.get_app_callback(platform);
         },
         
 //callback function that is used when the websocket connection (see get_app above) is completed
