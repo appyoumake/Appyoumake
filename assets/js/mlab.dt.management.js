@@ -118,7 +118,7 @@ Mlab_dt_management.prototype = {
             $("#" + mlab.dt.config["app"]["content_id"]).on("paste", function(e) {
 // stop original paste from happening
                 e.preventDefault();
-                
+            
 //if they are not allowed to paste into this component we quit
                 var comp_id = $(".mlab_current_component").data("mlab-type");
                 if (typeof mlab.dt.components[comp_id].conf.paste_allowed == "undefined" || mlab.dt.components[comp_id].conf.paste_allowed === false) {
@@ -137,7 +137,7 @@ Mlab_dt_management.prototype = {
                 setTimeout( function() { $(".mlab_editor_footer_help").text(""); }, 5000);
               
                 mlab.dt.flag_dirty = true;
-            });
+        });
             
 
         });

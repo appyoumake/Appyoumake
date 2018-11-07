@@ -1,7 +1,8 @@
 //image component	
 
     this.media_type = "image";
-
+    var component = this;
+    
     this.onCreate = function (el) {
         this.onLoad (el);
         
@@ -17,24 +18,46 @@
     }
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
-        $(el).find("figcaption").attr("contenteditable", "true");
-        $(el).find("p").attr("contenteditable", "true");
-    };
+    this.onLoad = function (el) {
+        var imageConainer = $("<div class='img-container'></div>");
+        var pasteConainer = $("<div class='paste-container' contenteditable='true'></div>");
+        pasteConainer.pasteImageReader(function(results) {
+            var url = mlab.dt.urls.component_upload_file
+                    .replace("_APPID_", mlab.dt.app.id)
+                    .replace("_COMPID_", component.config.name);
 
-	this.onSave = function (el) {
-        $(el).find("figcaption").removeAttr("contenteditable");
-        $(el).find("p").removeAttr("contenteditable");
+            $.ajax({
+                url: url,
+                data: {image: results.dataURL, name: results.name},
+                type: 'POST',
+                success: function( json ) {
+                    component.cbSetImageSource(el, json.urls[0]);
+                }
+            });
+          
+        });
+        pasteConainer.on('propertychange input', function() {
+            $(this).html('')
+        })
         
-        var temp_html = el.outerHTML;
-
-        $(el).find("figcaption").attr("contenteditable", "true");
+        el.find("img").wrap(imageConainer);
+        el.find(".img-container").prepend(pasteConainer)
+        
+        $(el).find("figcaption").attr("contenteditabcomponent_uploadle", "true");
         $(el).find("p").attr("contenteditable", "true");
+    }
+    
+    this.onSave = function (el) {
+        var local_el = $(el).clone();
+        local_el.find("figcaption").removeAttr("contenteditable");
+        local_el.find("p").removeAttr("contenteditable");
+        local_el.find(".paste-container").remove();
+        local_el.find(".img-container > img").unwrap();
         
-        return temp_html;
+        return local_el[0].outerHTML;
     };
     
-	this.onDelete = function () {
+    this.onDelete = function () {
 
     };
     
@@ -168,6 +191,6 @@
 
 //adds or removes the para html element, see html definition in conf.yml for the corect HTML to use
     this.custom_toggle_caption = function (el) {
-        this.toggle(el, "caption", "figcaption", "img", "<figcaption class='mc_text mc_display mc_figure_text' contenteditable='true'>Caption</figcaption>");
+        this.toggle(el, "caption", "figcaption", ".img-container", "<figcaption class='mc_text mc_display mc_figure_text' contenteditable='true'>Caption</figcaption>");
     };
     

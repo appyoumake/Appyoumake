@@ -1251,9 +1251,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function componentUploadAction(Request $request, $app_id, $comp_id) {
+        $content = $request->get('image');
         
 //check if upload successful and validate parameters
-        $test = empty($request->files->get('mlab_files'));
+        $test = empty($request->files->get('mlab_files')) && !$content;
         if ($test) {
     		return new JsonResponse(array(
     			'result' => 'failure',
@@ -1284,6 +1285,27 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $path_component = $this->container->getParameter('mlab')['paths']['component'] . $comp_id . "/";
         $replace_chars = $this->container->getParameter('mlab_app')['replace_in_filenames'];
         $urls = array();
+        
+        if($content) {
+            $subFolder = null;
+            $data = explode(',', $content, 2);
+            $mimeType = substr($data[0], $start=strpos($data[0], ':')+1, strpos($data[0], ';')-$start);
+            
+            foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
+                if (in_array($mimeType, $formats)) {
+                    $subFolder = $folder;
+                    break;
+                }
+            }
+            $filePathInfo = pathinfo($request->get('name'));
+            $fileName = $filePathInfo['filename'] . '-' . time() . '.' . $filePathInfo['extension'];
+            $saveTo = $path_app . $subFolder . '/' . $fileName;
+            $success = file_put_contents($saveTo, base64_decode($data[1]));
+
+            if($success) {
+                $urls[] = $subFolder . "/" . $fileName;
+            }
+        }
         
 //loop through list of files and determine mime type and folder, generate name and move or process file
 //then return the file path

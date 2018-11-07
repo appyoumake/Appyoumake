@@ -685,3 +685,14 @@ made smaler than the min width */
     width: 24px;
     height: 24px;
 }
+
+#mlab_editor .img-container {
+    position: relative
+}
+
+#mlab_editor .paste-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: copy;
+}
