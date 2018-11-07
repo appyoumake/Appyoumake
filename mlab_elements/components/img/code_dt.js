@@ -43,7 +43,7 @@
         el.find("img").wrap(imageConainer);
         el.find(".img-container").prepend(pasteConainer)
         
-        $(el).find("figcaption").attr("contenteditabcomponent_uploadle", "true");
+        $(el).find("figcaption").attr("contenteditable", "true");
         $(el).find("p").attr("contenteditable", "true");
     }
     
