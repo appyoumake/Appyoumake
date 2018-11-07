@@ -20,8 +20,7 @@
 //el = element this is initialising, config = global config from conf.yml
     this.onLoad = function (el) {
         var imageConainer = $("<div class='img-container'></div>");
-        var pasteConainer = $("<div class='paste-container' contenteditable='true'></div>");
-        pasteConainer.pasteImageReader(function(results) {
+        var pasteConainer = mlab.dt.api.pasteImageReader(function(results) {
             var url = mlab.dt.urls.component_upload_file
                     .replace("_APPID_", mlab.dt.app.id)
                     .replace("_COMPID_", component.config.name);
@@ -34,12 +33,8 @@
                     component.cbSetImageSource(el, json.urls[0]);
                 }
             });
-          
         });
-        pasteConainer.on('propertychange input', function() {
-            $(this).html('')
-        })
-        
+
         el.find("img").wrap(imageConainer);
         el.find(".img-container").prepend(pasteConainer)
         
