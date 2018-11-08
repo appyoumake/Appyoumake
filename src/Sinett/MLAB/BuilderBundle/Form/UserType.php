@@ -27,9 +27,9 @@ class UserType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-    	$role_choices = array("ROLE_USER" => "User (*)", "ROLE_ADMIN" => "Administrator (**)");
+    	$role_choices = array("User (*)" => "ROLE_USER", "Administrator (**)" => "ROLE_ADMIN");
 		if ($options['current_user_role'] == "ROLE_SUPER_ADMIN") {
-			$role_choices["ROLE_SUPER_ADMIN"] = "System (***)";
+			$role_choices["System (***)"] = "ROLE_SUPER_ADMIN";
 		}
 		
     	$builder
