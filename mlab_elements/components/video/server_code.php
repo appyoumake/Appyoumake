@@ -20,27 +20,27 @@ class mlab_ct_video {
         $dir = new \RecursiveDirectoryIterator($conf["paths"]["app"]);
         $iterator = new \RecursiveIteratorIterator($dir);
         foreach (new \RegexIterator($iterator, "/$f_name.mp4/i", RecursiveRegexIterator::GET_MATCH) as $file) {
-            $find_files[] = $file;
+            $find_files[] = $file[0];
         }
         
 //found a previous upload, just copy file
         if (!empty($find_files)) {
             copy($find_files[0], $video_filename);
-            copy(str_replace($find_files[0], ".mp4", ".png"), $thumbnail_filename);
+            copy(str_replace(".mp4", ".png", $find_files[0]), $thumbnail_filename);
         } else {
         
 //generate thumbnail
-            exec("ffmpeg -ss 00:00:05.000 -i '$uploaded_file' -vframes 1 -s 640x480 '$thumbnail_filename'");
+            exec("ffmpeg -ss 00:00:05.000 -i '$upload_path' -vframes 1 -s 640x480 '$thumbnail_filename'");
 //if none created skip time parameter and let first frame be thumbnail
             if (!file_exists("$thumbnail_filename")) {
-                exec("ffmpeg -i '$uploaded_file' -vframes 1 -s 640x480 '$thumbnail_filename'");
+                exec("ffmpeg -i '$upload_path' -vframes 1 -s 640x480 '$thumbnail_filename'");
             }
 
 //convert file if wider than 480 (https://trac.ffmpeg.org/wiki/Scaling%20(resizing)%20with%20ffmpeg), or if different file format than h264/aac: 
-            exec("ffmpeg -i '$file_uploaded' -vf 'scale=w=min(iw,480):h=-2' -vcodec h264 -acodec aac -strict -2 '$f_name'.mp4 ");
+            exec("ffmpeg -i '$upload_path' -vf \"scale='min(iw,480)':-2\" -vcodec h264 -acodec aac -strict -2 '$f_name.mp4' ");
         }
-// Old: exec("ffmpeg -i '$file_uploaded' -vcodec mpeg4 -acodec libfdk_aac '$file_filename'.mp4");
-// Web/iOS: exec("ffmpeg -i '$file_uploaded' -vcodec h264 -acodec aac -strict -2 '$file_filename'.mp4 ");
+// Old: exec("ffmpeg -i '$upload_path' -vcodec mpeg4 -acodec libfdk_aac '$file_filename'.mp4");
+// Web/iOS: exec("ffmpeg -i '$upload_path' -vcodec h264 -acodec aac -strict -2 '$file_filename'.mp4 ");
         return "$sub_folder/$f_name.mp4";
     }
 
