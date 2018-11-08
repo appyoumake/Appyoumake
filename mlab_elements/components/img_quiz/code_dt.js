@@ -1,10 +1,27 @@
 //image and text component, inherits from img component	
+   var component = this;
    
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
+    this.onLoad = function (el) {
         var that = this;
         var that_el = el;
         this.displayAnswers(el);
+        var pasteConainer = mlab.dt.api.pasteImageReader(function(results) {
+            var url = mlab.dt.urls.component_upload_file
+                    .replace("_APPID_", mlab.dt.app.id)
+                    .replace("_COMPID_", component.config.name);
+
+            $.ajax({
+                url: url,
+                data: {image: results.dataURL, name: results.name},
+                type: 'POST',
+                success: function( json ) {
+                    component.cbAddImage(el, json.urls[0]);
+                }
+            });
+        });
+
+        el.find(".mlab_ct_img_quiz_carousel").prepend(pasteConainer)
     };
 
 //we remove answers for any quizzes before we save, they are generated on the fly at runtime and design time
@@ -14,6 +31,8 @@
         answer_container.html("");
         local_el.find("img").removeClass("active").first().addClass("active");
         local_el.find("span").removeClass("active").first().addClass("active");
+        local_el.find(".paste-container").remove();
+
         return local_el[0].outerHTML;
     };
 

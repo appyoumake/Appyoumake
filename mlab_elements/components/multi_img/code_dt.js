@@ -1,6 +1,7 @@
 //image component	
 
     this.media_type = "image";
+    var component = this;
 
     this.onCreate = function (el) {
         this.onLoad(el);
@@ -11,17 +12,37 @@
     }
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
+    this.onLoad = function (el) {
         var that = this;
         var that_el = el;
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
+        
+        var pasteConainer = mlab.dt.api.pasteImageReader(function(results) {
+            var url = mlab.dt.urls.component_upload_file
+                    .replace("_APPID_", mlab.dt.app.id)
+                    .replace("_COMPID_", component.config.name);
+
+            $.ajax({
+                url: url,
+                data: {image: results.dataURL, name: results.name},
+                type: 'POST',
+                success: function(json) {
+                    component.cbAddImage(el, json.urls[0]);
+                }
+            });
+        });
+
+        el.find(".mlab_ct_multi_img_carousel").prepend(pasteConainer)
     };
 
-	this.onSave = function (el) {
+    this.onSave = function (el) {
         var local_el = $(el).clone();
         local_el.find("img").removeClass("active").first().addClass("active");
         local_el.find("span").removeClass("active").first().addClass("active");
+        
+        local_el.find(".paste-container").remove();
+
         return local_el[0].outerHTML;
     };
     

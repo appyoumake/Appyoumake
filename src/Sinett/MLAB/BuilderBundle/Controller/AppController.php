@@ -1279,7 +1279,8 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
 //load libraries
         $file_mgmt = $this->get('file_management');
-        
+        $max_len = $this->container->getParameter('mlab_app')['verify_uploads']['max_filename_length'];
+
 //get paths
         $path_app = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $path_component = $this->container->getParameter('mlab')['paths']['component'] . $comp_id . "/";
@@ -1298,12 +1299,17 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
                 }
             }
             $filePathInfo = pathinfo($request->get('name'));
-            $fileName = $filePathInfo['filename'] . '-' . time() . '.' . $filePathInfo['extension'];
+            $fileName = $filePathInfo['filename'] . '-' . md5($data[1]) . '.' . $filePathInfo['extension'];
+            $fileName = substr($fileName, -$max_len);
             $saveTo = $path_app . $subFolder . '/' . $fileName;
-            $success = file_put_contents($saveTo, base64_decode($data[1]));
-
-            if($success) {
+            if (file_exists($saveTo)) {
                 $urls[] = $subFolder . "/" . $fileName;
+            } else {
+                $success = file_put_contents($saveTo, base64_decode($data[1]));
+
+                if($success) {
+                    $urls[] = $subFolder . "/" . $fileName;
+                }
             }
         }
         
@@ -1318,7 +1324,6 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 //replace "european" characters with plain ASCII 7 bit characters
 			$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
 //android allows max 100 char filenames, use config variable for this in case changes in future
-            $max_len = $this->container->getParameter('mlab_app')['verify_uploads']['max_filename_length'];
             $f_name = substr($temp_f_name, 0, $max_len - (strlen($f_ext) + 1))  . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
 //OLD             $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
             
