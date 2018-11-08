@@ -10,6 +10,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 was: <option value="{{ url }}">{{ file }}</option>
 #}
     <option>&nbsp;</option>
-    {% for url, file in files %}
-        <option data-imagesrc="{{ url }}" data-description="{{ file }}" value="{{ url }}">{{ file }}</option>
+    {% for file in files %}
+        <option data-imagesrc="{{ file.preview }}" data-description="{{ file.name }}" value="{{ file.url }}">{{ file.name }}</option>
     {% endfor %}

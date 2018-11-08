@@ -1616,7 +1616,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $files = array();
         switch ($file_type) {
             case "video":
-                $search = "*.png";
+                $search = "*.mp4";
                 break;
             case "image":
                 $search = "*";
@@ -1630,7 +1630,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
         foreach (glob($app_path . $search) as $file) {
-            $files[$file_url . basename($file)] = basename($file);
+            $files[] = [
+                'url' => $file_url . basename($file),
+                'name' => basename($file),
+                'preview' => $file_url . substr(basename($file), 0, -4) . '.png',
+            ];
         }
 
         return new JsonResponse(array('result' => 'success', 'files' => $this->renderView('SinettMLABBuilderBundle:App:options.html.twig', array('files' => $files))));
