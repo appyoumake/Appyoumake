@@ -11,7 +11,6 @@
  */
     
     this.onCreate = function (el) {
-        
         var guid = this.api.getGUID();
         var trimmed_guid = guid.replace(/-/g, "");
         
@@ -37,9 +36,7 @@
                                 "    }  \n" + 
                                 "} ");
 
-        if (typeof (google) == "undefined" || typeof (google.maps) == "undefined") {
-            $("head").append($("<script src='" + location.protocol + "//" + this.config.custom.map_script + "&key=" + "AIzaSyAIPKs3rxK8sgR7-aHO6s-CvMkpTG-QZUQ" + "&callback=mlab_cp_googlemap_" + trimmed_guid + "'>")); 
-        }
+        this.onLoad(el);
         
     };
     
@@ -126,7 +123,7 @@
     };
             
 	this.onDelete = function () {
-		console.log('delete');
+		
     };
     
     this.updateMap = function (id) {
