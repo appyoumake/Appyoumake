@@ -1,0 +1,1 @@
+{"entrypoints":{"mlab":{"js":["build/mlab.js"]},"admin":{"js":["build/admin.js"]},"applist":{"js":["build/applist.js"]},"builder":{"js":["build/builder.js"]}}}
