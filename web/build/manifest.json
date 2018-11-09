@@ -1,6 +1,6 @@
 {
-  "build/builder.js": "/build/builder.js",
-  "build/mlab.js": "/build/mlab.js",
+  "build/admin.js": "/build/admin.js",
   "build/applist.js": "/build/applist.js",
-  "build/admin.js": "/build/admin.js"
+  "build/builder.js": "/build/builder.js",
+  "build/mlab.js": "/build/mlab.js"
 }
