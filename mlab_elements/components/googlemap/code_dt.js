@@ -17,7 +17,8 @@
         $(el).find("." + this.config.custom.class_identifier).attr("id", guid);
         
         this.api.setScript(el,  "function mlab_cp_googlemap_" + trimmed_guid + "() { \n" +
-                                "    var myOptions = mlab.dt.api.getAllVariables($('#" + guid + "').parent()); \n" + 
+                                "    debugger;" + 
+                                "    var myOptions = mlab.dt.api.getAllVariables($('#" + guid + "').parents('[data-mlab-type=\"googlemap\"]')); \n" + 
                                 "    if (typeof myOptions == 'undefined') {\n" +
                                 "        myOptions = " + JSON.stringify(this.config.custom.map_options) + ";\n" +
                                 "    }  \n" +
