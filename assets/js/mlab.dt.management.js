@@ -56,7 +56,7 @@ Mlab_dt_management.prototype = {
                     if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
 //TODO: skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
-                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
                         $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
 
 /*                        $('#mlab_download_'+ platform + '_icon').qtip({
@@ -162,7 +162,7 @@ Mlab_dt_management.prototype = {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
                 full_url = window.location.origin + data.url;
-                $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "table"}).show()
+                $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "image"}).show()
                         .append("<br>")
                         .append("<a href='" + full_url + "'>" + _tr["mlab.dt.management.js.app_download_process.1"] + ": " + full_url +"</a>")
                         .append("<br>")
