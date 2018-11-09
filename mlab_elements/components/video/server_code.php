@@ -20,9 +20,9 @@ class mlab_ct_video {
         $dir = new \RecursiveDirectoryIterator($conf["paths"]["app"]);
         $iterator = new \RecursiveIteratorIterator($dir);
         foreach (new \RegexIterator($iterator, "/$f_name.mp4/i", RecursiveRegexIterator::GET_MATCH) as $file) {
-            $find_files[] = $file[0];
+            $find_files[] = $iterator->getPathname();
         }
-        
+
 //found a previous upload, just copy file
         if (!empty($find_files)) {
             copy($find_files[0], $video_filename);
