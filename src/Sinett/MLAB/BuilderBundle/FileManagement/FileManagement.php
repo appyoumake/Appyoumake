@@ -452,7 +452,7 @@ class FileManagement {
 
         
     }
-    
+
     public function componentAdded($app_id, $app, $comp_id) {
         $path_component = $this->config['paths']['component'] . $comp_id . "/";
         $path_app = $app->calculateFullPath($this->config['paths']['app']);
@@ -481,24 +481,29 @@ class FileManagement {
                 file_put_contents("$path_app_js/include_comp.txt", implode("\n", $include_items));
             }
 
+            $appConfig = $appConfigUpdate['config'] = $this->getAppConfig($app);
+                
 //2: Add plugins to the local conf file. We store these as the compiler service will later add these through CLI commands
 //https://cordova.apache.org/docs/en/5.1.1/guide_cli_index.md.html
 //https://cordova.apache.org/docs/en/5.1.1/cordova_plugins_pluginapis.md.html#Plugin%20APIs.
             if (file_exists($path_component . "conf.yml")) {
                 $yaml = new Parser();
                 $comp_config = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
-                
-                if (isset($comp_config["plugins"])) {
 
+                if (isset($comp_config["plugins"])) {
                     $new_plugins = $comp_config["plugins"];
 
 //update config file for app with the list of plugins, Used when we compile the app using Cordova
-                    $tmp_existing_config = $this->getAppConfigValue($app, "plugins");
-                    if (!$tmp_existing_config) {
-                        $tmp_existing_config = array();
-                    }
-                    $this->updateAppConfigFile($app, array("title" => $app->getName(), "plugins" => array_unique(array_merge($new_plugins, $tmp_existing_config["plugins"]))));
+                    $appConfigUpdate['config']["title"] = $app->getName();
+                    $appConfigUpdate['config']["plugins"] = array_unique(array_merge($new_plugins, $appConfig["plugins"]));
                 }
+                
+                if (isset($comp_config["requires_network"]) && $comp_config["requires_network"] != 'none') {
+                    $counter = 'count' . ucfirst($comp_config["requires_network"]) . 'Comp';
+                    isset($appConfigUpdate['config'][$counter]) OR $appConfigUpdate['config'][$counter] = 0;
+                    $appConfigUpdate['config'][$counter] += 1;
+                }
+                $this->componentUpdateConfig($app, $comp_id, $appConfigUpdate);
 
 //2.5: copy across any runtime dependencies, can be JS or CSS
                 $this->copyRequiredFiles($comp_config, $path_app, $this->config['paths']['component']);
@@ -527,7 +532,7 @@ class FileManagement {
                 }
             }
 
-            return array('result' => 'success');
+            return array('result' => 'success', 'config' => $appConfigUpdate['config']);
 
         } else {
                 $error = "";
@@ -538,6 +543,46 @@ class FileManagement {
                             'msg' => $error);
         }        
     }
+	
+        public function componentUpdateConfig($app, $comp_id = null, $update = []) {
+            $component = null;
+            $path_app = $app->calculateFullPath($this->config['paths']['app']);
+            $config = $prevConfig = $this->getAppConfig($app);
+
+            if(!is_dir($path_app)) {
+                return array(
+                    'result' => 'failure',
+                    'msg' => "App not found\n"
+                );
+            }
+            
+            if($comp_id) {
+                $path_component = $this->config['paths']['component'] . $comp_id . "/";
+                if (file_exists($path_component . "conf.yml")) {
+                    $yaml = new Parser();
+                    $component = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                }
+            }
+
+            if(isset($update['config'])) {
+                $config = array_merge($config, $update['config']);
+            }
+
+            if(isset($update['execute'])) {
+                $execute = $update['execute'];
+                $config = call_user_func(function() use ($component, $config, $execute) {
+                    eval($execute);
+                    return $config;
+                });
+            }
+
+            if($config != $prevConfig) {
+               $path_app_config = $path_app . $this->config['filenames']["app_config"];
+               file_put_contents($path_app_config, json_encode($config));   
+            }
+
+            return array('result' => 'success', 'config' => $config);
+        }
 	
 	/**
 	 * Function called to create a new app, copies across relevant template files 
@@ -615,6 +660,20 @@ class FileManagement {
         }
         return false;
 
+    }
+
+/**
+ * Get application config json
+ * @param type $app
+ */
+    public function getAppConfig($app) {
+        $path_app = $app->calculateFullPath($this->config['paths']['app']);
+        $path_app_config = $path_app . $this->config['filenames']["app_config"];
+        if (file_exists($path_app_config)) {
+            return json_decode(file_get_contents($path_app_config), true);
+        }
+        
+        return [];
     }
     
 	/**
@@ -790,6 +849,39 @@ class FileManagement {
 //get path of file to delete
         $app_path = $app->calculateFullPath($this->config['paths']['app']);
         $page_to_delete = $this->getPageFileName($app_path, $page_num);
+        $pageSource = file_get_contents($app_path .  $page_to_delete);
+
+// update app conf.json counters for network required components
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = false;
+        $doc->loadHTMLFile($app_path .  $page_to_delete);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($doc);
+        $page_components = $xpath->query('//div[@data-mlab-type]');
+            
+        if ($page_components) {
+            $componentConfigs = [];
+            $appConfig = $appConfigUpdate['config'] = $this->getAppConfig($app);
+
+            foreach ($page_components as $page_component) {
+                $comp_name = $page_component->getAttribute("data-mlab-type");
+                if(!isset($componentConfigs[$comp_name])) {
+                    $path_component = $this->config['paths']['component'] . $comp_name . "/";
+                    if (file_exists($path_component . "conf.yml")) {
+                        $yaml = new Parser();
+                        $componentConfigs[$comp_name] = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                    }
+                }
+                if (isset($componentConfigs[$comp_name]["requires_network"]) && $componentConfigs[$comp_name]["requires_network"] != 'none') {
+                    $counter = 'count' . ucfirst($componentConfigs[$comp_name]["requires_network"]) . 'Comp';
+                    isset($appConfigUpdate['config'][$counter]) OR $appConfigUpdate['config'][$counter] = 0;
+                    $appConfigUpdate['config'][$counter] = max(0, $appConfigUpdate['config'][$counter]-1);
+                }
+            }
+            $this->componentUpdateConfig($app, null, $appConfigUpdate);
+        }
 
 //update links, we don't actually delete files! This way we can undelete easily afterwards
         $current_order = $this->getAppConfigValue($app, "page_order");
@@ -808,9 +900,9 @@ class FileManagement {
         } else if ($max === 0) { //no pages left when done
             $page_to_open = $current_order[0];
         } else if ($key > $max) { //deleting last record
-            $page_to_open = $current_order[$max];;
+            $page_to_open = $current_order[$max];
         } else {
-            $page_to_open = $current_order[$key];;
+            $page_to_open = $current_order[$key];
         }
         if (file_exists("$app_path/$page_to_open")) {
             return intval($page_to_open);

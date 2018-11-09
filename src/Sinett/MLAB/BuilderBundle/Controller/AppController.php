@@ -726,6 +726,8 @@ class AppController extends Controller
                 $comp_files[$platform] = $compiled_app;
             }
         }
+        
+        $appConfig =  $file_mgmt->getAppConfig($app);
 
 //dont need everything in config file when return config settings
     	unset($config["replace_in_filenames"]);
@@ -740,11 +742,13 @@ class AppController extends Controller
                 "mlab_current_user_email" => $this->getUser()->getEmail(),
                 "mlab_app_checksum" => $mlab_app_checksum,
                 "mlab_compiled_files" => $comp_files,
+                "mlab_app_config" => $appConfig,
                 
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
+                                        "component_update_config" => $this->generateUrl('app_builder_component_update_config',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'page_num' => '_PAGENUM_', 'func_name' => '_FUNCNAME_')),
                                         "component_upload_file" => $this->generateUrl('app_builder_component_upload',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_helpfile" => $this->generateUrl('help_get_component_helpfile',  array('comp_id' => '_COMPID_')),
@@ -874,15 +878,16 @@ class AppController extends Controller
             }
             
     		return new JsonResponse(array(
-    				'result' => 'success',
-    				'html' => $page["html"],
-    				'lock_status' => $page["lock_status"],
+                    'result' => 'success',
+                    'html' => $page["html"],
+                    'lock_status' => $page["lock_status"],
                     'page_num_sent' => $page_num,
                     'page_num_real' => intval($doc), //this is the page that is being opened, typically different from previous when delete page. index.html = 0
                     'app_id' => $app_id,
                     'page_title' => $title,
                     'only_index' => !file_exists($app_path . "001.html"),
-                    "compiled_files" => $comp_files
+                    "compiled_files" => $comp_files,
+                    "appConfig" => $file_mgmt->getAppConfig($app)
                 ));
     		 
     	} else {
@@ -942,10 +947,11 @@ class AppController extends Controller
         $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
         $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
         $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $file_mgmt->getPageIdAndTitles($app);
+            $mlab_app_data["page_names"] = $page_names;
             $app_info = array(
                 "result" => "file_changes",
     			"mlab_app" => $mlab_app_data,
@@ -960,7 +966,15 @@ class AppController extends Controller
 
         $app->setUpdated(new \DateTime());
         $em->flush();
-                
+            
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'pages' => $page_names,
+        ]]);
+
         return new JsonResponse(array(
             'result' => 'success',
             'app_info' => $app_info));
@@ -997,9 +1011,8 @@ class AppController extends Controller
     	}
         
 //copy the template file to the app
-// not required anymore        $title = $request->request->all()["title"];
         $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app, $title);
+        $new_page_num = $file_mgmt->newPage($app, $request->request->get('title'));
         if ($new_page_num === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
@@ -1012,13 +1025,22 @@ class AppController extends Controller
          
         $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
 */
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'pages' => $page_names,
+        ]]);
+
         if ($redirect_to_open) {
             return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
         } else {
             return new JsonResponse(array(
                 'result' => 'success',
                 'new_page_num' => $new_page_num,
-                "page_names" => $file_mgmt->getPageIdAndTitles($app)));
+                "page_names" => $page_names));
         }
     }
 
@@ -1099,7 +1121,15 @@ class AppController extends Controller
                     'result' => 'error',
                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
         } else {
-            
+            $page_names = $file_mgmt->getPageIdAndTitles($app);
+            $websocketService = $this->get('websocket_service');
+            $websocketService->send(['data' => [
+                '_type' => 'app_pages_update',
+                '_feedId' => 'app_' . $app->getUid(),
+                '_sender' => $uid,
+                'pages' => $page_names,
+            ]]);
+
 //update file counter variable in JS
 //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
@@ -1164,7 +1194,7 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
  * @param type $page_num
  * @return \Symfony\Component\HttpFoundation\JsonResponse
  */
-    public function reorderPageAction ($app_id, $from_page, $to_page, $uid) {
+    public function reorderPageAction (Request $request, $app_id, $from_page, $to_page, $uid) {
         
 //for the time being do not allow them to change the index page
         if ($from_page == "index" || $to_page == "index") {
@@ -1190,10 +1220,20 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         
 //renames the individual page files, returns page from and to variables so frontend can update variables
         $res = $file_mgmt->reorderPage($app, $from_page, $to_page, $uid);
+
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $uid,
+            'pages' => $page_names,
+        ]]);        
+        
         return new JsonResponse(array(
                 'result' => 'success',
                 'msg' => $this->get('translator')->trans('appController.msg.reorderPageActionSuccess'),
-                'page_names' => $file_mgmt->getPageIdAndTitles($app)));
+                'page_names' => $page_names));
     }
     
     function removeLocksAction() {
@@ -1344,7 +1384,36 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $file_mgmt = $this->get('file_management');
         return new JsonResponse($file_mgmt->componentAdded($app_id, $app, $comp_id));
     }
-    
+
+
+/**
+ * Whenever a component is deleted on the front end this function is called
+ * @param type $app_id
+ * @param type $comp_id
+ * @return \Sinett\MLAB\BuilderBundle\Controller\JsonModel|\Symfony\Component\HttpFoundation\JsonResponse
+ */
+    public function componentUpdateConfigAction(Request $request, $app_id, $comp_id) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+        
+        if ( !isset($comp_id) ) {
+    		return new JsonResponse(array(
+    			'result' => 'failure',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.component.type.not.specified') . ": %s", $comp_id)));
+        }
+
+        $file_mgmt = $this->get('file_management');
+        return new JsonResponse($file_mgmt->componentUpdateConfig($app, $comp_id, $request->request->all()));
+    }
 /**
  * This will add the HTML code for a feature to the index.html file if this is not being edited right now
  * @param type $app_id

@@ -29,14 +29,18 @@ custom:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA70lEQVRIS2NkoDFghJqfAKT9gViASvZ9AJqzAYgXgixoAOJ6KhmMbkwjyAKQbfw0suADyIIHQCxPIwsegiwoAOJ+GllQCIvkAKAFIKxAJYtAoQKK5A0wC6hkLqYxdLMAlA/syQiiC0A9E6EJBWsoUCMfgJK5IS5LqJVMG6EZFsMX1MpoeC1oAFpLSVHxEajfAF8QgbwFimQHMiN5AqFIplkeABlMt3wAKiZA9YECFu8cAIotxBcM+IKA2MIOb1onZMEDoAJiimucSZGQBcRWOGRbQEw+wJvWCfkAlg9AEY2t0gcFISitgwo2kgHNkykA5/0s2EmcrngAAAAASUVORK5CYII=
         tooltip: { nb_NO: Vis kapitteloverskrifter og sidenavn som en outline, en_GB: Display chapter and page headlines in an outline style, default: Display chapter and page headlines in an outline style }
         order: 3
+    display_chapter_page_titles: 
+        icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA3QAAAN0BcFOiBwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANWSURBVFiF7ZdNbFRVFMd/59335qOdqf2U2qBVqB9RMRJZ2MSqiUuNMSGyMa4ksmFpWAGNhrChCxcaFyZCDH6gidHoBkg0EbQGqrEIi0mLC6lUp5l+TGk7M2/uOy46Mx3aGaZTit30n5zFe+e8c373vJObe1FVVBWg3TFuEtA7aY5xU0Bnsa7LkroDm+/oPfARJhTmTkiDgJ+Ovt4KbAP+AW4CiIOw5Yk+EAFgIXWdv378ioWpf1mY+DuXTaesaiBupFF27X83HG3tBGDq6jC/Hz+cIQgACMdbnZaeJ0PN23bQ+uBOwk1tpSJiTKDWxorPNwEYL5RHxAVIJS7yy8C+nM1nE9j85cDaMWASQBxzOJUYYmvvSwA0bukmO5McyExOzBVytaRGfu3VvN0prhvpO/SZ2/zA4wAYL2zzdr4KQDhqATd56RyDA3utqBwNgvw7WhiSoowXPgBEi8+Z6STRWEdiIZU8ubztxg29d/7Ia28+23/Ka7rvEUyoweYz841Fv1MWGzORBgW4eubjvMAJa/23lxevpGvnvyE9/ucblXw2n9sf+LnPhz54KwtgwhGAUgfKAeJupFH9+VmSl845gbVf1ypcSmJccPCr+QPrv5++lgjlZqfwFhdZ+Rf4c2lv+Hj/4rjC96sF6HlxL7l08uAtQn4TcXJ/nDwSzt6Y8aoBDPpzMxfHh8464nhfBjYzv1qAhclxpkevPARcqORXVd94kUPXL5zZDRoAP68AUNXTwOnVFi1X2QysGMKirJ85Bhxb/t6pEPu/ahNgE2AToC4AEencMAAR2Q2c3TAAwCvYusqtHVLSF1TZ629H9XQgBNy9kQB7gE83EsCpM37dAcqkIrL0qRRO0WtRPUNYLOYi0hRt71pKEo3heF77WgDq6YBfsK2oOvGu7SVHKNaMQsdaAOrpwClgGNgRirVkvIZ4pOiId23HZufbRaRNVVPrDiAiLwOdwGNizL57+14x5f62h3cR7+qxs2MjYyLyLYs75mVVHayZu9axX0SeBgaj7V2Zu7ofNfc89YLX/dyrK+Ksn2X0uw+ZuDKYSY+NOP6NaUc1aFTV3O0CPA/88MzBT2otpqTZsVGGT/QDRFU1c8vg4jW5mgH3izFp6r2Ge+EEYGrl/w+kIZOHeJjmaQAAAABJRU5ErkJggg==
+        tooltip: { nb_NO: Vis kapitteloverskrifter og sidenavn som en outline, en_GB: Display chapter page titles, default: Display chapter page titles }
+        order: 4
     decrease_size:
         tooltip: { nb_NO: Reduser størrelsen på innholdslisten, en_GB: Decrease the size of the index, default: Decrease the size of the index }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPxJREFUeNpiYKAzYKSFoazsHO+BlACa8IffP38IMtHII4VYxAJpGnRAX/YD8X8oTqBLfAEtWg/E8xlGwSigNVAA4n56WghK1thKDpoAkCX/oZgumbcBycL79LDwPZKFIOxAS8sSsFi4npYW3of66D6apQqUGIqregJZ9AGIDwDxQjS5fFr4bj9SqhRA8yHVs4gClhQ5H83SBGpn9AY0MQM0C8nOIoxYMjooyC5A4xA9XpGBIzSOKbIQ5DN5LAkFZmE9En8DNdop7wkke6pmkQJo6iS2qPsPjW+yU+Z7IgxwQLPwPzRBkeyz92jFVwIO3+3HYuF7qBmDEwAEGAALeVWechiR6wAAAABJRU5ErkJggg==
-        order: 4
+        order: 5
     increase_size:
         tooltip: { nb_NO: Øk størrelsen på overskriften, en_GB: Increase the size of the headline, default: Increase the size of the headline }
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASRJREFUeNrUltENgyAQhu1D0z46gt3AERzBERiBEdjAERjBETqC3YAR6AZXTI6EEE7wwIde8r8g+Am5/8eu+5OSTkNu0v3x1LtaAK2TysCkE6BkDUw4AUJ7AiYCmNfMBRoEAsJTQJsAWg5sCmCA8EvrHQF3zVfBhgQM8CMuKU0AocQirXbnpVsDVXB8FLRvBevRcyZhi1CqFVBEL1QE0LYCmihV/I5TUFELm4mmoDp2a2X04UTXTlyYj7GVeL4SwLXW6FNhrlYFQc7owA2CGzG+4K3+cfpmPDomxvc1r8xa0uglt39VEEhcIE/GHnDvSnP0+0CcCHCDQDJbW3N2GUaWYiZSSpKywRYF8RkvyQOgjTtZZyYvBGTE6NsKvVmds6z6CTAAwDrVj6+nmH8AAAAASUVORK5CYII=
-        order: 5
+        order: 6
         
     
 messages:

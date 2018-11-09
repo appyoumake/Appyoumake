@@ -101,7 +101,26 @@ services:
         arguments: ['@session']
         tags:
             - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin }
-            
+lexik_maintenance:
+#    authorized:
+#        path: /path                                                         # Optional. Authorized path, accepts regexs
+#        host: your-domain.com                                               # Optional. Authorized domain, accepts regexs
+#        ips: ['127.0.0.1', '172.123.10.14']                                 # Optional. Authorized ip addresses
+#        query: { foo: bar }                                                 # Optional. Authorized request query parameter (GET/POST)
+#        cookie: { bar: baz }                                                # Optional. Authorized cookie
+#        route:                                                              # Optional. Authorized route name
+#        attributes:                                                         # Optional. Authorized route attributes
+    driver:
+        ttl: 3600                                                                  # Optional ttl option, can be not set
+         # File driver
+        class: '\Lexik\Bundle\MaintenanceBundle\Drivers\FileDriver'                # class for file driver
+        options: {file_path: %kernel.root_dir%/../app/cache/lock}                  # file_path is the complete path for create the file (Symfony < 3.0)
+
+    #Optional. response code and status of the maintenance page
+    response:
+        code: 503                                                                  # Http response code of Exception page
+        status: "Service Temporarily Unavailable"                                  # Exception page title
+        exception_message: "Service Temporarily Unavailable"                       # Message when Exception is thrown 
 # these Mlab parameters are generic to the Mlab app and not dependent on the server installations.
 # Typically they are here so they can be changed without changing code in the app when, for instance, new converters are installed, etc.
 

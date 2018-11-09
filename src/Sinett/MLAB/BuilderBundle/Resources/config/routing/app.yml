@@ -92,6 +92,10 @@ app_builder_copy_app:
 app_builder_component_added:
     path:   /builder/{app_id}/{comp_id}/component_added
     defaults: { _controller: "SinettMLABBuilderBundle:App:componentAdded" }
+    
+app_builder_component_update_config:
+    path:   /builder/{app_id}/{comp_id}/component_update_config
+    defaults: { _controller: "SinettMLABBuilderBundle:App:componentUpdateConfig" }
 
 app_builder_component_run_function:
     path:   /builder/{app_id}/{comp_id}/{page_num}/{func_name}/component_run_function

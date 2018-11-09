@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Sinett\MLAB\BuilderBundle\SinettMLABBuilderBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new Lexik\Bundle\MaintenanceBundle\LexikMaintenanceBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
