@@ -423,7 +423,7 @@ Mlab_dt_design.prototype = {
         }
         
 //remove selections, highlight, etc for previously selected component
-        this.componentBlur($(".mlab_current_component"));
+        this.parent.api.componentBlur($(".mlab_current_component"));
                 
         $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
         if (this.parent.api.display.componentHighlightSelected(mlab.dt.clipboard)) {
