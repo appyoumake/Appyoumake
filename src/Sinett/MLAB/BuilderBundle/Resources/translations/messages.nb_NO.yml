@@ -625,6 +625,8 @@ mlab.dt.management.js.compiler.get_app_status.prompt.platform: Velg platform (iO
 mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Kan ikke hente app status
 mlab.dt.management.js.compiler.get_app.status.creating.app: Bygger app...
 
+mlab.dt.management.js.lock.explanation: Denne siden er låst fordi den blir redigert av en annen bruker eller i en annen fane på denne PCen. Hvis dette ikke er tilfelle (det kan også skje hvis PCen eller nettleseren krasjer), kan du låse opp siden for redigering fra menyen.
+
 mlab_editor.init.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
 mlab_editor.init.js.alert.unsaved: Du har endringer som ikke er lagret, er du bombesikker på at du vil forlate siden?
 

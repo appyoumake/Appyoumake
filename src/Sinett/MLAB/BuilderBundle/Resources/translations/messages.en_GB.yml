@@ -625,6 +625,8 @@ mlab.dt.management.js.compiler.get_app_status.prompt.platform: platform (ios or 
 mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Unable to get app status
 mlab.dt.management.js.compiler.get_app.status.creating.app: Creating app...
 
+mlab.dt.management.js.lock.explanation: This page is locked because it is being edited by another user or in another tab on this PC. If this is not the case (it may also occur if your PC or browser crashed) then you can unlock it for editing from the menu.
+
 mlab_editor.init.js.alert.browser.support: This web app will only work in Chrome/Chromium or Firefox
 mlab_editor.init.js.alert.unsaved: You have unsaved changes, do you want to lose these?
 
