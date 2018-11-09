@@ -53,9 +53,8 @@ Encore
     // see https://symfony.com/doc/current/frontend/encore/babel.html
 
     // REMOVE THIS WHEN Encore is updated to work with Webpack 4.x
-    
     /*
-        .configureBabel(function(babelConfig) {
+    .configureBabel(function(babelConfig) {
         // add additional presets
         babelConfig.presets.push('es2017');
         // debug info: console.log(babelConfig.presets[0][1]);
