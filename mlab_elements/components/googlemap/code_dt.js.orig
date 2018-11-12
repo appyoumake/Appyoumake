@@ -51,12 +51,17 @@
         } else {
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }
- 
+<<<<<<< HEAD
+        
+//retrieve old settings and store in temp variables that are also used by the dialog box
         map_options = this.api.getAllVariables(el);
         if (map_options) {
             
         }
         
+=======
+ 
+>>>>>>> 90027d348a780b26eeb3c435d8ae8378e1ec9278
     };
 
 
@@ -74,8 +79,6 @@
     
 
 
-//we need to manipulate content for reopening the map either in design mode or at runtime.
-//therefore we need to generate new Google Maps API calls based on the current map settings (zoom level, controls displayed, etc
 //we also need to delete the script inside the DIV which has a script_GUID id.
 
 	this.onSave = function (el) {
