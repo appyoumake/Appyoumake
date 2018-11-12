@@ -11,5 +11,5 @@ was: <option value="{{ url }}">{{ file }}</option>
 #}
     <option>&nbsp;</option>
     {% for file in files %}
-        <option data-imagesrc="{{ file.preview }}" data-description="{{ file.name }}" value="{{ file.url }}">{{ file.name }}</option>
+        <option {% if file.preview is not null %}data-imagesrc="{{ file.preview }}"{% endif %} data-description="{{ file.name }}" value="{{ file.url }}">{{ file.name }}</option>
     {% endfor %}

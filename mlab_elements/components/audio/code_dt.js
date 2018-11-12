@@ -2,7 +2,6 @@
     this.media_type = "audio";
 
     this.cbUploadCompleted = function(el, media_url) {
-        var media = $(el).find(this.media_type);
+        var media = $(el).find('audio');
         media.attr({'src': media_url});
-        
     };
