@@ -17,7 +17,6 @@
         $(el).find("." + this.config.custom.class_identifier).attr("id", guid);
         
         this.api.setScript(el,  "function mlab_cp_googlemap_" + trimmed_guid + "() { \n" +
-                                "    debugger;" + 
                                 "    var myOptions = mlab.dt.api.getAllVariables($('#" + guid + "').parents('[data-mlab-type=\"googlemap\"]')); \n" + 
                                 "    if (typeof myOptions == 'undefined') {\n" +
                                 "        myOptions = " + JSON.stringify(this.config.custom.map_options) + ";\n" +
@@ -25,6 +24,7 @@
                                 "    curr_map = new google.maps.Map(document.getElementById('" + guid + "'), myOptions);\n" + 
                                 "    var new_markers = []; \n" + 
                                 "    mlab.dt.api.setTempVariable('" + this.config.name + "', 'maps" + guid + "', curr_map); \n" + 
+                                "    mlab.dt.api.setTempVariable('" + this.config.name + "', 'map_centre_name" + guid + "', myOptions.map_centre_name); \n" + 
                                 "    if (typeof myOptions.markers != 'undefined') { \n" + 
                                 "        for (i in myOptions.markers) { \n" + 
                                 "            var marker = new google.maps.Marker( {   \n" + 
@@ -51,7 +51,13 @@
         } else {
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }
- 
+        
+//retrieve old settings and store in temp variables that are also used by the dialog box
+        map_options = this.api.getAllVariables(el);
+        if (map_options) {
+            
+        }
+        
     };
 
 
@@ -69,12 +75,22 @@
     
 
 
-//we need to manipulate content for reopening the map either in design mode or at runtime.
-//therefore we need to generate new Google Maps API calls based on the current map settings (zoom level, controls displayed, etc
 //we also need to delete the script inside the DIV which has a script_GUID id.
 
 	this.onSave = function (el) {
         
+        this.saveSettings(el);
+        
+        var local_el = $(el).clone();
+        local_el.find("." + this.config.custom.class_identifier).css("pointer-events", "").html("Retrieving map ... ");
+        
+        return local_el[0].outerHTML;
+        
+    };
+    
+//we need to manipulate content for reopening the map either in design mode or at runtime.
+//therefore we need to generate new Google Maps API calls based on the current map settings (zoom level, controls displayed, etc
+    this.saveSettings = function (el) {
 //prepare some local vars
         var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
         var curr_map = this.api.getTempVariable(this.config.name, "maps" + guid);
@@ -111,14 +127,8 @@
                             config : {class_identifier: this.config.custom.class_identifier, map_script: this.config.custom.map_script}
                         };
                         
-        this.api.setAllVariables(el, map_options);
-        
-        var local_el = $(el).clone();
-        local_el.find("." + this.config.custom.class_identifier).css("pointer-events", "").html("Retrieving map ... ");
-        
-        return local_el[0].outerHTML;
-        
-    };
+        this.api.setAllVariables(el, map_options);        
+    }
     
     this.getContentSize = function (el) {
         var ctrl = $(el).find("." + this.class_identifier);
