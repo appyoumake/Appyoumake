@@ -51,12 +51,6 @@
         } else {
             eval("mlab_cp_googlemap_" + trimmed_guid + "();");
         }
- 
-        map_options = this.api.getAllVariables(el);
-        if (map_options) {
-            
-        }
-        
     };
 
 
@@ -79,14 +73,10 @@
 //we also need to delete the script inside the DIV which has a script_GUID id.
 
 	this.onSave = function (el) {
-        
         this.saveSettings(el);
-        
         var local_el = $(el).clone();
         local_el.find("." + this.config.custom.class_identifier).css("pointer-events", "").html("Retrieving map ... ");
-        
         return local_el[0].outerHTML;
-        
     };
     
 //we need to manipulate content for reopening the map either in design mode or at runtime.
