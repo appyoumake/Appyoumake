@@ -1330,6 +1330,36 @@ Mlab_dt_api.prototype = {
                 }                
             }
         },      
+/**
+ * Resume obj from history
+ * @param {object} el: history obj
+ */   
+        componentResume: function (el) {
+            var comp_id = el.data("mlab-type");
+            var dt = this.parent.parent;
+            
+            if (dt.components[comp_id].conf.unique && $("#" + dt.config["app"]["content_id"]).find("[data-mlab-type='" + comp_id + "']").length > 0) {
+                alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
+                return;
+            }
+            $("#" + dt.config["app"]["content_id"]).append(el);
+            this.componentHighlightSelected(el);
+            dt.design.component_menu_prepare();
+            
+            window.scrollTo(0,document.body.scrollHeight);
+            
+            el.on("click", function(){
+                var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this));
+                if (prep_menu) {
+                    mlab.dt.design.component_menu_prepare();
+                }
+            })
+            .on("input", function(){dt.flag_dirty = true;});
+            
+            if (typeof dt.components[comp_id].conf.process_keypress != "undefined" && dt.components[comp_id].conf.process_keypress) {
+                $(el).keydown( function(e) { dt.components[comp_id].code.onKeyPress(e); } );
+            }
+        },      
     },
 
 }

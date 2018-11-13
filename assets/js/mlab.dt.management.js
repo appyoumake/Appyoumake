@@ -493,11 +493,17 @@ Mlab_dt_management.prototype = {
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
     page_open : function (app_id, page_num) {
-        that = this;
-        this.page_save( function() { that.page_open_process(app_id, page_num); } );
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            that.page_save( function() {
+                that.page_open_process(app_id, page_num, function() {
+                    resolve();
+                })
+            });
+        });
     },
 
-    page_open_process : function (app_id, page_num) {
+    page_open_process : function (app_id, page_num, cb) {
 
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.page"], true);
 
@@ -563,10 +569,12 @@ Mlab_dt_management.prototype = {
                 that.parent.utils.update_status("temporary", data.msg, false);
 
             }
-
-        } );
-
-    },
+            
+            if(cb) {
+                cb();
+            }
+        }
+    )},
 
 /**
  * Call a backend python script that uses OpenOffice to convert PPT and DOC to individual pages
