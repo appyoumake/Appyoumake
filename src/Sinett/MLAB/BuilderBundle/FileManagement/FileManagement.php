@@ -912,6 +912,58 @@ class FileManagement {
     }    
     
     /**
+     * List of deleted 
+     * 
+     * @param type $app
+     * @return array [pageNum => pageTitle]
+     */
+    public function listDeletedPages($app) {
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
+        $appConfig = $this->getAppConfig($app);
+
+        $allPages = array_map("basename", glob($app_path . "/???.html"));
+        $deletedPages = array_diff($allPages, $appConfig['page_order']);
+        $list = [];
+        
+        libxml_use_internal_errors(true);
+
+        foreach($deletedPages as $pageFile) {
+            $doc = new \DOMDocument("1.0", "utf-8");
+            $doc->validateOnParse = false;
+            $doc->loadHTMLFile($app_path .  $pageFile);
+            
+            $xpath = new \DOMXPath($doc);
+            $pageContainer = $xpath->query("(//div[@data-role='page'])[1]");
+            
+            $pageId = substr($pageFile, 0, -5);
+            
+            $list[$pageId] =  $pageContainer[0]->getAttribute("data-title");
+        }
+        
+        return $list;
+    }
+    
+    /**
+     * Restore previously deleted page
+     * 
+     * @param type $app
+     * @param type $pageNum
+     * @return array $appConfig
+     */
+    public function restorePage($app, $pageNum) {
+        $app_path = $app->calculateFullPath($this->config['paths']['app']);
+        $appConfig['config'] = $this->getAppConfig($app);
+
+        if(!file_exists($app_path . $pageNum . '.html')) {
+            return false;
+        }
+        
+        $appConfig['config']['page_order'][] = $pageNum . '.html';
+        
+        return $this->componentUpdateConfig($app, null, $appConfig);
+    }    
+    
+    /**
      * Moves a page, this is done by renaming pages so they are always sequential.
      * 
      * @param type $app

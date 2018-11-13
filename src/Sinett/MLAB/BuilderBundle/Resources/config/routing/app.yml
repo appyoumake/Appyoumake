@@ -77,6 +77,14 @@ app_builder_page_delete:
     path:   /builder/{app_id}/{page_num}/{uid}/page_delete
     defaults: { _controller: "SinettMLABBuilderBundle:App:deletePage" }
     
+app_builder_deleted_pages:
+    path:   /builder/{app_id}/{uid}/deleted_pages
+    defaults: { _controller: "SinettMLABBuilderBundle:App:deletedPages" }
+    
+app_builder_page_restore:
+    path:   /builder/{app_id}/{page_num}/{uid}/page_restore
+    defaults: { _controller: "SinettMLABBuilderBundle:App:restorePage" }
+    
 app_builder_page_reorder:
     path:   /builder/{app_id}/{from_page}/{to_page}/{uid}/page_reorder
     defaults: { _controller: "SinettMLABBuilderBundle:App:reorderPage" }
