@@ -849,39 +849,12 @@ class FileManagement {
 //get path of file to delete
         $app_path = $app->calculateFullPath($this->config['paths']['app']);
         $page_to_delete = $this->getPageFileName($app_path, $page_num);
-        $pageSource = file_get_contents($app_path .  $page_to_delete);
 
 // update app conf.json counters for network required components
-        $doc = new \DOMDocument("1.0", "utf-8");
-        libxml_use_internal_errors(true);
-        $doc->validateOnParse = false;
-        $doc->loadHTMLFile($app_path .  $page_to_delete);
-        libxml_clear_errors();
-
-        $xpath = new \DOMXPath($doc);
-        $page_components = $xpath->query('//div[@data-mlab-type]');
-            
-        if ($page_components) {
-            $componentConfigs = [];
-            $appConfig = $appConfigUpdate['config'] = $this->getAppConfig($app);
-
-            foreach ($page_components as $page_component) {
-                $comp_name = $page_component->getAttribute("data-mlab-type");
-                if(!isset($componentConfigs[$comp_name])) {
-                    $path_component = $this->config['paths']['component'] . $comp_name . "/";
-                    if (file_exists($path_component . "conf.yml")) {
-                        $yaml = new Parser();
-                        $componentConfigs[$comp_name] = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
-                    }
-                }
-                if (isset($componentConfigs[$comp_name]["requires_network"]) && $componentConfigs[$comp_name]["requires_network"] != 'none') {
-                    $counter = 'count' . ucfirst($componentConfigs[$comp_name]["requires_network"]) . 'Comp';
-                    isset($appConfigUpdate['config'][$counter]) OR $appConfigUpdate['config'][$counter] = 0;
-                    $appConfigUpdate['config'][$counter] = max(0, $appConfigUpdate['config'][$counter]-1);
-                }
-            }
-            $this->componentUpdateConfig($app, null, $appConfigUpdate);
-        }
+        $appConfig = $this->getAppConfig($app);
+        $pageComponents = $this->getPageComponents($app_path . $page_to_delete);
+        $this->updateNetworkComponentCounters('remove', $appConfig['config'], $pageComponents);
+        $this->componentUpdateConfig($app, null, $appConfig);
 
 //update links, we don't actually delete files! This way we can undelete easily afterwards
         $current_order = $this->getAppConfigValue($app, "page_order");
@@ -959,9 +932,54 @@ class FileManagement {
         }
         
         $appConfig['config']['page_order'][] = $pageNum . '.html';
-        
+        $pageComponents = $this->getPageComponents($app_path . $pageNum . '.html');
+        $this->updateNetworkComponentCounters('add', $appConfig['config'], $pageComponents);
+
         return $this->componentUpdateConfig($app, null, $appConfig);
     }    
+    
+    protected function updateNetworkComponentCounters($action, &$config, $pageComponents) {
+        $add = $action == 'add' ? 1 : -1;
+        foreach ($pageComponents as $component) {
+             if (isset($component['config']["requires_network"]) && $component['config']["requires_network"] != 'none') {
+                $counter = 'count' . ucfirst($component['config']["requires_network"]) . 'Comp';
+                isset($config[$counter]) OR $config[$counter] = 0;
+                $config[$counter] = max(0, $config[$counter] + $add);
+            }
+        }
+    }    
+
+    protected function getPageComponents($path) {
+        $components = [];
+        $componentConfigs = [];
+
+        $doc = new \DOMDocument("1.0", "utf-8");
+        libxml_use_internal_errors(true);
+        $doc->validateOnParse = false;
+        $doc->loadHTMLFile($path);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($doc);
+        $page_components = $xpath->query('//div[@data-mlab-type]');
+
+        foreach ($page_components as $page_component) {
+            $comp_name = $page_component->getAttribute("data-mlab-type");
+            if(!isset($componentConfigs[$comp_name])) {
+                $path_component = $this->config['paths']['component'] . $comp_name . "/";
+                if (file_exists($path_component . "conf.yml")) {
+                    $yaml = new Parser();
+                    $componentConfigs[$comp_name] = $yaml->parse(@file_get_contents($path_component . "conf.yml"));
+                }
+            }
+            $components[] = [
+                'node' => $page_component,
+                'type' => $comp_name,
+                'config' => $componentConfigs[$comp_name]
+            ];
+        }
+        
+        return $components;
+    }
     
     /**
      * Moves a page, this is done by renaming pages so they are always sequential.
