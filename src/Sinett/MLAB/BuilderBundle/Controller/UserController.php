@@ -90,19 +90,18 @@ class UserController extends Controller
     */
     private function createCreateForm(User $entity)
     {
-        $temp_roles = $this->getUser()->getRoles();
+        $temp_role = $this->getUser()->getRole();
         $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
-        	'current_user_role' => $temp_roles[0], 
+        	'current_user_role' => $temp_role, 
             'attr' => array('autocomplete' => 'off'),
         ));
         
 //need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-            $temp_roles = $this->getUser()->getRoles();
             $temp_groups = $this->getUser()->getGroupsArray();
-            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
+            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_role, $temp_groups);
             $form->add('groups', 'entity', array( 'choices' => $groups,
                                                     'class' => 'SinettMLABBuilderBundle:Group',
                                                     'label' => 'app.admin.users.groups',
