@@ -22,6 +22,11 @@ app_create:
     defaults: { _controller: "SinettMLABBuilderBundle:App:create" }
     requirements: { methods: post }
 
+app_copy:
+    path:  /{id}/copy
+    defaults: { _controller: "SinettMLABBuilderBundle:App:copy" }
+    requirements: { methods: post }
+
 app_edit:
     path:  /{id}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:App:edit" }

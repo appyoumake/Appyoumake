@@ -42,6 +42,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                   {label:'{% trans %}builder.popup.app.properties.label.download{% endtrans %}',                icon:'/img/tools/down.png',         action:function() { mlab_download_app(); } },
                   {label:'{% trans %}builder.popup.app.properties.label.copy.link{% endtrans %}',               icon:'/img/copy_page.png',          action:function() { mlab_copy_app_link() } },
                   null, // divider
+                  {label:'{% trans %}builder.popup.app.properties.label.copy.app{% endtrans %}',                icon:'/img/copy_page.png',          action:function() { mlab_copy_app() } },
                   {label:'{% trans %}builder.popup.app.properties.label.new.incremental{% endtrans %}',         icon:'/img/newVersion.png',         action:function() { mlab_create_new_version(0.1); } },
                   {label:'{% trans %}builder.popup.app.properties.label.new.major{% endtrans %}',               icon:'/img/newVersion.png',         action:function() { mlab_create_new_version(1); } },
                   {label:'{% trans %}builder.popup.app.properties.label.new.branch{% endtrans %}',              icon:'/img/newVersion.png',         action:function() { mlab_create_new_branch(); } },
@@ -97,6 +98,38 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         
         function mlab_copy_app_link() {
             alert(mlab_current_app_id);
+        }
+        
+        function mlab_copy_app() {
+            
+//request new app title
+            var app_title = $("#row_app_" + mlab_current_app_id).find("td:nth-child(3)").text().trim();
+            var new_app_title = prompt("Please enter the name of the new app to copy '" + app_title + "' to.", app_title + " (Copy)");
+            
+//if they have provided a name we continue
+            if (new_app_title) {
+//prepare URL to call
+                var url = "{{ path('app_copy', { id: "_ID_" } ) }}";
+                url = url.replace("_ID_", mlab_current_app_id);
+
+//prepare data to send in POST
+                var data = {name : new_app_title};
+      
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function( data ) {
+                        if (data.result == "SUCCESS") {
+                            var open_url = "{{ path('app_builder_editor', { 'id': 'APP_ID', 'page_num': 'first' }) }}";
+                            location.href = open_url.replace(/APP_ID/ , data.app_id);
+
+                        } else {
+                            alert(data.message);
+                        }                        
+                    }
+                });
+            }
         }
         
         function mlab_create_new_version(increment) {
