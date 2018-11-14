@@ -14,13 +14,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 <div id="build_app_properties">
     <ul>
-        {% if mode == 'create' %}
-            <li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
-            <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.select_base.tab{% endtrans %}</a></li>
-        {% endif %}
-        <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
-        <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.classification.tab{% endtrans %}</a></li>
-        <li><a href="#builder_app_property_tabs-5">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.select_base.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.classification.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
       </ul>
       
     {{ form_start(form) }}
@@ -54,11 +51,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <div class="new_line">
                 {{ form_label(form.active_version, null, {'label': 'builder.new.app.active_version.number'|trans}) }}
                 {{ form_errors(form.active_version) }}
-                {% if mode == 'create' %}
-                    {{ form_widget(form.active_version, {'disabled': 'disabled'} ) }}
-                {% else %}
-                    {{ form_widget(form.active_version) }}
-                {% endif %}
+                {{ form_widget(form.active_version, {'disabled': 'disabled'} ) }}
             </div>
             
             
@@ -77,15 +70,15 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 <div class="left mlab_icon_design_input">
                     <label for="mlab_select_background">{% trans %}builder.new.app.name.selectBackground{% endtrans %}</label>
                     <select id="mlab_select_background" name="mlab_select_background" >
-                        <option value=""></option>
+                        <option data-imagesrc="/img/no_selection.png" value="" data-description="{% trans %}app.select.icon.no_background{% endtrans %}"></option>
                         {% for icon, path in backgrounds %}
                             <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
                         {% endfor %}
                     </select>
                 
-                    <label for="mlab_select_background">{% trans %}builder.new.app.name.selectForground{% endtrans %}</label>
+                    <label for="mlab_select_foreground">{% trans %}builder.new.app.name.selectForground{% endtrans %}</label>
                     <select id="mlab_select_foreground" name="mlab_select_foreground" >
-                        <option value=""></option>
+                        <option data-imagesrc="/img/no_selection.png" value="" data-description="{% trans %}app.select.icon.no_foreground{% endtrans %}"></option>
                         {% for icon, path in foregrounds %}
                             <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
                         {% endfor %}
@@ -174,24 +167,28 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         });
         
         $('#mlab_select_background').ddslick({
-            width: 90,
+            width: 300,
             height: 200,
             imagePosition: "left",
-            selectText: "{% trans %}app.select.icon.background{% endtrans %}",
             onSelected: function (data) {
-                if (data.selectedIndex > 0) {
+                if (!$('#mlab_select_foreground').hasClass("dd-container")) { //avoid trigger before both drop downs have been initialised
+                    return;
+                }
+                if (data.selectedIndex >= 0) {
                     createIcon.buildIcon();
                 }
             }
         });
         
         $('#mlab_select_foreground').ddslick({
-            width: 90,
+            width: 300,
             height: 200,
             imagePosition: "left",
-            selectText: "{% trans %}app.select.icon.foreground{% endtrans %}",
             onSelected: function (data) {
-                if (data.selectedIndex > 0) {
+                if (!$('#mlab_select_background').hasClass("dd-container")) { //avoid trigger before both drop downs have been initialised
+                    return;
+                }
+                if (data.selectedIndex >= 0) {
                     $("#mlab_local_iconfile").val("");
                     createIcon.buildIcon();
                 }
@@ -351,7 +348,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 //function to load sub categories when a higher level category is selected
     function loadTags(el, level) {
-        debugger;   
         if (level == 3) {
             return;
         }
@@ -408,7 +404,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             
             switch(eval_tab) {
                 case 0:
-                    if ($('#form_template').data('ddslick').selectedIndex == 0) {
+                    if ($('#form_template').data('ddslick').selectedIndex < 0) {
                         msg = msg + "{% trans %}properties.build.app.fill.template{% endtrans %}\n";
                     }  
                     break;
@@ -549,8 +545,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     $('#form_template').ddslick({
                         width: 300,
                         height: 110,
-                        imagePosition: "left",
-                        selectText: "{% trans %}app.select.template{% endtrans %}"
+                        imagePosition: "left"
                     });
 
 
@@ -568,8 +563,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 $('#form_template').ddslick({
                     width: 300,
                     height: 110,
-                    imagePosition: "left",
-                    selectText: "{% trans %}app.select.template{% endtrans %}"
+                    imagePosition: "left"
                 });
 
             }

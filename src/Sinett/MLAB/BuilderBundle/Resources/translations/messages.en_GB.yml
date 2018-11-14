@@ -64,6 +64,8 @@ builder.new.app.select_base.template: Template
 builder.new.app.select_base.existing_app: Existing App
 builder.new.app.select_base.office_file: Office file
 builder.new.app.basedon.description: Choose what you want to base the app on
+app.select.icon.no_background: No background
+app.select.icon.no_foreground: No main icon
 
 builder.new.app.name.description: Give the app a name and a full description before proceeding
 builder.new.app.name.name: Name

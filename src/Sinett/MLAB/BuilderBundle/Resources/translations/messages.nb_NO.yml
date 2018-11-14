@@ -64,6 +64,10 @@ builder.new.app.select_base.template: Mal
 builder.new.app.select_base.existing_app: Eksisterende App
 builder.new.app.select_base.office_file: Office fil
 builder.new.app.basedon.description: Velg det du ønsker å basere appen på
+app.select.icon.background: Velg en bakgrunn for ikonet du skal lage (valgfritt)
+app.select.icon.foreground: Velg hovedbildet for ikonet du skal lage (påkrevd)
+app.select.template: Velg malen som skal brukes for denne appen
+
 
 builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
 builder.new.app.name.name: Navn
