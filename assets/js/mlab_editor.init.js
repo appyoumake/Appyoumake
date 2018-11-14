@@ -308,7 +308,7 @@ $(document).ready(function() {
 //                    $("[data-mlab-comp-tool='redo']").on("click", function () { document.execCommand("redo"); });
 //                    $("[data-mlab-comp-tool='undo']").on("click", function () { document.execCommand("undo"); });
 
-                    $("[data-mlab-comp-tool='undo']").on("click", function () { mlab.dt.design.component_undo(); });
+                    $("[data-mlab-comp-tool='undo']").on("click", function () { mlab.dt.design.component_trash(); });
                     
                     $("#mlab_page_control_title").on("click", function () {
                         mlab.dt.api.editContent(this);

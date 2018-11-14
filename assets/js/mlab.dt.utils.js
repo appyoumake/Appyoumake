@@ -163,6 +163,7 @@ Mlab_dt_utils.prototype = {
  * @param {object} obj: history obj
  */   
     addHistory: function (obj) {
+        obj.id = this.parent.api.getGUID();
         mlab.dt.history.push(obj);
         
         if(mlab.dt.history.length > 0) {
@@ -174,8 +175,20 @@ Mlab_dt_utils.prototype = {
 /**
  * Rops obj from history and returns it
  */           
-    popHistory: function () {
-        var record = mlab.dt.history.pop();
+    popHistory: function (id) {
+        var record;
+        
+        if(id) {
+            mlab.dt.history = mlab.dt.history.filter(function(item) {
+                if(!record && item.id === id) {
+                    record = item;
+                    return false;
+                }
+                return true;
+            })
+        } else {
+            record = mlab.dt.history.pop();
+        }
         
         if(mlab.dt.history.length === 0) {
             $("[data-mlab-comp-tool='undo']").hide();
