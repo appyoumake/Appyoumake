@@ -435,6 +435,7 @@ builder.popup.app.properties.label.edit.content: Rediger appeninnhold
 builder.popup.app.properties.label.edit.details: Rediger app egenskaper
 builder.popup.app.properties.label.download: Last ned appen
 builder.popup.app.properties.label.copy.link: Kopier lenke til appen
+builder.popup.app.properties.label.copy.app: Kopier & rediger denne appen
 builder.popup.app.properties.label.new.incremental: Lag ny mindre versjonen
 builder.popup.app.properties.label.new.major: Lag ny stor versjon
 builder.popup.app.properties.label.new.branch: Lag ny del

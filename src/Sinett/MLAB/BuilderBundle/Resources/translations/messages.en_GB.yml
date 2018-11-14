@@ -435,6 +435,7 @@ builder.popup.app.properties.label.edit.content: Edit app content
 builder.popup.app.properties.label.edit.details: Edit app details
 builder.popup.app.properties.label.download: Download the app
 builder.popup.app.properties.label.copy.link: Copy link to the app
+builder.popup.app.properties.label.copy.app: Copy & edit this app
 builder.popup.app.properties.label.new.incremental: Create a new incremental version
 builder.popup.app.properties.label.new.major: Create a new major version
 builder.popup.app.properties.label.new.branch: Create a new branch
