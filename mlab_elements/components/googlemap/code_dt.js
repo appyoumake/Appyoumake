@@ -139,6 +139,7 @@
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( {'address': search_term}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
+                    
                     that.api.getTempVariable(that.config.name, "maps" + id).setCenter(results[0].geometry.location);
                 } else {
                     console.log("Not found: " + status); 
@@ -268,7 +269,7 @@
                 options_markers = options_markers + "<option value='" + i + "'>" + t + "</option>";
             }
         }
-        debugger;
+        
         var map_centre_name = this.api.getTempVariable(this.config.name, "map_centre_name" + guid);
         if (!map_centre_name) {
             map_centre_name = "Not selected";
@@ -309,8 +310,10 @@
         var component_id = this.config.component_name;
         var component_config = this.config;
         
-        this.api.displayPropertyDialog(el, "Edit map", content, null, null, null, null, false, event);
-        
+        this.api.displayPropertyDialog(el, "Edit map", content, null, null, function() {
+            var center = mlab.dt.api.getAllVariables($('#' + guid).parents('[data-mlab-type="googlemap"]'))["center"];
+            mlab.dt.api.getTempVariable('googlemap', 'maps' + guid).setCenter(new google.maps.LatLng(center.lat, center.lng));
+        }, null, false, event);
    };
    
    
