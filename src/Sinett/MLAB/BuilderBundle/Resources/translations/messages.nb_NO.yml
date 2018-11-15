@@ -56,6 +56,7 @@ app.builder.list.tooltip.properties: Menyen til
 builder.new.app.basedon.tab: Baser på
 builder.new.app.select_base.tab: Velg base
 builder.new.app.name.tab: Navn
+builder.new.app.icon.tab: Ikon
 builder.new.app.classification.tab: Klassifiser
 builder.new.app.submit.tab: Lag
 
@@ -64,17 +65,16 @@ builder.new.app.select_base.template: Mal
 builder.new.app.select_base.existing_app: Eksisterende App
 builder.new.app.select_base.office_file: Office fil
 builder.new.app.basedon.description: Velg det du ønsker å basere appen på
-app.select.icon.background: Velg en bakgrunn for ikonet du skal lage (valgfritt)
-app.select.icon.foreground: Velg hovedbildet for ikonet du skal lage (påkrevd)
-app.select.template: Velg malen som skal brukes for denne appen
-
+app.select.icon.no_background: Slett bakgrunn
+app.select.icon.no_foreground: Slett hovedikon
+builder.new.app.icon.scale: Juster ikonstørrelse
 
 builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
 builder.new.app.name.name: Navn
 builder.new.app.name.descriptionLab: Beskrivelse
 builder.new.app.name.selectBackground: Velg bakgrunn
 builder.new.app.name.selectForground: Velg ikon
-builder.new.app.name.iconFile: Ikon-fil
+builder.new.app.name.iconFile: <strong>eller</strong> velg en bildefil fra PCen din
 builder.new.app.name.addIconFileImage: Legg til bilde
 builder.new.app.name.iconText: Ikon-tekst
 builder.new.app.name.addIconText: Legg til tekst
