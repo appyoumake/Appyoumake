@@ -58,7 +58,11 @@ class AppController extends Controller
         
     }
     
-    
+    public function builderNewAction()
+    {
+        return $this->render('SinettMLABBuilderBundle:App:new/builder.html.twig');
+    }
+
     /**
      * Lists all App entities for management by app designer 
      * (similar to the indexAction, but adds many other actionsr)

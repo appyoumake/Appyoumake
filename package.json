@@ -3,8 +3,12 @@
     "@babel/preset-es2017": "^7.0.0-beta.53",
     "@symfony/webpack-encore": "^0.21.0",
     "imports-loader": "^0.7.0",
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.0.1",
     "script-loader": "^0.7.2",
     "uglifyjs-webpack-plugin": "^2.0.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "normalize.css": "^8.0.1"
+  }
 }
