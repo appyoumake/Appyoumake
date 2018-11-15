@@ -1359,8 +1359,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             
 //check to see if the mime type is allowed
             $sub_folder = false;
-            if (in_array($f_mime, $this->container->getParameter('mlab_app')['uploads_allowed'][$comp_id])) {
-                $sub_folder = $comp_id;
+            foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
+                if (in_array($f_mime, $formats)) {
+                    $sub_folder = $folder;
+                    break;
+                }
             }
 
             if ( !$sub_folder ) {
