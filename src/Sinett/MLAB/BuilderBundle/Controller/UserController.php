@@ -90,27 +90,13 @@ class UserController extends Controller
     */
     private function createCreateForm(User $entity)
     {
-        $temp_role = $this->getUser()->getRole();
         $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
-        	'current_user_role' => $temp_role, 
+            'current_user_role' => $this->getUser()->getRole(),
+            'groups' => $this->currentUserGroups(),
             'attr' => array('autocomplete' => 'off'),
         ));
-        
-//need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-            $temp_groups = $this->getUser()->getGroupsArray();
-            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_role, $temp_groups);
-            $form->add('groups', 'entity', array( 'choices' => $groups,
-                                                    'class' => 'SinettMLABBuilderBundle:Group',
-                                                    'label' => 'app.admin.users.groups',
-                                                    'required' => true,
-                                                    'empty_data'  => null,
-                                                    'placeholder'  => '',
-                                                    'multiple' => true));
-        }
-
 
         $form->add('submit', SubmitType::class, array('label' => 'app.admin.users.new.create.button'));
 
@@ -197,27 +183,13 @@ class UserController extends Controller
     */
     private function createEditForm(User $entity)
     {
-        $temp_roles = $this->getUser()->getRoles();
         $form = $this->createForm(UserType::class, $entity, array(
             'action' => $this->generateUrl('user_update', array('id' => $entity->getId())),
             'method' => 'PUT',
-            'current_user_role' => $temp_roles[0], 
+            'current_user_role' => $this->getUser()->getRole(), 
+            'groups' => $this->currentUserGroups(),
         ));
 
-//need to create custom form for regular admin because we want to filter out and only show groups that the current admin controls.
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-            $temp_roles = $this->getUser()->getRoles();
-            $temp_groups = $this->getUser()->getGroupsArray();
-            $groups = $this->getDoctrine()->getManager()->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups);
-            $form->add('groups', 'entity', array( 'choices' => $groups,
-                                                    'class' => 'SinettMLABBuilderBundle:Group',
-                                                    'label' => 'app.admin.users.groups',
-                                                    'required' => true,
-                                                    'empty_data'  => null,
-                                                    'placeholder'  => '',
-                                                    'multiple' => true));
-        }
-        
         $form->add('submit', SubmitType::class, array('label' => 'app.admin.users.edit.update.button'));
 
         return $form;
@@ -329,6 +301,16 @@ class UserController extends Controller
                 'result' => 'SUCCESS',
                 'record' => $this->renderView('SinettMLABBuilderBundle:User:show.html.twig', array('entity' => $entity))));
 	        	
+    }
+    
+    protected function currentUserGroups() {
+        return $this->getDoctrine()
+                ->getManager()
+                ->getRepository('SinettMLABBuilderBundle:Group')
+                ->findByRoleAndGroup(
+                    $this->getUser()->getRole(),
+                    $this->getUser()->getGroupsArray()
+                );
     }
 
 }
