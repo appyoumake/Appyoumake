@@ -862,6 +862,10 @@ Mlab_dt_management.prototype = {
 //update staus
                 that.parent.utils.update_status("completed");
                 that.parent.flag_dirty = true;
+                that.parent.app.locked = false;
+                $("#mlab_editor_disabled").remove();
+                $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);                  
+                
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
