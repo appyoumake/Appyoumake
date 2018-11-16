@@ -50,7 +50,7 @@
             </ul>
         </nav>
         <div class="nav-right">
-            <div class="warning"><span class="icon"></span></div>
+            <button class="warning"></button>
             <div class="app-info">
                 You are working on: APP NAME HERE
                 <a href="#" class="view-all-apps"> View all apps</a>
@@ -66,108 +66,43 @@
     </div>
     <div class="main">
         <div class="nav-pages">
-            <ul>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
-                <li>3</li>
+            <div class="level-name">Top level pages</div>
+            <ul class="list-pages with-preview">
+                {% set page %}
+                <li>
+                    <button class="delete"></button>
+                    <div class="page">
+                        <img src="https://via.placeholder.com/100x150" />
+                        <p>Page Title 1</p>
+                    </div>
+                </li>
+                {% endset %}
+                {% for i in 0..10 %}
+                    {{ page }}
+                {% endfor %}
+                </li>
+                <li>
+                    <div class="level-name">second level pages</div>
+                    <ul>
+                        {% for i in 0..3 %}
+                            {{ page }}
+                        {% endfor %}
+                        <li>
+                            <div class="level-name">Third level pages</div>
+                            <ul>
+                                {% for i in 0..3 %}
+                                    {{ page }}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% for i in 0..2 %}
+                            {{ page }}
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% for i in 0..3 %}
+                    {{ page }}
+                {% endfor %}
             </ul>
         </div>
         <div class="builder">

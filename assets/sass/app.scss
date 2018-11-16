@@ -20,7 +20,12 @@ $primary-text: #fff;
 $border-color: #aaa;
 $secondary-color: #3744a0;
 $builder-bgcolor: #eee;
+$shadow-color: #eee;
 $toolbox-active-bgcolor: #fff;
+
+$top-level-color: #1d2773;
+$second-level-color: #6a199d;
+$third-level-color: #2ea778;
 
 html, body {
     height: 100%;
@@ -174,7 +179,6 @@ body {
             background: $toolbox-active-bgcolor;
             color: #000;
 
-            &:before,flaticon-user
             &:after {
                 position: absolute;
                 bottom: 0;
@@ -219,26 +223,8 @@ body {
 
 .app-info, .user-profile {
     line-height: $header-height;
-
-
 }
-.warning {
-    margin: auto 0;
-    .icon {
-        display: inline-block;
-        border: 2px solid #FFF;
-        border-radius: 50%;
-        font-weight: bold;
-        font-size: 15px;
-        width: 16px;
-        height: 16px;
-        text-align: center;
 
-        &:before {
-            content: "!"
-        }
-    }
-}
 .app-info {
     .view-all-apps {
         padding: 10px;
@@ -254,5 +240,129 @@ body {
         transform: rotate(-45deg) translate(2px,-2px);
         line-height: normal;
         display: inline-block;
+    }
+}
+
+.nav-pages {
+    font-family: 'Ropa+Sans', sans-serif;
+    font-size: 0.8em;
+    padding: 5px 10px 0 0;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0 0px 0 16px;
+    }
+
+    li {
+        position: relative;
+        margin-bottom: 15px;
+        .delete {
+            display: none;
+        }
+        &:hover {
+            > .delete {
+                display: block;
+            }
+        }
+    }
+
+    .page {
+        cursor: pointer;
+    }
+
+    img {
+        border: 1px solid #000;
+        display: none;
+    }
+
+    .with-preview {
+        img {
+            display: block;
+        }
+    }
+
+    p {
+        margin: 4px 0;
+    }
+
+    .level-name {
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    >.level-name {
+        color: $top-level-color;
+        padding: 0 0 0 16px;
+    }
+
+    > ul {
+        > li {
+            > .level-name {
+                color: $second-level-color;
+            }
+            > ul {
+                border-left: 2px solid $second-level-color;
+                    > li {
+                        > .level-name {
+                            color: $third-level-color;
+                        }
+                        > ul {
+                            border-left: 2px solid $third-level-color;
+                        }
+                    }
+            }
+        }
+    }
+
+}
+
+.delete {
+   border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+
+    display: inline-block;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 19px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    background-color: $primary-color;
+    color: $primary-text;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+
+    &:before {
+        content: "×"
+    }
+}
+
+.warning {
+    margin: auto 5px;
+    display: inline-block;
+    border: 2px solid #FFF;
+    font-size: 15px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+
+    display: inline-block;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    color: $primary-text;
+    background-color: transparent;
+
+    &:before {
+        content: "!"
     }
 }

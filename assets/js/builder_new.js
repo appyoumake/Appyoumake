@@ -9,7 +9,12 @@ $(document).ready(function() {
         $(this).parent().addClass('active');
     });
 
+    $('.list-pages .delete').click(function (e) {
+        alert('Delete')
+    });
 
-
+    $('.list-pages .page').click(function (e) {
+        alert('Open')
+    });
 
 });
