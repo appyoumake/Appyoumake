@@ -19,7 +19,7 @@ class mlab_ct_audio {
         $dir = new \RecursiveDirectoryIterator($conf["paths"]["app"]);
         $iterator = new \RecursiveIteratorIterator($dir);
         foreach (new \RegexIterator($iterator, "/$f_name.m4a/i", RecursiveRegexIterator::GET_MATCH) as $file) {
-            $find_files[] = $file;
+            $find_files[] = $iterator->getPathname();
         }
         
 //found a previous upload, just copy file
@@ -28,7 +28,7 @@ class mlab_ct_audio {
         } else {
         
 //convert file if wider than 480 (https://trac.ffmpeg.org/wiki/Scaling%20(resizing)%20with%20ffmpeg), or if different file format than h264/m4a: 
-            exec("ffmpeg -i '$file_uploaded' -c:a libfdk_aac '$f_name'.m4a ");
+            exec("ffmpeg -i '$upload_path' -strict -2 -c:a aac '$f_name.m4a' ");
         }
         return "$sub_folder/$f_name.m4a";
     }

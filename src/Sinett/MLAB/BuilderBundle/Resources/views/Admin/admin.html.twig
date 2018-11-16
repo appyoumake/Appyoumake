@@ -114,8 +114,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                 ); // end each function 
                                
   	  			    		} else if (data.action == 'EDIT' || data.action == 'UPDATE') {
-                                debugger;
-  	  			    			$("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
+                                $("#row_" + data.db_table + "_" + data.db_id).replaceWith(data.record);
                                 $("#row_" + data.db_table + "_" + data.db_id).find("a").each(function () {
                                     prepare_links(this, "ui-id-" + ($('#tabs_admin_apps').tabs('option','active') + 1));
                                     } // end function to run for each link  

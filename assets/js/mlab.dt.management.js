@@ -56,7 +56,7 @@ Mlab_dt_management.prototype = {
                     if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
 //TODO: skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
-                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
                         $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
 
 /*                        $('#mlab_download_'+ platform + '_icon').qtip({
@@ -95,7 +95,7 @@ Mlab_dt_management.prototype = {
                     if (data.lock_status == "locked") {
                         that.parent.app.locked = true;
                         $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
-                        $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                        $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                     } else {
                         that.parent.app.locked = false;
                         $("#mlab_editor_disabled").remove();
@@ -162,7 +162,7 @@ Mlab_dt_management.prototype = {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
                 full_url = window.location.origin + data.url;
-                $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "table"}).show()
+                $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "image"}).show()
                         .append("<br>")
                         .append("<a href='" + full_url + "'>" + _tr["mlab.dt.management.js.app_download_process.1"] + ": " + full_url +"</a>")
                         .append("<br>")
@@ -543,7 +543,7 @@ Mlab_dt_management.prototype = {
                 if (data.lock_status == "locked") {
                     that.parent.app.locked = true;
                     $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
-                    $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                    $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                 } else {
                     that.parent.app.locked = false;
                     $("#mlab_editor_disabled").remove();
@@ -1134,7 +1134,7 @@ Mlab_dt_management.prototype = {
                         if (typeof data.filename != "undefined" && data.filename != null && data.filename != "") {
                             mlab.dt.app.compiled_files[data.platform] = data.filename;
                             var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
-                            $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                            $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
                             $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
                             mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.ready"], false);
                         } else {

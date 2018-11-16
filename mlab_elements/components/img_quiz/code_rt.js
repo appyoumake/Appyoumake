@@ -16,7 +16,7 @@
             }
             return ints;
         }
-        debugger;
+        
 //first we get the number of questions they want to display
         var display_num_questions = parseInt(mlab.api.getVariable(el, "display_num_questions")),
             total_num_questions = $(el).find("[data-mlab-ct-img_quiz-role='display'] > img").length;
@@ -159,7 +159,7 @@
             res = "Incorrect";
             msg = btn_clicked.data("mlab-ct-img_quiz-explanation");
         }
-        debugger;
+        
         el.find("[data-mlab-ct-img_quiz-role='result']").text(res);
         el.find('[data-mlab-ct-img_quiz-role="explain"] > p').text(msg);
         el.find('[data-mlab-ct-img_quiz-role="explain"]').slideDown();

@@ -26,4 +26,4 @@ yarn-error.log
 /web/bundles/
 /_minimal_websocket/npm-debug.log
 node_modules/
-
+/web/build/*

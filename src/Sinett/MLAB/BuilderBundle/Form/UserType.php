@@ -27,9 +27,9 @@ class UserType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-    	$role_choices = array("ROLE_USER" => "User (*)", "ROLE_ADMIN" => "Administrator (**)");
+    	$role_choices = array("User (*)" => "ROLE_USER", "Administrator (**)" => "ROLE_ADMIN");
 		if ($options['current_user_role'] == "ROLE_SUPER_ADMIN") {
-			$role_choices["ROLE_SUPER_ADMIN"] = "System (***)";
+			$role_choices["System (***)"] = "ROLE_SUPER_ADMIN";
 		}
 		
     	$builder
@@ -37,7 +37,7 @@ class UserType extends AbstractType
             ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username', 'attr' => array('autocomplete' => 'off')))
             ->add('plainPassword', PasswordType::class, array('label' => 'app.admin.users.new.or.edit.plain.password', 'attr' => array('autocomplete' => 'off')))
             ->add('groups', null, array('label' => 'app.admin.users.new.or.edit.groups'))
-            ->add('roles', ChoiceType::class, array('choices' => $role_choices, 'multiple' => true, 'label' => 'app.admin.users.new.or.edit.roles'))
+            ->add('role', ChoiceType::class, array('choices' => $role_choices, 'multiple' => false, 'label' => 'app.admin.users.new.or.edit.roles'))
             ->add('enabled', null, array('label' => 'app.admin.users.new.or.edit.enabled'))
             ;
     }

@@ -56,6 +56,7 @@ app.builder.list.tooltip.properties: Menu for
 builder.new.app.basedon.tab: Based on
 builder.new.app.select_base.tab: Choose base
 builder.new.app.name.tab: Name
+builder.new.app.icon.tab: Icon
 builder.new.app.classification.tab: Classify
 builder.new.app.submit.tab: Make
 
@@ -64,13 +65,16 @@ builder.new.app.select_base.template: Template
 builder.new.app.select_base.existing_app: Existing App
 builder.new.app.select_base.office_file: Office file
 builder.new.app.basedon.description: Choose what you want to base the app on
+app.select.icon.no_background: No background
+app.select.icon.no_foreground: No main icon
+builder.new.app.icon.scale: Adjust icon size
 
 builder.new.app.name.description: Give the app a name and a full description before proceeding
 builder.new.app.name.name: Name
 builder.new.app.name.descriptionLab: Description
 builder.new.app.name.selectBackground: Choose background
 builder.new.app.name.selectForground: Choose icon
-builder.new.app.name.iconFile: Icon file
+builder.new.app.name.iconFile: <strong>or</strong> select an image file from your computer
 builder.new.app.name.addIconFileImage: Add image
 builder.new.app.name.iconText: Icon text
 builder.new.app.name.addIconText: Add text
@@ -435,6 +439,7 @@ builder.popup.app.properties.label.edit.content: Edit app content
 builder.popup.app.properties.label.edit.details: Edit app details
 builder.popup.app.properties.label.download: Download the app
 builder.popup.app.properties.label.copy.link: Copy link to the app
+builder.popup.app.properties.label.copy.app: Copy & edit this app
 builder.popup.app.properties.label.new.incremental: Create a new incremental version
 builder.popup.app.properties.label.new.major: Create a new major version
 builder.popup.app.properties.label.new.branch: Create a new branch
@@ -624,6 +629,8 @@ mlab.dt.management.js.compiler.get_app_status.prompt.version: version (leave bla
 mlab.dt.management.js.compiler.get_app_status.prompt.platform: platform (ios or android) (leave blank is OK)
 mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Unable to get app status
 mlab.dt.management.js.compiler.get_app.status.creating.app: Creating app...
+
+mlab.dt.management.js.lock.explanation: This page is locked because it is being edited by another user or in another tab on this PC. If this is not the case (it may also occur if your PC or browser crashed) then you can unlock it for editing from the menu.
 
 mlab_editor.init.js.alert.browser.support: This web app will only work in Chrome/Chromium or Firefox
 mlab_editor.init.js.alert.unsaved: You have unsaved changes, do you want to lose these?
