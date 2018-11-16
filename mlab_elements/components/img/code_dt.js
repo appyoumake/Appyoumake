@@ -189,3 +189,6 @@
         this.toggle(el, "caption", "figcaption", ".img-container", "<figcaption class='mc_text mc_display mc_figure_text' contenteditable='true'>Caption</figcaption>");
     };
     
+    this.preview = function (el) {
+        return el.find('img:first').clone();
+    }

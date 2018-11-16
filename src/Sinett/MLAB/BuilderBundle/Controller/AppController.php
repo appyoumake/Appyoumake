@@ -1194,6 +1194,80 @@ class AppController extends Controller
         }
     }    
     
+    
+    /**
+     * Returns list of deleted pages for the App
+     * @param type $app_id
+     * @param type $uid
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deletedPagesAction ($app_id, $uid) {
+        if ($app_id > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)
+            ));
+    	}
+        
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        
+        $pagesList = $file_mgmt->listDeletedPages($app);
+        
+        return new JsonResponse(array(
+            'result' => 'success',
+            'pages' => $pagesList
+        ));
+    }    
+    
+    /**
+     * Restore application page
+     * @param type $app_id
+     * @param type $page_num
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function restorePageAction ($app_id, $page_num, $uid) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+        
+        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+        }
+    	
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        
+        $restorePage = $file_mgmt->restorePage($app, $page_num, $uid);
+        
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $uid,
+            'pages' => $page_names,
+        ]]);
+
+        return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
+    } 
+    
     /**
      * imports a PPT/DOC file into current app using external python code
      * 

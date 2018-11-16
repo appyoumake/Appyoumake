@@ -289,7 +289,7 @@ Mlab_dt_design.prototype = {
         var that = this;
         var el = $(".mlab_current_component");
         var comp_id = el.data("mlab-type");
-        
+               
         if (typeof this.parent.components[comp_id].conf.requires_network != "undefined" && this.parent.components[comp_id].conf.requires_network != "none") {
             var requestDelete = {
                 type: "POST",
@@ -332,6 +332,14 @@ Mlab_dt_design.prototype = {
                         that.parent.utils.update_app_title_bar(data.config)
                     })
             }
+            
+            mlab.dt.utils.addHistory({
+                type: 'component',
+                app_id: that.parent.app.id,
+                page: that.parent.app.curr_page_num,
+                component: el.clone()
+            });
+            
             return true; 
         }
         
@@ -371,6 +379,14 @@ Mlab_dt_design.prototype = {
                                         that.parent.utils.update_app_title_bar(data.config)
                                     });
                                 }
+                                
+                                mlab.dt.utils.addHistory({
+                                    type: 'component',
+                                    app_id: that.parent.app.id,
+                                    page: that.parent.app.curr_page_num,
+                                    component: el.clone()
+                                });
+            
                                 that.parent.flag_dirty = true;
                             } 
                         },
@@ -396,6 +412,40 @@ Mlab_dt_design.prototype = {
         this.parent.api.displayExternalHelpfile(comp_id, title, owner_element, qTipClass);           
     },
     
+// undo deleted component and place it on bottom
+    component_undo : function (objId) {
+        var deletedElement = mlab.dt.utils.popHistory(objId);
+        var that = this;
+        
+        if(deletedElement) {
+            var resumeComponent = function() {
+                that.parent.api.display.componentResume(deletedElement.component);
+            };
+            
+            if(this.parent.app.curr_page_num != deletedElement.page) {
+                mlab.dt.management.page_open(this.parent.app.id, deletedElement.page)
+                .then(resumeComponent);
+            } else {
+                resumeComponent();
+            }
+        }
+    },
+    
+// undo last deleted component and place it on bottom
+    component_trash : function () {
+        var that = this;
+        var previewList = $('<ul></ul>');
+
+        mlab.dt.history.map(function(history) {
+            var el = $('<li></li>').html(mlab.dt.components[history.component.attr('data-mlab-type')].code.preview(history.component));
+            el.on('click', function() {
+                that.component_undo(history.id);
+                this.remove();
+            });
+            previewList.append(el);
+        });
+        $('#history').html(previewList);
+    },
     
 //cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard
     component_cut : function () {
