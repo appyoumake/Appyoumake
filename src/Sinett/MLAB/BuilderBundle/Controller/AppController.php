@@ -1382,10 +1382,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function componentUploadAction(Request $request, $app_id, $comp_id) {
-        $content = $request->get('image');
+        $pasted_content = $request->get('image'); //if we send a pasted image to be saved it is a request element
         
-//check if upload successful and validate parameters
-        $test = empty($request->files->get('mlab_files')) && !$content;
+//check if upload successful and validate parameters OR the image request element (BASE64 encoded image, see above)
+        $test = empty($request->files->get('mlab_files')) && !$pasted_content;
         if ($test) {
     		return new JsonResponse(array(
     			'result' => 'failure',
@@ -1418,9 +1418,9 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $replace_chars = $this->container->getParameter('mlab_app')['replace_in_filenames'];
         $urls = array();
         
-        if($content) {
+        if($pasted_content) {
             $subFolder = null;
-            $data = explode(',', $content, 2);
+            $data = explode(',', $pasted_content, 2);
             $mimeType = substr($data[0], $start=strpos($data[0], ':')+1, strpos($data[0], ';')-$start);
             
             foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
@@ -1433,78 +1433,85 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             $fileName = $filePathInfo['filename'] . '-' . md5($data[1]) . '.' . $filePathInfo['extension'];
             $fileName = substr($fileName, -$max_len);
             $saveTo = $path_app . $subFolder . '/' . $fileName;
+            
+//first check if file exists, as we use MD5 checksum as part of the name, it works OK.
             if (file_exists($saveTo)) {
                 $urls[] = $subFolder . "/" . $fileName;
             } else {
+                if (!file_exists($path_app . $subFolder)) {
+                    mkdir($path_app . $subFolder);
+                }
+//if it does not exist we need to create the folder before trying to save it
                 $success = file_put_contents($saveTo, base64_decode($data[1]));
 
                 if($success) {
                     $urls[] = $subFolder . "/" . $fileName;
                 }
             }
-        }
+        } else { //content not supplied as pasted BASE64 data, but as real file uploads
         
 //loop through list of files and determine mime type and folder, generate name and move or process file
 //then return the file path
-        foreach($request->files as $uploadedFile) {
-            $width = $height = $type = $attr = null;
-            $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
-            $f_ext = $uploadedFile->guessExtension();
-            $f_mime = $uploadedFile->getMimeType();
-            
+            foreach($request->files as $uploadedFile) {
+                $width = $height = $type = $attr = null;
+                $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
+                $f_ext = $uploadedFile->guessExtension();
+                $f_mime = $uploadedFile->getMimeType();
+
 //replace "european" characters with plain ASCII 7 bit characters
-			$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
+            	$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
 //android allows max 100 char filenames, use config variable for this in case changes in future
-            $f_name = substr($temp_f_name, 0, $max_len - (strlen($f_ext) + 1))  . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
+                $f_name = substr($temp_f_name, 0, $max_len - (strlen($f_ext) + 1))  . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
 //OLD             $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
             
 //check to see if the mime type is allowed
-            $sub_folder = false;
-            foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
-                if (in_array($f_mime, $formats)) {
-                    $sub_folder = $folder;
-                    break;
+                $sub_folder = false;
+                foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
+                    if (in_array($f_mime, $formats)) {
+                        $sub_folder = $folder;
+                        break;
+                    }
                 }
-            }
 
-            if ( !$sub_folder ) {
-                return new JsonResponse( array(
-                    'result' => 'failure',
-                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')) );
-            }
+                if ( !$sub_folder ) {
+                    return new JsonResponse( array(
+                        'result' => 'failure',
+                        'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')) );
+                }
 
 //if the component has a routine to process the file, then we call this.
 //otherwise we just copy the file
-            $process_file = false;
-            $temp_class_name = "mlab_ct_" . $comp_id;
-
-            if (!file_exists($path_component . "server_code.php")) {
                 $process_file = false;
-            } else if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
-                return new JsonResponse(array(
-                    'result' => 'failure',
-                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
-            }
+                $temp_class_name = "mlab_ct_" . $comp_id;
 
-            if (class_exists($temp_class_name)) {
-                $component_class = new $temp_class_name();
-                if (method_exists($component_class, "onUpload")) {
-                    $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $config);
-                    if (!$url) {
-                        return new JsonResponse(array(
-                            'result' => 'failure',
-                            'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
-                    }
-                    $process_file = true;
-                    $urls[] = $url;
+                if (!file_exists($path_component . "server_code.php")) {
+                    $process_file = false;
+                } else if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
+                    return new JsonResponse(array(
+                        'result' => 'failure',
+                        'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
                 }
-            }
+
+                if (class_exists($temp_class_name)) {
+                    $component_class = new $temp_class_name();
+                    if (method_exists($component_class, "onUpload")) {
+                        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+                        $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $config);
+                        if (!$url) {
+                            return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
+                        }
+                        $process_file = true;
+                        $urls[] = $url;
+                    }
+                }
             
 //no onupload processing, so we just copy the file            
-            if (!$process_file) {            
-                $uploadedFile->move($path_app . $sub_folder, $f_name . "." . $f_ext);
-                $urls[] = $sub_folder . "/" . $f_name . "." . $f_ext;
+                if (!$process_file) {            
+                    $uploadedFile->move($path_app . $sub_folder, $f_name . "." . $f_ext);
+                    $urls[] = $sub_folder . "/" . $f_name . "." . $f_ext;
+                }
             }
         }
 
@@ -1788,11 +1795,15 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
         foreach (glob($app_path . $search) as $file) {
-            $previewFile =  substr($file, 0, -4) . '.png';
+            if ($file_type === "image") {
+                $previewFile = $file;
+            } else {
+                $previewFile = substr($file, 0, -4) . '.png';
+            }
             $files[] = [
                 'url' => $file_url . basename($file),
                 'name' => basename($file),
-                'preview' => file_exists($previewFile) ? $file_url . basename($previewFile) : null,
+                'preview' => file_exists($previewFile) ? $file_url . basename($previewFile) : null
             ];
         }
 
