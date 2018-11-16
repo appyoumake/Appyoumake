@@ -43,6 +43,10 @@ body {
     height: $header-height; 
     display: flex;
     margin-bottom: #{$toolbox-height + 1px};
+
+    a {
+        color: $primary-text;
+    }
 }
 
 .main {
@@ -170,7 +174,7 @@ body {
             background: $toolbox-active-bgcolor;
             color: #000;
 
-            &:before,
+            &:before,flaticon-user
             &:after {
                 position: absolute;
                 bottom: 0;
@@ -198,3 +202,57 @@ body {
     }
 }
 
+.nav-right {
+    margin-left: auto;
+    display: flex;
+    font-size: 0.8em;
+
+    > div {
+        padding: 0 10px;
+        border-left: 1px solid $secondary-color;
+
+        &:first-child {
+            border-left: none;
+        }
+    }
+}
+
+.app-info, .user-profile {
+    line-height: $header-height;
+
+
+}
+.warning {
+    margin: auto 0;
+    .icon {
+        display: inline-block;
+        border: 2px solid #FFF;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 15px;
+        width: 16px;
+        height: 16px;
+        text-align: center;
+
+        &:before {
+            content: "!"
+        }
+    }
+}
+.app-info {
+    .view-all-apps {
+        padding: 10px;
+    }
+}
+
+.user-profile {
+    .arrow {
+        width: 2px;
+        height: 2px;
+        border: 2px solid;
+        border-color:  transparent transparent $primary-text $primary-text;
+        transform: rotate(-45deg) translate(2px,-2px);
+        line-height: normal;
+        display: inline-block;
+    }
+}
