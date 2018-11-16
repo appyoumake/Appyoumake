@@ -37,7 +37,7 @@ class UserType extends AbstractType
             ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username', 'attr' => array('autocomplete' => 'off')))
             ->add('plainPassword', PasswordType::class, array('label' => 'app.admin.users.new.or.edit.plain.password', 'attr' => array('autocomplete' => 'off')))
             ->add('groups', null, array('label' => 'app.admin.users.new.or.edit.groups'))
-            ->add('roles', ChoiceType::class, array('choices' => $role_choices, 'multiple' => true, 'label' => 'app.admin.users.new.or.edit.roles'))
+            ->add('role', ChoiceType::class, array('choices' => $role_choices, 'multiple' => false, 'label' => 'app.admin.users.new.or.edit.roles'))
             ->add('enabled', null, array('label' => 'app.admin.users.new.or.edit.enabled'))
             ;
     }

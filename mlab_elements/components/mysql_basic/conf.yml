@@ -7,6 +7,8 @@ name: mysql_basic
 extended_name: { nb_NO: Enkelt MySQL eksempel, en_GB: Simple MySQL example, default: Simple MySQL example }
 tooltip: { nb_NO: Lagre data fra nåværende komponent på en MySQL server, en_GB: Store data from the current component on a MySQL server, default: Store data from the current component on a MySQL server }
 credentials: ["url", "username", "password"]
+# can be internet or network, latter is local network.
+requires_network: internet
 custom:
     table: mlab_
     prefix: mlab_rt_

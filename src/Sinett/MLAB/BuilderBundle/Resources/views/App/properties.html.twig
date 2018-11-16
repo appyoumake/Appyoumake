@@ -14,54 +14,29 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 <div id="build_app_properties">
     <ul>
-        {% if mode == 'create' %}
-            <li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.basedon.tab{% endtrans %}</a></li>
-            <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.select_base.tab{% endtrans %}</a></li>
-        {% endif %}
-        <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-1">{% trans %}builder.new.app.select_base.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-2">{% trans %}builder.new.app.name.tab{% endtrans %}</a></li>
+        <li><a href="#builder_app_property_tabs-3">{% trans %}builder.new.app.icon.tab{% endtrans %}</a></li>
         <li><a href="#builder_app_property_tabs-4">{% trans %}builder.new.app.classification.tab{% endtrans %}</a></li>
         <li><a href="#builder_app_property_tabs-5">{% trans %}builder.new.app.submit.tab{% endtrans %}</a></li>
       </ul>
       
     {{ form_start(form) }}
-        {% if mode == 'create' %}
-            {% form_theme form.template 'SinettMLABBuilderBundle:Form:ddslick_template.html.twig' %}
-            {% form_theme form.copyApp 'SinettMLABBuilderBundle:Form:ddslick_copyApp.html.twig' %}
+        {% form_theme form.template 'SinettMLABBuilderBundle:Form:ddslick_template.html.twig' %}
+
 <!-- output list of templates and apps -->
 
-            <div class="mlab_form_tab" id="builder_app_property_tabs-1">
-                <p>{% trans %}builder.new.app.select_base.description{% endtrans %}</p>
-                <label for="select_base_template">{% trans %}builder.new.app.select_base.template{% endtrans %}</label> 
-                <input type="radio" name="select_base" id="select_base_template" value="template">
-                <label for="select_base_existing_app">{% trans %}builder.new.app.select_base.existing_app{% endtrans %}</label> 
-                <input type="radio" name="select_base" id="select_base_existing_app" value="existing_app">
-<!--                <label for="select_base_office_file">{% trans %}builder.new.app.select_base.office_file{% endtrans %}</label> 
-                <input type="radio" name="select_base" id="select_base_office_file" value="office_file"> -->
+        <div class="mlab_form_tab" id="builder_app_property_tabs-1">
+            <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
+
+            <div id="div_base_template" class="mlab_div_base">
+                {{ form_row(form.template, {'url_templates': url_templates, 'templates': templates}) }}
             </div>
 
-            <div class="mlab_form_tab" id="builder_app_property_tabs-2">
-                    
-                <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
-
-                <div id="div_base_existing_app" class="mlab_div_base">
-                    {{ form_row(form.copyApp, {'url_apps': url_apps, 'app_icon_path': app_icon_path, 'apps': apps}) }}
-                </div>
-                
-                <div id="div_base_template" class="mlab_div_base">
-                    {{ form_row(form.template, {'url_templates': url_templates, 'templates': templates}) }}
-                </div>
-                
-                <div id="div_base_office_file" class="mlab_div_base">   
-                    {{ form_label(form.importFile, null, {'label': 'properties.build.app.import.ppt.doc'|trans}) }}
-                    {{ form_errors(form.importFile) }}
-                    {{ form_widget(form.importFile) }}
-                </div>
-                            
-            </div>
-        {% endif %}
+        </div>
         
 <!-- name etc -->
-        <div class="mlab_form_tab" id="builder_app_property_tabs-3">
+        <div class="mlab_form_tab" id="builder_app_property_tabs-2">
             
             <p>{% trans %}builder.new.app.name.description{% endtrans %}</p>
             
@@ -74,43 +49,44 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <div class="new_line">
                 {{ form_label(form.active_version, null, {'label': 'builder.new.app.active_version.number'|trans}) }}
                 {{ form_errors(form.active_version) }}
-                {% if mode == 'create' %}
-                    {{ form_widget(form.active_version, {'disabled': 'disabled'} ) }}
-                {% else %}
-                    {{ form_widget(form.active_version) }}
-                {% endif %}
+                {{ form_widget(form.active_version, {'disabled': 'disabled'} ) }}
             </div>
-            
             
             <div class="new_line hidden">
                 {{ form_label(form.splashFile, null, {'label': 'builder.new.app.name.splashFile'|trans}) }}
                 {{ form_errors(form.splashFile) }}
                 {{ form_widget(form.splashFile) }}
             </div>
+        </div>
 
+        <div class="mlab_form_tab" id="builder_app_property_tabs-3">
+            {{ form_widget(form.iconFile) }}
             
-            <fieldset id="mlab_make_icon" class="new_line">
-                {{ form_widget(form.iconFile) }}
-                <legend>{% trans %}properties.build.app.design.icon.legend{% endtrans %}:</legend>
-                <canvas id="app_icon_designer" height="256" width="256">
-                </canvas>                
-                <div class="left mlab_icon_design_input">
+            <div id="mlab_make_icon">
+                <div class="mlab_icon_design_output">
+                    <legend>{% trans %}properties.build.app.design.icon.legend{% endtrans %}:</legend>
+                    <canvas id="app_icon_designer" height="256" width="256"></canvas> 
+                    <label for="mlab_scale_icon">{% trans %}builder.new.app.icon.scale{% endtrans %}</label>
+                    <input type="range" min="10" max="100" value="80" class="slider" id="mlab_scale_icon" >
+                </div>
+                
+                <div class="mlab_icon_design_input">
                     <label for="mlab_select_background">{% trans %}builder.new.app.name.selectBackground{% endtrans %}</label>
                     <select id="mlab_select_background" name="mlab_select_background" >
-                        <option value=""></option>
+                        <option data-imagesrc="/img/no_selection.png" value="" data-description="{% trans %}app.select.icon.no_background{% endtrans %}"></option>
                         {% for icon, path in backgrounds %}
                             <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
                         {% endfor %}
                     </select>
                 
-                    <label for="mlab_select_background">{% trans %}builder.new.app.name.selectForground{% endtrans %}</label>
+                    <label for="mlab_select_foreground">{% trans %}builder.new.app.name.selectForground{% endtrans %}</label>
                     <select id="mlab_select_foreground" name="mlab_select_foreground" >
-                        <option value=""></option>
+                        <option data-imagesrc="/img/no_selection.png" value="" data-description="{% trans %}app.select.icon.no_foreground{% endtrans %}"></option>
                         {% for icon, path in foregrounds %}
                             <option data-imagesrc="{{ path }}" value="{{ path }}">{{ icon }}</option>
                         {% endfor %}
                     </select>
-                
+                    
                     
                     <label for="mlab_local_iconfile">{% trans %}builder.new.app.name.iconFile{% endtrans %}</label>
                     <input id="mlab_local_iconfile" name="mlab_local_iconfile" type="file">
@@ -119,7 +95,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     <input class="hidden" id="mlab_icon_text" name="mlab_icon_text" maxlength="{{icon_text_maxlength}}">
                     <button class="hidden button_wizard mlab_button_new_icon" onclick="createIcon.buildIcon();">{% trans %}builder.new.app.name.addIconText{% endtrans %}</button>
                 </div>
-            </fieldset>
+            </div>
 
             
         </div>
@@ -178,6 +154,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 //what they want to base the app on
         mlab_edit_mode = "{{mode}}";
         
+//flag telling us to ignore icon related events
+        mlab_icon_select_disabled = true;
+
 //this variable stores the icon functionality
         createIcon = new iconFunctions();
         
@@ -186,12 +165,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         $( "#build_app_properties ul" ).css("pointer-events", "none");
         
 
-        $('#form_copyApp').ddslick({
-            width: 300,
-            imagePosition: "left",
-            selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
-        });
-        
         $('#form_template').ddslick({
             width: 300,
             height: 350,
@@ -200,24 +173,38 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         });
         
         $('#mlab_select_background').ddslick({
-            width: 90,
+            width: 300,
             height: 200,
             imagePosition: "left",
-            selectText: "{% trans %}app.select.icon.background{% endtrans %}",
             onSelected: function (data) {
-                if (data.selectedIndex > 0) {
+                if (!$('#mlab_select_foreground').hasClass("dd-container")) { //avoid trigger before both drop downs have been initialised
+                    return;
+                }
+                
+                if (mlab_icon_select_disabled) {
+                    return;
+                }
+
+                if (data.selectedIndex >= 0) {
                     createIcon.buildIcon();
                 }
             }
         });
         
         $('#mlab_select_foreground').ddslick({
-            width: 90,
+            width: 300,
             height: 200,
             imagePosition: "left",
-            selectText: "{% trans %}app.select.icon.foreground{% endtrans %}",
             onSelected: function (data) {
-                if (data.selectedIndex > 0) {
+                if (!$('#mlab_select_background').hasClass("dd-container")) { //avoid trigger before both drop downs have been initialised
+                    return;
+                }
+                
+                if (mlab_icon_select_disabled) {
+                    return;
+                }
+                
+                if (data.selectedIndex >= 0) {
                     $("#mlab_local_iconfile").val("");
                     createIcon.buildIcon();
                 }
@@ -225,9 +212,17 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         });
         
         $("#mlab_local_iconfile").on("change", function () {
+            mlab_icon_select_disabled = true;
             $('#mlab_select_foreground').ddslick('select', {index: 0 });
             createIcon.buildIcon();
+            mlab_icon_select_disabled = false;
         });
+        
+        $("#mlab_scale_icon").on("input", function () {
+            createIcon.buildIcon();
+        });
+        
+        mlab_icon_select_disabled = false;
         
     }); //end onready
     
@@ -293,30 +288,23 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             }
         }
         
-//loads background icon into canvas    
+//loads background or foreground icon into canvas
+//the value of the slider is used to determine size of foreground image
         function drawImage(img, isForeground) {
             var canvas = document.getElementById("app_icon_designer");
             var ctx = canvas.getContext("2d");
+            var scale_to = 1;
             if (isForeground) {
-                if (img.naturalWidth >= (canvas.width * .8) || img.naturalHeight >= (canvas.height * .8)) {
-                    var l = canvas.width * .25;
-                    var t = canvas.height * .25;
-                    var w = canvas.width * .5;
-                    var h = canvas.height * .5;
-                } else {
-                    var l = (canvas.width - img.naturalWidth) / 2;
-                    var t = (canvas.height - img.naturalHeight) / 2;
-//image is smaller than what we want, so no need to indicate size parameters                    
-                    ctx.drawImage(img, l, t);
-                    return;
-                }
-            } else {
-                var l = 0;
-                var t = 0;
-                var w = canvas.width;
-                var h = canvas.height;
-            }    
+//pick up scaling, we use size of canvas (which is square) as the base
+                scale_to = $("#mlab_scale_icon").val() / 100;
+            }
+            var scale = Math.min( canvas.height / img.naturalHeight, canvas.width / img.naturalWidth ) * scale_to;
 
+//image is scaled with the original height OR width setting the max value, and then 
+            var w = img.naturalWidth * scale;
+            var h = img.naturalHeight * scale;
+            var l = (canvas.width - w) / 2;
+            var t = (canvas.height - h) / 2;
             ctx.drawImage(img, l, t, w, h);
         }
         
@@ -377,7 +365,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
 //function to load sub categories when a higher level category is selected
     function loadTags(el, level) {
-        debugger;   
         if (level == 3) {
             return;
         }
@@ -433,57 +420,13 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             var msg = '';
             
             switch(eval_tab) {
-                case 0:
-                    var sel_val = "";
-                    var selected = $("input[type='radio'][name='select_base']:checked");
-
-                    if (selected.length > 0) {
-                        sel_val = selected.val();
-                        $('.mlab_div_base').addClass("hidden");
-                        $('#div_base_' + sel_val).removeClass("hidden");
-                        
-//if they want to import data then we also need to have a template, otherwise the app will never work
-                        if (sel_val == "office_file") {
-                            $('#div_base_template').removeClass("hidden");
-                        }
-                    } else {
-                        msg = msg + "{% trans %}properties.build.app.fill.base.on{% endtrans %}\n";
-                    }
+                case 0: //template selection
+                    if ($('#form_template').data('ddslick').selectedIndex < 0) {
+                        msg = msg + "{% trans %}properties.build.app.fill.template{% endtrans %}\n";
+                    }  
                     break;
-                
-                case 1:
-                    var action = $("input[type='radio'][name='select_base']:checked").val();
-                    switch(action) {
-                        case "office_file":
-                            if ($("#form_importFile").val() == "") {
-                                msg = msg + "{% trans %}properties.build.app.fill.doc.convert{% endtrans %}\n";
-                            } else {
-                                var file_name = $("#form_importFile").val();
-                                var file_type = file_name.substr(file_name.lastIndexOf('.') + 1).toLowerCase();
-                                var regex = /ppt|pptx|doc|docx/g;
-                                if (!regex.test(file_type)) {
-                                    msg = msg + "{% trans %}properties.build.app.fill.doc.convert.format{% endtrans %}\n";
-                                }
-                            }
-
-                        case "template":
-                            if ($('#form_template').data('ddslick').selectedIndex == 0) {
-                                msg = msg + "{% trans %}properties.build.app.fill.template{% endtrans %}\n";
-                            }  
-                            break;
                             
-                        case "existing_app":
-                            if ($('#form_copyApp').data('ddslick').selectedIndex == 0) {
-                                msg = msg + "{% trans %}properties.build.app.fill.app.copy{% endtrans %}\n";
-                            } else {
-                                $("#form_copy_app").val($('#form_copyApp').data('ddslick').selectedData.value);
-                            }
-                            break;
-                            
-                    } //end switch what they want to base app on
-                    break;
-
-                case 2:
+                case 1: //define name and version
                     if ($('#form_name').val().trim() == "") {
                         msg = msg + "{% trans %}properties.build.app.fill.name{% endtrans %}\n";
                     }
@@ -494,6 +437,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                         }
                     }
 
+                case 2: //create the icon
+                
                     if (icon_created) {
                         $("#form_iconFile").val(document.getElementById("app_icon_designer").toDataURL());
                     } else {
@@ -510,7 +455,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     }
                     break;
 
-                case 3:
+                case 3: //add keywords, and tag the app
                     if ($('#form_description').val().trim() == "") {
                         msg = msg + "{% trans %}properties.build.app.fill.description{% endtrans %}\n";
                     }  
@@ -527,19 +472,8 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 //moving to last page, display all info so they can check before committing
                     if (msg == '') {
                         $('#form_tags').val(JSON.stringify([$('#mlab_tag_1').val(), $('#mlab_tag_2').val(), $('#mlab_tag_3').val()]))
-                        var action = $("input[type='radio'][name='select_base']:checked").val();
-                        var based_on = "";
-                        switch(action) {
-                            case "template":
-                                based_on = "{% trans %}properties.build.app.summery.1{% endtrans %} " + $('#form_template').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.2{% endtrans %}";
-                                break;
-                            case "existing_app":
-                                based_on = "{% trans %}properties.build.app.summery.3{% endtrans %} " + $('#form_copyApp').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.4{% endtrans %}";
-                                break;
-                            case "office_file":
-                                based_on = "{% trans %}properties.build.app.summery.5{% endtrans %} " + $("#form_importFile").val() + " {% trans %}properties.build.app.summery.6{% endtrans %} " + $('#form_template').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.7{% endtrans %}";
-                                break;
-                        } //end switch what they want to base app on                        
+                        var based_on = "{% trans %}properties.build.app.summery.1{% endtrans %} " + $('#form_template').data('ddslick').selectedData.text + " {% trans %}properties.build.app.summery.2{% endtrans %}";
+                        
                         var summary = 
                                       "<fieldset>" +
                                       "<legend>{% trans %}builder.new.app.submit.name{% endtrans %}:</span> " + $('#form_name').val() + "</legend>" + 
@@ -572,11 +506,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     }
                     break;
                     
-                case 4:
+                case 4: //submit form
 
 //reset the template select box so it returns value properly
                     $('#form_template').ddslick('destroy');
-                    $('#form_copyApp').ddslick('destroy');
 //here we submit the data via AJAX, call function that must be in page that this dialog is called up in!                  
                     mlab_app_submit_properties($("#mlab_form_app"));
                     break;
@@ -614,7 +547,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         * submits data for new app from the dialog box where we collect details of the new app  
         */
     function mlab_app_submit_properties(form) {
-        formData = new FormData(document.getElementById('mlab_form_app'))
+        formData = new FormData(document.getElementById('mlab_form_app'));
 
         $.ajax({
             url: form.attr( "action" ),  //Server script to process data, should be createAction in app controller 
@@ -627,17 +560,11 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             success: function( data ) {
                 if (data.result == 'FAILURE') {
                     alert(data.message);
-                    $('#form_copyApp').ddslick({
-                        width: 300,
-                        imagePosition: "left",
-                        selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
-                    });
 
                     $('#form_template').ddslick({
                         width: 300,
                         height: 110,
-                        imagePosition: "left",
-                        selectText: "{% trans %}app.select.template{% endtrans %}"
+                        imagePosition: "left"
                     });
 
 
@@ -652,17 +579,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             error: function(e) {
                 alert('{% trans %}properties.build.app.error{% endtrans %}'); 
                 console.log(e);
-                $('#form_copyApp').ddslick({
-                    width: 300,
-                    imagePosition: "left",
-                    selectText: "{% trans %}app.select.app.to.copy{% endtrans %}"
-                });
-
                 $('#form_template').ddslick({
                     width: 300,
                     height: 110,
-                    imagePosition: "left",
-                    selectText: "{% trans %}app.select.template{% endtrans %}"
+                    imagePosition: "left"
                 });
 
             }

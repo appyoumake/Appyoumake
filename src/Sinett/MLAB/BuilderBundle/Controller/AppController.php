@@ -149,6 +149,7 @@ class AppController extends Controller
     	$entity = new App();
         $form = $this->createAppForm($entity, 'create');
         $form->handleRequest($request);
+        $temp_app_data = $request->request->all();
 
         if ($form->isValid()) {
 //store values in array for easy access
@@ -210,48 +211,13 @@ class AppController extends Controller
         		$entity->addGroup($group);
         	}
 
-//do they want to copy an existing app?
-            switch ($temp_app_data["select_base"]) {
-               case "existing_app":
-                    $orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
-                    $result = false;
-                    if ($orig_app) {
-                        $result = $file_mgmt->copyAppFiles($app_data["copyApp"], $app_destination);
-                    } 
-
-                    if ($result == false) {
-                        return new JsonResponse(array(
-                                'action' => 'ADD',
-                                'result' => 'FAILURE',
-                                'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
-                    } 
-
-//update the title of the app in the conf.json file
-                    $file_mgmt->updateAppConfigFile($app, array("title" => $entity->getName()));
-                    break;
-        
-//otherwise we use the template they specified 
-                case "template":
-                    $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-                    if ($result !== true) {
-                        return new JsonResponse(array(
-                                'action' => 'ADD',
-                                'result' => 'FAILURE',
-                                'message' => $this->get('translator')->trans('appController.msg.createAction.2')));
-                    }
-                    break;
-
-                case "office_file":
-                    break;
-
-                default:
-                    return new JsonResponse(array(
-                            'action' => 'ADD',
-                            'result' => 'FAILURE',
-                            'message' => $this->get('translator')->trans('appController.msg.createAction.4')));
-        		        		
-        	}
-        	
+            $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+            if ($result !== true) {
+                return new JsonResponse(array(
+                        'action' => 'ADD',
+                        'result' => 'FAILURE',
+                        'message' => $this->get('translator')->trans('appController.msg.createAction.2')));
+            }
             
 //now we store the splash file and the icon file (if created)
             if (null != $entity->getSplashFile() && $entity->getSplashFile()->isValid()) {
@@ -383,6 +349,97 @@ class AppController extends Controller
             'entity'      => $entity,
                     ));
     }
+    
+    /**
+     * Copies a given app, the new name is posted as form data
+     *
+     */
+    public function copyAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die($this->get('translator')->trans('appController.die.no.access'));
+        }
+        
+        $new_name = trim($request->request->get('name'));
+        if (empty($new_name)) {
+            return new JsonResponse(array(
+                    'action' => 'COPY',
+                    'result' => 'FAILURE',
+                    'message' => "No name specified for app, you need to submit a name for the app to copy to."));            
+        }
+
+        
+//check if they already use this name, if so, quit
+        $exists = $em
+           ->getRepository('Sinett\MLAB\BuilderBundle\Entity\App')
+           ->createQueryBuilder('a')
+           ->where('upper(a.name) = upper(:name)')
+           ->setParameter('name', $new_name)
+           ->getQuery()
+           ->execute();
+
+        if ($exists) {
+            return new JsonResponse(array(
+                    'action' => 'COPY',
+                    'result' => 'FAILURE',
+                    'message' =>  $this->get('translator')->trans('appController.msg.createAction.1')));
+        }
+
+//get config values
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+
+        $file_mgmt = $this->get('file_management');
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+
+        if (!$app) {
+            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
+        }
+
+//first we try to copy files, if fail there is no superfluous record in the DB
+        $guid = $file_mgmt->GUID_v4();
+        $copy_from_version_num = $app->getActiveVersion();
+        $app_source = $app->calculateFullPath($config["paths"]["app"]);
+        $app_destination = str_replace("/" . $app->getPath() . "/$copy_from_version_num/", "/$guid/1/", $app_source);
+        
+        $result = false;
+        $result = $file_mgmt->copyAppFiles($app_source, $app_destination);
+
+//now clone object, and update name and GUID (used in path and uid fields)
+        if ($result == false) {
+            return new JsonResponse(array(
+                    'action' => 'ADD',
+                    'result' => 'FAILURE',
+                    'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
+        }
+        
+        $new_app = clone $app;
+        $new_app->setName($new_name);
+        $new_app->setPath($guid);
+        $new_app->setUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+      	$new_app->setUpdatedBy($this->get('security.token_storage')->getToken()->getUser());
+        $new_app->setUpdated(new \DateTime());
+        
+//save new app
+        $em->persist($new_app);
+        $em->flush();
+        
+//create and save app version
+        $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
+        $temp_app_version->setVersion(1);
+        $temp_app_version->setEnabled(1);
+        $temp_app_version->setApp($new_app);
+        $new_app->addAppVersion($temp_app_version);
+        $new_app->setActiveVersion(1);
+        $em->flush();
+
+
+        return new JsonResponse(array(
+            'action' => 'COPY',
+            'result' => 'SUCCESS',
+            'app_id' => $new_app->getId()
+            ));        
+    }    
 
     /**
      * Displays a form to edit an existing App entity.
@@ -1376,8 +1433,11 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
             
 //check to see if the mime type is allowed
             $sub_folder = false;
-            if (in_array($f_mime, $this->container->getParameter('mlab_app')['uploads_allowed'][$comp_id])) {
-                $sub_folder = $comp_id;
+            foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
+                if (in_array($f_mime, $formats)) {
+                    $sub_folder = $folder;
+                    break;
+                }
             }
 
             if ( !$sub_folder ) {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require('script-loader!./jquery.ddslick-1.0.0.js');
+require('script-loader!./jquery.ddslick-2.0.0.js');
 
 // need to tell it that this = window
 // see https://stackoverflow.com/questions/28969861/managing-jquery-plugin-dependency-in-webpack
