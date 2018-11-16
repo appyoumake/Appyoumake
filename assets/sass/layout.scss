@@ -1,0 +1,38 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header {
+    height: $header-height; 
+    display: flex;
+    margin-bottom: #{$toolbox-height + 1px};
+}
+
+.main {
+    height: calc(100% - #{$header-height});
+    display: flex;
+}
+
+.nav-pages {
+    position: relative;
+    overflow-y: auto;
+    flex-direction: column;
+    width: $pages-nav-width;
+}
+
+.builder {
+    flex: 1 1 auto;
+    position: relative;
+    overflow-y: auto;
+    flex-direction: column;
+}

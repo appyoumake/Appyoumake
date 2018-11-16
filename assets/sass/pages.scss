@@ -1,0 +1,74 @@
+
+.nav-pages {
+    font-family: 'Ropa+Sans', sans-serif;
+    font-size: 0.8em;
+    padding: 5px 10px 0 0;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0 0px 0 16px;
+    }
+
+    li {
+        position: relative;
+        margin-bottom: 15px;
+        .delete {
+            display: none;
+        }
+        &:hover {
+            > .delete {
+                display: block;
+            }
+        }
+    }
+
+    .page {
+        cursor: pointer;
+    }
+
+    img {
+        border: 1px solid #000;
+        display: none;
+    }
+
+    .with-preview {
+        img {
+            display: block;
+        }
+    }
+
+    p {
+        margin: 4px 0;
+    }
+
+    .level-name {
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    >.level-name {
+        color: $top-level-color;
+        padding: 0 0 0 16px;
+    }
+
+    > ul {
+        > li {
+            > .level-name {
+                color: $second-level-color;
+            }
+            > ul {
+                border-left: 2px solid $second-level-color;
+                    > li {
+                        > .level-name {
+                            color: $third-level-color;
+                        }
+                        > ul {
+                            border-left: 2px solid $third-level-color;
+                        }
+                    }
+            }
+        }
+    }
+
+}
