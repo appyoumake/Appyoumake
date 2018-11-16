@@ -1,3 +1,13 @@
+@mixin btn-reset {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
 .v-separator {
     height: 100%;
     border-left: solid 1px $border-color;
@@ -9,13 +19,8 @@
 }
 
 .toolbox-btn {
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
+    @include btn-reset;
+    
     width: 8em;
     height: 50%;
     text-align: left;
@@ -45,11 +50,7 @@
 }
 
 .delete {
-   border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
+    @include btn-reset;
 
     display: inline-block;
     border-radius: 50%;
@@ -69,18 +70,26 @@
     }
 }
 
+.delete-alt {
+    @include btn-reset;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 15px;
+    margin-bottom: 2em;
+
+    &:before {
+        font-family: "Flaticon";
+        content: $font-Flaticon-garbage-2;
+        font-size: 2em;
+    }
+}
+
 .warning {
     margin: auto 5px;
-    display: inline-block;
     border: 2px solid #FFF;
     font-size: 15px;
-    width: 16px;
-    height: 16px;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-
     display: inline-block;
     border-radius: 50%;
     width: 20px;

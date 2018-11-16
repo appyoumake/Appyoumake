@@ -9,7 +9,7 @@ $(document).ready(function() {
         $(this).parent().addClass('active');
     });
 
-    $('.list-pages .delete').click(function (e) {
+    $('.list-pages .delete, .list-pages .delete-alt').click(function (e) {
         alert('Delete')
     });
 

@@ -69,40 +69,33 @@
             <div class="level-name">Top level pages</div>
             <ul class="list-pages with-preview">
                 {% set page %}
+                {% for i in 0..3 %}
                 <li>
-                    <button class="delete"></button>
+                    <!-- <button class="delete"></button> -->
+                    <button class="delete-alt"></button>
                     <div class="page">
                         <img src="https://via.placeholder.com/100x150" />
                         <p>Page Title 1</p>
                     </div>
                 </li>
-                {% endset %}
-                {% for i in 0..10 %}
-                    {{ page }}
                 {% endfor %}
+                {% endset %}
+                {{ page }}
                 </li>
                 <li>
                     <div class="level-name">second level pages</div>
                     <ul>
-                        {% for i in 0..3 %}
-                            {{ page }}
-                        {% endfor %}
+                        {{ page }}
                         <li>
                             <div class="level-name">Third level pages</div>
                             <ul>
-                                {% for i in 0..3 %}
-                                    {{ page }}
-                                {% endfor %}
+                                {{ page }}
                             </ul>
                         </li>
-                        {% for i in 0..2 %}
-                            {{ page }}
-                        {% endfor %}
+                        {{ page }}
                     </ul>
                 </li>
-                {% for i in 0..3 %}
-                    {{ page }}
-                {% endfor %}
+                {{ page }}
             </ul>
         </div>
         <div class="builder">

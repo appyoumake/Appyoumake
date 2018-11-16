@@ -13,11 +13,11 @@
     li {
         position: relative;
         margin-bottom: 15px;
-        .delete {
+        .delete, .delete-alt {
             display: none;
         }
         &:hover {
-            > .delete {
+            > .delete, > .delete-alt {
                 display: block;
             }
         }
@@ -36,10 +36,14 @@
         img {
             display: block;
         }
+
+        p {
+            margin: 4px 0;
+        }
     }
 
     p {
-        margin: 4px 0;
+        line-height: 2em;
     }
 
     .level-name {
