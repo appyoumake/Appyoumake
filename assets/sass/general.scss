@@ -24,6 +24,7 @@
     width: 8em;
     height: 50%;
     text-align: left;
+    position: relative;
     &:before {
         font-family: "Flaticon";
         margin: 0 10px;
@@ -39,8 +40,53 @@
         &:before {
             margin: 0;
             position: absolute;
-            top: 0.5em;
+            top: 0.2em;
             font-size: 2em;
+            left: 0;
+            right: 0;
+        }
+
+        &.badge:after {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            font-size: 16px;
+            line-height: 16px;
+            border-radius: 50%;
+        }
+
+        &.badge-plus:after {
+            color: $toolbox-plus-badge-color;
+            background-color: $toolbox-plus-badge-bgcolor;
+            content: '+';
+            font-size: 15px;
+        }
+
+        &.badge-caret:after {
+            color: $toolbox-caret-badge-color;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 8" width="11" height="8"><path style="fill: #ffffff;stroke: #ffffff" d="M1.82,1.43l3.61,4.57l3.56,-4.52z" /></svg>') $toolbox-caret-badge-bgcolor no-repeat center center;
+
+            content: '';
+            font-size: 10px;
+        }
+
+        &.badge-top-right:after {
+            top: 0.2em;
+            right: 0.2em;
+        }
+
+        &.badge-top-left:after {
+            top: 0.2em;
+            left: 0.2em;
+        }
+
+        &.badge-bottom-right:after {
+            bottom: 1em;
+            right: 0.2em;
+        }
+        &.badge-bottom-left:after {
+            bottom: 1em;
+            left: 0.2em;
         }
     }
 
