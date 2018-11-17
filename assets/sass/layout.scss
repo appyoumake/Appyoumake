@@ -16,6 +16,7 @@ body {
     height: $header-height; 
     display: flex;
     margin-bottom: #{$toolbox-height + 1px};
+    z-index: 1000; /* to set top position of toolx-menu*/
 }
 
 .main {

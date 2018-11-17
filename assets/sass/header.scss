@@ -70,6 +70,60 @@
             }
         }
     }
+
+    .toolbox-menu {
+        position: relative;
+        .menu {
+            position: absolute;
+            background-color: $toolbox-menu-bg-color;
+            border: 1px solid $toolbox-menu-border-color;
+            width: $toolbox-menu-width;
+            margin-top: 10px;
+            padding: 12.5px 25px;
+            right: -200%;
+            opacity: 0;
+            visibility: hidden;
+            transition: visibility 1s, opacity 0.2s ease;
+
+        }
+        &.open:after {
+            content: "";
+            background: $toolbox-menu-bg-color;
+            border-color: $toolbox-menu-border-color;
+            border-width: 1px 1px 0 0;
+            border-style: solid;
+            position: absolute;
+            width:10px;
+            height: 10px;
+            transform: rotate(-45deg) translate(-3px, 3px);
+        }
+
+        [data-open-menu]:focus {
+            ~ .menu {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+/*        &.open {
+            .menu {
+                display: block;
+            }
+            &:after {
+                content: "";
+                background: $toolbox-menu-bg-color;
+                border-color: $toolbox-menu-border-color;
+                border-width: 1px 1px 0 0;
+                border-style: solid;
+                position: absolute;
+                width:10px;
+                height: 10px;
+                transform: rotate(-45deg) translate(-3px, 3px);
+
+            }
+        }*/
+
+    }
 }
 
 .tabs {

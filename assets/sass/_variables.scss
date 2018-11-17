@@ -2,6 +2,7 @@
 // Sizes
 $header-height: 48px;
 $toolbox-height: 73px;
+$toolbox-menu-width: 250px;
 $pages-nav-width: 226px;
 
 // Colors
@@ -12,7 +13,7 @@ $secondary-color: #3744a0;
 $border-color: #aaa;
 $shadow-color: #eee;
 
-$top-level-color: #1d2773;
+$top-level-color: $primary-color;
 $second-level-color: #6a199d;
 $third-level-color: #2ea778;
 
@@ -25,3 +26,5 @@ $toolbox-plus-badge-bgcolor: #2ea778;
 
 $toolbox-caret-badge-color: #fff;
 $toolbox-caret-badge-bgcolor: $secondary-color;
+$toolbox-menu-bg-color: #fff;
+$toolbox-menu-border-color: $primary-color;
