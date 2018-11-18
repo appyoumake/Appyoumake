@@ -29,7 +29,7 @@ html:
         </div>
 
 custom:
-    map_options: {zoom: 8, center: { lat: 59.974944, lng: 11.048852 }, mapTypeId: "roadmap", zoomControl: true, scaleControl: true, mapTypeControl: true,}
+    map_options: {zoom: 8, center: { lat: 59.974944, lng: 11.048852 }, map_centre_name: "FFI, Kjeller", mapTypeId: "roadmap", zoomControl: true, scaleControl: true, mapTypeControl: true}
     class_identifier: mlab_cp_googlemap_canvas
 #    map_script: maps.google.com/maps/api/js?v=3
     map_script: maps.googleapis.com/maps/api/js?v=3
