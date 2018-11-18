@@ -190,5 +190,5 @@
     };
     
     this.preview = function (el) {
-        return el.find('img:first').clone();
-    }
+        return { image_url: el.find('img:first').attr("src") };
+    };

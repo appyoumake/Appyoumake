@@ -321,7 +321,14 @@
             var center = mlab.dt.api.getAllVariables($('#' + guid).parents('[data-mlab-type="googlemap"]'))["center"];
             mlab.dt.api.getTempVariable('googlemap', 'maps' + guid).setCenter(new google.maps.LatLng(center.lat, center.lng));
         }, null, false, event);
-   };
+    };
    
    
-   
+    this.preview = function (el) {
+        var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
+        var map_centre_name = this.api.getTempVariable(this.config.name, "map_centre_name" + guid);
+        if (!map_centre_name) {
+            map_centre_name = "Not selected";
+        }        
+        return { text: "Map centred on " + map_centre_name };       
+    };
