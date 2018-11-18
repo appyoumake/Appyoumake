@@ -696,3 +696,35 @@ made smaler than the min width */
     position: absolute;
     cursor: copy;
 }
+
+#mlab_history {
+    position: absolute;
+    right: 0;
+    border: 2px graytext solid;
+    box-shadow: 5px 5px lightgrey;
+    margin-right: 10px;
+    height: 400px;
+    overflow-y: scroll;
+    width: 300px;
+    display: none;
+}
+
+#mlab_history img {
+    float: left;
+    width: 40px;
+    height: 40px;   
+    margin-right: 5px
+}
+
+#mlab_history p {
+    float: left;
+    width: auto;
+    height: 40px;
+    line-height: 12px;
+}
+
+div#mlab_history li {
+    height: 42px;
+    border-bottom: 2px solid lightgrey;
+    margin: 4px;
+}

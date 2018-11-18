@@ -90,8 +90,7 @@
     this.preview = function (el) {
         var text = el.text();
         if (text.length > 25){
-            return text.substring(0,22)+'…';
+            text = text.substring(0, 22) + '…';
         }
-        
-        return text; 
+        return { text: text };        
     }

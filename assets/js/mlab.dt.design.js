@@ -431,20 +431,46 @@ Mlab_dt_design.prototype = {
         }
     },
     
-// undo last deleted component and place it on bottom
+//display list of deleted components
     component_trash : function () {
-        var that = this;
-        var previewList = $('<ul></ul>');
-
+        var that = this,
+            previewList = $('<ul class="mlab_undo_preview" onclick="$(\'#mlab_history\').hide();"></ul>'),
+            preview_data, preview_html, el, comp_name;
+    
         mlab.dt.history.map(function(history) {
-            var el = $('<li></li>').html(mlab.dt.components[history.component.attr('data-mlab-type')].code.preview(history.component));
+// components *should* have a preview, if not we use name + icon
+            comp_name = history.component.attr('data-mlab-type');
+            preview_data = {}; //reset for each loop
+
+//prepare preview data
+            if (typeof mlab.dt.components[comp_name].code.preview === "function") {
+                preview_data = mlab.dt.components[comp_name].code.preview(history.component);
+            } 
+            if (!preview_data["text"]) {
+                preview_data["text"] = "";
+            }
+            if (!preview_data["image_url"]) {
+                preview_data["image_url"] = mlab.dt.config.urls.component + comp_name + "/icon.png";
+            }
+            preview_html = "<img src='" + preview_data["image_url"] + "'>" + 
+                           "<p>" + mlab.dt.api.getLocaleComponentMessage(comp_name, ["extended_name"]) + "<br>" +
+                           preview_data["text"] + "<br>" +
+                           "[From page: " + mlab.dt.app.page_names[history.page].title + "]" +
+                           "</p>";
+            
+//create HTML element and display it
+            el = $('<li></li>').html(preview_html);
+            
+// undo last deleted component and place it on bottom
             el.on('click', function() {
                 that.component_undo(history.id);
                 this.remove();
+                mlab.dt.flag_dirty = true;
+                $('#mlab_history').hide();
             });
             previewList.append(el);
         });
-        $('#history').html(previewList);
+        $('#mlab_history').html(previewList).show();
     },
     
 //cut and copy simply takes the complete outerHTML and puts it into a local variable, mlab.dt.clipboard

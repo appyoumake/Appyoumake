@@ -89,11 +89,11 @@
 
     this.custom_show_image_previous = function (el) {
         this.showImage(el, -1);
-    }
+    };
     
     this.custom_show_image_next = function (el) {
         this.showImage(el, 1);
-    }
+    };
 
     this.custom_delete_image = function (el) {
         var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
@@ -107,7 +107,7 @@
             curr_img.remove();
             $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").remove();
         }
-    }
+    };
     
 
 /**
@@ -135,7 +135,7 @@
         move_to.addClass("active");
         var num_active = move_to.index() + 1;
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
-    }
+    };
     
 /**
  * This task moves the currently view image to the left or right depending on the direction 
@@ -166,4 +166,8 @@
 //update navigation dot
         var num_active = curr_img.index() + 1;
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
-    }
+    };
+    
+    this.preview = function (el) {
+        return { image_url: el.find('img:first').attr("src") };
+    };

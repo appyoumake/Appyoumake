@@ -222,3 +222,9 @@
             }
         }
     };
+    
+    this.preview = function (el) {
+        return { text: this.getHTMLElement(el).text().replace(/\s+/g,' ').trim() };
+    };
+    
+    
