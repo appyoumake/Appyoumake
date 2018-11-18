@@ -38,4 +38,34 @@ $(document).ready(function() {
         // alert('Open')
 
     });
+
+    $('[data-tooltip]').mouseenter(function () {
+        var $target = $(this);
+        // dont display tooltip if menu open
+        if($target.is('[data-open-menu]:focus')) {
+            return;
+        }
+
+        var targetOffsets = $target.offset(),
+            $arrow = $('<span>'),
+            $tooltip = $('<span class="tooltip" style="top:0; left:0"></span>')
+                .text($target.data('tooltip'))
+                .append($arrow);
+        
+        $target.after($tooltip);
+
+        var targetScrrenCenter = targetOffsets.left + $target.innerWidth()/2,
+            tooltipWidth = $tooltip.outerWidth(),
+            tooltipLeft = Math.min(
+                $(window).width() - tooltipWidth,
+                Math.max(0, targetScrrenCenter - (tooltipWidth/2))
+            ),
+            arrowLeft = targetScrrenCenter - tooltipLeft - 3;
+
+        $arrow.css('left', arrowLeft)
+        $tooltip.css('top', targetOffsets.top + $target.outerHeight() + $arrow.outerHeight())
+            .css('left', tooltipLeft);
+    }).on('mouseleave focus', function () {
+        $(this).siblings('.tooltip').remove();
+    });
 });
