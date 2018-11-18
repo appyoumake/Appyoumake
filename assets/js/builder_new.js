@@ -16,8 +16,15 @@ $(document).ready(function() {
     $('.list-pages .page').click(function (e) {
         alert('Open')
     });
-    $('.nav-pages.open > .close').click(function (e) {
-        $(this).closest('.nav-pages.open').removeClass('open');
+
+
+    
+    $('[data-open-deleted]').click(function (e) {
+        $('.nav-pages .pages-wrapper').addClass('deleted-open');
+    });
+
+    $('.pages-wrapper.deleted-open .close').click(function (e) {
+        $(this).closest('.deleted-open').removeClass('deleted-open');
     });
 
     /* Fix toolbox menu arrow positon and visibility*/

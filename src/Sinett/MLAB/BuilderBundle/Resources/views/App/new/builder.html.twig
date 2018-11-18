@@ -25,7 +25,7 @@
                                 </div>
                             </div>
                             <div class="v-separator"></div>
-                            <button class="toolbox-btn btn-lg like badge badge-plus badge-top-right">Save</button>
+                            <button data-open-deleted class="toolbox-btn btn-lg like badge badge-plus badge-top-right">Save</button>
                             <button class="toolbox-btn btn-lg like">Save</button>
                                 <button data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
                             <button class="toolbox-btn btn-lg like">Save</button>
@@ -103,59 +103,63 @@
         </div>
 
     </div>
+{% set activePage %}
+{% for i in 0..3 %}
+<li>
+<!-- <button class="delete"></button> -->
+<button class="delete-alt"></button>
+<div class="page">
+<img src="https://via.placeholder.com/100x150" />
+<p>Page Title 1</p>
+</div>
+</li>
+{% endfor %}
+{% endset %}
+
+{% set deletedPage %}
+{% for i in 0..3 %}
+<li>
+<div class="page">
+<img src="https://via.placeholder.com/100x150" />
+<p>Page Title 1</p>
+</div>
+</li>
+{% endfor %}
+{% endset %}
+
     <div class="main">
-        <div class="nav-pages deleted open">
+        <div class="nav-pages">
+        <div class="pages-wrapper deleted-open">
+        <div class="deleted">
             <button class="close">&times;</button>
             <div class="title">Deleted</div>
-{% set page %}
-{% for i in 0..3 %}
-<li>
-<!-- <button class="delete"></button> -->
-<button class="delete-alt"></button>
-<div class="page">
-<img src="https://via.placeholder.com/100x150" />
-<p>Page Title 1</p>
-</div>
-</li>
-{% endfor %}
-{% endset %}
-                <ul class="list-pages with-preview">
-                    {{ page }}
-                    {{ page }}
-                    {{ page }}
-                </ul>
+            <ul class="list-pages with-preview">
+                {{ deletedPage }}
+                {{ deletedPage }}
+                {{ deletedPage }}
+            </ul>
         </div>
-        <div class="nav-pages active">
+        <div class="active">
                 <div class="level-name">Top level pages</div>
-{% set page %}
-{% for i in 0..3 %}
-<li>
-<!-- <button class="delete"></button> -->
-<button class="delete-alt"></button>
-<div class="page">
-<img src="https://via.placeholder.com/100x150" />
-<p>Page Title 1</p>
-</div>
-</li>
-{% endfor %}
-{% endset %}
                 <ul class="list-pages with-preview">
-                    {{ page }}
+                    {{ activePage }}
                     <li>
                         <div class="level-name">second level pages</div>
                         <ul>
-                            {{ page }}
+                            {{ activePage }}
                             <li>
                                 <div class="level-name">Third level pages</div>
                                 <ul>
-                                    {{ page }}
+                                    {{ activePage }}
                                 </ul>
                             </li>
-                            {{ page }}
+                            {{ activePage }}
                         </ul>
                     </li>
-                    {{ page }}
+                    {{ activePage }}
                 </ul>
+            </div>
+        </div>
         </div>
         <div class="builder">
             <ul class="breadcrumb">

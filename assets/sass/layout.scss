@@ -25,11 +25,45 @@ body {
 }
 
 .nav-pages {
+    display: flex;
     position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex-direction: column;
-    width: $pages-nav-width;
+    width: $active-pages-nav-width;
+
+    .pages-wrapper {
+        width: $active-pages-nav-width + $deleted-pages-nav-width;
+        left: -$deleted-pages-nav-width;
+        transition: left 0.5s ease;
+
+        display: flex;
+        position: relative;
+
+        &.deleted-open {
+            left: 0;
+
+            .active{
+                overflow: hidden;
+            }
+        }
+        
+    }
+
+    .active {
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: $active-pages-nav-width;
+    }
+
+    .deleted {
+        position: relative;
+        width: $deleted-pages-nav-width;
+        overflow: hidden;
+
+
+        .list-pages {
+            overflow-y: auto;
+            height: calc(100% - 3em)
+        }
+    }
 }
 
 .builder {
