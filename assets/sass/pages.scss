@@ -1,6 +1,5 @@
-
 .nav-pages {
-    font-family: 'Ropa+Sans', sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: 0.8em;
     padding: 5px 10px 0 0;
 
@@ -51,27 +50,61 @@
         margin: 10px 0;
     }
 
-    >.level-name {
-        color: $top-level-color;
-        padding: 0 0 0 16px;
+    &.active {
+        >.level-name {
+            color: $top-level-color;
+            padding: 0 0 0 16px;
+        }
+        > ul {
+            > li {
+                > .level-name {
+                    color: $second-level-color;
+                }
+                > ul {
+                    border-left: 2px solid $second-level-color;
+                        > li {
+                            > .level-name {
+                                color: $third-level-color;
+                            }
+                            > ul {
+                                border-left: 2px solid $third-level-color;
+                            }
+                        }
+                }
+            }
+        }
     }
 
-    > ul {
-        > li {
-            > .level-name {
-                color: $second-level-color;
-            }
-            > ul {
-                border-left: 2px solid $second-level-color;
-                    > li {
-                        > .level-name {
-                            color: $third-level-color;
-                        }
-                        > ul {
-                            border-left: 2px solid $third-level-color;
-                        }
-                    }
-            }
+    &.deleted {
+        width: 160px;
+        display: flex;
+        overflow: hidden;
+        background-color: $deleted-list-bgcolor;
+        color: $deleted-list-color;
+        box-shadow: inset -10px 0 50px -10px rgba(0, 0, 0, 0.7);
+        .title {
+            margin: 15px;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .close {
+            @include btn-reset;
+
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 2em;
+            font-family: sans-serif;
+        }
+
+        .list-pages {
+            overflow-y: auto;
+        }
+
+        &.open+.nav-pages.active{
+            overflow: hidden;
         }
     }
 

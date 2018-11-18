@@ -27,6 +27,7 @@ body {
 .nav-pages {
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
     flex-direction: column;
     width: $pages-nav-width;
 }

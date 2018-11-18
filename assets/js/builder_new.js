@@ -16,6 +16,9 @@ $(document).ready(function() {
     $('.list-pages .page').click(function (e) {
         alert('Open')
     });
+    $('.nav-pages.open > .close').click(function (e) {
+        $(this).closest('.nav-pages.open').removeClass('open');
+    });
 
     /* Fix toolbox menu arrow positon and visibility*/
     $('.toolbox .toolbox-menu [data-open-menu]').focus(function (e) {
