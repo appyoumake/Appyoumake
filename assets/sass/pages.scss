@@ -1,6 +1,7 @@
 .nav-pages {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 0.8em;
+    border-right: 1px solid $border-color;
 
     ul {
         list-style: none;
@@ -32,7 +33,7 @@
 
     .with-preview {
         img {
-            display: block;
+            display: inline-block;
         }
 
         p {
@@ -98,6 +99,29 @@
             top: 0;
             font-size: 2em;
             font-family: sans-serif;
+        }
+
+        .image {
+            position: relative;
+            display: inline-block;
+            &:hover {
+                &:after {
+                    content: 'Restore page';
+                    background-color: $deleted-restore-bgcolor;
+                    color: $deleted-restore-color;
+                    position: absolute;
+                    padding: 0 7px;
+                    font-size: 1.2em;
+                    line-height: 1.5em;
+                    border-radius: 10px;
+                    display: block;
+                    top: calc(50% - 0.6em);
+                    margin: 0 0.2em;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+                }
+            }
         }
 
     }

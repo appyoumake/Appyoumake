@@ -25,7 +25,7 @@
                                 </div>
                             </div>
                             <div class="v-separator"></div>
-                            <button data-open-deleted class="toolbox-btn btn-lg like badge badge-plus badge-top-right">Save</button>
+                            <button data-open-deleted class="toolbox-btn btn-lg like badge badge-plus badge-top-right selected">Save</button>
                             <button class="toolbox-btn btn-lg like">Save</button>
                                 <button data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
                             <button class="toolbox-btn btn-lg like">Save</button>
@@ -109,7 +109,7 @@
 <!-- <button class="delete"></button> -->
 <button class="delete-alt"></button>
 <div class="page">
-<img src="https://via.placeholder.com/100x150" />
+<img src="https://via.placeholder.com/100x150/FFFFFF/000000" />
 <p>Page Title 1</p>
 </div>
 </li>
@@ -120,8 +120,10 @@
 {% for i in 0..3 %}
 <li>
 <div class="page">
-<img src="https://via.placeholder.com/100x150" />
-<p>Page Title 1</p>
+    <div class="image">
+        <img src="https://via.placeholder.com/100x150/FFFFFF/000000" />
+    </div>
+    <p>Page Title 1</p>
 </div>
 </li>
 {% endfor %}

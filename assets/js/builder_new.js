@@ -20,11 +20,14 @@ $(document).ready(function() {
 
     
     $('[data-open-deleted]').click(function (e) {
-        $('.nav-pages .pages-wrapper').addClass('deleted-open');
+        $pagesNav = $('.nav-pages .pages-wrapper');
+        $pagesNav.toggleClass('deleted-open');
+        $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
     });
 
     $('.pages-wrapper.deleted-open .close').click(function (e) {
         $(this).closest('.deleted-open').removeClass('deleted-open');
+        $('[data-open-deleted]').removeClass('selected');
     });
 
     /* Fix toolbox menu arrow positon and visibility*/

@@ -21,6 +21,7 @@
 .toolbox-btn {
     @include btn-reset;
     
+    border: 1px solid transparent;
     width: 8em;
     height: 50%;
     text-align: left;
@@ -45,6 +46,11 @@
             left: 0;
             right: 0;
         }
+    }
+
+    &.selected {
+        border: 1px solid $secondary-color;
+        border-radius: 5px;
     }
 
     &.like:before {
