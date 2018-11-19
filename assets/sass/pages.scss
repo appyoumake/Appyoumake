@@ -27,7 +27,7 @@
     }
 
     img {
-        border: 1px solid #000;
+        border: 1px solid $dark-color;
         display: none;
     }
 
@@ -48,26 +48,36 @@
     .level-name {
         font-weight: bold;
         margin: 10px 0;
+
+        &.change-name {
+            cursor: pointer;
+            &:hover {
+                &:after {
+                    content: '\01F589';
+                    padding-left: 1em;
+                }
+            }
+        }
     }
 
     .active {
         >.level-name {
-            color: $top-level-color;
+            color: $top-level-text;
             padding: 0 0 0 16px;
         }
         > ul {
             > li {
                 > .level-name {
-                    color: $second-level-color;
+                    color: $second-level-text;
                 }
                 > ul {
-                    border-left: 2px solid $second-level-color;
+                    border-left: 2px solid $second-level-text;
                         > li {
                             > .level-name {
-                                color: $third-level-color;
+                                color: $third-level-text;
                             }
                             > ul {
-                                border-left: 2px solid $third-level-color;
+                                border-left: 2px solid $third-level-text;
                             }
                         }
                 }
@@ -77,8 +87,8 @@
 
     .deleted {
 
-        background-color: $deleted-list-bgcolor;
-        color: $deleted-list-color;
+        background-color: $deleted-list-color;
+        color: $deleted-list-text;
         box-shadow: inset -10px 0 50px -10px rgba(0, 0, 0, 0.7);
 
 
@@ -107,8 +117,8 @@
             &:hover {
                 &:after {
                     content: 'Restore page';
-                    background-color: $deleted-restore-bgcolor;
-                    color: $deleted-restore-color;
+                    background-color: $deleted-restore-color;
+                    color: $deleted-restore-text;
                     position: absolute;
                     padding: 0 7px;
                     font-size: 1.2em;

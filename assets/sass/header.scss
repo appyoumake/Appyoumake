@@ -36,7 +36,7 @@
     position: fixed;
     left: 0;
     height: #{$toolbox-height - 20px};
-    background-color: $toolbox-active-bgcolor;
+    background-color: $toolbox-active-color;
     width: 100%;
     border-bottom: solid 1px $border-color;
     font-size: 0.8em;
@@ -70,25 +70,49 @@
             }
         }
     }
+}
 
-    .toolbox-menu {
-        position: relative;
-        .menu {
-            position: absolute;
-            background-color: $toolbox-menu-bg-color;
-            border: 1px solid $toolbox-menu-border-color;
-            width: $toolbox-menu-width;
-            margin-top: 10px;
-            padding: 12.5px 25px;
-            right: -200%;
-            opacity: 0;
-            visibility: hidden;
-            transition: visibility 1s, opacity 0.2s ease;
+.toolbox-menu {
+    position: relative;
+    .menu {
+        position: absolute;
+        background-color: $toolbox-menu-color;
+        color: $toolbox-menu-text;
+        border: 1px solid $toolbox-menu-border-color;
+        width: $toolbox-menu-width;
+        margin-top: 10px;
+        padding: 12.5px 25px;
+        right: -200%;
+        opacity: 0;
+        visibility: hidden;
+        transition: visibility 1s, opacity 0.2s ease; /* fix visibility on close to be able to click a button */
+    }
+    &.open:after {
+        content: "";
+        background: $toolbox-menu-color;
+        border-color: $toolbox-menu-border-color;
+        border-width: 1px 1px 0 0;
+        border-style: solid;
+        position: absolute;
+        width:10px;
+        height: 10px;
+        transform: rotate(-45deg) translate(-3px, 3px);
+    }
 
+    [data-open-menu]:focus {
+        ~ .menu {
+            opacity: 1;
+            visibility: visible;
         }
-        &.open:after {
+    }
+
+/*        &.open {
+        .menu {
+            display: block;
+        }
+        &:after {
             content: "";
-            background: $toolbox-menu-bg-color;
+            background: $toolbox-menu-color;
             border-color: $toolbox-menu-border-color;
             border-width: 1px 1px 0 0;
             border-style: solid;
@@ -96,34 +120,10 @@
             width:10px;
             height: 10px;
             transform: rotate(-45deg) translate(-3px, 3px);
+
         }
+    }*/
 
-        [data-open-menu]:focus {
-            ~ .menu {
-                opacity: 1;
-                visibility: visible;
-            }
-        }
-
-/*        &.open {
-            .menu {
-                display: block;
-            }
-            &:after {
-                content: "";
-                background: $toolbox-menu-bg-color;
-                border-color: $toolbox-menu-border-color;
-                border-width: 1px 1px 0 0;
-                border-style: solid;
-                position: absolute;
-                width:10px;
-                height: 10px;
-                transform: rotate(-45deg) translate(-3px, 3px);
-
-            }
-        }*/
-
-    }
 }
 
 .tabs {
@@ -147,8 +147,8 @@
         }
 
         &.active {
-            background: $toolbox-active-bgcolor;
-            color: #000;
+            background: $toolbox-active-color;
+            color: $dark-text;
             
             &:before,
             &:after {
@@ -162,13 +162,13 @@
                 left: -6px;
                 border-bottom-right-radius: 6px;
                 border-width: 0 1px 1px 0;
-                box-shadow: 2px 2px 0 $toolbox-active-bgcolor;
+                box-shadow: 2px 2px 0 $toolbox-active-color;
             }
             &:after {
                 right: -6px;
                 border-bottom-left-radius: 6px;
                 border-width: 0 0 1px 1px;
-                box-shadow: -2px 2px 0 $toolbox-active-bgcolor;
+                box-shadow: -2px 2px 0 $toolbox-active-color;
             }
 
             .toolbox {
@@ -204,6 +204,21 @@
 }
 
 .user-profile {
+    @include btn-reset;
+
+    &:before {
+        content: '\01F464';
+        font-size: 1.4em;
+    }
+
+    &:after {
+        content: '\005E';
+        font-size: 1.4em;
+        font-family: cursive;
+        transform: rotate(180deg)  translateY(0.1em);
+        display: inline-block;
+    }
+
     .arrow {
         width: 2px;
         height: 2px;
@@ -212,5 +227,20 @@
         transform: rotate(-45deg) translate(2px,-2px);
         line-height: normal;
         display: inline-block;
+    }
+    &+.menu {
+        padding: 0;
+        width: $user-toolbox-menu-width;
+        a {
+            color: $toolbox-menu-text;
+            display: block;
+            text-align: right;
+            padding: 12.5px 25px;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;;
+            }
+        }
     }
 }

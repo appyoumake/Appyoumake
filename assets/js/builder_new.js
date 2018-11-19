@@ -25,13 +25,13 @@ $(document).ready(function() {
         $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
     });
 
-    $('.pages-wrapper.deleted-open .close').click(function (e) {
+    $('.pages-wrapper .close').click(function (e) {
         $(this).closest('.deleted-open').removeClass('deleted-open');
         $('[data-open-deleted]').removeClass('selected');
     });
 
     /* Fix toolbox menu arrow positon and visibility*/
-    $('.toolbox .toolbox-menu [data-open-menu]').focus(function (e) {
+    $('.toolbox-menu [data-open-menu]').focus(function (e) {
         var $toolboxMenu = $(this).closest('.toolbox-menu');
         var $menu = $toolboxMenu.find('.menu');
         var menuOffsetLeft = $menu.offset().left;

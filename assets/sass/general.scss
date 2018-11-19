@@ -3,7 +3,7 @@
     color: inherit;
     border: none;
     padding: 0;
-    font: inherit;
+    // font: inherit;
     cursor: pointer;
     outline: inherit;
 }
@@ -75,19 +75,26 @@
     }
 
     &.badge-plus:after {
-        text-align: center;
-        color: $toolbox-plus-badge-color;
-        background-color: $toolbox-plus-badge-bgcolor;
-        content: '+';
+        font-family: sans-serif;
         font-size: 15px;
+        text-align: center;
+        color: $toolbox-plus-badge-text;
+        background-color: $toolbox-plus-badge-color;
+        content: '+';
     }
 
     &.badge-caret:after {
-        color: $toolbox-caret-badge-color;
-        background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 8" width="11" height="8"><path style="fill: #ffffff;stroke: #ffffff" d="M1.82,1.43l3.61,4.57l3.56,-4.52z" /></svg>') $toolbox-caret-badge-bgcolor no-repeat center center;
+        color: transparent;
+        background: $toolbox-caret-badge-color;
 
         content: '';
-        font-size: 10px;
+        font-size: 8px;
+
+        content: '◢';
+        font-family: cursive;
+        transform: rotate(45deg);
+        display: inline-block;
+        text-shadow: -1px -2px 0 $toolbox-caret-badge-text;
     }
 
     &.badge-top-right:after {
@@ -153,7 +160,7 @@
 
 .warning {
     margin: auto 5px;
-    border: 2px solid #FFF;
+    border: 2px solid $light-color;
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -169,8 +176,8 @@
     position: fixed;
     max-width: 200px;
     display: block;
-    background-color: $tooltip-bgcolor;
-    color: $tooltip-color;
+    background-color: $tooltip-color;
+    color: $tooltip-text;
     padding: 8px 12px;
 
     > span {
@@ -178,7 +185,7 @@
         height: 10px;
         transform: rotate(-45deg) translate(-4px, 4px);
         position: absolute;
-        background: $tooltip-bgcolor;
+        background: $tooltip-color;
         top: -10px;
         right: calc(50% - 5px);
     }

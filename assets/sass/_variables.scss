@@ -3,36 +3,46 @@
 $header-height: 48px;
 $toolbox-height: 73px;
 $toolbox-menu-width: 250px;
+$user-toolbox-menu-width: 150px;
 $active-pages-nav-width: 226px;
 $deleted-pages-nav-width: 160px;
 
 // Colors
+$light-text: #fff;
+$light-color: #fff;
+
+$dark-text: #000;
+$dark-color: #000;
+
 $primary-color: #1d2773;
-$primary-text: #fff;
+$primary-text: $light-text;
 $secondary-color: #3744a0;
+$secondary-text: $light-text;
 
 $border-color: #aaa;
 $shadow-color: #eee;
 
-$deleted-list-bgcolor: #959595;
-$deleted-list-color: #fff;
-$deleted-restore-bgcolor: #37439f;
-$deleted-restore-color: #fff;
-$top-level-color: $primary-color;
-$second-level-color: #6a199d;
-$third-level-color: #2ea778;
+$deleted-list-color: #959595;
+$deleted-list-text: $light-text;
+$deleted-restore-color: #37439f;
+$deleted-restore-text: $light-text;
 
-$toolbox-active-bgcolor: #fff;
-$builder-bgcolor: #eee;
-$app-container-bgcolor: #fff;
+$top-level-text: $primary-color;
+$second-level-text: #6a199d;
+$third-level-text: #2ea778;
 
-$toolbox-plus-badge-color: #fff;
-$toolbox-plus-badge-bgcolor: #2ea778;
+$toolbox-active-color: $light-color;
+$toolbox-plus-badge-text: $light-text;
+$toolbox-plus-badge-color: $third-level-text;
 
-$toolbox-caret-badge-color: #fff;
-$toolbox-caret-badge-bgcolor: $secondary-color;
-$toolbox-menu-bg-color: #fff;
+$toolbox-caret-badge-text: $light-text;
+$toolbox-caret-badge-color: $secondary-color;
+$toolbox-menu-color: $light-color;
+$toolbox-menu-text: $dark-text;
 $toolbox-menu-border-color: $primary-color;
 
-$tooltip-bgcolor: #000;
-$tooltip-color: #fff;
+$tooltip-color: $dark-color;
+$tooltip-text: $light-text;
+
+$builder-color: #eee;
+$app-container-color: $light-color;
