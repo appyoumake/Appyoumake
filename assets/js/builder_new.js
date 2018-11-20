@@ -98,4 +98,10 @@ $(document).ready(function() {
 
         $('body').append($overlay);
     });
+
+
+    $('input[type=radio][name=pages-list-display]').change(function() {
+        $('.nav-pages .active .list-pages').attr('class', 'list-pages ' + this.value);
+    });
+
 });

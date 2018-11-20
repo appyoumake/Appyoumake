@@ -61,6 +61,7 @@
     }
 
     .active {
+        position: relative;
         >.level-name {
             color: $top-level-text;
             padding: 0 0 0 16px;
@@ -215,6 +216,40 @@ ul.add-new-page-levels {
                     }
                 }
             }
+        }
+    }
+}
+
+.change-display {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    
+    input {
+        display: none;
+        &:checked {
+            &+label {
+                background: $secondary-color;
+            }
+        }
+    }
+
+    label {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        border-radius: 3px;
+
+        &[for=with-preview]:before {
+            color: $shadow-color;
+            content: 'P'
+
+        }
+        &[for=with-titles]:before {
+            color: $shadow-color;
+            content: 'T'
+
         }
     }
 }
