@@ -17,6 +17,20 @@ body {
     display: flex;
     margin-bottom: #{$toolbox-height + 1px};
     z-index: 1000; /* to set top position of toolx-menu*/
+    justify-content: center;
+
+    .nav-main {
+        display: flex;
+        flex: 1;
+        margin-right: auto;
+    }
+
+    .nav-right {
+        display: flex;
+        flex: 1;
+        margin-left: auto;
+        justify-content: flex-end;
+    }
 }
 
 .main {
