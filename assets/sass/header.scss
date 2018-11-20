@@ -59,8 +59,7 @@
         .form-input {
             position: relative;
             &:after {
-                font-family: "Flaticon";
-                content: $font-Flaticon-search-1;
+                content: '';
                 position: absolute;
                 top: 5px;
                 right: 10px;

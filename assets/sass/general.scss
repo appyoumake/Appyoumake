@@ -27,7 +27,6 @@
     text-align: left;
     position: relative;
     &:before {
-        font-family: "Flaticon";
         margin: 0 10px;
     }
 
@@ -54,7 +53,7 @@
     }
 
     &.like:before {
-        content: $font-Flaticon-like;
+        content: '';
     }
 }
 
@@ -152,8 +151,7 @@
     margin-bottom: 2em;
 
     &:before {
-        font-family: "Flaticon";
-        content: $font-Flaticon-garbage-2;
+        content: '';
         font-size: 2em;
     }
 }
