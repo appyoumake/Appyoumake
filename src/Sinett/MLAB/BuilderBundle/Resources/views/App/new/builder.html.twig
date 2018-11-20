@@ -8,6 +8,7 @@
                 <li class="active"><a href="#tab1">App</a>
                     <div class="toolbox">
                         <div>
+                            <button data-open-modal="new-page" class="toolbox-btn btn-lg like">New Page</button>
                             <div class="toolbox-menu">
                                 <button data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
                                 <div class="menu">
@@ -37,7 +38,7 @@
                                     <p class="toolbox-text badge badge-plus badge-center-right">SaveSave SaveSaveSave</p>
                                 </div>
                             </div>
-                            <button class="toolbox-btn like">Save</button>
+                            <button data-open-modal="restore-components" class="toolbox-btn like">Restore components</button>
                             <button class="toolbox-btn like">Save</button>
                             <div class="v-separator"></div>
                             <div class="v-separator"></div>
@@ -176,6 +177,69 @@
             <div class="app-container">
                 
             </div>
+        </div>
+    </div>
+
+
+{% set restoreDeletedComponent %}
+{% for i in 0..12 %}
+<li>
+    <input type="checkbox" value="Bike" id="comp-{{ i }}">
+    <label class="component" for="comp-{{ i }}">
+        <div class="preview">
+            <img src="https://via.placeholder.com/150x100/FFFFFF/000000" />
+        </div>
+        <div>
+            <strong>Map</strong><br>
+            Deleted: 01.01.19 <br>
+            Page: Page 1
+        </div>
+    </label>
+</li>
+{% endfor %}
+{% endset %}
+    <div id="restore-components" class="modal">
+        <div class="modal-title">Restore deleted components
+            <button data-close-modal class="close">&times;</button>
+        </div>
+        <div class="modal-content">
+            <ul class="restore-deleted-pages-list">
+                {{ restoreDeletedComponent }}
+            </ul>
+        </div>
+        <div class="modal-bottom">
+            <button data-close-modal class="modal-btn secondary">Cancel</button>
+            <button class="modal-btn">Restore</button>
+        </div>
+    </div>
+
+    <div id="new-page" class="modal">
+        <div class="modal-title">Add new page
+            <button data-close-modal class="close">&times;</button>
+        </div>
+        <div class="modal-content">
+            <ul class="add-new-page-levels">
+                <li>
+                    <input type="radio" name="new-page-level" value="top-level" id="top-level-new-page" checked>
+                    <label class="component" for="top-level-new-page">Add new top level page</label>
+                    <ul>
+                        <li>
+                            <input type="radio" name="new-page-level" value="second-level" id="second-level-new-page">
+                            <label class="component" for="second-level-new-page">Add new second level page</label>
+                            <ul>
+                                <li>
+                                    <input type="radio" name="new-page-level" value="third-level" id="third-level-new-page">
+                                    <label class="component" for="third-level-new-page">Add new third level page</label>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-bottom">
+            <button data-close-modal class="modal-btn secondary">Cancel</button>
+            <button class="modal-btn">Next</button>
         </div>
     </div>
 {% endblock %}

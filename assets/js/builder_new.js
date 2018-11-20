@@ -81,4 +81,21 @@ $(document).ready(function() {
     }).on('mouseleave focus', function () {
         $(this).siblings('.tooltip').remove();
     });
+
+    $('[data-open-modal]').click(function () {
+        $modal = $('#' + $(this).data('open-modal'));
+        $modal.show();
+
+        var close = function() {
+            $modal.hide();
+            $overlay.remove();
+        };
+
+        $overlay = $('<div class="modal-overlay"></div>');
+        $overlay.click(close);
+
+        $modal.find('[data-close-modal]').click(close);
+
+        $('body').append($overlay);
+    });
 });

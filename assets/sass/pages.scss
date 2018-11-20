@@ -91,24 +91,12 @@
         color: $deleted-list-text;
         box-shadow: inset -10px 0 50px -10px rgba(0, 0, 0, 0.7);
 
-
         padding-bottom: 19px; /* fix hidden scroller bottom arrow */
         .title {
             margin: 0 15px;
             font-weight: bold;
             font-size: 1.5em;
             line-height: 3em;
-        }
-        .close {
-            @include btn-reset;
-
-            width: 40px;
-            height: 40px;
-            position: absolute;
-            right: 0;
-            top: 0;
-            font-size: 2em;
-            font-family: sans-serif;
         }
 
         .image {
@@ -136,4 +124,97 @@
 
     }
 
+}
+
+ul.restore-deleted-pages-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    label.component {
+        display: flex;
+        padding: 12px;
+        cursor: pointer;
+    }
+
+    .preview {
+        margin-right: 12px;
+    }
+
+    input {
+        display: none;
+        &:checked+label{
+            background-color: $secondary-color;
+            color: $light-text;
+        }
+    }
+}
+
+#restore-components .modal-content {
+    padding: 0;
+}
+
+ul.add-new-page-levels {
+    list-style: none;
+    margin: 40px 0;
+    padding: 0;
+    ul {
+        list-style: none;
+        padding: 0 0 0 15px;
+        margin: 0;
+    }
+
+    label {
+        display: block;
+        padding: 15px;
+        line-height: 2em;
+        font-size: 1em;
+        color: $light-text;
+        margin-bottom: 15px;
+        position: relative;
+        user-select: none;
+    }
+
+    input[type=radio] {
+        display: none;
+
+        &:checked + label {
+            &:after {
+                content: '';
+                display: block;
+                border-bottom: 2px solid $light-text;
+                border-right: 2px solid $light-text;
+                width: 7px;
+                height: 18px;
+                position: absolute;
+                right: 25px;
+                top: calc(50% - 13px);
+                transform: rotate(45deg);
+
+            }
+        } 
+    }
+
+    > li {
+        > label {
+            background-color: $top-level-text;
+        }
+        > ul {
+            border-left: 1px solid $second-level-text;
+            > li {
+                > label {
+                    background-color: $second-level-text;
+                }
+                > ul {
+                    border-left: 1px solid $third-level-text;
+
+                    > li {
+                        > label {
+                            background-color: $third-level-text;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
