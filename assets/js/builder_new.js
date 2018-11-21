@@ -13,7 +13,7 @@ $(document).ready(function() {
         alert('Delete')
     });
 
-    $('.list-pages .page').click(function (e) {
+    $('[data-open-page]').click(function (e) {
         alert('Open')
     });
 

@@ -1,8 +1,8 @@
 
 // Sizes
 $header-height: 48px;
-$toolbox-height: 73px;
-$toolbox-menu-width: 250px;
+$toolbox-height: 93px;
+$toolbox-menu-width: 25em;
 $user-toolbox-menu-width: 150px;
 $active-pages-nav-width: 226px;
 $deleted-pages-nav-width: 160px;
@@ -31,6 +31,9 @@ $top-level-text: $primary-color;
 $second-level-text: #6a199d;
 $third-level-text: #2ea778;
 
+$toolbox-btn-color: $primary-color;
+$toolbox-btn-selected-color: #6a7bdf;
+$toolbox-btn-disabled-color: #dddddd;
 $toolbox-active-color: $light-color;
 $toolbox-plus-badge-text: $light-text;
 $toolbox-plus-badge-color: $third-level-text;

@@ -20,103 +20,103 @@
 
 .toolbox-btn {
     @include btn-reset;
-    
-    border: 1px solid transparent;
-    width: 12em;
-    height: 50%;
-    text-align: left;
+
     position: relative;
-    &:before {
-        margin: 0 10px;
-    }
+    font-size: 1.2em;
+    display: inline-block;
+    padding: 5px;
+    line-height: 1.7em;
+    text-align: left;
+    > i {
+        color: $light-text;
+        background: $toolbox-btn-color;
+        padding: 5px;
+        border-radius: 2px;
+    }   
 
     &.btn-lg {
-        padding-top: 0;
-        width: 4.6em;
-        padding-top: 3em;
-        height: 100%;
+        line-height: 1.15;
         text-align: center;
-
-        &:before {
-            margin: 0;
-            position: absolute;
-            top: 0.2em;
-            font-size: 2em;
-            left: 0;
-            right: 0;
+        > i {
+            width: 1.5em;
+            border-radius: 5px;
+            height: 1.5em;
+            display: block;
+            font-size: 1.8em;
+            margin: 0 auto 5px auto;
+            line-height: 1.5em;
+        }
+    }
+    &.selected, &:focus, &:hover {
+        > i {
+            background: $toolbox-btn-selected-color;
+        }
+    }
+    &.disabled, &[disabled] {
+        color: $toolbox-btn-disabled-color;
+        > i {
+            background: $toolbox-btn-disabled-color;
         }
     }
 
-    &.selected {
-        border: 1px solid $secondary-color;
-        border-radius: 5px;
+    > .badge-top-right {
+        right: 3px !important;
     }
-
-    &.like:before {
-        content: '';
+    > .badge-bottom-right {
+        bottom: 10px !important;
+        right: 2px !important;
     }
 }
 
 .toolbox-text {
     text-align: left;
     line-height: 20px;
+    position: relative;
+    cursor: pointer;
 }
 
 .badge {
-    position: relative;
-    &:after {
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        font-size: 16px;
-        line-height: 16px;
-        border-radius: 50%;
+    position: absolute;
+    background: $toolbox-plus-badge-color;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    color: $light-text;
+    font-size: 15px;
+    line-height: 1;
+    text-align: center;
+    font-weight: normal;
+
+    &.badge-top-right {
+        top: 0;
+        right: 0;
     }
 
-    &.badge-plus:after {
+    &.badge-top-left {
+        top: 0;
+        left: 0;
+    }
+
+    &.badge-bottom-right {
+        bottom: 0;
+        right: 0;
+    }
+
+    &.badge-bottom-left {
+        bottom: 0;
+        left: 0;
+    }
+
+    &.badge-plus {
+        background: $toolbox-plus-badge-color;
         font-family: sans-serif;
-        font-size: 15px;
-        text-align: center;
-        color: $toolbox-plus-badge-text;
-        background-color: $toolbox-plus-badge-color;
-        content: '+';
     }
 
-    &.badge-caret:after {
-        color: transparent;
+    &.badge-caret {
         background: $toolbox-caret-badge-color;
-
-        content: '';
-        font-size: 8px;
-
-        content: '◢';
-        font-family: cursive;
-        transform: rotate(45deg);
-        display: inline-block;
-        text-shadow: -1px -2px 0 $toolbox-caret-badge-text;
-    }
-
-    &.badge-top-right:after {
-        top: 0.2em;
-        right: 0.2em;
-    }
-
-    &.badge-top-left:after {
-        top: 0.2em;
-        left: 0.2em;
-    }
-
-    &.badge-bottom-right:after {
-        bottom: 1em;
-        right: 0.2em;
-    }
-    &.badge-bottom-left:after {
-        bottom: 1em;
-        left: 0.2em;
-    }
-    &.badge-center-right:after {
-        top: 15%;
-        margin-left: 1em;
+        i {
+            font-size: 0.7em;   
+        }
     }
 }
 
@@ -132,29 +132,12 @@
     text-align: center;
     background-color: $primary-color;
     color: $primary-text;
-    position: absolute;
-    top: -10px;
-    right: -10px;
 
     &:before {
         content: "×"
     }
 }
 
-.delete-alt {
-    @include btn-reset;
-
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 15px;
-    margin-bottom: 2em;
-
-    &:before {
-        content: '';
-        font-size: 2em;
-    }
-}
 
 .warning {
     margin: auto 5px;

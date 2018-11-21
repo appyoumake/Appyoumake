@@ -7,14 +7,55 @@
                 <li class="active"><a href="#tab1">App</a>
                     <div class="toolbox">
                         <div>
-                            <button data-open-modal="new-page" class="toolbox-btn btn-lg like">New Page</button>
+                            <button data-open-modal="new-page" class="toolbox-btn btn-lg">
+                                <span class="badge badge-top-right badge-plus">+</span>
+                                <i class="far fa-file"></i> 
+                                New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn btn-lg">
+                                <span class="badge badge-bottom-right badge-caret">
+                                    <i class="fas fa-caret-down"></i>
+                                </span>
+                                <i class="far fa-file"></i> 
+                                New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn btn-lg">
+                                <i class="far fa-file"></i> New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn btn-lg selected">
+                                <i class="far fa-file"></i> New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                <i class="far fa-file"></i> New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn">
+                                <i class="far fa-file"></i> New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn selected">
+                                <i class="far fa-file"></i> New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn" disabled>
+                                <i class="far fa-file"></i> New Page
+                            </button>
+
+                            <div class="v-separator"></div>
                             <div class="toolbox-menu">
-                                <button data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
+                                <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
+                                    <i class="far fa-file"></i> New Page
+                                </button>
                                 <div class="menu">
-                                    <button class="toolbox-btn btn-lg like">Save</button>
-                                    <button class="toolbox-btn btn-lg like">Save</button>
-                                    <button class="toolbox-btn btn-lg like">Save</button>
-                                    <button class="toolbox-btn btn-lg like">Save</button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg">
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
                                 </div>
                             </div>
                             <div class="v-separator"></div>
@@ -25,21 +66,20 @@
                                 </div>
                             </div>
                             <div class="v-separator"></div>
-                            <button data-open-deleted class="toolbox-btn btn-lg like badge badge-plus badge-top-right">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                                <button data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
+                            <button data-open-deleted class="toolbox-btn">
+                                <i class="far fa-trash-alt"></i> Deleted
+                            </button>
+                            <button data-open-modal="restore-components" class="toolbox-btn">
+                                Restore components
+                            </button>
                             <div class="toolbox-menu">
-                                <button data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
+                                <button data-open-menu class="toolbox-btn btn-lg">Save</button>
                                 <div class="menu">
-                                    <h1 class="toolbox-text badge badge-plus badge-center-right">Save</h1>
-                                    <h2 class="toolbox-text badge badge-plus badge-center-right">Save Save Save </h2>
-                                    <p class="toolbox-text badge badge-plus badge-center-right">SaveSave SaveSaveSave</p>
+                                    <h1 class="toolbox-text">Save <span class="badge badge-top-right badge-plus">+</span></h1>
+                                    <h2 class="toolbox-text">Save Save Save <span class="badge badge-top-right badge-plus">+</span></h2>
+                                    <p class="toolbox-text">SaveSave SaveSaveSave <span class="badge badge-top-right badge-plus">+</span></p>
                                 </div>
                             </div>
-                            <button data-open-modal="restore-components" class="toolbox-btn like">Restore components</button>
-                            <button class="toolbox-btn like">Save</button>
-                            <div class="v-separator"></div>
                             <div class="v-separator"></div>
                             <div class="v-separator"></div>
                             <div class="v-separator"></div>
@@ -47,12 +87,22 @@
                             <div class="v-separator"></div>
                             <div class="v-separator"></div>
                             <div class="toolbox-menu">
-                                <button data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " data-open-menu class="toolbox-btn btn-lg like badge badge-caret badge-bottom-right">Save</button>
+                                <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
+                                    <i class="far fa-file"></i> New Page
+                                </button>
                                 <div class="menu">
-                                    <button class="toolbox-btn btn-lg like">Save</button>
-                                    <button class="toolbox-btn btn-lg like">Save</button>
-                                    <button class="toolbox-btn btn-lg like">Save</button>
-                                    <button class="toolbox-btn btn-lg like">Save</button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg">
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -61,28 +111,25 @@
                 <li><a href="#tab2">Insert</a>
                     <div class="toolbox">
                         <div>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <div class="v-separator"></div>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn like">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn like">Save</button>
+                            <button data-open-modal="new-page" class="toolbox-btn">
+                                <i class="far fa-file"></i> New Page
+                            </button>
+                            <button data-open-modal="new-page" class="toolbox-btn">
+                                <i class="far fa-file"></i> New Page
+                            </button>
                         </div>
                     </div>
                 </li>
                 <li><a href="#tab3">Format</a>
                     <div class="toolbox">
                         <div>
-                            <button class="toolbox-btn btn-lg like badge-plus badge-top-right">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn btn-lg like">Save</button>
-                            <button class="toolbox-btn like">Save</button>
-                            <button class="toolbox-btn like">Save</button>
+                            <button data-open-modal="new-page" class="toolbox-btn">
+                                <i class="far fa-file"></i> New Page
+                            </button>
                             <div class="v-separator"></div>
-                            <button class="toolbox-btn btn-lg like">Save</button>
+                            <button data-open-modal="new-page" class="toolbox-btn">
+                                <i class="far fa-file"></i> New Page
+                            </button>
                         </div>
                     </div>
                 </li>
@@ -98,6 +145,7 @@
 
             <div class="toolbox-menu">
                 <button data-open-menu class="user-profile">
+                    <i class="fas fa-user"></i>
                     Username
                 </button>
                 <div class="menu">
@@ -109,13 +157,15 @@
     </div>
 {% set activePage %}
 {% for i in 0..3 %}
-<li>
-<!-- <button class="delete"></button> -->
-<button class="delete-alt"></button>
-<div class="page">
-<img src="https://via.placeholder.com/100x150/FFFFFF/000000" />
-<p>Page Title 1</p>
-</div>
+<li class="display-alt">
+    <div data-open-page>
+        <div class="preview">
+            <img src="https://via.placeholder.com/100x150/FFFFFF/000000" />
+        </div>
+        <p>Page Title 1</p>
+    </div>
+    <!-- <button class="delete"></button> -->
+    <button class="delete-alt"><i class="far fa-trash-alt"></i></button>
 </li>
 {% endfor %}
 {% endset %}
@@ -148,19 +198,23 @@
             <div class="active">
                     <div class="change-display">
                         <input type="radio" name="pages-list-display" value="with-preview" id="with-preview" checked/>
-                        <label for="with-preview"></label>
+                        <label for="with-preview"><i class="fas fa-th-list fa-fw"></i></label>
                         <input type="radio" name="pages-list-display" value="with-titles" id="with-titles" />
-                        <label for="with-titles"></label>
+                        <label for="with-titles"><i class="fas fa-bars fa-fw"></i></label>
                     </div>
                     <div class="level-name">Top level pages</div>
                     <ul class="list-pages with-preview">
                         {{ activePage }}
-                        <li>
-                            <div class="level-name change-name">second level pages</div>
+                        <li class="display-alt">
+                            <div class="level-name change-name">second level pages
+                                <i class="fas fa-pencil-alt"></i>
+                            </div>
                             <ul>
                                 {{ activePage }}
-                                <li>
-                                    <div class="level-name change-name">Third level pages</div>
+                                <li class="display-alt">
+                                    <div class="level-name change-name">Third level pages
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </div>
                                     <ul>
                                         {{ activePage }}
                                     </ul>

@@ -202,10 +202,7 @@
 .user-profile {
     @include btn-reset;
 
-    &:before {
-        content: '\01F464';
-        font-size: 1.4em;
-    }
+    line-height: 40px;
 
     &:after {
         content: '\005E';
@@ -215,15 +212,6 @@
         display: inline-block;
     }
 
-    .arrow {
-        width: 2px;
-        height: 2px;
-        border: 2px solid;
-        border-color:  transparent transparent $primary-text $primary-text;
-        transform: rotate(-45deg) translate(2px,-2px);
-        line-height: normal;
-        display: inline-block;
-    }
     &+.menu {
         padding: 0;
         width: $user-toolbox-menu-width;

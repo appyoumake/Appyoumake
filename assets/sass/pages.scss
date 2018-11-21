@@ -3,36 +3,23 @@
     font-size: 0.8em;
     border-right: 1px solid $border-color;
 
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0 0px 0 16px;
-    }
-
-    li {
-        position: relative;
-        margin-bottom: 15px;
-        .delete, .delete-alt {
-            display: none;
-        }
-        &:hover {
-            > .delete, > .delete-alt {
-                display: block;
-            }
-        }
-    }
-
-    .page {
-        cursor: pointer;
-    }
-
     img {
         border: 1px solid $dark-color;
+    }
+
+    .preview {
         display: none;
     }
 
+    .delete-alt {
+        @include btn-reset;
+        margin: 0 .5em 1.2em 0;
+
+        font-size: 2em;
+    }
+
     .with-preview {
-        img {
+        .preview {
             display: inline-block;
         }
 
@@ -41,20 +28,90 @@
         }
     }
 
-    p {
-        line-height: 2em;
+    .with-titles {
+        .delete-alt {
+            font-size: 1.4em;
+            margin-bottom: 0;
+        }
+
+        .delete {
+            font-size: 1.4em;
+            margin-right: 10px;
+        }
     }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0 0px 0 16px;
+        flex-grow: 1;
+
+        &.with-preview li:not(.display-alt) {
+            align-items: flex-start;
+            justify-content: unset;
+            position: relative;
+            .delete{
+                position: relative;
+                left: -10px;
+                top: -10px;
+            }
+
+            p {
+                /* display: inline-block; */
+                position: absolute;
+                top: 50%;
+                /* bottom: 0; */
+                left: 100%;
+                width: 80px;
+                margin-top: -7px;
+                margin-left: 10px;
+            }
+        }
+    }
+
+    li {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 10px;
+        .delete, .delete-alt {
+            // display: none;
+            visibility: hidden;
+        }
+        &:hover {
+            > .delete, > .delete-alt {
+                visibility: visible;
+            }
+        }
+        [data-open-page] {
+            cursor: pointer;
+            position: relative;
+        }
+
+        &.display-alt{
+            [data-open-page] {
+                flex-grow: 1;
+            }
+        }
+
+    }
+
 
     .level-name {
         font-weight: bold;
         margin: 10px 0;
 
         &.change-name {
+            flex-grow: 1;
             cursor: pointer;
+            i {
+                display: none;
+            }
             &:hover {
-                &:after {
-                    content: '\01F589';
-                    padding-left: 1em;
+                i {
+                    display: inline-block;
                 }
             }
         }
@@ -236,20 +293,9 @@ ul.add-new-page-levels {
 
     label {
         display: inline-block;
-        width: 20px;
-        height: 20px;
         cursor: pointer;
         border-radius: 3px;
-
-        &[for=with-preview]:before {
-            color: $shadow-color;
-            content: 'P'
-
-        }
-        &[for=with-titles]:before {
-            color: $shadow-color;
-            content: 'T'
-
-        }
+        color: $shadow-color;
+        padding: 4px;
     }
 }
