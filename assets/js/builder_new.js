@@ -30,26 +30,30 @@ $(document).ready(function() {
         $('[data-open-deleted]').removeClass('selected');
     });
 
-    /* Fix toolbox menu arrow positon and visibility*/
-    $('.toolbox-menu [data-open-menu]').focus(function (e) {
-        var $toolboxMenu = $(this).closest('.toolbox-menu');
+    $('.toolbox-menu [data-open-menu]').click(function (e) {
+        var $menuOpener = $(this);
+        var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
         var $menu = $toolboxMenu.find('.menu');
         var menuOffsetLeft = $menu.offset().left;
 
         if(menuOffsetLeft < 0) {
-            $menu.css('left', 0);
-        } else if(($(window).width() - (menuOffsetLeft + $menu.outerWidth())) < 0) {
-            $menu.css('right', 0);
+            $menu.css('left', menuOffsetLeft*-1 + 35);
+        } else if(($('body').width() - (menuOffsetLeft + $menu.outerWidth())) < 0) {
+            $menu.css('left', '-200%');
         }
 
         $toolboxMenu.addClass('open');
-    }).blur(function() {
-        $(this).closest('.toolbox-menu').removeClass('open');
+
+        $(window).bind("click.closeMenu", function(e) {
+            if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {
+                $(this).unbind("click.closeMenu");
+                $('.toolbox-menu').removeClass('open');
+            }
+        });
     })
 
     $('.toolbox-btn').click(function (e) {
         // alert('Open')
-
     });
 
     $('[data-tooltip]').mouseenter(function () {
@@ -85,15 +89,14 @@ $(document).ready(function() {
     $('[data-open-modal]').click(function () {
         $modal = $('#' + $(this).data('open-modal'));
         $modal.show();
+        $overlay = $('<div class="modal-overlay"></div>');
 
         var close = function() {
             $modal.hide();
             $overlay.remove();
         };
 
-        $overlay = $('<div class="modal-overlay"></div>');
         $overlay.click(close);
-
         $modal.find('[data-close-modal]').click(close);
 
         $('body').append($overlay);

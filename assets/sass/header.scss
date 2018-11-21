@@ -47,28 +47,26 @@
             margin: 5px 0;
         }
         input {
-            font-size: 1.5em;
-            padding: 2px 30px 2px 10px;
+            margin-left: 25px;
+            font-size: 1.2em;
+            padding: 2px 25px 2px 10px;
             &:focus {
                 outline: none;
             }
             border:1px solid $border-color;
             border-radius: 1em;
-            width: 110px;
         }
         .form-input {
             position: relative;
-            &:after {
-                content: '';
-                position: absolute;
-                top: 5px;
-                right: 10px;
-                font-size: 1.2em;
-                color: $secondary-color;
+
+            > i {
+                position: relative;
+                right: 25px;
             }
         }
     }
 }
+
 
 .toolbox-menu {
     position: relative;
@@ -80,10 +78,50 @@
         width: $toolbox-menu-width;
         margin-top: 10px;
         padding: 12.5px 25px;
-        right: -200%;
-        opacity: 0;
+        left: 50%;
+        margin-left: -200px;
         visibility: hidden;
-        transition: visibility 1s, opacity 0.2s ease; /* fix visibility on close to be able to click a button */
+
+        fieldset {
+            margin: 0 0 10px 0;
+        }
+
+        p {
+            margin: .8em 0;
+        }
+
+        select {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            font-size: 1.2em;
+            padding: 4px 0;
+
+            input[type=radio] {
+                margin-top: -1px;
+                vertical-align: middle;
+
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                padding: 2px;
+                background-clip: content-box;
+                border: 2px solid #aaaaaa;
+                background-color: $light-text;
+                border-radius: 50%;
+                &:checked {
+                    background-color: $primary-color;
+                }
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
     }
     &.open:after {
         content: "";
@@ -94,34 +132,38 @@
         position: absolute;
         width:10px;
         height: 10px;
+        left: 50%;
+        margin-left: -5px;
         transform: rotate(-45deg) translate(-3px, 3px);
     }
 
-    [data-open-menu]:focus {
-        ~ .menu {
-            opacity: 1;
-            visibility: visible;
+    &.open {
+        [data-open-menu] {
+            ~ .menu {
+                display: block;
+                visibility: visible;
+            }
+            &.toolbox-btn > i {
+                background: $toolbox-btn-selected-color;
+            }
         }
     }
+}
 
-/*        &.open {
-        .menu {
-            display: block;
-        }
-        &:after {
-            content: "";
-            background: $toolbox-menu-color;
-            border-color: $toolbox-menu-border-color;
-            border-width: 1px 1px 0 0;
-            border-style: solid;
-            position: absolute;
-            width:10px;
-            height: 10px;
-            transform: rotate(-45deg) translate(-3px, 3px);
+.toolbox-menu .menu fieldset, .fieldset {
+    border: 0;
+    padding: 10px 15px;
+    border-bottom: 1px solid $border-color;
+    text-align:left;
+    &:last-child {
+        border-bottom: none;
+    }
+}
 
-        }
-    }*/
-
+.toolbox-menu .menu legend, .legend {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: $primary-color;
 }
 
 .tabs {
@@ -186,6 +228,19 @@
         &:first-child {
             border-left: none;
         }
+    }
+}
+
+.warnings {
+    > button {
+        @include btn-reset;
+        line-height: -5+$header-height;
+        font-size: .8em;
+    }
+    font-size: 1.2em;
+
+    p {
+        margin: .5em 0;
     }
 }
 

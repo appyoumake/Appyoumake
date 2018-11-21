@@ -7,6 +7,26 @@
                 <li class="active"><a href="#tab1">App</a>
                     <div class="toolbox">
                         <div>
+                            <div class="toolbox-menu">
+                                <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
+                                    <i class="far fa-file"></i> Settings
+                                </button>
+                                <div class="menu">
+
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg">
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
+                                        <i class="far fa-file"></i> New Page
+                                    </button>
+                                </div>
+                            </div>
                             <button data-open-modal="new-page" class="toolbox-btn btn-lg">
                                 <span class="badge badge-top-right badge-plus">+</span>
                                 <i class="far fa-file"></i> 
@@ -43,26 +63,45 @@
                                 <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
                                     <i class="far fa-file"></i> New Page
                                 </button>
-                                <div class="menu">
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg">
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
+                                <div class="menu no-padding">
+                                    <fieldset>
+                                        <div class="search">
+                                            <div class="form-input">
+                                                <input placeholder="Find a location on the map" type="text" name="search" autocomplete="off" style="width:195px">
+                                                <i class="fas fa-search"></i>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>Center of map</legend>
+                                        <p>Center of map: Lillestrøm</p>
+                                        <p>Change center of map to current location</p>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>Markers</legend>
+                                        <select multiple>
+                                            <option value="volvo">Volvo</option>
+                                            <option value="saab">Saab</option>
+                                            <option value="opel">Opel</option>
+                                            <option value="audi">Audi</option>
+                                        </select>
+                                        <p>Add marker at current location</p>
+                                        <p>Remove selected markers</p>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>Map attributes</legend>
+                                        <label><input type="radio" name="mapAttributes" value="option1"> option 1</label>
+                                        <label><input type="radio" name="mapAttributes" value="option2"> option 2</label>
+                                        <label><input type="radio" name="mapAttributes" value="option3"> option 3</label>
+                                    </fieldset>
                                 </div>
                             </div>
                             <div class="v-separator"></div>
                             <div class="search">
                                 <label for="search">Search for a component:</label>
                                 <div class="form-input">
-                                    <input id="search" type="text" name="search" autocomplete="off">
+                                    <input id="search" type="text" name="search" autocomplete="off" style="width: 110px;">
+                                    <i class="fas fa-search"></i>
                                 </div>
                             </div>
                             <div class="v-separator"></div>
@@ -82,15 +121,12 @@
                             </div>
                             <div class="v-separator"></div>
                             <div class="v-separator"></div>
-                            <div class="v-separator"></div>
-                            <div class="v-separator"></div>
-                            <div class="v-separator"></div>
-                            <div class="v-separator"></div>
                             <div class="toolbox-menu">
                                 <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
-                                    <i class="far fa-file"></i> New Page
+                                    <i class="far fa-file"></i> Settings
                                 </button>
                                 <div class="menu">
+
                                     <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
                                         <i class="far fa-file"></i> New Page
                                     </button>
@@ -137,7 +173,25 @@
         </nav>
         <div class="logo">MLAB</div>
         <div class="nav-right">
-            <button class="warning" data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text "></button>
+            <div class="toolbox-menu warnings">
+                <button data-open-menu>
+                    <span class="fa-stack">
+                        <i class="far fa-circle fa-stack-2x"></i>
+                        <i class="fas fa-exclamation fa-stack-1x"></i>
+                    </span>
+                </button>
+                <div class="menu no-padding">
+                    <div class="fieldset">
+                        <p>Application requires Network</p>
+                    </div>
+                    <div class="fieldset">
+                        <p>Application requires Internet</p>
+                    </div>
+                    <div class="fieldset">
+                        <p>Application requires API configuration</p>
+                    </div>
+                </div>
+            </div>
             <div class="app-info">
                 You are working on: APP NAME HERE
                 <a href="#" class="view-all-apps"> View all apps</a>

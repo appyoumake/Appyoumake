@@ -287,6 +287,7 @@ ul.add-new-page-levels {
         &:checked {
             &+label {
                 background: $secondary-color;
+                color: $light-text;
             }
         }
     }

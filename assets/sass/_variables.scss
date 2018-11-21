@@ -19,8 +19,10 @@ $primary-text: $light-text;
 $secondary-color: #3744a0;
 $secondary-text: $light-text;
 
-$border-color: #aaa;
-$shadow-color: #eee;
+$dark-shadow-color: #aaa;
+$shadow-color: #ddd;
+$light-shadow-color: #eee;
+$border-color: $dark-shadow-color;
 
 $deleted-list-color: #959595;
 $deleted-list-text: $light-text;
@@ -32,7 +34,7 @@ $second-level-text: #6a199d;
 $third-level-text: #2ea778;
 
 $toolbox-btn-color: $primary-color;
-$toolbox-btn-selected-color: #6a7bdf;
+$toolbox-btn-selected-color: #6978e2;
 $toolbox-btn-disabled-color: #dddddd;
 $toolbox-active-color: $light-color;
 $toolbox-plus-badge-text: $light-text;
