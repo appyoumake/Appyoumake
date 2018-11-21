@@ -171,3 +171,20 @@
     this.preview = function (el) {
         return { image_url: el.find('img:first').attr("src") };
     };
+    
+    this.onKeyPress = function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            var sel, range, html;
+            sel = window.getSelection();
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            var linebreak = document.createElement("br") ;
+            range.insertNode(linebreak);
+            var linebreak = document.createElement("br") ;
+            range.insertNode(linebreak);
+            range.setStartAfter(linebreak);
+            range.setEndAfter(linebreak); 
+        }
+    };
+    
