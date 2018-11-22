@@ -311,6 +311,9 @@ $(document).ready(function() {
                     $("[data-mlab-comp-tool='undo']").on("click", function () { mlab.dt.design.component_trash(); });
                     
                     $("#mlab_page_control_title").on("click", function () {
+                        if( !$('#mlab_page_control_title_actions').is(":visible") ) { 
+                            mlab.dt.api.editContent(this);
+                        }
                         $('#mlab_page_control_title_actions').show();
                         $('#mlab_page_control_title').attr('title', _tr["app.builder.page.tooltip.page.name.edit"]);
                     });
