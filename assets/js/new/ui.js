@@ -28,31 +28,13 @@ $(document).ready(function() {
         $('[data-open-deleted]').removeClass('selected');
     });
 
-    $('.toolbox-menu [data-open-menu]').click(function (e) {
-        var $menuOpener = $(this);
-        var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
-        var $menu = $toolboxMenu.find('.menu');
-        var menuOffsetLeft = $menu.offset().left;
 
-        if(menuOffsetLeft < 0) {
-            $menu.css('left', menuOffsetLeft*-1 + 35);
-        } else if(($('body').width() - (menuOffsetLeft + $menu.outerWidth())) < 0) {
-            $menu.css('left', '-200%');
-        }
-
-        $toolboxMenu.addClass('open');
-
-        $(window).bind("click.closeMenu", function(e) {
-            if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {
-                $(this).unbind("click.closeMenu");
-                $('.toolbox-menu').removeClass('open');
-            }
-        });
-    })
 
     $('.toolbox-btn').click(function (e) {
         // alert('Open')
     });
+
+    mlab.dt.ui.initialiseDropdownButtons(".toolbox-menu");
 
     $('[data-tooltip]').mouseenter(function () {
         var $target = $(this);
@@ -115,4 +97,69 @@ $(document).ready(function() {
     $('[data-new-section]').click(function () {
         alert('new section');
     });
+    
+//ARILD THURSDAY
+
+
+//END ARILD THURSDAY
+    
 });
+
+//ARILD THURSDAY
+
+function Mlab_dt_ui () {
+    this.parent = null;
+    
+    this.toolbar_template = `<div class='toolbox-menu'>
+            <button data-open-menu data-tooltip='' class='toolbox-btn btn-lg'>
+                <i class='far fa-file'></i> %%CATEGORY%%
+            </button>
+            <div class='menu'>
+                %%COMPONENTS%%
+            </div>
+        </div>`;
+};
+
+Mlab_dt_ui.prototype = {
+    
+    initialiseDropdownButtons : function(selector) {
+        $(selector + ' [data-open-menu]').click(function (e) {
+            var $menuOpener = $(this);
+            var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
+            var $menu = $toolboxMenu.find('.menu');
+            var menuOffsetLeft = $menu.offset().left;
+
+            if(menuOffsetLeft < 0) {
+                $menu.css('left', menuOffsetLeft*-1 + 35);
+            } else if(($('body').width() - (menuOffsetLeft + $menu.outerWidth())) < 0) {
+                $menu.css('left', '-200%');
+            }
+
+            $toolboxMenu.addClass('open');
+
+            $(window).bind("click.closeMenu", function(e) {
+                if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {
+                    $(this).unbind("click.closeMenu");
+                    $('.toolbox-menu').removeClass('open');
+                }
+            });
+        })
+    },
+    
+    displayComponents : function (components_html) {
+        var html;
+        //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
+        for  (var category in components_html) {
+            html = this.toolbar_template.replace("%%CATEGORY%%", components_html[category]["name"]);
+            html = html.replace("%%COMPONENTS%%", components_html[category]["components"].join(""));
+            $("#mlab_toolbar_components").append(html);
+        } 
+
+        this.initialiseDropdownButtons("#mlab_toolbar_components");
+
+    
+    },
+    
+}
+
+//EMD ARILD THURSDAY

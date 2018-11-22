@@ -705,6 +705,10 @@ editor.tabs.file.restore.page: Restore deleted page
 editor.tabs.file.restore.page.tooltip: Restore deleted page
 editor.tabs.file.restore.component: Restore deleted component
 editor.tabs.file.restore.component.tooltip: Restore deleted component
+editor.tabs.file.new.page: New page
+editor.tabs.file.new.page.tooltip: Add a new page to the current app
+editor.tabs.file.new.section: New section
+editor.tabs.file.new.section.tooltip: Sections are used to let the user navigate around the app easily through an index. You can use up to 3 levels.
 
 
 
