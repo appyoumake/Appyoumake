@@ -688,3 +688,26 @@ mlab.dt.api.js.getLink.no_selection: Please select som text inside the current c
 
 select.locale: Select language
 mlab.dt.management.js.websocket.error.connect: Connection to message server failed, cannot continue. Check Internet connection and try again.
+
+# new "Powerpoint-esque" UI
+editor.tabs.file: App
+editor.tabs.file.save: Save
+editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon below.
+editor.tabs.file.unlock: Unlock
+editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button below to unlock it.
+editor.tabs.file.test.web: Test in web page
+editor.tabs.file.test.web.tooltip: Do a quick test of what the app will look like by clicking the www-button. The App will then appear in a new web page.
+editor.tabs.file.test.mob: Test on mobile
+editor.tabs.file.test.mob.tooltip: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
+editor.tabs.file.qrcode: QR code
+editor.tabs.file.qrcode.tooltip: QR code
+editor.tabs.file.restore.page: Restore deleted page
+editor.tabs.file.restore.page.tooltip: Restore deleted page
+editor.tabs.file.restore.component: Restore deleted component
+editor.tabs.file.restore.component.tooltip: Restore deleted component
+
+
+
+editor.tabs.format: Format
+editor.tabs.insert: Insert
+editor.tabs.help: Help

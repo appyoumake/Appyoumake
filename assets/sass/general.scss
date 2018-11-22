@@ -45,22 +45,26 @@
         color: $light-text;
         background: $toolbox-btn-color;
         padding: 5px;
-        border-radius: 2px;
+        border-radius: 4px;
+        font-size: 0.8em;
     }   
 
     &.btn-lg {
         line-height: 1.15;
         text-align: center;
+        font-size: 1.2em;
+        border-radius: 2px;
         > i {
             width: 1.5em;
             border-radius: 5px;
             height: 1.5em;
             display: block;
-            font-size: 1.8em;
+            font-size: 0.9em;
             margin: 0 auto 5px auto;
             line-height: 1.5em;
         }
     }
+    
     &.selected, &:focus, &:hover {
         > i {
             background: $toolbox-btn-selected-color;
@@ -74,11 +78,11 @@
     }
 
     > .badge-top-right {
-        right: 3px !important;
+        right: 1em !important;
     }
     > .badge-bottom-right {
-        bottom: 10px !important;
-        right: 2px !important;
+        bottom: 1.6em !important;
+        right: 0.7em !important;
     }
 }
 
