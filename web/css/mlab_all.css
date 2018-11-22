@@ -481,7 +481,8 @@
     padding-bottom: 0.5em;
 }
 
-#builder_dialog_new_app .mlab_icon_design_input {
+#builder_dialog_new_app .mlab_icon_design_input,
+#builder_dialog_new_app .mlab_icon_design_output {
     padding-top: 0.6em;
 }
 
@@ -498,6 +499,17 @@
     padding-bottom: 0.6em;
 }
 
+#builder_dialog_new_app #mlab_make_icon {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    grid-gap: 3%;
+}
+
+#builder_dialog_new_app #mlab_scale_icon {
+    width: 256px;
+    margin: 10px;
+}
+
 #builder_dialog_new_app #mlab_make_icon label{
     width: 40%;
 }
@@ -511,7 +523,12 @@
 
 #builder_dialog_new_app #mlab_icon_text,
 #builder_dialog_new_app #mlab_local_iconfile{
-    width: 43%;  
+    width: 100%;
+}
+
+#mlab_make_icon label,
+#mlab_make_icon input {
+    margin-top: 15px;
 }
 
 
@@ -1248,4 +1265,4 @@ body.mlab_base div.mlab_top_bar_back {
     height: 0;
     line-height: 0;
     background: none;
-}
+}z

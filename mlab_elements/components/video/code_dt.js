@@ -36,6 +36,16 @@
     };
 
     this.cbUploadCompleted = function(el, media_url) {
-        var media = $(el).find('video');
+        var media = $(el).find(mlab.dt.components.video.code.media_type);
         media.attr({src: media_url, poster: media_url.replace(/\.mp4$/, '.png')});
+    };
+    
+    this.preview = function (el) {
+        var media = $(el).find(mlab.dt.components.video.code.media_type);
+        if (media.attr("poster")) {
+            return { image_url: media.attr("poster") ,
+                     text: media.attr("src") };
+        } else {
+            return { text: media.attr("src") };
+        }
     };

@@ -165,3 +165,7 @@
         }
          
     };
+
+    this.preview = function (el) {
+        return { text: "YouTube video" };
+    };

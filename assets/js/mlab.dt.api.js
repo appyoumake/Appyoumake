@@ -387,6 +387,76 @@ Mlab_dt_api.prototype = {
     },
     
 /**
+ * Highlights controls that have child contols inside them
+ * @param {type} sub_el: The element to display. If not specified, then update all components
+ * @param {type} editable: Optional, the element to display. If not specified, then update all components
+ */   
+    pasteImageReader : function (pasteCallback) {
+        (function($) {
+          var defaults;
+          $.event.fix = (function(originalFix) {
+            return function(event) {
+              event = originalFix.apply(this, arguments);
+              if (event.type.indexOf('copy') === 0 || event.type.indexOf('paste') === 0) {
+                event.clipboardData = event.originalEvent.clipboardData;
+              }
+              return event;
+            };
+          })($.event.fix);
+          defaults = {
+            callback: $.noop,
+            matchType: /image.*/
+          };
+          return $.fn.pasteImageReader = function(options) {
+            if (typeof options === "function") {
+              options = {
+                callback: options
+              };
+            }
+            options = $.extend({}, defaults, options);
+            return this.each(function() {
+              var $this, element;
+              element = this;
+              $this = $(this);
+              return $this.bind('paste', function(event) {
+                var clipboardData, found;
+                found = false;
+                clipboardData = event.clipboardData;
+                return Array.prototype.forEach.call(clipboardData.types, function(type, i) {
+                  var file, reader;
+                  if (found) {
+                    return;
+                  }
+                  if (type.match(options.matchType) || clipboardData.items[i].type.match(options.matchType)) {
+                    file = clipboardData.items[i].getAsFile();
+                    reader = new FileReader();
+                    reader.onload = function(evt) {
+                      return options.callback.call(element, {
+                        dataURL: evt.target.result,
+                        event: evt,
+                        file: file,
+                        name: file.name
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                    return found = true;
+                  }
+                });
+              });
+            });
+          };
+        })(jQuery);
+
+        
+        var el = $("<div class='paste-container' contenteditable='true'></div>");
+        el.pasteImageReader(pasteCallback);
+        el.on('propertychange input', function() {
+            $(this).html('')
+        })
+        
+        return el;
+    },      
+/**
  * Creates a unique ID starting with the prefix mlab_, followed by a rfc4122 version 4 compliant GUID. 
  * This is typically used to create an ID for a component that must not clash with any other IDs.
  * @returns {String}
@@ -1328,6 +1398,36 @@ Mlab_dt_api.prototype = {
                         editable.addClass("mlab_current_component_editable").attr("contenteditable", true);
                     }
                 }                
+            }
+        },      
+/**
+ * Resume obj from history
+ * @param {object} el: history obj
+ */   
+        componentResume: function (el) {
+            var comp_id = el.data("mlab-type");
+            var dt = this.parent.parent;
+            
+            if (dt.components[comp_id].conf.unique && $("#" + dt.config["app"]["content_id"]).find("[data-mlab-type='" + comp_id + "']").length > 0) {
+                alert(_tr["mlab.dt.design.js.alert.only.one.comp"]);
+                return;
+            }
+            $("#" + dt.config["app"]["content_id"]).append(el);
+            this.componentHighlightSelected(el);
+            dt.design.component_menu_prepare();
+            
+            window.scrollTo(0,document.body.scrollHeight);
+            
+            el.on("click", function(){
+                var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this));
+                if (prep_menu) {
+                    mlab.dt.design.component_menu_prepare();
+                }
+            })
+            .on("input", function(){dt.flag_dirty = true;});
+            
+            if (typeof dt.components[comp_id].conf.process_keypress != "undefined" && dt.components[comp_id].conf.process_keypress) {
+                $(el).keydown( function(e) { dt.components[comp_id].code.onKeyPress(e); } );
             }
         },      
     },

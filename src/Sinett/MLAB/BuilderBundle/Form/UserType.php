@@ -31,12 +31,12 @@ class UserType extends AbstractType
 		if ($options['current_user_role'] == "ROLE_SUPER_ADMIN") {
 			$role_choices["System (***)"] = "ROLE_SUPER_ADMIN";
 		}
-		
-    	$builder
+
+        $builder
             ->add('email', null, array('label' => 'app.admin.users.new.or.edit.email', 'attr' => array('autocomplete' => 'off')))
             ->add('username', null, array('label' => 'app.admin.users.new.or.edit.username', 'attr' => array('autocomplete' => 'off')))
             ->add('plainPassword', PasswordType::class, array('label' => 'app.admin.users.new.or.edit.plain.password', 'attr' => array('autocomplete' => 'off')))
-            ->add('groups', null, array('label' => 'app.admin.users.new.or.edit.groups'))
+            ->add('groups', null, array('choices' => $options['groups'], 'multiple' => true, 'label' => 'app.admin.users.new.or.edit.groups'))
             ->add('role', ChoiceType::class, array('choices' => $role_choices, 'multiple' => false, 'label' => 'app.admin.users.new.or.edit.roles'))
             ->add('enabled', null, array('label' => 'app.admin.users.new.or.edit.enabled'))
             ;
@@ -49,7 +49,8 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Sinett\MLAB\BuilderBundle\Entity\User',
-        	'current_user_role' => 'ROLE_USER'
+        	'current_user_role' => 'ROLE_USER',
+            'groups' => null
         ));
     }
 

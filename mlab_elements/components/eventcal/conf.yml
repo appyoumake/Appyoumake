@@ -28,6 +28,9 @@ tooltip: { nb_NO: Google Event Kalender, en_GB: Google Event Calendar, default: 
 version: 0.9
 # visible (Boolean)
 
+# can be internet or network, latter is local network.
+requires_network: internet
+
 custom:
     settings: {calendarId: '', fromDate: '', toDate: ''}
     html_event: |

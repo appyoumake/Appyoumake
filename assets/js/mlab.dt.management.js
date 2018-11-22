@@ -118,7 +118,7 @@ Mlab_dt_management.prototype = {
             $("#" + mlab.dt.config["app"]["content_id"]).on("paste", function(e) {
 // stop original paste from happening
                 e.preventDefault();
-                
+            
 //if they are not allowed to paste into this component we quit
                 var comp_id = $(".mlab_current_component").data("mlab-type");
                 if (typeof mlab.dt.components[comp_id].conf.paste_allowed == "undefined" || mlab.dt.components[comp_id].conf.paste_allowed === false) {
@@ -137,7 +137,7 @@ Mlab_dt_management.prototype = {
                 setTimeout( function() { $(".mlab_editor_footer_help").text(""); }, 5000);
               
                 mlab.dt.flag_dirty = true;
-            });
+        });
             
 
         });
@@ -493,11 +493,17 @@ Mlab_dt_management.prototype = {
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
     page_open : function (app_id, page_num) {
-        that = this;
-        this.page_save( function() { that.page_open_process(app_id, page_num); } );
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            that.page_save( function() {
+                that.page_open_process(app_id, page_num, function() {
+                    resolve();
+                })
+            });
+        });
     },
 
-    page_open_process : function (app_id, page_num) {
+    page_open_process : function (app_id, page_num, cb) {
 
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.page"], true);
 
@@ -563,10 +569,12 @@ Mlab_dt_management.prototype = {
                 that.parent.utils.update_status("temporary", data.msg, false);
 
             }
-
-        } );
-
-    },
+            
+            if(cb) {
+                cb();
+            }
+        }
+    )},
 
 /**
  * Call a backend python script that uses OpenOffice to convert PPT and DOC to individual pages
@@ -854,6 +862,10 @@ Mlab_dt_management.prototype = {
 //update staus
                 that.parent.utils.update_status("completed");
                 that.parent.flag_dirty = true;
+                that.parent.app.locked = false;
+                $("#mlab_editor_disabled").remove();
+                $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);                  
+                
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);

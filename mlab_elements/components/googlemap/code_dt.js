@@ -24,6 +24,7 @@
                                 "    curr_map = new google.maps.Map(document.getElementById('" + guid + "'), myOptions);\n" + 
                                 "    var new_markers = []; \n" + 
                                 "    mlab.dt.api.setTempVariable('" + this.config.name + "', 'maps" + guid + "', curr_map); \n" + 
+                                "    mlab.dt.api.setTempVariable('" + this.config.name + "', 'map_centre" + guid + "', curr_map.getCenter()); \n" + 
                                 "    mlab.dt.api.setTempVariable('" + this.config.name + "', 'map_centre_name" + guid + "', myOptions.map_centre_name); \n" + 
                                 "    if (typeof myOptions.markers != 'undefined') { \n" + 
                                 "        for (i in myOptions.markers) { \n" + 
@@ -37,6 +38,12 @@
                                 "    }  \n" + 
                                 "} ");
 
+//save default settings
+        var map_options = this.config.custom.map_options;
+        map_options.config = {class_identifier: this.config.custom.class_identifier, map_script: this.config.custom.map_script}
+        this.api.setAllVariables(el, map_options);
+                    
+//run regular load code
         this.onLoad(el);
         
     };
@@ -88,8 +95,8 @@
         var temp_markers = this.api.getTempVariable(this.config.name, "markers" + guid);
         var map_centre = this.api.getTempVariable(this.config.name, "map_centre" + guid);
         if (typeof map_centre == "undefined") {
-            var lat = 59.7217278;
-            var long = 10.1357072;
+            var lat = this.config.custom.map_options.lat;
+            var long = this.config.custom.map_options.lng;
         } else {
             var lat = map_centre.lat();
             var long = map_centre.lng();
@@ -314,7 +321,14 @@
             var center = mlab.dt.api.getAllVariables($('#' + guid).parents('[data-mlab-type="googlemap"]'))["center"];
             mlab.dt.api.getTempVariable('googlemap', 'maps' + guid).setCenter(new google.maps.LatLng(center.lat, center.lng));
         }, null, false, event);
-   };
+    };
    
    
-   
+    this.preview = function (el) {
+        var guid = $(el).find("." + this.config.custom.class_identifier).attr("id");
+        var map_centre_name = this.api.getTempVariable(this.config.name, "map_centre_name" + guid);
+        if (!map_centre_name) {
+            map_centre_name = "Not selected";
+        }        
+        return { text: "Map centred on " + map_centre_name };       
+    };

@@ -12,7 +12,9 @@ placeholder: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANMAAACVCAYAAADCBs+oA
 resizeable: true
 credentials: ["apikey"]
 autorun_on_create: custom_select_video
-    
+# can be internet or network, latter is local network.
+requires_network: internet
+
 html:
     designtime: |
         <div class="mlab_cp_youtube mc_figure mc_interactive mc_map " style="pointer-events: none;" >
