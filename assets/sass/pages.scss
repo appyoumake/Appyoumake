@@ -45,28 +45,6 @@
         margin: 0;
         padding: 0 0px 0 16px;
         flex-grow: 1;
-
-        &.with-preview li:not(.display-alt) {
-            align-items: flex-start;
-            justify-content: unset;
-            position: relative;
-            .delete{
-                position: relative;
-                left: -10px;
-                top: -10px;
-            }
-
-            p {
-                /* display: inline-block; */
-                position: absolute;
-                top: 50%;
-                /* bottom: 0; */
-                left: 100%;
-                width: 80px;
-                margin-top: -7px;
-                margin-left: 10px;
-            }
-        }
     }
 
     li {
@@ -119,6 +97,28 @@
 
     .active {
         position: relative;
+        ul.with-preview li:not(.display-alt) {
+            align-items: flex-start;
+            justify-content: unset;
+            position: relative;
+            .delete{
+                position: relative;
+                left: -10px;
+                top: -10px;
+            }
+
+            p {
+                /* display: inline-block; */
+                position: absolute;
+                top: 50%;
+                /* bottom: 0; */
+                left: 100%;
+                width: 80px;
+                margin-top: -7px;
+                margin-left: 10px;
+            }
+        }
+
         >.level-name {
             color: $top-level-text;
             padding: 0 0 0 16px;
@@ -160,6 +160,7 @@
         .image {
             position: relative;
             display: inline-block;
+            cursor: pointer;
             &:hover {
                 &:after {
                     content: 'Restore page';

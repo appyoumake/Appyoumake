@@ -32,8 +32,16 @@
         display: flex;
         flex-flow: column wrap;
     }
-    position: fixed;
-    left: 0;
+
+    /* maximum content size */
+    // position: fixed;
+    // left: 0;
+    /*end */
+
+    /* fixed content size */
+    position: absolute;
+    left: -20px;
+    /*end */
     height: #{$toolbox-height - 20px};
     background-color: $toolbox-active-color;
     width: 100%;
@@ -270,6 +278,8 @@
     &+.menu {
         padding: 0;
         width: $user-toolbox-menu-width;
+        margin-left: $user-toolbox-menu-width/-2;
+        left: unset;
         a {
             color: $toolbox-menu-text;
             display: block;
