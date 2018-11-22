@@ -1,6 +1,4 @@
-// alert('test')
-const $ = require('./jquery-2.1.4.js');
-
+// Init UI elements
 $(document).ready(function() {
     $('.header ul.tabs > li > a').click(function (e) {
         e.preventDefault();
@@ -107,4 +105,14 @@ $(document).ready(function() {
         $('.nav-pages .active .list-pages').attr('class', 'list-pages ' + this.value);
     });
 
+
+    $('[data-new-page]').click(function () {
+        console.log('new page');
+        mlab.dt.management.page_new();
+    });
+
+
+    $('[data-new-section]').click(function () {
+        alert('new section');
+    });
 });

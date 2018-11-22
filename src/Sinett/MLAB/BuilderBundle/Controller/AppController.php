@@ -714,6 +714,42 @@ class AppController extends Controller
     }
     
 /**
+ * NEW: Opens the app page editor, loads initial app and various config details
+ * @param type $id
+ * @param type $page_num
+ */
+    public function buildAppNewAction($id, $page_num) {
+/*
+        
+// pick up config from parameters.yml, we use this mainly for paths
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        unset($config["replace_in_filenames"]);
+        unset($config["verify_uploads"]);
+
+//load all the components        
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('component');*/
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die($this->get('translator')->trans('appController.die.no.access'));
+        }
+        
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+        $yaml = new Parser();
+        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->getUser()->getLocale() . '.yml'));
+        $file_mgmt = $this->get('file_management');
+        $real_page_filename = $file_mgmt->getPageFileName($app_path, $page_num);
+
+        return $this->render('SinettMLABBuilderBundle:App:new/build_app.html.twig', array(
+                "mlab_app_page_num" => intVal($real_page_filename),
+                "mlab_app_id" => $id, 
+                "mlab_appbuilder_root_url" => $this->generateUrl('app_builder_index'),
+                "mlab_translations" => json_encode($temp)
+        ));
+    }
+        
+/**
  * Opens the app page editor, loads initial app and various config details
  * @param type $id
  * @param type $page_num

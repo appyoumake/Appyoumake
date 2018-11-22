@@ -160,7 +160,6 @@ app_import_file:
     defaults: { _controller: "SinettMLABBuilderBundle:App:importFile" }
     requirements: { methods: post }
 
-app_builder_new:
-    path: /builder_new/
-    defaults: { _controller: "SinettMLABBuilderBundle:App:builderNew" }
-    
+new_app_builder_editor:
+    path:   /new/builder/{id}/{page_num}/build
+    defaults: { _controller: "SinettMLABBuilderBundle:App:buildAppNew" }
