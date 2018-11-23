@@ -710,8 +710,28 @@ editor.tabs.file.new.page.tooltip: Add a new page to the current app
 editor.tabs.file.new.section: New section
 editor.tabs.file.new.section.tooltip: Sections are used to let the user navigate around the app easily through an index. You can use up to 3 levels.
 
-
+editor.tabs.insert: Insert
+editor.tabs.insert.new.page: New page
+editor.tabs.insert.new.page.tooltip: Insert a new page in the current app. After the new page open you can add content to the page.
+editor.tabs.insert.new.section: New section
+editor.tabs.insert.new.section.tooltip: Insert a new section in the app. A section is a divider, similar to headlines in Word, that is used to let the app users navigate around the app.
 
 editor.tabs.format: Format
-editor.tabs.insert: Insert
+editor.tabs.format.component.up: Move up
+editor.tabs.format.component.up.tooltip: Move component up on the page
+editor.tabs.format.component.down: Move down
+editor.tabs.format.component.down.tooltip: Move component down on the page
+editor.tabs.format.component.delete: Delete
+editor.tabs.format.component.delete.tooltip: Delete the selected component 
+editor.tabs.format.component.cut: Cut
+editor.tabs.format.component.cut.tooltip: Cut the selected component to the component clipboard. You can then paste the component into another page
+editor.tabs.format.component.copy: Copy
+editor.tabs.format.component.copy.tooltip: Copy the selected component to the component clipboard. You can then paste the component into this or another page
+editor.tabs.format.component.paste: Paste
+editor.tabs.format.component.paste.tooltip: Paste the last component you copied or pasted
+
 editor.tabs.help: Help
+editor.tabs.help.tutorial: Tutorial
+editor.tabs.help.tutorial.tooltip: Display Mlab's introduction tutorial, this will explain the basics of how to create an app
+editor.tabs.help.toggle_hover: Help on hover
+editor.tabs.help.toggle_hover.tooltip: Turn tooltip help for buttons on or off

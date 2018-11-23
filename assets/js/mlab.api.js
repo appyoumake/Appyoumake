@@ -65,7 +65,14 @@ function Mlab_api () {
     Also splitting in index_html, because we do not know what parameters there are.
  */
     var mlab_ready_triggered = false;
-    var path = '' + window.location.href.split('index.html')[0];
+    
+//in new design #tab1 etc gets added to URL, so check if we're in design mode or not.
+    var url = window.location.href;
+    if (url.includes("index.html")) {
+        var path = '' + url.split('index.html')[0];
+    } else {
+        var path = '' + url.split('#')[0];
+    }
 /* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
     file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
 */

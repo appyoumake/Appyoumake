@@ -163,6 +163,7 @@
     background-color: $tooltip-color;
     color: $tooltip-text;
     padding: 8px 12px;
+    z-index: 1001;  /* needed to be above the buttons the tips are for */
 
     > span {
         width:10px;

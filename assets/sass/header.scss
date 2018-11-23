@@ -40,7 +40,7 @@
 
     /* fixed content size */
     position: absolute;
-    left: -20px;
+    /*left: -20px;*/
     /*end */
     height: #{$toolbox-height - 20px};
     background-color: $toolbox-active-color;
@@ -293,3 +293,46 @@
         }
     }
 }
+
+/* toggle switch for help on hover */
+input[type="checkbox"].toggle {
+	font-size: 1em;
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+	        appearance: none;
+    width: 6em;
+    height: 1.5em;
+	background: #ddd;
+	border-radius: 1em;
+	position: relative;
+	cursor: pointer;
+	outline: none;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+  }
+  
+  input[type="checkbox"].toggle:checked {
+	background: #1d2773;
+  }
+  
+  input[type="checkbox"].toggle:after {
+	position: absolute;
+	content: "";
+    width: 3em;
+    height: 1.8em;
+    border-radius: 1em;
+	background: #fff;
+	-webkit-box-shadow: 0 0 .25em rgba(0,0,0,.3);
+	        box-shadow: 0 0 .25em rgba(0,0,0,.3);
+	-webkit-transform: scale(.7);
+	        transform: scale(.7);
+	left: 0;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+  }
+  
+  input[type="checkbox"].toggle:checked:after {
+	left: calc(100% - 1em);
+  }
+	
+/* Switch 1 Specific Style End */

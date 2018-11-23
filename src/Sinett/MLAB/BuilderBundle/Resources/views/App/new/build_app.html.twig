@@ -2,7 +2,7 @@
 {# class="toolbox"  left = $("#t1").outerWidth() + $("#t2").outerWidth() #}
 {% block content %}
     <div class="header">
-        <nav class="nav-main">
+        <nav class="nav-main" id="mlab_navbar">
             <ul class="tabs">
                 <li class="active"><a href="#tab1">App</a>
                     <div class="toolbox">
@@ -10,18 +10,18 @@
                     </div>
                 </li>
                 <li><a href="#tab2">Insert</a>
-                    <div class="toolbox">
+                    <div class="toolbox" id="mlab_toolbar_components">
                         {{ include( 'SinettMLABBuilderBundle:App:new/tabs_insert.html.twig' ) }}
                     </div>
                 </li>
                 <li><a href="#tab3">Format</a>
-                    <div class="toolbox">
+                    <div class="toolbox" id="mlab_toolbar_for_components">
                         {{ include( 'SinettMLABBuilderBundle:App:new/tabs_format.html.twig' ) }}
                     </div>
                 </li>
                 <li><a href="#tab4">Help</a>
                     <div class="toolbox">
-                        {{ include( 'SinettMLABBuilderBundle:App:new/tabs_format.html.twig' ) }}
+                        {{ include( 'SinettMLABBuilderBundle:App:new/tabs_help.html.twig' ) }}
                     </div>
                 </li>
             </ul>
@@ -62,8 +62,8 @@
                 </div>
             </div>
         </div>
-
     </div>
+
 {% set activePage %}
 {% for i in 0..3 %}
 <li class="display-alt">

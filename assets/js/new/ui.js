@@ -1,28 +1,33 @@
+//set the left position of the toolboxes, must be done when layout is ready
+$(window).load(function() {
+    var main_navbar = $("#mlab_navbar");
+    var left = main_navbar[0].getBoundingClientRect().left
+    main_navbar.find(".toolbox").each(function(index) { 
+        $(this).css("left", (left - $(this).parent()[0].getBoundingClientRect().left) + "px") 
+    } ) ;
+});
+
 // Init UI elements
 $(document).ready(function() {
+    
+    //alert("Hi Constantin, why are you using z-index everywhere? Is it really required?");
+//set active tab on click
     $('.header ul.tabs > li > a').click(function (e) {
         e.preventDefault();
-
         $(this).parent().siblings('li').removeClass('active');
         $(this).parent().addClass('active');
     });
 
+//delete pages when click delete icon
     $('.list-pages .delete, .list-pages .delete-alt').click(function (e) {
         alert('Delete')
     });
 
-    $('[data-open-deleted]').click(function (e) {
-        $pagesNav = $('.nav-pages .pages-wrapper');
-        $pagesNav.toggleClass('deleted-open');
-        $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
-    });
-
+//
     $('.pages-wrapper .close').click(function (e) {
         $(this).closest('.deleted-open').removeClass('deleted-open');
         $('[data-open-deleted]').removeClass('selected');
     });
-
-
 
     $('.toolbox-btn').click(function (e) {
         // alert('Open')
@@ -30,6 +35,7 @@ $(document).ready(function() {
 
     mlab.dt.ui.initialiseDropdownButtons(".toolbox-menu");
 
+//prepare tooltip display for all buttons
     $('[data-tooltip]').mouseenter(function () {
         var $target = $(this);
         // dont display tooltip if menu open
@@ -81,17 +87,10 @@ $(document).ready(function() {
         $('.nav-pages .active .list-pages').attr('class', 'list-pages ' + this.value);
     });
 
-
-    $('[data-new-page]').click(function () {
-        console.log('new page');
-        mlab.dt.management.page_new();
+    $('[data-action]').click(function () {
+        mlab.dt.utils.runActions($(this).data("action"));
     });
-
-
-    $('[data-new-section]').click(function () {
-        alert('new section');
-    });
-
+        
 
     $('[data-open-page]').click(ui.openPage);
 });
