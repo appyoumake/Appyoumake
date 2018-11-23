@@ -1,178 +1,27 @@
 {% extends "SinettMLABBuilderBundle:App:new/layout.html.twig" %}
-
+{# class="toolbox"  left = $("#t1").outerWidth() + $("#t2").outerWidth() #}
 {% block content %}
     <div class="header">
         <nav class="nav-main">
             <ul class="tabs">
                 <li class="active"><a href="#tab1">App</a>
                     <div class="toolbox">
-                        <div>
-                            <button data-new-page class="toolbox-btn btn-lg">
-                                <span class="badge badge-top-right badge-plus">+</span>
-                                <i class="far fa-file"></i> 
-                                New Page
-                            </button>
-                            <button data-new-section class="toolbox-btn btn-lg">
-                                <span class="badge badge-top-right badge-plus">+</span>
-                                <i class="fas fa-book-open"></i>
-                                New Section
-                            </button>
-                            <div class="v-separator"></div>
-                            <div class="toolbox-menu">
-                                <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
-                                    <i class="far fa-file"></i> Settings
-                                </button>
-                                <div class="menu">
-
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg">
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                </div>
-                            </div>
-                            <button data-open-modal="new-page" class="toolbox-btn btn-lg">
-                                <span class="badge badge-bottom-right badge-caret">
-                                    <i class="fas fa-caret-down"></i>
-                                </span>
-                                <i class="far fa-file"></i> 
-                                New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn btn-lg">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn btn-lg selected">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn selected">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn" disabled>
-                                <i class="far fa-file"></i> New Page
-                            </button>
-
-                            <div class="v-separator"></div>
-                            <div class="toolbox-menu">
-                                <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
-                                    <i class="far fa-file"></i> New Page
-                                </button>
-                                <div class="menu no-padding">
-                                    <fieldset>
-                                        <div class="search">
-                                            <div class="form-input">
-                                                <input placeholder="Find a location on the map" type="text" name="search" autocomplete="off" style="width:195px">
-                                                <i class="fas fa-search"></i>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>Center of map</legend>
-                                        <p>Center of map: Lillestrøm</p>
-                                        <p>Change center of map to current location</p>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>Markers</legend>
-                                        <select multiple>
-                                            <option value="volvo">Volvo</option>
-                                            <option value="saab">Saab</option>
-                                            <option value="opel">Opel</option>
-                                            <option value="audi">Audi</option>
-                                        </select>
-                                        <p>Add marker at current location</p>
-                                        <p>Remove selected markers</p>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>Map attributes</legend>
-                                        <label><input type="radio" name="mapAttributes" value="option1"> option 1</label>
-                                        <label><input type="radio" name="mapAttributes" value="option2"> option 2</label>
-                                        <label><input type="radio" name="mapAttributes" value="option3"> option 3</label>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <div class="v-separator"></div>
-                            <div class="search">
-                                <label for="search">Search for a component:</label>
-                                <div class="form-input">
-                                    <input id="search" type="text" name="search" autocomplete="off" style="width: 110px;">
-                                    <i class="fas fa-search"></i>
-                                </div>
-                            </div>
-                            <div class="v-separator"></div>
-                            <button data-open-deleted class="toolbox-btn">
-                                <i class="far fa-trash-alt"></i> Deleted
-                            </button>
-                            <button data-open-modal="restore-components" class="toolbox-btn">
-                                Restore components
-                            </button>
-                            <div class="toolbox-menu">
-                                <button data-open-menu class="toolbox-btn btn-lg">Save</button>
-                                <div class="menu">
-                                    <h1 class="toolbox-text">Save <span class="badge badge-top-right badge-plus">+</span></h1>
-                                    <h2 class="toolbox-text">Save Save Save <span class="badge badge-top-right badge-plus">+</span></h2>
-                                    <p class="toolbox-text">SaveSave SaveSaveSave <span class="badge badge-top-right badge-plus">+</span></p>
-                                </div>
-                            </div>
-                            <div class="v-separator"></div>
-                            <div class="v-separator"></div>
-                            <div class="toolbox-menu">
-                                <button data-open-menu data-tooltip="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " class="toolbox-btn btn-lg">
-                                    <i class="far fa-file"></i> Settings
-                                </button>
-                                <div class="menu">
-
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg">
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                    <button data-open-modal="new-page" class="toolbox-btn btn-lg" disabled>
-                                        <i class="far fa-file"></i> New Page
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        {{ include( 'SinettMLABBuilderBundle:App:new/tabs_file.html.twig' ) }}
                     </div>
                 </li>
                 <li><a href="#tab2">Insert</a>
                     <div class="toolbox">
-                        <div>
-                            <button data-open-modal="new-page" class="toolbox-btn">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <button data-open-modal="new-page" class="toolbox-btn">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                        </div>
+                        {{ include( 'SinettMLABBuilderBundle:App:new/tabs_insert.html.twig' ) }}
                     </div>
                 </li>
                 <li><a href="#tab3">Format</a>
                     <div class="toolbox">
-                        <div>
-                            <button data-open-modal="new-page" class="toolbox-btn">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                            <div class="v-separator"></div>
-                            <button data-open-modal="new-page" class="toolbox-btn">
-                                <i class="far fa-file"></i> New Page
-                            </button>
-                        </div>
+                        {{ include( 'SinettMLABBuilderBundle:App:new/tabs_format.html.twig' ) }}
+                    </div>
+                </li>
+                <li><a href="#tab4">Help</a>
+                    <div class="toolbox">
+                        {{ include( 'SinettMLABBuilderBundle:App:new/tabs_format.html.twig' ) }}
                     </div>
                 </li>
             </ul>

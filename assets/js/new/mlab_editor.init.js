@@ -86,6 +86,7 @@ $(document).ready(function() {
             design: new Mlab_dt_design(),
             management: new Mlab_dt_management(),
             utils: new Mlab_dt_utils(),
+            ui: new Mlab_dt_ui(),
 
         },
 
@@ -97,6 +98,7 @@ $(document).ready(function() {
             self.dt.design.parent = self.dt;
             self.dt.management.parent = self.dt;
             self.dt.utils.parent = self.dt;
+            self.dt.ui.parent = self.dt;
         }
 
     };
@@ -146,20 +148,7 @@ $(document).ready(function() {
                 $.ajax({ url: url, async: false });
 
                 if (mlab.dt.flag_dirty) { return _tr["mlab_editor.init.js.alert.unsaved"] ; }
-//Loop trough the Component categories/accordians to se if they are expand or collapsed. 
-                var compcat = $("#mlab_toolbar_components h3");
-                if (typeof compcat != "undefined"){
-                    compcat.each(function(){
-                        var cat = $(this).data("mlab-category");
-                        if ($(this).hasClass("ui-state-active")){
-//Set coockie to save expand state of the accordians of the componentgroup
-                            document.cookie="mlabCompCat" + cat + "=0; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
-                        } else {
-//Set coockie to save collapsed state of the accordians of the componentgroup
-                            document.cookie="mlabCompCat" + cat + "=1; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
-                        }
-                    })
-                }
+
             };
 
 //now we load components, the go into a mlab object called components,
@@ -262,6 +251,9 @@ $(document).ready(function() {
                         }
                     }
 
+                    components_html = mlab.dt.utils.prepareComponents(data);
+                    mlab.dt.ui.displayComponents(components_html);
+                    
 
 //we always load pages using AJAX, this takes the parameters passed from the controller
                     mlab.dt.management.app_open( document.mlab_temp_vars.app_id, document.mlab_temp_vars.page_num );
