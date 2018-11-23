@@ -666,14 +666,24 @@ class FileManagement {
  * Get application config json
  * @param type $app
  */
-    public function getAppConfig($app) {
-        $path_app = $app->calculateFullPath($this->config['paths']['app']);
-        $path_app_config = $path_app . $this->config['filenames']["app_config"];
-        if (file_exists($path_app_config)) {
-            return json_decode(file_get_contents($path_app_config), true);
+    public function getAppConfig($app = null) {
+        $defaultConfig = [
+            'tableOfContents' => []
+        ];
+        $config = [];
+
+        if ($app && !$this->appConfig) {
+            $path_app = $app->calculateFullPath($this->config['paths']['app']);
+            $path_app_config = $path_app . $this->config['filenames']["app_config"];
+
+            if (file_exists($path_app_config)) {
+                $config = json_decode(file_get_contents($path_app_config), true);
+            }
+
+            $this->appConfig = array_merge($defaultConfig, $config);
         }
-        
-        return [];
+
+        return $this->appConfig;
     }
     
 	/**
@@ -786,19 +796,22 @@ class FileManagement {
         }
     }
     
-    public function savePage($app, $page_num, $title, $html) {
+    public function savePage($pageNum, $html) {
+        $pageTOC = $this->getPageTOC($pageNum);
+        $title = $pageTOC['title'];
+
 //get path of file to save
-        if ($page_num === 0) {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
+        if ($pageNum === 0) {
+            $file_path = $this->app->calculateFullPath($this->config['paths']['app']) . "index.html";
             return file_put_contents ($file_path, $html);
         } else {
-            $template_page_path = $app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
+            $template_page_path = $this->app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
             $page = str_replace(array("%%TITLE%%", "%%CONTENT%%"), array($title, $html), file_get_contents ($template_page_path));
 //We use this code to save to cache directory as well, if so we will have a complete path, not a page number
-            if(is_numeric($page_num)) {
-                $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";
+            if(is_numeric($pageNum)) {
+                $file_path = $this->app->calculateFullPath($this->config['paths']['app']) . substr("000" . $pageNum, -3) . ".html";
             } else {
-                $file_path = $page_num;
+                $file_path = $pageNum;
             }
             return file_put_contents ($file_path, $page);
         }
@@ -1976,6 +1989,89 @@ class FileManagement {
             copy($src, $dst); 
         }
     }
+
+
+// NEW
+    
+    protected $app = null;
+    public $appConfig = null;
+
+    public function setApp(\Sinett\MLAB\BuilderBundle\Entity\App $app) {
+        $this->app = $app;
+        return $this;
+    }
+    
+    /**
+     * Creates an empty file which will be locked when we redirect to page_get in calling function
+     * @param type $app
+     * @return bool
+     */
+    public function createNewPage() {
+        $pageProperties = $this->getNewPageNum($this->app);
+        if ($pageProperties['new_page_num'] === false) {
+            return false;
+        }
+
+        $title = 'New Page ' . $pageProperties['new_page_num'];
+        $content = str_replace('%TITLE%', $title, $this->config['app']['html_header']) . $this->config['app']['html_footer'];
+
+        if (file_put_contents($pageProperties['new_page_path'], $content) !== false) {
+            $appConfig = $this->getAppConfig($this->app);
+            $page = $this->getNewPageConfig([
+                'title' => $title,
+                'fileName' => basename($pageProperties['new_page_path']),
+                'pageNumber' =>  $pageProperties['new_page_num'],
+            ]);
+
+            array_push($appConfig['tableOfContents'], $page);
+            $this->updateAppConfig($appConfig);
+
+            return $page;
+        } else {
+            return false;
+        }
+    }
+
+    protected function getNewPageConfig($page = []) {
+        return array_merge([
+           'type' => 'page',
+           'order' => 0,
+           'title' => 'New Page',
+           'fileName' => null,
+        ], $page);
+    }
+    
+    protected function getPageTOC($pageNum) {
+        $appConfig = $this->getAppConfig($this->app);
+        $filter = function($page) use ($pageNum) {
+            if ($page['type'] == 'section') {
+            // todo: need to filter recursivly through sections
+            }
+            return $page['pageNumber'] == $pageNum && $page['type'] == 'page';
+        };
+
+        $details = array_filter($appConfig['tableOfContents'], $filter);
+        return array_pop($details);
+    }
+    
+
+    public function updateAppConfig($config = []) {
+        $current = $this->getAppConfig();
+        $config = array_merge($current, $config);
+        $pathApp = $this->app->calculateFullPath($this->config['paths']['app']);
+
+        $pathAppConfig = $pathApp . $this->config['filenames']['app_config'];
+
+        $result = file_put_contents($pathAppConfig, json_encode($config));
+
+        if($result) {
+            $this->appConfig = $config;
+        }
+
+        return $result;
+    }
+
+
    
 }
 

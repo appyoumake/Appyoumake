@@ -1024,12 +1024,12 @@ class AppController extends Controller
         
 //create file management object
 	    $file_mgmt = $this->get('file_management');
-        $file_mgmt->setConfig('app');
+        $fileManager = $this->get('file_management')->setApp($app);
+        $fileManager->setConfig('app');
 
         $temp_data = $request->request->all();
         $html = $temp_data["html"];
-        $title = $temp_data["title"];
-        $res = $file_mgmt->savePage($app, intval($page_num), $title, $html);
+        $res = $fileManager->savePage(intval($page_num), $html);
         if ($res === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
@@ -1041,14 +1041,13 @@ class AppController extends Controller
 
 //we now use the file management plugin to obtain the checksum, 
 //for this checksum we exclude the current file as we are the only ones who can change it
-        $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
-        $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
+        $current_page_file_name = $fileManager->getPageFileName($app_path, $page_num);
+        $mlab_app_checksum = $fileManager->getAppMD5($app, $current_page_file_name);
         $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
-        $page_names = $file_mgmt->getPageIdAndTitles($app);
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $page_names;
+            $mlab_app_data["page_names"] = $fileManager->getPageIdAndTitles($app);
             $app_info = array(
                 "result" => "file_changes",
     			"mlab_app" => $mlab_app_data,
@@ -1066,10 +1065,10 @@ class AppController extends Controller
             
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [
-            '_type' => 'app_pages_update',
+            '_type' => 'app_update_table_of_contents',
             '_feedId' => 'app_' . $app->getUid(),
             '_sender' => $request->get('_sender'),
-            'pages' => $page_names,
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
         ]]);
 
         return new JsonResponse(array(
@@ -1093,7 +1092,7 @@ class AppController extends Controller
      * the app it will not create two with the same name
      * @param type $app_id
      */
-    public function newPageAction (Request $request, $app_id, $uid, $redirect_to_open, $title) {
+    public function newPageAction(Request $request, $app_id, $uid, $redirect_to_open, $title) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1107,38 +1106,23 @@ class AppController extends Controller
     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
     	}
         
-//copy the template file to the app
-        $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app, $request->request->get('title'));
-        if ($new_page_num === false) {
-            return new JsonResponse(array(
-                'result' => 'failure',
-                'msg' => $this->get('translator')->trans('appController.msg.app.id.not.specified')));
-        }
-        
-//update file counter variable in JS
-        /* TODO: Remove and replace with precompile processing 
-         * $total_pages = $file_mgmt->getTotalPageNum($app);
-         
-        $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
-*/
-        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $fileManager = $this->get('file_management')->setApp($app);
+        $page = $fileManager->createNewPage();
+
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [
-            '_type' => 'app_pages_update',
+            '_type' => 'app_update_table_of_contents',
             '_feedId' => 'app_' . $app->getUid(),
             '_sender' => $request->get('_sender'),
-            'pages' => $page_names,
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
         ]]);
 
-        if ($redirect_to_open) {
-            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
-        } else {
-            return new JsonResponse(array(
-                'result' => 'success',
-                'new_page_num' => $new_page_num,
-                "page_names" => $page_names));
-        }
+        return $this->redirect($this->generateUrl('app_builder_page_get', [
+            'app_id' => $app_id,
+            'page_num' => $page['pageNumber'],
+            'uid' => $uid,
+            'app_open_mode' => 'false'
+        ]));
     }
 
     /**
