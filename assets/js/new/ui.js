@@ -90,7 +90,7 @@ $(document).ready(function() {
 
     $('body').on('click', '[data-action-click]', function (e) {
         var data = $(this).data();
-        ui[data.actionClick](data);
+        ui[data.actionClick](data, e);
     })
 
 });
@@ -196,6 +196,25 @@ var ui = {
         mlab.dt.management.section_new();
     },
 
+    editSectionTitle: function(data, e) {
+        var $title = $(e.currentTarget),
+            sectionId = data.sectionId;
+
+        $title.data('previousTitle', $title.text().trim());
+
+        if($title.attr('contenteditable') != "true"){
+            $title.attr('contenteditable', true)
+                .focus()
+                .one('focusout', function() {
+                    $title.attr('contenteditable', false);
+                    var newTitle = $title.text().trim();
+                    if($title.data('previousTitle') !== newTitle) {
+                        mlab.dt.management.section_update_title(sectionId, newTitle);
+                    }
+                });
+        }
+    },
+
     watch: {
         tableOfContents: function (newVar, oldVar) {
             ui.updateAppTableOfContents(newVar, oldVar);
@@ -230,7 +249,9 @@ var ui = {
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
                     </div>
-                    <div class="level-name change-name">${sectionTOC.title} <i class="fas fa-pencil-alt"></i></div>
+                    <div class="level-name" data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
+                        ${sectionTOC.title} <i class="fas fa-pencil-alt"></i>
+                    </div>
                     <ul>
                         ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
                     </ul>

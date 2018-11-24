@@ -110,7 +110,7 @@
         i {
             display: none;
         }
-        &:hover {
+        &:not([contenteditable=true]):hover {
             i {
                 display: inline-block;
             }
@@ -143,10 +143,10 @@
 
         >.level-name {
             color: $top-level-text;
-            padding: 0 0 0 16px;
+            padding: 10px 0 10px 16px;
         }
         > ul {
-            padding-top: 40px;
+            padding-top: 20px;
             > li {
                 margin-right: 10px;
                 > .level-name {

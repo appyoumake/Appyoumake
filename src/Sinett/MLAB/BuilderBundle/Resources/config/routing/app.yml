@@ -79,6 +79,11 @@ app_builder_section_new:
     defaults: { _controller: "SinettMLABBuilderBundle:App:newSection" }
     requirements: { methods: post }
 
+app_builder_section_update_title:
+    path:   /builder/{app_id}/{uid}/section_update_title
+    defaults: { _controller: "SinettMLABBuilderBundle:App:sectionUpdateTitle" }
+    requirements: { methods: post }
+
 app_builder_page_copy:
     path:   /builder/{app_id}/{page_num}/{uid}/page_copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }

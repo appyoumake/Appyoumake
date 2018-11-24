@@ -2095,6 +2095,16 @@ class FileManagement {
 
     }
 
+    public function updateSectionTitle($sectionId, $title) {
+        $appConfig = $this->getAppConfig($this->app);
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId]);
+        $parentSection = &$parentSection[0];
+        $parentSection['title'] = $title;
+
+        return $this->updateAppConfig($appConfig);
+    }
+
     protected function getNewPageConfig($page = []) {
         return array_merge([
            'type' => 'page',
