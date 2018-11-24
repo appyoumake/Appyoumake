@@ -84,16 +84,15 @@ $(document).ready(function() {
 
     $('[data-new-page]').click(function () {
         console.log('new page');
-        mlab.dt.management.page_new();
     });
 
 
-    $('[data-new-section]').click(function () {
-        alert('new section');
-    });
 
+    $('body').on('click', '[data-action-click]', function (e) {
+        var data = $(this).data();
+        ui[data.actionClick](data);
+    })
 
-    $('[data-open-page]').click(ui.openPage);
 });
 
 //ARILD THURSDAY
@@ -181,8 +180,16 @@ var ui = {
         $active.scrollTop($active.prop('scrollHeight'));
     },
 
-    openPage: function(e) {
-        alert(`opening page ${$(this).data('open-page')}`)
+    openPage: function(data) {
+        alert(`opening page ${data.pageNum}`)
+    },
+
+    newPage: function() {
+        mlab.dt.management.page_new();
+    },
+
+    newSection: function() {
+        mlab.dt.management.section_new();
     },
 
     watch: {
@@ -196,23 +203,23 @@ var ui = {
             $list = $('<list>');
 
             for (var i = 0; i < toc.length; i++) {
-                $list.append(ui.render[toc[i].type](toc[i]))
+                $list.append(this[toc[i].type](toc[i]))
             }
 
             return $list;
         },
 
         page: function (pageTOC) {
-            $page = $('<div>').attr('data-open-page', '')
-                .html(`<div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>`)
-                .data('open-page', pageTOC.pageNumber)
-                .click(ui.openPage);
-
-            return $('<li class="display-alt"></li>').html($page);
+            return `
+                <li class="display-alt">
+                    <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
+                        <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>
+                    </div>
+                </li>`;
         },
 
         section: function (sectionTOC) {
-            $section = $('<div>').attr('data-open-page', '')
+            $section = $('<div>')
                 .html(`<div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>`);
 
             return $('<li class="display-alt"></li>').html($section);

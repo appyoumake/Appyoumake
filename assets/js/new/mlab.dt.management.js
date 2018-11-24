@@ -827,6 +827,18 @@ Mlab_dt_management.prototype = {
         this.page_save( function() { that.page_new_process(); } );
     },
 
+    section_new : function () {
+        var url = this.parent.urls.section_new.replace("_ID_", this.parent.app.id)
+            .replace("_UID_", this.parent.uid);
+
+        $.post(url, {_sender: this.parent.uid}, function(data) {
+            console.log(data);
+            if (data.result == "success") {
+
+            }
+        });
+    },
+
     page_new_process : function (title) {
         $("body").css("cursor", "wait");
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);

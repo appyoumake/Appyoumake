@@ -2006,7 +2006,7 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function createNewPage() {
+    public function createNewPage($position = null, $section = null) {
         $pageProperties = $this->getNewPageNum($this->app);
         if ($pageProperties['new_page_num'] === false) {
             return false;
@@ -2023,13 +2023,66 @@ class FileManagement {
                 'pageNumber' =>  $pageProperties['new_page_num'],
             ]);
 
-            array_push($appConfig['tableOfContents'], $page);
+            if($position !== null) {
+                array_splice($appConfig['tableOfContents'], $position, 0, [$page]);
+            } else {
+                array_push($appConfig['tableOfContents'], $page);
+            }
+
+            // $appConfig['tableOfContents'] = [];
+
             $this->updateAppConfig($appConfig);
 
             return $page;
         } else {
             return false;
         }
+    }
+
+    public function searchTOC(&$tableOfContents, $conditions = []) {
+        $results = [];
+
+        foreach ($tableOfContents as &$child) {
+            if (count(array_intersect_assoc($child, $conditions)) === count($conditions)) {
+                $results[] = &$child;
+            }
+
+            if(isset($child['children'])) {
+                $nextLevel = $this->searchTOC($child['children'], $conditions);
+                if($nextLevel) {
+                    $results = array_merge($results, $nextLevel);
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    public function createNewSection($position = null, $parent = null) {
+        $appConfig = $this->getAppConfig($this->app);
+        $section = $this->getNewSectionConfig();
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $parent]);
+        $parentSection = &$parentSection[0];
+
+        if($parentSection) {
+            if(!isset($parentSection['children'])) {
+                $parentSection['children'] = [];
+            }
+
+            if($position !== null) {
+                array_splice($parentSection['children'], $position, 0, [$section]);
+            } else {
+                array_push($parentSection['children'], $section);
+            }
+        } else {
+            array_push($appConfig['tableOfContents'], $section);
+        }
+
+        $this->updateAppConfig($appConfig);
+
+        return $section;
+
     }
 
     protected function getNewPageConfig($page = []) {
@@ -2039,6 +2092,25 @@ class FileManagement {
            'title' => 'New Page',
            'fileName' => null,
         ], $page);
+    }
+    
+    protected function getNewSectionConfig($section = []) {
+        $appConfig = $this->getAppConfig($this->app);
+        $listSections = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section']);
+
+        usort($listSections, function($a, $b) {
+            return @$b['id'] <=> @$a['id'];
+        });
+
+        $last = reset($listSections);
+        $nextId = isset($last['id']) ?  $last['id']+1 : 1;
+
+        return array_merge([
+            'id' => $nextId,
+            'type' => 'section',
+            'order' => 0,
+            'title' => 'New Section3',
+        ], $section);
     }
     
     protected function getPageTOC($pageNum) {

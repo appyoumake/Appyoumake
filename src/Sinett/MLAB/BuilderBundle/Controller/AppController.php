@@ -855,6 +855,7 @@ class AppController extends Controller
                                         "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => 'false')),
                                         "app_open" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => '_OPEN_MODE_')),
                                         "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
+                                        "section_new" => $this->generateUrl('app_builder_section_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_reorder" => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_', 'uid' => '_UID_')),
@@ -1094,17 +1095,17 @@ class AppController extends Controller
      */
     public function newPageAction(Request $request, $app_id, $uid, $redirect_to_open, $title) {
         if ($app_id > 0) {
-	    	$em = $this->getDoctrine()->getManager();
-    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
                 die($this->get('translator')->trans('appController.die.no.access'));
             }
-    		
-    	} else {
-    		return new JsonResponse(array(
-    			'result' => 'error',
-    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
-    	}
+            
+        } else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+        }
         
         $fileManager = $this->get('file_management')->setApp($app);
         $page = $fileManager->createNewPage();
@@ -1123,6 +1124,39 @@ class AppController extends Controller
             'uid' => $uid,
             'app_open_mode' => 'false'
         ]));
+    }
+
+
+
+    public function newSectionAction(Request $request, $app_id, $uid) {
+        if ($app_id > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+            
+        } else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+        }
+        
+        $fileManager = $this->get('file_management')->setApp($app);
+        $page = $fileManager->createNewSection();
+
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_update_table_of_contents',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]]);
+
+        return new JsonResponse([
+            'result' => 'success',
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]);
     }
 
     /**
