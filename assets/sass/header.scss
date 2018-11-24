@@ -240,6 +240,8 @@
 }
 
 .warnings {
+    display: none;
+    
     > button {
         @include btn-reset;
         line-height: -5+$header-height;

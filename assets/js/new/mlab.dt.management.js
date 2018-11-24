@@ -69,7 +69,7 @@ Mlab_dt_management.prototype = {
                 });
                 
                 
-                $("#mlab_statusbar_permanent").html(mlab.dt.app.name);
+                $("#mlab_statusbar_appname").html(mlab.dt.app.name);
 //update the list of features we have added to this app
                 $("#mlab_features_list li").removeClass("mlab_item_applied");
                 $(that.parent.app.curr_indexpage_html)
@@ -798,11 +798,12 @@ Mlab_dt_management.prototype = {
 
         });
 
+//TODO: Re-implement this
+/*
 //above we have counted the number of issues relating to the template "best practices" configuration, time to display the error message, if any
         if (template_best_practice_msg.length > 0) {
-            
            
-            $("#mlab_statusbar_permanent").qtip( {
+            $("#mlab_statusbar_appname").qtip( {
                 content: {text: "<ul><li>" + template_best_practice_msg.join("</li><li>") + "</li></ul>" },
                 position: { my: 'topMiddle', at: 'bottomMiddle', viewport: $(window) },
                 show: { ready: true },
@@ -815,7 +816,7 @@ Mlab_dt_management.prototype = {
         } else {
              $(".mlab_qtip_info").remove();
         }
-
+*/
         return res;
     },
 

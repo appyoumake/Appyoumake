@@ -326,7 +326,8 @@ Mlab_dt_utils.prototype = {
                 break;
                 
             case "component.delete":
-                mlab.dt.design.component_delete();
+                debugger;
+                mlab.dt.design.component_delete(false);
                 break;
                 
             case "component.cut":

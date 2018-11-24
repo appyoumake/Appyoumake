@@ -47,18 +47,31 @@
                     </div>
                 </div>
             </div>
-            <div class="app-info">
-                You are working on: APP NAME HERE
-                <a href="#" class="view-all-apps"> View all apps</a>
+            <div class="app-info" >
+                Editing: <span id="mlab_statusbar_appname"></span>
+                <a href="{{ path('app_builder_index')}}" class="view-all-apps" target="_top" title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' >View all apps</a>
             </div>
 
             <div class="toolbox-menu">
                 <button data-open-menu class="user-profile">
                     <i class="fas fa-user"></i>
-                    Username
                 </button>
                 <div class="menu">
-                    <a href="javascript:void(0)" class="toolbox-text">Logout</a>
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <p>You are logged in as: {{ app.user.username }}</p>
+                        <br>
+                        <a class="modal-btn" href="{{ path('fos_user_security_logout') }}">
+                            {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                        </a>
+
+                    {% else %}
+
+                        <p>{{ 'layout.login.headline'|trans({}, 'FOSUserBundle') }}</p>
+
+                        {% block fos_user_content %}
+                        {% endblock fos_user_content %}
+
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -167,6 +180,20 @@
 </li>
 {% endfor %}
 {% endset %}
+
+    <div id="mlab_dialog_delete" class="modal">
+        <div class="modal-title"> {% trans %}build_app.dialog.delete.title{% endtrans %}
+            <button data-close-modal class="close">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p>{% trans %}build_app.dialog.delete.text{% endtrans %}</p>
+        </div>
+        <div class="modal-bottom">
+            <button data-close-modal class="modal-btn secondary">{% trans %}mlab.dt.api.js.getLink.cancel{% endtrans %}</button>
+            <button data-close-modal class="modal-btn" onclick="mlab.dt.design.component_delete(false);">{% trans %}app.admin.components.tooltip.delete{% endtrans %}</button>
+        </div>
+    </div>
+
     <div id="restore-components" class="modal">
         <div class="modal-title">Restore deleted components
             <button data-close-modal class="close">&times;</button>
