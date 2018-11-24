@@ -2049,16 +2049,17 @@ class FileManagement {
         }
     }
 
-    public function searchTOC(&$tableOfContents, $conditions = []) {
+    public function searchTOC(&$tableOfContents, $conditions = [], &$parents = []) {
         $results = [];
 
-        foreach ($tableOfContents as &$child) {
+        foreach ($tableOfContents as $key => &$child) {
             if (count(array_intersect_assoc($child, $conditions)) === count($conditions)) {
+                $parents[$key] = &$tableOfContents;
                 $results[] = &$child;
             }
 
             if(isset($child['children'])) {
-                $nextLevel = $this->searchTOC($child['children'], $conditions);
+                $nextLevel = $this->searchTOC($child['children'], $conditions, $parents);
                 if($nextLevel) {
                     $results = array_merge($results, $nextLevel);
                 }
@@ -2101,6 +2102,21 @@ class FileManagement {
         $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId]);
         $parentSection = &$parentSection[0];
         $parentSection['title'] = $title;
+
+        return $this->updateAppConfig($appConfig);
+    }
+
+    public function deleteSection($sectionId) {
+        $appConfig = $this->getAppConfig($this->app);
+        $parents = [];
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parents);
+        foreach ($parents as $key => &$parent) {
+            $children = $parent[$key]['children'];
+            
+            unset($parent[$key]);
+            $parent = array_merge($parent, $children);
+        }
 
         return $this->updateAppConfig($appConfig);
     }

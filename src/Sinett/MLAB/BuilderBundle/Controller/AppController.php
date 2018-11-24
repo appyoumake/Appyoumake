@@ -857,6 +857,7 @@ class AppController extends Controller
                                         "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "section_new" => $this->generateUrl('app_builder_section_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "section_update_title" => $this->generateUrl('app_builder_section_update_title',  array('app_id' => '_ID_', 'uid' => '_UID_')),
+                                        "section_delete" => $this->generateUrl('app_builder_section_delete',  array('app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_reorder" => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_', 'uid' => '_UID_')),
@@ -1147,7 +1148,10 @@ class AppController extends Controller
         }
         
         $fileManager = $this->get('file_management')->setApp($app);
-        $page = $fileManager->createNewSection(1, 1);
+        $fileManager->createNewSection(
+            $request->get('position', null),
+            $request->get('section', null)
+        );
 
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [
@@ -1184,6 +1188,40 @@ class AppController extends Controller
             $request->get('title')
         );
         // sectionId, title
+
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_update_table_of_contents',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]]);
+
+        return new JsonResponse([
+            'result' => 'success',
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]);
+    }
+
+    public function sectionDeleteAction(Request $request, $app_id, $uid) {
+        // 
+        if ($app_id > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+            
+        } else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+        }
+        
+        $fileManager = $this->get('file_management')->setApp($app);
+        $page = $fileManager->deleteSection(
+            $request->get('sectionId')
+        );
 
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [

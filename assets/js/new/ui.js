@@ -192,8 +192,8 @@ var ui = {
         mlab.dt.management.page_new(data.section, data.position);
     },
 
-    newSection: function() {
-        mlab.dt.management.section_new();
+    newSection: function(data) {
+        mlab.dt.management.section_new(data.section, data.position);
     },
 
     editSectionTitle: function(data, e) {
@@ -213,6 +213,10 @@ var ui = {
                     }
                 });
         }
+    },
+
+    deleteSection: function(data, e) {
+        mlab.dt.management.section_delete(data.sectionId);
     },
 
     watch: {
@@ -237,7 +241,9 @@ var ui = {
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>
                     </div>
-                    <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}"><i class="far fa-trash-alt"></i></button>
+                    <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
                 </li>`;
         },
 
@@ -250,7 +256,11 @@ var ui = {
                         </button>
                     </div>
                     <div class="level-name" data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
-                        ${sectionTOC.title} <i class="fas fa-pencil-alt"></i>
+                        ${sectionTOC.title}
+                        <i class="fas fa-pencil-alt"></i>
+                        <button data-action-click="deleteSection" data-section-id="${sectionTOC.id}">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
                     </div>
                     <ul>
                         ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}

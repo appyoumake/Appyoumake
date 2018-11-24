@@ -107,13 +107,16 @@
 
         flex: 0 0 100%;
         cursor: pointer;
-        i {
+        i.fa-pencil-alt, button {
             display: none;
         }
         &:not([contenteditable=true]):hover {
-            i {
+            i.fa-pencil-alt, button {
                 display: inline-block;
             }
+        }
+        button {
+            @include btn-reset;
         }
     }
 

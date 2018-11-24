@@ -827,11 +827,22 @@ Mlab_dt_management.prototype = {
         this.page_save( function() { that.page_new_process(section, position); } );
     },
 
-    section_new : function () {
+    section_new : function (section = null, position = null) {
         var url = this.parent.urls.section_new.replace("_ID_", this.parent.app.id)
             .replace("_UID_", this.parent.uid);
 
-        $.post(url, {_sender: this.parent.uid}, function(data) {
+        $.post(url, {_sender: this.parent.uid, section, position}, function(data) {
+            if (data.result == "success") {
+                ui.props.tableOfContents = data.tableOfContents;
+            }
+        });
+    },
+
+    section_delete : function (sectionId) {
+        var url = this.parent.urls.section_delete.replace("_ID_", this.parent.app.id)
+            .replace("_UID_", this.parent.uid);
+
+        $.post(url, {_sender: this.parent.uid, sectionId}, function(data) {
             if (data.result == "success") {
                 ui.props.tableOfContents = data.tableOfContents;
             }
