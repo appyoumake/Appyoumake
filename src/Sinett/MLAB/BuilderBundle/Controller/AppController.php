@@ -1108,7 +1108,7 @@ class AppController extends Controller
         }
         
         $fileManager = $this->get('file_management')->setApp($app);
-        $page = $fileManager->createNewPage();
+        $page = $fileManager->createNewPage(null, 3);
 
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [
@@ -1143,7 +1143,7 @@ class AppController extends Controller
         }
         
         $fileManager = $this->get('file_management')->setApp($app);
-        $page = $fileManager->createNewSection();
+        $page = $fileManager->createNewSection(1, 1);
 
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [

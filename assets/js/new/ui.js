@@ -172,11 +172,11 @@ var ui = {
     }),
 
     updateAppTableOfContents: function(content) {
-        var $tableOfContents = this.render.tableOfContents(content);
+        var tableOfContents = this.render.tableOfContents(content);
         var $active = $('.nav-pages .active');
         var $list = $active.find('.list-pages');
 
-        $list.html($tableOfContents.children());
+        $list.html(tableOfContents);
         $active.scrollTop($active.prop('scrollHeight'));
     },
 
@@ -200,13 +200,7 @@ var ui = {
 
     render: {
         tableOfContents: function (toc) {
-            $list = $('<list>');
-
-            for (var i = 0; i < toc.length; i++) {
-                $list.append(this[toc[i].type](toc[i]))
-            }
-
-            return $list;
+            return toc.map(item => this[item.type](item)).join('');
         },
 
         page: function (pageTOC) {
@@ -215,14 +209,18 @@ var ui = {
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>
                     </div>
+                    <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}"><i class="far fa-trash-alt"></i></button>
                 </li>`;
         },
 
         section: function (sectionTOC) {
-            $section = $('<div>')
-                .html(`<div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>`);
-
-            return $('<li class="display-alt"></li>').html($section);
+            return `
+                <li class="display-alt">
+                    <div class="level-name change-name">${sectionTOC.title} <i class="fas fa-pencil-alt"></i></div>
+                    <ul>
+                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children) : ''}
+                    </ul>
+                </li>`;
         }
     }
 };

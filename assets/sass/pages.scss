@@ -63,7 +63,7 @@
                 visibility: visible;
             }
         }
-        [data-open-page] {
+        [data-action-click=openPage] {
             cursor: pointer;
             position: relative;
         }
@@ -82,7 +82,7 @@
         margin: 10px 0;
 
         &.change-name {
-            flex-grow: 1;
+            flex: 0 0 100%;
             cursor: pointer;
             i {
                 display: none;

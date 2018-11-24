@@ -832,9 +832,8 @@ Mlab_dt_management.prototype = {
             .replace("_UID_", this.parent.uid);
 
         $.post(url, {_sender: this.parent.uid}, function(data) {
-            console.log(data);
             if (data.result == "success") {
-
+                ui.props.tableOfContents = data.tableOfContents;
             }
         });
     },

@@ -1998,6 +1998,8 @@ class FileManagement {
 
     public function setApp(\Sinett\MLAB\BuilderBundle\Entity\App $app) {
         $this->app = $app;
+        $this->getAppConfig($this->app);
+
         return $this;
     }
     
@@ -2023,11 +2025,19 @@ class FileManagement {
                 'pageNumber' =>  $pageProperties['new_page_num'],
             ]);
 
-            if($position !== null) {
-                array_splice($appConfig['tableOfContents'], $position, 0, [$page]);
+            if($section) {
+                $tableOfContents = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
+                $tableOfContents = &$tableOfContents[0]['children'];
             } else {
-                array_push($appConfig['tableOfContents'], $page);
+                $tableOfContents = &$appConfig['tableOfContents'];
             }
+
+            if($position !== null) {
+                array_splice($tableOfContents, $position, 0, [$page]);
+            } else {
+                array_push($tableOfContents, $page);
+            }
+
 
             // $appConfig['tableOfContents'] = [];
 
@@ -2109,21 +2119,16 @@ class FileManagement {
             'id' => $nextId,
             'type' => 'section',
             'order' => 0,
-            'title' => 'New Section3',
+            'title' => 'New Section ' . $nextId,
+            'children' => []
         ], $section);
     }
     
     protected function getPageTOC($pageNum) {
         $appConfig = $this->getAppConfig($this->app);
-        $filter = function($page) use ($pageNum) {
-            if ($page['type'] == 'section') {
-            // todo: need to filter recursivly through sections
-            }
-            return $page['pageNumber'] == $pageNum && $page['type'] == 'page';
-        };
-
-        $details = array_filter($appConfig['tableOfContents'], $filter);
-        return array_pop($details);
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        
+        return $page[0];
     }
     
 
