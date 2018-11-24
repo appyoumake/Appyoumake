@@ -1106,9 +1106,12 @@ class AppController extends Controller
                 'result' => 'error',
                 'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
         }
-        
+
         $fileManager = $this->get('file_management')->setApp($app);
-        $page = $fileManager->createNewPage(null, 3);
+        $page = $fileManager->createNewPage(
+            $request->get('position', null),
+            $request->get('section', null)
+        );
 
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [

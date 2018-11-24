@@ -171,21 +171,25 @@ var ui = {
         }
     }),
 
-    updateAppTableOfContents: function(content) {
+    updateAppTableOfContents: function(content, oldContent) {
         var tableOfContents = this.render.tableOfContents(content);
         var $active = $('.nav-pages .active');
         var $list = $active.find('.list-pages');
 
         $list.html(tableOfContents);
-        $active.scrollTop($active.prop('scrollHeight'));
+
+        // scroll pages list if last element is different
+        if(oldContent && JSON.stringify(content[content.length-1]) !== JSON.stringify(oldContent[oldContent.length-1])) {
+            $active.scrollTop($active.prop('scrollHeight'));
+        }
     },
 
     openPage: function(data) {
         alert(`opening page ${data.pageNum}`)
     },
 
-    newPage: function() {
-        mlab.dt.management.page_new();
+    newPage: function(data) {
+        mlab.dt.management.page_new(data.section, data.position);
     },
 
     newSection: function() {
@@ -194,18 +198,23 @@ var ui = {
 
     watch: {
         tableOfContents: function (newVar, oldVar) {
-            ui.updateAppTableOfContents(newVar);
+            ui.updateAppTableOfContents(newVar, oldVar);
         }
     },
 
     render: {
-        tableOfContents: function (toc) {
-            return toc.map(item => this[item.type](item)).join('');
+        tableOfContents: function (toc, section = null) {
+            return toc.map((item, i) => this[item.type](item, i, section)).join('');
         },
 
-        page: function (pageTOC) {
+        page: function (pageTOC, i, section) {
             return `
                 <li class="display-alt">
+                    <div class="insert-new-here">
+                        <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                    </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>
                     </div>
@@ -213,12 +222,17 @@ var ui = {
                 </li>`;
         },
 
-        section: function (sectionTOC) {
+        section: function (sectionTOC, i, section) {
             return `
                 <li class="display-alt">
+                    <div class="insert-new-here">
+                        <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                    </div>
                     <div class="level-name change-name">${sectionTOC.title} <i class="fas fa-pencil-alt"></i></div>
                     <ul>
-                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children) : ''}
+                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
                     </ul>
                 </li>`;
         }

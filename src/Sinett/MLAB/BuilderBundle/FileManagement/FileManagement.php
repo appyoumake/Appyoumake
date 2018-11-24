@@ -2032,7 +2032,7 @@ class FileManagement {
                 $tableOfContents = &$appConfig['tableOfContents'];
             }
 
-            if($position !== null) {
+            if(is_numeric($position)) {
                 array_splice($tableOfContents, $position, 0, [$page]);
             } else {
                 array_push($tableOfContents, $page);
@@ -2128,7 +2128,7 @@ class FileManagement {
         $appConfig = $this->getAppConfig($this->app);
         $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
         
-        return $page[0];
+        return reset($page);
     }
     
 

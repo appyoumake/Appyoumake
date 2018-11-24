@@ -822,9 +822,9 @@ Mlab_dt_management.prototype = {
 /**
 * Creates a new file on the server and opens it
 */
-    page_new : function () {
+    page_new : function (section = null, position = null) {
         that = this;
-        this.page_save( function() { that.page_new_process(); } );
+        this.page_save( function() { that.page_new_process(section, position); } );
     },
 
     section_new : function () {
@@ -838,7 +838,7 @@ Mlab_dt_management.prototype = {
         });
     },
 
-    page_new_process : function (title) {
+    page_new_process : function (section, position) {
         $("body").css("cursor", "wait");
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
         var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
@@ -855,14 +855,14 @@ Mlab_dt_management.prototype = {
         }
 
         var that = this;
-        $.post( url, {_sender: this.parent.uid, title}, function( data ) {
+        $.post( url, {_sender: this.parent.uid, section, position}, function( data ) {
             if (data.result == "success") {
 
                 ui.props.tableOfContents = data.appConfig.tableOfContents;
 
 //prepare variables
-                that.parent.app.page_names.push({title: title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
-                that.parent.app.curr_pagetitle = title;
+                // that.parent.app.page_names.push({title: title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
+                // that.parent.app.curr_pagetitle = title;
                 that.parent.app.curr_page_num = data.page_num_real;
                 
 //update page content area and HTML display of meta data
