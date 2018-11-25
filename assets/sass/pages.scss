@@ -78,6 +78,14 @@
             }
         }
 
+        .insert-new-here button, &.insert-in-section button{
+            @include btn-reset;
+            color: $secondary-text;
+            background-color: $secondary-color;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+        }
         .insert-new-here{
             position: absolute;
             top: -30px;
@@ -87,14 +95,14 @@
             display: none;
 
             button {
-                @include btn-reset;
-                color: $secondary-text;
-                background-color: $secondary-color;
-                border-radius: 50%;
-                width: 25px;
-                height: 25px;
                 position: relative;
                 top: 12.5px;
+            }
+        }
+
+        &.insert-in-section{
+            button {
+                margin: 0 auto;
             }
         }
 

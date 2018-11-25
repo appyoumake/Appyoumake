@@ -227,7 +227,9 @@ var ui = {
 
     render: {
         tableOfContents: function (toc, section = null) {
-            return toc.map((item, i) => this[item.type](item, i, section)).join('');
+            return toc.map((item, i) => this[item.type](item, i, section))
+            .concat(this.addToBottom(section))
+            .join('');
         },
 
         page: function (pageTOC, i, section) {
@@ -265,7 +267,18 @@ var ui = {
                     <ul>
                         ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
                     </ul>
-                </li>`;
+                </li>
+                `;
+        },
+
+        addToBottom: function (section) {
+            return `
+                <li class="insert-in-section">
+                    <button data-action-click="newPage" data-section="${section}">
+                        <i class="fas fa-plus fa-fw"></i>
+                    </button>
+                </li>
+            `;
         }
     }
 };

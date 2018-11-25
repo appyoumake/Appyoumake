@@ -828,7 +828,8 @@ Mlab_dt_management.prototype = {
     },
 
     section_new : function (section = null, position = null) {
-        var url = this.parent.urls.section_new.replace("_ID_", this.parent.app.id)
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'section_new')
             .replace("_UID_", this.parent.uid);
 
         $.post(url, {_sender: this.parent.uid, section, position}, function(data) {
@@ -839,7 +840,8 @@ Mlab_dt_management.prototype = {
     },
 
     section_delete : function (sectionId) {
-        var url = this.parent.urls.section_delete.replace("_ID_", this.parent.app.id)
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'section_delete')
             .replace("_UID_", this.parent.uid);
 
         $.post(url, {_sender: this.parent.uid, sectionId}, function(data) {
@@ -850,7 +852,8 @@ Mlab_dt_management.prototype = {
     },
 
     section_update_title : function (sectionId, title) {
-        var url = this.parent.urls.section_update_title.replace("_ID_", this.parent.app.id)
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'section_update_title')
             .replace("_UID_", this.parent.uid);
 
         $.post(url, {_sender: this.parent.uid, sectionId, title}, function(data) {
@@ -863,8 +866,9 @@ Mlab_dt_management.prototype = {
     page_new_process : function (section, position) {
         $("body").css("cursor", "wait");
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
-        var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
-        url = url.replace("_UID_", this.parent.uid);
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'page_new')
+            .replace("_UID_", this.parent.uid);
 
 //here we hide the tools for components until they select a control
         if (typeof this.parent.qtip_tools != "undefined") {

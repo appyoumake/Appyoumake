@@ -74,19 +74,9 @@ app_builder_page_new:
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage", redirect_to_open: 1, title: "" }
     requirements: { methods: post }
 
-app_builder_section_new:
-    path:   /builder/{app_id}/{uid}/section_new
-    defaults: { _controller: "SinettMLABBuilderBundle:App:newSection" }
-    requirements: { methods: post }
-
-app_builder_section_update_title:
-    path:   /builder/{app_id}/{uid}/section_update_title
-    defaults: { _controller: "SinettMLABBuilderBundle:App:sectionUpdateTitle" }
-    requirements: { methods: post }
-
-app_builder_section_delete:
-    path:   /builder/{app_id}/{uid}/app_builder_section_delete
-    defaults: { _controller: "SinettMLABBuilderBundle:App:sectionDelete" }
+app_builder_page_action:
+    path:   /builder/{app_id}/{uid}/action/{action}
+    defaults: { _controller: "SinettMLABBuilderBundle:App:pageAction" }
     requirements: { methods: post }
 
 app_builder_page_copy:
