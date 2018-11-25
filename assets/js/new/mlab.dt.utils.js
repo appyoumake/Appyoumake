@@ -197,4 +197,163 @@ Mlab_dt_utils.prototype = {
         return record;
     },
     
+    prepareComponents: function (data) {
+        
+        mlab.dt.components = data.mlab_components;
+        mlab.dt.storage_plugins = {};
+        var components_html = {};
+        var category_translations = {};
+        var features_html = [];
+        var additional_html = "";
+        var comp_type;
+
+//loop to clean up components so that there are no duplicate order_by entries and also generate JS code from text in code_dt.js file
+        var temp_comp_order = [];
+        for (comp_id in mlab.dt.components) {
+            temp_comp_order.push(parseInt(mlab.dt.components[comp_id].order_by));
+//we need to attach the code_dt.js content to an object so we can use it as JS code
+            if (mlab.dt.components[comp_id].code !== false) {
+                eval("mlab.dt.components['" + comp_id + "'].code = new function() { " + mlab.dt.components[comp_id].code + "};");
+            }
+        }
+        temp_comp_order.sort(function(a, b) {return a - b;});
+
+//now loop through all components and for those that inherit another we transfer properties
+        mlab.dt.utils.process_inheritance(mlab.dt.components);
+
+//second loop which is for displaying the tools loaded & prepared above in the editor page
+        for (comp_id in mlab.dt.components) {
+//here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
+            mlab.dt.components[comp_id].code.config = mlab.dt.components[comp_id].conf;
+            var c = mlab.dt.components[comp_id];
+            if (c.accessible && !(c.is_storage_plugin)) {
+
+//prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
+                var tt = mlab.dt.api.getLocaleComponentMessage(comp_id, ["tooltip"]);
+                var eName = mlab.dt.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
+
+//the category setting in the conf.yml files
+                if (typeof components_html[c.conf.category] == "undefined") {
+                    components_html[c.conf.category] = {components: [], name: mlab.dt.api.getLocaleComponentMessage(comp_id, ["category_name"])};
+                }                                
+
+                if (c.is_feature) {
+                    comp_type = "feature";
+                } else {
+                    comp_type = "component";
+                }
+
+                var pos = temp_comp_order.indexOf(parseInt(c.order_by));
+                delete temp_comp_order[pos];
+                
+                components_html[c.conf.category]["components"][pos] = "<button data-mlab-type='" + comp_id + "' " +
+                            "onclick='mlab.dt.design." + comp_type + "_add(\"" + comp_id + "\");' " +
+                            "class='toolbox-btn btn-lg' >" +
+                            "<i style='background-image: url(\"" + mlab.dt.config.urls.component + comp_id + "/" + mlab.dt.config.component_files.ICON + "\");'></i> " + tt +
+                        "</button>";
+                
+            } else if (c.accessible && c.is_storage_plugin) {
+                mlab.dt.storage_plugins[comp_id] = eName;
+            }
+        }
+
+//finally we assign the API object to the component, cannot do this earlier as it would create a loop to parents, etc 
+//when trying to merge properties in the previous code block
+        for (index in mlab.dt.components) {
+            if (typeof mlab.dt.components[index].code != "undefined" && mlab.dt.components[index].code !== false) {
+                mlab.dt.components[index].code.api = mlab.dt.api;
+            }
+
+//added to inherit HTML to the additional mlab.dt.components.html which is set in loadSingleComponent in /src/Sinett/MLAB/BuilderBundle/FileManagement/FileManagement.php
+            if (!mlab.dt.components[index].html && mlab.dt.components[index].conf.inherit) {
+                mlab.dt.components[index].html = mlab.dt.components[mlab.dt.components[index].conf.inherit].html;
+            }
+        }
+        
+        return components_html;
+        
+    },
+    
+/*
+ * "traffic police" function which redirect clicks on buttons to relevant actions in Mlab
+ * Most of these actions were from before a major UI design so are spread in different parts of the code
+ */
+    runActions: function (action) {
+        switch (action) {
+            case "page.save":
+                var temp; //dummy variable, should redo for more modern ES/JS
+                mlab.dt.management.page_save(temp, true);
+                break;
+                
+            case "page.unlock":
+                mlab.dt.management.app_remove_locks();
+                break;
+                
+            case "app.preview":
+                mlab.dt.management.page_preview();
+                break;
+                
+            case "app.test":
+                mlab.dt.management.compiler.get_app("android");
+                break;
+                
+//display the list of deleted pages
+            case "page.restore":
+                $pagesNav = $('.nav-pages .pages-wrapper');
+                $pagesNav.toggleClass('deleted-open');
+                $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
+                break;
+                
+            case "component.restore":
+                mlab.dt.design.component_trash();
+                break;
+                
+            case "page.new":
+                mlab.dt.management.page_new();
+                break;
+                
+            case "section.new":
+                console.log("implement");
+                alert('new section');
+                break;
+                
+            case "component.up":
+                mlab.dt.design.component_moveup();
+                break;
+                
+            case "component.down":
+                mlab.dt.design.component_movedown();
+                break;
+                
+            case "component.delete":
+                debugger;
+                mlab.dt.design.component_delete(false);
+                break;
+                
+            case "component.cut":
+                mlab.dt.design.component_cut();
+                break;
+                
+            case "component.copy":
+                mlab.dt.design.component_copy();
+                break;
+                
+            case "component.paste":
+                mlab.dt.design.component_paste();
+                break;
+                
+            case "help.tutorial":
+                console.log("implement");
+                break;
+                
+            case "help.toggle_hover":
+                console.log("implement");
+                break;
+                
+            default:
+                console.log("Unknown action");
+                break;
+        }
+    }
+
 }

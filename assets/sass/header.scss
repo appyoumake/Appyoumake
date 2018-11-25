@@ -40,7 +40,7 @@
 
     /* fixed content size */
     position: absolute;
-    left: -20px;
+    /*left: -20px;*/
     /*end */
     height: #{$toolbox-height - 20px};
     background-color: $toolbox-active-color;
@@ -240,6 +240,8 @@
 }
 
 .warnings {
+    display: none;
+    
     > button {
         @include btn-reset;
         line-height: -5+$header-height;
@@ -268,19 +270,22 @@
     line-height: 40px;
 
     &:after {
-        content: '\005E';
-        font-size: 1.4em;
-        font-family: cursive;
-        transform: rotate(180deg)  translateY(0.1em);
+        content: "";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 12px 6px 0 6px;
+        border-color: $toolbox-btn-selected-color transparent transparent transparent;
         display: inline-block;
     }
 
     &+.menu {
         padding: 0;
-        width: $user-toolbox-menu-width;
-        margin-left: $user-toolbox-menu-width/-2;
+        width: fit-content;
+        margin-left: calc(width/2)px;
         left: unset;
-        a {
+        text-align: center;
+        p {
             color: $toolbox-menu-text;
             display: block;
             text-align: right;
@@ -293,3 +298,53 @@
         }
     }
 }
+
+.toolbox-menu.open .user-profile {
+
+    &:after {
+        transform: rotate(180deg)  translateY(0.1em);
+    }
+}
+
+/* toggle switch for help on hover */
+input[type="checkbox"].toggle {
+	font-size: 1em;
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+	        appearance: none;
+    width: 6em;
+    height: 1.5em;
+	background: #ddd;
+	border-radius: 1em;
+	position: relative;
+	cursor: pointer;
+	outline: none;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+  }
+  
+  input[type="checkbox"].toggle:checked {
+	background: #1d2773;
+  }
+  
+  input[type="checkbox"].toggle:after {
+	position: absolute;
+	content: "";
+    width: 3em;
+    height: 1.8em;
+    border-radius: 1em;
+	background: #fff;
+	-webkit-box-shadow: 0 0 .25em rgba(0,0,0,.3);
+	        box-shadow: 0 0 .25em rgba(0,0,0,.3);
+	-webkit-transform: scale(.7);
+	        transform: scale(.7);
+	left: 0;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+  }
+  
+  input[type="checkbox"].toggle:checked:after {
+	left: calc(100% - 1em);
+  }
+	
+/* Switch 1 Specific Style End */

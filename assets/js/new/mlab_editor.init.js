@@ -156,101 +156,6 @@ $(document).ready(function() {
             $.get( document.mlab_temp_vars.appbuilder_root_url + document.mlab_temp_vars.app_id  + "/load_components" , function( data ) {
                 if (data.result === "success") {
 
-                    var loc = mlab.dt.api.getLocale();
-                    mlab.dt.components = data.mlab_components;
-                    mlab.dt.storage_plugins = {};
-                    var components_html = {};
-                    var category_translations = {};
-                    var features_html = [];
-                    var additional_html = "";
-                    var comp_type;
-
-//loop to clean up components so that there are no duplicate order_by entries and also generate JS code from text in code_dt.js file
-                    var temp_comp_order = [];
-                    for (comp_id in mlab.dt.components) {
-                        temp_comp_order.push(parseInt(mlab.dt.components[comp_id].order_by));
-//we need to attach the code_dt.js content to an object so we can use it as JS code
-                        if (mlab.dt.components[comp_id].code !== false) {
-                            eval("mlab.dt.components['" + comp_id + "'].code = new function() { " + mlab.dt.components[comp_id].code + "};");
-                        }
-                    }
-                    temp_comp_order.sort(function(a, b) {return a - b;});
-
-//now loop through all components and for those that inherit another we transfer properties
-                    mlab.dt.utils.process_inheritance(mlab.dt.components);
-
-//second loop which is for displaying the tools loaded & prepared above in the editor page
-                    for (comp_id in mlab.dt.components) {
-//here we create the conf object inside the newly created code object, this way we can access the configuration details inside the code
-                        mlab.dt.components[comp_id].code.config = mlab.dt.components[comp_id].conf;
-                        var c = mlab.dt.components[comp_id];
-                        if (c.accessible && !(c.is_storage_plugin)) {
-
-//prepare the tooltips (regular/extended). Can be a string, in which use as is, or an key-value object, if key that equals mlab.dt.api.getLocale() is found use this, if not look for one called "default"
-                            var tt = mlab.dt.api.getLocaleComponentMessage(comp_id, ["tooltip"]);
-                            var tte = mlab.dt.api.getLocaleComponentMessage(comp_id, ["footer_tip"]);
-                            var eName = mlab.dt.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
-
-//the category setting in the conf.yml files
-                            if (typeof components_html[c.conf.category] == "undefined") {
-                                components_html[c.conf.category] = [];
-                                category_translations[c.conf.category] = mlab.dt.api.getLocaleComponentMessage(comp_id, ["category_name"]);
-                            }                                
-
-                            if (c.is_feature) {
-                                comp_type = "feature";
-                            } else {
-                                comp_type = "component";
-                            }
-                            
-                            var pos = temp_comp_order.indexOf(parseInt(c.order_by));
-                            delete temp_comp_order[pos];
-                            components_html[c.conf.category][pos] = "<div data-mlab-type='" + comp_id + "' " +
-                                        "onclick='mlab.dt.design." + comp_type + "_add(\"" + comp_id + "\");' " +
-                                        "title='" + tt + "' " +
-                                        "class='mlab_button_components' " +
-                                        "style='background-image: url(\"" + mlab.dt.config.urls.component + comp_id + "/" + mlab.dt.config.component_files.ICON + "\");'>" +
-                                    "</div>" + 
-                                    "<div class='mlab_component_footer_tip'>" +
-                                            tte +
-                                     "</div>";
-                        } else if (c.accessible && c.is_storage_plugin) {
-                            mlab.dt.storage_plugins[comp_id] = eName;
-                        }
-                    }
-
-//TODO now first category is hardcoded to be text...
-//If the first category of components does not have a cookie it moste likely that none of the mlabCompCatxxx cookies are made (first time users or deleted cookies) - so set the first categroy to expand 
-                    var cookieExists = mlab.dt.utils.getCookie("mlabCompCattext");
-                    if (cookieExists === 1){
-//Cookie for first category not found - set cookie so it will be expanded
-                        document.cookie="mlabCompCattext=0; expires=Thu, 18 Dec 2053 12:00:00 UTC; path=/";
-                    }
-
-//Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
-                    for  (category in components_html) {
-                        var activeCat = Number(mlab.dt.utils.getCookie("mlabCompCat" + category));
-                        $("<div><h3 data-mlab-category='" + category + "'><div class='mlab_category_name'>" + category_translations[category] + "</div></h3><div>" + components_html[category].join("") + "</div></div>").appendTo("#mlab_toolbar_components").accordion({
-                            heightStyle: "content",
-                            active: activeCat,
-                            collapsible: true
-                        });
-                    } 
-
-
-//finally we assign the API object to the component, cannot do this earlier as it would create a loop to parents, etc 
-//when trying to merge properties in the previous code block
-                    for (index in mlab.dt.components) {
-                        if (typeof mlab.dt.components[index].code != "undefined" && mlab.dt.components[index].code !== false) {
-                            mlab.dt.components[index].code.api = mlab.dt.api;
-                        }
-                        
-//added to inherit HTML to the additional mlab.dt.components.html which is set in loadSingleComponent in /src/Sinett/MLAB/BuilderBundle/FileManagement/FileManagement.php
-                        if (!mlab.dt.components[index].html && mlab.dt.components[index].conf.inherit) {
-                            mlab.dt.components[index].html = mlab.dt.components[mlab.dt.components[index].conf.inherit].html;
-                        }
-                    }
-
                     components_html = mlab.dt.utils.prepareComponents(data);
                     mlab.dt.ui.displayComponents(components_html);
                     
@@ -260,6 +165,24 @@ $(document).ready(function() {
 
 //erase the temporary variable, this is used in inititalisation process only.
                     delete document.mlab_temp_vars;
+
+
+//prepare the menu popup for the storage plugin selector
+/*SPSP                        $("[data-mlab-comp-tool='storage_plugin']").click( function(event) {
+                        mlab.dt.api.closeAllPropertyDialogs();
+                        var owner_element = event.currentTarget;
+                        mlab.dt.api.properties_tooltip = $(owner_element).qtip({
+                            solo: false,
+                            content:    {text: $("data-mlab-get-info='storage_plugins'").clone(), title: _tr["mlab_editor.init.js.qtip.comp.storage.plugin.title"], button: true },
+                            position:   { my: 'leftMiddle', at: 'rightMiddle', adjust: { screen: true } },
+                            show:       { ready: true, modal: { on: true, blur: false } },
+                            hide:       false,
+                            events:     { hide: function(event, api) { api.destroy(); mlab.dt.api.properties_tooltip = false; } },
+                            style:      { classes: "mlab_zindex_top_tooltip", tip: true }
+                        });
+                    } );*/
+
+
 
                 } else {
                     alert(_tr["mlab_editor.init.js.compiling.failed.loading.comps"]);

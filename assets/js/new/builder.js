@@ -20,8 +20,8 @@ require('script-loader!../mlab.api.js');
 require('script-loader!../mlab.dt.api.js');
 require('script-loader!./mlab.dt.management.js');
 require('script-loader!../mlab.dt.bestpractice.js');
-require('script-loader!../mlab.dt.design.js');
-require('script-loader!../mlab.dt.utils.js');
+require('script-loader!./mlab.dt.design.js');
+require('script-loader!./mlab.dt.utils.js');
 require('script-loader!./mlab_editor.init.js');
 
 require('script-loader!./ui.js');

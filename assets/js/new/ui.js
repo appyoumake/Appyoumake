@@ -1,12 +1,24 @@
+//set the left position of the toolboxes, must be done when layout is ready
+$(window).load(function() {
+    var main_navbar = $("#mlab_navbar");
+    var left = main_navbar[0].getBoundingClientRect().left
+    main_navbar.find(".toolbox").each(function(index) { 
+        $(this).css("left", (left - $(this).parent()[0].getBoundingClientRect().left) + "px") 
+    } ) ;
+});
+
 // Init UI elements
 $(document).ready(function() {
+    
+    //alert("Hi Constantin, why are you using z-index everywhere? Is it really required?");
+//set active tab on click
     $('.header ul.tabs > li > a').click(function (e) {
         e.preventDefault();
-
         $(this).parent().siblings('li').removeClass('active');
         $(this).parent().addClass('active');
     });
 
+//delete pages when click delete icon
     $('.list-pages .delete, .list-pages .delete-alt').click(function (e) {
         alert('Delete')
     });
@@ -16,14 +28,13 @@ $(document).ready(function() {
         $('[data-open-deleted]').removeClass('selected');
     });
 
-
-
     $('.toolbox-btn').click(function (e) {
         // alert('Open')
     });
 
     mlab.dt.ui.initialiseDropdownButtons(".toolbox-menu");
 
+//prepare tooltip display for all buttons
     $('[data-tooltip]').mouseenter(function () {
         var $target = $(this);
         // dont display tooltip if menu open
@@ -39,13 +50,15 @@ $(document).ready(function() {
         
         $target.after($tooltip);
 
-        var targetScrrenCenter = targetOffsets.left + $target.innerWidth()/2,
+        var header = $('#mlab_menu_header');
+        var maxLeft = header.offset().left + header.width();
+        var targetScreenCenter = targetOffsets.left + $target.innerWidth()/2,
             tooltipWidth = $tooltip.outerWidth(),
             tooltipLeft = Math.min(
-                $(window).width() - tooltipWidth,
-                Math.max(0, targetScrrenCenter - (tooltipWidth/2))
+                maxLeft - tooltipWidth,
+                Math.max(header.offset().left, targetScreenCenter - (tooltipWidth/2))
             ),
-            arrowLeft = targetScrrenCenter - tooltipLeft - 3;
+            arrowLeft = targetScreenCenter - tooltipLeft - 3;
 
         $arrow.css('left', arrowLeft)
         $tooltip.css('top', targetOffsets.top + $target.outerHeight() + $arrow.outerHeight())
@@ -76,16 +89,15 @@ $(document).ready(function() {
     });
 
 
-    $('[data-new-page]').click(function () {
-        console.log('new page');
-    });
-
-
-
     $('body').on('click', '[data-action-click]', function (e) {
         var data = $(this).data();
         ui[data.actionClick](data, e);
     })
+
+    $('[data-action]').click(function () {
+        mlab.dt.utils.runActions($(this).data("action"));
+    });
+        
 
 });
 
@@ -110,16 +122,21 @@ Mlab_dt_ui.prototype = {
         $(selector + ' [data-open-menu]').click(function (e) {
             var $menuOpener = $(this);
             var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
+            $toolboxMenu.toggleClass('open');
+            if (!$toolboxMenu.hasClass('open')) {
+                return;
+            }
             var $menu = $toolboxMenu.find('.menu');
             var menuOffsetLeft = $menu.offset().left;
-
-            if(menuOffsetLeft < 0) {
-                $menu.css('left', menuOffsetLeft*-1 + 35);
-            } else if(($('body').width() - (menuOffsetLeft + $menu.outerWidth())) < 0) {
-                $menu.css('left', '-200%');
+            var header = $('#mlab_menu_header');
+            var maxLeft = header.offset().left + header.width();
+   
+            if(menuOffsetLeft < header.offset().left) {
+                $menu.css('left', menuOffsetLeft + 35);
+            } else if((maxLeft - (menuOffsetLeft + $menu.outerWidth())) < 0) {
+                $menu.css('left', "-100%");
             }
 
-            $toolboxMenu.addClass('open');
 
             $(window).bind("click.closeMenu", function(e) {
                 if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {

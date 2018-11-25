@@ -163,6 +163,7 @@
     background-color: $tooltip-color;
     color: $tooltip-text;
     padding: 8px 12px;
+    z-index: 1001;  /* needed to be above the buttons the tips are for */
 
     > span {
         width:10px;
@@ -255,3 +256,19 @@
         }
     }
 }
+
+/* TODO: SASSIFY */
+.common-btn {
+    @include btn-reset;
+    margin: 5px;
+    font-family: 'Roboto Condensed', sans-serif;
+    z-index: 1200;
+    background: $light-color;
+    border: 1px solid $modal-border;
+    overflow: hidden;
+    background: $modal-primary-btn-color;
+    color: $modal-primary-btn-text;
+    min-width: 6em;
+    line-height: 2.5em;
+}
+
