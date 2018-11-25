@@ -59,10 +59,11 @@
                 <div class="menu">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                         <p>You are logged in as: {{ app.user.username }}</p>
-                        <br>
-                        <a class="modal-btn" href="{{ path('fos_user_security_logout') }}">
+                        <hr>
+                        <button class="mlab_button_new_app common-btn" onclick="window.location.href='{{ path('fos_user_security_logout') }}';">
                             {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                        </a>
+                        </button>
+
 
                     {% else %}
 

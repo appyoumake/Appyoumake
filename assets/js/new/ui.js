@@ -51,6 +51,7 @@ $(document).ready(function() {
         
         $target.after($tooltip);
 
+        console.log("log");
         var targetScrrenCenter = targetOffsets.left + $target.innerWidth()/2,
             tooltipWidth = $tooltip.outerWidth(),
             tooltipLeft = Math.min(

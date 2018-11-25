@@ -256,3 +256,22 @@
         }
     }
 }
+
+/* TODO: SASSIFY */
+.common-btn {
+    @include btn-reset;
+    font-family: 'Roboto Condensed', sans-serif;
+    z-index: 1200;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: $light-color;
+    border: 1px solid $modal-border;
+    overflow: hidden;
+    display: none;
+    background: $modal-primary-btn-color;
+    color: $modal-primary-btn-text;
+    min-width: 6em;
+    line-height: 2.5em;    
+}
