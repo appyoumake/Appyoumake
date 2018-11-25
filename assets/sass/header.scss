@@ -270,19 +270,22 @@
     line-height: 40px;
 
     &:after {
-        content: '\005E';
-        font-size: 1.4em;
-        font-family: cursive;
-        transform: rotate(180deg)  translateY(0.1em);
+        content: "";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 12px 6px 0 6px;
+        border-color: $toolbox-btn-selected-color transparent transparent transparent;
         display: inline-block;
     }
 
     &+.menu {
         padding: 0;
-        width: $user-toolbox-menu-width;
-        margin-left: $user-toolbox-menu-width/-2;
+        width: fit-content;
+        margin-left: calc(width/2)px;
         left: unset;
-        a {
+        text-align: center;
+        p {
             color: $toolbox-menu-text;
             display: block;
             text-align: right;
@@ -293,6 +296,13 @@
                 text-decoration: underline;;
             }
         }
+    }
+}
+
+.toolbox-menu.open .user-profile {
+
+    &:after {
+        transform: rotate(180deg)  translateY(0.1em);
     }
 }
 

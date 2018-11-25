@@ -1,7 +1,7 @@
 {% extends "SinettMLABBuilderBundle:App:new/layout.html.twig" %}
 {# class="toolbox"  left = $("#t1").outerWidth() + $("#t2").outerWidth() #}
 {% block content %}
-    <div class="header">
+    <div class="header" id="mlab_menu_header">
         <nav class="nav-main" id="mlab_navbar">
             <ul class="tabs">
                 <li class="active"><a href="#tab1">App</a>
@@ -51,14 +51,14 @@
                 Editing: <span id="mlab_statusbar_appname"></span>
                 <a href="{{ path('app_builder_index')}}" class="view-all-apps" target="_top" title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' >View all apps</a>
             </div>
-
+            
             <div class="toolbox-menu">
                 <button data-open-menu class="user-profile">
                     <i class="fas fa-user"></i>
                 </button>
                 <div class="menu">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        <p>You are logged in as: {{ app.user.username }}</p>
+                        <p  >You are logged in as: {{ app.user.email }}</p>
                         <hr>
                         <button class="mlab_button_new_app common-btn" onclick="window.location.href='{{ path('fos_user_security_logout') }}';">
                             {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}

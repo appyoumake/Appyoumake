@@ -51,14 +51,15 @@ $(document).ready(function() {
         
         $target.after($tooltip);
 
-        console.log("log");
-        var targetScrrenCenter = targetOffsets.left + $target.innerWidth()/2,
+        var header = $('#mlab_menu_header');
+        var maxLeft = header.offset().left + header.width();
+        var targetScreenCenter = targetOffsets.left + $target.innerWidth()/2,
             tooltipWidth = $tooltip.outerWidth(),
             tooltipLeft = Math.min(
-                $(window).width() - tooltipWidth,
-                Math.max(0, targetScrrenCenter - (tooltipWidth/2))
+                maxLeft - tooltipWidth,
+                Math.max(header.offset().left, targetScreenCenter - (tooltipWidth/2))
             ),
-            arrowLeft = targetScrrenCenter - tooltipLeft - 3;
+            arrowLeft = targetScreenCenter - tooltipLeft - 3;
 
         $arrow.css('left', arrowLeft)
         $tooltip.css('top', targetOffsets.top + $target.outerHeight() + $arrow.outerHeight())
@@ -117,16 +118,21 @@ Mlab_dt_ui.prototype = {
         $(selector + ' [data-open-menu]').click(function (e) {
             var $menuOpener = $(this);
             var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
+            $toolboxMenu.toggleClass('open');
+            if (!$toolboxMenu.hasClass('open')) {
+                return;
+            }
             var $menu = $toolboxMenu.find('.menu');
             var menuOffsetLeft = $menu.offset().left;
-
-            if(menuOffsetLeft < 0) {
-                $menu.css('left', menuOffsetLeft*-1 + 35);
-            } else if(($('body').width() - (menuOffsetLeft + $menu.outerWidth())) < 0) {
-                $menu.css('left', '-200%');
+            var header = $('#mlab_menu_header');
+            var maxLeft = header.offset().left + header.width();
+   
+            if(menuOffsetLeft < header.offset().left) {
+                $menu.css('left', menuOffsetLeft + 35);
+            } else if((maxLeft - (menuOffsetLeft + $menu.outerWidth())) < 0) {
+                $menu.css('left', "-100%");
             }
 
-            $toolboxMenu.addClass('open');
 
             $(window).bind("click.closeMenu", function(e) {
                 if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {
