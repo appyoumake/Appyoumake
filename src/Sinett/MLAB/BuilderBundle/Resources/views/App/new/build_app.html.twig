@@ -77,36 +77,7 @@
             </div>
         </div>
     </div>
-
-{% set activePage %}
-{% for i in 0..3 %}
-<li class="display-alt">
-    <div class="insert-new-here"><button><i class="fas fa-plus fa-fw"></i></button></div>
-    <div data-action-click="openPage" data-page-num="test">
-        <div class="preview">
-            <img src="https://via.placeholder.com/100x150/FFFFFF/000000" />
-        </div>
-        <p>Page Title 1</p>
-    </div>
-    <!-- <button class="delete"></button> -->
-    <button class="delete-alt"><i class="far fa-trash-alt"></i></button>
-</li>
-{% endfor %}
-{% endset %}
-
-{% set deletedPage %}
-{% for i in 0..3 %}
-<li>
-<div class="page">
-    <div class="image">
-        <img src="https://via.placeholder.com/100x150/FFFFFF/000000" />
-    </div>
-    <p>Page Title 1</p>
-</div>
-</li>
-{% endfor %}
-{% endset %}
-
+    
     <div class="main">
         <div class="nav-pages">
             <div class="pages-wrapper">
@@ -114,9 +85,6 @@
                 <button class="close">&times;</button>
                 <div class="title">Deleted</div>
                 <ul class="list-pages with-preview">
-                    {{ deletedPage }}
-                    {{ deletedPage }}
-                    {{ deletedPage }}
                 </ul>
             </div>
             <div class="active">
@@ -128,25 +96,6 @@
                     </div>
                     <div class="level-name">Top level pages</div>
                     <ul class="list-pages with-preview">
-                        {{ activePage }}
-                        <li class="display-alt">
-                            <div class="level-name change-name">second level pages
-                                <i class="fas fa-pencil-alt"></i>
-                            </div>
-                            <ul>
-                                {{ activePage }}
-                                <li class="display-alt">
-                                    <div class="level-name change-name">Third level pages
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </div>
-                                    <ul>
-                                        {{ activePage }}
-                                    </ul>
-                                </li>
-                                {{ activePage }}
-                            </ul>
-                        </li>
-                        {{ activePage }}
                     </ul>
                 </div>
             </div>

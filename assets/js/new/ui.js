@@ -212,7 +212,7 @@ var ui = {
     },
 
     openPage: function(data) {
-        alert(`opening page ${data.pageNum}`)
+        mlab.dt.management.page_open(mlab.dt.app.id, data.pageNum);
     },
 
     showDeleted: function() {
