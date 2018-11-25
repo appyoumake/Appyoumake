@@ -974,39 +974,37 @@ Mlab_dt_management.prototype = {
         });
     },
 
-    page_delete  : function () {
-        if (this.parent.app.curr_page_num == 0) {
-            alert(_tr["mlab.dt.management.js.page_copy.alert.not.delete.index.page"]);
-            return;
-        }
-
-        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
-            return;
-        }
-
+    page_delete: function (page_num) {
         this.parent.utils.timer_stop();
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.deleting.page"], true);
 
         var that = this,
-            url = this.parent.urls.page_delete.replace("_ID_", this.parent.app.id);
-        url = url.replace("_PAGE_NUM_", this.parent.app.curr_page_num);
-        url = url.replace("_UID_", this.parent.uid);
+            url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+                .replace("_ACTION_", 'page_delete')
+                .replace("_UID_", this.parent.uid);
 
-        $.get( url, function( data ) {
+        $.post( url, {_sender: this.parent.uid, page_num},function( data ) {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                $("#mlab_existing_pages [data-mlab-page-num='" + data.page_num_sent).remove();
-                
-                that.parent.app.page_names.splice(that.page_filenum2index(that.parent.app.curr_page_num), 1);
-                that.regular_page_process ( data.html, data.page_num_real );
-                that.app_update_gui_metadata(true);
-                that.parent.utils.update_app_title_bar(data.appConfig)
-
+                ui.props.tableOfContents = data.tableOfContents;
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }
 
             that.parent.utils.timer_start();
+        });
+    },
+
+    page_restore: function (page_num) {
+        var that = this,
+            url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+                .replace("_ACTION_", 'page_restore')
+                .replace("_UID_", this.parent.uid);
+
+        $.post( url, {_sender: this.parent.uid, page_num},function( data ) {
+            if (data.result == "success") {
+                ui.props.tableOfContents = data.appConfig.tableOfContents;
+            }
         });
     },
 

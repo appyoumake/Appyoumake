@@ -11,12 +11,6 @@ $(document).ready(function() {
         alert('Delete')
     });
 
-    $('[data-open-deleted]').click(function (e) {
-        $pagesNav = $('.nav-pages .pages-wrapper');
-        $pagesNav.toggleClass('deleted-open');
-        $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
-    });
-
     $('.pages-wrapper .close').click(function (e) {
         $(this).closest('.deleted-open').removeClass('deleted-open');
         $('[data-open-deleted]').removeClass('selected');
@@ -172,20 +166,42 @@ var ui = {
     }),
 
     updateAppTableOfContents: function(content, oldContent) {
-        var tableOfContents = this.render.tableOfContents(content);
-        var $active = $('.nav-pages .active');
-        var $list = $active.find('.list-pages');
+        var deletedPages = [];
 
-        $list.html(tableOfContents);
+        var activePages = content.filter(function f(o) {
+            if (o.children) {
+                o.children = o.children.filter(f);
+            }
+            if(o.is_deleted) {
+                deletedPages.push(o);
+                return false;
+            }
+            return true;
+        });
+
+        var tableOfContents = this.render.tableOfContents(activePages);
+        var deletedList = this.render.deletedList(deletedPages);
+        var $activeTab = $('.nav-pages .active');
+        var $listActive = $activeTab.find('.list-pages');
+        var $listDeleted = $('.nav-pages .deleted .list-pages');
+
+        $listActive.html(tableOfContents);
+        $listDeleted.html(deletedList);
 
         // scroll pages list if last element is different
         if(oldContent && JSON.stringify(content[content.length-1]) !== JSON.stringify(oldContent[oldContent.length-1])) {
-            $active.scrollTop($active.prop('scrollHeight'));
+            $activeTab.scrollTop($activeTab.prop('scrollHeight'));
         }
     },
 
     openPage: function(data) {
         alert(`opening page ${data.pageNum}`)
+    },
+
+    showDeleted: function() {
+        $pagesNav = $('.nav-pages .pages-wrapper');
+        $pagesNav.toggleClass('deleted-open');
+        $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
     },
 
     newPage: function(data) {
@@ -216,7 +232,23 @@ var ui = {
     },
 
     deleteSection: function(data, e) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+            return;
+        }
+
         mlab.dt.management.section_delete(data.sectionId);
+    },
+
+    deletePage: function(data, e) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+            return;
+        }
+
+        mlab.dt.management.page_delete(data.pageNum);
+    },
+
+    restorePage: function(data, e) {
+        mlab.dt.management.page_restore(data.pageNum);
     },
 
     watch: {
@@ -226,10 +258,16 @@ var ui = {
     },
 
     render: {
+
         tableOfContents: function (toc, section = null) {
             return toc.map((item, i) => this[item.type](item, i, section))
-            .concat(this.addToBottom(section))
-            .join('');
+                .concat(this.addToBottom(section))
+                .join('');
+        },
+
+        deletedList: function (toc, section = null) {
+            return toc.map((item, i) => this.deletedPage(item))
+                .join('');
         },
 
         page: function (pageTOC, i, section) {
@@ -246,7 +284,21 @@ var ui = {
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
-                </li>`;
+                </li>
+            `;
+        },
+
+        deletedPage: function (pageTOC) {
+            return `
+                <li>
+                    <div class="page">
+                        <div class="image" data-action-click="restorePage" data-page-num="${pageTOC.pageNumber}">
+                            <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
+                        </div>
+                        <p>${pageTOC.title}</p>
+                    </div>
+                </li>
+            `;
         },
 
         section: function (sectionTOC, i, section) {
@@ -268,7 +320,7 @@ var ui = {
                         ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
                     </ul>
                 </li>
-                `;
+            `;
         },
 
         addToBottom: function (section) {
