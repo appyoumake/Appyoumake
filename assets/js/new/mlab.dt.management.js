@@ -835,7 +835,7 @@ Mlab_dt_management.prototype = {
 
         $.post(url, {_sender: this.parent.uid, section, position}, function(data) {
             if (data.result == "success") {
-                ui.props.tableOfContents = data.tableOfContents;
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             }
         });
     },
@@ -847,7 +847,7 @@ Mlab_dt_management.prototype = {
 
         $.post(url, {_sender: this.parent.uid, sectionId}, function(data) {
             if (data.result == "success") {
-                ui.props.tableOfContents = data.tableOfContents;
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             }
         });
     },
@@ -859,7 +859,7 @@ Mlab_dt_management.prototype = {
 
         $.post(url, {_sender: this.parent.uid, sectionId, title}, function(data) {
             if (data.result == "success") {
-                ui.props.tableOfContents = data.tableOfContents;
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             }
         });
     },
@@ -885,7 +885,7 @@ Mlab_dt_management.prototype = {
         $.post( url, {_sender: this.parent.uid, section, position}, function( data ) {
             if (data.result == "success") {
 
-                ui.props.tableOfContents = data.appConfig.tableOfContents;
+                mlab.dt.ui.props.tableOfContents = data.appConfig.tableOfContents;
 
 //prepare variables
                 // that.parent.app.page_names.push({title: title, filename: ("000" + data.page_num_real).slice(-3) + ".html"});
@@ -987,7 +987,7 @@ Mlab_dt_management.prototype = {
         $.post( url, {_sender: this.parent.uid, page_num},function( data ) {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
-                ui.props.tableOfContents = data.tableOfContents;
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }
@@ -1004,7 +1004,7 @@ Mlab_dt_management.prototype = {
 
         $.post( url, {_sender: this.parent.uid, page_num},function( data ) {
             if (data.result == "success") {
-                ui.props.tableOfContents = data.appConfig.tableOfContents;
+                mlab.dt.ui.props.tableOfContents = data.appConfig.tableOfContents;
             }
         });
     },

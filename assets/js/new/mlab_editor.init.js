@@ -86,7 +86,7 @@ $(document).ready(function() {
             design: new Mlab_dt_design(),
             management: new Mlab_dt_management(),
             utils: new Mlab_dt_utils(),
-            ui: new Mlab_dt_ui(),
+            ui: Mlab_dt_ui,
 
         },
 
@@ -138,7 +138,7 @@ $(document).ready(function() {
             
             mlab.dt.app.config = data.mlab_app_config;
 
-            ui.props.tableOfContents = data.mlab_app_config.tableOfContents;
+            mlab.dt.ui.props.tableOfContents = data.mlab_app_config.tableOfContents;
 
 
 /**** Finished preparing variables, now we set up rest of environment ****/
@@ -159,6 +159,7 @@ $(document).ready(function() {
                 if (data.result === "success") {
 
                     components_html = mlab.dt.utils.prepareComponents(data);
+                    // mlab.dt.ui.props.components = data.mlab_components;
                     mlab.dt.ui.displayComponents(components_html);
                     
 
