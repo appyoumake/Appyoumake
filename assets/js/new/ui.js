@@ -538,10 +538,11 @@ var Mlab_dt_ui = {
             return `
                 <button data-mlab-type='${component.conf.name}' 
                     onclick='mlab.dt.design.${'component'}_add("${component.conf.name}");'
-                    class='toolbox-btn btn-lg' >
+                    class='toolbox-btn btn-lg' 
+                    title="${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["tooltip"])}">
                     <i style='background-image: url("${mlab.dt.config.urls.component}${component.conf.name}/${mlab.dt.config.component_files.ICON}");'>
                     </i>
-                    ${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["tooltip"])}
+                    <div>${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["extended_name"])}</div>
                 </button>
             `;
         },

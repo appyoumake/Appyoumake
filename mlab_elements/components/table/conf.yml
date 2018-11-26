@@ -4,8 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: list
 category_name: {nb_NO: Liste, en_GB: List}
 name: table
-tooltip: Table, add and remove columns and rows
 tooltip: {nb_NO: Tabell - legg til og slett kolonner og rader, en_GB: Table - add and remove columns and rows, default: Table - add and remove columns and rows}
+extended_name: {nb_NO: Tabell, en_GB: Table, default: Table }
 footer_tip: {nb_NO: Legger til en redigerbar tabell med to kolonner og to rader, en_GB: Adds an editable table with two columns and two rows, default: Adds an editable table with two columns and two rows }
 process_keypress: true
 html: |

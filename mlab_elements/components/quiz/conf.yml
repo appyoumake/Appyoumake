@@ -4,9 +4,9 @@ developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
 category: dataentry
 category_name: {nb_NO: Datainnsamling, en_GB: Dataentry}
 name: quiz
-extended_name: { nb_NO: Interaktiv quiz, en_GB: Interactive quiz, default: Interactive quiz }
+extended_name: { nb_NO: Quiz, en_GB: Quiz, default: Quiz }
 storage_plugin: true
-tooltip: { nb_NO: Quiz, en_GB: Quiz, default: Quiz }
+tooltip: { nb_NO: Interaktiv quiz, en_GB: Interactive quiz, default: Interactive quiz }
 footer_tip: { nb_NO: Lag en quiz for brukerne, en_GB: Build a quiz for users to answer, default: Build a quiz for users to answer }
 required_libs: {"designtime": ["quiz.css", "quiz_dt.css"], "runtime": ["quiz.css"]}
 # plugins: ["cordova-plugin-device"]

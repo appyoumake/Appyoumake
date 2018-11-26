@@ -4,8 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: list
 category_name: {nb_NO: Liste, en_GB: List}
 name: ol
-extended_name: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
 tooltip: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
+extended_name: { nb_NO: Nummerert liste, en_GB: Numbered list, default: Numbered list }
 footer_tip: { nb_NO: Setter inn en nummerert liste i appen. Trykk enter for å få et nytt punkt i listen, en_GB: Adds an ordered (numbered) list where you can enter information in numbered points, default: Adds an ordered (numbered) list where you can enter information in numbered points }
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
