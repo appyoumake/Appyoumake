@@ -474,7 +474,7 @@ var Mlab_dt_ui = {
                     class='toolbox-btn btn-lg' >
                     <i style='background-image: url("${mlab.dt.config.urls.component}${component.conf.name}/${mlab.dt.config.component_files.ICON}");'>
                     </i>
-                    ${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["tooltip"])}
+                    <div>${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["tooltip"])}</div>
                 </button>
             `;
         },
