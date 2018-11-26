@@ -153,58 +153,39 @@ var Mlab_dt_ui = {
         })
     },
     
-    displayComponents : function (components_html) {
-        for  (var category in components_html) {
-            $("#mlab_toolbar_components").append(this.render.toolbar(
-                components_html[category]["name"],
-                components_html[category]["components"].join(""),
-            ));
-        } 
+    displayComponents : function (components) {
+        var sorted = [];
+        for (var comp in components) {
+            sorted.push([comp, components[comp].order_by]);
+        }
+
+        sorted.sort(function(a, b) {
+            return a[1] - b[1];
+        });
+
+        var byCategory = [];
+
+        for (var i = 0; i < sorted.length; i++) {
+            var compName = sorted[i][0];
+            var c = components[compName]
+            if (c.accessible && !c.is_storage_plugin) {
+                if (!byCategory.hasOwnProperty(c.conf.category)) {
+                    byCategory[c.conf.category] = {
+                        components: [],
+                        name: mlab.dt.api.getLocaleComponentMessage(compName, ["category_name"])
+                    };
+                }
+
+                byCategory[c.conf.category].components.push(components[compName]);
+            }
+        }
+
+        $("#mlab_toolbar_components").append(Object.keys(byCategory).map(
+            (key) => this.render.toolbar(byCategory[key].name, byCategory[key].components)
+        ));
 
         this.initialiseDropdownButtons("#mlab_toolbar_components");
     },
-
-    //  stashed
-    // displayComponents : function (components) {
-    //     var sorted = [];
-    //     for (var comp in components) {
-    //         sorted.push([comp, components[comp].order_by]);
-    //     }
-
-    //     sorted.sort(function(a, b) {
-    //         return a[1] - b[1];
-    //     });
-
-    //     var byCategory = [];
-
-    //     for (var i = 0; i < sorted.length; i++) {
-    //         var compName = sorted[i][0];
-    //         var c = components[compName]
-    //         if (c.accessible && !c.is_storage_plugin) {
-    //             if (!byCategory.hasOwnProperty('c_' + c.conf.category)) {
-    //                 byCategory['c_' + c.conf.category] = {
-    //                     components: [],
-    //                     name: mlab.dt.api.getLocaleComponentMessage(c.conf.category, ["category_name"])
-    //                 };
-    //             }
-
-    //             byCategory['c_' + c.conf.category].components.push(components[compName]);
-    //         }
-    //     }
-
-    //     debugger;
-    //     console.log(components);
-
-    //     // var html;
-    //     // //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
-    //     // for  (var category in components_html) {
-    //     //     html = this.toolbar_template.replace("%%CATEGORY%%", components_html[category]["name"]);
-    //     //     html = html.replace("%%COMPONENTS%%", components_html[category]["components"].join(""));
-    //     //     $("#mlab_toolbar_components").append(html);
-    //     // } 
-
-    //     // this.initialiseDropdownButtons("#mlab_toolbar_components");
-    // },
 
     updateAppTableOfContents: function(content, oldContent) {
         var deletedPages = [];
@@ -385,9 +366,21 @@ var Mlab_dt_ui = {
                         <i class='far fa-file'></i> ${category}
                     </button>
                     <div class='menu'>
-                        ${components}
+                        ${components.map(comp => this.componentButton(comp)).join('')}
                     </div>
                 </div>
+            `;
+        },
+
+        componentButton: function (component) {
+            return `
+                <button data-mlab-type='${component.conf.name}' 
+                    onclick='mlab.dt.design.${'component'}_add("${component.conf.name}");'
+                    class='toolbox-btn btn-lg' >
+                    <i style='background-image: url("${mlab.dt.config.urls.component}${component.conf.name}/${mlab.dt.config.component_files.ICON}");'>
+                    </i>
+                    ${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["tooltip"])}
+                </button>
             `;
         },
     }

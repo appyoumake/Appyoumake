@@ -201,7 +201,6 @@ Mlab_dt_utils.prototype = {
         
         mlab.dt.components = data.mlab_components;
         mlab.dt.storage_plugins = {};
-        var components_html = {};
         var category_translations = {};
         var features_html = [];
         var additional_html = "";
@@ -232,11 +231,6 @@ Mlab_dt_utils.prototype = {
                 var tt = mlab.dt.api.getLocaleComponentMessage(comp_id, ["tooltip"]);
                 var eName = mlab.dt.api.getLocaleComponentMessage(comp_id, ["extended_name"]);
 
-//the category setting in the conf.yml files
-                if (typeof components_html[c.conf.category] == "undefined") {
-                    components_html[c.conf.category] = {components: [], name: mlab.dt.api.getLocaleComponentMessage(comp_id, ["category_name"])};
-                }                                
-
                 if (c.is_feature) {
                     comp_type = "feature";
                 } else {
@@ -245,12 +239,6 @@ Mlab_dt_utils.prototype = {
 
                 var pos = temp_comp_order.indexOf(parseInt(c.order_by));
                 delete temp_comp_order[pos];
-                
-                components_html[c.conf.category]["components"][pos] = "<button data-mlab-type='" + comp_id + "' " +
-                            "onclick='mlab.dt.design." + comp_type + "_add(\"" + comp_id + "\");' " +
-                            "class='toolbox-btn btn-lg' >" +
-                            "<i style='background-image: url(\"" + mlab.dt.config.urls.component + comp_id + "/" + mlab.dt.config.component_files.ICON + "\");'></i> " + tt +
-                        "</button>";
                 
             } else if (c.accessible && c.is_storage_plugin) {
                 mlab.dt.storage_plugins[comp_id] = eName;
@@ -269,8 +257,6 @@ Mlab_dt_utils.prototype = {
                 mlab.dt.components[index].html = mlab.dt.components[mlab.dt.components[index].conf.inherit].html;
             }
         }
-        
-        return components_html;
         
     },
     

@@ -159,8 +159,7 @@ $(document).ready(function() {
                 if (data.result === "success") {
 
                     components_html = mlab.dt.utils.prepareComponents(data);
-                    // mlab.dt.ui.props.components = data.mlab_components;
-                    mlab.dt.ui.displayComponents(components_html);
+                    mlab.dt.ui.props.components = data.mlab_components;
                     
 
 //we always load pages using AJAX, this takes the parameters passed from the controller

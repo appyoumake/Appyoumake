@@ -2,6 +2,7 @@
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
 category: list
+category_name: {nb_NO: Liste, en_GB: List}
 name: table
 tooltip: Table, add and remove columns and rows
 tooltip: {nb_NO: Tabell - legg til og slett kolonner og rader, en_GB: Table - add and remove columns and rows, default: Table - add and remove columns and rows}
