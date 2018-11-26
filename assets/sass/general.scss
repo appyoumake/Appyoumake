@@ -272,3 +272,14 @@
     line-height: 2.5em;
 }
 
+
+
+/* toolmenu popup button text */
+
+[data-mlab-type] div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 48px;
+    display: block;
+}

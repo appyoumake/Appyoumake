@@ -84,7 +84,7 @@
         color: $toolbox-menu-text;
         border: 1px solid $toolbox-menu-border-color;
         width: $toolbox-menu-width;
-        margin-top: 10px;
+        margin-top: -1px;
         padding: 12.5px 25px;
         left: 50%;
         margin-left: -200px;
@@ -142,6 +142,7 @@
         height: 10px;
         left: 50%;
         margin-left: -5px;
+        margin-top: -11px;
         transform: rotate(-45deg) translate(-3px, 3px);
     }
 
@@ -274,8 +275,8 @@
         width: 0;
         height: 0;
         border-style: solid;
-        border-width: 12px 6px 0 6px;
-        border-color: $toolbox-btn-selected-color transparent transparent transparent;
+        border-width: 6px 3px 0 3px;
+        border-color: $light-text transparent transparent transparent;
         display: inline-block;
     }
 
@@ -347,4 +348,22 @@ input[type="checkbox"].toggle {
 	left: calc(100% - 1em);
   }
 	
-/* Switch 1 Specific Style End */
+/* Switch Style End */
+
+/* different top margin for popup for the main toolbar */
+#mlab_navbar .toolbox-menu.open:after {
+    margin-top: 73px;
+}
+
+#mlab_navbar .toolbox-menu.open .menu {
+    margin-top: 83px;
+}
+
+/* current app name formatting */
+.app-info {
+    font-weight: bold;
+}
+
+.app-info #mlab_statusbar_appname {
+    font-weight: normal;
+}
