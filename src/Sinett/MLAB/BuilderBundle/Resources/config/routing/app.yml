@@ -74,6 +74,11 @@ app_builder_page_new:
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage", redirect_to_open: 1, title: "" }
     requirements: { methods: post }
 
+app_builder_page_action:
+    path:   /builder/{app_id}/{uid}/action/{action}
+    defaults: { _controller: "SinettMLABBuilderBundle:App:pageAction" }
+    requirements: { methods: post }
+
 app_builder_page_copy:
     path:   /builder/{app_id}/{page_num}/{uid}/page_copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }

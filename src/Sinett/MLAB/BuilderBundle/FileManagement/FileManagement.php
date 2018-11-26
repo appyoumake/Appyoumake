@@ -850,53 +850,7 @@ class FileManagement {
             return false;
         }
     }
-    
-    /**
-     * "deletes" a page, simply removes from list of pages, but leaves file untouched so can recover it later.
-     * 
-     * @param type $app
-     * @param type $page_num
-     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
-     */
-    public function deletePage($app, $page_num, $uid) {
-//get path of file to delete
-        $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        $page_to_delete = $this->getPageFileName($app_path, $page_num);
 
-// update app conf.json counters for network required components
-        $appConfig = $this->getAppConfig($app);
-        $pageComponents = $this->getPageComponents($app_path . $page_to_delete);
-        $this->updateNetworkComponentCounters('remove', $appConfig['config'], $pageComponents);
-        $this->componentUpdateConfig($app, null, $appConfig);
-
-//update links, we don't actually delete files! This way we can undelete easily afterwards
-        $current_order = $this->getAppConfigValue($app, "page_order");
-        if (!$current_order) {
-            $current_order = array_map("basename", glob( $app_path . "/???.html" ));
-        }
-        
-//find entry to delete and set which entry to open next
-        $key = array_search(basename($page_to_delete), $current_order);
-        $max = sizeof($current_order) - 2; //max index AFTER removed an element, -2 because base 0 array
-        array_splice($current_order, $key, 1);
-        $this->updateAppConfigFile($app, array("page_order" => $current_order));
-	
-        if ($max < 0) { //no pages left when done, need to open index
-            $page_to_open = "index.html";
-        } else if ($max === 0) { //no pages left when done
-            $page_to_open = $current_order[0];
-        } else if ($key > $max) { //deleting last record
-            $page_to_open = $current_order[$max];
-        } else {
-            $page_to_open = $current_order[$key];
-        }
-        if (file_exists("$app_path/$page_to_open")) {
-            return intval($page_to_open);
-        } else {
-            return 0;
-        }
-    }    
-    
     /**
      * List of deleted 
      * 
@@ -928,28 +882,6 @@ class FileManagement {
         
         return $list;
     }
-    
-    /**
-     * Restore previously deleted page
-     * 
-     * @param type $app
-     * @param type $pageNum
-     * @return array $appConfig
-     */
-    public function restorePage($app, $pageNum) {
-        $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        $appConfig['config'] = $this->getAppConfig($app);
-
-        if(!file_exists($app_path . $pageNum . '.html')) {
-            return false;
-        }
-        
-        $appConfig['config']['page_order'][] = $pageNum . '.html';
-        $pageComponents = $this->getPageComponents($app_path . $pageNum . '.html');
-        $this->updateNetworkComponentCounters('add', $appConfig['config'], $pageComponents);
-
-        return $this->componentUpdateConfig($app, null, $appConfig);
-    }    
     
     protected function updateNetworkComponentCounters($action, &$config, $pageComponents) {
         $add = $action == 'add' ? 1 : -1;
@@ -1998,6 +1930,8 @@ class FileManagement {
 
     public function setApp(\Sinett\MLAB\BuilderBundle\Entity\App $app) {
         $this->app = $app;
+        $this->getAppConfig($this->app);
+
         return $this;
     }
     
@@ -2006,7 +1940,7 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function createNewPage() {
+    public function createNewPage($position = null, $section = null) {
         $pageProperties = $this->getNewPageNum($this->app);
         if ($pageProperties['new_page_num'] === false) {
             return false;
@@ -2023,13 +1957,100 @@ class FileManagement {
                 'pageNumber' =>  $pageProperties['new_page_num'],
             ]);
 
-            array_push($appConfig['tableOfContents'], $page);
+            if($section) {
+                $tableOfContents = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
+                $tableOfContents = &$tableOfContents[0]['children'];
+            } else {
+                $tableOfContents = &$appConfig['tableOfContents'];
+            }
+
+            if(is_numeric($position)) {
+                array_splice($tableOfContents, $position, 0, [$page]);
+            } else {
+                array_push($tableOfContents, $page);
+            }
+
+
+            // $appConfig['tableOfContents'] = [];
+
             $this->updateAppConfig($appConfig);
 
             return $page;
         } else {
             return false;
         }
+    }
+
+    public function searchTOC(&$tableOfContents, $conditions = [], &$parents = []) {
+        $results = [];
+
+        foreach ($tableOfContents as $key => &$child) {
+            if (count(array_intersect_assoc($child, $conditions)) === count($conditions)) {
+                $parents[$key] = &$tableOfContents;
+                $results[] = &$child;
+            }
+
+            if(isset($child['children'])) {
+                $nextLevel = $this->searchTOC($child['children'], $conditions, $parents);
+                if($nextLevel) {
+                    $results = array_merge($results, $nextLevel);
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    public function createNewSection($position = null, $parent = null) {
+        $appConfig = $this->getAppConfig($this->app);
+        $section = $this->getNewSectionConfig();
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $parent]);
+        $parentSection = &$parentSection[0];
+
+        if($parentSection) {
+            if(!isset($parentSection['children'])) {
+                $parentSection['children'] = [];
+            }
+
+            if($position !== null) {
+                array_splice($parentSection['children'], $position, 0, [$section]);
+            } else {
+                array_push($parentSection['children'], $section);
+            }
+        } else {
+            array_push($appConfig['tableOfContents'], $section);
+        }
+
+        $this->updateAppConfig($appConfig);
+
+        return $section;
+
+    }
+
+    public function updateSectionTitle($sectionId, $title) {
+        $appConfig = $this->getAppConfig($this->app);
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId]);
+        $parentSection = &$parentSection[0];
+        $parentSection['title'] = $title;
+
+        return $this->updateAppConfig($appConfig);
+    }
+
+    public function deleteSection($sectionId) {
+        $appConfig = $this->getAppConfig($this->app);
+        $parents = [];
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parents);
+        foreach ($parents as $key => &$parent) {
+            $children = $parent[$key]['children'];
+            
+            unset($parent[$key]);
+            $parent = array_merge($parent, $children);
+        }
+
+        return $this->updateAppConfig($appConfig);
     }
 
     protected function getNewPageConfig($page = []) {
@@ -2041,19 +2062,32 @@ class FileManagement {
         ], $page);
     }
     
-    protected function getPageTOC($pageNum) {
+    protected function getNewSectionConfig($section = []) {
         $appConfig = $this->getAppConfig($this->app);
-        $filter = function($page) use ($pageNum) {
-            if ($page['type'] == 'section') {
-            // todo: need to filter recursivly through sections
-            }
-            return $page['pageNumber'] == $pageNum && $page['type'] == 'page';
-        };
+        $listSections = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section']);
 
-        $details = array_filter($appConfig['tableOfContents'], $filter);
-        return array_pop($details);
+        usort($listSections, function($a, $b) {
+            return @$b['id'] <=> @$a['id'];
+        });
+
+        $last = reset($listSections);
+        $nextId = isset($last['id']) ?  $last['id']+1 : 1;
+
+        return array_merge([
+            'id' => $nextId,
+            'type' => 'section',
+            'order' => 0,
+            'title' => 'New Section ' . $nextId,
+            'children' => []
+        ], $section);
     }
     
+    protected function getPageTOC($pageNum) {
+        $appConfig = $this->getAppConfig($this->app);
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        
+        return reset($page);
+    }
 
     public function updateAppConfig($config = []) {
         $current = $this->getAppConfig();
@@ -2070,8 +2104,39 @@ class FileManagement {
 
         return $result;
     }
+    
+    /**
+     * "deletes" a page, simply removes from list of pages, but leaves file untouched so can recover it later.
+     * 
+     * @param type $app
+     * @param type $page_num
+     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
+     */
+    public function deletePage($page_num) {
+        $appConfig = $this->getAppConfig($this->app);
 
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $page_num]);
+        $page[0]['is_deleted'] = true;
 
+        return $this->updateAppConfig($appConfig);
+    }    
+    
+    /**
+     * Restore previously deleted page
+     * 
+     * @param type $pageNum
+     * @return array $pageTOC
+     */
+    public function restorePage($pageNum) {
+        // $this->updateNetworkComponentCounters('add', $appConfig['config'], $pageComponents);
+        $appConfig = $this->getAppConfig($this->app);
+
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        $page[0]['is_deleted'] = false;
+        $this->updateAppConfig($appConfig);
+
+        return $page[0];
+    }    
    
 }
 

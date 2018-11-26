@@ -854,7 +854,7 @@ class AppController extends Controller
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
                                         "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => 'false')),
                                         "app_open" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => '_OPEN_MODE_')),
-                                        "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
+                                        "page_action" => $this->generateUrl('app_builder_page_action',  array('action' => '_ACTION_', 'app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_reorder" => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_', 'uid' => '_UID_')),
@@ -1094,20 +1094,19 @@ class AppController extends Controller
      */
     public function newPageAction(Request $request, $app_id, $uid, $redirect_to_open, $title) {
         if ($app_id > 0) {
-	    	$em = $this->getDoctrine()->getManager();
-    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
                 die($this->get('translator')->trans('appController.die.no.access'));
             }
-    		
-    	} else {
-    		return new JsonResponse(array(
-    			'result' => 'error',
-    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
-    	}
-        
+            
+        } else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+        }
+
         $fileManager = $this->get('file_management')->setApp($app);
-        $page = $fileManager->createNewPage();
 
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [
@@ -1123,6 +1122,103 @@ class AppController extends Controller
             'uid' => $uid,
             'app_open_mode' => 'false'
         ]));
+    }
+
+
+    public function pageActionAction(Request $request, $app_id, $uid, $action) {
+        if ($app_id > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+            
+        } else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+        }
+        
+        $fileManager = $this->get('file_management')->setApp($app);
+
+        switch ($action) {
+            case 'section_new':
+                $fileManager->createNewSection(
+                    $request->get('position', null),
+                    $request->get('section', null)
+                );
+                break;
+
+            case 'section_delete':
+                $fileManager->deleteSection(
+                    $request->get('sectionId')
+                );
+                break;
+            
+            case 'section_update_title':
+                $fileManager->updateSectionTitle(
+                    $request->get('sectionId'),
+                    $request->get('title')
+                );
+                break;
+            
+            case 'page_new':
+                $page = $fileManager->createNewPage(
+                    $request->get('position', null),
+                    $request->get('section', null)
+                );
+
+                $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                    'app_id' => $app_id,
+                    'page_num' => $page['pageNumber'],
+                    'uid' => $uid,
+                    'app_open_mode' => 'false'
+                ]));
+                break;
+
+            case 'page_delete':
+                $page_to_open = $fileManager->deletePage($request->get('page_num'));
+
+                // $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                //     'app_id' => $app_id,
+                //     'page_num' => $page_to_open,
+                //     'uid' => $uid,
+                //     'app_open_mode' => 'false'
+                // ]));
+
+                break;
+
+            case 'page_restore':
+                $page = $fileManager->restorePage($request->get('page_num'));
+
+                $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                    'app_id' => $app_id,
+                    'page_num' => $page['pageNumber'],
+                    'uid' => $uid,
+                    'app_open_mode' => 'false'
+                ]));
+
+                break;
+
+            default:
+                return new JsonResponse(array(
+                    'result' => 'error',
+                    'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+                break;
+        }
+
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_update_table_of_contents',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]]);
+
+        return isset($response) ? $response : new JsonResponse([
+            'result' => 'success',
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]);
     }
 
     /**
@@ -1173,50 +1269,50 @@ class AppController extends Controller
      * @param type $page_num
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function deletePageAction ($app_id, $page_num, $uid) {
-        if ($app_id > 0) {
-	    	$em = $this->getDoctrine()->getManager();
-    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
-            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
-                die($this->get('translator')->trans('appController.die.no.access'));
-            }
-    	} else {
-    		return new JsonResponse(array(
-    			'result' => 'error',
-    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
-    	}
+//     public function deletePageAction ($app_id, $page_num, $uid) {
+//         if ($app_id > 0) {
+// 	    	$em = $this->getDoctrine()->getManager();
+//     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+//             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+//                 die($this->get('translator')->trans('appController.die.no.access'));
+//             }
+//     	} else {
+//     		return new JsonResponse(array(
+//     			'result' => 'error',
+//     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+//     	}
         
-        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
-            return new JsonResponse(array(
-    					'result' => 'error',
-    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
-        }
+//         if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
+//             return new JsonResponse(array(
+//     					'result' => 'error',
+//     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+//         }
     	
-	    $file_mgmt = $this->get('file_management');
-        $file_mgmt->setConfig('app');
+// 	    $file_mgmt = $this->get('file_management');
+//         $file_mgmt->setConfig('app');
         
-//delete file, returns number of file to open if successful
-        $page_to_open = $file_mgmt->deletePage($app, $page_num, $uid);
-        if ($page_to_open === false) {
-            return new JsonResponse(array(
-                    'result' => 'error',
-                    'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
-        } else {
-            $page_names = $file_mgmt->getPageIdAndTitles($app);
-            $websocketService = $this->get('websocket_service');
-            $websocketService->send(['data' => [
-                '_type' => 'app_pages_update',
-                '_feedId' => 'app_' . $app->getUid(),
-                '_sender' => $uid,
-                'pages' => $page_names,
-            ]]);
+// //delete file, returns number of file to open if successful
+//         $page_to_open = $file_mgmt->deletePage($app, $page_num, $uid);
+//         if ($page_to_open === false) {
+//             return new JsonResponse(array(
+//                     'result' => 'error',
+//                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
+//         } else {
+//             $page_names = $file_mgmt->getPageIdAndTitles($app);
+//             $websocketService = $this->get('websocket_service');
+//             $websocketService->send(['data' => [
+//                 '_type' => 'app_pages_update',
+//                 '_feedId' => 'app_' . $app->getUid(),
+//                 '_sender' => $uid,
+//                 'pages' => $page_names,
+//             ]]);
 
-//update file counter variable in JS
-//not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
-            /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
-            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_to_open, 'uid' => $uid, 'app_open_mode' => 'false')));
-        }
-    }    
+// //update file counter variable in JS
+// //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
+//             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
+//             return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_to_open, 'uid' => $uid, 'app_open_mode' => 'false')));
+//         }
+//     }    
     
     
     /**

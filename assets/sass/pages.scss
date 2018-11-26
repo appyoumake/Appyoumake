@@ -13,7 +13,7 @@
 
     .delete-alt {
         @include btn-reset;
-        margin: 0 .5em 1.2em 0;
+        margin: 0 0 1.2em 0;
 
         font-size: 2em;
     }
@@ -52,8 +52,9 @@
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
-
+        position: relative;
         margin-bottom: 10px;
+
         .delete, .delete-alt {
             // display: none;
             visibility: hidden;
@@ -62,8 +63,11 @@
             > .delete, > .delete-alt {
                 visibility: visible;
             }
+            > .insert-new-here{
+                display: block;
+            }
         }
-        [data-open-page] {
+        [data-action-click=openPage] {
             cursor: pointer;
             position: relative;
         }
@@ -74,24 +78,53 @@
             }
         }
 
+        .insert-new-here button, &.insert-in-section button{
+            @include btn-reset;
+            color: $secondary-text;
+            background-color: $secondary-color;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+        }
+        .insert-new-here{
+            position: absolute;
+            top: -30px;
+            width: 100%;
+            border-bottom: 2px dashed blue;
+            text-align: right;
+            display: none;
+
+            button {
+                position: relative;
+                top: 12.5px;
+            }
+        }
+
+        &.insert-in-section{
+            button {
+                margin: 0 auto;
+            }
+        }
+
     }
 
 
     .level-name {
         font-weight: bold;
-        margin: 10px 0;
+        padding: 10px 0;
 
-        &.change-name {
-            flex-grow: 1;
-            cursor: pointer;
-            i {
-                display: none;
+        flex: 0 0 100%;
+        cursor: pointer;
+        i.fa-pencil-alt, button {
+            display: none;
+        }
+        &:not([contenteditable=true]):hover {
+            i.fa-pencil-alt, button {
+                display: inline-block;
             }
-            &:hover {
-                i {
-                    display: inline-block;
-                }
-            }
+        }
+        button {
+            @include btn-reset;
         }
     }
 
@@ -121,10 +154,12 @@
 
         >.level-name {
             color: $top-level-text;
-            padding: 0 0 0 16px;
+            padding: 10px 0 10px 16px;
         }
         > ul {
+            padding-top: 20px;
             > li {
+                margin-right: 10px;
                 > .level-name {
                     color: $second-level-text;
                 }

@@ -23,7 +23,6 @@ $(document).ready(function() {
         alert('Delete')
     });
 
-//
     $('.pages-wrapper .close').click(function (e) {
         $(this).closest('.deleted-open').removeClass('deleted-open');
         $('[data-open-deleted]').removeClass('selected');
@@ -89,12 +88,17 @@ $(document).ready(function() {
         $('.nav-pages .active .list-pages').attr('class', 'list-pages ' + this.value);
     });
 
+
+    $('body').on('click', '[data-action-click]', function (e) {
+        var data = $(this).data();
+        ui[data.actionClick](data, e);
+    })
+
     $('[data-action]').click(function () {
         mlab.dt.utils.runActions($(this).data("action"));
     });
         
 
-    $('[data-open-page]').click(ui.openPage);
 });
 
 //ARILD THURSDAY
@@ -178,50 +182,172 @@ var ui = {
         }
     }),
 
-    updateAppTableOfContents: function(content) {
-        var $tableOfContents = this.render.tableOfContents(content);
-        var $active = $('.nav-pages .active');
-        var $list = $active.find('.list-pages');
+    updateAppTableOfContents: function(content, oldContent) {
+        var deletedPages = [];
 
-        $list.html($tableOfContents.children());
-        $active.scrollTop($active.prop('scrollHeight'));
+        var activePages = content.filter(function f(o) {
+            if (o.children) {
+                o.children = o.children.filter(f);
+            }
+            if(o.is_deleted) {
+                deletedPages.push(o);
+                return false;
+            }
+            return true;
+        });
+
+        var tableOfContents = this.render.tableOfContents(activePages);
+        var deletedList = this.render.deletedList(deletedPages);
+        var $activeTab = $('.nav-pages .active');
+        var $listActive = $activeTab.find('.list-pages');
+        var $listDeleted = $('.nav-pages .deleted .list-pages');
+
+        $listActive.html(tableOfContents);
+        $listDeleted.html(deletedList);
+
+        // scroll pages list if last element is different
+        if(oldContent && JSON.stringify(content[content.length-1]) !== JSON.stringify(oldContent[oldContent.length-1])) {
+            $activeTab.scrollTop($activeTab.prop('scrollHeight'));
+        }
     },
 
-    openPage: function(e) {
-        alert(`opening page ${$(this).data('open-page')}`)
+    openPage: function(data) {
+        mlab.dt.management.page_open(mlab.dt.app.id, data.pageNum);
+    },
+
+    showDeleted: function() {
+        $pagesNav = $('.nav-pages .pages-wrapper');
+        $pagesNav.toggleClass('deleted-open');
+        $pagesNav.is('.deleted-open') ? $(this).addClass('selected') : $(this).removeClass('selected');
+    },
+
+    newPage: function(data) {
+        mlab.dt.management.page_new(data.section, data.position);
+    },
+
+    newSection: function(data) {
+        mlab.dt.management.section_new(data.section, data.position);
+    },
+
+    editSectionTitle: function(data, e) {
+        var $title = $(e.currentTarget),
+            sectionId = data.sectionId;
+
+        $title.data('previousTitle', $title.text().trim());
+
+        if($title.attr('contenteditable') != "true"){
+            $title.attr('contenteditable', true)
+                .focus()
+                .one('focusout', function() {
+                    $title.attr('contenteditable', false);
+                    var newTitle = $title.text().trim();
+                    if($title.data('previousTitle') !== newTitle) {
+                        mlab.dt.management.section_update_title(sectionId, newTitle);
+                    }
+                });
+        }
+    },
+
+    deleteSection: function(data, e) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+            return;
+        }
+
+        mlab.dt.management.section_delete(data.sectionId);
+    },
+
+    deletePage: function(data, e) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+            return;
+        }
+
+        mlab.dt.management.page_delete(data.pageNum);
+    },
+
+    restorePage: function(data, e) {
+        mlab.dt.management.page_restore(data.pageNum);
     },
 
     watch: {
         tableOfContents: function (newVar, oldVar) {
-            ui.updateAppTableOfContents(newVar);
+            ui.updateAppTableOfContents(newVar, oldVar);
         }
     },
 
     render: {
-        tableOfContents: function (toc) {
-            $list = $('<list>');
 
-            for (var i = 0; i < toc.length; i++) {
-                $list.append(ui.render[toc[i].type](toc[i]))
-            }
-
-            return $list;
+        tableOfContents: function (toc, section = null) {
+            return toc.map((item, i) => this[item.type](item, i, section))
+                .concat(this.addToBottom(section))
+                .join('');
         },
 
-        page: function (pageTOC) {
-            $page = $('<div>').attr('data-open-page', '')
-                .html(`<div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>`)
-                .data('open-page', pageTOC.pageNumber)
-                .click(ui.openPage);
-
-            return $('<li class="display-alt"></li>').html($page);
+        deletedList: function (toc, section = null) {
+            return toc.map((item, i) => this.deletedPage(item))
+                .join('');
         },
 
-        section: function (sectionTOC) {
-            $section = $('<div>').attr('data-open-page', '')
-                .html(`<div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>`);
+        page: function (pageTOC, i, section) {
+            return `
+                <li class="display-alt">
+                    <div class="insert-new-here">
+                        <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                    </div>
+                    <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
+                        <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>
+                    </div>
+                    <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </li>
+            `;
+        },
 
-            return $('<li class="display-alt"></li>').html($section);
+        deletedPage: function (pageTOC) {
+            return `
+                <li>
+                    <div class="page">
+                        <div class="image" data-action-click="restorePage" data-page-num="${pageTOC.pageNumber}">
+                            <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
+                        </div>
+                        <p>${pageTOC.title}</p>
+                    </div>
+                </li>
+            `;
+        },
+
+        section: function (sectionTOC, i, section) {
+            return `
+                <li class="display-alt">
+                    <div class="insert-new-here">
+                        <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                    </div>
+                    <div class="level-name" data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
+                        ${sectionTOC.title}
+                        <i class="fas fa-pencil-alt"></i>
+                        <button data-action-click="deleteSection" data-section-id="${sectionTOC.id}">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    <ul>
+                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
+                    </ul>
+                </li>
+            `;
+        },
+
+        addToBottom: function (section) {
+            return `
+                <li class="insert-in-section">
+                    <button data-action-click="newPage" data-section="${section}">
+                        <i class="fas fa-plus fa-fw"></i>
+                    </button>
+                </li>
+            `;
         }
     }
 };
