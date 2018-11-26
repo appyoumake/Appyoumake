@@ -78,6 +78,7 @@
 
 .toolbox-menu {
     position: relative;
+    
     .menu {
         position: absolute;
         background-color: $toolbox-menu-color;
@@ -131,6 +132,7 @@
             }
         }
     }
+    
     &.open:after {
         content: "";
         background: $toolbox-menu-color;

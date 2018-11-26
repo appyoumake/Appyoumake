@@ -283,3 +283,9 @@
     max-width: 48px;
     display: block;
 }
+
+[data-mlab-type] i {
+    background-size: contain;
+    background-color: $toolbox-menu-color;
+    border: 1px solid $primary-color;
+}
