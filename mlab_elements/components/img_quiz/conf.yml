@@ -1,6 +1,6 @@
 # Configuration file for image quiz component
 name: img_quiz
-extended_name: { nb_NO: Bilde basert quiz, en_GB: Image based quiz, default: Image based quiz }
+extended_name: { nb_NO: Bilde quiz, en_GB: Image quiz, default: Image quiz }
 version: 0.9
 developer: Arild Bergh @ Sinett/FFI.no
 inherit: multi_img

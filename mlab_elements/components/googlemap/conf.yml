@@ -4,7 +4,7 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: map
 category_name: {nb_NO: Kart, en_GB: Map}
 name: googlemap
-extended_name: { nb_NO: Enkelt Google kart, en_GB: Basic Google map, default: Basic Google map }
+extended_name: { nb_NO: Google kart, en_GB: Google map, default: Google map }
 unique: true
 tooltip: { nb_NO: Enkelt Google kart med markører, en_GB: Basic Google map with markers, default: Basic Google map with markers }
 footer_tip: { nb_NO: Kartutsnitt fra Google kart hvor du definerer område som skal vises og kan legge til markører, en_GB: Google map where you define the area to be displayed and can add markers, default: Google map where you define the area to be displayed and can add markers }
