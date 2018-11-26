@@ -9,115 +9,121 @@ $(window).load(function() {
 
 // Init UI elements
 $(document).ready(function() {
-    
-    //alert("Hi Constantin, why are you using z-index everywhere? Is it really required?");
-//set active tab on click
-    $('.header ul.tabs > li > a').click(function (e) {
-        e.preventDefault();
-        $(this).parent().siblings('li').removeClass('active');
-        $(this).parent().addClass('active');
-    });
-
-//delete pages when click delete icon
-    $('.list-pages .delete, .list-pages .delete-alt').click(function (e) {
-        alert('Delete')
-    });
-
-    $('.pages-wrapper .close').click(function (e) {
-        $(this).closest('.deleted-open').removeClass('deleted-open');
-        $('[data-open-deleted]').removeClass('selected');
-    });
-
-    $('.toolbox-btn').click(function (e) {
-        // alert('Open')
-    });
-
-    mlab.dt.ui.initialiseDropdownButtons(".toolbox-menu");
-
-//prepare tooltip display for all buttons
-    $('[data-tooltip]').mouseenter(function () {
-        var $target = $(this);
-        // dont display tooltip if menu open
-        if($target.is('[data-open-menu]:focus')) {
-            return;
-        }
-
-        var targetOffsets = $target.offset(),
-            $arrow = $('<span>'),
-            $tooltip = $('<span class="tooltip" style="top:0; left:0"></span>')
-                .text($target.data('tooltip'))
-                .append($arrow);
-        
-        $target.after($tooltip);
-
-        var header = $('#mlab_menu_header');
-        var maxLeft = header.offset().left + header.width();
-        var targetScreenCenter = targetOffsets.left + $target.innerWidth()/2,
-            tooltipWidth = $tooltip.outerWidth(),
-            tooltipLeft = Math.min(
-                maxLeft - tooltipWidth,
-                Math.max(header.offset().left, targetScreenCenter - (tooltipWidth/2))
-            ),
-            arrowLeft = targetScreenCenter - tooltipLeft - 3;
-
-        $arrow.css('left', arrowLeft)
-        $tooltip.css('top', targetOffsets.top + $target.outerHeight() + $arrow.outerHeight())
-            .css('left', tooltipLeft);
-    }).on('mouseleave focus', function () {
-        $(this).siblings('.tooltip').remove();
-    });
-
-    $('[data-open-modal]').click(function () {
-        $modal = $('#' + $(this).data('open-modal'));
-        $modal.show();
-        $overlay = $('<div class="modal-overlay"></div>');
-
-        var close = function() {
-            $modal.hide();
-            $overlay.remove();
-        };
-
-        $overlay.click(close);
-        $modal.find('[data-close-modal]').click(close);
-
-        $('body').append($overlay);
-    });
-
-
-    $('input[type=radio][name=pages-list-display]').change(function() {
-        $('.nav-pages .active .list-pages').attr('class', 'list-pages ' + this.value);
-    });
-
-
-    $('body').on('click', '[data-action-click]', function (e) {
-        var data = $(this).data();
-        ui[data.actionClick](data, e);
-    })
-
-    $('[data-action]').click(function () {
-        mlab.dt.utils.runActions($(this).data("action"));
-    });
-        
-
+    mlab.dt.ui.init();
 });
 
-//ARILD THURSDAY
+var Mlab_dt_ui = {
 
-function Mlab_dt_ui () {
-    this.parent = null;
-    
-    this.toolbar_template = `<div class='toolbox-menu'>
-            <button data-open-menu data-tooltip='' class='toolbox-btn btn-lg'>
-                <i class='far fa-file'></i> %%CATEGORY%%
-            </button>
-            <div class='menu'>
-                %%COMPONENTS%%
-            </div>
-        </div>`;
-};
+    parent: null,
 
-Mlab_dt_ui.prototype = {
+    props: new Proxy({}, {
+        set: function(obj, prop, value) {
+            if(typeof Mlab_dt_ui.watch[prop] !== 'undefined') {
+                Mlab_dt_ui.watch[prop](value, obj[prop]);
+            }
+
+            obj[prop] = value;
+
+            return true;
+        }
+    }),
+
+    init: function() {
+        this.initTooltips();
+        this.initModals();
+        this.initActions();
+        this.initPages();
+        this.initToolbar();
+
+        this.initialiseDropdownButtons('.toolbox-menu');
+    },
     
+    initTooltips: function() {
+    //prepare tooltip display for all buttons
+        $('[data-tooltip]').mouseenter(function () {
+            var $target = $(this);
+            // dont display tooltip if menu open
+            if($target.is('[data-open-menu]:focus')) {
+                return;
+            }
+
+            var targetOffsets = $target.offset(),
+                $arrow = $('<span>'),
+                $tooltip = $('<span class="tooltip" style="top:0; left:0"></span>')
+                    .text($target.data('tooltip'))
+                    .append($arrow);
+            
+            $target.after($tooltip);
+
+            var header = $('#mlab_menu_header');
+            var maxLeft = header.offset().left + header.width();
+            var targetScreenCenter = targetOffsets.left + $target.innerWidth()/2,
+                tooltipWidth = $tooltip.outerWidth(),
+                tooltipLeft = Math.min(
+                    maxLeft - tooltipWidth,
+                    Math.max(header.offset().left, targetScreenCenter - (tooltipWidth/2))
+                ),
+                arrowLeft = targetScreenCenter - tooltipLeft - 3;
+
+            $arrow.css('left', arrowLeft)
+            $tooltip.css('top', targetOffsets.top + $target.outerHeight() + $arrow.outerHeight())
+                .css('left', tooltipLeft);
+        }).on('mouseleave focus', function () {
+            $(this).siblings('.tooltip').remove();
+        });
+    },
+
+    initToolbar: function() {
+    //set active tab on click
+        $('.header ul.tabs > li > a').click(function (e) {
+            e.preventDefault();
+            $(this).parent().siblings('li').removeClass('active');
+            $(this).parent().addClass('active');
+        });
+    },
+
+    initActions: function() {
+        var _this = this;
+
+        $('body').on('click', '[data-action-click]', function (e) {
+            var data = $(this).data();
+            _this[data.actionClick](data, e);
+        });
+
+        $('[data-action]').click(function () {
+            mlab.dt.utils.runActions($(this).data("action"));
+        });
+    },
+        
+    initPages: function() {
+        $('input[type=radio][name=pages-list-display]').change(function() {
+            $('.nav-pages .active .list-pages').attr('class', 'list-pages ' + this.value);
+        });
+
+        $('.pages-wrapper .close').click(function (e) {
+            $(this).closest('.deleted-open').removeClass('deleted-open');
+            $('[data-open-deleted]').removeClass('selected');
+        });
+    },
+    
+    initModals: function() {
+        $('[data-open-modal]').click(function () {
+            $modal = $('#' + $(this).data('open-modal'));
+            $modal.show();
+            $overlay = $('<div class="modal-overlay"></div>');
+
+            var close = function() {
+                $modal.hide();
+                $overlay.remove();
+            };
+
+            $overlay.click(close);
+            $modal.find('[data-close-modal]').click(close);
+
+            $('body').append($overlay);
+        });
+    },
+
     initialiseDropdownButtons : function(selector) {
         $(selector + ' [data-open-menu]').click(function (e) {
             var $menuOpener = $(this);
@@ -148,39 +154,57 @@ Mlab_dt_ui.prototype = {
     },
     
     displayComponents : function (components_html) {
-        var html;
-        //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
         for  (var category in components_html) {
-            html = this.toolbar_template.replace("%%CATEGORY%%", components_html[category]["name"]);
-            html = html.replace("%%COMPONENTS%%", components_html[category]["components"].join(""));
-            $("#mlab_toolbar_components").append(html);
+            $("#mlab_toolbar_components").append(this.render.toolbar(
+                components_html[category]["name"],
+                components_html[category]["components"].join(""),
+            ));
         } 
 
         this.initialiseDropdownButtons("#mlab_toolbar_components");
-
-    
     },
-    
-}
 
-//EMD ARILD THURSDAY
+    //  stashed
+    // displayComponents : function (components) {
+    //     var sorted = [];
+    //     for (var comp in components) {
+    //         sorted.push([comp, components[comp].order_by]);
+    //     }
 
+    //     sorted.sort(function(a, b) {
+    //         return a[1] - b[1];
+    //     });
 
+    //     var byCategory = [];
 
-var ui = {
+    //     for (var i = 0; i < sorted.length; i++) {
+    //         var compName = sorted[i][0];
+    //         var c = components[compName]
+    //         if (c.accessible && !c.is_storage_plugin) {
+    //             if (!byCategory.hasOwnProperty('c_' + c.conf.category)) {
+    //                 byCategory['c_' + c.conf.category] = {
+    //                     components: [],
+    //                     name: mlab.dt.api.getLocaleComponentMessage(c.conf.category, ["category_name"])
+    //                 };
+    //             }
 
-    props: new Proxy({}, {
-        set: function(obj, prop, value) {
+    //             byCategory['c_' + c.conf.category].components.push(components[compName]);
+    //         }
+    //     }
 
-            if(typeof ui.watch[prop] !== 'undefined') {
-                ui.watch[prop](value, obj[prop]);
-            }
+    //     debugger;
+    //     console.log(components);
 
-            obj[prop] = value;
+    //     // var html;
+    //     // //Puts all components under the same category and adds an accordion to the categroy collapsed or expanded depending on the coockie state 
+    //     // for  (var category in components_html) {
+    //     //     html = this.toolbar_template.replace("%%CATEGORY%%", components_html[category]["name"]);
+    //     //     html = html.replace("%%COMPONENTS%%", components_html[category]["components"].join(""));
+    //     //     $("#mlab_toolbar_components").append(html);
+    //     // } 
 
-            return true;
-        }
-    }),
+    //     // this.initialiseDropdownButtons("#mlab_toolbar_components");
+    // },
 
     updateAppTableOfContents: function(content, oldContent) {
         var deletedPages = [];
@@ -270,8 +294,12 @@ var ui = {
 
     watch: {
         tableOfContents: function (newVar, oldVar) {
-            ui.updateAppTableOfContents(newVar, oldVar);
-        }
+            Mlab_dt_ui.updateAppTableOfContents(newVar, oldVar);
+        },
+
+        components: function (newVar) {
+            Mlab_dt_ui.displayComponents(newVar);
+        },
     },
 
     render: {
@@ -289,7 +317,7 @@ var ui = {
 
         page: function (pageTOC, i, section) {
             return `
-                <li class="display-alt">
+                <li class="display-alt" draggable="true">
                     <div class="insert-new-here">
                         <button data-action-click="newPage" data-position="${i}" data-section="${section}">
                             <i class="fas fa-plus fa-fw"></i>
@@ -348,7 +376,20 @@ var ui = {
                     </button>
                 </li>
             `;
-        }
+        },
+
+        toolbar: function (category, components) {
+            return `
+                <div class='toolbox-menu'>
+                    <button data-open-menu data-tooltip='' class='toolbox-btn btn-lg'>
+                        <i class='far fa-file'></i> ${category}
+                    </button>
+                    <div class='menu'>
+                        ${components}
+                    </div>
+                </div>
+            `;
+        },
     }
 };
     
