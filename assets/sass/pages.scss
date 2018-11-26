@@ -78,6 +78,17 @@
             }
         }
 
+        &.insert-before {
+            &:before {
+                content: '';
+                width: 100%;
+                position: absolute;
+                top: -10px;
+                border-bottom: 2px dashed blue;
+
+            }
+        }
+
         .insert-new-here button, &.insert-in-section button{
             @include btn-reset;
             color: $secondary-text;
@@ -107,6 +118,14 @@
         }
 
     }
+
+    [draggable="true"] {
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+
 
 
     .level-name {
