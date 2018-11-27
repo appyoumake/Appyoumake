@@ -154,7 +154,7 @@
                 display: block;
                 visibility: visible;
             }
-            &.toolbox-btn > i {
+            &.toolbox-btn > i, &.toolbox-btn > img {
                 background: $toolbox-btn-selected-color;
             }
         }

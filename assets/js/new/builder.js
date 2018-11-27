@@ -15,6 +15,7 @@ require('script-loader!../jquery.contextmenu-1.0.0.js');
 require('script-loader!../spin.js');
 require('script-loader!../jquery.spin.js');
 require('script-loader!../bowser.js');
+require('script-loader!../html2canvas.js');
 
 require('script-loader!../mlab.api.js');
 require('script-loader!./mlab.dt.api.js');

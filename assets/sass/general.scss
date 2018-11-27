@@ -41,7 +41,7 @@
     padding: 5px;
     line-height: 1.7em;
     text-align: left;
-    > i {
+    > i, img {
         color: $light-text;
         background: $toolbox-btn-color;
         padding: 5px;
@@ -54,7 +54,7 @@
         text-align: center;
         font-size: 1.2em;
         border-radius: 2px;
-        > i {
+        > i, img {
             width: 1.5em;
             border-radius: 5px;
             height: 1.5em;
@@ -66,13 +66,13 @@
     }
     
     &.selected, &:focus, &:hover {
-        > i {
+        > i, img {
             background: $toolbox-btn-selected-color;
         }
     }
     &.disabled, &[disabled] {
         color: $toolbox-btn-disabled-color;
-        > i {
+        > i, img {
             background: $toolbox-btn-disabled-color;
         }
     }
@@ -132,7 +132,7 @@
 
     &.badge-caret {
         background: $toolbox-caret-badge-color;
-        i {
+        i, img {
             font-size: 0.7em;   
         }
     }
@@ -284,7 +284,8 @@
     display: block;
 }
 
-#mlab_toolbar_components [data-mlab-type] i {
+#mlab_toolbar_components [data-mlab-type] i, #mlab_toolbar_components [data-mlab-type] img,
+#mlab_toolbar_for_components [data-mlab-type] i, #mlab_toolbar_for_components [data-mlab-type] img {
     background-size: contain;
     background-color: $toolbox-menu-color;
     border: 1px solid $primary-color;

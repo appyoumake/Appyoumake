@@ -729,6 +729,12 @@ editor.tabs.format.component.copy: Copy
 editor.tabs.format.component.copy.tooltip: Copy the selected component to the component clipboard. You can then paste the component into this or another page
 editor.tabs.format.component.paste: Paste
 editor.tabs.format.component.paste.tooltip: Paste the last component you copied or pasted
+editor.tabs.format.component.resize: Resize
+editor.tabs.format.component.aspect_ratio: Aspect ratio
+editor.tabs.format.component.storage: Storage
+editor.tabs.format.component.credentials: Credentials
+
+
 
 editor.tabs.help: Help
 editor.tabs.help.tutorial: Tutorial

@@ -105,7 +105,7 @@ Mlab_dt_design.prototype = {
         }
 
         $("#" + this.parent.config["app"]["content_id"]).append(new_comp);
-        new_comp.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
+        new_comp.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.ui.displayComponentTools($(this)); } } )
         new_comp.on("input", function(){mlab.dt.flag_dirty = true;});
         
 //process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
@@ -116,7 +116,7 @@ Mlab_dt_design.prototype = {
         $('.mlab_current_component').qtip('hide'); 
 
         if (this.parent.api.display.componentHighlightSelected(new_comp)) {
-            this.component_menu_prepare();
+            mlab.dt.ui.displayComponentTools(new_comp);
         }
         
 //scroll down where the component is added
@@ -321,7 +321,7 @@ Mlab_dt_design.prototype = {
         el.remove();
         if (sel_comp.length > 0) {
             if (this.parent.api.display.componentHighlightSelected(sel_comp)) {
-                this.component_menu_prepare();
+                mlab.dt.ui.displayComponentTools(sel_comp);
             }
         } 
         this.parent.flag_dirty = true;
@@ -441,14 +441,14 @@ Mlab_dt_design.prototype = {
                 
         $("#" + this.parent.config["app"]["content_id"]).append(mlab.dt.clipboard);
         if (this.parent.api.display.componentHighlightSelected(mlab.dt.clipboard)) {
-            this.component_menu_prepare();
+            mlab.dt.ui.displayComponentTools(mlab.dt.clipboard);
         } else {
             //TODO - the check does not work.....
-            this.component_menu_prepare();
+            mlab.dt.ui.displayComponentTools(mlab.dt.clipboard);
         }
 
         window.scrollTo(0,document.body.scrollHeight);
-        mlab.dt.clipboard.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } } )
+        mlab.dt.clipboard.on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.ui.displayComponentTools($(this)); } } )
         mlab.dt.clipboard.on("input", function(){mlab.dt.flag_dirty = true;});
         
 //process all keys if this component wants to manipulate them (i.e. the process_keypress setting exists)
@@ -625,7 +625,7 @@ Mlab_dt_design.prototype = {
         $( "#" + that.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
             $( this ).droppable(that.parent.droppable_options)
                      .sortable(that.parent.sortable_options)
-                     .on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.design.component_menu_prepare(); } })
+                     .on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.ui.displayComponentTools($(this)); } })
                      .on("input", function(){mlab.dt.flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");
@@ -646,130 +646,7 @@ Mlab_dt_design.prototype = {
  *********** Function to manipulate adaptive menus (those defined by component itself ********
 ************************************************************/
 
-/* adds component specific menu (images) when a component is added/selected */
-    component_menu_prepare: function () {
-        var curr_comp = $(".mlab_current_component");
-        if (curr_comp.length < 1) {
-            return;
-        }
-        var conf = this.parent.components[curr_comp.data("mlab-type")].conf;
-        var comp_name = curr_comp.data("mlab-type");
-        var items = new Object();
-        var title = "";
-        var menu = $("#mlab_toolbar_for_components .mlab_component_context_menu");
-        var temp_menu = [];
-        var loc = mlab.dt.api.getLocale();
-        
-        $("#mlab_toolbar_for_components .mlab_component_toolbar_heading").text(this.parent.api.getLocaleComponentMessage(comp_name, ["extended_name"]));
-        menu.html("");
-        
 
-        if (typeof conf.custom != "undefined") {
-            
-//preliminary loop to create a lookuptable for the position of tools that handles duplicate order numbers
-            var temp_comp_order = [];
-            for(var index in this.parent.components[comp_name].code) {
-                if (index.substr(0, 7) == "custom_") {
-                    title = index.slice(7);
-                    
-//we may have a case where the custom code is written, but we have forgotten to create a matching conf.yml entry
-                    if (typeof conf.custom[title] != "undefined") {
-                        temp_comp_order.push( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 );
-                    }
-                }
-            }
-            temp_comp_order.sort(function(a, b) {return a - b;});
-            
-//repeating loop that generates the tool buttons for the custom code
-            for(var index in this.parent.components[comp_name].code) {
-                if (index.substr(0, 7) == "custom_") {
-                    title = index.slice(7);
-                    if (typeof conf.custom[title] != "undefined") {
-                        var icon = ( typeof conf.custom[title]["icon"] != "undefined" ) ? "src='" + conf.custom[title]["icon"] + "'" : "class='missing_icon'";
-                        var tt = this.parent.api.getLocaleComponentMessage(comp_name, ["custom", title, "tooltip"]);
-
-//get unique position
-                        var order = temp_comp_order.indexOf(parseInt( ( typeof conf.custom[title]["order"] != "undefined" ) ? conf.custom[title]["order"] : 0 ));
-                        delete temp_comp_order[order];
-
-                        if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
-                            var cl = "mlab_newline";
-                        } else {
-                            var cl = "";
-                        }
-
-                        temp_menu[order] = "<img onclick='(function(e){ mlab.dt.components." + comp_name + ".code." + index + "($(\".mlab_current_component\"), e);})(event)' " + 
-                                         "title='" + tt + "' " + 
-                                         "class='" + cl + "' " + 
-                                         "data-mlab-comp-tool-id='" + index + "' " + 
-                                         icon + " >";
-                    } else {
-                        console.log("Missing conf.yml entry for custom:" + title);
-                    }
-                }
-            }
-            menu.append(temp_menu.join(""));
-            menu.append("<div class='clear'>&nbsp;</div>");
-            
-        }
-        
-        
-//display credentials selection button, if this supports credentials
-        if (typeof conf.credentials != "undefined" && Object.prototype.toString.call( conf.credentials ) === "[object Array]") {
-            $("[data-mlab-comp-tool='credentials']").removeClass("mlab_hidden");
-        } else {
-            $("[data-mlab-comp-tool='credentials']").addClass("mlab_hidden");
-        }
-
-//display storage selection list button, if this supports storage
-        if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
-            $("[data-mlab-comp-tool='storage_plugin']").removeClass("mlab_hidden");
-        } else {
-            $("[data-mlab-comp-tool='storage_plugin']").addClass("mlab_hidden");
-        }
-        
-//display size and aspect ratio selection list buttons, if this supports resizing
-        if (typeof conf.resizeable != "undefined" && conf.resizeable == true) {
-            $("[data-mlab-comp-tool='comp_size']").removeClass("mlab_hidden");
-            $("[data-mlab-comp-tool='comp_aspect']").removeClass("mlab_hidden");
-            $("#mlab_component_size_list li").removeClass("mlab_item_applied");
-            $("#mlab_component_aspect_list li").removeClass("mlab_item_applied");
-//update the menus with the existing selection, if any
-            $("#mlab_component_size_list [data-data-mlab-comp-size='" + curr_comp.data("mlab-comp-size") + "']").addClass("mlab_item_applied");
-            $("#mlab_component_aspect_list [data-data-mlab-comp-aspect='" + curr_comp.data("mlab-comp-aspect") + "']").addClass("mlab_item_applied");
-        } else {
-            $("[data-mlab-comp-tool='comp_size']").addClass("mlab_hidden");
-            $("[data-mlab-comp-tool='comp_aspect']").addClass("mlab_hidden");
-        }
-       
-//set the qTips posistion after where it is placed in the window 
-        var myPosQtip = 'leftTop';
-        var eTop = curr_comp.offset().top; //get the offset top of the element
-        eTop = eTop - $(window).scrollTop();
-        
-        if( eTop > 450 ){
-            myPosQtip = 'leftBottom';
-        }
-              
-        this.parent.qtip_tools = $(curr_comp).qtip({
-            solo: false,
-            content:    { text: function() { return $('#mlab_toolbar_for_components').clone(true); } },
-            position:   { my: myPosQtip, at: 'rightTop', viewport: $(window) },
-            show: {ready: true, modal: { on: false, blur: false }},
-            hide: false,
-            events: {
-                hide: function(event, api) { $(mlab.dt.api.properties_tooltip).qtip('hide'); api.destroy(); },
-                visible: function(event, api) { $(mlab.dt.qtip_tools).qtip().elements.content.find("*").removeAttr("id"); },
-            },
-            style: { classes: 'qtip-light mlab_zindex_regular_tooltip', tip: true },
-    
-/*            show:       { ready: true, modal: { on: false, blur: false } },
-            hide:       false, */
-        });
-        
-        $(curr_comp).qtip("show");
-    },
-    
 /*
  * Turn the help in the footer and the footer on and off
  */
