@@ -1414,14 +1414,14 @@ Mlab_dt_api.prototype = {
             }
             $("#" + dt.config["app"]["content_id"]).append(el);
             this.componentHighlightSelected(el);
-            dt.design.component_menu_prepare();
+            mlab.dt.ui.displayComponentTools(el);
             
             window.scrollTo(0,document.body.scrollHeight);
             
             el.on("click", function(){
                 var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this));
                 if (prep_menu) {
-                    mlab.dt.design.component_menu_prepare();
+                    mlab.dt.ui.displayComponentTools($(this));
                 }
             })
             .on("input", function(){dt.flag_dirty = true;});
