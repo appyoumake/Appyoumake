@@ -123,7 +123,7 @@ var Mlab_dt_ui = {
         });
 
         $('[data-action]').click(function () {
-            mlab.dt.utils.runActions($(this).data("action"));
+            mlab.dt.utils.runActions(this, $(this).data("action"));
         });
     },
         
@@ -156,8 +156,15 @@ var Mlab_dt_ui = {
         });
     },
 
+//here we can send either a string or a list of jQUery objects, the latter is used when we add toolbuttons, etc
     initialiseDropdownButtons : function(selector) {
-        $(selector + ' [data-open-menu]').click(function (e) {
+        var elements;
+        if (typeof selector == "string") {
+            elements = $(selector + ' [data-open-menu]');
+        } else {
+            elements = selector;
+        }
+        elements.click(function (e) {
             var $menuOpener = $(this);
             var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
             $toolboxMenu.toggleClass('open');
@@ -182,6 +189,9 @@ var Mlab_dt_ui = {
                     $('.toolbox-menu').removeClass('open');
                 }
             });
+            
+//also close drop down box when an action icon is clicked
+            $menu.find('[data-action]').on("click", function() { $(this).closest(".toolbox-menu").removeClass("open"); });
         })
     },
     
@@ -231,17 +241,19 @@ var Mlab_dt_ui = {
             items = new Object(),
             title = "",
             menu = $("#mlab_format_menu"),
-            tools_div = $("#mlab_toolbar_for_components"),
-            temp_menu = [];
+            custom_tools_separator = $("#mlab_optional_custom_separator"),
+            temp_menu = [],
+            optional_shared_tool_counter = 0;
 
-//reset old menu
-        tools_div.html("");
+//reset old menu, due to flex issues they are not contained in a DIV, but follows a DIV separator
+        custom_tools_separator.nextAll().remove();
 
 //first we display standard buttons that are implicitly requested
 
 //display credentials selection button, if this supports credentials
         if (typeof conf.credentials != "undefined" && Object.prototype.toString.call( conf.credentials ) === "[object Array]") {
             menu.find("[data-action='component.tool.credentials']").removeClass("mlab_hidden");
+            optional_shared_tool_counter++;
         } else {
             menu.find("[data-action='component.tool.credentials']").addClass("mlab_hidden");
         }
@@ -249,22 +261,28 @@ var Mlab_dt_ui = {
 //display storage selection list button, if this supports storage
         if (typeof conf.storage_plugin != "undefined" && conf.storage_plugin == true) {
             menu.find("[data-open-menu='component.tool.storage_plugin']").removeClass("mlab_hidden");
+            optional_shared_tool_counter++;
         } else {
             menu.find("[data-open-menu='component.tool.storage_plugin']").addClass("mlab_hidden");
         }
-        debugger;
 //display size and aspect ratio selection list buttons, if this supports resizing
         if (typeof conf.resizeable != "undefined" && conf.resizeable == true) {
-            menu.find("[data-open-menu='component.tool.size']").removeClass("mlab_hidden").find("img").removeClass("selected");;
-            menu.find("[data-open-menu='component.tool.aspect']").removeClass("mlab_hidden").find("img").removeClass("selected");;
+            menu.find("[data-open-menu='component.tool.size']").removeClass("mlab_hidden").find("button").removeClass("selected");;
+            menu.find("[data-open-menu='component.tool.aspect']").removeClass("mlab_hidden").find("button").removeClass("selected");;
 //update the menus with the existing selection, if any
             menu.find("[data-size='" + curr_comp.find("[data-mlab-sizer]").data("mlab-size") + "']").addClass("selected");
             menu.find("[data-aspect='" + curr_comp.find("[data-mlab-sizer]").data("mlab-aspectratio") + "']").addClass("selected");
+            optional_shared_tool_counter++;
         } else {
             menu.find("[data-open-menu='component.tool.size']").addClass("mlab_hidden");
             menu.find("[data-open-menu='component.tool.aspect']").addClass("mlab_hidden");
         }
 
+        if (optional_shared_tool_counter == 0) {
+            $("#mlab_common_optional_separator").hide()
+        } else {
+            $("#mlab_common_optional_separator").show()
+        }
 
 //here we look for custom functions and display buttons from them based on icons in the conf.yml file
         if (typeof conf.custom != "undefined") {
@@ -307,9 +325,29 @@ var Mlab_dt_ui = {
                     }
                 }
             }
-            tools_div.html(temp_menu.join(""));
+            menu.append(temp_menu.join(""));
+            this.initialiseDropdownButtons(custom_tools_separator.nextAll());
         }
 
+    },
+    
+    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector, wide, event) {
+        mlab.dt.api.indicateWait(true);
+            
+        var curr_comp = $(".mlab_current_component"),
+            button = $(event.currentTarget),
+            menu = button.next(),
+            close_button = $('<button class="common-btn">OK</button>');
+        
+        if (!menu || !menu.hasClass("menu")) {
+            menu = $("<div class='menu'></div>").insertAfter(button)
+        }
+            
+        menu.html(content);
+        menu.append(close_button);
+        close_button.on("click", func_hide);
+        menu.parent().addClass("open");
+        mlab.dt.api.indicateWait(false);
     },
     
     updateAppTableOfContents: function(content, oldContent) {
@@ -535,7 +573,7 @@ var Mlab_dt_ui = {
         componentButton: function (component) {
             return `
                 <button data-mlab-type='${component.conf.name}' 
-                    onclick='mlab.dt.design.${'component'}_add("${component.conf.name}");'
+                    onclick='mlab.dt.design.${'component'}_add("${component.conf.name}"); $(this).closest(".toolbox-menu").removeClass("open");'
                     class='toolbox-btn btn-lg' 
                     title="${mlab.dt.api.getLocaleComponentMessage(component.conf.name, ["tooltip"])}">
                     <i style='background-image: url("${mlab.dt.config.urls.component}${component.conf.name}/${mlab.dt.config.component_files.ICON}");'>
@@ -547,14 +585,17 @@ var Mlab_dt_ui = {
         
         componentToolButton: function (comp_name, func_name, tooltip, icon) {
             return `
-                <button data-mlab-type='${comp_name}' 
-                    onclick='mlab.dt.components.${comp_name}.code.${func_name}($(\".mlab_current_component\"));'
-                    class='toolbox-btn btn-lg' 
-                    title='${tooltip}'
-                    data-mlab-comp-tool-id='${func_name}'>
-                    <img src="${icon}">
-                    <div>&nbsp;</div>
-                </button>
+                <div class="toolbox-menu">
+                    <button data-open-menu data-mlab-type='${comp_name}' 
+                        onclick='mlab.dt.components.${comp_name}.code.${func_name}($(\".mlab_current_component\"), event);'
+                        class='toolbox-btn btn-lg' 
+                        title='${tooltip}'
+                        data-mlab-comp-tool-id='${func_name}'>
+                        <img src="${icon}">
+                        <div>&nbsp;</div>
+                    </button>
+                    <div class='menu'></div>
+                </div>
             `;
         },
         
