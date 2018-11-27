@@ -437,6 +437,11 @@ var Mlab_dt_ui = {
         if($title.attr('contenteditable') != "true"){
             $title.attr('contenteditable', true)
                 .focus()
+                .keydown(function(e) {
+                    if (e.keyCode == 13) {
+                        $(this).trigger('focusout');
+                    }
+                })
                 .one('focusout', function() {
                     $title.attr('contenteditable', false);
                     var newTitle = $title.text().trim();
@@ -456,6 +461,11 @@ var Mlab_dt_ui = {
         if($title.attr('contenteditable') != "true"){
             $title.attr('contenteditable', true)
                 .focus()
+                .keydown(function(e) {
+                    if (e.keyCode == 13) {
+                        $(this).trigger('focusout');
+                    }
+                })
                 .one('focusout', function() {
                     $title.attr('contenteditable', false);
                     var newTitle = $title.text().trim();
