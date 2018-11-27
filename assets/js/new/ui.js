@@ -10,6 +10,38 @@ $(window).load(function() {
 // Init UI elements
 $(document).ready(function() {
     mlab.dt.ui.init();
+
+    $('.nav-pages .active')
+        .on('dragstart', 'li', function (e) {
+            e.stopPropagation(); 
+            $(this).addClass('dragging');
+            e.originalEvent.dataTransfer.setData("pagenum", $(this).data('pageNum'));
+            return true;
+        })
+
+        .on('dragover', 'li:not(.dragging)', function (e) {
+            e.originalEvent.target.classList.add('insert-before');
+            return false;
+        }) 
+        .on('dragleave', 'li', function (e) {
+            e.originalEvent.target.classList.remove('insert-before');
+            return false;
+        }) 
+        .on('dragend', 'li', function (e) {
+            $(this).removeClass('dragging');
+            $(this).siblings().removeClass('insert-before');
+
+            return false;
+        })
+        .on('drop', 'li', function (e) {
+            e.originalEvent.preventDefault();
+            var pageNum = e.originalEvent.dataTransfer.getData("pagenum");
+            var dropData = $(this).data();
+
+            mlab.dt.ui.movePage(pageNum, dropData.section, dropData.position);
+
+            return false;
+        });
 });
 
 var Mlab_dt_ui = {
@@ -327,6 +359,36 @@ var Mlab_dt_ui = {
         mlab.dt.management.section_new(data.section, data.position);
     },
 
+    movePage: function(pageNum, section, position) {
+        var tableOfContents = this.props.tableOfContents;
+
+        var cut = this.findBy('pageNumber', pageNum, tableOfContents);
+        delete cut.parent[cut.key];
+
+        var paste = section ? this.findBy('id', section, tableOfContents).node.children : tableOfContents;
+        paste.splice(position, 0, {...cut.node});
+
+        this.props.tableOfContents = tableOfContents;
+    },
+
+    findBy: function(prop, id, o) {
+        var result, p;
+        for (p in o) {
+            if (o[p][prop] == id){
+              return {node: o[p], parent: o, key: p};
+            }
+
+            if(typeof o[p].children === 'object' ) {
+                result = this.findBy(prop, id, o[p].children);
+            }
+
+            if(result){
+                return result;
+            }
+        }
+        return result;
+    },
+
     editSectionTitle: function(data, e) {
         var $title = $(e.currentTarget),
             sectionId = data.sectionId;
@@ -391,7 +453,12 @@ var Mlab_dt_ui = {
 
         page: function (pageTOC, i, section) {
             return `
-                <li class="display-alt" draggable="true">
+                <li
+                    class="display-alt"
+                    draggable="true"
+                    data-page-num="${pageTOC.pageNumber}"
+                    data-position="${i}"
+                    data-section="${section}">
                     <div class="insert-new-here">
                         <button data-action-click="newPage" data-position="${i}" data-section="${section}">
                             <i class="fas fa-plus fa-fw"></i>
