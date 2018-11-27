@@ -628,6 +628,11 @@ Mlab_dt_api.prototype = {
  * @returns {undefined}
  */
     displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector, wide, event) {
+        
+//TODO: Move from here totally
+        mlab.dt.ui.displayPropertyDialog(el, title, content, func_render, func_visible, func_hide, focus_selector, wide, event);
+        return;
+        
         this.indicateWait(true);
         this.closeAllPropertyDialogs();
         that = this;

@@ -13,7 +13,7 @@
     border-left: 1px solid $border-color;
     margin: 0 20px;
 
-    &.invlisible {
+    &.invisible {
         border-left: 0;
     }
 }
@@ -27,7 +27,7 @@
     border-bottom: 1px solid $border-color;
     margin: 20px 0;
 
-    &.invlisible {
+    &.invisible {
         border-bottom: 0;
     }
 }
@@ -285,7 +285,7 @@
 }
 
 #mlab_toolbar_components [data-mlab-type] i, #mlab_toolbar_components [data-mlab-type] img,
-#mlab_toolbar_for_components [data-mlab-type] i, #mlab_toolbar_for_components [data-mlab-type] img {
+#mlab_format_menu [data-mlab-type] i, #mlab_format_menu [data-mlab-type] img {
     background-size: contain;
     background-color: $toolbox-menu-color;
     border: 1px solid $primary-color;

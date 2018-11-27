@@ -264,7 +264,7 @@ Mlab_dt_utils.prototype = {
  * "traffic police" function which redirect clicks on buttons to relevant actions in Mlab
  * Most of these actions were from before a major UI design so are spread in different parts of the code
  */
-    runActions: function (action) {
+    runActions: function (action_element, action) {
         switch (action) {
             case "page.save":
                 var temp; //dummy variable, should redo for more modern ES/JS
@@ -334,6 +334,30 @@ Mlab_dt_utils.prototype = {
                 
             case "help.toggle_hover":
                 console.log("implement");
+                break;
+                
+            case "component.tool.aspect":
+                mlab.dt.api.display.setAspectRatio($(".mlab_current_component"), $(action_element).data("aspect"));
+                $(action_element).parent().find("button").removeClass("selected");
+                $(action_element).addClass("selected");
+                break;
+                
+            case "component.tool.size":
+                mlab.dt.api.display.setSize($(".mlab_current_component"), $(action_element).data("size"));
+                $(action_element).parent().find("button").removeClass("selected");
+                $(action_element).addClass("selected");
+                break;
+                
+            case "component.tool.storage_plugin":
+                var el = $(this).siblings("[data-mlab-get-info='storage_plugins']");
+                if( !el.is(":visible")) { 
+                    el.html(mlab.dt.api.getStoragePluginList(mlab.dt.api.getSelectedComponent()));
+                }
+                el.slideToggle();
+                break;
+                
+            case "component.tool.credentials":
+                mlab.dt.design.component_edit_credentials();
                 break;
                 
             default:

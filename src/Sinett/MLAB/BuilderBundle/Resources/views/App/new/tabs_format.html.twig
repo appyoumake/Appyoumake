@@ -1,12 +1,12 @@
 {# Format menu tools, some always, others loaded when component is selected #}
-<div id='mlab_format_menu'>
-    <button data-action="component.up" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.format.component.up.tooltip{% endtrans %}" >
-        <i class="fas fa-chevron-up"></i> {% trans %}editor.tabs.format.component.up{% endtrans %}
-    </button>
-    <button data-action="component.down" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.format.component.down.tooltip{% endtrans %}" >
-        <i class="fas fa-chevron-down"></i> {% trans %}editor.tabs.format.component.down{% endtrans %}
-    </button>
-
+    <div>
+        <button data-action="component.up" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.format.component.up.tooltip{% endtrans %}" >
+            <i class="fas fa-chevron-up"></i> {% trans %}editor.tabs.format.component.up{% endtrans %}
+        </button>
+        <button data-action="component.down" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.format.component.down.tooltip{% endtrans %}" >
+            <i class="fas fa-chevron-down"></i> {% trans %}editor.tabs.format.component.down{% endtrans %}
+        </button>
+    </div>  
     <div class="v-separator"></div>
     
     <button data-open-modal="mlab_dialog_delete" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.delete.tooltip{% endtrans %}">
@@ -25,7 +25,7 @@
         <i class="fas fa-paste"></i> {% trans %}editor.tabs.format.component.paste{% endtrans %}
     </button>
     
-    <div class="v-separator"></div>
+    <div class="v-separator" id="mlab_common_optional_separator"></div>
     
     <button data-action='component.tool.credentials' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'>
         <i class="fas fa-sign-out-alt"></i> {% trans %}editor.tabs.format.component.credentials{% endtrans %}
@@ -45,13 +45,13 @@
         </button>
         <div class='menu'>
             <button data-action='component.tool.size' data-size="small" class='toolbox-btn btn-lg' >
-                <img src="/img/tools/sizes.png" style='width: 8px;'>
+                <img src="/img/tools/sizes.png" style='width: 8px; height: 8px;'>
             </button>
             <button data-action='component.tool.size' data-size="medium" class='toolbox-btn btn-lg' >
-                <img src="/img/tools/sizes.png" style='width: 66%;'>
+                <img src="/img/tools/sizes.png" style='width: 16px; height: 16px;'>
             </button>
             <button data-action='component.tool.size' data-size="large" class='toolbox-btn btn-lg' >
-                <img src="/img/tools/sizes.png" style='width: 100%;'>
+                <img src="/img/tools/sizes.png" style='width: 32px; height:32px'>
             </button>
         </div>
     </div>
@@ -72,9 +72,4 @@
             </button>
         </div>
     </div>
-
-    <div class="v-separator"></div>
-    
-    <div id="mlab_toolbar_for_components"></div>
-    
-</div>
+    <div class="v-separator" id="mlab_optional_custom_separator"></div>
