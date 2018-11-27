@@ -1161,6 +1161,13 @@ class AppController extends Controller
                     $request->get('title')
                 );
                 break;
+                        
+            case 'page_update_title':
+                $fileManager->updatePageTitle(
+                    $request->get('pageNum'),
+                    $request->get('title')
+                );
+                break;
             
             case 'page_new':
                 $page = $fileManager->createNewPage(
@@ -1198,6 +1205,14 @@ class AppController extends Controller
                     'app_open_mode' => 'false'
                 ]));
 
+                break;
+
+            case 'toc_move':
+                $fileManager->tocMove(
+                    $request->get('node'),
+                    $request->get('section'),
+                    $request->get('position')
+                );
                 break;
 
             default:

@@ -828,6 +828,18 @@ Mlab_dt_management.prototype = {
         this.page_save( function() { that.page_new_process(section, position); } );
     },
 
+    toc_move : function (data, section, position) {
+        var url = this.parent.urls.page_action.replace('_ID_', this.parent.app.id)
+            .replace('_ACTION_', 'toc_move')
+            .replace('_UID_', this.parent.uid);
+
+        $.post(url, {_sender: this.parent.uid, section, position, node: data}, function(data) {
+            if (data.result == "success") {
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
+            }
+        });
+    },
+
     section_new : function (section = null, position = null) {
         var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
             .replace("_ACTION_", 'section_new')
@@ -858,6 +870,18 @@ Mlab_dt_management.prototype = {
             .replace("_UID_", this.parent.uid);
 
         $.post(url, {_sender: this.parent.uid, sectionId, title}, function(data) {
+            if (data.result == "success") {
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
+            }
+        });
+    },
+
+    page_update_title : function (pageNum, title) {
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'page_update_title')
+            .replace("_UID_", this.parent.uid);
+
+        $.post(url, {_sender: this.parent.uid, pageNum, title}, function(data) {
             if (data.result == "success") {
                 mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             }
