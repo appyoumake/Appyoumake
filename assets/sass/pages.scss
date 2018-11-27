@@ -147,6 +147,20 @@
         }
     }
 
+    [data-type=page] p {
+        height: 1em;
+        
+        button {
+            @include btn-reset;
+            display: none;
+        }
+        &:not([contenteditable=true]):hover {
+            button {
+                display: inline-block;
+            }
+        }
+    }
+
     .active {
         position: relative;
         ul.with-preview li:not(.display-alt) {

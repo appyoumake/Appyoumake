@@ -2038,6 +2038,16 @@ class FileManagement {
         return $this->updateAppConfig($appConfig);
     }
 
+    public function updatePageTitle($pageNum, $title) {
+        $appConfig = $this->getAppConfig($this->app);
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        $parentSection = &$parentSection[0];
+        $parentSection['title'] = $title;
+
+        return $this->updateAppConfig($appConfig);
+    }
+
     public function deleteSection($sectionId) {
         $appConfig = $this->getAppConfig($this->app);
         $parents = [];

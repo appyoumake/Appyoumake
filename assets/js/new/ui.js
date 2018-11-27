@@ -409,6 +409,25 @@ var Mlab_dt_ui = {
         }
     },
 
+    editPageTitle: function(data, e) {
+        var $title = $(e.currentTarget).parent(),
+            pageNum = data.pageNum;
+
+        $title.data('previousTitle', $title.text().trim());
+
+        if($title.attr('contenteditable') != "true"){
+            $title.attr('contenteditable', true)
+                .focus()
+                .one('focusout', function() {
+                    $title.attr('contenteditable', false);
+                    var newTitle = $title.text().trim();
+                    if($title.data('previousTitle') !== newTitle) {
+                        mlab.dt.management.page_update_title(pageNum, newTitle);
+                    }
+                });
+        }
+    },
+
     deleteSection: function(data, e) {
         if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
             return;
@@ -467,7 +486,13 @@ var Mlab_dt_ui = {
                         </button>
                     </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
-                        <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div><p>${pageTOC.title}</p>
+                        <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
+                        <p>
+                            ${pageTOC.title}
+                            <button data-action-click="editPageTitle" data-page-num="${pageTOC.pageNumber}">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                        </p>
                     </div>
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
