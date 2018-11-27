@@ -151,23 +151,35 @@
 
 
 
-    .level-name {
-        font-weight: bold;
+    .level-name, .page-name {
         padding: 10px 0;
-
+        display: flex;
         flex: 0 0 100%;
-        cursor: pointer;
-        i.fa-pencil-alt, button {
-            display: none;
+        p {
+            max-width:120px;
+
+            &:not([contenteditable=true]) {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+            }
         }
-        &:not([contenteditable=true]):hover {
-            i.fa-pencil-alt, button {
+
+        button {
+            @include btn-reset;
+            display: none;
+            margin: 0 5px;
+            padding: 2px;
+        }
+        &:hover {
+            button {
                 display: inline-block;
             }
         }
-        button {
-            @include btn-reset;
-        }
+    }
+    .level-name p {
+        font-weight: bold;
     }
 
     [data-type=page] p {

@@ -429,7 +429,7 @@ var Mlab_dt_ui = {
     },
 
     editSectionTitle: function(data, e) {
-        var $title = $(e.currentTarget),
+        var $title = $(e.currentTarget).parent().children('p'),
             sectionId = data.sectionId;
 
         $title.data('previousTitle', $title.text().trim());
@@ -453,7 +453,7 @@ var Mlab_dt_ui = {
     },
 
     editPageTitle: function(data, e) {
-        var $title = $(e.currentTarget).parent(),
+        var $title = $(e.currentTarget).parent().children('p'),
             pageNum = data.pageNum;
 
         $title.data('previousTitle', $title.text().trim());
@@ -543,12 +543,12 @@ var Mlab_dt_ui = {
                     </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
-                        <p>
-                            ${pageTOC.title}
+                        <div class="page-name">
+                            <p title="${pageTOC.title}">${pageTOC.title}</p>
                             <button data-action-click="editPageTitle" data-page-num="${pageTOC.pageNumber}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                        </p>
+                        </div>
                     </div>
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
@@ -579,9 +579,11 @@ var Mlab_dt_ui = {
                     data-id="${sectionTOC.id}"
                     data-position="${i}"
                     data-section="${section}">
-                    <div class="level-name" data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
-                        ${sectionTOC.title}
-                        <i class="fas fa-pencil-alt"></i>
+                    <div class="level-name">
+                        <p title="${sectionTOC.title}">${sectionTOC.title}</p>
+                        <button data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
                         <button data-action-click="deleteSection" data-section-id="${sectionTOC.id}">
                             <i class="far fa-trash-alt"></i>
                         </button>
