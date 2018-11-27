@@ -2019,7 +2019,11 @@ class FileManagement {
                 array_push($parentSection['children'], $section);
             }
         } else {
-            array_push($appConfig['tableOfContents'], $section);
+            if($position !== null) {
+                array_splice($appConfig['tableOfContents'], $position, 0, [$section]);
+            } else {
+                array_push($appConfig['tableOfContents'], $section);
+            }
         }
 
         $this->updateAppConfig($appConfig);

@@ -481,9 +481,17 @@ var Mlab_dt_ui = {
                     data-position="${i}"
                     data-section="${section}">
                     <div class="insert-new-here">
-                        <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                        <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
+                        <div class="select">
+                            <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                                page
+                            </button>
+                            <button data-action-click="newSection" data-position="${i}" data-section="${section}">
+                                section
+                            </button>
+                        </div>
                     </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>

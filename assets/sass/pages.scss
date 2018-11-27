@@ -89,7 +89,7 @@
             }
         }
 
-        .insert-new-here button, &.insert-in-section button{
+        .insert-new-here > button, &.insert-in-section button{
             @include btn-reset;
             color: $secondary-text;
             background-color: $secondary-color;
@@ -105,9 +105,32 @@
             text-align: right;
             display: none;
 
-            button {
+            > button {
                 position: relative;
                 top: 12.5px;
+            }
+        }
+
+        .insert-new-here{
+            .select {
+                visibility: hidden;
+                transition: visibility 1s, opacity 0.2s ease;
+                position: absolute;
+                right: 30px;
+                top: 0;
+                background-color: $light-color;
+                border: 1px solid $dark-color;
+                z-index: 1;
+
+                button {
+                    @include btn-reset;
+                    display: block;
+                    margin:0 auto;
+                    padding: 5px 15px;
+                }
+            }
+            > button:focus ~ .select {
+                visibility: visible;
             }
         }
 
