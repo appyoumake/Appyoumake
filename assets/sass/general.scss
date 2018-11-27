@@ -18,8 +18,12 @@
     }
 }
 
-.no-padding {
+.no-padding, .mlab_component_settings {
     padding: 0px !important;
+}
+
+.mlab_component_settings {
+    width: 300px !important;
 }
 
 .h-separator {

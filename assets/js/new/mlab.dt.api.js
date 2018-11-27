@@ -265,8 +265,8 @@ Mlab_dt_api.prototype = {
             content.append( $('<input />',  { id: "mlab_cp_selected_file",             type: "hidden" }) );
             content.append( $('<div />',    { id: "mlab_cp_mediaupload_uploadfiles",   class: "mlab_dt_picture mlab_dt_left" }) );
             content.append( $('<div />',    {                                          class: "mlab_dt_tiny_new_line",             html: "&nbsp;" }) );
-            content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
-            content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_ok",     class: "mlab_dt_button_ok mlab_dt_left",     text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"] }) );
+//            content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_cancel", class: "mlab_dt_button_cancel mlab_dt_left", text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.4"] }) );
+//            content.append( $('<div />',    { id: "mlab_cp_mediaupload_button_ok",     class: "mlab_dt_button_ok mlab_dt_left",     text: _tr["mlab.dt.api.js.uploadMedia.qtip.content.5"] }) );
 //            content.append( $('<img />',    { id: "mlab_cp_mediaupload_spinner",       class: "right",                                                               src:  "/img/spinner.gif" }) );
             return content;
         }
@@ -289,14 +289,16 @@ Mlab_dt_api.prototype = {
  * @param {type} api
  * @returns {Mlab_dt_api.prototype.uploadMedia.local_render_tooltip}
  */
-        function local_render_tooltip(event, api) {
+
+//TODO move more into mlab.dt.ui
+        function local_render_tooltip(done_func) {
             that.indicateWait(true);
             that_qtip = this;
             
             this.dt_component = el;
             this.dt_component_id = component_config.name;
             this.dt_config = component_config;
-            this.dt_cb = cb;
+            this.done_func = done_func;
             
 //load existing files into dropdown box and make it ddslick
             var existing_files = that.getMedia(file_type);
@@ -304,7 +306,7 @@ Mlab_dt_api.prototype = {
             $("#mlab_cp_select_file").html(existing_files)
                                      .on("change", local_set_media_source_existing)
                                      .ddslick({
-                                         width: 254,
+                                         width: 280,
                                          height: 64,
                                          imagePosition: "left",
                                          selectText: "Select existing media file to use"
@@ -326,14 +328,14 @@ Mlab_dt_api.prototype = {
                 showPreview:true,
                 previewHeight: "100px",
                 previewWidth: "100px", 
-                statusBarWidth:254,
-                dragdropWidth:254,
+                statusBarWidth:280,
+                dragdropWidth:280,
                 onSuccess: function(files, data, xhr) {
                             if (data.result == "failure") {
                                 alert(data.msg);
                             } else {
                                 local_set_media_source(data.urls[0]);
-                                mlab.dt.api.closeAllPropertyDialogs();
+                                that_qtip.done_func();
                             }
                     }.bind(that_qtip.dt_component),
                 onError: function(files, status, errMsg) { alert(errMsg); }
@@ -344,11 +346,14 @@ Mlab_dt_api.prototype = {
                     var sel_existing = $("#mlab_cp_select_file").data('ddslick').selectedData.value;
                     if (sel_existing) {
                         local_set_media_source(sel_existing);
+                        that_qtip.done_func();
                     } else {
                         uploadObj.startUpload(); 
                     }
-                }.bind(that_qtip.dt_component) );
-            $('#mlab_cp_mediaupload_button_cancel').on("click", function(e) { api.hide(e); }.bind(that_qtip.dt_component) );
+                    $('#mlab_cp_mediaupload_button_ok').off("click");
+                }.bind(that_qtip.dt_component));
+//DONE IN displayUploadModalDialog in ui.js            $('#mlab_cp_mediaupload_button_cancel').on("click", function() {  } );
+            
             $('.new_but_line').addClass('mlab_dt_button_new_line');
             $('.new_big_line').addClass('mlab_dt_large_new_line');
             $('.new_small_line').addClass('mlab_dt_small_new_line');
@@ -362,27 +367,9 @@ Mlab_dt_api.prototype = {
         
 
 //code that is executed when this function is called
-//
-//can be called from element or in response to event click, this decides who should "own" this tooltip
-        var owner_element = (typeof event != "undefined") ? event.currentTarget : el;
 
 //the meat of this function, displaying the tooltip
-        that_qtip = this.properties_tooltip = $(owner_element).qtip({
-            solo:       false,
-            content:    { text: local_prepare_form_html(), title: _tr["mlab.dt.api.js.uploadMedia.qtip.title"] },
-            position:   { my: 'leftMiddle', at: 'rightMiddle', viewport: $(window) },
-            show:       { ready: true, modal: { on: true, blur: false } },
-            hide:       false,
-            style:      { classes: 'qtip-light mlab_zindex_top_tooltip', tip: true },
-            events:     {
-                          render: local_render_tooltip,
-                          show: function(event, api) { api.focus(event); },
-                          hide: function(event, api) { api.destroy(); that.properties_tooltip = false; 
-                        }
-            }
-        });
-        
-
+        mlab.dt.ui.displayUploadModalDialog(local_prepare_form_html(), local_render_tooltip);
 
     },
     

@@ -158,11 +158,12 @@ var Mlab_dt_ui = {
 
 //here we can send either a string or a list of jQUery objects, the latter is used when we add toolbuttons, etc
     initialiseDropdownButtons : function(selector) {
+        console.log("initialiseDropdownButtons");
         var elements;
         if (typeof selector == "string") {
             elements = $(selector + ' [data-open-menu]');
         } else {
-            elements = selector;
+            elements = selector.find("[data-open-menu]");
         }
         elements.click(function (e) {
             var $menuOpener = $(this);
@@ -243,7 +244,8 @@ var Mlab_dt_ui = {
             menu = $("#mlab_format_menu"),
             custom_tools_separator = $("#mlab_optional_custom_separator"),
             temp_menu = [],
-            optional_shared_tool_counter = 0;
+            optional_shared_tool_counter = 0,
+            render_func;
 
 //reset old menu, due to flex issues they are not contained in a DIV, but follows a DIV separator
         custom_tools_separator.nextAll().remove();
@@ -314,10 +316,15 @@ var Mlab_dt_ui = {
                         delete temp_comp_order[order];
 
 //TODO: temp hack to respect old newline setting, now we insert a div, before it was a class
-                        if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
-                            temp_menu[order] = this.render.divider() + this.render.componentToolButton(comp_name, index, tooltip, icon);
+                        if (typeof conf.custom[title]["dialog"] != "undefined" && conf.custom[title]["dialog"] === true) {
+                            render_func = this.render.componentToolButtonMenu;
                         } else {
-                            temp_menu[order] = this.render.componentToolButton(comp_name, index, tooltip, icon);
+                            render_func = this.render.componentToolButton;
+                        }
+                        if (typeof conf.custom[title]["newline"] != "undefined" && conf.custom[title]["newline"] === true) {
+                            temp_menu[order] = this.render.divider() + render_func(comp_name, index, tooltip, icon);
+                        } else {
+                            temp_menu[order] = render_func(comp_name, index, tooltip, icon);
                         }
                         
                     } else {
@@ -331,7 +338,8 @@ var Mlab_dt_ui = {
 
     },
     
-    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_hide, focus_selector, wide, event) {
+//currently called from mlab.dt.api, this used to use qtip as a popup, not custom made, so a bit more hacky
+    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_close, focus_selector, wide, event) {
         mlab.dt.api.indicateWait(true);
             
         var curr_comp = $(".mlab_current_component"),
@@ -345,10 +353,30 @@ var Mlab_dt_ui = {
             
         menu.html(content);
         menu.append(close_button);
-        close_button.on("click", func_hide);
-        menu.parent().addClass("open");
+        close_button.on("click", func_close);
+        close_button.on("click", function() { $(this).closest("toolbox-menu").removeClass("open"); });
+        menu.closest("toolbox-menu").addClass("open");
+        if (func_visible) { mlab.dt.api.executeCallback (func_visible, curr_comp, event) }
         mlab.dt.api.indicateWait(false);
     },
+    
+    displayUploadModalDialog: function(content, render_func) {
+        $modal = $('#mlab_dialog_upload');
+        $modal.find(".modal-content").html(content);
+        $overlay = $('<div class="modal-overlay"></div>');
+
+        var close = function() {
+            $modal.hide();
+            $overlay.remove();
+        };
+
+        $overlay.click(close);
+        render_func(close);
+        $('#mlab_cp_mediaupload_button_cancel').off("click").on("click", close );
+        $modal.show();
+        $('body').append($overlay);
+    },
+    
     
     updateAppTableOfContents: function(content, oldContent) {
         var deletedPages = [];
@@ -379,6 +407,14 @@ var Mlab_dt_ui = {
         // }
     },
 
+    triggerAutoRun: function(comp_id) {
+        $(".tabs li:nth-child(3) > a").trigger("click");
+        var func = mlab.dt.components[comp_id].conf.autorun_on_create;
+        $('#mlab_format_menu').find('[data-mlab-comp-tool-id="' + func + '"]').trigger( "click" );
+    },
+    
+    
+    
     openPage: function(data) {
         mlab.dt.management.page_open(mlab.dt.app.id, data.pageNum);
     },
@@ -626,6 +662,21 @@ var Mlab_dt_ui = {
         componentToolButton: function (comp_name, func_name, tooltip, icon) {
             return `
                 <div class="toolbox-menu">
+                    <button data-action data-mlab-type='${comp_name}' 
+                        onclick='mlab.dt.components.${comp_name}.code.${func_name}($(\".mlab_current_component\"), event);'
+                        class='toolbox-btn btn-lg' 
+                        title='${tooltip}'
+                        data-mlab-comp-tool-id='${func_name}'>
+                        <img src="${icon}">
+                        <div>&nbsp;</div>
+                    </button>
+                </div>
+            `;
+        },
+        
+        componentToolButtonMenu: function (comp_name, func_name, tooltip, icon) {
+            return `
+                <div class="toolbox-menu">
                     <button data-open-menu data-mlab-type='${comp_name}' 
                         onclick='mlab.dt.components.${comp_name}.code.${func_name}($(\".mlab_current_component\"), event);'
                         class='toolbox-btn btn-lg' 
@@ -634,7 +685,7 @@ var Mlab_dt_ui = {
                         <img src="${icon}">
                         <div>&nbsp;</div>
                     </button>
-                    <div class='menu'></div>
+                    <div class='menu mlab_component_settings'></div>
                 </div>
             `;
         },

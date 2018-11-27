@@ -28,6 +28,7 @@ custom:
         tooltip: { nb_NO: Last opp et eller flere bilder eller velg bilder allerede i denne appen, en_GB: Upload one ore more pictures or select pictures already in the app, default: Upload one ore more pictures or select pictures already in the app }
         order: 1
         newline: true
+        dialog: true
     delete_image:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAR1JREFUeNqs0z9Lw0AcxvGkFa110MHVOnTxNbRDJ9+AXQPSxVXdnLp3cKyIiyBZBN+Ao6OCS9+CdCgKoqC1Ter1e/Ac1PRqhfqDD3ck5Lm/CY0xwSKVCxasJdeJomiF5gCbCt5FGQPc4xEFvOEqjuPnHwFUC4czBtoTVxXUswFbGulzzqzXsDq1BCoPO615u2oHePEF1LDxx73r+E7hGO+4xK2eXeAOfZzhAV00fAE9Te8I13jVxp7jCSe4QaqQqQB7jCGGMkKi9lv9ob4p/HaR8goK9T6X6f/vTcwGGE03yLRmwswA99Lu+BeWtanJxPNUywl898BWEW2UsI4mdrCNU1Q1UOIL6OvoGvqB7K3c1xI+9KO5S5S6j8YCDAArO0imo31J5wAAAABJRU5ErkJggg==
         tooltip: { nb_NO: Slett bilde , en_GB: Delete picture, default: Delete picture }
