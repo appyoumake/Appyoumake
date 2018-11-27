@@ -1200,6 +1200,14 @@ class AppController extends Controller
 
                 break;
 
+            case 'toc_move':
+                $fileManager->tocMove(
+                    $request->get('node'),
+                    $request->get('section'),
+                    $request->get('position')
+                );
+                break;
+
             default:
                 return new JsonResponse(array(
                     'result' => 'error',

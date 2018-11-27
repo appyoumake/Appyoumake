@@ -15,7 +15,7 @@ $(document).ready(function() {
         .on('dragstart', 'li', function (e) {
             e.stopPropagation(); 
             $(this).addClass('dragging');
-            e.originalEvent.dataTransfer.setData("pagenum", $(this).data('pageNum'));
+            e.originalEvent.dataTransfer.setData("data", JSON.stringify($(this).data()));
             return true;
         })
 
@@ -35,10 +35,10 @@ $(document).ready(function() {
         })
         .on('drop', 'li', function (e) {
             e.originalEvent.preventDefault();
-            var pageNum = e.originalEvent.dataTransfer.getData("pagenum");
+            var data = JSON.parse(e.originalEvent.dataTransfer.getData("data"));
             var dropData = $(this).data();
 
-            mlab.dt.ui.movePage(pageNum, dropData.section, dropData.position);
+            mlab.dt.ui.movePage(data, dropData.section, dropData.position);
 
             return false;
         });
@@ -338,9 +338,9 @@ var Mlab_dt_ui = {
         $listDeleted.html(deletedList);
 
         // scroll pages list if last element is different
-        if(oldContent && JSON.stringify(content[content.length-1]) !== JSON.stringify(oldContent[oldContent.length-1])) {
-            $activeTab.scrollTop($activeTab.prop('scrollHeight'));
-        }
+        // if(oldContent && JSON.stringify(content[content.length-1]) !== JSON.stringify(oldContent[oldContent.length-1])) {
+        //     $activeTab.scrollTop($activeTab.prop('scrollHeight'));
+        // }
     },
 
     openPage: function(data) {
@@ -361,16 +361,17 @@ var Mlab_dt_ui = {
         mlab.dt.management.section_new(data.section, data.position);
     },
 
-    movePage: function(pageNum, section, position) {
-        var tableOfContents = this.props.tableOfContents;
+    movePage: function(data, section, position) {
+        mlab.dt.management.toc_move(data, section, position);
+        // var tableOfContents = this.props.tableOfContents;
 
-        var cut = this.findBy('pageNumber', pageNum, tableOfContents);
-        delete cut.parent[cut.key];
+        // var cut = this.findBy('pageNumber', pageNum, tableOfContents);
+        // delete cut.parent[cut.key];
 
-        var paste = section ? this.findBy('id', section, tableOfContents).node.children : tableOfContents;
-        paste.splice(position, 0, {...cut.node});
+        // var paste = section ? this.findBy('id', section, tableOfContents).node.children : tableOfContents;
+        // paste.splice(position, 0, {...cut.node});
 
-        this.props.tableOfContents = tableOfContents;
+        // this.props.tableOfContents = tableOfContents;
     },
 
     findBy: function(prop, id, o) {
@@ -444,7 +445,7 @@ var Mlab_dt_ui = {
 
         tableOfContents: function (toc, section = null) {
             return toc.map((item, i) => this[item.type](item, i, section))
-                .concat(this.addToBottom(section))
+                .concat(this.addTo(section, toc.length+1))
                 .join('');
         },
 
@@ -458,7 +459,8 @@ var Mlab_dt_ui = {
                 <li
                     class="display-alt"
                     draggable="true"
-                    data-page-num="${pageTOC.pageNumber}"
+                    data-type="page"
+                    data-page-number="${pageTOC.pageNumber}"
                     data-position="${i}"
                     data-section="${section}">
                     <div class="insert-new-here">
@@ -491,12 +493,13 @@ var Mlab_dt_ui = {
 
         section: function (sectionTOC, i, section) {
             return `
-                <li class="display-alt">
-                    <div class="insert-new-here">
-                        <button data-action-click="newPage" data-position="${i}" data-section="${section}">
-                            <i class="fas fa-plus fa-fw"></i>
-                        </button>
-                    </div>
+                <li
+                    class="display-alt"
+                    draggable="true"
+                    data-type="section"
+                    data-id="${sectionTOC.id}"
+                    data-position="${i}"
+                    data-section="${section}">
                     <div class="level-name" data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
                         ${sectionTOC.title}
                         <i class="fas fa-pencil-alt"></i>
@@ -511,9 +514,13 @@ var Mlab_dt_ui = {
             `;
         },
 
-        addToBottom: function (section) {
+        addTo: function (section, position) {
             return `
-                <li class="insert-in-section">
+                <li class="insert-in-section"
+                    data-type="section"
+                    data-section="${section}"
+                    data-position="${position}"
+                >
                     <button data-action-click="newPage" data-section="${section}">
                         <i class="fas fa-plus fa-fw"></i>
                     </button>

@@ -2109,18 +2109,18 @@ class FileManagement {
      * "deletes" a page, simply removes from list of pages, but leaves file untouched so can recover it later.
      * 
      * @param type $app
-     * @param type $page_num
+     * @param type $pageNum
      * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
      */
-    public function deletePage($page_num) {
+    public function deletePage($pageNum) {
         $appConfig = $this->getAppConfig($this->app);
 
-        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $page_num]);
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
         $page[0]['is_deleted'] = true;
 
         return $this->updateAppConfig($appConfig);
     }    
-    
+
     /**
      * Restore previously deleted page
      * 
@@ -2136,6 +2136,46 @@ class FileManagement {
         $this->updateAppConfig($appConfig);
 
         return $page[0];
+    }
+
+    public function tocMove($node, $section, $position) {
+        $appConfig = $this->getAppConfig($this->app);
+        $conditions = array_intersect_key($node, array_flip(['type', 'id', 'pageNumber']));
+
+        $cutParent = null;
+        $cut = $this->searchTOC($appConfig['tableOfContents'], $conditions, $cutParent);
+
+        if(!empty($section)) {
+            $paste = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
+        } else {
+            $paste = &$appConfig['tableOfContents'];
+        }
+        
+        foreach ($cutParent as $key => &$parent) {
+            // if moving object is in the same level and the new position is after old one
+            // fix new position
+            if($parent == $paste && $key < $position) {
+                $position--;
+            }
+            $fixDeletedPostions = 0;
+            for ($i=0; $i < $position; $i++) { 
+                if(isset($paste[$i]['is_deleted']) && $paste[$i]['is_deleted']) {
+                    $fixDeletedPostions++;
+                }
+            }
+
+            $position = $position+$fixDeletedPostions;
+
+            $out = array_splice($parent, $key, 1);
+
+            if(isset($paste[0]['children'])) {
+                array_splice($paste[0]['children'], $position, 0, $out);
+            } else {
+                array_splice($paste, $position, 0, $out);
+            }
+        }
+        
+        return $this->updateAppConfig($appConfig);
     }    
    
 }
