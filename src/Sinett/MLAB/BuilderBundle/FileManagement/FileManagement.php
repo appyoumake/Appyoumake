@@ -2039,30 +2039,23 @@ class FileManagement {
             return $this->deleteSection($sectionId);
         }
 
-
         $appConfig = $this->getAppConfig($this->app);
 
-        $section = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parentSection);
-        $key = key($parentSection);
-        $cut = array_slice($parentSection[$key], $key, 1);
+        $cutParent = null;
+        $cut = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $cutParent);
+        $key = key($cutParent);
 
-        if(isset($parentSection[$key][$key-1]) && $parentSection[$key][$key-1]['type'] == 'section'){
-            array_splice(
-                $parentSection[$key][$key-1]['children'], 
-                count($parentSection[$key][$key-1]['children']),
-                0,
-                $cut
-            );
+        $paste = &$cutParent[$key];
+        $out = array_splice($cutParent[$key], $key, 1);
 
-            $cut = array_slice($parentSection[$key], $key, 1);
+        if(isset($cutParent[$key][$key-1]) && $cutParent[$key][$key-1]['type'] == 'section'){
+            array_splice($paste[$key-1]['children'], count($paste[$key-1]['children']), 0, $out);
         } else {
             $newSection = $this->getNewSectionConfig();
-            $newSection['children'] = $cut;
+            $newSection['children'] = $out;
             
-            array_splice($parentSection[$key], $key, 1, [$newSection]);
+            array_splice($cutParent[$key], $key, 1, [$newSection]);
         }
-
-        
 
         return $this->updateAppConfig($appConfig);
     }
