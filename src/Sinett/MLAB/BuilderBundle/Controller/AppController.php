@@ -702,7 +702,7 @@ class AppController extends Controller
 
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
 
-        $file_mgmt = $this->get('file_management');
+        $file_mgmt = $this->get('file_management')->setApp($app);
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $res = $file_mgmt->preCompileProcessingAction($app);
         
