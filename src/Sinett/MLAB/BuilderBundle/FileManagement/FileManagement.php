@@ -797,8 +797,10 @@ class FileManagement {
     }
     
     public function savePage($pageNum, $html, $title = null) {
-        $pageTOC = $this->getPageTOC($pageNum);
-        $title = $title ? $title : $pageTOC['title'];
+        if(is_numeric($pageNum)) {
+            $pageTOC = $this->getPageTOC($pageNum);
+            $title = $pageTOC['title'];
+        }
 
 //get path of file to save
         if ($pageNum === 0) {
