@@ -1149,6 +1149,13 @@ class AppController extends Controller
                 );
                 break;
 
+            case 'section_indent':
+                $fileManager->indentSection(
+                    $request->get('sectionId'),
+                    $request->get('indent')
+                );
+                break;
+            
             case 'section_delete':
                 $fileManager->deleteSection(
                     $request->get('sectionId')
@@ -1158,14 +1165,14 @@ class AppController extends Controller
             case 'section_update_title':
                 $fileManager->updateSectionTitle(
                     $request->get('sectionId'),
-                    $request->get('title')
+                    $request->request->get('title')
                 );
                 break;
                         
             case 'page_update_title':
                 $fileManager->updatePageTitle(
                     $request->get('pageNum'),
-                    $request->get('title')
+                    $request->request->get('title')
                 );
                 break;
             

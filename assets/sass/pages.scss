@@ -216,6 +216,14 @@
                 display: inline-block;
             }
         }
+
+        button.indent {
+            border-radius: 50%;
+            width:20px;
+            height:20px;
+            background-color: $secondary-color;
+            color: $light-text;
+        }
     }
     .level-name p {
         font-weight: bold;

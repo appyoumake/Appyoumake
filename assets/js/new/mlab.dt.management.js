@@ -864,6 +864,18 @@ Mlab_dt_management.prototype = {
         });
     },
 
+    section_indent : function (sectionId, indent) {
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'section_indent')
+            .replace("_UID_", this.parent.uid);
+
+        $.post(url, {_sender: this.parent.uid, sectionId, indent}, function(data) {
+            if (data.result == "success") {
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
+            }
+        });
+    },
+
     section_update_title : function (sectionId, title) {
         var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
             .replace("_ACTION_", 'section_update_title')

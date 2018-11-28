@@ -2021,7 +2021,7 @@ class FileManagement {
                 array_push($parentSection['children'], $section);
             }
         } else {
-            if($position !== null) {
+            if(!empty($position)) {
                 array_splice($appConfig['tableOfContents'], $position, 0, [$section]);
             } else {
                 array_push($appConfig['tableOfContents'], $section);
@@ -2032,6 +2032,32 @@ class FileManagement {
 
         return $section;
 
+    }
+
+    public function indentSection($sectionId, $indent) {
+        if($indent == 'down') {
+            return $this->deleteSection($sectionId);
+        }
+
+        $appConfig = $this->getAppConfig($this->app);
+
+        $cutParent = null;
+        $cut = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $cutParent);
+        $key = key($cutParent);
+
+        $paste = &$cutParent[$key];
+        $out = array_splice($cutParent[$key], $key, 1);
+
+        if(isset($cutParent[$key][$key-1]) && $cutParent[$key][$key-1]['type'] == 'section'){
+            array_splice($paste[$key-1]['children'], count($paste[$key-1]['children']), 0, $out);
+        } else {
+            $newSection = $this->getNewSectionConfig();
+            $newSection['children'] = $out;
+            
+            array_splice($cutParent[$key], $key, 1, [$newSection]);
+        }
+
+        return $this->updateAppConfig($appConfig);
     }
 
     public function updateSectionTitle($sectionId, $title) {
@@ -2059,12 +2085,10 @@ class FileManagement {
         $parents = [];
 
         $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parents);
-        foreach ($parents as $key => &$parent) {
-            $children = $parent[$key]['children'];
-            
-            unset($parent[$key]);
-            $parent = array_merge($parent, $children);
-        }
+        $key = key($parents);
+        $children = $parents[$key][$key]['children'];
+
+        array_splice($parents[$key], $key, 1, $children);
 
         return $this->updateAppConfig($appConfig);
     }

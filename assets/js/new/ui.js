@@ -537,6 +537,10 @@ var Mlab_dt_ui = {
         mlab.dt.management.section_delete(data.sectionId);
     },
 
+    indentSection: function(data, e) {
+        mlab.dt.management.section_indent(data.sectionId, data.indent);
+    },
+
     deletePage: function(data, e) {
         if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
             return;
@@ -561,8 +565,8 @@ var Mlab_dt_ui = {
 
     render: {
 
-        tableOfContents: function (toc, section = null) {
-            return toc.map((item, i) => this[item.type](item, i, section))
+        tableOfContents: function (toc, section = null, level = 1) {
+            return toc.map((item, i) => this[item.type](item, i, section, level))
                 // .concat(this.addTo(section, toc.length+1))
                 .join('');
         },
@@ -606,7 +610,7 @@ var Mlab_dt_ui = {
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
-                    <div class="insert-new-here insert-after-page">
+                    <!--div class="insert-new-here insert-after-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
@@ -618,7 +622,7 @@ var Mlab_dt_ui = {
                                 section
                             </button>
                         </div>
-                    </div>
+                    </div-->
                 </li>
             `;
         },
@@ -646,7 +650,7 @@ var Mlab_dt_ui = {
                        '<p>Enter the URL of the website below.<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input"></p>');
         },
 
-        section: function (sectionTOC, i, section) {
+        section: function (sectionTOC, i, section, level) {
             return `
                 <li
                     class="display-alt"
@@ -663,13 +667,26 @@ var Mlab_dt_ui = {
                         <button data-action-click="deleteSection" data-section-id="${sectionTOC.id}">
                             <i class="far fa-trash-alt"></i>
                         </button>
+                        <button class="indent" data-action-click="indentSection" data-indent="${level<2 ? 'up' : 'down'}" data-section-id="${sectionTOC.id}">
+                            ${level<2 ? '>' : '<'}
+                        </button>
                     </div>
                     <ul>
-                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
+                        ${sectionTOC.children ? this.sectionChildren(sectionTOC.children, sectionTOC.id, level) : ''}
                         ${this.addTo(sectionTOC.id, sectionTOC.children.length+1)}
                     </ul>
                 </li>
             `;
+        },
+
+        sectionChildren: function (children, section, level) {
+            if(level < 2) {
+                return this.tableOfContents(children, section, level+1);
+            }
+
+            return children.filter(item => item.type == 'page').map((item, i) => this.page(item, i, section))
+                .join('')
+                .concat(children.filter(item => item.type == 'section').map((item, i) => this.sectionChildren(item.children, item.id, level+1)).join(''))
         },
 
         addTo: function (section, position) {
