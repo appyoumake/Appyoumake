@@ -610,7 +610,7 @@ var Mlab_dt_ui = {
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
-                    <div class="insert-new-here insert-after-page">
+                    <!--div class="insert-new-here insert-after-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
@@ -622,7 +622,7 @@ var Mlab_dt_ui = {
                                 section
                             </button>
                         </div>
-                    </div>
+                    </div-->
                 </li>
             `;
         },

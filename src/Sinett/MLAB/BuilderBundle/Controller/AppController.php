@@ -1165,14 +1165,14 @@ class AppController extends Controller
             case 'section_update_title':
                 $fileManager->updateSectionTitle(
                     $request->get('sectionId'),
-                    $request->get('title')
+                    $request->request->get('title')
                 );
                 break;
                         
             case 'page_update_title':
                 $fileManager->updatePageTitle(
                     $request->get('pageNum'),
-                    $request->get('title')
+                    $request->request->get('title')
                 );
                 break;
             
