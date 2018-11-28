@@ -228,7 +228,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                     <a target='_top' href='{{ path('fos_user_security_logout') }}'>{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
                                 {% endif %}
                             </div>
-                        </div><!-- End User menu container -->                       
+                        </div><!-- End User menu container --> 
+                        <li class='menu_right'>
+                            <a class="mlab_statusbar_permanent_label" onclick='window.location.href = window.location.href.replace("/builder/", "/new/builder/")'>Preview update</a>
+                        </li>
                     </ul>
                     
                      <div id='mlab_page_control'>

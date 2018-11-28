@@ -1008,7 +1008,7 @@ Mlab_dt_api.prototype = {
         } else if (link_type == "newpage") {
             var page_title = $("#mlab_dt_link_app_new_page").val();
             if (page_title) {
-                mlab.dt.management.page_new_in_background(page_title, this.update_newpage_link);
+                mlab.dt.management.page_new_in_background(page_title, mlab.dt.api.update_newpage_link);
             } else {
                 alert(_tr["mlab.dt.api.js.getLink.alert_no_title"]);
                 return false;
@@ -1045,22 +1045,11 @@ Mlab_dt_api.prototype = {
         for (pos in mlab.dt.app.page_names) {
             opt = opt + "<option value='" + mlab.dt.app.page_names[pos]["filename"] + "'>" + mlab.dt.app.page_names[pos]["title"] + "</option>";
         }
-        var that = this;
-        var content = $('<div id="mlab_dt_link_dialog">' + 
-            '<br><label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="page" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
-            '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + opt + '</select><br>' + 
-            '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
-            '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
-            '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label><br>' + 
-            '<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input">' + '<br>' + 
-          '</div>');
-  
-        content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick=" if (that.updateLink()) {mlab.dt.api.closeAllPropertyDialogs();}">' + _tr["mlab.dt.api.js.getLink.ok"] + '</button>');
-        content.append( '<button class="mlab_dt_button_cancel mlab_dt_right" onclick=" that.cancelLink();">' + _tr["mlab.dt.api.js.getLink.cancel"] + '</button>');
-
-        var title = _tr["mlab.dt.api.js.getLink.heading"];
+        var content = mlab.dt.ui.render.linkDialog(opt);
         
-        this.displayPropertyDialog(el, title, content, function() {$(".qtip-close").on("click", that.cancelLink);}, null, null, null, false, event);
+        var title = _tr["mlab.dt.api.js.getLink.heading"];
+
+        this.displayPropertyDialog(el, title, content, mlab.dt.api.cancelLink, null, mlab.dt.api.updateLink, null, false, event);
         
     },
     
