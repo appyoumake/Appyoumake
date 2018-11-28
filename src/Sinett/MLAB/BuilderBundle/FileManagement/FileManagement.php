@@ -1940,13 +1940,15 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function createNewPage($position = null, $section = null) {
+    public function createNewPage($position = null, $section = null, $title = null) {
         $pageProperties = $this->getNewPageNum($this->app);
         if ($pageProperties['new_page_num'] === false) {
             return false;
         }
 
-        $title = 'New Page ' . $pageProperties['new_page_num'];
+        if (is_null($title)) { //default page name if 
+            $title = 'New Page ' . $pageProperties['new_page_num'];
+        }
         $content = str_replace('%TITLE%', $title, $this->config['app']['html_header']) . $this->config['app']['html_footer'];
 
         if (file_put_contents($pageProperties['new_page_path'], $content) !== false) {

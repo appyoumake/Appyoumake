@@ -959,15 +959,19 @@ Mlab_dt_management.prototype = {
     page_new_in_background : function (title, cb) {
         $("body").css("cursor", "wait");
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
-        var url = this.parent.urls.page_new.replace("_ID_", this.parent.app.id);
-        url = url.replace("_UID_", this.parent.uid) + "/0/" + encodeURI(title);
-
+        
+        var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
+            .replace("_ACTION_", 'page_new')
+            .replace("_UID_", this.parent.uid) + "/0/" + encodeURI(title);
+    
         var that = this;
         $.post( url, {}, function( data ) {
             if (data.result == "success") {
-//update staus
+//update staus 
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
                 that.parent.utils.update_status("completed");
                 that.parent.flag_dirty = true;
+
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
             }

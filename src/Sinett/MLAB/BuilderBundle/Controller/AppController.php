@@ -1125,7 +1125,7 @@ class AppController extends Controller
     }
 
 
-    public function pageActionAction(Request $request, $app_id, $uid, $action) {
+    public function pageActionAction(Request $request, $app_id, $uid, $action, $redirect_to_open, $title) {
         if ($app_id > 0) {
             $em = $this->getDoctrine()->getManager();
             $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1179,15 +1179,21 @@ class AppController extends Controller
             case 'page_new':
                 $page = $fileManager->createNewPage(
                     $request->get('position', null),
-                    $request->get('section', null)
+                    $request->get('section', null),
+                    $title
                 );
-
-                $response = $this->redirect($this->generateUrl('app_builder_page_get', [
-                    'app_id' => $app_id,
-                    'page_num' => $page['pageNumber'],
-                    'uid' => $uid,
-                    'app_open_mode' => 'false'
-                ]));
+                
+//we may want to open pages in the background, check parameter to see if this is true.
+//if so, we do NOT go to page open
+                
+                if ($redirect_to_open) {
+                    $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                        'app_id' => $app_id,
+                        'page_num' => $page['pageNumber'],
+                        'uid' => $uid,
+                        'app_open_mode' => 'false'
+                    ]));
+                }                 
                 break;
 
             case 'page_delete':
@@ -1240,6 +1246,7 @@ class AppController extends Controller
         return isset($response) ? $response : new JsonResponse([
             'result' => 'success',
             'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+            'new_page_num' => ($action === 'page_new' ? $page['pageNumber'] : "")
         ]);
     }
 

@@ -339,22 +339,39 @@ var Mlab_dt_ui = {
     },
     
 //currently called from mlab.dt.api, this used to use qtip as a popup, not custom made, so a bit more hacky
-    displayPropertyDialog : function (el, title, content, func_render, func_visible, func_close, focus_selector, wide, event) {
+    displayPropertyDialog : function (el, title, content, func_cancel, func_visible, func_ok, focus_selector, wide, event) {
         mlab.dt.api.indicateWait(true);
-            
+
+//init variables, current component working with, etc
         var curr_comp = $(".mlab_current_component"),
             button = $(event.currentTarget),
-            menu = button.next(),
-            close_button = $('<button class="common-btn">OK</button>');
-        
-        if (!menu || !menu.hasClass("menu")) {
-            menu = $("<div class='menu'></div>").insertAfter(button)
+            menu = button.next('.menu'),
+            close_button = $('<button class="common-btn">OK</button>'),
+            toolboxMenu = menu.closest('.toolbox-menu');
+
+        if (!menu) {
+            console.log("MENU NOT CREATED");
+            //menu = $("<div class='menu'></div>").insertAfter(button)
         }
             
+//add content to menu div
         menu.html(content);
         menu.append(close_button);
-        close_button.on("click", func_close);
+        
+//attach event handler. Clicking outside = cancel.
+        close_button.on("click", func_ok);
         close_button.on("click", function() { $(this).closest("toolbox-menu").removeClass("open"); });
+        $(window).bind("click.closeMenu", function(e) {
+            if(e.target !== menu[0] && toolboxMenu.find(e.target).length === 0) {
+                if (func_cancel) {
+                    func_cancel();
+                }
+                $(this).unbind("click.closeMenu");
+                $('.toolbox-menu').removeClass('open');
+            }
+        });
+
+//open menu div and execute visible function if any
         menu.closest("toolbox-menu").addClass("open");
         if (func_visible) { mlab.dt.api.executeCallback (func_visible, curr_comp, event) }
         mlab.dt.api.indicateWait(false);
@@ -621,6 +638,17 @@ var Mlab_dt_ui = {
                     </div>
                 </li>
             `;
+        },
+        
+        linkDialog: function (options) {
+            return $('<div id="mlab_dt_link_dialog">' + 
+                '<br><label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="page" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
+                '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + options + '</select><br>' + 
+                '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
+                '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
+                '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label><br>' + 
+                '<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input">' + '<br>' + 
+              '</div>');
         },
 
         section: function (sectionTOC, i, section, level) {
