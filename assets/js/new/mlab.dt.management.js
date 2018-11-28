@@ -1136,50 +1136,50 @@ Mlab_dt_management.prototype = {
 // hva om man lagrer en ny versjon mens kompiler
 
                     case "connected":
-                        $("#mlab_progressbar").val(5);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.connected"]);
+                        $("#mlab_progressbar").show();
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.connected"]);
                         break;
 
                     case "creating":
                         $("#mlab_progressbar").show();
-                        $("#mlab_progressbar").val(10);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.creating"]);
+                        // $("#mlab_progressbar").val(10);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.creating"]);
                         //createApp is called, this creates the empty app
                         break;
 
                     case "created":
-                        $("#mlab_progressbar").val(15);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.created"]);
+                        // $("#mlab_progressbar").val(15);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.created"]);
                         break;
 
                     case "precompilation":
-                        $("#mlab_progressbar").val(20);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.precompilation"]);
+                        // $("#mlab_progressbar").val(20);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.precompilation"]);
                         break;
 
                     case "uploading":
-                        $("#mlab_progressbar").val(25);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.uploading"]);
+                        // $("#mlab_progressbar").val(25);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.uploading"]);
                         break;
 
                     case "verifying":
-                        $("#mlab_progressbar").val(30);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verifying"]);
+                        // $("#mlab_progressbar").val(30);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.verifying"]);
                         break;
 
                     case "verification_ok":
-                        $("#mlab_progressbar").val(35);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.verification_ok"]);
+                        // $("#mlab_progressbar").val(35);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.verification_ok"]);
                         break;
 
                     case "compiling":
-                        $("#mlab_progressbar").val(40);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compiling"]);
+                        // $("#mlab_progressbar").val(40);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.compiling"]);
                         break;
 
                     case "compilation_ok":
-                        $("#mlab_progressbar").val(80);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.compilation_ok"]);
+                        // $("#mlab_progressbar").val(80);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.compilation_ok"]);
                         break;
 
                     case "failed":
@@ -1187,7 +1187,7 @@ Mlab_dt_management.prototype = {
                     case "compilation_failed":
                     case "verification_failed":
                     case "create_failed":
-                        $("#mlab_statusbar_compiler").text("");
+                        $("#mlab_progressbar").attr("title", "");
                         $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
                         $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                         $("#mlab_progressbar").hide();
@@ -1195,13 +1195,13 @@ Mlab_dt_management.prototype = {
                         break;
 
                     case "receiving":
-                        $("#mlab_progressbar").val(90);
-                        $("#mlab_statusbar_compiler").text(_tr["mlab_editor.init.js.compiling.receiving"]);
+                        // $("#mlab_progressbar").val(90);
+                        $("#mlab_progressbar").attr("title", _tr["mlab_editor.init.js.compiling.receiving"]);
                         break;
 
                     case "ready":
-                        $("#mlab_progressbar").val(100);
-                        $("#mlab_statusbar_compiler").text("");
+                        // $("#mlab_progressbar").val(100);
+                        $("#mlab_progressbar").attr("title", "");
                         $("#mlab_download_" + data.platform + "_icon").removeClass('mlab_download_' + data.platform + '_icon_grey');
                         $("#mlab_download_" + data.platform + "_icon").find("img").hide();
                         $("#mlab_progressbar").hide();
@@ -1405,14 +1405,14 @@ Mlab_dt_management.prototype = {
             url = url.replace("_VERSION_", mlab.dt.app.active_version);
             url = url.replace("_PLATFORM_", platform);
             var caption_finished = _tr["mlab.dt.management.js.compiler.get_app.status.creating.app"];
-            $("#mlab_statusbar_compiler").text(caption_finished);
+            $("#mlab_progressbar").attr("title", caption_finished);
             $("#mlab_download_" + platform + "_icon").find('img').show();
             $("#mlab_download_" + platform + "_icon").addClass("mlab_download_" + platform + "_icon_grey");
             $("#mlab_progressbar").show();
-            $("#mlab_progressbar").val(2);
+            // $("#mlab_progressbar").val(2);
             $.getJSON(url, function( json ) {
                 if (json.result != "success") {
-                    $("#mlab_statusbar_compiler").text("");
+                    $("#mlab_progressbar").attr("title", "");
                     $("#mlab_progressbar").hide();
                     mlab.dt.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.unable.contact.server"], false);
                     $("#mlab_download_" + platform + "_icon").find('img').hide();

@@ -28,6 +28,7 @@
         </nav>
         <div class="logo">MLAB</div>
         <div class="nav-right">
+            
             <div class="toolbox-menu warnings">
                 <button data-open-menu>
                     <span class="fa-stack">
@@ -46,6 +47,10 @@
                         <p>Application requires API configuration</p>
                     </div>
                 </div>
+            </div>
+            
+            <div class="app-info" id="mlab_progressbar" >
+                <img src="/img/spinner.gif" tooltip="info">
             </div>
             
             <div class="app-info" >
@@ -151,11 +156,11 @@
             <button data-close-modal class="close">&times;</button>
         </div>
         <div class="modal-content">
-            <p>{% trans %}build_app.dialog.delete.text{% endtrans %}</p>
+            <p>{% trans %}build_app.dialog.delete.component{% endtrans %}</p>
         </div>
         <div class="modal-bottom">
             <button data-close-modal class="modal-btn secondary">{% trans %}mlab.dt.api.js.getLink.cancel{% endtrans %}</button>
-            <button data-close-modal class="modal-btn" onclick="mlab.dt.design.component_delete(false);">{% trans %}app.admin.components.tooltip.delete{% endtrans %}</button>
+            <button data-close-modal class="modal-btn" onclick="mlab.dt.design.component_delete(false);">{% trans %}editor.tabs.format.component.delete{% endtrans %}</button>
         </div>
     </div>
 

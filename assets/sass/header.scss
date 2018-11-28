@@ -368,3 +368,13 @@ input[type="checkbox"].toggle {
 .app-info #mlab_statusbar_appname {
     font-weight: normal;
 }
+
+/* make sure all buttons for  components list are same size. */
+#mlab_toolbar_components .toolbox-menu button {
+    width: 72px;
+}
+
+#mlab_progressbar {
+    padding-top: 3px;
+    display: none;
+}

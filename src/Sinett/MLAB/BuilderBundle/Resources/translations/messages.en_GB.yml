@@ -428,6 +428,7 @@ build_app.tooltip.not.saved: The latest changes were not saved
 build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
 build_app.dialog.delete.title: Delete?
 build_app.dialog.delete.text: Are you sure you want to delete?
+build_app.dialog.delete.component: Are you sure you want to delete this component? Until you leave this page you can restore it from the menu bar.
 
 build_app.footer.tooltip.help: Turn help off
 build_app.footer.help: Hold the mouse over the item you wish to describe.
@@ -676,7 +677,7 @@ controller.help.msg.file.notfound: Component help file not found
 
 mlab.dt.api.js.getLink.heading: Add link
 mlab.dt.api.js.getLink.app_page: I want to link to a page in my app
-mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it. Enter title of page below.
+mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it.
 mlab.dt.api.js.getLink.url: I want to link to an external website
 mlab.dt.api.js.getLink.ok: OK
 mlab.dt.api.js.getLink.cancel: Cancel

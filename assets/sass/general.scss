@@ -22,10 +22,6 @@
     padding: 0px !important;
 }
 
-.mlab_component_settings {
-    width: 300px !important;
-}
-
 .h-separator {
     width: 100%;
     border-bottom: 1px solid $border-color;
@@ -293,4 +289,33 @@
     background-size: contain;
     background-color: $toolbox-menu-color;
     border: 1px solid $primary-color;
+}
+
+/* hacks for test day */
+#mlab_format_menu .menu.mlab_component_settings {
+    width: 300px !important;
+}
+
+#mlab_format_menu .menu.mlab_component_settings * {
+    float: none;
+}
+
+#mlab_format_menu .menu.mlab_component_settings label {
+    width: 90%;
+    line-height: 2.2em;
+    vertical-align: middle;
+    text-align: left;
+}
+
+#mlab_format_menu .menu.mlab_component_settings select, #mlab_format_menu .menu.mlab_component_settings input[type="text"] {
+    width: 70%;
+}
+
+#mlab_format_menu .menu.mlab_component_settings p {
+    padding-left: 40px;
+    text-align: left;
+}
+/* alternative to mlab_hidden */
+.mlab_invisible {
+    visibility: hidden;
 }

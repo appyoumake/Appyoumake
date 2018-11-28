@@ -8,29 +8,33 @@
         </button>
     </div>  
     <div class="v-separator"></div>
-    
-    <button data-open-modal="mlab_dialog_delete" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.delete.tooltip{% endtrans %}">
-        <i class="far fa-trash-alt"></i> {% trans %}editor.tabs.format.component.delete{% endtrans %}
-    </button>
-    
+    <div>
+        <button data-open-modal="mlab_dialog_delete" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.delete.tooltip{% endtrans %}">
+            <i class="far fa-trash-alt"></i> {% trans %}editor.tabs.format.component.delete{% endtrans %}
+        </button>
+    </div>
     <div class="v-separator"></div>
-    
-    <button data-action="component.cut" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.cut.tooltip{% endtrans %}">
-        <i class="fas fa-cut"></i> {% trans %}editor.tabs.format.component.cut{% endtrans %}
-    </button>
-    <button data-action="component.copy" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.copy.tooltip{% endtrans %}">
-        <i class="fas fa-copy"></i> {% trans %}editor.tabs.format.component.copy{% endtrans %}
-    </button>
-    <button data-action="component.paste" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.paste.tooltip{% endtrans %}">
-        <i class="fas fa-paste"></i> {% trans %}editor.tabs.format.component.paste{% endtrans %}
-    </button>
-    
+    <div>
+        <button data-action="component.cut" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.cut.tooltip{% endtrans %}">
+            <i class="fas fa-cut"></i> {% trans %}editor.tabs.format.component.cut{% endtrans %}
+        </button>
+    </div>
+    <div>
+        <button data-action="component.copy" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.copy.tooltip{% endtrans %}">
+            <i class="fas fa-copy"></i> {% trans %}editor.tabs.format.component.copy{% endtrans %}
+        </button>
+    </div>
+    <div>
+        <button data-action="component.paste" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.paste.tooltip{% endtrans %}">
+            <i class="fas fa-paste"></i> {% trans %}editor.tabs.format.component.paste{% endtrans %}
+        </button>
+    </div>
     <div class="v-separator" id="mlab_common_optional_separator"></div>
-    
-    <button data-action='component.tool.credentials' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'>
-        <i class="fas fa-sign-out-alt"></i> {% trans %}editor.tabs.format.component.credentials{% endtrans %}
-    </button>
-    
+    <div>
+        <button data-action='component.tool.credentials' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'>
+            <i class="fas fa-sign-out-alt"></i> {% trans %}editor.tabs.format.component.credentials{% endtrans %}
+        </button>
+    </div>
     <div class='toolbox-menu'>
         <button data-open-menu='component.tool.storage_plugin' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'>
             <i class="fas fa-cloud-upload-alt"></i> {% trans %}editor.tabs.format.component.storage{% endtrans %}

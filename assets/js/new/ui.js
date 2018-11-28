@@ -360,7 +360,7 @@ var Mlab_dt_ui = {
         
 //attach event handler. Clicking outside = cancel.
         close_button.on("click", func_ok);
-        close_button.on("click", function() { $(this).closest("toolbox-menu").removeClass("open"); });
+        close_button.on("click", function() { $(this).closest(".toolbox-menu").removeClass("open"); });
         $(window).bind("click.closeMenu", function(e) {
             if(e.target !== menu[0] && toolboxMenu.find(e.target).length === 0) {
                 if (func_cancel) {
@@ -637,14 +637,13 @@ var Mlab_dt_ui = {
         },
         
         linkDialog: function (options) {
-            return $('<div id="mlab_dt_link_dialog">' + 
-                '<br><label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="page" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label><br>' + 
-                '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + options + '</select><br>' + 
-                '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label><br>' + 
-                '<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input">' + '<br>' + 
-                '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label><br>' + 
-                '<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input">' + '<br>' + 
-              '</div>');
+            return $('<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="page" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.app_page"] + '</label>' + 
+                       '<p>Select the page to link to below.' +
+                       '<select id="mlab_dt_link_app_pages" class="mlab_dt_select">' + options + '</select></p><hr>' + 
+                     '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="newpage" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.new_page"] + '</label>' + 
+                       '<p>Enter a title for the new page below.<input type="text" id="mlab_dt_link_app_new_page" class="mlab_dt_input"></p><hr>' +
+                     '<label class="mlab_dt_label"><input type="radio" name="mlab_dt_getlink_choice" value="url" class="mlab_dt_input">' + _tr["mlab.dt.api.js.getLink.url"] + '</label>' + 
+                       '<p>Enter the URL of the website below.<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input"></p>');
         },
 
         section: function (sectionTOC, i, section) {
