@@ -1180,7 +1180,7 @@ class AppController extends Controller
                 $page = $fileManager->createNewPage(
                     $request->get('position', null),
                     $request->get('section', null),
-                    $title
+                    $request->request->get('title', null)
                 );
                 
 //we may want to open pages in the background, check parameter to see if this is true.

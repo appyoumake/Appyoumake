@@ -796,9 +796,9 @@ class FileManagement {
         }
     }
     
-    public function savePage($pageNum, $html) {
+    public function savePage($pageNum, $html, $title = null) {
         $pageTOC = $this->getPageTOC($pageNum);
-        $title = $pageTOC['title'];
+        $title = $title ? $title : $pageTOC['title'];
 
 //get path of file to save
         if ($pageNum === 0) {
@@ -816,7 +816,7 @@ class FileManagement {
             return file_put_contents ($file_path, $page);
         }
     }
-    
+
     /**
      * copies a page
      * @param type $app
@@ -1403,7 +1403,7 @@ class FileManagement {
         }
 
         //$content = $doc->saveHtml($doc->getElementById($this->config["app"]["content_id"]));
-        $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
+        $this->savePage($cached_app_path . "000.html", $content, $doc->getElementsByTagName('title')->item(0)->textContent);
 
 //get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
         preg_match_all('~%%(.+?)%%~', $frontpage_content, $placeholders);
