@@ -1149,6 +1149,13 @@ class AppController extends Controller
                 );
                 break;
 
+            case 'section_indent':
+                $fileManager->indentSection(
+                    $request->get('sectionId'),
+                    $request->get('indent')
+                );
+                break;
+            
             case 'section_delete':
                 $fileManager->deleteSection(
                     $request->get('sectionId')

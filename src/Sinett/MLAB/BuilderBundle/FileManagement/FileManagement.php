@@ -2019,7 +2019,7 @@ class FileManagement {
                 array_push($parentSection['children'], $section);
             }
         } else {
-            if($position !== null) {
+            if(!empty($position)) {
                 array_splice($appConfig['tableOfContents'], $position, 0, [$section]);
             } else {
                 array_push($appConfig['tableOfContents'], $section);
@@ -2030,6 +2030,39 @@ class FileManagement {
 
         return $section;
 
+    }
+
+    public function indentSection($sectionId, $indent) {
+        if($indent == 'down') {
+            return $this->deleteSection($sectionId);
+        }
+
+
+        $appConfig = $this->getAppConfig($this->app);
+
+        $section = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parentSection);
+        $key = key($parentSection);
+        $cut = array_slice($parentSection[$key], $key, 1);
+
+        if(isset($parentSection[$key][$key-1]) && $parentSection[$key][$key-1]['type'] == 'section'){
+            array_splice(
+                $parentSection[$key][$key-1]['children'], 
+                count($parentSection[$key][$key-1]['children']),
+                0,
+                $cut
+            );
+
+            $cut = array_slice($parentSection[$key], $key, 1);
+        } else {
+            $newSection = $this->getNewSectionConfig();
+            $newSection['children'] = $cut;
+            
+            array_splice($parentSection[$key], $key, 1, [$newSection]);
+        }
+
+        
+
+        return $this->updateAppConfig($appConfig);
     }
 
     public function updateSectionTitle($sectionId, $title) {
@@ -2057,12 +2090,10 @@ class FileManagement {
         $parents = [];
 
         $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parents);
-        foreach ($parents as $key => &$parent) {
-            $children = $parent[$key]['children'];
-            
-            unset($parent[$key]);
-            $parent = array_merge($parent, $children);
-        }
+        $key = key($parents);
+        $children = $parents[$key][$key]['children'];
+
+        array_splice($parents[$key], $key, 1, $children);
 
         return $this->updateAppConfig($appConfig);
     }
