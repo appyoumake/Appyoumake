@@ -546,7 +546,7 @@ var Mlab_dt_ui = {
 
         tableOfContents: function (toc, section = null) {
             return toc.map((item, i) => this[item.type](item, i, section))
-                .concat(this.addTo(section, toc.length+1))
+                // .concat(this.addTo(section, toc.length+1))
                 .join('');
         },
 
@@ -564,7 +564,7 @@ var Mlab_dt_ui = {
                     data-page-number="${pageTOC.pageNumber}"
                     data-position="${i}"
                     data-section="${section}">
-                    <div class="insert-new-here">
+                    <div class="insert-new-here insert-before-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
@@ -589,6 +589,19 @@ var Mlab_dt_ui = {
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
+                    <div class="insert-new-here insert-after-page">
+                        <button>
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                        <div class="select">
+                            <button data-action-click="newPage" data-position="${i+1}" data-section="${section}">
+                                page
+                            </button>
+                            <button data-action-click="newSection" data-position="${i+1}" data-section="${section}">
+                                section
+                            </button>
+                        </div>
+                    </div>
                 </li>
             `;
         },
@@ -626,6 +639,7 @@ var Mlab_dt_ui = {
                     </div>
                     <ul>
                         ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
+                        ${this.addTo(sectionTOC.id, sectionTOC.children.length+1)}
                     </ul>
                 </li>
             `;
@@ -638,9 +652,7 @@ var Mlab_dt_ui = {
                     data-section="${section}"
                     data-position="${position}"
                 >
-                    <button data-action-click="newPage" data-section="${section}">
-                        <i class="fas fa-plus fa-fw"></i>
-                    </button>
+
                 </li>
             `;
         },

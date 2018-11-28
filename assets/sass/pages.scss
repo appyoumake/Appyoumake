@@ -85,7 +85,16 @@
                 position: absolute;
                 top: -10px;
                 border-bottom: 2px dashed blue;
+            }
+        }
 
+        &.insert-after {
+            &:after {
+                content: '';
+                width: 100%;
+                position: absolute;
+                top: -10px;
+                border-bottom: 2px dashed blue;
             }
         }
 
@@ -98,16 +107,47 @@
             height: 25px;
         }
         .insert-new-here{
+            // display: none;
+            opacity: 0;
+
             position: absolute;
-            top: -30px;
             width: 100%;
-            border-bottom: 2px dashed blue;
+            height: 25%;
             text-align: right;
-            display: none;
+            z-index: 1200;
+
+            &.insert-before-page {
+                top: -6px;
+                border-top: 2px dashed blue;
+                > button {
+                    top: -12.5px;
+                }
+
+                .select {
+                    top:-30px;
+                }
+            }
+
+            &.insert-after-page {
+                bottom: -6px;
+                border-bottom: 2px dashed blue;
+
+                > button {
+                    bottom: -34px;
+                }
+
+                .select {
+                    top: 20px;
+                }
+            }
 
             > button {
                 position: relative;
-                top: 12.5px;
+            }
+
+            &:hover {
+                opacity: 1;
+                // display: block;
             }
         }
 
@@ -117,7 +157,6 @@
                 transition: visibility 1s, opacity 0.2s ease;
                 position: absolute;
                 right: 30px;
-                top: 0;
                 background-color: $light-color;
                 border: 1px solid $dark-color;
                 z-index: 1;
@@ -135,6 +174,7 @@
         }
 
         &.insert-in-section{
+            min-height: 1em;
             button {
                 margin: 0 auto;
             }
@@ -152,7 +192,6 @@
 
 
     .level-name, .page-name {
-        padding: 10px 0;
         display: flex;
         flex: 0 0 100%;
         p {
