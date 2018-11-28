@@ -201,10 +201,9 @@ Mlab_dt_design.prototype = {
             if (typeof this.parent.components[comp_id].code.onCreate != "undefined") {
                 this.parent.components[comp_id].code.onCreate(el);
             }
-            //if the component has an autorun function efined we call it here, with the componet as the parameter
+//if the component has an autorun function defined we call the click for the matching button here
             if (typeof this.parent.components[comp_id].conf.autorun_on_create == "string") {
-                var func = this.parent.components[comp_id].conf.autorun_on_create;
-                eval("this.parent.components[comp_id].code." + func + "(el, {currentTarget: mlab.dt.qtip_tools.qtip().tooltip.find('[data-mlab-comp-tool-id=\"" + func + "\"]')[0]});")
+                mlab.dt.ui.triggerAutoRun(comp_id)
             }
         } else if (typeof this.parent.components[comp_id].code.onLoad != "undefined") {
             this.parent.components[comp_id].code.onLoad(el);

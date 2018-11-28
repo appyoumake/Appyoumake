@@ -133,6 +133,19 @@
 {% endfor %}
 {% endset %}
 
+    <div id="mlab_dialog_upload" class="modal">
+        <div class="modal-title"> {% trans %}mlab.dt.api.js.uploadMedia.qtip.title{% endtrans %}
+            <button data-close-modal class="close">&times;</button>
+        </div>
+        <div class="modal-content">
+            
+        </div>
+        <div class="modal-bottom">
+            <button id="mlab_cp_mediaupload_button_cancel" data-close-modal class="modal-btn secondary">{% trans %}mlab.dt.api.js.uploadMedia.qtip.content.4{% endtrans %}</button>
+            <button id="mlab_cp_mediaupload_button_ok" data-close-modal class="modal-btn" >{% trans %}mlab.dt.api.js.uploadMedia.qtip.content.5{% endtrans %}</button>
+        </div>
+    </div>
+
     <div id="mlab_dialog_delete" class="modal">
         <div class="modal-title"> {% trans %}build_app.dialog.delete.title{% endtrans %}
             <button data-close-modal class="close">&times;</button>
