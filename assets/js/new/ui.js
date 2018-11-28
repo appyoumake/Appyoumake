@@ -482,7 +482,7 @@ var Mlab_dt_ui = {
     },
 
     editSectionTitle: function(data, e) {
-        var $title = $(e.currentTarget),
+        var $title = $(e.currentTarget).parent().children('p'),
             sectionId = data.sectionId;
 
         $title.data('previousTitle', $title.text().trim());
@@ -490,6 +490,11 @@ var Mlab_dt_ui = {
         if($title.attr('contenteditable') != "true"){
             $title.attr('contenteditable', true)
                 .focus()
+                .keydown(function(e) {
+                    if (e.keyCode == 13) {
+                        $(this).trigger('focusout');
+                    }
+                })
                 .one('focusout', function() {
                     $title.attr('contenteditable', false);
                     var newTitle = $title.text().trim();
@@ -501,7 +506,7 @@ var Mlab_dt_ui = {
     },
 
     editPageTitle: function(data, e) {
-        var $title = $(e.currentTarget).parent(),
+        var $title = $(e.currentTarget).parent().children('p'),
             pageNum = data.pageNum;
 
         $title.data('previousTitle', $title.text().trim());
@@ -509,6 +514,11 @@ var Mlab_dt_ui = {
         if($title.attr('contenteditable') != "true"){
             $title.attr('contenteditable', true)
                 .focus()
+                .keydown(function(e) {
+                    if (e.keyCode == 13) {
+                        $(this).trigger('focusout');
+                    }
+                })
                 .one('focusout', function() {
                     $title.attr('contenteditable', false);
                     var newTitle = $title.text().trim();
@@ -553,7 +563,7 @@ var Mlab_dt_ui = {
 
         tableOfContents: function (toc, section = null) {
             return toc.map((item, i) => this[item.type](item, i, section))
-                .concat(this.addTo(section, toc.length+1))
+                // .concat(this.addTo(section, toc.length+1))
                 .join('');
         },
 
@@ -571,7 +581,7 @@ var Mlab_dt_ui = {
                     data-page-number="${pageTOC.pageNumber}"
                     data-position="${i}"
                     data-section="${section}">
-                    <div class="insert-new-here">
+                    <div class="insert-new-here insert-before-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
@@ -586,16 +596,29 @@ var Mlab_dt_ui = {
                     </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
-                        <p>
-                            ${pageTOC.title}
+                        <div class="page-name">
+                            <p title="${pageTOC.title}">${pageTOC.title}</p>
                             <button data-action-click="editPageTitle" data-page-num="${pageTOC.pageNumber}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                        </p>
+                        </div>
                     </div>
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
+                    <div class="insert-new-here insert-after-page">
+                        <button>
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                        <div class="select">
+                            <button data-action-click="newPage" data-position="${i+1}" data-section="${section}">
+                                page
+                            </button>
+                            <button data-action-click="newSection" data-position="${i+1}" data-section="${section}">
+                                section
+                            </button>
+                        </div>
+                    </div>
                 </li>
             `;
         },
@@ -633,15 +656,18 @@ var Mlab_dt_ui = {
                     data-id="${sectionTOC.id}"
                     data-position="${i}"
                     data-section="${section}">
-                    <div class="level-name" data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
-                        ${sectionTOC.title}
-                        <i class="fas fa-pencil-alt"></i>
+                    <div class="level-name">
+                        <p title="${sectionTOC.title}">${sectionTOC.title}</p>
+                        <button data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
                         <button data-action-click="deleteSection" data-section-id="${sectionTOC.id}">
                             <i class="far fa-trash-alt"></i>
                         </button>
                     </div>
                     <ul>
                         ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id) : ''}
+                        ${this.addTo(sectionTOC.id, sectionTOC.children.length+1)}
                     </ul>
                 </li>
             `;
@@ -654,9 +680,7 @@ var Mlab_dt_ui = {
                     data-section="${section}"
                     data-position="${position}"
                 >
-                    <button data-action-click="newPage" data-section="${section}">
-                        <i class="fas fa-plus fa-fw"></i>
-                    </button>
+
                 </li>
             `;
         },
