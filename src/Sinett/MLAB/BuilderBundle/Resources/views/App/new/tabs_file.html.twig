@@ -14,10 +14,24 @@
             <i class="fas fa-mobile-alt"></i> {% trans %}editor.tabs.file.test.mob{% endtrans %}
         </button>
     </div>
-    <button data-open-menu class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.file.qrcode.tooltip{% endtrans %}" >
-        <i class="fas fa-qrcode"></i> {% trans %}editor.tabs.file.qrcode{% endtrans %}
-    </button>
+    <div class='toolbox-menu'>
+        <button data-open-menu class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.file.qrcode.tooltip{% endtrans %}" >
+            <i class="fas fa-qrcode"></i> {% trans %}editor.tabs.file.qrcode{% endtrans %}
+        </button>
+        <div class='menu'>
+            {% for platform in mlab_variables.compiler_service.supported_platforms %}
+                <div data-mlab-download-link-info='{{ platform }}'>
+                    <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>
+                    <input id='mlab_download_link_{{ platform }}' class='mlab_download_link'>&nbsp;</input>
+                    <br>
+                    <button class="common-btn" onclick="mlab.dt.management.copyUrl('mlab_download_link_{{ platform }}');">Copy link to app</button>
+                </div>
+            {% endfor %}                             
+        </div>
+    </div>
         
+        
+
     <div class="v-separator"></div>
     
     <div>

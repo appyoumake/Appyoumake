@@ -57,7 +57,7 @@ Mlab_dt_management.prototype = {
 //TODO: skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
                         $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
-                        $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
+                        $("#mlab_download_link_" + platform).val(text);
 
 /*                        $('#mlab_download_'+ platform + '_icon').qtip({
                             hide:{ delay:500, fixed:true },//give a small delay to allow the user t mouse over it.
@@ -1223,7 +1223,7 @@ Mlab_dt_management.prototype = {
                             mlab.dt.app.compiled_files[data.platform] = data.filename;
                             var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
                             $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
-                            $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
+                            $("#mlab_download_link_" + data.platform).val(text);
                             mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.ready"], false);
                         } else {
                             mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.failed"], false);
@@ -1235,7 +1235,14 @@ Mlab_dt_management.prototype = {
             },
         },
     }, //end socket object
-    
+
+    copyUrl: function(element) {
+        var copyText = document.getElementById(element);
+        copyText.select();
+        document.execCommand("copy");
+        alert("The app URL has been copied to the clipboard");
+    },
+
     market: {
 
         login : function () {

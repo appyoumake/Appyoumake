@@ -1083,9 +1083,6 @@ Mlab_dt_api.prototype = {
   * @returns {Boolean|Array of strings}
  */
     getCredentials: function (el, component_id, credentials_required, cb_function, edit, params) {
-//TODO: Fix so use ui.js for render, etc
-        alert("Not implemented");
-        return;
         var default_cred_values = mlab.dt.components[component_id].conf.credential_values;
         var needinfo = false;
         var saved_cred_values = this.getVariable(params.component, "storage_plugin") ; //params.component is always set to the active Mlab component
@@ -1114,6 +1111,10 @@ Mlab_dt_api.prototype = {
             
         }
         if (needinfo || edit) {
+//TODO: Fix so use ui.js for render, etc
+            alert("Not implemented");
+            return;
+            
             var dlg = $('<div />', {'id': "mlab_dt_dialog_credentials", title: _tr["mlab.dt.api.js.getCredentials.dlg.title"] } );
             dlg.append( $('<p />', {     text: _tr["mlab.dt.api.js.getCredentials.dlg.text"] , 
                                           'class': 'mlab_dt_text_info' } ) );

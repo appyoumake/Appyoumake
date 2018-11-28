@@ -319,3 +319,9 @@
 .mlab_invisible {
     visibility: hidden;
 }
+
+//text box, make look more like plain text
+.mlab_download_link {
+    color: $dark-text;
+    border: none;
+}
