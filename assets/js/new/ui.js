@@ -409,7 +409,7 @@ var Mlab_dt_ui = {
             return true;
         });
 
-        var tableOfContents = this.render.tableOfContents(activePages);
+        var tableOfContents = this.render.indexPage() + this.render.tableOfContents(activePages);
         var deletedList = this.render.deletedList(deletedPages);
         var $activeTab = $('.nav-pages .active');
         var $listActive = $activeTab.find('.list-pages');
@@ -760,6 +760,21 @@ var Mlab_dt_ui = {
         
         divider: function () {
             return '<div class="v-separator"></div>';
+        },
+        
+        indexPage: function () {
+            return `
+                <li
+                    class="display-alt"
+                    data-type="page">
+                    <div data-action-click="openPage" data-page-num="0">
+                        <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
+                        <div class="page-name">
+                            <p title="Index">Index</p>
+                        </div>
+                    </div>
+                </li>
+            `;
         },
         
     }
