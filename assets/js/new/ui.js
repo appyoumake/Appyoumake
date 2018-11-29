@@ -188,6 +188,7 @@ var Mlab_dt_ui = {
                 if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {
                     $(this).unbind("click.closeMenu");
                     $('.toolbox-menu').removeClass('open');
+                    $(e.target).click()
                 }
             });
             
@@ -368,6 +369,7 @@ var Mlab_dt_ui = {
                 }
                 $(this).unbind("click.closeMenu");
                 $('.toolbox-menu').removeClass('open');
+                $(e.target).click();
             }
         });
 
