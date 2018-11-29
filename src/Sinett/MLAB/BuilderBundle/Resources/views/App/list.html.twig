@@ -14,7 +14,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 				    </td>
                     <td class="builder_app_list_icon"><a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img data-mlab-icon-id="{{ app.id }}" src="{{ app_url ~ app.path ~ "/" ~ app.active_version ~ "/" ~ app_icon }}"></a></td>
                     <td class="builder_app_list_name mlab_max_width_medium" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
-                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
+                        <a href="{{ path('new_app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
 				    </td>
                     
 				    <td class="mlab_align_center">
