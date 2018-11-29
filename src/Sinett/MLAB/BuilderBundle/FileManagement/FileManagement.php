@@ -24,7 +24,7 @@ class CustomPreProcessing {
     
 //gets total number of pages in an app
     public function getnumberofpages($file_mgmt, $config, $app, $app_path) {
-   		$pages = $file_mgmt->getAppConfigValue($app, "page_order");
+   		$pages = $file_mgmt->getAppConfigValue($app, "tableOfContents");
         if (!$pages) {
             $pages = glob( $app_path . "/???.html" );
         }
@@ -34,13 +34,15 @@ class CustomPreProcessing {
 //returns list of pages in the order they are to be displayed
     public function getpageorder($file_mgmt, $config, $app, $app_path) {
         
-        $pages = $file_mgmt->getAppConfigValue($app, "page_order");
-        if (!$pages) {
-            $pages = array_map("basename", glob( $app_path . "/???.html" ));
+        $toc = $file_mgmt->getAppConfigValue($app, "tableOfContents");
+        $page_order = array();
+        foreach ($toc as $toc_item) {
+            if ($toc_item["type"] === "page" && ( isset($toc_item["is_deleted"]) && $toc_item["is_deleted"] ) ) {
+                $page_order[] = $toc_item["pageNumber"];
+            }
         }
-        $page_order = array_map(function($val){return intval($val); }, $pages);
         
-        array_unshift($page_order, 0);
+        //TODO: Check if this is required to remove index.html array_unshift($page_order, 0);
         return json_encode($page_order);
     }
     
