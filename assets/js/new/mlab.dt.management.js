@@ -95,7 +95,9 @@ Mlab_dt_management.prototype = {
                     if (data.lock_status == "locked") {
                         that.parent.app.locked = true;
                         $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
-                        $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                        var lft = $(".builder")[0].getBoundingClientRect().left;
+                        var wdt = $(".builder")[0].getBoundingClientRect().width
+                        $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:' + lft + 'px;width: ' + wdt + 'px;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                     } else {
                         that.parent.app.locked = false;
                         $("#mlab_editor_disabled").remove();
@@ -549,7 +551,9 @@ Mlab_dt_management.prototype = {
                 if (data.lock_status == "locked") {
                     that.parent.app.locked = true;
                     $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
-                    $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                    var lft = $(".builder")[0].getBoundingClientRect().left;
+                    var wdt = $(".builder")[0].getBoundingClientRect().width
+                    $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:' + lft + 'px;width: ' + wdt + 'px;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                 } else {
                     that.parent.app.locked = false;
                     $("#mlab_editor_disabled").remove();

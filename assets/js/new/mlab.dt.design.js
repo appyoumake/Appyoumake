@@ -113,7 +113,7 @@ Mlab_dt_design.prototype = {
             $(new_comp).keydown( function(e) { mlab.dt.components[$(this).data("mlab-type")].code.onKeyPress(e); } );
         }
 
-        $('.mlab_current_component').qtip('hide'); 
+        //$('.mlab_current_component').qtip('hide'); 
 
         if (this.parent.api.display.componentHighlightSelected(new_comp)) {
             mlab.dt.ui.displayComponentTools(new_comp);
@@ -239,6 +239,7 @@ Mlab_dt_design.prototype = {
 
 
     component_moveup : function (el) {
+        debugger;
         if (typeof el == "undefined") {
             var el = $(".mlab_current_component");
         }
@@ -249,10 +250,10 @@ Mlab_dt_design.prototype = {
             el.insertBefore(el.prev());
             var local_el = el;
             el.fadeIn(500, function(){
-                local_el.qtip("api").reposition(null, false);
+/*                local_el.qtip("api").reposition(null, false);
                 if (mlab.dt.api.properties_tooltip) {
                     $(mlab.dt.api.properties_tooltip).qtip("api").reposition(null, false);
-                }
+                } */
             });
         });
         this.parent.flag_dirty = true;
@@ -269,10 +270,10 @@ Mlab_dt_design.prototype = {
             el.insertAfter(el.next());
             var local_el = el;
             el.fadeIn(500, function(){
-                local_el.qtip("api").reposition(null, false);
+/*                local_el.qtip("api").reposition(null, false);
                 if (mlab.dt.api.properties_tooltip) {
                     $(mlab.dt.api.properties_tooltip).qtip("api").reposition(null, false);
-                }
+                } */
             });
         });
         this.parent.flag_dirty = true;
