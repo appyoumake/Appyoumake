@@ -105,12 +105,14 @@ class mlab_ct_index {
                     ];
                     $addIndex($toc['children'], $level+1);
                 } else {
-                    $index[] = [
-                        'chapter' => false,
-                        'level' => $level,
-                        'title' => $toc['title'],
-                        'page_id' => $toc['pageNumber'],
-                    ];
+                    if (!isset($toc['is_deleted']) || !$toc['is_deleted']) {
+                        $index[] = [
+                            'chapter' => false,
+                            'level' => $level,
+                            'title' => $toc['title'],
+                            'page_id' => $toc['pageNumber'],
+                        ];
+                    }
                 }
             }
         };
