@@ -85,6 +85,8 @@ Mlab_dt_management.prototype = {
                         that.parent.app.curr_pagetitle = title;
                         $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle); 
                         that.parent.flag_dirty = true;
+
+                        that.page_update_title(0, title);
                     }
                 }
 
@@ -117,7 +119,7 @@ Mlab_dt_management.prototype = {
             that.parent.utils.update_app_title_bar(mlab.dt.app.config);
             
 //set the trap for the paste function so we force plain text
-            $("#" + mlab.dt.config["app"]["content_id"]).on("paste", function(e) {
+            $('#mlab_editor').on("paste", "#" + mlab.dt.config["app"]["content_id"], function(e) {
 // stop original paste from happening
                 e.preventDefault();
             

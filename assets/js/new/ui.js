@@ -12,28 +12,28 @@ $(document).ready(function() {
     mlab.dt.ui.init();
 
     $('.nav-pages .active')
-        .on('dragstart', 'li', function (e) {
+        .on('dragstart', 'li:not([data-type=index])', function (e) {
             e.stopPropagation(); 
             $(this).addClass('dragging');
             e.originalEvent.dataTransfer.setData("data", JSON.stringify($(this).data()));
             return true;
         })
 
-        .on('dragover', 'li:not(.dragging)', function (e) {
+        .on('dragover', 'li:not(.dragging):not([data-type=index])', function (e) {
             e.originalEvent.target.classList.add('insert-before');
             return false;
         }) 
-        .on('dragleave', 'li', function (e) {
+        .on('dragleave', 'li:not([data-type=index])', function (e) {
             e.originalEvent.target.classList.remove('insert-before');
             return false;
         }) 
-        .on('dragend', 'li', function (e) {
+        .on('dragend', 'li:not([data-type=index])', function (e) {
             $(this).removeClass('dragging');
             $(this).siblings().removeClass('insert-before');
 
             return false;
         })
-        .on('drop', 'li', function (e) {
+        .on('drop', 'li:not([data-type=index])', function (e) {
             e.originalEvent.preventDefault();
             var data = JSON.parse(e.originalEvent.dataTransfer.getData("data"));
             var dropData = $(this).data();
@@ -397,8 +397,13 @@ var Mlab_dt_ui = {
     
     updateAppTableOfContents: function(content, oldContent) {
         var deletedPages = [];
+        var index;
 
         var activePages = content.filter(function f(o) {
+            if (o.type == 'page' && o.pageNumber == 0) {
+                index = o;
+                return false;
+            }
             if (o.children) {
                 o.children = o.children.filter(f);
             }
@@ -409,7 +414,7 @@ var Mlab_dt_ui = {
             return true;
         });
 
-        var tableOfContents = this.render.indexPage() + this.render.tableOfContents(activePages);
+        var tableOfContents = this.render.indexPage(index) + this.render.tableOfContents(activePages);
         var deletedList = this.render.deletedList(deletedPages);
         var $activeTab = $('.nav-pages .active');
         var $listActive = $activeTab.find('.list-pages');
@@ -762,21 +767,23 @@ var Mlab_dt_ui = {
             return '<div class="v-separator"></div>';
         },
         
-        indexPage: function () {
+        indexPage: function (index) {
             return `
                 <li
                     class="display-alt"
-                    data-type="page">
-                    <div data-action-click="openPage" data-page-num="0">
+                    data-type="index">
+                    <div data-action-click="openPage" data-page-num="${index.pageNumber}">
                         <div class="preview"><img src="https://via.placeholder.com/100x150/FFFFFF/000000"></div>
                         <div class="page-name">
-                            <p title="Index">Index</p>
+                            <p title="${index.title}">${index.title}</p>
+                            <button data-action-click="editPageTitle" data-page-num="${index.pageNumber}">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </li>
             `;
         },
-        
     }
 };
     
