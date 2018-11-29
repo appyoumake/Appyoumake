@@ -85,6 +85,8 @@ Mlab_dt_management.prototype = {
                         that.parent.app.curr_pagetitle = title;
                         $("#mlab_page_control_title").text(that.parent.app.curr_pagetitle); 
                         that.parent.flag_dirty = true;
+
+                        that.page_update_title(0, title);
                     }
                 }
 

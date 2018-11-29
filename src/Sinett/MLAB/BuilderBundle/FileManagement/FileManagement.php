@@ -668,7 +668,12 @@ class FileManagement {
  */
     public function getAppConfig($app = null) {
         $defaultConfig = [
-            'tableOfContents' => []
+            'tableOfContents' => [[
+                'title' => 'Index',
+                'type' => 'page',
+                'pageNumber' => 0,
+                'fileName' => 'index.html'
+            ]]
         ];
         $config = [];
 
@@ -797,7 +802,7 @@ class FileManagement {
     }
     
     public function savePage($pageNum, $html, $title = null) {
-        if(is_numeric($pageNum)) {
+        if(is_numeric($pageNum) && $pageNum !== 0) {
             $pageTOC = $this->getPageTOC($pageNum);
             $title = $pageTOC['title'];
         }
@@ -1974,8 +1979,6 @@ class FileManagement {
                 array_push($tableOfContents, $page);
             }
 
-
-            // $appConfig['tableOfContents'] = [];
 
             $this->updateAppConfig($appConfig);
 
