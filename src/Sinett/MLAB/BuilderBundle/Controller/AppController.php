@@ -1145,7 +1145,7 @@ class AppController extends Controller
             case 'section_new':
                 $fileManager->createNewSection(
                     $request->get('position', null),
-                    $request->get('section', null)
+                    $request->get('level', null)
                 );
                 break;
 
@@ -1179,7 +1179,6 @@ class AppController extends Controller
             case 'page_new':
                 $page = $fileManager->createNewPage(
                     $request->get('position', null),
-                    $request->get('section', null),
                     $request->request->get('title', null)
                 );
                 
@@ -1223,7 +1222,6 @@ class AppController extends Controller
             case 'toc_move':
                 $fileManager->tocMove(
                     $request->get('node'),
-                    $request->get('section'),
                     $request->get('position')
                 );
                 break;

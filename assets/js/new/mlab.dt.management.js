@@ -846,12 +846,12 @@ Mlab_dt_management.prototype = {
         });
     },
 
-    section_new : function (section = null, position = null) {
+    section_new : function (level = null, position = null) {
         var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
             .replace("_ACTION_", 'section_new')
             .replace("_UID_", this.parent.uid);
 
-        $.post(url, {_sender: this.parent.uid, section, position}, function(data) {
+        $.post(url, {_sender: this.parent.uid, level, position}, function(data) {
             if (data.result == "success") {
                 mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             }

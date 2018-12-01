@@ -274,21 +274,34 @@
         > ul {
             padding-top: 20px;
             > li {
+
+                &.section-level-0 {
+                    > .level-name {
+                        color: $second-level-text;
+                    }
+
+                    > ul {
+                        border-left: 2px solid $second-level-text;
+                    }
+                }
+                &.section-level-1 {
+                    > .level-name {
+                        color: $third-level-text;
+                    }
+
+                    > ul {
+                        border-left: 2px solid $third-level-text;
+                    }
+                }
+
+            
+
+
+
+
+
                 margin-right: 10px;
-                > .level-name {
-                    color: $second-level-text;
-                }
-                > ul {
-                    border-left: 2px solid $second-level-text;
-                        > li {
-                            > .level-name {
-                                color: $third-level-text;
-                            }
-                            > ul {
-                                border-left: 2px solid $third-level-text;
-                            }
-                        }
-                }
+
             }
         }
     }
