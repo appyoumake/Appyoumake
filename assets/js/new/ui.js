@@ -609,10 +609,10 @@ var Mlab_dt_ui = {
 
         currentPosition: 0,
 
-        tableOfContents: function (toc = [], section = null, level = 0) {
+        tableOfContents: function (toc = [], level = 0) {
             var _this = this;
 
-            return toc.map((item, i) => this[item.type](item, this.currentPosition++, section, level))
+            return toc.map((item, i) => this[item.type](item, this.currentPosition++, level))
                 // .concat(this.addTo(section, toc.length+1))
                 .join('');
         },
@@ -622,7 +622,7 @@ var Mlab_dt_ui = {
                 .join('');
         },
 
-        page: function (pageTOC, i, section, level) {
+        page: function (pageTOC, i, level) {
             return `
                 <li
                     class="display-alt"
@@ -656,7 +656,7 @@ var Mlab_dt_ui = {
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
-                    <!--div class="insert-new-here insert-after-page">
+                    <!-- /hidden because block page title change/div class="insert-new-here insert-after-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
@@ -696,15 +696,28 @@ var Mlab_dt_ui = {
                        '<p>Enter the URL of the website below.<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input"></p>');
         },
 
-        section: function (sectionTOC, i, section, level) {
+        section: function (sectionTOC, i, level) {
             return `
                 <li
                     class="display-alt section-level-${sectionTOC.level}"
                     draggable="true"
                     data-type="section"
                     data-id="${sectionTOC.id}"
-                    data-position="${i}"
-                    data-section="${section}">
+                    data-position="${i}">
+                    <!--/hidden because block section title change/ div class="insert-new-here insert-before-page">
+                        <button>
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                        <div class="select">
+                            <button data-action-click="newPage" data-position="${i}">
+                                page
+                            </button>
+                            <button data-action-click="newSection" data-position="${i}" data-level="${level}">
+                                section
+                            </button>
+                        </div>
+                    </div -->
+
                     <div class="level-name">
                         <p title="${sectionTOC.title}">${sectionTOC.title}</p>
                         <button data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
@@ -718,20 +731,10 @@ var Mlab_dt_ui = {
                         </button>
                     </div>
                     <ul>
-                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, sectionTOC.id, level+1) : ''}
+                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, level+1) : ''}
                     </ul>
                 </li>
             `;
-        },
-
-        sectionChildren: function (children, section, level) {
-            if(level < 2) {
-                return this.tableOfContents(children, section, level+1);
-            }
-
-            return children.filter(item => item.type == 'page').map((item, i) => this.page(item, i, section))
-                .join('')
-                .concat(children.filter(item => item.type == 'section').map((item, i) => this.sectionChildren(item.children, item.id, level+1)).join(''))
         },
 
         addTo: function (section, position) {
