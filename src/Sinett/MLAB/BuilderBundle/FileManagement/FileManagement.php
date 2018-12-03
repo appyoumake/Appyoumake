@@ -2077,13 +2077,17 @@ class FileManagement {
             return @$b['id'] <=> @$a['id'];
         });
 
+        if(isset($section['level'])) {
+            $section['level'] = min($section['level'], 1);
+        }
+
         $last = reset($listSections);
         $nextId = isset($last['id']) ?  $last['id']+1 : 1;
 
         return array_merge([
             'id' => $nextId,
             'type' => 'section',
-            'level' => 1,
+            'level' => 0,
             'title' => 'New Section ' . $nextId,
         ], $section);
     }
