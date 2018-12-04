@@ -1134,8 +1134,7 @@ Mlab_dt_management.prototype = {
                     return;
                 }
                 
-                mlab.dt.app.page_names = data.pages;
-                mlab.dt.management.app_update_gui_metadata();
+                mlab.dt.ui.props.tableOfContents = data.tableOfContents;
             },
             app_build_update: function(data, obj) {
                 switch (data.status) {
