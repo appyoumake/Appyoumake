@@ -398,26 +398,11 @@ var Mlab_dt_ui = {
     
     
     updateAppTableOfContents: function(content, oldContent) {
-        var deletedPages = [];
-        var index;
+        var activeTree = this.activeTree(content.active);
 
-        var activePages = content.filter(function f(o) {
-            if (o.type == 'page' && o.pageNumber == 0) {
-                index = o;
-                return false;
-            }
-            if (o.children) {
-                o.children = o.children.filter(f);
-            }
-            if(o.is_deleted) {
-                deletedPages.push(o);
-                return false;
-            }
-            return true;
-        });
-
-        var tableOfContents = this.render.indexPage(index) + this.render.tableOfContents(activePages);
-        var deletedList = this.render.deletedList(deletedPages);
+        this.render.currentPosition = 0;
+        var tableOfContents = this.render.indexPage(content.index || undefined) + this.render.tableOfContents(activeTree);
+        var deletedList = this.render.deletedList(content.deleted);
         var $activeTab = $('.nav-pages .active');
         var $listActive = $activeTab.find('.list-pages');
         var $listDeleted = $('.nav-pages .deleted .list-pages');
@@ -431,6 +416,56 @@ var Mlab_dt_ui = {
         // }
     },
 
+    activeTree: function(nodes) {
+        var tree = [];
+        var currentLevel = 0;
+        var currentParent = [];
+        var children = [];
+
+        nodes.map(item => {
+            if(item.type == 'page') {
+                if(currentParent && currentParent[currentLevel]) {
+                    currentParent[currentLevel]['children'].push(item);
+                } else {
+                    tree.push(item);
+                }
+            } else if (item.type == 'section'){
+                item['children'] = [];
+
+                if(item.level > 0 && currentParent && currentParent[currentLevel]) {
+                    if(item.level > 1 || item.level == currentLevel) {
+                        if(currentParent[currentLevel-1]) {
+                            currentParent[currentLevel-1]['children'].push(item);
+                        } else {
+                            tree.push(item);
+                        }
+                    // } else if (item.level > currentLevel) {
+                    //     if(item.level > 2) {
+                    //         currentParent[currentLevel-1]['children'].push(item);
+                    //     } else {
+                    //         currentParent[currentLevel]['children'].push(item);
+                    //     }
+
+                    // } else if (item.level > currentLevel) {
+                    //     currentParent[currentLevel]['children'].push(item);
+                    } else {
+                        currentParent[currentLevel]['children'].push(item);
+                    }
+
+                } else {
+                    tree.push(item);
+                }
+
+                currentLevel = Math.min(1, item.level);
+                currentParent[currentLevel] = item;
+            }
+
+        })
+
+        return tree;
+    },
+    
+    
     triggerAutoRun: function(comp_id) {
         $(".tabs li:nth-child(3) > a").trigger("click");
         var func = mlab.dt.components[comp_id].conf.autorun_on_create;
@@ -454,7 +489,7 @@ var Mlab_dt_ui = {
     },
 
     newSection: function(data) {
-        mlab.dt.management.section_new(data.section, data.position);
+        mlab.dt.management.section_new(data.level, data.position);
     },
 
     movePage: function(data, section, position) {
@@ -572,18 +607,22 @@ var Mlab_dt_ui = {
 
     render: {
 
-        tableOfContents: function (toc, section = null, level = 1) {
-            return toc.map((item, i) => this[item.type](item, i, section, level))
+        currentPosition: 0,
+
+        tableOfContents: function (toc = [], level = 0) {
+            var _this = this;
+
+            return toc.map((item, i) => this[item.type](item, this.currentPosition++, level))
                 // .concat(this.addTo(section, toc.length+1))
                 .join('');
         },
 
-        deletedList: function (toc, section = null) {
+        deletedList: function (toc = [], section = null) {
             return toc.map((item, i) => this.deletedPage(item))
                 .join('');
         },
 
-        page: function (pageTOC, i, section) {
+        page: function (pageTOC, i, level) {
             return `
                 <li
                     class="display-alt"
@@ -591,16 +630,16 @@ var Mlab_dt_ui = {
                     data-type="page"
                     data-page-number="${pageTOC.pageNumber}"
                     data-position="${i}"
-                    data-section="${section}">
+                    data-level="${level}">
                     <div class="insert-new-here insert-before-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
                         <div class="select">
-                            <button data-action-click="newPage" data-position="${i}" data-section="${section}">
+                            <button data-action-click="newPage" data-position="${i}">
                                 page
                             </button>
-                            <button data-action-click="newSection" data-position="${i}" data-section="${section}">
+                            <button data-action-click="newSection" data-position="${i}" data-level="${level}">
                                 section
                             </button>
                         </div>
@@ -617,15 +656,15 @@ var Mlab_dt_ui = {
                     <button class="delete-alt" data-action-click="deletePage" data-page-num="${pageTOC.pageNumber}">
                         <i class="far fa-trash-alt"></i>
                     </button>
-                    <!--div class="insert-new-here insert-after-page">
+                    <!-- /hidden because block page title change/div class="insert-new-here insert-after-page">
                         <button>
                             <i class="fas fa-plus fa-fw"></i>
                         </button>
                         <div class="select">
-                            <button data-action-click="newPage" data-position="${i+1}" data-section="${section}">
+                            <button data-action-click="newPage" data-position="${i+1}">
                                 page
                             </button>
-                            <button data-action-click="newSection" data-position="${i+1}" data-section="${section}">
+                            <button data-action-click="newSection" data-position="${i+1}" data-level="${level}">
                                 section
                             </button>
                         </div>
@@ -657,15 +696,28 @@ var Mlab_dt_ui = {
                        '<p>Enter the URL of the website below.<input type="text" id="mlab_dt_link_app_url" class="mlab_dt_input"></p>');
         },
 
-        section: function (sectionTOC, i, section, level) {
+        section: function (sectionTOC, i, level) {
             return `
                 <li
-                    class="display-alt"
+                    class="display-alt section-level-${sectionTOC.level}"
                     draggable="true"
                     data-type="section"
                     data-id="${sectionTOC.id}"
-                    data-position="${i}"
-                    data-section="${section}">
+                    data-position="${i}">
+                    <!--/hidden because block section title change/ div class="insert-new-here insert-before-page">
+                        <button>
+                            <i class="fas fa-plus fa-fw"></i>
+                        </button>
+                        <div class="select">
+                            <button data-action-click="newPage" data-position="${i}">
+                                page
+                            </button>
+                            <button data-action-click="newSection" data-position="${i}" data-level="${level}">
+                                section
+                            </button>
+                        </div>
+                    </div -->
+
                     <div class="level-name">
                         <p title="${sectionTOC.title}">${sectionTOC.title}</p>
                         <button data-action-click="editSectionTitle" data-section-id="${sectionTOC.id}">
@@ -674,26 +726,15 @@ var Mlab_dt_ui = {
                         <button data-action-click="deleteSection" data-section-id="${sectionTOC.id}">
                             <i class="far fa-trash-alt"></i>
                         </button>
-                        <button class="indent" data-action-click="indentSection" data-indent="${level<2 ? 'up' : 'down'}" data-section-id="${sectionTOC.id}">
-                            ${level<2 ? '>' : '<'}
+                        <button class="indent" data-action-click="indentSection" data-indent="${sectionTOC.level<1 ? 'up' : 'down'}" data-section-id="${sectionTOC.id}">
+                            ${sectionTOC.level<1 ? '>' : '<'}
                         </button>
                     </div>
                     <ul>
-                        ${sectionTOC.children ? this.sectionChildren(sectionTOC.children, sectionTOC.id, level) : ''}
-                        ${this.addTo(sectionTOC.id, sectionTOC.children.length+1)}
+                        ${sectionTOC.children ? this.tableOfContents(sectionTOC.children, level+1) : ''}
                     </ul>
                 </li>
             `;
-        },
-
-        sectionChildren: function (children, section, level) {
-            if(level < 2) {
-                return this.tableOfContents(children, section, level+1);
-            }
-
-            return children.filter(item => item.type == 'page').map((item, i) => this.page(item, i, section))
-                .join('')
-                .concat(children.filter(item => item.type == 'section').map((item, i) => this.sectionChildren(item.children, item.id, level+1)).join(''))
         },
 
         addTo: function (section, position) {
@@ -769,7 +810,7 @@ var Mlab_dt_ui = {
             return '<div class="v-separator"></div>';
         },
         
-        indexPage: function (index) {
+        indexPage: function (index = {title: 'Index', pageNumber: 0}) {
             return `
                 <li
                     class="display-alt"

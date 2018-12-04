@@ -618,7 +618,7 @@ class FileManagement {
                     $app_conf["plugins"] = array_merge($app_conf["plugins"], $temp["plugins"]);
                 }
             }
-            
+            //
             file_put_contents($app_config_path, json_encode($app_conf));
             return true;
         } else {
@@ -670,12 +670,11 @@ class FileManagement {
  */
     public function getAppConfig($app = null) {
         $defaultConfig = [
-            'tableOfContents' => [[
-                'title' => 'Index',
-                'type' => 'page',
-                'pageNumber' => 0,
-                'fileName' => 'index.html'
-            ]]
+            'tableOfContents' => [
+                'index' => ['title' => 'Index', 'pageNumber' => 0, 'type' => 'page'],
+                'active' => [],
+                'deleted' => [],
+            ]
         ];
         $config = [];
 
@@ -687,7 +686,9 @@ class FileManagement {
                 $config = json_decode(file_get_contents($path_app_config), true);
             }
 
-            $this->appConfig = array_merge($defaultConfig, $config);
+            foreach ($defaultConfig as $key => $value) {
+                $this->appConfig[$key] = array_merge($defaultConfig[$key], $config[$key]);
+            }
         }
 
         return $this->appConfig;
@@ -1949,7 +1950,7 @@ class FileManagement {
      * @param type $app
      * @return bool
      */
-    public function createNewPage($position = null, $section = null, $title = null) {
+    public function createNewPage($position = null, $title = null) {
         $pageProperties = $this->getNewPageNum($this->app);
         if ($pageProperties['new_page_num'] === false) {
             return false;
@@ -1968,19 +1969,13 @@ class FileManagement {
                 'pageNumber' =>  $pageProperties['new_page_num'],
             ]);
 
-            if($section) {
-                $tableOfContents = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
-                $tableOfContents = &$tableOfContents[0]['children'];
-            } else {
-                $tableOfContents = &$appConfig['tableOfContents'];
-            }
-
             if(is_numeric($position)) {
-                array_splice($tableOfContents, $position, 0, [$page]);
+                array_splice($appConfig['tableOfContents']['active'], $position, 0, [$page]);
             } else {
-                array_push($tableOfContents, $page);
+                array_push($appConfig['tableOfContents']['active'], $page);
             }
-
+// kosio
+            // $appConfig['tableOfContents'] = [];
 
             $this->updateAppConfig($appConfig);
 
@@ -1990,17 +1985,17 @@ class FileManagement {
         }
     }
 
-    public function searchTOC(&$tableOfContents, $conditions = [], &$parents = []) {
+    public function searchTOC(&$tableOfContents, $conditions = [], &$keys = []) {
         $results = [];
 
         foreach ($tableOfContents as $key => &$child) {
             if (count(array_intersect_assoc($child, $conditions)) === count($conditions)) {
-                $parents[$key] = &$tableOfContents;
                 $results[] = &$child;
+                $keys[] = $key;
             }
 
-            if(isset($child['children'])) {
-                $nextLevel = $this->searchTOC($child['children'], $conditions, $parents);
+            if(isset($child[0])) {
+                $nextLevel = $this->searchTOC($child, $conditions, $keys);
                 if($nextLevel) {
                     $results = array_merge($results, $nextLevel);
                 }
@@ -2010,29 +2005,16 @@ class FileManagement {
         return $results;
     }
 
-    public function createNewSection($position = null, $parent = null) {
+    public function createNewSection($position = null, $level = null) {
         $appConfig = $this->getAppConfig($this->app);
-        $section = $this->getNewSectionConfig();
+        $section = $this->getNewSectionConfig([
+            'level' => intval($level)
+        ]);
 
-        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $parent]);
-        $parentSection = &$parentSection[0];
-
-        if($parentSection) {
-            if(!isset($parentSection['children'])) {
-                $parentSection['children'] = [];
-            }
-
-            if($position !== null) {
-                array_splice($parentSection['children'], $position, 0, [$section]);
-            } else {
-                array_push($parentSection['children'], $section);
-            }
+        if(is_numeric($position)) {
+            array_splice($appConfig['tableOfContents']['active'], $position, 0, [$section]);
         } else {
-            if(!empty($position)) {
-                array_splice($appConfig['tableOfContents'], $position, 0, [$section]);
-            } else {
-                array_push($appConfig['tableOfContents'], $section);
-            }
+            array_push($appConfig['tableOfContents']['active'], $section);
         }
 
         $this->updateAppConfig($appConfig);
@@ -2042,27 +2024,11 @@ class FileManagement {
     }
 
     public function indentSection($sectionId, $indent) {
-        if($indent == 'down') {
-            return $this->deleteSection($sectionId);
-        }
-
+        $indent = $indent == 'down' ? -1 : 1;
         $appConfig = $this->getAppConfig($this->app);
 
-        $cutParent = null;
-        $cut = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $cutParent);
-        $key = key($cutParent);
-
-        $paste = &$cutParent[$key];
-        $out = array_splice($cutParent[$key], $key, 1);
-
-        if(isset($cutParent[$key][$key-1]) && $cutParent[$key][$key-1]['type'] == 'section'){
-            array_splice($paste[$key-1]['children'], count($paste[$key-1]['children']), 0, $out);
-        } else {
-            $newSection = $this->getNewSectionConfig();
-            $newSection['children'] = $out;
-            
-            array_splice($cutParent[$key], $key, 1, [$newSection]);
-        }
+        $section = $this->searchTOC($appConfig['tableOfContents']['active'], ['type' => 'section', 'id' => $sectionId]);
+        $section[0]['level'] = min($section[0]['level'] + $indent, 1);
 
         return $this->updateAppConfig($appConfig);
     }
@@ -2070,9 +2036,8 @@ class FileManagement {
     public function updateSectionTitle($sectionId, $title) {
         $appConfig = $this->getAppConfig($this->app);
 
-        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId]);
-        $parentSection = &$parentSection[0];
-        $parentSection['title'] = $title;
+        $section = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId]);
+        $section[0]['title'] = $title;
 
         return $this->updateAppConfig($appConfig);
     }
@@ -2080,22 +2045,18 @@ class FileManagement {
     public function updatePageTitle($pageNum, $title) {
         $appConfig = $this->getAppConfig($this->app);
 
-        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
-        $parentSection = &$parentSection[0];
-        $parentSection['title'] = $title;
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        $page[0]['title'] = $title;
 
         return $this->updateAppConfig($appConfig);
     }
 
     public function deleteSection($sectionId) {
         $appConfig = $this->getAppConfig($this->app);
-        $parents = [];
+        $keys = [];
+        $this->searchTOC($appConfig['tableOfContents']['active'], ['type' => 'section', 'id' => $sectionId], $keys);
 
-        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parents);
-        $key = key($parents);
-        $children = $parents[$key][$key]['children'];
-
-        array_splice($parents[$key], $key, 1, $children);
+        array_splice($appConfig['tableOfContents']['active'], $keys[0], 1);
 
         return $this->updateAppConfig($appConfig);
     }
@@ -2103,7 +2064,6 @@ class FileManagement {
     protected function getNewPageConfig($page = []) {
         return array_merge([
            'type' => 'page',
-           'order' => 0,
            'title' => 'New Page',
            'fileName' => null,
         ], $page);
@@ -2117,15 +2077,18 @@ class FileManagement {
             return @$b['id'] <=> @$a['id'];
         });
 
+        if(isset($section['level'])) {
+            $section['level'] = min($section['level'], 1);
+        }
+
         $last = reset($listSections);
         $nextId = isset($last['id']) ?  $last['id']+1 : 1;
 
         return array_merge([
             'id' => $nextId,
             'type' => 'section',
-            'order' => 0,
+            'level' => 0,
             'title' => 'New Section ' . $nextId,
-            'children' => []
         ], $section);
     }
     
@@ -2161,9 +2124,11 @@ class FileManagement {
      */
     public function deletePage($pageNum) {
         $appConfig = $this->getAppConfig($this->app);
-
-        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
-        $page[0]['is_deleted'] = true;
+        $keys = [];
+        $active = &$appConfig['tableOfContents']['active'];
+        $this->searchTOC($active, ['type' => 'page', 'pageNumber' => $pageNum], $keys);
+        $page = array_splice($active, $keys[0], 1);
+        array_push($appConfig['tableOfContents']['deleted'], $page[0]);
 
         return $this->updateAppConfig($appConfig);
     }    
@@ -2178,50 +2143,29 @@ class FileManagement {
         // $this->updateNetworkComponentCounters('add', $appConfig['config'], $pageComponents);
         $appConfig = $this->getAppConfig($this->app);
 
-        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
-        $page[0]['is_deleted'] = false;
-        $this->updateAppConfig($appConfig);
+        $keys = [];
+        $deleted = &$appConfig['tableOfContents']['deleted'];
+        $this->searchTOC($deleted, ['type' => 'page', 'pageNumber' => $pageNum], $keys);
+        $page = array_splice($deleted, $keys[0], 1);
+        array_push($appConfig['tableOfContents']['active'], $page[0]);
 
+        $this->updateAppConfig($appConfig);
         return $page[0];
     }
 
-    public function tocMove($node, $section, $position) {
+    public function tocMove($node, $position) {
         $appConfig = $this->getAppConfig($this->app);
         $conditions = array_intersect_key($node, array_flip(['type', 'id', 'pageNumber']));
 
-        $cutParent = null;
-        $cut = $this->searchTOC($appConfig['tableOfContents'], $conditions, $cutParent);
-
-        if(!empty($section)) {
-            $paste = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
-        } else {
-            $paste = &$appConfig['tableOfContents'];
+        $keys = null;
+        $active = &$appConfig['tableOfContents']['active'];
+        $this->searchTOC($active, $conditions, $keys);
+        $cut = array_splice($active, $keys[0], 1);
+        if($position >= $keys[0]) {
+            $position--;
         }
-        
-        foreach ($cutParent as $key => &$parent) {
-            // if moving object is in the same level and the new position is after old one
-            // fix new position
-            if($parent == $paste && $key < $position) {
-                $position--;
-            }
-            $fixDeletedPostions = 0;
-            for ($i=0; $i < $position; $i++) { 
-                if(isset($paste[$i]['is_deleted']) && $paste[$i]['is_deleted']) {
-                    $fixDeletedPostions++;
-                }
-            }
+        array_splice($active, $position, 0, $cut);
 
-            $position = $position+$fixDeletedPostions;
-
-            $out = array_splice($parent, $key, 1);
-
-            if(isset($paste[0]['children'])) {
-                array_splice($paste[0]['children'], $position, 0, $out);
-            } else {
-                array_splice($paste, $position, 0, $out);
-            }
-        }
-        
         return $this->updateAppConfig($appConfig);
     }    
    
