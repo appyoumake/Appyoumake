@@ -595,6 +595,19 @@ var Mlab_dt_ui = {
         mlab.dt.management.page_restore(data.pageNum);
     },
 
+    builderLockedState: function(locked) {
+        if(locked) {
+            if(!$("#mlab_editor_disabled").length) {
+                $("#" + this.parent.config["app"]["content_id"]).fadeTo('slow',.6);
+                var height = $(".builder")[0].scrollHeight;
+                $("div.builder").append('<div style="height:' + height + 'px;" title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled"></div>');
+            }
+        } else {
+            $("#mlab_editor_disabled").remove();
+            $("#" + this.parent.config["app"]["content_id"]).fadeTo('slow',1);       
+        }
+    },
+
     watch: {
         tableOfContents: function (newVar, oldVar) {
             Mlab_dt_ui.updateAppTableOfContents(newVar, oldVar);
@@ -602,6 +615,10 @@ var Mlab_dt_ui = {
 
         components: function (newVar) {
             Mlab_dt_ui.displayComponents(newVar);
+        },
+
+        builderLocked: function (newVar) {
+            Mlab_dt_ui.builderLockedState(newVar);
         },
     },
 
