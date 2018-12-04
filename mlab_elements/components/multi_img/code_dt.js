@@ -121,19 +121,19 @@
         var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         var curr_img = container.find(".active");
         if (direction == 1) {
-            var move_to = curr_img.next();
+            var move_to = curr_img.next("img");
             if (move_to.length == 0) {
-                move_to = container.children(":first");
+                move_to = container.children("img:first");
             }
         } else {
-            var move_to = curr_img.prev();
+            var move_to = curr_img.prev("img");
             if (move_to.length == 0) {
-                move_to = container.children(":last");
+                move_to = container.children("img:last");
             }
         }  
         curr_img.removeClass("active");
         move_to.addClass("active");
-        var num_active = move_to.index() + 1;
+        var num_active = move_to.index() ;
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     };
     
@@ -149,14 +149,14 @@
         var curr_img = container.find(".active");
         var num_active;
         if (direction == 1) {
-            var move_to = curr_img.next();
+            var move_to = curr_img.next("img");
             if (move_to.length != 0) {
                 move_to.after(curr_img);
             } else {
                 return;
             }
         } else {
-            var move_to = curr_img.prev();
+            var move_to = curr_img.prev("img");
             if (move_to.length != 0) {
                 move_to.before(curr_img);
             } else {
@@ -164,7 +164,7 @@
             }
         }
 //update navigation dot
-        var num_active = curr_img.index() + 1;
+        var num_active = curr_img.index();
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     };
     

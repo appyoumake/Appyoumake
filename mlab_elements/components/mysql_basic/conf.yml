@@ -4,7 +4,7 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: storage_plugin
 category_name: {nb_NO: Storage_plugin, en_GB: Storage_plugin}
 name: mysql_basic
-extended_name: { nb_NO: Enkelt MySQL eksempel, en_GB: Simple MySQL example, default: Simple MySQL example }
+extended_name: { nb_NO: MySQL kobling, en_GB: MySQL connection, default: MySQL connection }
 tooltip: { nb_NO: Lagre data fra nåværende komponent på en MySQL server, en_GB: Store data from the current component on a MySQL server, default: Store data from the current component on a MySQL server }
 credentials: ["url", "username", "password"]
 # can be internet or network, latter is local network.

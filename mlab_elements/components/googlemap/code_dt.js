@@ -284,34 +284,55 @@
 
         content = $('<div />');
         
-        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Search map' + '</legend>' +
-                        '<label class="mlab_dt_label" for="mlab_cp_googlemap_center">Search map:</label>' + 
-                        '<input class="mlab_dt_input" id="mlab_cp_googlemap_center" type="text" onkeyup="mlab.dt.components.googlemap.code.searchMap(\'' + guid + '\', $(this).val());" >' + 
-                        '</fieldset>' );
+        content.append( `
+                        <fieldset class="search">
+                            <legend >Search map</legend>
+                            <label for="mlab_cp_googlemap_center">Search map:</label>
+                            <div class="form-input">
+                                <input  id="mlab_cp_googlemap_center" type="text" onkeyup="mlab.dt.components.googlemap.code.searchMap('${guid}', $(this).val());" >
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </fieldset>
+                        ` );
                 
-        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Centre map' + '</legend>' +
-                        '<label class="mlab_dt_label" data-mlab-cp-googlemap-info="centre" onclick="mlab.dt.components.googlemap.code.moveToCentre(\'' + guid + '\');">Current centre: ' + map_centre_name + ' </label>' + 
-                        '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.setMapCenter(\'' + guid + '\');">Centre at current location</button>' + 
-                        '</fieldset>' );
+        content.append( `
+                        <fieldset > 
+                            <legend >Centre map</legend>
+                            <p data-mlab-cp-googlemap-info="centre" onclick="mlab.dt.components.googlemap.code.moveToCentre('${guid}');">Current centre: ${map_centre_name}</p>
+                            <button onclick="mlab.dt.components.googlemap.code.setMapCenter('${guid}');">Centre at current location</button>
+                        </fieldset>
+                        `
+                      );
 
-        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Markers' + '</legend>' +
-                        '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.setMarker(\'' + guid + '\');">Add marker here</button>' + 
-                        '<br><select class="mlab_dt_select" id="mlab_cp_googlemap_markers" size="5">' + options_markers + '</select>' +
-                        '<button class="mlab_dt_button mlab_dt_left" onclick="mlab.dt.components.googlemap.code.removeMarker(\'' + guid + '\');">Remove Marker</button>' + 
-                        '</fieldset>' );
+        content.append( `
+                        <fieldset >
+                            <legend>Markers</legend>
+                            <button onclick="mlab.dt.components.googlemap.code.setMarker('${guid}');">Add marker here</button>
+                            <br>
+                            <select id="mlab_cp_googlemap_markers" size="5">${options_markers}</select>
+                            <button onclick="mlab.dt.components.googlemap.code.removeMarker('${guid}');">Remove Marker</button>
+                        </fieldset>
+                        `);
         
-        content.append( '<fieldset class="mlab_dt_group"><legend class="mlab_dt_text_headline">' + 'Map attributes' + '</legend>' +
-                        '<label class="mlab_dt_label" for="mlab_cp_googlemap_zoom_control">Show zoom control</label>' + 
-                        '<input class="mlab_dt_input" id="mlab_cp_googlemap_zoom_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl(\'' + guid + '\', \'zoomControl\', $(this).is(\':checked\'));" ' + ((curr_map.zoomControl) ? "checked" : "") + '>' + 
-                        '<label class="mlab_dt_label" for="mlab_cp_googlemap_zoom_level">Choose zoom level</label>' + 
-                        '<select class="mlab_dt_select" id="mlab_cp_googlemap_zoom_level" onclick="mlab.dt.components.googlemap.code.setMapZoom(\'' + guid + '\', parseInt($(this).val()));">' + options + '</select>' + 
-                        '<label class="mlab_dt_label" for="mlab_cp_googlemap_type_control">Show map type switcher</label>' + 
-                        '<input class="mlab_dt_input" id="mlab_cp_googlemap_type_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl(\'' + guid + '\', \'mapTypeControl\', $(this).is(\':checked\'));" ' + ((curr_map.mapTypeControl) ? "checked" : "") + '>' + 
-                        '<label class="mlab_dt_label" for="mlab_cp_googlemap_type_control">Show scale control</label>' + 
-                        '<input class="mlab_dt_input" id="mlab_cp_googlemap_type_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl(\'' + guid + '\', \'scaleControl\', $(this).is(\':checked\'));" ' + ((curr_map.scaleControl) ? "checked" : "") + '>' +
-                        '</fieldset>' );
+        var zoomControl = (curr_map.zoomControl) ? "checked" : "",
+            mapTypeControl = (curr_map.mapTypeControl) ? "checked" : "",
+            scaleControl = (curr_map.scaleControl) ? "checked" : "";
+    
+        content.append( `
+                        <fieldset >
+                            <legend >Map attributes</legend>
+                            <label for="mlab_cp_googlemap_zoom_control">Show zoom control</label> 
+                            <input id="mlab_cp_googlemap_zoom_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl('${guid}', 'zoomControl', $(this).is(':checked'));" ${zoomControl}> 
+                            <label for="mlab_cp_googlemap_zoom_level">Choose zoom level</label> 
+                            <select id="mlab_cp_googlemap_zoom_level" onclick="mlab.dt.components.googlemap.code.setMapZoom('${guid}', parseInt($(this).val()));">${options}</select> 
+                            <label for="mlab_cp_googlemap_type_control">Show map type switcher</label> 
+                            <input id="mlab_cp_googlemap_type_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl('${guid}', mapTypeControl, $(this).is(:checked));" ${mapTypeControl}> 
+                            <label for="mlab_cp_googlemap_type_control">Show scale control</label> 
+                            <input id="mlab_cp_googlemap_type_control" type="checkbox" onclick="mlab.dt.components.googlemap.code.setMapControl('${guid}', scaleControl, $(this).is(:checked));" ${scaleControl}>
+                        </fieldset>
+                        ` );
 
-        content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">OK</button>');
+//        content.append( '<button class="mlab_dt_button_ok mlab_dt_right" onclick="mlab.dt.api.closeAllPropertyDialogs();">OK</button>');
 
         var component = el;
         var component_id = this.config.component_name;

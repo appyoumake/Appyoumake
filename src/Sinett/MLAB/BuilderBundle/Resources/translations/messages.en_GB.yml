@@ -22,66 +22,63 @@ mlab.page.title.admin: MLAB admin
 # Index info page
 #-----------------------------------------------------
 app.builder.index.page.heading: Mlab
-app.builder.index.page.text: Welcome to Mlab. With this tool you can create your own interactive apps.
+app.builder.index.page.text: Welcome to the app builder Mlab. Mlab is a framework that allows staff without programming knowledge to create and share professional, interactive apps.
 app.builder.index.page.link.text.before: To get started go to the
 app.builder.index.page.link.app.list: App list
-app.builder.index.page.link.text.after: or chose a different action from the menu above.
+app.builder.index.page.link.text.after: or chose a different action from the menu above. Below you will find a quick introduction to the app builder Mlab.
 app.builder.index.page.help.guide.heading: How to create an app in 5 steps
-app.builder.index.page.help.guide.text1: Start the New App wizard
-app.builder.index.page.help.guide.text2: Click on a component to add to page
-app.builder.index.page.help.guide.text3: Edit the component content and settings
-app.builder.index.page.help.guide.text4: Add more components and pages until the app is completed
-app.builder.index.page.help.guide.text5: Build the app and try it on a mobile or tablet 
-
-
+app.builder.index.page.help.guide.text1: Select "New App".
+app.builder.index.page.help.guide.text2: Create pages and add components. Components can be text, images, movies and audio.
+app.builder.index.page.help.guide.text3: Edit the contents of the pages and the settings of the components. Work performed is automatically saved.
+app.builder.index.page.help.guide.text4: Continue adding pages and components until the app is finished. The table of contents is updated automatically.
+app.builder.index.page.help.guide.text5: Select "Try App on Mobile". The app is completed and can be tested on mobile or tablet.
+ 
+ 
 #-----------------------------------------------------
 # List of apps page
 #-----------------------------------------------------
 app.builder.list.main.heading: Apps
-app.builder.list.welcome.info: Welcome to Mlab app builder! <br><br> Here is a list of apps you can access. You can edit them by clicking on the app name. Use the button to create a new app.
+app.builder.list.welcome.info: Here is a list of apps you can access. You can edit them by clicking on the app name. Use the button to create a new app.
 app.builder.list.new.app.button: New App
 app.builder.list.heading.app: App Name
 app.builder.list.heading.published: Published
 app.builder.list.heading.version: Version
 app.builder.list.heading.active_version: Active version
 app.builder.list.heading.last.updated: Last updated
-
+ 
 app.builder.list.tooltip.name: Click on the name to edit the app
 app.builder.list.tooltip.properties: Menu for
-
-
+ 
+ 
 #-----------------------------------------------------
-# New App Form 
+# New App Form
 #-----------------------------------------------------
 builder.new.app.basedon.tab: Based on
 builder.new.app.select_base.tab: Choose base
 builder.new.app.name.tab: Name
-builder.new.app.icon.tab: Icon
 builder.new.app.classification.tab: Classify
 builder.new.app.submit.tab: Make
-
-builder.new.app.select_base.description: Choose whether you want the app to be based on a template, an existing app or an Office file.
+ 
+builder.new.app.select_base.description: Choose which template the app should be based on. The template will determine the app's appearance and navigation capabilities.
 builder.new.app.select_base.template: Template
 builder.new.app.select_base.existing_app: Existing App
 builder.new.app.select_base.office_file: Office file
-builder.new.app.basedon.description: Choose what you want to base the app on
-app.select.icon.no_background: No background
-app.select.icon.no_foreground: No main icon
-builder.new.app.icon.scale: Adjust icon size
-
-builder.new.app.name.description: Give the app a name and a full description before proceeding
+ 
+builder.new.app.basedon.description: Choose which template the app should be based on. The template will determine the app's appearance and navigation capabilities.
+ 
+builder.new.app.name.description: Give the app a unique name. <br> Version number can not be changed. It is always 1 for new apps, but if you create a new version of the app, the number will increase.
 builder.new.app.name.name: Name
 builder.new.app.name.descriptionLab: Description
 builder.new.app.name.selectBackground: Choose background
 builder.new.app.name.selectForground: Choose icon
-builder.new.app.name.iconFile: <strong>or</strong> select an image file from your computer
+builder.new.app.name.iconFile: Icon file
 builder.new.app.name.addIconFileImage: Add image
 builder.new.app.name.iconText: Icon text
 builder.new.app.name.addIconText: Add text
 builder.new.app.name.splashFile: Splash file
 builder.new.app.active_version.number: Version number
-
-builder.new.app.classification.description: Keywords will help others find your app when searching
+ 
+builder.new.app.classification.description: Give the app a full description. Keywords and categorization will help others find your app when searching.
 builder.new.app.classification.keywords: Keywords
 builder.new.app.classification.category1: 1. Category
 builder.new.app.classification.category2: 2. Category
@@ -428,6 +425,7 @@ build_app.tooltip.not.saved: The latest changes were not saved
 build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
 build_app.dialog.delete.title: Delete?
 build_app.dialog.delete.text: Are you sure you want to delete?
+build_app.dialog.delete.component: Are you sure you want to delete this component? Until you leave this page you can restore it from the menu bar.
 
 build_app.footer.tooltip.help: Turn help off
 build_app.footer.help: Hold the mouse over the item you wish to describe.
@@ -676,7 +674,7 @@ controller.help.msg.file.notfound: Component help file not found
 
 mlab.dt.api.js.getLink.heading: Add link
 mlab.dt.api.js.getLink.app_page: I want to link to a page in my app
-mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it. Enter title of page below.
+mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it.
 mlab.dt.api.js.getLink.url: I want to link to an external website
 mlab.dt.api.js.getLink.ok: OK
 mlab.dt.api.js.getLink.cancel: Cancel
@@ -688,3 +686,56 @@ mlab.dt.api.js.getLink.no_selection: Please select som text inside the current c
 
 select.locale: Select language
 mlab.dt.management.js.websocket.error.connect: Connection to message server failed, cannot continue. Check Internet connection and try again.
+
+# new "Powerpoint-esque" UI
+editor.tabs.file: App
+editor.tabs.file.save: Save
+editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon below.
+editor.tabs.file.unlock: Unlock
+editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button below to unlock it.
+editor.tabs.file.test.web: Test in web page
+editor.tabs.file.test.web.tooltip: Do a quick test of what the app will look like by clicking the www-button. The App will then appear in a new web page.
+editor.tabs.file.test.mob: Test on mobile
+editor.tabs.file.test.mob.tooltip: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
+editor.tabs.file.qrcode: QR code
+editor.tabs.file.qrcode.tooltip: QR code
+editor.tabs.file.restore.page: Restore deleted page
+editor.tabs.file.restore.page.tooltip: Restore deleted page
+editor.tabs.file.restore.component: Restore deleted component
+editor.tabs.file.restore.component.tooltip: Restore deleted component
+editor.tabs.file.new.page: New page
+editor.tabs.file.new.page.tooltip: Add a new page to the current app
+editor.tabs.file.new.section: New section
+editor.tabs.file.new.section.tooltip: Sections are used to let the user navigate around the app easily through an index. You can use up to 3 levels.
+
+editor.tabs.insert: Insert
+editor.tabs.insert.new.page: New page
+editor.tabs.insert.new.page.tooltip: Insert a new page in the current app. After the new page open you can add content to the page.
+editor.tabs.insert.new.section: New section
+editor.tabs.insert.new.section.tooltip: Insert a new section in the app. A section is a divider, similar to headlines in Word, that is used to let the app users navigate around the app.
+
+editor.tabs.format: Format
+editor.tabs.format.component.up: Move up
+editor.tabs.format.component.up.tooltip: Move component up on the page
+editor.tabs.format.component.down: Move down
+editor.tabs.format.component.down.tooltip: Move component down on the page
+editor.tabs.format.component.delete: Delete
+editor.tabs.format.component.delete.tooltip: Delete the selected component 
+editor.tabs.format.component.cut: Cut
+editor.tabs.format.component.cut.tooltip: Cut the selected component to the component clipboard. You can then paste the component into another page
+editor.tabs.format.component.copy: Copy
+editor.tabs.format.component.copy.tooltip: Copy the selected component to the component clipboard. You can then paste the component into this or another page
+editor.tabs.format.component.paste: Paste
+editor.tabs.format.component.paste.tooltip: Paste the last component you copied or pasted
+editor.tabs.format.component.resize: Resize
+editor.tabs.format.component.aspect_ratio: Aspect ratio
+editor.tabs.format.component.storage: Storage
+editor.tabs.format.component.credentials: Credentials
+
+
+
+editor.tabs.help: Help
+editor.tabs.help.tutorial: Tutorial
+editor.tabs.help.tutorial.tooltip: Display Mlab's introduction tutorial, this will explain the basics of how to create an app
+editor.tabs.help.toggle_hover: Help on hover
+editor.tabs.help.toggle_hover.tooltip: Turn tooltip help for buttons on or off

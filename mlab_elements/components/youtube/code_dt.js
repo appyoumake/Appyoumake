@@ -85,6 +85,7 @@
 
 /* respond to search being pressed */
         $('button#mlab_cp_youtube_submit').click(function(){
+            console.log("searching");
             $.youtubeAPI( $('input#mlab_cp_youtube_search').val() );
         });
 
@@ -143,12 +144,12 @@
         var component_config = this.config;
         
         content = $('<form />');
-        content.append( '<div class="arama">' + 
+        content.append( '<div class="arama search">' + 
                         '    <form action="" onsubmit="return false">' + 
-                        '        <p class="mlab_dt_text_info">Søk etter en youtube-video ved å skrive et søkeord i boksen og enten velg et forslag fra listen eller klikk på søk-knappen</p>' + 
-                        '        <div class="ui-widget">' +  
-                        '            <input id="mlab_cp_youtube_search" class="mlab_dt_input"/>' + 
-                        '            <button id="mlab_cp_youtube_submit" class="mlab_dt_button">Søk</button>' + 
+                        '        <p class="">Søk etter en youtube-video ved å skrive et søkeord i boksen og enten velg et forslag fra listen eller klikk på søk-knappen</p>' + 
+                        '        <div class="form-input">' +  
+                        '            <input id="mlab_cp_youtube_search">' + 
+                        '            <button id="mlab_cp_youtube_submit" class="fas fa-search">Søk</button>' + 
                         '        </div>' + 
                         '    </form>' + 
                         '</div>' +

@@ -20,7 +20,10 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
-    
+     
+    .enableSassLoader()
+    .addEntry('app', './assets/sass/app.scss')
+
     //used on all pages, incl. app builder
     .addEntry('mlab', './assets/js/mlab.js')
     
@@ -32,6 +35,7 @@ Encore
     
     //used on app builder page
     .addEntry('builder', './assets/js/builder.js')
+    .addEntry('builder_new', './assets/js/new/builder.js')
     
     // see https://symfony.com/doc/current/frontend/encore/legacy-apps.html re what this does.
     // in short makes $ and jQuery global vars

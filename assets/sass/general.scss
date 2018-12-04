@@ -1,0 +1,327 @@
+@mixin btn-reset {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    // font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.v-separator {
+    height: 100%;
+    border-left: 1px solid $border-color;
+    margin: 0 20px;
+
+    &.invisible {
+        border-left: 0;
+    }
+}
+
+.no-padding, .mlab_component_settings {
+    padding: 0px !important;
+}
+
+.h-separator {
+    width: 100%;
+    border-bottom: 1px solid $border-color;
+    margin: 20px 0;
+
+    &.invisible {
+        border-bottom: 0;
+    }
+}
+
+.toolbox-btn {
+    @include btn-reset;
+
+    position: relative;
+    font-size: 1.2em;
+    display: inline-block;
+    padding: 5px;
+    line-height: 1.7em;
+    text-align: left;
+    > i, img {
+        color: $light-text;
+        background: $toolbox-btn-color;
+        padding: 5px;
+        border-radius: 4px;
+        font-size: 0.8em;
+    }   
+
+    &.btn-lg {
+        line-height: 1.15;
+        text-align: center;
+        font-size: 1.2em;
+        border-radius: 2px;
+        > i, img {
+            width: 1.5em;
+            border-radius: 5px;
+            height: 1.5em;
+            display: block;
+            font-size: 0.9em;
+            margin: 0 auto 5px auto;
+            line-height: 1.5em;
+        }
+    }
+    
+    &.selected, &:focus, &:hover {
+        > i, img {
+            background: $toolbox-btn-selected-color;
+        }
+    }
+    &.disabled, &[disabled] {
+        color: $toolbox-btn-disabled-color;
+        > i, img {
+            background: $toolbox-btn-disabled-color;
+        }
+    }
+
+    > .badge-top-right {
+        right: 1em !important;
+    }
+    > .badge-bottom-right {
+        bottom: 1.6em !important;
+        right: 0.7em !important;
+    }
+}
+
+.toolbox-text {
+    text-align: left;
+    line-height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.badge {
+    position: absolute;
+    background: $toolbox-plus-badge-color;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    color: $light-text;
+    font-size: 15px;
+    line-height: 1;
+    text-align: center;
+    font-weight: normal;
+
+    &.badge-top-right {
+        top: 0;
+        right: 0;
+    }
+
+    &.badge-top-left {
+        top: 0;
+        left: 0;
+    }
+
+    &.badge-bottom-right {
+        bottom: 0;
+        right: 0;
+    }
+
+    &.badge-bottom-left {
+        bottom: 0;
+        left: 0;
+    }
+
+    &.badge-plus {
+        background: $toolbox-plus-badge-color;
+        font-family: sans-serif;
+    }
+
+    &.badge-caret {
+        background: $toolbox-caret-badge-color;
+        i, img {
+            font-size: 0.7em;   
+        }
+    }
+}
+
+.delete {
+    @include btn-reset;
+
+    display: inline-block;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 19px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    background-color: $primary-color;
+    color: $primary-text;
+
+    &:before {
+        content: "×"
+    }
+}
+
+.tooltip {
+    position: fixed;
+    max-width: 200px;
+    display: block;
+    background-color: $tooltip-color;
+    color: $tooltip-text;
+    padding: 8px 12px;
+    z-index: 1001;  /* needed to be above the buttons the tips are for */
+
+    > span {
+        width:10px;
+        height: 10px;
+        transform: rotate(-45deg) translate(-4px, 4px);
+        position: absolute;
+        background: $tooltip-color;
+        top: -10px;
+        right: calc(50% - 5px);
+    }
+}
+
+.close {
+    @include btn-reset;
+
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 2em;
+    font-family: sans-serif;
+}
+
+.modal-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 900;
+    top: 0;
+    left: 0;
+    z-index: 1100;
+    background: #fff;
+    opacity: 0.8;
+    position: fixed;
+}
+
+
+.modal {
+    font-family: 'Roboto Condensed', sans-serif;
+    z-index: 1200;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: $light-color;
+    border: 1px solid $modal-border;
+    overflow: hidden;
+    display: none;
+    
+    .modal-title, .modal-content, .modal-bottom {
+        padding: 0 15px;
+    }
+
+    .modal-title{
+        line-height: 40px;
+        background: $modal-title-color;
+        color: $modal-title-text;
+        margin-bottom: 15px;
+    }
+
+    .modal-content{
+        max-height: 50vh;
+        min-width: 40vw;
+        overflow-y: auto;
+    }
+
+    .modal-bottom{
+        display: flex;
+        justify-content: center;
+        padding: 15px 0;
+
+        button+button {
+            margin-left: 1em;
+        }
+  
+      }
+
+    .modal-btn {
+        @include btn-reset;
+
+        background: $modal-primary-btn-color;
+        color: $modal-primary-btn-text;
+        min-width: 6em;
+        line-height: 2.5em;
+
+        &.secondary {
+            background: $modal-secondary-btn-color;
+            color: $modal-secondary-btn-text;            
+        }
+    }
+}
+
+/* TODO: SASSIFY */
+.common-btn {
+    @include btn-reset;
+    margin: 5px;
+    font-family: 'Roboto Condensed', sans-serif;
+    z-index: 1200;
+    background: $light-color;
+    border: 1px solid $modal-border;
+    overflow: hidden;
+    background: $modal-primary-btn-color;
+    color: $modal-primary-btn-text;
+    min-width: 6em;
+    line-height: 2.5em;
+}
+
+
+
+/* toolmenu popup button text */
+
+#mlab_toolbar_components [data-mlab-type] div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 96px;
+    display: block;
+}
+
+#mlab_toolbar_components [data-mlab-type] i, #mlab_toolbar_components [data-mlab-type] img,
+#mlab_format_menu [data-mlab-type] i, #mlab_format_menu [data-mlab-type] img {
+    background-size: contain;
+    background-color: $toolbox-menu-color;
+    border: 1px solid $primary-color;
+}
+
+/* hacks for test day */
+#mlab_format_menu .menu.mlab_component_settings {
+    width: 300px !important;
+}
+
+#mlab_format_menu .menu.mlab_component_settings * {
+    float: none;
+}
+
+#mlab_format_menu .menu.mlab_component_settings label {
+    width: 90%;
+    line-height: 2.2em;
+    vertical-align: middle;
+    text-align: left;
+}
+
+#mlab_format_menu .menu.mlab_component_settings select, #mlab_format_menu .menu.mlab_component_settings input[type="text"] {
+    width: 70%;
+}
+
+#mlab_format_menu .menu.mlab_component_settings p {
+    padding-left: 40px;
+    text-align: left;
+}
+/* alternative to mlab_hidden */
+.mlab_invisible {
+    visibility: hidden;
+}
+
+//text box, make look more like plain text
+.mlab_download_link {
+    color: $dark-text;
+    border: none;
+}

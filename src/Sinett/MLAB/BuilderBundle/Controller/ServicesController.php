@@ -662,6 +662,7 @@ class ServicesController extends Controller
         }
         
 //prepare variables & get current processed app checksum
+        $file_mgmt->setApp($app);
         $app_uid = $app->getUid();
         $app_path = $app->calculateFullPath($config['paths']['app']);
         $path_app_config = $app_path . $config['filenames']["app_config"];

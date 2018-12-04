@@ -74,6 +74,11 @@ app_builder_page_new:
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage", redirect_to_open: 1, title: "" }
     requirements: { methods: post }
 
+app_builder_page_action:
+    path:   /builder/{app_id}/{uid}/action/{action}/{redirect_to_open}/{title}
+    defaults: { _controller: "SinettMLABBuilderBundle:App:pageAction", redirect_to_open: 1, title: "" }
+    requirements: { methods: post }
+
 app_builder_page_copy:
     path:   /builder/{app_id}/{page_num}/{uid}/page_copy
     defaults: { _controller: "SinettMLABBuilderBundle:App:copyPage" }
@@ -160,3 +165,6 @@ app_import_file:
     defaults: { _controller: "SinettMLABBuilderBundle:App:importFile" }
     requirements: { methods: post }
 
+new_app_builder_editor:
+    path:   /new/builder/{id}/{page_num}/build
+    defaults: { _controller: "SinettMLABBuilderBundle:App:buildAppNew" }

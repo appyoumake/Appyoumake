@@ -1030,6 +1030,7 @@ body.mlab_base div.mlab_top_bar_back {
     background-image: url("/img/frontpage_step1.png");
     background-repeat: no-repeat;
     padding: 700px 535px 0px 0px;
+    background-size: contain;
 }
 
 .mlab_base .mlab_edit_compgroup_checkbox {
@@ -1265,4 +1266,4 @@ body.mlab_base div.mlab_top_bar_back {
     height: 0;
     line-height: 0;
     background: none;
-}z
+}

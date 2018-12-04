@@ -22,66 +22,63 @@ mlab.page.title.admin: MLAB admin
 # Index info page
 #-----------------------------------------------------
 app.builder.index.page.heading: Mlab
-app.builder.index.page.text: Velkommen til Mlab. Med dette rammeverket kan du lage dine egne interaktive apper.
+app.builder.index.page.text: Velkommen til app bygger Mlab. Mlab er et rammeverk som gir personell uten programmeringskunnskap mulighet til å lage og dele profesjonelle, interaktive apper.
 app.builder.index.page.link.text.before: For å komme i gang gå til
 app.builder.index.page.link.app.list: App liste
-app.builder.index.page.link.text.after: eller velg en annen handling fra menyen ovenfor.
-app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 steg
-app.builder.index.page.help.guide.text1: Start Ny App veiviseren
-app.builder.index.page.help.guide.text2: Klikk på en komponent for å legge den til på siden
-app.builder.index.page.help.guide.text3: Rediger innholdet og innstillingene til komponenten
-app.builder.index.page.help.guide.text4: Legg til flere komponenter og sider til appen er ferdig
-app.builder.index.page.help.guide.text5: Bygg appen og prøve den på mobil eller nettbrett
-
-
+app.builder.index.page.link.text.after: eller velg en annen handling fra menyen ovenfor. Under finner du Mlab veileder som gir en rask innføring i app byggeren.
+app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 trinn
+app.builder.index.page.help.guide.text1: Velg ”Ny App”.
+app.builder.index.page.help.guide.text2: Opprett sider og legg til komponenter. Komponenter kan være tekst, bilder, film og lyd.
+app.builder.index.page.help.guide.text3: Rediger innholdet på sidene og innstillingene til komponentene. Utført arbeid lagres automatisk.
+app.builder.index.page.help.guide.text4: Fortsett å legg til sider og komponenter til appen er ferdig. Innholdsfortegnelsen oppdateres automatisk.
+app.builder.index.page.help.guide.text5: Velg “Prøv App på mobil”. Appen ferdigstilles og kan prøves på mobil eller nettbrett.
+ 
+ 
 #-----------------------------------------------------
 # List of apps page
 #-----------------------------------------------------
 app.builder.list.main.heading: App'er
-app.builder.list.welcome.info: Velkommen til Mlab app-bygger! <br><br> Her har du en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. Bruk knappen for å lage en ny app.
+app.builder.list.welcome.info: Her har du en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. Bruk knappen for å lage en ny app.
 app.builder.list.new.app.button: Ny App
 app.builder.list.heading.app: App navn
 app.builder.list.heading.published: Publisert
 app.builder.list.heading.version: Versjon
 app.builder.list.heading.active_version: Aktiv versjon
 app.builder.list.heading.last.updated: Sist oppdatert
-
+ 
 app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
 app.builder.list.tooltip.properties: Menyen til
-
-
+ 
+ 
 #-----------------------------------------------------
-# New app form 
+# New app form
 #-----------------------------------------------------
 builder.new.app.basedon.tab: Baser på
 builder.new.app.select_base.tab: Velg base
 builder.new.app.name.tab: Navn
-builder.new.app.icon.tab: Ikon
 builder.new.app.classification.tab: Klassifiser
 builder.new.app.submit.tab: Lag
-
-builder.new.app.select_base.description: Velg om du ønsker at appen skal baseres på en mal, en eksisterende app eller en Office fil.
+ 
+builder.new.app.select_base.description: Velg hvilken mal appen skal baseres på. Malen vil bestemme appens utseende og navigasjonsmuligheter.
 builder.new.app.select_base.template: Mal
 builder.new.app.select_base.existing_app: Eksisterende App
 builder.new.app.select_base.office_file: Office fil
-builder.new.app.basedon.description: Velg det du ønsker å basere appen på
-app.select.icon.no_background: Slett bakgrunn
-app.select.icon.no_foreground: Slett hovedikon
-builder.new.app.icon.scale: Juster ikonstørrelse
-
-builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
+ 
+builder.new.app.basedon.description: Velg hvilken mal appen skal baseres på. Malen vil bestemme appens utseende og navigasjonsmuligheter.
+ 
+builder.new.app.name.description: Gi appen et unikt navn. <br>Versjonsnummeret kan ikke endres. Det er 1 på nye apper, men om man lager en ny versjon av appen vil tallet øke.
 builder.new.app.name.name: Navn
 builder.new.app.name.descriptionLab: Beskrivelse
 builder.new.app.name.selectBackground: Velg bakgrunn
 builder.new.app.name.selectForground: Velg ikon
-builder.new.app.name.iconFile: <strong>eller</strong> velg en bildefil fra PCen din
+builder.new.app.name.iconFile: Ikon-fil
 builder.new.app.name.addIconFileImage: Legg til bilde
 builder.new.app.name.iconText: Ikon-tekst
 builder.new.app.name.addIconText: Legg til tekst
 builder.new.app.name.splashFile: Splash-fil
 builder.new.app.active_version.number: Versjonsnummer
-
-builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
+ 
+builder.new.app.classification.description: Gi appen en fyldig beskrivelse. Nøkkelord og kategorisering vil hjelpe andre å finne appen din ved søk.
 builder.new.app.classification.keywords: Nøkkelord
 builder.new.app.classification.category1: 1. Kategori
 builder.new.app.classification.category2: 2. Kategori
@@ -688,3 +685,54 @@ mlab.dt.api.js.getLink.no_selection: Vennligst velg noe tekst i den gjeldende ko
 
 select.locale: Velg språk
 mlab.dt.management.js.websocket.error.connect: Tilkobling til meldingsserver mislyktes, kan ikke fortsette. Sjekk Internett-tilkobling og prøv igjen.
+
+# new "Powerpoint-esque" UI
+editor.tabs.file: App
+editor.tabs.file.save: Save
+editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon below.
+editor.tabs.file.unlock: Unlock
+editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button below to unlock it.
+editor.tabs.file.test.web: Test in web page
+editor.tabs.file.test.web.tooltip: Do a quick test of what the app will look like by clicking the www-button. The App will then appear in a new web page.
+editor.tabs.file.test.mob: Test on mobile
+editor.tabs.file.test.mob.tooltip: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
+editor.tabs.file.qrcode: QR code
+editor.tabs.file.qrcode.tooltip: QR code
+editor.tabs.file.restore.page: Restore deleted page
+editor.tabs.file.restore.page.tooltip: Restore deleted page
+editor.tabs.file.restore.component: Restore deleted component
+editor.tabs.file.restore.component.tooltip: Restore deleted component
+editor.tabs.file.new.page: New page
+editor.tabs.file.new.page.tooltip: Add a new page to the current app
+editor.tabs.file.new.section: New section
+editor.tabs.file.new.section.tooltip: Sections are used to let the user navigate around the app easily through an index. You can use up to 3 levels.
+
+editor.tabs.insert: Insert
+editor.tabs.insert.new.page: New page
+editor.tabs.insert.new.page.tooltip: Insert a new page in the current app. After the new page open you can add content to the page.
+editor.tabs.insert.new.section: New section
+editor.tabs.insert.new.section.tooltip: Insert a new section in the app. A section is a divider, similar to headlines in Word, that is used to let the app users navigate around the app.
+
+editor.tabs.format: Format
+editor.tabs.format.component.up: Flytt opp
+editor.tabs.format.component.up.tooltip: Move component up on the page
+editor.tabs.format.component.down: Move down
+editor.tabs.format.component.down.tooltip: Move component down on the page
+editor.tabs.format.component.delete: Delete
+editor.tabs.format.component.delete.tooltip: Delete the selected component 
+editor.tabs.format.component.cut: Cut
+editor.tabs.format.component.cut.tooltip: Cut the selected component to the component clipboard. You can then paste the component into another page
+editor.tabs.format.component.copy: Copy
+editor.tabs.format.component.copy.tooltip: Copy the selected component to the component clipboard. You can then paste the component into this or another page
+editor.tabs.format.component.paste: Paste
+editor.tabs.format.component.paste.tooltip: Paste the last component you copied or pasted
+editor.tabs.format.component.resize: Resize
+editor.tabs.format.component.aspect_ratio: Aspect ratio
+editor.tabs.format.component.storage: Storage
+editor.tabs.format.component.credentials: Credentials
+
+editor.tabs.help: Hjelp
+editor.tabs.help.tutorial: Veileder
+editor.tabs.help.tutorial.tooltip: Display Mlab's introduction tutorial, this will explain the basics of how to create an app
+editor.tabs.help.toggle_hover: Help on hover
+editor.tabs.help.toggle_hover.tooltip: Turn tooltip help for buttons on or off

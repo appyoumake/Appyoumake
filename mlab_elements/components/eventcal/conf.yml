@@ -2,7 +2,7 @@
 
 autorun_on_create: custom_set_options
 category: serviceconnections
-category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
+category_name: {nb_NO: Tjenester, en_GB: Services}
 # compatible (array of Strings, optional)
 credentials: ["apikey"]
 # custom (Object (key/value style), required if custom functions are written in the code_dt.js code, see comment)

@@ -4,8 +4,8 @@ developer: Arild Bergh @ Sinett/FFI.no
 category: list
 category_name: {nb_NO: Liste, en_GB: List}
 name: ol
-extended_name: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
 tooltip: { nb_NO: Nummerert liste, en_GB: Ordered (numbered) list, default: Ordered (numbered) list }
+extended_name: { nb_NO: Nummerert liste, en_GB: Numbered list, default: Numbered list }
 footer_tip: { nb_NO: Setter inn en nummerert liste i appen. Trykk enter for å få et nytt punkt i listen, en_GB: Adds an ordered (numbered) list where you can enter information in numbered points, default: Adds an ordered (numbered) list where you can enter information in numbered points }
 compatible: ["table", "ul", "ol", "p"]
 process_keypress: true
@@ -30,6 +30,7 @@ custom:
         tooltip: { nb_NO: Legg til en lenke på den valgte teksten, en_GB: Add a link to the currently highlighted text, default: Add a link to the currently highlighted text }
         order: 9
         newline: true
+        dialog: true
     remove_link:
         icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAalJREFUeNrsVt1NxDAMbhEI3igbdISyQdmgGxA26AaECWCD3k1QmKAwQcsE7QbAG4iHwz45komc1LlXsGT11LPz2Z9/0iz7lxU5OT2rQHvQHdM30A609O1z5aHoiDp9f32+s/cGHl3EFW2vwGdyL46UieChA2idAIZSoB/PVAv4wiIOgS2gd6APzo6B3qZSWsFjRHqIWh9sIupcQAgyE9g+UPjvQp0h1cBFfR0DI3v8vfGyTKI0I7qWNTAmH6puBMUiW6JRsnEjMBJ1kk0BOvNRCQHWwjy1no1VgI3eOb3YNHRI41G3AGWLsrkKGh+fnUs3i3nE2bAGwRq9gpM9AOwG/DZrkRqPkn3NYmACjTsKOjsILFQz8lGDHQs0dgmt7+SJ6u6C2oZozIVtkgomLXk+8M+iv3DFaFrfeu9bGiV+Th2KjhvNyjnrI3ekpSVSagCtshsH2k6tdj+Gdul5wpyV/PpJAeSFNZzSCNjWNUdo98YAH73uwjreE72jYoM0qR9DpdBhITXMr3H11ODkws0+8AtTkF+ZEd1VypKXMu2EbHttnf62/AgwAAga3aqyrm3FAAAAAElFTkSuQmCC
         tooltip: { nb_NO: Fjern lenken ved tekstmarkøren, en_GB: Remove the link at the current cursor position, default: Remove the link at the current cursor position }

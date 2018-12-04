@@ -1,0 +1,94 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    /* fixed content size */
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+    /*end */
+}
+
+.header {
+    height: $header-height; 
+    display: flex;
+    margin-bottom: #{$toolbox-height + 1px};
+    z-index: 1000; /* to set top position of toolx-menu*/
+    justify-content: center;
+
+    .nav-main {
+        display: flex;
+        flex: 1;
+        margin-right: auto;
+    }
+
+    .nav-right {
+        display: flex;
+        flex: 1;
+        margin-left: auto;
+        justify-content: flex-end;
+    }
+}
+
+.main {
+    height: calc(100% - #{$header-height});
+    display: flex;
+}
+
+.nav-pages {
+    display: flex;
+    position: relative;
+    width: $active-pages-nav-width;
+
+    .pages-wrapper {
+        width: $active-pages-nav-width + $deleted-pages-nav-width;
+        left: -$deleted-pages-nav-width;
+        transition: left 0.5s ease;
+
+        display: flex;
+        position: relative;
+
+        &.deleted-open {
+            left: 0;
+
+            .active{
+                overflow: hidden;
+            }
+        }
+        
+    }
+
+    .active {
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: $active-pages-nav-width;
+    }
+
+    .deleted {
+        position: relative;
+        width: $deleted-pages-nav-width;
+        overflow: hidden;
+
+
+        .list-pages {
+            overflow-y: auto;
+            height: calc(100% - 3em)
+        }
+    }
+}
+
+.builder {
+    flex: 1 1 auto;
+    position: relative;
+    overflow-y: auto;
+    flex-direction: column;
+}

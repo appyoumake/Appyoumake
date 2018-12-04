@@ -90,9 +90,34 @@ class mlab_ct_index {
  * 2 - Extract page title
  * 3 - Build multi-dim array which is [chapter]{[page|another chapter]}{[page|another chapter]}[page]
  */
-        foreach ($app_config["page_order"] as $file) {
-            $index[] = $this->findChapterHeading($app_path . $file, intval($file), "Page " . intval($file));
-        }
+        // foreach ($app_config["page_order"] as $file) {
+        //     $index[] = $this->findChapterHeading($app_path . $file, intval($file), "Page " . intval($file));
+        // }
+
+        $addIndex = function ($tableOfContents, $level = 1) use (&$index, &$addIndex){
+            foreach ($tableOfContents as $toc) {
+                if ($toc['type'] == 'section') {
+                    $index[] = [
+                        'chapter' => $toc['title'],
+                        'level' => $level,
+                        'title' => $toc['title'],
+                        'page_id' => isset($toc['children'][0]['pageNumber']) ? $toc['children'][0]['pageNumber'] : '',
+                    ];
+                    $addIndex($toc['children'], $level+1);
+                } else {
+                    if (!isset($toc['is_deleted']) || !$toc['is_deleted']) {
+                        $index[] = [
+                            'chapter' => false,
+                            'level' => $level,
+                            'title' => $toc['title'],
+                            'page_id' => $toc['pageNumber'],
+                        ];
+                    }
+                }
+            }
+        };
+
+        $addIndex($app_config["tableOfContents"]);
 
 //now we generate the index, we always add app title as top level and link to first page 
         $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $this->variables['textsize'] . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
@@ -148,11 +173,11 @@ class mlab_ct_index {
             ($index['chapter'] ? $index['chapter'] : $index["title"]) . "</a>";
         
         $html .= "<ul>\n";
-        if($index['chapter'] && $this->variables['displayChapterPageTitle']){
-            $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
-            $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a>";
-            $html .= "</li>";
-        }
+        // if($index['chapter'] && $this->variables['displayChapterPageTitle']){
+        //     $html .= "<li class='mc_text mc_display mc_list mc_bullet mc_link mc_internal'>\n";
+        //     $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>kosio" . $index["title"] . "</a>";
+        //     $html .= "</li>";
+        // }
         
         foreach ($index['children'] as $child) {
             $html .= $this->detailedIndexLevelHtml($child);

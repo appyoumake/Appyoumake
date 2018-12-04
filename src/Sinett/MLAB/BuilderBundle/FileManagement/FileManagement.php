@@ -24,7 +24,7 @@ class CustomPreProcessing {
     
 //gets total number of pages in an app
     public function getnumberofpages($file_mgmt, $config, $app, $app_path) {
-   		$pages = $file_mgmt->getAppConfigValue($app, "page_order");
+   		$pages = $file_mgmt->getAppConfigValue($app, "tableOfContents");
         if (!$pages) {
             $pages = glob( $app_path . "/???.html" );
         }
@@ -34,13 +34,15 @@ class CustomPreProcessing {
 //returns list of pages in the order they are to be displayed
     public function getpageorder($file_mgmt, $config, $app, $app_path) {
         
-        $pages = $file_mgmt->getAppConfigValue($app, "page_order");
-        if (!$pages) {
-            $pages = array_map("basename", glob( $app_path . "/???.html" ));
+        $toc = $file_mgmt->getAppConfigValue($app, "tableOfContents");
+        $page_order = array();
+        foreach ($toc as $toc_item) {
+            if ($toc_item["type"] === "page" && ( isset($toc_item["is_deleted"]) && $toc_item["is_deleted"] ) ) {
+                $page_order[] = $toc_item["pageNumber"];
+            }
         }
-        $page_order = array_map(function($val){return intval($val); }, $pages);
         
-        array_unshift($page_order, 0);
+        //TODO: Check if this is required to remove index.html array_unshift($page_order, 0);
         return json_encode($page_order);
     }
     
@@ -666,14 +668,29 @@ class FileManagement {
  * Get application config json
  * @param type $app
  */
-    public function getAppConfig($app) {
-        $path_app = $app->calculateFullPath($this->config['paths']['app']);
-        $path_app_config = $path_app . $this->config['filenames']["app_config"];
-        if (file_exists($path_app_config)) {
-            return json_decode(file_get_contents($path_app_config), true);
+    public function getAppConfig($app = null) {
+        $defaultConfig = [
+            'tableOfContents' => [[
+                'title' => 'Index',
+                'type' => 'page',
+                'pageNumber' => 0,
+                'fileName' => 'index.html'
+            ]]
+        ];
+        $config = [];
+
+        if ($app && !$this->appConfig) {
+            $path_app = $app->calculateFullPath($this->config['paths']['app']);
+            $path_app_config = $path_app . $this->config['filenames']["app_config"];
+
+            if (file_exists($path_app_config)) {
+                $config = json_decode(file_get_contents($path_app_config), true);
+            }
+
+            $this->appConfig = array_merge($defaultConfig, $config);
         }
-        
-        return [];
+
+        return $this->appConfig;
     }
     
 	/**
@@ -786,24 +803,29 @@ class FileManagement {
         }
     }
     
-    public function savePage($app, $page_num, $title, $html) {
+    public function savePage($pageNum, $html, $title = null) {
+        if(is_numeric($pageNum) && $pageNum !== 0) {
+            $pageTOC = $this->getPageTOC($pageNum);
+            $title = $pageTOC['title'];
+        }
+
 //get path of file to save
-        if ($page_num === 0) {
-            $file_path = $app->calculateFullPath($this->config['paths']['app']) . "index.html";
+        if ($pageNum === 0) {
+            $file_path = $this->app->calculateFullPath($this->config['paths']['app']) . "index.html";
             return file_put_contents ($file_path, $html);
         } else {
-            $template_page_path = $app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
+            $template_page_path = $this->app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
             $page = str_replace(array("%%TITLE%%", "%%CONTENT%%"), array($title, $html), file_get_contents ($template_page_path));
 //We use this code to save to cache directory as well, if so we will have a complete path, not a page number
-            if(is_numeric($page_num)) {
-                $file_path = $app->calculateFullPath($this->config['paths']['app']) . substr("000" . $page_num, -3) . ".html";
+            if(is_numeric($pageNum)) {
+                $file_path = $this->app->calculateFullPath($this->config['paths']['app']) . substr("000" . $pageNum, -3) . ".html";
             } else {
-                $file_path = $page_num;
+                $file_path = $pageNum;
             }
             return file_put_contents ($file_path, $page);
         }
     }
-    
+
     /**
      * copies a page
      * @param type $app
@@ -837,53 +859,7 @@ class FileManagement {
             return false;
         }
     }
-    
-    /**
-     * "deletes" a page, simply removes from list of pages, but leaves file untouched so can recover it later.
-     * 
-     * @param type $app
-     * @param type $page_num
-     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
-     */
-    public function deletePage($app, $page_num, $uid) {
-//get path of file to delete
-        $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        $page_to_delete = $this->getPageFileName($app_path, $page_num);
 
-// update app conf.json counters for network required components
-        $appConfig = $this->getAppConfig($app);
-        $pageComponents = $this->getPageComponents($app_path . $page_to_delete);
-        $this->updateNetworkComponentCounters('remove', $appConfig['config'], $pageComponents);
-        $this->componentUpdateConfig($app, null, $appConfig);
-
-//update links, we don't actually delete files! This way we can undelete easily afterwards
-        $current_order = $this->getAppConfigValue($app, "page_order");
-        if (!$current_order) {
-            $current_order = array_map("basename", glob( $app_path . "/???.html" ));
-        }
-        
-//find entry to delete and set which entry to open next
-        $key = array_search(basename($page_to_delete), $current_order);
-        $max = sizeof($current_order) - 2; //max index AFTER removed an element, -2 because base 0 array
-        array_splice($current_order, $key, 1);
-        $this->updateAppConfigFile($app, array("page_order" => $current_order));
-	
-        if ($max < 0) { //no pages left when done, need to open index
-            $page_to_open = "index.html";
-        } else if ($max === 0) { //no pages left when done
-            $page_to_open = $current_order[0];
-        } else if ($key > $max) { //deleting last record
-            $page_to_open = $current_order[$max];
-        } else {
-            $page_to_open = $current_order[$key];
-        }
-        if (file_exists("$app_path/$page_to_open")) {
-            return intval($page_to_open);
-        } else {
-            return 0;
-        }
-    }    
-    
     /**
      * List of deleted 
      * 
@@ -915,28 +891,6 @@ class FileManagement {
         
         return $list;
     }
-    
-    /**
-     * Restore previously deleted page
-     * 
-     * @param type $app
-     * @param type $pageNum
-     * @return array $appConfig
-     */
-    public function restorePage($app, $pageNum) {
-        $app_path = $app->calculateFullPath($this->config['paths']['app']);
-        $appConfig['config'] = $this->getAppConfig($app);
-
-        if(!file_exists($app_path . $pageNum . '.html')) {
-            return false;
-        }
-        
-        $appConfig['config']['page_order'][] = $pageNum . '.html';
-        $pageComponents = $this->getPageComponents($app_path . $pageNum . '.html');
-        $this->updateNetworkComponentCounters('add', $appConfig['config'], $pageComponents);
-
-        return $this->componentUpdateConfig($app, null, $appConfig);
-    }    
     
     protected function updateNetworkComponentCounters($action, &$config, $pageComponents) {
         $add = $action == 'add' ? 1 : -1;
@@ -1458,7 +1412,7 @@ class FileManagement {
         }
 
         //$content = $doc->saveHtml($doc->getElementById($this->config["app"]["content_id"]));
-        $this->savePage($app, $cached_app_path . "000.html", $doc->getElementsByTagName('title')->item(0)->textContent, $content);
+        $this->savePage($cached_app_path . "000.html", $content, $doc->getElementsByTagName('title')->item(0)->textContent);
 
 //get list of all placeholders, each placeholder is surrounded by double percentage (%) signs
         preg_match_all('~%%(.+?)%%~', $frontpage_content, $placeholders);
@@ -1976,6 +1930,300 @@ class FileManagement {
             copy($src, $dst); 
         }
     }
+
+
+// NEW
+    
+    protected $app = null;
+    public $appConfig = null;
+
+    public function setApp(\Sinett\MLAB\BuilderBundle\Entity\App $app) {
+        $this->app = $app;
+        $this->getAppConfig($this->app);
+
+        return $this;
+    }
+    
+    /**
+     * Creates an empty file which will be locked when we redirect to page_get in calling function
+     * @param type $app
+     * @return bool
+     */
+    public function createNewPage($position = null, $section = null, $title = null) {
+        $pageProperties = $this->getNewPageNum($this->app);
+        if ($pageProperties['new_page_num'] === false) {
+            return false;
+        }
+
+        if (is_null($title)) { //default page name if 
+            $title = 'New Page ' . $pageProperties['new_page_num'];
+        }
+        $content = str_replace('%TITLE%', $title, $this->config['app']['html_header']) . $this->config['app']['html_footer'];
+
+        if (file_put_contents($pageProperties['new_page_path'], $content) !== false) {
+            $appConfig = $this->getAppConfig($this->app);
+            $page = $this->getNewPageConfig([
+                'title' => $title,
+                'fileName' => basename($pageProperties['new_page_path']),
+                'pageNumber' =>  $pageProperties['new_page_num'],
+            ]);
+
+            if($section) {
+                $tableOfContents = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
+                $tableOfContents = &$tableOfContents[0]['children'];
+            } else {
+                $tableOfContents = &$appConfig['tableOfContents'];
+            }
+
+            if(is_numeric($position)) {
+                array_splice($tableOfContents, $position, 0, [$page]);
+            } else {
+                array_push($tableOfContents, $page);
+            }
+
+
+            $this->updateAppConfig($appConfig);
+
+            return $page;
+        } else {
+            return false;
+        }
+    }
+
+    public function searchTOC(&$tableOfContents, $conditions = [], &$parents = []) {
+        $results = [];
+
+        foreach ($tableOfContents as $key => &$child) {
+            if (count(array_intersect_assoc($child, $conditions)) === count($conditions)) {
+                $parents[$key] = &$tableOfContents;
+                $results[] = &$child;
+            }
+
+            if(isset($child['children'])) {
+                $nextLevel = $this->searchTOC($child['children'], $conditions, $parents);
+                if($nextLevel) {
+                    $results = array_merge($results, $nextLevel);
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    public function createNewSection($position = null, $parent = null) {
+        $appConfig = $this->getAppConfig($this->app);
+        $section = $this->getNewSectionConfig();
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $parent]);
+        $parentSection = &$parentSection[0];
+
+        if($parentSection) {
+            if(!isset($parentSection['children'])) {
+                $parentSection['children'] = [];
+            }
+
+            if($position !== null) {
+                array_splice($parentSection['children'], $position, 0, [$section]);
+            } else {
+                array_push($parentSection['children'], $section);
+            }
+        } else {
+            if(!empty($position)) {
+                array_splice($appConfig['tableOfContents'], $position, 0, [$section]);
+            } else {
+                array_push($appConfig['tableOfContents'], $section);
+            }
+        }
+
+        $this->updateAppConfig($appConfig);
+
+        return $section;
+
+    }
+
+    public function indentSection($sectionId, $indent) {
+        if($indent == 'down') {
+            return $this->deleteSection($sectionId);
+        }
+
+        $appConfig = $this->getAppConfig($this->app);
+
+        $cutParent = null;
+        $cut = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $cutParent);
+        $key = key($cutParent);
+
+        $paste = &$cutParent[$key];
+        $out = array_splice($cutParent[$key], $key, 1);
+
+        if(isset($cutParent[$key][$key-1]) && $cutParent[$key][$key-1]['type'] == 'section'){
+            array_splice($paste[$key-1]['children'], count($paste[$key-1]['children']), 0, $out);
+        } else {
+            $newSection = $this->getNewSectionConfig();
+            $newSection['children'] = $out;
+            
+            array_splice($cutParent[$key], $key, 1, [$newSection]);
+        }
+
+        return $this->updateAppConfig($appConfig);
+    }
+
+    public function updateSectionTitle($sectionId, $title) {
+        $appConfig = $this->getAppConfig($this->app);
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId]);
+        $parentSection = &$parentSection[0];
+        $parentSection['title'] = $title;
+
+        return $this->updateAppConfig($appConfig);
+    }
+
+    public function updatePageTitle($pageNum, $title) {
+        $appConfig = $this->getAppConfig($this->app);
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        $parentSection = &$parentSection[0];
+        $parentSection['title'] = $title;
+
+        return $this->updateAppConfig($appConfig);
+    }
+
+    public function deleteSection($sectionId) {
+        $appConfig = $this->getAppConfig($this->app);
+        $parents = [];
+
+        $parentSection = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $sectionId], $parents);
+        $key = key($parents);
+        $children = $parents[$key][$key]['children'];
+
+        array_splice($parents[$key], $key, 1, $children);
+
+        return $this->updateAppConfig($appConfig);
+    }
+
+    protected function getNewPageConfig($page = []) {
+        return array_merge([
+           'type' => 'page',
+           'order' => 0,
+           'title' => 'New Page',
+           'fileName' => null,
+        ], $page);
+    }
+    
+    protected function getNewSectionConfig($section = []) {
+        $appConfig = $this->getAppConfig($this->app);
+        $listSections = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section']);
+
+        usort($listSections, function($a, $b) {
+            return @$b['id'] <=> @$a['id'];
+        });
+
+        $last = reset($listSections);
+        $nextId = isset($last['id']) ?  $last['id']+1 : 1;
+
+        return array_merge([
+            'id' => $nextId,
+            'type' => 'section',
+            'order' => 0,
+            'title' => 'New Section ' . $nextId,
+            'children' => []
+        ], $section);
+    }
+    
+    protected function getPageTOC($pageNum) {
+        $appConfig = $this->getAppConfig($this->app);
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        
+        return reset($page);
+    }
+
+    public function updateAppConfig($config = []) {
+        $current = $this->getAppConfig();
+        $config = array_merge($current, $config);
+        $pathApp = $this->app->calculateFullPath($this->config['paths']['app']);
+
+        $pathAppConfig = $pathApp . $this->config['filenames']['app_config'];
+
+        $result = file_put_contents($pathAppConfig, json_encode($config));
+
+        if($result) {
+            $this->appConfig = $config;
+        }
+
+        return $result;
+    }
+    
+    /**
+     * "deletes" a page, simply removes from list of pages, but leaves file untouched so can recover it later.
+     * 
+     * @param type $app
+     * @param type $pageNum
+     * @return name of file to open after the page was deleted (next or previous or first page) OR false if fail
+     */
+    public function deletePage($pageNum) {
+        $appConfig = $this->getAppConfig($this->app);
+
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        $page[0]['is_deleted'] = true;
+
+        return $this->updateAppConfig($appConfig);
+    }    
+
+    /**
+     * Restore previously deleted page
+     * 
+     * @param type $pageNum
+     * @return array $pageTOC
+     */
+    public function restorePage($pageNum) {
+        // $this->updateNetworkComponentCounters('add', $appConfig['config'], $pageComponents);
+        $appConfig = $this->getAppConfig($this->app);
+
+        $page = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'page', 'pageNumber' => $pageNum]);
+        $page[0]['is_deleted'] = false;
+        $this->updateAppConfig($appConfig);
+
+        return $page[0];
+    }
+
+    public function tocMove($node, $section, $position) {
+        $appConfig = $this->getAppConfig($this->app);
+        $conditions = array_intersect_key($node, array_flip(['type', 'id', 'pageNumber']));
+
+        $cutParent = null;
+        $cut = $this->searchTOC($appConfig['tableOfContents'], $conditions, $cutParent);
+
+        if(!empty($section)) {
+            $paste = $this->searchTOC($appConfig['tableOfContents'], ['type' => 'section', 'id' => $section]);
+        } else {
+            $paste = &$appConfig['tableOfContents'];
+        }
+        
+        foreach ($cutParent as $key => &$parent) {
+            // if moving object is in the same level and the new position is after old one
+            // fix new position
+            if($parent == $paste && $key < $position) {
+                $position--;
+            }
+            $fixDeletedPostions = 0;
+            for ($i=0; $i < $position; $i++) { 
+                if(isset($paste[$i]['is_deleted']) && $paste[$i]['is_deleted']) {
+                    $fixDeletedPostions++;
+                }
+            }
+
+            $position = $position+$fixDeletedPostions;
+
+            $out = array_splice($parent, $key, 1);
+
+            if(isset($paste[0]['children'])) {
+                array_splice($paste[0]['children'], $position, 0, $out);
+            } else {
+                array_splice($paste, $position, 0, $out);
+            }
+        }
+        
+        return $this->updateAppConfig($appConfig);
+    }    
    
 }
 

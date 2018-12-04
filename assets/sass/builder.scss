@@ -1,0 +1,945 @@
+.builder {
+    background-color: $builder-color;
+}
+
+ul.breadcrumb {
+    font-family: 'Roboto Condensed', sans-serif;
+    position: absolute;
+    top: 14px;
+    left: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: $top-level-text;
+    li {
+        display: inline;
+
+        &:first-child a {
+            color: $top-level-text;
+        }
+
+        &:nth-child(2) a {
+            color: $second-level-text;
+        }
+
+        &:nth-child(3) a {
+            color: $third-level-text;
+        }
+
+        &+li:before {
+            padding: 8px;
+            color: black;
+            content: ">";
+        }
+    }
+
+    a {
+        font-weight: bold;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.app-container {
+    width:768px;
+    height:1024px;
+    background-color: $app-container-color;
+    margin: 40px auto 40px auto;
+    box-shadow: 0px 0px 30px #ccc;
+}
+
+/* FROM OLD MLAB EDITING CSS */
+
+/*
+MLAB component styling for comunication with the app creator or the 
+app user.
+
+  The styles allways begins with:
+  * for design time
+   #mlab_editor .mlab_dt_cc_...
+   (dt = desing time, cc = component config)
+
+  * for run time
+   #mlab_editable_area .mlab_rt_cc_...
+   (rt = run time, cc = component config)
+
+*/
+
+
+/* ==========================================================================
+   Design time - dt
+   ========================================================================== */
+
+/* ===  Information  === */
+
+#mlab_editor .mlab_dt_text,
+#mlab_editor .mlab_dt_text_headline,
+#mlab_editor .mlab_dt_text_info,
+#mlab_editor .mlab_dt_text_filename {
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+    direction: ltr;
+    margin: 0.5em;
+}
+
+#mlab_editor .mlab_dt_text_headline {
+    font-weight: bold;
+    line-height: 14px;
+    font-size: 12px;
+}
+
+#mlab_editor .mlab_dt_text_info {  
+    width: 95%;
+    margin-bottom: 1.5em;
+    white-space: normal; /* added for file upload dialog. */
+}
+
+#mlab_editor .mlab_dt_text_filename {
+      font-size: 12px; 
+      font-style: italic;
+}
+
+#mlab_editor .mlab_dt_progress_bar {
+    float: left;
+    width: 90%;
+}
+
+#mlab_editor .mlab_dt_status_bar {
+
+}
+
+/* ===  Buttons  === */
+
+#mlab_editor .mlab_dt_button,
+#mlab_editor .mlab_dt_button_ok,
+#mlab_editor .mlab_dt_button_cancel,
+#mlab_editor .mlab_dt_button_close,
+#mlab_editor .mlab_dt_button_retry,
+#mlab_editor .mlab_dt_button_done,
+#mlab_editor .mlab_dt_button_upload_files,
+#mlab_editor .mlab_dt_dialog_credentials .ui-button {
+    background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, #B4B4B4 100%) repeat scroll center center rgba(0, 0, 0, 0);
+    border: 1px solid #AAAAAA;
+    border-radius: 2px;
+    color: #212121;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 10.5px !important;
+    line-height: 12px;
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+    margin-top: 0px;
+    padding: 5.5px 12px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: none;
+    transition: box-shadow 0.1s linear 0s;
+    vertical-align: top;
+    word-wrap: break-word;
+    cursor: pointer;
+    box-shadow: none;
+    width: auto;
+}
+
+#mlab_editor .mlab_dt_button_help {
+    float: right;
+    height: 12px;
+    margin-top: 1px;
+    margin-right: -5px;
+    background: whitesmoke;
+    border: solid 1px darkgray;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#mlab_editor .mlab_comp_help_qTip .mlab_dt_button_help,
+#mlab_editor .mlab_page_help_qTip .mlab_dt_button_help {
+    visibility: hidden;
+}
+
+#mlab_editor .mlab_dt_button_help {
+    float: right;
+    height: 12px;
+    margin-top: 1px;
+    margin-right: -5px;
+    background: whitesmoke;
+    border: solid 1px darkgray;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#mlab_editor .mlab_comp_help_qTip .mlab_dt_button_help,
+#mlab_editor .mlab_page_help_qTip .mlab_dt_button_help {
+    visibility: hidden;
+}
+
+
+/* ===  Space - new line === */
+
+#mlab_editor .mlab_dt_button_new_line {
+    padding: 18px;
+    padding-right: 50%;
+}
+
+#mlab_editor .mlab_dt_button_small_new_line {
+    padding: 1px;
+    padding-right: 50%;
+}
+
+#mlab_editor .mlab_dt_large_new_line {
+    padding: 22px;
+}
+
+#mlab_editor .mlab_dt_larger_new_line {
+    padding: 35px;
+}
+
+#mlab_editor .mlab_dt_largest_new_line {
+    padding: 44px;
+}
+
+
+#mlab_editor .mlab_dt_medium_new_line {
+    padding: 12px;
+}
+
+#mlab_editor .mlab_dt_small_new_line {
+    padding: 7px;
+}
+
+#mlab_editor .mlab_dt_tiny_new_line {
+    padding: 1px;
+}
+
+#mlab_editor .mlab_dt_new_row {
+    padding: 7px;
+}
+
+
+/* ===  Input  === 
+    Generell tekst
+    Label
+    URL
+    Koordinater for kart
+    Velg filer
+    Bruker navn
+    Passord
+    Drop down liste
+    Autocomplete liste
+    Liste med thumbnails
+    Check list
+*/
+
+#mlab_editor .mlab_dt_input, 
+#mlab_editor .mlab_dt_large_input,
+#mlab_editor .mlab_dt_label,
+#mlab_editor .mlab_dt_short_label,
+#mlab_editor .mlab_dt_textarea,
+#mlab_editor .mlab_dt_medium_textarea,
+#mlab_editor .mlab_dt_select,
+#mlab_editor .mlab_dt_picture {
+    float: left;
+    font-size:12px;
+    font-family: Arial,Helvetica,sans-serif;
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding: 2px;
+    padding-bottom: 0.2em;
+    border-radius: 0px;
+    border: 1px solid rgb(169, 169, 169);
+    cursor: pointer;
+
+}
+
+#mlab_editor .mlab_dt_large_input {
+    min-width: 90%;
+}
+
+#mlab_editor .mlab_dt_label {
+    min-width: 55%;
+    border: none;
+}
+
+#mlab_editor .mlab_dt_short_label {
+    min-width: 25%;
+    border: none;
+}
+
+#mlab_editor .mlab_dt_medium_textarea {
+    min-width: 90%;
+    min-height: 4em;
+} 
+
+
+/* ===  Tabs  === */
+
+#mlab_editor .mlab_dt_tab {
+
+}
+
+#mlab_editor .mlab_dt_tab_list {
+border-bottom: 1px solid orange;
+padding-top: 0.5em;
+margin-bottom: 0.5em;   
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab {
+font-size: 0.9em;
+font-family: Arial,Helvetica,sans-serif;
+padding: 0.3em;
+margin: 0.7px;
+margin-bottom: 0;
+border: 1px solid orange;
+border-bottom: 0;
+cursor: pointer;
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active {
+background-color: rgba(255,165,0,0.2);
+}
+
+#mlab_editor .mlab_dt_tab_list .mlab_dt_tab.ui-tabs-active a{
+outline: none;
+color: black;
+}
+
+/* ===  Fieldset - group  === */
+#mlab_editor .mlab_dt_group {
+    border: solid 1px lightgrey;
+    padding-bottom: 4px;
+    margin: 5px;
+    margin-top: 10px;
+}
+
+/* ===  list for component size and aspect   === */
+#mlab_editor #mlab_component_size_list ul, 
+#mlab_editor #mlab_component_aspect_list ul {
+    background-color: white;
+    border: 0px orange solid;
+    padding: 8px;
+    padding-left:25px;
+    margin: 0;    
+}
+
+#mlab_editor #mlab_component_size_list li, 
+#mlab_editor #mlab_component_aspect_list li {
+    cursor: pointer;
+    list-style-type: square; 
+    padding-right: 10px;
+    color: black;
+    font-size:13px; 
+    line-height: 16px;
+    text-decoration: underline; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#mlab_editor #mlab_component_size_list li.mlab_item_applied:before, 
+#mlab_editor #mlab_component_aspect_list li.mlab_item_applied:before {
+    content: "\2713 ";
+    margin-left: -1em;
+    margin-right: .100em;
+}
+
+/* ===  list for component storage plugin   === */
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] ul {
+    background-color: white;
+    border: 0px orange solid;
+    padding-top: 0px;
+    padding-right: 8px;
+    padding-left: 2px;
+    padding-bottom: 12px;
+    margin: 0;    
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li {
+    cursor: pointer;
+    list-style-type: none; 
+    padding-right: 10px;
+    color: black;
+    font-size:13px; 
+    line-height: 16px;
+    text-decoration: underline; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] li.mlab_item_applied span:after {
+    content: "\2713 ";
+    color: darkgreen;
+    padding-left: 2px;
+    font-weight: bold;
+}
+
+#mlab_editor .mlab_toolbar_for_components [data-mlab-get-info='storage_plugins'] img[data-mlab-comp-tool='credentials'] {
+    width: 15px;
+    height: 15px;
+    margin-bottom: -4px;
+    margin-right: 2px;
+}
+
+/* ===  Placement  === */
+
+#mlab_editor .mlab_dt_right {
+    float: right;
+}
+
+
+#mlab_editor .mlab_dt_left {
+   float: left;
+}
+
+#mlab_editor .mlab_dt_newline {
+   clear: both;
+}
+
+/* ===  Spesific styling for individual components  === */
+
+#mlab_editor #mlab_cp_googlemap_center,
+#mlab_editor #mlab_cp_googlemap_markers {
+   min-width: 205px;
+}
+
+#mlab_editor #mlab_cp_youtube_results {
+    padding: 2px;
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+#mlab_editor #mlab_cp_youtube_results img {
+    padding: 5px;
+}
+
+#mlab_editor #mlab_cp_youtube_results .youtube {
+    max-height: 94px;
+}
+
+#mlab_editor #mlab_cp_youtube_results .youtube h3 {
+    padding-top: 14px;
+    padding-bottom: 3px;
+}
+
+#mlab_editor #mlab_cp_youtube_results .youtube p {
+    height: 30px;
+    overflow: hidden;
+}
+
+#mlab_editor #mlab_cp_youtube_results a {
+    color: #353535;
+    text-decoration: none;
+}
+
+/* IMAGE UPLOAD QTIP */
+#mlab_editor #mlab_cp_select_file {
+    min-width: 195px;
+    max-width: 71%;
+}
+
+#mlab_dt_form_upload #mlab_cp_select_file, 
+#mlab_dt_form_upload #mlab_cp_select_file .dd-select {
+    height: auto;
+    line-height: 40px;
+    width: 250px;
+    padding: 6px;
+    min-height: 40px;
+}
+
+/*#mlab_dt_form_upload #mlab_cp_select_file, 
+#mlab_dt_form_upload #mlab_cp_select_file .dd-select {
+    height: 40px;
+    line-height: 40px;
+    width: 250px;
+    padding-left: 6px;
+}*/
+
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload:hover,
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload-cancel:hover {
+    background: orange;
+}
+
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload,
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload-cancel {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    box-shadow: none;
+    line-height: 20px;
+    height: 20px;
+    margin: 0 10px 10px 0;
+    display: inline-block;
+    border: 1px solid orange;
+    text-decoration: none;
+    border-radius: 3px;
+    padding: 6px 10px 4px 10px;
+    color: black;
+    background: rgba(255,165,0,0.2);
+    vertical-align: middle;
+}
+
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload-cancel {
+    font-weight: normal;
+    text-shadow: none;
+    font-size: 12px;
+    line-height: 13px;
+    height: 13px;
+}
+
+#mlab_editor #mlab_dt_form_upload .ajax-upload-dragdrop {
+    border: 2px dotted #A5A5C7;
+    color: #DADCE3;
+    text-align: left;
+    padding: 10px 10px 0px 10px;
+    width: 232px !important;
+}
+
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload-statusbar {
+    border: none;
+    margin-top: 10px;
+    width: 420px;
+    margin: 0;
+    padding: 5px 5px 5px 16px;
+    clear: both;
+}
+
+#mlab_editor #mlab_dt_form_upload .ajax-file-upload-filename {
+    width: 300px;
+    height: auto;
+    margin: 0 5px 5px 0px;
+    padding: 2px;
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    color: #353535;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-pointer-down {
+    border: solid 5px transparent;
+    border-top: solid 5px #000;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-options > li:last-child > .dd-option {
+    border-bottom: none;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-option:hover {
+    background: #f3f3f3;
+    color: #000;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-options {
+    border: solid 1px #ccc;
+    border-top: none;
+    list-style: none;
+    box-shadow: 0px 1px 5px #ddd;
+    display: none;
+    position: absolute;
+    z-index: 2000;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    overflow: auto;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-select {
+    border-radius: 2px;
+    border: solid 1px #ccc;
+    position: relative;
+    cursor: pointer;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-selected-description-truncated {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#mlab_editor #mlab_dt_form_upload .dd-desc {
+    color: #353535;
+    display: block;
+    overflow: hidden;
+    font-weight: normal;
+    line-height: 1.4em;
+    padding-top: 8px;
+    padding-right: 25px;
+}
+
+#mlab_dt_form_upload form input {
+    z-index: inherit;
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   Run time - rt
+   ========================================================================== */
+
+#mlab_editable_area .mlab_rt_maximize {  
+  /* Set rules to fill the screen */
+  min-height: 100%;
+	
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+	
+  /* Set up positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+#mlab_editor .mlab_property_dlg .qtip-content {
+    padding: 0.4em;
+}
+
+/* ==========================================================================
+   This is the styles for the mlab editor 
+   (the top menu has its own css)
+
+   To be sure that the templates css not overwrites anytihng that has to do
+   with toolbars under the main menu line:
+   1. The component toolbar (to the left)
+   2. The page controls and management (over the app area/page), 
+   3. The toolbar that switches for each component (to the right)
+   4. The overlay info box
+   5. The warning box of the rules set by the template
+   6. The app area - just the outline, not the content of it
+   
+   The styles allways begins with:
+   
+   3. #mlab_editor .mlab_toolbar_for_components 
+   4. #mlab_editor #mlab_overlay
+   5. #mlab_editor #mlab_template_warning
+   6. #mlab_editor #mlab_container
+
+   ========================================================================== */
+/* Added so that the elements of the container don't wrap if the screen is 
+made smaler than the min width */
+/* body#mlab_editor {
+    padding-bottom: 70px;
+    margin-bottom: 70px;
+}*/
+
+/* Added so that the elements of the container don't wrap if the screen is 
+made smaler than the min width */
+#mlab_editor {
+    min-width: 1000px;
+}
+
+/* Used to hide different elements with javascript */
+.mlab_hidden {
+    display: none;
+}
+
+/* Used to show different elements with javascript */
+.mlab_show {
+    display: block !important;
+}
+
+/* Used to set the backgound to transparent for different elements with javascript */
+.mlab_transparent {
+    background: transparent !important;
+}
+
+/* Used to hide elements that comes from the template */
+.mlab_hide_in_app_builder {
+    display: none !important;
+}
+
+#mlab_editor .mlab_align_menu_elements .mlab_permanent_top_menu {
+    position: fixed;
+    z-index: 500;
+    background-color: white;
+    padding-bottom: 25px;
+    width: 100%;
+}
+
+
+#mlab_editor .mlab_qtip_tooltip.qtip{
+    max-width: 250px;
+    background-color: white;
+    color: black;
+    border: solid orange 2px;
+    box-shadow: 5px 5px 5px darkslategray;
+    padding: 6px;
+    line-height: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+}
+
+#mlab_editor .mlab_qtip_tooltip .qtip-titlebar {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0px;
+    padding-bottom: 10px;
+    background-color: white;
+}
+
+/* NOT USING INTERFERES WITH qtip
+#mlab_editor .mlab_qtip_menu_tooltip.qtip{
+    z-index: 20000 !important;
+}
+*/
+
+#mlab_editor .mlab_qtip_tooltip.qtip p{
+    margin: 0 0 6px;
+}
+
+#mlab_editor .mlab_qtip_tooltip.qtip h1{
+    font-size: 20px;
+    line-height: 1.1;
+    margin: 0 0 5px;
+}
+
+#mlab_editor .mlab_qtip_tooltip.qtip img{
+    float: left;
+    margin: 10px 10px 10px 0;
+}
+
+#mlab_editor .mlab_qtip_tooltip.qtip .info{
+    overflow: hidden;
+}
+
+#mlab_editor .mlab_qtip_tooltip.qtip p.note{
+    font-weight: 700;
+}
+
+ /*remove
+ .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 0;
+}
+
+ .ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 0;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 0;
+}
+*/
+
+
+/* ==========================================================================
+   5. The warning box of the rules set by the template
+   ========================================================================== */
+
+#mlab_editor #mlab_template_warning {
+    display: block;
+    font-family: Verdana, Arial, sans-serif;
+    height: 0px;
+    line-height: 0px;
+    width: 868px;
+    background: greenyellow;
+}
+
+/* ==========================================================================
+   6. The app area/page - the styling of the content is handled by the template
+                          and the mlab_component_config.css
+   ========================================================================== */
+
+#mlab_editor #mlab_editor_chrome {
+    border: none;
+    margin: 10px;
+    margin-top: 20px;
+    float: left;
+    width: 644px;
+    display: block;
+    overflow-y: visible;
+    overflow-x: visible;
+    position: absolute;
+    left: 160px;
+    top: 20px;
+    clear: both;
+}
+
+#mlab_editor #mlab_editor_chrome [data-role="page"] {
+    overflow-y: visible;
+    clear: both;
+    height: auto !important;
+    min-height: 200px !important;
+    margin-bottom: 70px !important;
+}
+
+/* Outlines the current selcted component */
+#mlab_editor #mlab_editable_area .mlab_current_component {
+    outline: 3px dotted ;
+}
+
+/* Gives the current selcted component a move icone when hovering it */
+#mlab_editor #mlab_editable_area div[data-mlab-type].mlab_current_component:hover {
+    background-image: url("/img/drag_white.png");
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+
+/* The components - only in the editor */
+#mlab_editor #mlab_editable_area div[data-mlab-type] {
+    margin: 5px;
+}
+
+
+/* ==========================================================================
+   7. The footer with helptext
+   ========================================================================== */
+
+#mlab_editor .mlab_editor_footer {
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1),rgba(255,255,255,1));
+    z-index: 500;
+} 
+
+#mlab_editor .mlab_editor_footer_help {
+    padding: 23px 0 10px 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+} 
+
+#mlab_editor .mlab_editor_footer_help_icon {
+    float: left;
+    padding: 15px 5px 0 10px;
+    width: 25px;
+}
+
+/* TEMP AV ARILD */
+
+#mlab_editor ul.ui-autocomplete {
+    z-index: 15000; 
+    background-color: wheat;
+    border: 1px solid gray;
+    padding: 2px;
+}
+
+#mlab_editor .ui-state-active a, #mlab_editor .ui-state-active a:link, #mlab_editor .ui-state-active a:visited {
+    color: white;
+}
+
+#mlab_editor .mlab_current_component_child {
+    outline: 2px dotted ;
+}
+
+#mlab_editor .mlab_current_component_editable {
+    outline: 1px dotted ;
+}
+
+/*TODO: Fix this so on top of fixed elements such as div.mlab_permanent_top_menu */
+.mlab_zindex_regular_tooltip {
+    z-index: 400 !important;
+}
+
+/* NOT USING; INTERFERES WITH QTIP Z INDEX
+.mlab_zindex_top_tooltip {
+    z-index: 510 !important;
+}
+
+.mlab_zindex_top_helptip {
+    z-index: 550 !important;
+}
+*/
+
+#mlab_editor.mlab_loading_info {
+    cursor: wait;
+}
+
+#mlab_editor [data-mlab-get-info='storage_plugins'] {
+    z-index: 600 !important;
+}
+
+#mlab_editor [data-mlab-get-info="credentials"] label {
+    line-height: 90%;
+    margin: 0;
+    padding: 0;
+}
+
+#mlab_editor [data-mlab-get-info="credentials"] input {
+    width: 90%;
+    margin-top: 0;
+}
+
+#mlab_editor [data-mlab-get-info="credentials"] button {
+    float: right;
+}
+
+#mlab_editor [data-mlab-get-info="storage_plugins"] {
+    margin: 10px 0;
+}
+
+#mlab_editor .container .ui-loader {
+   display: none; 
+}
+
+#mlab_editor #mlab_dialog_confirm .mlab_dialog_confirm_text {
+    float:left; 
+    margin:0 7px 20px 0;
+}
+
+#mlab_editor #mlab_page_control_import {
+    padding-left: 10px;
+    width: 22px;
+}
+
+#mlab_editor #mlab_statusbar_requires_network.internet,
+#mlab_editor #mlab_statusbar_requires_network.network {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAACmAAAApgHdff84AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAATVQTFRF////AAAAAACAAABVAACAIACAHABxGgCAFQCAJACAHgB4GgBzHwZ2HQV2HAR5IAR4HwR4HQR3HAR4HgN3HwV4HwV4HQV4HgV3HgV5HQR5HwR4HgR5HgR3HgR4HQR4HQN4HwN3HgV4HgV4HgV4HwV5HgV4HgV4HgR3HgR4HgR4HgR5aVWqaVaqeWa1Yk2lYk6mY06mf265gXC7gnG7V0KeVD+cVUCdinnAHQR4i3rCjHzCTDaXTTiXjH3Cj37ESjOVSjOWSzWWRS+THQR4QCmPk4PGHgR4PyiPHgR4HgR4lYXIHwR4HgR4Nx6JNR6IHgN4HgN3NByIHgN4l4jJl4nJMRiEmIrLLxaDHgR4HgR4HgR4Igl7Iwl7Iwl8IAd6m4zMm4zMm4zMm4zNm4zMm4zMm4zMm4zMngyFXwAAAGZ0Uk5TAAECAwQICQoMDhEUKTQ/QEJHSF5iZGhvcHJ1dn6AjJ2eoKGip6iqq7G1uMDAwMHBwcHCwsXGxsbHyMjKysrKzMzMztDS0tPT1NbW2drb3N3e3t/f4OLi4+Tl6fLz8/T09vj4+v3+MHJupQAAAQxJREFUGBmlwdVSAgEYBtAPWEK6G6RDShoMBClJRRAQBVzif/9HcJhZh73YC0fPwZ+JNCan1+s0aUTgMwRXk0IilUoUJqugAT+MlXF2Tpx5dlwx4kQRHpWPxHMsj8IKQN1Ls0TE9vOZbjeT77NExKZ7ajzniGib3DT9dp3O7m9uklsiyr3D19hRbRFQgaMKLGq0a/jAROvFoR4ncjlO9MNiPcoAjMclBRhrZLBeDyJWBpC6PAw42s5deXo4TMu3HS14bG/3xLlZ2HDmru+IZtXqjOjr0Y0zSajRbi3j8WWr/RCSgIfxvVjEgNjyesng15QOhxJCrq4TTxAg+9jvPy8gIFYqxSBEZjbL8A/f1MQ4d4rtA2UAAAAASUVORK5CYII=');
+    width: 24px;
+    height: 24px;
+}
+
+#mlab_editor .img-container {
+    position: relative
+}
+
+#mlab_editor .paste-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: copy;
+}
+
+#mlab_history {
+    position: absolute;
+    right: 0;
+    border: 2px graytext solid;
+    box-shadow: 5px 5px lightgrey;
+    margin-right: 10px;
+    height: 400px;
+    overflow-y: scroll;
+    width: 300px;
+    display: none;
+}
+
+#mlab_history img {
+    float: left;
+    width: 40px;
+    height: 40px;   
+    margin-right: 5px
+}
+
+#mlab_history p {
+    float: left;
+    width: auto;
+    height: 40px;
+    line-height: 12px;
+}
+
+div#mlab_history li {
+    height: 42px;
+    border-bottom: 2px solid lightgrey;
+    margin: 4px;
+}
