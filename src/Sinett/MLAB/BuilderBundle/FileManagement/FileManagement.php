@@ -36,8 +36,8 @@ class CustomPreProcessing {
         
         $toc = $file_mgmt->getAppConfigValue($app, "tableOfContents");
         $page_order = array();
-        foreach ($toc as $toc_item) {
-            if ($toc_item["type"] === "page" && ( isset($toc_item["is_deleted"]) && $toc_item["is_deleted"] ) ) {
+        foreach ($toc['active'] as $toc_item) {
+            if ($toc_item["type"] === "page") {
                 $page_order[] = $toc_item["pageNumber"];
             }
         }
@@ -686,9 +686,7 @@ class FileManagement {
                 $config = json_decode(file_get_contents($path_app_config), true);
             }
 
-            foreach ($defaultConfig as $key => $value) {
-                $this->appConfig[$key] = array_merge($defaultConfig[$key], $config[$key]);
-            }
+            $this->appConfig = array_merge($defaultConfig, $config);
         }
 
         return $this->appConfig;
