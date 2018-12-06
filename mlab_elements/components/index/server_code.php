@@ -98,43 +98,14 @@ class mlab_ct_index {
         $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $this->variables['textsize'] . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
         
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
-        if ($this->variables['style'] == "folding") {
-            $html .= "<div class='mc_container mc_index mc_list " . $this->variables['textsize'] . "'>\n";
-            $curr_level = false;
-            $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index[0]["page_id"] . "); return false;'>" . $index[0]["title"] . "</a></p>\n";
-//loop through all pages, insert new details tag for each chapter, can be neted.
-            foreach ($app_config["tableOfContents"]['active'] as $i => $chapter_info) {
-                $chapter_info = [
-                    'chapter' => $chapter_info['type'] == 'section' ? $chapter_info['title'] : false,
-                    'level' => $curr_level+1,
-                    'page_id' => $chapter_info['type'] == 'page' ? $chapter_info["pageNumber"] : null,
-                    'title' => $chapter_info["title"]
-                ];
+        $activeTree = $this->activeTree($app_config["tableOfContents"]['active']);
+        $index = array_merge($index, $activeTree);
 
-                if ($chapter_info["chapter"]) { 
-                    for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened details tag
-                        $html .= "</details>\n";
-                    }
-                    $curr_chapter = $chapter_info["chapter"];
-                    $curr_level = $chapter_info["level"];
-                    $html .= "<details>\n";
-                    $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $chapter_info["page_id"] . '); return false;}">' . trim($chapter_info["chapter"]) . "</summary>\n";
-                    
-                    if($this->variables['displayChapterPageTitle']){
-                        // $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
-                    }
-                } else {
-                    $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
-                }
-                    
-            }
-            $html .= "</div>";
+        if ($this->variables['style'] == "folding") {
+            $html .= $this->foldedListHtml($index);
         } else {
-            $activeTree = $this->activeTree($app_config["tableOfContents"]['active']);
-            $index = array_merge($index, $activeTree);
             $html .= $this->detailedListHtml($index);
         }
-
         return $html;
         
     }
@@ -191,6 +162,43 @@ class mlab_ct_index {
 
         return $tree;
     }
+
+    protected function foldedListHtml($indexes) {
+        $html = "<div class='mc_container mc_index mc_list " . $this->variables['textsize'] . "'>\n";
+        foreach ($indexes as $index) {
+            $html .= $this->foldedIndexLevelHtml($index);
+        }
+        $html .= "</div>";
+        return $html;
+    }
+
+    
+    protected function foldedIndexLevelHtml($index) {
+        $html = '';
+        if ($index["chapter"]) { 
+            $html .= "<details>\n";
+            $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $index["page_id"] . '); return false;}">' . trim($index["chapter"]) . "</summary>\n";
+            
+            if($this->variables['displayChapterPageTitle']){
+                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a></p>\n";
+            }
+
+            if(isset($index['children'])) {
+                foreach ($index['children'] as $child) {
+                    $html .= $this->foldedIndexLevelHtml($child);
+                }
+            }
+
+            $html .= "</details>\n";
+        } else {
+            $html .= "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a></p>\n";
+
+        }
+
+        return $html;
+    }
+
+    
     protected function detailedListHtml($indexes) {
         // $chapters = $this->chapterTree($indexes);
         $html = "<ul class='" . 'mc_container mc_index mc_list ' . $this->variables['textsize'] . "'>\n";;
