@@ -1298,7 +1298,17 @@ class FileManagement {
 //MÅ TESTE OM TOM EXCLUDEFILES TIL func_find VIRKER FOR Å IKKE EKSKLUDERE TING, SAMME FOR 
         $app_path = $app->calculateFullPath($this->config["paths"]["app"]);
         $md5sums = array();
-        
+
+        $path_app_config = $app_path . $this->config['filenames']["app_config"];
+        if (file_exists($path_app_config)) {
+            $config = json_decode(file_get_contents($path_app_config), true);
+            unset($config['processed_checksum']);
+            // add md5 checksum of the app config.json content, exept the saved processed_checksum
+            // otherwise every time it will generate new checksum and the file change will
+            // trigger the update
+            $md5sums[] = md5(json_encode($config));
+        }
+
         if ($exclude_file != "") {
             $files = $this->func_find( $app_path, "f", "*", array($exclude_file, "*.lock") );
         } else {
@@ -1359,15 +1369,15 @@ class FileManagement {
         
 //prepare list of pages here, this also updates the conf.json so we sen through the correct app config to any external functions
 //OLD         $pages = glob ( $app_path . "???.html" );
-        $pages = $this->getAppConfigValue($app, "page_order");
-        if (!$pages) {
-            $pages = array_map("basename", glob( $app_path . "/???.html" ));
-            $this->updateAppConfigFile($app, array("page_order" => $pages));
-        }
+        $appConfig = $this->getAppConfig();
 //add app path to all paths, we never store paths in config file.
-        $func = function($val) use ($app_path) { return $app_path . $val; };
-        $pages = array_map($func, $pages);        
-        
+        $func = function($val) use ($app_path) {
+            if($val['type'] == 'page'){
+                return $app_path . $val['fileName'];
+            }
+        };
+        $pages = array_map($func, $appConfig['tableOfContents']['active']);        
+        $pages = array_filter($pages);        
         array_unshift($pages, $cached_app_path . "000.html"); //fake placeholder to make loop below work neater
         array_unshift($pages, $app_path . "index.html"); //fake placeholder to make loop below work neater
         
