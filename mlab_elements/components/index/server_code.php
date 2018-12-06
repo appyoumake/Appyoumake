@@ -94,31 +94,6 @@ class mlab_ct_index {
         //     $index[] = $this->findChapterHeading($app_path . $file, intval($file), "Page " . intval($file));
         // }
 
-        $addIndex = function ($tableOfContents, $level = 1) use (&$index, &$addIndex){
-            foreach ($tableOfContents as $toc) {
-                if ($toc['type'] == 'section') {
-                    $index[] = [
-                        'chapter' => $toc['title'],
-                        'level' => $level,
-                        'title' => $toc['title'],
-                        'page_id' => isset($toc['children'][0]['pageNumber']) ? $toc['children'][0]['pageNumber'] : '',
-                    ];
-                    $addIndex($toc['children'], $level+1);
-                } else {
-                    if (!isset($toc['is_deleted']) || !$toc['is_deleted']) {
-                        $index[] = [
-                            'chapter' => false,
-                            'level' => $level,
-                            'title' => $toc['title'],
-                            'page_id' => $toc['pageNumber'],
-                        ];
-                    }
-                }
-            }
-        };
-
-        $addIndex($app_config["tableOfContents"]);
-
 //now we generate the index, we always add app title as top level and link to first page 
         $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $this->variables['textsize'] . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
         
@@ -126,9 +101,16 @@ class mlab_ct_index {
         if ($this->variables['style'] == "folding") {
             $html .= "<div class='mc_container mc_index mc_list " . $this->variables['textsize'] . "'>\n";
             $curr_level = false;
-            
+            $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index[0]["page_id"] . "); return false;'>" . $index[0]["title"] . "</a></p>\n";
 //loop through all pages, insert new details tag for each chapter, can be neted.
-            foreach ($index as $i => $chapter_info) {
+            foreach ($app_config["tableOfContents"]['active'] as $i => $chapter_info) {
+                $chapter_info = [
+                    'chapter' => $chapter_info['type'] == 'section' ? $chapter_info['title'] : false,
+                    'level' => $curr_level+1,
+                    'page_id' => $chapter_info['type'] == 'page' ? $chapter_info["pageNumber"] : null,
+                    'title' => $chapter_info["title"]
+                ];
+
                 if ($chapter_info["chapter"]) { 
                     for ($i = $curr_level; $i >= $chapter_info["level"]; $i--) { //close previously opened details tag
                         $html .= "</details>\n";
@@ -139,7 +121,7 @@ class mlab_ct_index {
                     $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $chapter_info["page_id"] . '); return false;}">' . trim($chapter_info["chapter"]) . "</summary>\n";
                     
                     if($this->variables['displayChapterPageTitle']){
-                        $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
+                        // $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
                     }
                 } else {
                     $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $chapter_info["page_id"] . "); return false;'>" . $chapter_info["title"] . "</a></p>\n";
@@ -148,6 +130,8 @@ class mlab_ct_index {
             }
             $html .= "</div>";
         } else {
+            $activeTree = $this->activeTree($app_config["tableOfContents"]['active']);
+            $index = array_merge($index, $activeTree);
             $html .= $this->detailedListHtml($index);
         }
 
@@ -155,10 +139,62 @@ class mlab_ct_index {
         
     }
 
+    protected function activeTree($tableOfContents) {
+        $tree = [];
+
+        $currentParent = [];
+        $currentLevel = 1;
+
+        foreach ($tableOfContents as &$item) {
+            if($item['type'] == 'page') {
+                // modify item
+                $item = [
+                    'chapter' => false,
+                    'level' => $currentLevel,
+                    'title' => $item['title'],
+                    'page_id' => $item['pageNumber'],
+                ];
+
+                if(isset($currentParent[$currentLevel])) {
+                    $currentParent[$currentLevel]['children'][] = $item;
+                    if(!$currentParent[$currentLevel]['page_id']) {
+                        $currentParent[$currentLevel]['page_id'] = $item['page_id'];
+                    }
+                } else {
+                    $tree[] = $item;
+                }
+            } elseif($item['type'] == 'section') {
+                $item['level'] = $item['level'];
+                $item['page_id'] = null;
+                $item['chapter'] = $item['title'];
+                $item['children'] = [];
+
+                if($item['level'] > 0 && $currentParent && $currentParent[$currentLevel]) {
+                    if($item['level'] > 1 || $item['level'] == $currentLevel) {
+                        if(isset($currentParent[$currentLevel-1])) {
+                            $currentParent[$currentLevel-1]['children'][] = &$item;
+                        } else {
+                            $tree[] = &$item;
+                        }
+                    } else {
+                        $currentParent[$currentLevel]['children'][] = &$item;
+                    }
+
+                } else {
+                    $tree[] = &$item;
+                }
+
+                $currentLevel = min(1, $item['level']);
+                $currentParent[$currentLevel] = &$item;
+            }
+        }
+
+        return $tree;
+    }
     protected function detailedListHtml($indexes) {
-        $chapters = $this->chapterTree($indexes);
+        // $chapters = $this->chapterTree($indexes);
         $html = "<ul class='" . 'mc_container mc_index mc_list ' . $this->variables['textsize'] . "'>\n";;
-        foreach ($chapters as $index) {
+        foreach ($indexes as $index) {
             $html .= $this->detailedIndexLevelHtml($index);
         }
         $html .= "</ul>\n";
@@ -178,9 +214,10 @@ class mlab_ct_index {
         //     $html .= "<a onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>kosio" . $index["title"] . "</a>";
         //     $html .= "</li>";
         // }
-        
-        foreach ($index['children'] as $child) {
-            $html .= $this->detailedIndexLevelHtml($child);
+        if(isset($index['children'])) {
+            foreach ($index['children'] as $child) {
+                $html .= $this->detailedIndexLevelHtml($child);
+            }
         }
         
         $html .= "</ul>\n";
