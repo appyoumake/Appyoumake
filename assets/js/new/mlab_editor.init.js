@@ -67,7 +67,6 @@ $(document).ready(function() {
             },
 
             sortable_options: {
-                placeholder: "mlab_component_placeholder",
                 revert: false,
                 helper: "clone",
                 cancel: "[contenteditable]",
