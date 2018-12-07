@@ -787,16 +787,24 @@ made smaler than the min width */
     outline: 3px dotted ;
 }
 
-/* Gives the current selcted component a move icone when hovering it */
-#mlab_editor #mlab_editable_area div[data-mlab-type].mlab_current_component:hover {
-    background-image: url("/img/drag_white.png");
-    background-position: right top;
-    background-repeat: no-repeat;
-}
-
 /* The components - only in the editor */
 #mlab_editor #mlab_editable_area div[data-mlab-type] {
     margin: 5px;
+    padding: 1px;
+    position: relative;
+
+/* Gives the current selcted component a move icone when hovering it */
+    &.mlab_current_component:hover:after {
+        background-image: url("/img/drag_white.png");
+        background-position: right top;
+        background-repeat: no-repeat;
+        content: '';
+        width: 20px;
+        height: 20px;
+        top: 0;
+        right: 0;
+        position: absolute;
+    }
 }
 
 

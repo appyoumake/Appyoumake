@@ -239,7 +239,6 @@ Mlab_dt_design.prototype = {
 
 
     component_moveup : function (el) {
-        debugger;
         if (typeof el == "undefined") {
             var el = $(".mlab_current_component");
         }
@@ -623,9 +622,7 @@ Mlab_dt_design.prototype = {
 //and set the styles for dragging/dropping so it works OK
         var that = this;
         $( "#" + that.parent.config["app"]["content_id"] + "> div" ).each(function( index ) {
-            $( this ).droppable(that.parent.droppable_options)
-                     .sortable(that.parent.sortable_options)
-                     .on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.ui.displayComponentTools($(this)); } })
+            $( this ).on("click", function(){var prep_menu = mlab.dt.api.display.componentHighlightSelected($(this)); if (prep_menu) { mlab.dt.ui.displayComponentTools($(this)); } })
                      .on("input", function(){mlab.dt.flag_dirty = true;});
 
             comp_id = $( this ).data("mlab-type");
