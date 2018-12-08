@@ -670,8 +670,10 @@ Mlab_dt_management.prototype = {
         }
 
         if ((!require_save) && (typeof fnc != 'undefined')) {
+            this.parent.counter_saving_page--;
             return fnc();
         } else if (!require_save) {
+            this.parent.counter_saving_page--;
             this.parent.utils.timer_start();
             return false;
         }
