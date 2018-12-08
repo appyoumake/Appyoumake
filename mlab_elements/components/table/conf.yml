@@ -8,6 +8,7 @@ tooltip: {nb_NO: Tabell - legg til og slett kolonner og rader, en_GB: Table - ad
 extended_name: {nb_NO: Tabell, en_GB: Table, default: Table }
 footer_tip: {nb_NO: Legger til en redigerbar tabell med to kolonner og to rader, en_GB: Adds an editable table with two columns and two rows, default: Adds an editable table with two columns and two rows }
 process_keypress: true
+paste_allowed: true
 html: |
     <table style="width:100%" class="mc_container">
       <thead>
