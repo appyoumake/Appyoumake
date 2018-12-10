@@ -960,3 +960,12 @@ div#mlab_history li {
     border-bottom: 2px solid lightgrey;
     margin: 4px;
 }
+
+
+[data-mlab-type=table] {
+
+    th:focus, td:focus, [data-mlab-dt-table-focus] {
+        background-color: $secondary-color;
+        color: $secondary-text;
+    }
+}
