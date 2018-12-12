@@ -508,7 +508,7 @@ Mlab_dt_management.prototype = {
     },
 
     page_open_process : function (app_id, page_num, cb) {
-
+        $('.builder')[0].scrollTop = 0;
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.page"], true);
 
         var url = this.parent.urls.page_get.replace("_ID_", app_id);
@@ -557,7 +557,6 @@ Mlab_dt_management.prototype = {
                     that.parent.app.locked = false;
                     that.parent.ui.props.builderLocked = false;           
                 }
-
                 if ( $("#mlab_overlay").is(':visible') ) {
                     $("#mlab_overlay").slideUp();
                 }
@@ -906,6 +905,8 @@ Mlab_dt_management.prototype = {
 
     page_new_process : function (section, position) {
         $("body").css("cursor", "wait");
+        $('.builder')[0].scrollTop = 0;
+        
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.storing.page"], true);
         var url = this.parent.urls.page_action.replace("_ID_", this.parent.app.id)
             .replace("_ACTION_", 'page_new')
