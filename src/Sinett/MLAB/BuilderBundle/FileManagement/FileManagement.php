@@ -36,6 +36,7 @@ class CustomPreProcessing {
         
         $toc = $file_mgmt->getAppConfigValue($app, "tableOfContents");
         $page_order = array();
+        $page_order[] = 0;
         foreach ($toc['active'] as $toc_item) {
             if ($toc_item["type"] === "page") {
                 $page_order[] = $toc_item["pageNumber"];
