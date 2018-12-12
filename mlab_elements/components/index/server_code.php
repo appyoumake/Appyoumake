@@ -117,7 +117,7 @@ class mlab_ct_index {
         $currentLevel = 1;
 
         foreach ($tableOfContents as &$item) {
-            if($item['type'] == 'page') {
+            if($item['type'] == 'page' && $this->variables['style'] != 'summary') {
                 // modify item
                 $item = [
                     'chapter' => false,
