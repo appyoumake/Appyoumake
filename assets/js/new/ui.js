@@ -68,6 +68,14 @@ var Mlab_dt_ui = {
         this.initToolbar();
 
         this.initialiseDropdownButtons('.toolbox-menu');
+
+
+        $(window).bind("click.closeMenu", function(e) {
+            if($('.toolbox-menu').find(e.target).length === 0) {
+                $('.toolbox-menu.open').removeClass('open');
+            }
+        });
+
     },
     
     initTooltips: function() {
@@ -166,6 +174,8 @@ var Mlab_dt_ui = {
             elements = selector.find("[data-open-menu]");
         }
         elements.click(function (e) {
+            $('.toolbox-menu.open').removeClass('open');
+            
             var $menuOpener = $(this);
             var $toolboxMenu = $menuOpener.closest('.toolbox-menu');
             $toolboxMenu.toggleClass('open');
@@ -183,16 +193,6 @@ var Mlab_dt_ui = {
                 $menu.css('left', "-100%");
             }
 
-
-            $(window).bind("click.closeMenu", function(e) {
-                if(e.target !== $menuOpener[0] && $toolboxMenu.find(e.target).length === 0) {
-                    $(this).unbind("click.closeMenu");
-                    $('.toolbox-menu').removeClass('open');
-                    // removed because of constantly looping through initialiseDropdownButtons
-                    // $(e.target).click()
-                }
-            });
-            
 //also close drop down box when an action icon is clicked
             $menu.find('[data-action]').on("click", function() { $(this).closest(".toolbox-menu").removeClass("open"); });
         })
@@ -363,17 +363,6 @@ var Mlab_dt_ui = {
 //attach event handler. Clicking outside = cancel.
         close_button.on("click", func_ok);
         close_button.on("click", function() { $(this).closest(".toolbox-menu").removeClass("open"); });
-        $(window).bind("click.closeMenu", function(e) {
-            if(e.target !== menu[0] && toolboxMenu.find(e.target).length === 0) {
-                if (func_cancel) {
-                    func_cancel();
-                }
-                $(this).unbind("click.closeMenu");
-                $('.toolbox-menu').removeClass('open');
-                // removed because of constantly looping through initialiseDropdownButtons
-                // $(e.target).click();
-            }
-        });
 
 //open menu div and execute visible function if any
         menu.closest("toolbox-menu").addClass("open");
