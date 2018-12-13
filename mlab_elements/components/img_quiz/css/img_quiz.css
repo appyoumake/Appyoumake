@@ -53,6 +53,9 @@ and open the template in the editor.
     width: 100%;
     height: 30px;
     text-align: center;
+    color: #cccccc !important;
+    font-family: Arial,sans-serif;
+    font-size: 1em;
 }
 
 .mlab_ct_img_quiz_indicators span {
