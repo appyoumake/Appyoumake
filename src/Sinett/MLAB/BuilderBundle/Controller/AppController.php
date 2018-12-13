@@ -72,7 +72,7 @@ class AppController extends Controller
     public function builderAction()
     {
         $em = $this->getDoctrine()->getManager();
-    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
         return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
                 'app_url' => $this->container->getParameter('mlab')["urls"]["app"],
@@ -171,7 +171,9 @@ class AppController extends Controller
                ->getRepository('Sinett\MLAB\BuilderBundle\Entity\App')
                ->createQueryBuilder('a')
                ->where('upper(a.name) = upper(:name)')
+               ->andWhere('a.enabled = :enabled')
                ->setParameter('name', $entity->getName())
+               ->setParameter('enabled', 1)
                ->getQuery()
                ->execute();
             
@@ -646,8 +648,13 @@ class AppController extends Controller
         							  	  'result' => 'failure',
         								  'message' => $this->get('translator')->trans('appController.msg.deleteAction.2')));
         }
-        
-        $app_path = $entity->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+
+        $entity->setEnabled(0);
+        $em->flush();
+
+    
+// Disabled Hard delete
+/*        $app_path = $entity->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $app_path = dirname($app_path);
         
         try {
@@ -677,7 +684,7 @@ class AppController extends Controller
         							  'result' => 'failure',
         						 	  'message' => $e->getMessage()));
         } 
-        
+*/
         return new JsonResponse(array('db_table' => 'app',
         							  'db_id' => $id,
         							  'result' => 'success',
