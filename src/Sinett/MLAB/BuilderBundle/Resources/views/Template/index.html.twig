@@ -20,6 +20,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 <th>{% trans %}app.admin.templates.description{% endtrans %}</th>
                 <th>{% trans %}app.admin.templates.groups{% endtrans %}</th>  
                 {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
+                    <th>{% trans %}app.admin.templates.groups_admin{% endtrans %}</th>
                     <th>{% trans %}app.admin.templates.enabled{% endtrans %}</th>
                     <th class="mlab_min_width_short"> 
                         <a class="mlab_button_new_template" href="{{ path('template_new') }}" title="{% trans %}app.admin.templates.tooltip.new{% endtrans %}"></a>

@@ -27,11 +27,11 @@ class TemplateRepository extends EntityRepository
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
 	public function findAllByGroups ( $role, $groups ) {
-		$templates = array();
+        $templates = array();
         $repository = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:TemplateGroupData');
-		foreach ($groups as $group) {
-			$temp_templates = $group->getTemplates();
-			foreach ($temp_templates as $temp_template) {
+        foreach ($groups as $group) {
+            $temp_templates = $group->getTemplates();
+            foreach ($temp_templates as $temp_template) {
 //we have used a duplicate access record with a new field 
 //(long fricking story, but basically due to having spent far too lon converting another table from koin table to join+additional data table)
 //if the user is superadmin, then they always see the tempate
@@ -42,16 +42,19 @@ class TemplateRepository extends EntityRepository
 //admin access is determined by bit 0
                     if ($access_record) {
                         $access_state = $access_record->getAccessState();
-                        if ( $role == "ROLE_ADMIN" & ( $access_state & 1 ) ) {
+                        if ( $role == "ROLE_ADMIN" && ( $access_state & 1 ) ) {
                             $templates[$temp_template->getId()] = $temp_template->getArray();
 //user access is determined by bit 1
-                        } else if ( $role == "ROLE_USER" & ( $access_state & 2 ) ) {
+                        } else if ( $role == "ROLE_USER" && ( $access_state & 2 ) ) {
                             $templates[$temp_template->getId()] = $temp_template->getArray();
                         }
+                        
+                            dump($role == "ROLE_ADMIN" & ( $access_state & 1 ));
                     }                    
                 }
-			}
-		}
+            }
+        }
+// dd($role, $groups->toArray(), $temp_templates->toArray(), $templates);
 		return $templates;
 	}
     

@@ -78,6 +78,11 @@ class Template
      */
     private $group_names;
     
+    /**
+     * @var string
+     */
+    private $group_names_admin;
+    
 
     /**
      * Constructor
@@ -430,6 +435,29 @@ class Template
     public function getGroupNames()
     {
         return $this->group_names;
+    }
+
+    /**
+     * Set group_names_admin
+     *
+     * @param string $names
+     * @return Component
+     */
+    public function setGroupNamesAdmin($names)
+    {
+        $this->group_names_admin = $names;
+    
+        return $this;
+    }
+
+    /**
+     * Get group_names_admin
+     *
+     * @return string 
+     */
+    public function getGroupNamesAdmin()
+    {
+        return $this->group_names_admin;
     }
     
 }
