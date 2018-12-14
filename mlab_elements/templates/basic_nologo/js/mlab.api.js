@@ -785,7 +785,7 @@ Mlab_api.prototype = {
 //have calculated the file name, now we need to try to load it
 //Adds a differens between swipe and click
             if (swipe){
-                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
+                    $.mobile.pageContainer.pagecontainer("change", filename, swipe);    
             } else {
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
             }
@@ -938,8 +938,8 @@ $(document).ready(function() {
             mlab.api.display.prepareRegularComponents(event);
 //Swipe
             $('div.ui-page')
-                .on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", true); console.log("right swipe"); })
-                .on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", true); console.log("left swipe");});
+                .on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", { transition: "slide", reverse: true }); console.log("right swipe"); })
+                .on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", { transition: "slide"}); console.log("left swipe");});
         });
 
 //general pagecontainerbeforeshow, run component code for components that require size information, ie. display is done
