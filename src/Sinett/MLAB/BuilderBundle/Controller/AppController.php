@@ -468,14 +468,34 @@ class AppController extends Controller
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
         $temp_roles = $this->getUser()->getRoles();
+        $temp_groups = $this->getUser()->getGroups();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_roles[0], $this->getUser()->getGroups());
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
     	$app_icon_path = $this->container->getParameter('mlab_app')['filenames']['app_icon'];
+        $tags = '';
+        $tag_level_1 = array("<option></option>");
+        $appTags = json_decode($entity->getTags());
+//this loop will get the predefined categories for all the groups the current user is a member of
+//it will store all entries in a string (they are stored as JSON objects in the DB) + preload the top level entries to put in the first drop down box
+        foreach ($temp_groups as $temp_group) {
+            $cat = trim($temp_group->getCategories());
+            if ($cat) {
+                if (strlen($tags)) { $tags .= ','; };
+                $tags .= $cat;
+                $cat_obj = json_decode($cat);
+                foreach ($cat_obj as $tag_tree) {
+                    $txt = $tag_tree->text;
+                    $selected = (isset($appTags[0]) && $appTags[0] == $txt) ? ' selected' : null;
+                    $tag_level_1[] = "<option value='$txt'$selected>$txt</option>";
+                }
+            }
+        }
+        $tags = '[' . $tags . ']';
         
         $editForm = $this->createAppForm($entity, 'update');
-        
+
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
             'entity' => $entity,
             'apps' => $apps,
@@ -490,6 +510,8 @@ class AppController extends Controller
             'icon_font_url' => $this->container->getParameter('mlab')['urls']['icon_font'],
             'icon_text_maxlength' => $this->container->getParameter('mlab_app')['icon_text_maxlength'],
             'icon_default' => $this->container->getParameter('mlab_app')['compiler_service']['default_icon'],
+            'tags' => $tags,
+            'tag_level_1' => $tag_level_1,
         ));
         
     }
@@ -524,6 +546,7 @@ class AppController extends Controller
         }
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+        $active_version = $entity->getActiveVersion();
         
         if (!$entity) {
             throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
@@ -531,22 +554,23 @@ class AppController extends Controller
         
         $editForm = $this->createAppForm($entity, 'update');
         $editForm->handleRequest($request);
+        $entity->setActiveVersion($active_version);
 
         if ($editForm->isValid()) {
 
 //get config values
-        	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+            $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
             
 //prepare file management service
-		    $file_mgmt = $this->get('file_management');
-		    $file_mgmt->setConfig('app');
-        	 
+            $file_mgmt = $this->get('file_management');
+            $file_mgmt->setConfig('app');
+            $app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+             /*
 //store old name and version, if these are changed we will need to rename folders, etc
             $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
             $old_version = $old_entity["version"];
             $old_path = $old_entity["path"];
-        	$entity->generatePath($config["replace_in_filenames"]);
-            $app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+            $entity->generatePath($config["replace_in_filenames"]);
             
             $new_path = $entity->getPath();
             $new_version = $entity->getVersion();
@@ -572,11 +596,11 @@ class AppController extends Controller
 //update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
                 $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_creator_identifier"] . $old_path, $config["compiler_service"]["app_creator_identifier"] . $new_path);
             }
-            
-        	$usr = $this->get('security.token_storage')->getToken()->getUser();
-        	$entity->setUpdatedBy($usr);
+            */
+            $usr = $this->get('security.token_storage')->getToken()->getUser();
+            $entity->setUpdatedBy($usr);
             $entity->setUid($config["compiler_service"]["app_creator_identifier"] . "." . $entity->getPath());
-		    
+            
 //now we store the splash file and the icon file (if created)
             if (null != $entity->getSplashFile() && $entity->getSplashFile()->isValid()) {
                 $splash_filename = $config["filenames"]["app_splash_screen"] . "." . $entity->getSplashFile()->getClientOriginalExtension();
@@ -587,39 +611,37 @@ class AppController extends Controller
                             'message' => $this->get('translator')->trans('appController.msg.unable.store.splach.screen')));
                 }
             }
-            
+
 //store icon creatd or use default icon
             if (null != $entity->getIconFile()) {
                 $encoded_image = str_replace(' ', '+', $entity->getIconFile());
-            } else {
-                $encoded_image = str_replace(' ', '+', $config["compiler_service"]["default_icon"]);
-            }
-            $encoded_image = str_replace("data:image/png;base64,", "", $encoded_image);
-            $png_image = base64_decode($encoded_image);
+                $encoded_image = str_replace("data:image/png;base64,", "", $encoded_image);
+                $png_image = base64_decode($encoded_image);
 
-//this will fail both if file = 0 bytes and if it fails to write file.
-            if (!file_put_contents("$app_destination/" . $config["filenames"]["app_icon"], $png_image)) {
-                return new JsonResponse(array(
-                        'action' => 'ADD',
-                        'result' => 'FAILURE',
-                        'message' => $this->get('translator')->trans('appController.msg.unable.store.icon')));
+    //this will fail both if file = 0 bytes and if it fails to write file.
+                if (!file_put_contents("$app_destination/" . $config["filenames"]["app_icon"], $png_image)) {
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => $this->get('translator')->trans('appController.msg.unable.store.icon')));
+                }
             }
             
                         
 //finally we save the database record 
             $em->flush();
-            
+
             return new JsonResponse(array('db_table' => 'app',
-            		'action' => 'UPDATE',
-            		'db_id' => $id,
-            		'result' => 'SUCCESS',
-            		'record' => $this->renderView('SinettMLABBuilderBundle:App:show.html.twig', array('entity' => $entity))));
+                    'action' => 'UPDATE',
+                    'db_id' => $id,
+                    'result' => 'SUCCESS',
+                    'record' => $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity->getArray(), 'app_url' => $config["urls"]["app"], 'app_icon' => $config["filenames"]["app_icon"]))));
         }
             
         return new JsonResponse(array('db_table' => 'app',
-        		'db_id' => $id,
-        		'result' => 'FAILURE',
-        		'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
+                'db_id' => $id,
+                'result' => 'FAILURE',
+                'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
             
     }
     
