@@ -12,7 +12,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     <td class="builder_app_list_properties" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
 				    	<div class="builder_app_properties" onmousedown="mlab_set_app_id({{ app.id }});"></div>
 				    </td>
-                    <td class="builder_app_list_icon"><a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img data-mlab-icon-id="{{ app.id }}" src="{{ app_url ~ app.path ~ "/" ~ app.active_version ~ "/" ~ app_icon }}"></a></td>
+                    <td class="builder_app_list_icon"><a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img data-mlab-icon-id="{{ app.id }}" src="{{ app_url ~ app.path ~ "/" ~ app.active_version ~ "/" ~ app_icon ~ "?" ~ date().timestamp }}"></a></td>
                     <td class="builder_app_list_name mlab_max_width_medium" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
                         <a href="{{ path('new_app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
 				    </td>

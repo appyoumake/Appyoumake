@@ -30,7 +30,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <p>{% trans %}builder.new.app.basedon.description{% endtrans %}</p>
 
             <div id="div_base_template" class="mlab_div_base">
-                {{ form_row(form.template, {'url_templates': url_templates, 'templates': templates}) }}
+                {{ form_row(form.template, {'url_templates': url_templates, 'templates': templates, 'entity': entity}) }}
             </div>
 
         </div>
@@ -410,9 +410,9 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         var tot_tabs = $('#build_app_properties >ul >li').size();
         
 //if in update mode we hide first two tabs, hence these numbers are a bit different
-        if (mlab_edit_mode == 'update') {
-            eval_tab = eval_tab + 2;
-        } 
+        // if (mlab_edit_mode == 'update') {
+        //     eval_tab = eval_tab + 2;
+        // } 
             
  
 //going forward: verify data, if ok: display previous button, change title of next button if on last page 
@@ -568,11 +568,17 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                     });
 
 
-                } else {
+                } else if (data.action == 'UPDATE') {
 //here we update the list of apps with the new app details
                     $("#builder_dialog_new_app").dialog("close");
-                    $(data.html).prependTo("#table_app");
-                    location.href = location.origin + $(data.html).find("a").first().attr("href");
+                    var $record = $(data.record);
+                    $('#' + $record.attr('id')).remove();
+                    $record.prependTo("#table_app");
+                } else {
+//here we update the list of apps with the new app details
+                    // $("#builder_dialog_new_app").dialog("close");
+                    // $(data.html).prependTo("#table_app");
+                    // location.href = location.origin + $(data.html).find("a").first().attr("href");
                 }
             },
             
