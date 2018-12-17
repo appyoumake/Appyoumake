@@ -24,6 +24,7 @@ use Sinett\MLAB\BuilderBundle\Entity\Component;
 use Sinett\MLAB\BuilderBundle\Form\ComponentType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Sinett\MLAB\BuilderBundle\Entity\ComponentGroup;
 
 //also get list of apps, see indexAction
 use Sinett\MLAB\BuilderBundle\Entity\App;
@@ -71,12 +72,15 @@ class ComponentController extends Controller
 //pick up group access names, we show admin access (bit 0 = 1) in separate column
                 foreach ($entity->getGroups() as $group) {
                     $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $entity->getId(), 'group' => $group->getId()))->getAccessState();
-                    if ( ($access_state & 1) > 0) {
+                    if ($access_state >= ComponentGroup::ACCESS_STATE_ADMIN) {
                         $group_admin_access[] = $group->getName();
-                    } else if ( ($access_state & 2) > 0) {
+                    }
+
+                    if ($access_state >= ComponentGroup::ACCESS_STATE_USER) {
                         $group_user_access[] = $group->getName();
                     }
                 }
+
                 $entity->setGroupNamesAdmin(implode(", ", $group_admin_access));
                 $entity->setGroupNamesUser(implode(", ", $group_user_access));
             }
@@ -105,12 +109,12 @@ class ComponentController extends Controller
 //here we check what sort of access record this is.
 //if bit 0 = 1 we have admin access, so we list it
                         $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $entity->getId(), 'group' => $group->getId()))->getAccessState();
-                        if ( ($access_state & 1) > 0 && !in_array($entity, $entities)) {
+                        if ($access_state >= ComponentGroup::ACCESS_STATE_ADMIN && !in_array($entity, $entities)) {
                             $add_entity = true;
                         } 
 
 //if bit 1 = 1 we have user access, so we add this group name to the list
-                        if ( ($access_state & 2) > 0) {
+                        if ($access_state >= ComponentGroup::ACCESS_STATE_USER) {
                             $group_user_access[] = $group->getName();
                         }
                     }
