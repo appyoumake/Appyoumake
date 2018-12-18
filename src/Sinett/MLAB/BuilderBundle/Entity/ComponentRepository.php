@@ -55,12 +55,10 @@ class ComponentRepository extends EntityRepository
                         $components[] = $temp_component->getPath();
                     } else {
                         $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
-//admin access is determined by bit 0
                         if ($access_record) {
                             $access_state = $access_record->getAccessState();
                             if ( $role == "ROLE_ADMIN" && $access_state <= ComponentGroup::ACCESS_STATE_ADMIN ) {
                                 $components[] = $temp_component->getPath();
-//user access is determined by bit 1
                             } else if ( $role == "ROLE_USER" && $access_state <= ComponentGroup::ACCESS_STATE_USER ) {
                                 $components[] = $temp_component->getPath();
                             }

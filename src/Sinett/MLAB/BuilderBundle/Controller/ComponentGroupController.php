@@ -203,7 +203,7 @@ class ComponentGroupController extends Controller
         $component_entity = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
 
         return $this->render('SinettMLABBuilderBundle:ComponentGroup:edit.html.twig', array(
-            'access'     => $access,
+            'access'           => $access,
             'component_id'     => $component_id,
             'component_entity' => $component_entity,
             'groups'           => $groups_to_edit,
@@ -276,7 +276,6 @@ class ComponentGroupController extends Controller
             'admin' => ComponentGroup::ACCESS_STATE_ADMIN,
             'user' => ComponentGroup::ACCESS_STATE_USER,
         ];
-
 
         $em = $this->getDoctrine()->getManager();
         $temp_roles = $this->getUser()->getRoles();

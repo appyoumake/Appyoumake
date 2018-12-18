@@ -74,22 +74,16 @@ class Template
     private $canDelete;
 
     /**
-     * @var string
+     * @var \Doctrine\Common\Collections\Collection
      */
-    private $group_names;
+    private $templateGroups;
     
-    /**
-     * @var string
-     */
-    private $group_names_admin;
-    
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->templateGroups = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -194,39 +188,7 @@ class Template
         return $this->app;
     }
 
-    /**
-     * Add groups
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $groups
-     * @return Template
-     */
-    public function addGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $groups)
-    {
-        $this->groups[] = $groups;
-    
-        return $this;
-    }
 
-    /**
-     * Remove groups
-     *
-     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $groups
-     */
-    public function removeGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $groups)
-    {
-        $this->groups->removeElement($groups);
-    }
-
-    /**
-     * Get groups
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-    
     /**
      * Get display value
      *
@@ -420,9 +382,9 @@ class Template
      * @param string $enabled
      * @return Component
      */
-    public function setGroupNames($names)
+    public function setGroupNamesUser($names)
     {
-        $this->group_names = $names;
+        $this->group_names_user = $names;
     
         return $this;
     }
@@ -432,9 +394,9 @@ class Template
      *
      * @return string 
      */
-    public function getGroupNames()
+    public function getGroupNamesUser()
     {
-        return $this->group_names;
+        return $this->group_names_user;
     }
 
     /**
@@ -458,6 +420,103 @@ class Template
     public function getGroupNamesAdmin()
     {
         return $this->group_names_admin;
+    }
+
+    /**
+     * Add componentGroups
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup
+     * @return Component
+     */
+    public function addComponentGroup(\Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup)
+    {
+        if (!$this->templateGroups->contains($templateGroup)) {
+            $this->templateGroups->add($templateGroup);
+            $templateGroup->setTemplate($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove templateGroups
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup
+     */
+    public function removeTemplateGroup(\Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup)
+    {
+        if ($this->templateGroups->contains($templateGroup)) {
+            $this->templateGroups->removeElement($templateGroup);
+            $job->setTemplate(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove templateGroups
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup
+     */
+    public function removeTemplateGroupById($id)
+    {
+        foreach($this->groups as $group) {
+            if ($group->getId() == $id) {
+                $this->templateGroups->removeElement($group);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get templateGroups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTemplateGroups()
+    {
+        return $this->templateGroups;
+    }
+    
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return new \Doctrine\Common\Collections\ArrayCollection(array_map(
+            function ($templateGroups) {
+                return $templateGroups->getGroup();
+            },
+            $this->templateGroups->toArray()
+        ));
+    }
+    
+   /**
+    * Add group, wrapper function for addComponentGroup
+    *
+    * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+    * @return Component
+    */
+    public function addGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
+    {
+        $temp = new \Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData;
+        $temp->setGroup($group)->setTemplate($this);
+        $this->addTemplateGroup($temp);
+        return $this;
+    }
+    
+    /**
+     * Remove group, wrapper function for removeTemplateGroup
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+     */
+    public function removeGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group)
+    {
+        $this->removeTemplateGroup($group);
+        return $this;
     }
     
 }

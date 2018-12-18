@@ -56,6 +56,7 @@ class ComponentController extends Controller
         $file_mgmt = $this->get('file_management');
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);
         
+        
 //now pick up the components, and set canDelete for those who have not been used
         
 //for superadmin we list all components

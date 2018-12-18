@@ -39,17 +39,13 @@ class TemplateRepository extends EntityRepository
                     $templates[$temp_template->getId()] = $temp_template->getArray();
                 } else {
                     $access_record = $repository->findOneBy(array('template_id' => $temp_template->getId(), 'group_id' => $group->getId()));
-//admin access is determined by bit 0
                     if ($access_record) {
                         $access_state = $access_record->getAccessState();
-                        if ( $role == "ROLE_ADMIN" && ( $access_state & 1 ) ) {
+                        if ( $role == "ROLE_ADMIN" && $access_state <= TemplateGroupData::ACCESS_STATE_ADMIN ) {
                             $templates[$temp_template->getId()] = $temp_template->getArray();
-//user access is determined by bit 1
-                        } else if ( $role == "ROLE_USER" && ( $access_state & 2 ) ) {
+                        } else if ( $role == "ROLE_USER" && $access_state <= TemplateGroupData::ACCESS_STATE_USER ) {
                             $templates[$temp_template->getId()] = $temp_template->getArray();
                         }
-                        
-                            dump($role == "ROLE_ADMIN" & ( $access_state & 1 ));
                     }                    
                 }
             }
