@@ -55,7 +55,7 @@ class ComponentController extends Controller
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAll();
         $file_mgmt = $this->get('file_management');
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);
-        
+
         
 //now pick up the components, and set canDelete for those who have not been used
         
@@ -68,22 +68,8 @@ class ComponentController extends Controller
             }
             
             foreach ($entities as $entity) {
-                $group_user_access = array();
-                $group_admin_access = array();
 //pick up group access names, we show admin access (bit 0 = 1) in separate column
-                foreach ($entity->getGroups() as $group) {
-                    $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $entity->getId(), 'group' => $group->getId()))->getAccessState();
-                    if ($access_state >= ComponentGroup::ACCESS_STATE_ADMIN) {
-                        $group_admin_access[] = $group->getName();
-                    }
-
-                    if ($access_state >= ComponentGroup::ACCESS_STATE_USER) {
-                        $group_user_access[] = $group->getName();
-                    }
-                }
-
-                $entity->setGroupNamesAdmin(implode(", ", $group_admin_access));
-                $entity->setGroupNamesUser(implode(", ", $group_user_access));
+                $this->setComponentGroupNames($entity);
             }
             
 //for regular admin only list the ones they have access to through group membership
@@ -386,13 +372,32 @@ class ComponentController extends Controller
         $file_mgmt = $this->get('file_management');
         $all_comps_used = $file_mgmt->getComponentsUsed($apps);
         $entity->setCanDelete( ! in_array($entity->getPath(), $all_comps_used) );
+        $this->setComponentGroupNames($entity);
         
         return new JsonResponse(array('db_table' => 'component',
                 'action' => 'UPDATE',
                 'db_id' => $entity->getId(),
                 'result' => 'SUCCESS',
-                'record' => $this->renderView('SinettMLABBuilderBundle:Component:show.html.twig', array('entity' => $entity))));
+                'record' => $this->renderView('SinettMLABBuilderBundle:Component:show_admin.html.twig', array('entity' => $entity))));
 	        	
     }
     
+    
+    protected function setComponentGroupNames(&$component) {
+        $em = $this->getDoctrine()->getManager();
+        $group_admin_access = array();
+        $group_user_access = array();
+        foreach ($component->getGroups() as $group) {
+            $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component->getId(), 'group' => $group->getId()))->getAccessState();
+            if ($access_state >= ComponentGroup::ACCESS_STATE_ADMIN) {
+                $group_admin_access[] = $group->getName();
+            }
+
+            if ($access_state >= ComponentGroup::ACCESS_STATE_USER) {
+                $group_user_access[] = $group->getName();
+            }
+        }
+        $component->setGroupNamesAdmin(implode(", ", $group_admin_access));   
+        $component->setGroupNamesUser(implode(", ", $group_user_access));   
+    }
 }

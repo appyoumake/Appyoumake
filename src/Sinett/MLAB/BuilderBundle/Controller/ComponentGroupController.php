@@ -284,12 +284,14 @@ class ComponentGroupController extends Controller
         $updated_groups = $request->get('sinett_mlab_builderbundle_componentgroup'); //data coming in
         $updated_groups = $updated_groups ? $updated_groups : [];
         $component = $em->getRepository('SinettMLABBuilderBundle:Component')->find($component_id);
+        $userGroupAccess = [];
         
         foreach ($all_groups as $group) {
              
             $group_id = $group->getId();
             $existing_access = false;
             $isEnabled = false;
+            $userGroupAccess[] = $group->getName();
 
 //first check if this entry is set, and if so, is it set to enabled?
             if (array_key_exists($group_id, $updated_groups)) {
@@ -330,11 +332,13 @@ class ComponentGroupController extends Controller
                 $em->flush();
             }
         }
-        
 //format the group access details
         $group_admin_access = array();
         $group_user_access = array();
-        foreach ($component->getGroups() as $group) {
+        $groupsWithAccess = $component->getGroups()->filter(function($group) use ($userGroupAccess){
+            return in_array($group->getName(), $userGroupAccess);
+        });
+        foreach ($groupsWithAccess as $group) {
             $access_state = $em->getRepository('SinettMLABBuilderBundle:ComponentGroup')->findOneBy(array('component' => $component->getId(), 'group' => $group->getId()))->getAccessState();
             if ($access_state >= ComponentGroup::ACCESS_STATE_ADMIN) {
                 $group_admin_access[] = $group->getName();

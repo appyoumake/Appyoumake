@@ -42,25 +42,9 @@ class TemplateController extends Controller
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
             $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAll();
             foreach ($entities as $entity) {
-                $group_user_access = array();
-                $group_admin_access = array();
 //pick up group access names, we show admin access (bit 0 = 1) in red
-                foreach ($entity->getGroups() as $group) {
-                    $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()))->getAccessState();
-                    if ($access_state >= TemplateGroupData::ACCESS_STATE_ADMIN) {
-                        $group_admin_access[] = $group->getName();
-                    }
-
-                    if ($access_state >= TemplateGroupData::ACCESS_STATE_USER) {
-                        $group_user_access[] = $group->getName();
-                    }
-                }
-                $entity->setGroupNamesUser(implode(", ", $group_user_access));
-                $entity->setGroupNamesAdmin(implode(", ", $group_admin_access));
+                $this->setTemplateGroupNames($entity);
             }
-
-
-                
         } else {
             
             $temp_entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllEnabledCheckDeleteable();
@@ -71,30 +55,19 @@ class TemplateController extends Controller
 
             foreach ($temp_entities as $entity) {
                 $add_entity = false;
-                $group_user_access = array();
                 $sub_groups = $entity->getGroups();
                 foreach ($sub_groups as $group) {
                     if (in_array($group->getId(), $group_access)) { // only deal with groups that we have access to
-
 //here we check what sort of access record this is.
-//if bit 0 = 1 we have admin access, so we list it
                         $template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()));
-                        if ($template_group_data) {
-                            $access_state = $template_group_data->getAccessState();
-                            if ( ($access_state & 1) > 0 && !in_array($entity, $entities)) {
-                                $add_entity = true;
-                            } 
-
-//if bit 1 = 1 we have user access, so we add this group name to the list
-                            if ( ($access_state & 2) > 0) {
-                                $group_user_access[] = $group->getName();
-                            }
+                        if ($template_group_data && $template_group_data->getAccessState() >= TemplateGroupData::ACCESS_STATE_ADMIN) {
+                            $add_entity = true;
                         }
                     }
                 }
                 if ($add_entity) {
+                    $this->setTemplateGroupNames($entity);
                     $entities[] = $entity;
-                    $entities[sizeof($entities) - 1]->setGroupNamesUser(implode(", ", $group_user_access));
                 }
             }            
             
@@ -470,38 +443,21 @@ class TemplateController extends Controller
                 $new_entity->setTemplateId($template_id);
                 $new_entity->setGroup($group);
                 $new_entity->setTemplate($template);
-                
+
                 $em->persist($new_entity);
                 $em->flush();
             }
             
 
         }
-        
-//format the group access details
-        $group_admin_access = array();
-        $group_user_access = array();
-        foreach ($template->getGroups() as $group) {
-            $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template_id, 'group_id' => $group->getId()))->getAccessState();
-            if ($access_state >= TemplateGroupData::ACCESS_STATE_ADMIN) {
-                $group_admin_access[] = $group->getName();
-            }
+        $this->setTemplateGroupNames($template);
 
-            if ($access_state >= TemplateGroupData::ACCESS_STATE_USER) {
-                $group_user_access[] = $group->getName();
-            }
-        }
-        $template->setGroupNamesAdmin(implode(", ", $group_admin_access));   
-        $template->setGroupNamesUser(implode(", ", $group_user_access));   
-        
         return new JsonResponse(array('db_table' => 'template',
                     'action' => 'UPDATE',
                     'db_id' => $template_id,
                     'result' => 'SUCCESS',
                     'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $template))));
     }
-    
-    
     
     
     
@@ -568,14 +524,35 @@ class TemplateController extends Controller
         $em->flush();
         
         $temp_apps = $entity->getApps();
-		$entity->setCanDelete($temp_apps->count() == 0);
+        $entity->setCanDelete($temp_apps->count() == 0);
+        $this->setTemplateGroupNames($entity);
             
         return new JsonResponse(array('db_table' => 'template',
                 'action' => 'UPDATE',
                 'db_id' => $entity->getId(),
                 'result' => 'SUCCESS',
                 'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $entity))));
-	        	
+                
+    }
+    
+    
+    protected function setTemplateGroupNames(&$template) {
+        $em = $this->getDoctrine()->getManager();
+        $group_admin_access = array();
+        $group_user_access = array();
+        foreach ($template->getGroups() as $group) {
+            $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template->getId(), 'group_id' => $group->getId()))->getAccessState();
+            if ($access_state >= TemplateGroupData::ACCESS_STATE_ADMIN) {
+                $group_admin_access[] = $group->getName();
+            }
+
+            if ($access_state >= TemplateGroupData::ACCESS_STATE_USER) {
+                $group_user_access[] = $group->getName();
+            }
+        }
+        $template->setGroupNamesAdmin(implode(", ", $group_admin_access));   
+        $template->setGroupNamesUser(implode(", ", $group_user_access));   
+        
     }
     
     
