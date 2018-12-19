@@ -67,6 +67,11 @@ class Group extends BaseGroup
     private $componentGroups;
     
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $templateGroups;
+    
+    /**
      * @var boolean
      */
     private $enabled;
@@ -89,6 +94,7 @@ class Group extends BaseGroup
         $this->apps = new \Doctrine\Common\Collections\ArrayCollection();
         $this->templates = new \Doctrine\Common\Collections\ArrayCollection();
         $this->componentGroups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->templateGroups = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -293,16 +299,6 @@ class Group extends BaseGroup
     }
 
     /**
-     * Get templates
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getTemplates()
-    {
-        return $this->templates;
-    }
-
-    /**
      * Add componentGroups
      *
      * @param \Sinett\MLAB\BuilderBundle\Entity\ComponentGroup $componentGroup
@@ -357,6 +353,64 @@ class Group extends BaseGroup
                 return $componentGroups->getComponent();
             },
             $this->componentGroups->toArray()
+        ));
+    }
+    
+    /**
+     * Add templateGroups
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup
+     * @return Group
+     */
+    public function addTemplateGroup(\Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup)
+    {
+        if (!$this->templateGroups->contains($templateGroup)) {
+            $this->templateGroups->add($templateGroup);
+            $templateGroup->setGroup($this);
+        }
+    
+        return $this;
+    }
+
+    /**
+     * Remove templateGroups
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup
+     */
+    public function removeTemplateGroup(\Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData $templateGroup)
+    {
+
+        if ($this->templateGroups->contains($templateGroup)) {
+            $this->templateGroups->removeElement($templateGroup);
+            $job->setGroup(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get templateGroups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTemplateGroups()
+    {
+        return $this->templateGroups;
+        //return $this->templateGroups->toArray();
+    }
+    
+    /**
+     * Get components
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTemplates()
+    {
+        return new \Doctrine\Common\Collections\ArrayCollection(array_map(
+            function ($templateGroups) {
+                return $templateGroups->getTemplate();
+            },
+            $this->templateGroups->toArray()
         ));
     }
     

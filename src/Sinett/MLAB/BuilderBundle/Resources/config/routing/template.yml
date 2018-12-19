@@ -23,7 +23,7 @@ template_create:
     requirements: { methods: post }
 
 template_edit:
-    path:  /{id}/edit
+    path:  /{id}/{access}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:Template:edit" }
 
 template_update:
@@ -32,7 +32,7 @@ template_update:
     requirements: { methods: post|put }
 
 template_update_group:
-    path:  /{template_id}/update_groups
+    path:  /{template_id}/{access}/update_groups
     defaults: { _controller: "SinettMLABBuilderBundle:Template:updateGroups" }
     requirements: { methods: post|put }
 

@@ -66,19 +66,23 @@ Sinett\MLAB\BuilderBundle\Entity\Template:
     apps:
       targetEntity: App
       mappedBy: template
-
+    templateGroups:
+      targetEntity: TemplateGroupData
+      mappedBy: template
+      cascade: [persist, remove]
+    
 # templates can be limited by group membership
-  manyToMany:
-    groups:
-      targetEntity: Group
-      inversedBy: templates
-      joinTable:
-        name: templates_groups
-        joinColumns:
-          template_id:
-            referencedColumnName: id
-        inverseJoinColumns:
-          group_id:
-            referencedColumnName: id
+  # manyToMany:
+  #   groups:
+  #     targetEntity: Group
+  #     inversedBy: templates
+  #     joinTable:
+  #       name: templates_groups
+  #       joinColumns:
+  #         template_id:
+  #           referencedColumnName: id
+  #       inverseJoinColumns:
+  #         group_id:
+  #           referencedColumnName: id
             
   lifecycleCallbacks: {  }

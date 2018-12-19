@@ -14,10 +14,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
         {% if entity.groupNamesUser is empty %} <!-- If no group -->
-            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
+            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'user' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
             {% trans %}app.admin.components.no.group{% endtrans %}
         {% else %} <!-- If have groups -->
-            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
+            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'user' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
                 {{ entity.groupNamesUser|raw }}
         {% endif %}  
             </a>
@@ -25,10 +25,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
         <td class="mlab_max_width_medium">
             {% if entity.groupNamesAdmin is empty %} <!-- If no group -->
-                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
+                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'admin' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
                 {% trans %}app.admin.components.no.group{% endtrans %}
             {% else %} <!-- If have groups -->
-                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
+                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'admin' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
                     {{ entity.groupNamesAdmin|raw }}
             {% endif %}  
                 </a>

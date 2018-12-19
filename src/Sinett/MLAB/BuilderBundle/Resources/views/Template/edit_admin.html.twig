@@ -13,7 +13,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block body -%}
     <h5>{% trans %}app.admin.templates.tooltip.group{% endtrans %} {{ entity.name }}</h5>
 
-    <form action="{{ path('template_update_group',  { 'template_id': template_id }) }}" method="post">
+    <form action="{{ path('template_update_group',  { 'template_id': template_id, 'access': access }) }}" method="post">
         
         {% for group in groups %}
             <input type="checkbox" class="mlab_edit_compgroup_checkbox" id="sinett_mlab_builderbundle_templategroup_{{ group.id }}_enabled" name="sinett_mlab_builderbundle_templategroup[{{ group.id }}][enabled]" value="{{ group.id }}" {% if group.isEnabled == "true" %} checked {% endif %}>

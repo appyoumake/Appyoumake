@@ -14,15 +14,24 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <td class="mlab_align_center">{% if entity.version == null %} 1 {% else %}{{ entity.version }}{% endif %} </td>
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
-        <a href="{{ path('template_edit', { 'id': entity.id }) }}" title="{% trans %}app.admin.templates.tooltip.group{% endtrans %} '{{ entity.name }}'">
-            {% if entity.groupNames is empty %} <!-- If no group -->
+        <a href="{{ path('template_edit', { 'id': entity.id, 'access': 'user' }) }}" title="{% trans %}app.admin.templates.tooltip.group{% endtrans %} '{{ entity.name }}'">
+            {% if entity.groupNamesUser is empty %} <!-- If no group -->
                {% trans %}app.admin.components.no.group{% endtrans %}
             {% else %} <!-- If have groups -->
-                {{ entity.groupNames|raw }}
+                {{ entity.groupNamesUser|raw }}
             {% endif %} 
         </a>
     </td>
     {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
+        <td class="mlab_align_center">
+            <a href="{{ path('template_edit', { 'id': entity.id, 'access': 'admin' }) }}" title="{% trans %}app.admin.templates.tooltip.group{% endtrans %} '{{ entity.name }}'">
+                {% if entity.groupNamesAdmin is empty %} <!-- If no group -->
+                   {% trans %}app.admin.components.no.group{% endtrans %}
+                {% else %} <!-- If have groups -->
+                    {{ entity.groupNamesAdmin|raw }}
+                {% endif %} 
+            </a>
+        </td>
         <td class="mlab_align_center">
             <a href="{{ path('template_toggle_state', { 'id': entity.id }) }}" class="mlab_icon_{{ entity.enabled == true ? "enabled" : "disabled" }}" ></a>
         </td>

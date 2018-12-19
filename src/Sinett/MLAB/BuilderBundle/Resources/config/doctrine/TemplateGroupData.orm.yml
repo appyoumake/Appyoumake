@@ -42,4 +42,18 @@ Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData:
       nullable: false
       options:
         default: 0
-         
+  manyToOne:
+    template:
+      targetEntity: Template
+      inversedBy: templateGroups
+      joinColumn:
+        name: template_id
+        referencedColumnName: id
+        
+    group:
+      targetEntity: Group
+      inversedBy: templateGroups
+      joinColumn:
+        name: group_id
+        referencedColumnName: id
+      

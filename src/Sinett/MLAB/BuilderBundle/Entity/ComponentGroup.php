@@ -21,6 +21,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ComponentGroup
 {
+
+    const ACCESS_STATE_SUPERADMIN = 0;
+    const ACCESS_STATE_ADMIN = 1;
+    const ACCESS_STATE_USER = 2;
+    
     /**
      * @var integer
      */
