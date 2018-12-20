@@ -22,7 +22,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             {% endif %}
             {% set options = templates %}
             {% for group_label, choice in options %}
-                <option data-imagesrc="{{ url_templates ~ choice.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.description }}" value="{{ choice.id }}" {% if choice.id == entity.template.id %} selected{% endif %}>{{ choice.description }}</option>
+                <option data-imagesrc="{{ url_templates ~ choice.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.description }}" value="{{ choice.id }}" {% if entity.template and choice.id == entity.template.id %} selected{% endif %}>{{ choice.description }}</option>
             {% endfor %}
         </select>
     {% endspaceless %}
