@@ -138,6 +138,8 @@ $(document).ready(function() {
             mlab.dt.app.config = data.mlab_app_config;
 
             mlab.dt.ui.props.tableOfContents = data.mlab_app_config.tableOfContents;
+            
+            mlab.dt.ui.props.warnings = data.mlab_app_config;
 
 
 /**** Finished preparing variables, now we set up rest of environment ****/
