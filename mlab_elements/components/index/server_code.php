@@ -81,7 +81,12 @@ class mlab_ct_index {
         
 //first process index.html file. We check to see if this starts a new chapter through the chapter component, 
 //then we add the page title to the chapter element in the index array. 0 = no chapter specified
-        $index[] = $this->findChapterHeading("$app_path/index.html", 0, "Front page");
+        $index[] = [
+            'level' => 0,
+            'page_id' => 0,
+            'chapter' => $app_config["tableOfContents"]['index']['title'],
+            'children' => []
+        ];
         
 /*
  * now we process all the other files in the app
