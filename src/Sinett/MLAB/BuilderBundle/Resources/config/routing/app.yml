@@ -54,7 +54,7 @@ app_builder_index:
 
 app_builder_editor:
     path:   /builder/{id}/{page_num}/build
-    defaults: { _controller: "SinettMLABBuilderBundle:App:buildApp" }
+    defaults: { _controller: "SinettMLABBuilderBundle:App:buildAppNew" }
 
 app_builder_page_get:
     path:   /builder/{app_id}/{page_num}/{uid}/{app_open_mode}/page_get
