@@ -586,6 +586,20 @@ var Mlab_dt_ui = {
         mlab.dt.management.page_restore(data.pageNum);
     },
 
+    updateWarnings: function(config) {
+        $warnings = $('.warnings');
+        $warningsMenu = $warnings.find('.menu');
+        $warningsMenu.html('')
+        $warnings.css('display', 'none');
+
+        if(config.countInternetComp > 0) {
+            $warning = $('<div class="fieldset"><p>Application requires Internet</p></div>');
+            $warningsMenu.append($warning);
+            $warnings.css('display', 'block');
+        }
+
+    },
+
     builderLockedState: function(locked) {
         if(locked) {
             if(!$("#mlab_editor_disabled").length) {
@@ -610,6 +624,10 @@ var Mlab_dt_ui = {
 
         builderLocked: function (newVar) {
             Mlab_dt_ui.builderLockedState(newVar);
+        },
+
+        warnings: function (newVar) {
+            Mlab_dt_ui.updateWarnings(newVar);
         },
     },
 
