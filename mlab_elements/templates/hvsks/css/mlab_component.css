@@ -177,7 +177,8 @@ part of a list */
 /*  */
 #mlab_editor .mc_text.mc_heading,
 .mlab_main_body_content .mc_text.mc_heading {
-    color: #627895;
+    color: #000;
+    text-transform: uppercase;
 }
 
 #mlab_editor .mc_text.mc_heading.mc_small,
@@ -237,7 +238,8 @@ part of a list */
 /* A chapter display element */
 #mlab_editor .mc_display.mc_chapter,
 .mlab_main_body_content .mc_display.mc_chapter {
-    color: #627895;
+    color: #000;
+    text-transform: uppercase;
 }
 
 /* An ingress display element - typically below a heading */
@@ -530,7 +532,7 @@ part of a list */
 .mlab_main_body_content .mc_container .mc_list .mc_heading, 
 #mlab_editor .mc_container .mc_list .mc_item,
 .mlab_main_body_content .mc_container .mc_list .mc_item {
-    outline: 1px dotted lightblue;
+    outline: 1px solid #000;
     width: 30px;
 }
 
@@ -626,3 +628,21 @@ div[data-mlab-type] .mc_index p:last-child{
     text-decoration: none;
 }
 
+
+#mlab_editor [data-mlab-type=table] [data-mlab-dt-table-focus] {
+    background-color: lightblue !important;
+}
+
+#mlab_editor [data-mlab-type=table] thead tr,
+.mlab_main_body_content [data-mlab-type=table] thead tr,
+#mlab_editor [data-mlab-type=table] tr:nth-child(even),
+.mlab_main_body_content [data-mlab-type=table] tr:nth-child(even){
+    background-color: #efefef !important;
+}
+
+#mlab_editor [data-mlab-type=table] td,
+.mlab_main_body_content [data-mlab-type=table] td,
+#mlab_editor [data-mlab-type=table] th,
+.mlab_main_body_content [data-mlab-type=table] th{
+    padding: 10px;
+}
