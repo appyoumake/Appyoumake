@@ -251,7 +251,7 @@ part of a list */
 /* A text display element */
 #mlab_editor .mc_display.mc_text,
 .mlab_main_body_content .mc_display.mc_text {
-
+    outline: 0;
 }
 
 /* */
@@ -281,6 +281,12 @@ part of a list */
    text-align: center;
    font-style: italic;
    font-size: 0.9em;
+   color: #fff;
+   background-color: #877040;
+    margin: 0;
+    padding: 10px;
+    margin-left: 0.5em;
+    margin-right: -0.5em;
 }
 
 /* */
@@ -558,7 +564,8 @@ div[data-mlab-type] .mc_index details > p {
     margin: 0.3rem 0;
 }
 
-div[data-mlab-type] .mc_index details > summary {
+#mlab_editor div[data-mlab-type] .mc_index details > summary,
+.mlab_main_body_content div[data-mlab-type] .mc_index details > summary {
     font-size: 1.45rem;
     color: #000;
     list-style: none;
@@ -654,4 +661,5 @@ div[data-mlab-type] .mc_index p:last-child{
 #mlab_editor [data-mlab-type="index"] summary,
 .mlab_main_body_content [data-mlab-type="index"] summary{
     padding: 0 1.25em;
+    color: #000;
 }
