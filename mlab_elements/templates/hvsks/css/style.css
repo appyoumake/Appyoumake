@@ -1,0 +1,30 @@
+/* Style Sheet for the Basic template
+   Developer: Cecilie Jackbo Gran @ Sinett/FFI.no
+*/
+
+
+/* ==========================================================================
+   Page
+   ========================================================================== */
+
+#mlab_editor_chrome [data-role="page"],
+#mlab_page_body {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    overflow-y: auto;
+    background-color: #ffffff;  
+}
+
+#mlab_page_body .mlab_main_body_content,
+#mlab_editor_chrome .mlab_main_body_content {
+    padding: 0.6em;
+}
+
+/* modern clearfix, needed for image quiz, but good in general */
+div[data-mlab-type]:after {
+    content: "";
+    display: table;
+    clear: both;
+}
