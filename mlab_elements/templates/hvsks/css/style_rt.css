@@ -251,3 +251,8 @@ div[data-mlab-type]:after {
     display: table;
     clear: both;
 }
+
+#mlab_menu_panel div[data-mlab-type] .mc_index summary,
+#mlab_menu_panel div[data-mlab-type] .mc_index p {
+    color: #fff;
+}

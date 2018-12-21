@@ -560,12 +560,12 @@ div[data-mlab-type] .mc_index details > p {
 
 div[data-mlab-type] .mc_index details > summary {
     font-size: 1.45rem;
-    color: #000 !important;
+    color: #000;
     list-style: none;
     padding: 0;
     outline: none;
     cursor: pointer;
-    margin-left: -1.25em;
+    margin-left: 0;
 }
 
 
@@ -607,8 +607,7 @@ div[data-mlab-type] .mc_index details,
 div[data-mlab-type] .mc_index p {
     border-bottom: 1px solid #ccc;
     margin: 0px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
 }
 div[data-mlab-type] .mc_index details:last-child,
 div[data-mlab-type] .mc_index p:last-child{
@@ -645,4 +644,14 @@ div[data-mlab-type] .mc_index p:last-child{
 #mlab_editor [data-mlab-type=table] th,
 .mlab_main_body_content [data-mlab-type=table] th{
     padding: 10px;
+}
+
+#mlab_editor [data-mlab-type="index"] details,
+.mlab_main_body_content [data-mlab-type="index"] details{
+    padding: 0px;
+}
+
+#mlab_editor [data-mlab-type="index"] summary,
+.mlab_main_body_content [data-mlab-type="index"] summary{
+    padding: 0 1.25em;
 }
