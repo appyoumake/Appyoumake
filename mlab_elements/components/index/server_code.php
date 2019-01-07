@@ -84,8 +84,7 @@ class mlab_ct_index {
         $index[] = [
             'level' => 0,
             'page_id' => 0,
-            'chapter' => false,
-            'title' => $app_config["tableOfContents"]['index']['title'],
+            'chapter' => $app_config["tableOfContents"]['index']['title'],
             'children' => []
         ];
         
