@@ -68,12 +68,44 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         function mlab_set_app_id(app_id) {
             mlab_current_app_id = app_id;
         }
+        
+        /**
+		 * Opens up the mlab app list section if hidden
+		*/
+		function mlab_show_app_list () {
+            if ($("#mlab_builder_section_app_list").hasClass( "mlab_hide_section" )) {
+                //show the help seciton and hide the list section
+                $("#mlab_builder_section_app_list").toggleClass("mlab_hide_section");
+                $("#mlab_builder_section_app_build_help").toggleClass("mlab_hide_section");
+                //toggle the design of the buttons
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front");
+            }
+		};
 
 		/**
 		 * Opens up the properties dialog and displays a blank form
 		*/
 		function mlab_app_new () {
 			$("#builder_dialog_new_app").load(url_new).dialog("open");
+		};
+        
+       /**
+		 * Opens up the mlab help section
+		*/
+		function mlab_show_how_to_build_app () {
+            if ($("#mlab_builder_section_app_build_help").hasClass( "mlab_hide_section" )) {
+                //show the help seciton and hide the list section
+                $("#mlab_builder_section_app_list").toggleClass("mlab_hide_section");
+                $("#mlab_builder_section_app_build_help").toggleClass("mlab_hide_section");
+                //toggle the design of the buttons
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front");
+            }
 		};
 		
 		/**
@@ -245,22 +277,72 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block body -%}
     <h1>{% trans %}app.builder.list.main.heading{% endtrans %}</h1>
 	<p class="builder_welcome">{% trans %}app.builder.list.welcome.info{% endtrans %}</p>
-	<p><a class="mlab_button_new_app" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a></p>
-    <table class="records_list app_list" id="table_app">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
-                <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
-                <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
-                <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
-            </tr>
-        </thead>
-        <tbody>
-	        {% for app in apps %}
-		        {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
-	        {% endfor %}
-        </tbody>
-    </table>
+	<p>
+        <a id="mlab_builder_button_app_list" class="mlab_buttons_front_selected" href="javascript: mlab_show_app_list();">{% trans %}app.builder.list.app.list.button{% endtrans %}</a>
+        <a class="mlab_buttons_front" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a>
+        <a id="mlab_builder_button_app_build_help" class="mlab_buttons_front"  href="javascript: mlab_show_how_to_build_app();">{% trans %}app.builder.list.help.tutorial.button{% endtrans %}</a> 
+    </p>
+    <div id="mlab_builder_section_app_list">
+        <table class="records_list app_list" id="table_app">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
+                    <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
+                    <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
+                    <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in apps %}
+                    {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="mlab_builder_section_app_build_help" class="mlab_hide_section">
+        <div class="mlab_five_step_help_page">
+            <div class="help_guide">
+                <div class="help_guide_top">
+                    <div class="help_guide_back" onclick="help_guide_back();"></div>
+                    <p class="help_guide_heading">{% trans %}app.builder.index.page.help.guide.heading{% endtrans %}</p>
+                    <div class="help_guide_next" onclick="help_guide_next();"></div>
+                </div>
+                <p class="help_guide_text">1. {% trans %}app.builder.index.page.help.guide.text1{% endtrans %}</p> 
+                <div class="help_guide_img"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        
+            var step = 1;
+            help_text = [];
+
+            {% for i in 1..5 %}
+                help_text[{{i}}] = '{{('app.builder.index.page.help.guide.text'~i)|trans}}';
+            {% endfor %}
+
+                function help_guide_next() {
+
+                    if (step >= 5){
+                        step = 1;
+                    } else {
+                        step++;
+                    };
+                    $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
+                    $('.help_guide_text').text(step + ". " + help_text[step]);
+                };
+
+                function help_guide_back() {
+                   if (step <= 1){
+                       step = 5;
+                   } else {
+                       step--;
+                   }
+                  $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
+                  $('.help_guide_text').text(step + ". " + help_text[step]);
+                };
+
+        </script>
+    </div>
     <div id="builder_dialog_new_app"></div>
 {% endblock %}

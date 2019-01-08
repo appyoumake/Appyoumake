@@ -2,7 +2,7 @@
 version: 0.3
 developer: Arild Bergh, Sinett, FFI / Morten Krane, Snapper Net Solutions
 category: dataentry
-category_name: {nb_NO: Datainnsamling, en_GB: Dataentry}
+category_name: {nb_NO: Data innsamling, en_GB: Dataentry}
 name: quiz
 extended_name: { nb_NO: Quiz, en_GB: Quiz, default: Quiz }
 storage_plugin: true

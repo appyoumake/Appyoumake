@@ -18,6 +18,12 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
+        $securityContext = $this->container->get('security.authorization_checker');
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            // authenticated REMEMBERED, FULLY will imply REMEMBERED (NON anonymous)
+            return $this->redirect($this->generateUrl('app_builder_index'));
+        }
+        
         return $this->render('SinettMLABBuilderBundle:Default:index.html.twig');
     }
 }

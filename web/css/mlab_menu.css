@@ -23,13 +23,13 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
    ========================================================================== */
 #mlab_editor ul#mlab_menu,
 ul#mlab_menu {
-    background: #000;
+    background: #1d2773;
     border: 0;
     border-radius: 2px; 
-    border-top: 4px solid;  
+    border-top: 4px solid #1d2773;  
     height:43px;
     list-style:none;
-    margin:2px;
+    margin:0px;
     padding:0px 20px 0px 20px;
     z-index: 1000;
 }
@@ -195,7 +195,7 @@ progress::-moz-progress-bar {
 .mlab_layout .dropdown_user_menu{
     background: #F4F4F4;
     border: 1px solid #777777;
-    border-radius: 0px 2px 2px 2px;
+    border-radius: 0px 0px 2px 2px;
     border-top: none;
     float: left;
     left: -999em; /* Hides the drop down */
@@ -210,8 +210,8 @@ progress::-moz-progress-bar {
 #mlab_editor .mlab_show_editor_dropdown,
 .mlab_base .mlab_show_editor_dropdown,
 .mlab_layout .mlab_show_editor_dropdown {
-    left: 119px;
-    top: 45px;
+    left: 117px;
+    top: 43px;
 }
 
 .mlab_base .dropdown_editor_menu,
@@ -234,9 +234,9 @@ progress::-moz-progress-bar {
 #mlab_editor .mlab_show_user_dropdown,
 .mlab_base .mlab_show_user_dropdown,
 .mlab_layout .mlab_show_user_dropdown{
-    right: 50px;
+    right: 19px;
     left: 0px;
-    top: 45px;
+    top: 43px;
 }
 
 /* Columns */

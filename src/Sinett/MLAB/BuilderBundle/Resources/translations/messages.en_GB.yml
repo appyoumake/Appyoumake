@@ -21,25 +21,24 @@ mlab.page.title.admin: MLAB admin
 #-----------------------------------------------------
 # Index info page
 #-----------------------------------------------------
-app.builder.index.page.heading: Mlab
-app.builder.index.page.text: Welcome to the app builder Mlab. Mlab is a framework that allows staff without programming knowledge to create and share professional, interactive apps.
-app.builder.index.page.link.text.before: To get started go to the
-app.builder.index.page.link.app.list: App list
-app.builder.index.page.link.text.after: or chose a different action from the menu above. Below you will find a quick introduction to the app builder Mlab.
+app.builder.index.page.heading: Welcome to the app builder Mlab
+app.builder.index.page.text: Mlab is a framework that allows staff without programming knowledge to create and share professional, interactive apps.
 app.builder.index.page.help.guide.heading: How to create an app in 5 steps
-app.builder.index.page.help.guide.text1: Select "New App".
-app.builder.index.page.help.guide.text2: Create pages and add components. Components can be text, images, movies and audio.
+app.builder.index.page.help.guide.text1: Select:- New App.
+app.builder.index.page.help.guide.text2: Create pages and add components. Components can be text, images, videos and audio.
 app.builder.index.page.help.guide.text3: Edit the contents of the pages and the settings of the components. Work performed is automatically saved.
-app.builder.index.page.help.guide.text4: Continue adding pages and components until the app is finished. The table of contents is updated automatically.
-app.builder.index.page.help.guide.text5: Select "Try App on Mobile". The app is completed and can be tested on mobile or tablet.
+app.builder.index.page.help.guide.text4: Continue adding pages and components until the app is finished. The table of content is updated automatically.
+app.builder.index.page.help.guide.text5: Select:- Try App on Mobile. The app is completed and can be tested on mobile or tablet.
  
  
 #-----------------------------------------------------
 # List of apps page
 #-----------------------------------------------------
 app.builder.list.main.heading: Apps
-app.builder.list.welcome.info: Here is a list of apps you can access. You can edit them by clicking on the app name. Use the button to create a new app.
+app.builder.list.welcome.info: The app list gives you the list of apps you have access to and you can edit them by clicking on the app name. To create an app, click the New app button. Mlab tutorial gives you a quick introduction to how to create an app.
 app.builder.list.new.app.button: New App
+app.builder.list.app.list.button: App List
+app.builder.list.help.tutorial.button: Mlab Tutorial
 app.builder.list.heading.app: App Name
 app.builder.list.heading.published: Published
 app.builder.list.heading.version: Version
@@ -56,6 +55,7 @@ app.builder.list.tooltip.properties: Menu for
 builder.new.app.basedon.tab: Based on
 builder.new.app.select_base.tab: Choose base
 builder.new.app.name.tab: Name
+builder.new.app.icon.tab: Icon
 builder.new.app.classification.tab: Classify
 builder.new.app.submit.tab: Make
  
@@ -69,8 +69,11 @@ builder.new.app.basedon.description: Choose which template the app should be bas
 builder.new.app.name.description: Give the app a unique name. <br> Version number can not be changed. It is always 1 for new apps, but if you create a new version of the app, the number will increase.
 builder.new.app.name.name: Name
 builder.new.app.name.descriptionLab: Description
+builder.new.app.icon.scale: Scale the icon
 builder.new.app.name.selectBackground: Choose background
+app.select.icon.no_background: No background
 builder.new.app.name.selectForground: Choose icon
+app.select.icon.no_foreground: No icon
 builder.new.app.name.iconFile: Icon file
 builder.new.app.name.addIconFileImage: Add image
 builder.new.app.name.iconText: Icon text

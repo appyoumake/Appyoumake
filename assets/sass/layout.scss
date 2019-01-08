@@ -42,6 +42,7 @@ body {
 .main {
     height: calc(100% - #{$header-height});
     display: flex;
+    border-top: solid 1px $border-color;
 }
 
 .nav-pages {
