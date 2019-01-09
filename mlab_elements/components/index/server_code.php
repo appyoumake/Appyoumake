@@ -81,6 +81,8 @@ class mlab_ct_index {
         
 //first process index.html file. We check to see if this starts a new chapter through the chapter component, 
 //then we add the page title to the chapter element in the index array. 0 = no chapter specified
+
+        //TODO: sjekk om det er section i index - da må index under denne section....
         $index[] = [
             'level' => 0,
             'page_id' => 0,
@@ -120,7 +122,16 @@ class mlab_ct_index {
 
         $currentParent = [];
         $currentLevel = 1;
+        //if first item is not a section - make a face header and 
+        //$this->variables['style'] == 'summary' - so face one first section with app name (line 143)
 
+        if ($this->variables['style'] == 'summary' && $tableOfContents[0]['type'] != "section") {
+                $item['level'] = $item['level'];
+                $item['page_id'] = null;
+                $item['chapter'] = $item['title'];
+                $item['children'] = [];
+        }
+        
         foreach ($tableOfContents as &$item) {
             if($item['type'] == 'page' && $this->variables['style'] != 'summary') {
                 // modify item
@@ -185,7 +196,7 @@ class mlab_ct_index {
             $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $index["page_id"] . '); return false;}">' . trim($index["chapter"]) . "</summary>\n";
             
             if($this->variables['displayChapterPageTitle']){
-                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["title"] . "</a></p>\n";
+                $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["chapter"] . "</a></p>\n";
             }
 
             if(isset($index['children'])) {
