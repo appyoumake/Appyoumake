@@ -104,6 +104,9 @@ app.wizard.button.finished: Ferdig
 # Main Menu
 #-----------------------------------------------------
 app.mlab.menu.tooltip: Menu
+app.builder.menu.mlab.logo: MLAB
+app.builder.menu.app.edited: App navn
+app.builder.menu.app.list: Vis alle apper
 app.builder.menu.welcome.info: Dette er hovedmenyen til Mlab
 app.builder.menu.heading.links: Naviger
 app.builder.menu.links.info: Liste over sider i Mlab du har tilgang til
@@ -580,6 +583,9 @@ userController.msg.email.exists: En bruker med denne eposten er allerede registr
 userController.createNotFoundException: Finner ikke brukerinfo.
 userController.editAction.response: Du har ikke tilgang til å redigere denne brukeren, bare en superbruker eller Admin har denne rettigheten
 
+fileManagement.getNewSectionConfig.new.section: Ny seksjon
+fileManagement.createNewPage.new.page: Ny side
+
 
 #-----------------------------------------------------
 # JS files - starts with file name 
@@ -623,7 +629,8 @@ mlab.dt.management.js.page_update_title.alert.page.locked: Side er stengt, denne
 mlab.dt.management.js.page_new.prompt.title.new.page: Skriv inn nytt navn på siden
 mlab.dt.management.js.page_copy.alert.not.copy.index.page: Kan ikke kopiere innholdssiden
 mlab.dt.management.js.page_copy.alert.not.delete.index.page: Kan ikke slette innholdssiden
-mlab.dt.management.js.page_copy.alert.sure.delete: Er du bombesikker på at du vil slette denne siden? Denne handlingen kan ikke gjøre om!
+mlab.dt.management.js.page_copy.alert.sure.delete.page: Er du bombesikker på at du vil slette denne siden? Du kan gjenopprette siden ved å gå til App taben og klilkke på Gjenopprett slettet side.
+mlab.dt.management.js.page_copy.alert.sure.delete.section: Er du bombesikker på at du vil slette denne seksjonen?
 mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Kan ikke åpne nytt vindu, endr innstillingene for å tillate popup-vinduer
 mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (det er OK å la den stå tom )
 mlab.dt.management.js.compiler.get_app_status.prompt.version: versjon (det er OK å la den stå tomt)
@@ -692,51 +699,66 @@ mlab.dt.management.js.websocket.error.connect: Tilkobling til meldingsserver mis
 
 # new "Powerpoint-esque" UI
 editor.tabs.file: App
-editor.tabs.file.save: Save
-editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon below.
-editor.tabs.file.unlock: Unlock
-editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button below to unlock it.
-editor.tabs.file.test.web: Test in web page
-editor.tabs.file.test.web.tooltip: Do a quick test of what the app will look like by clicking the www-button. The App will then appear in a new web page.
-editor.tabs.file.test.mob: Test on mobile
-editor.tabs.file.test.mob.tooltip: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
-editor.tabs.file.qrcode: QR code
-editor.tabs.file.qrcode.tooltip: QR code
-editor.tabs.file.restore.page: Restore deleted page
-editor.tabs.file.restore.page.tooltip: Restore deleted page
-editor.tabs.file.restore.component: Restore deleted component
-editor.tabs.file.restore.component.tooltip: Restore deleted component
-editor.tabs.file.new.page: New page
-editor.tabs.file.new.page.tooltip: Add a new page to the current app
-editor.tabs.file.new.section: New section
-editor.tabs.file.new.section.tooltip: Sections are used to let the user navigate around the app easily through an index. You can use up to 3 levels.
+editor.tabs.file.save: Lagre
+editor.tabs.file.save.tooltip: Appen lagres automatisk med jevne mellomrom. Hvis du vil lagre nå, klikker du på lagreikonet.
+editor.tabs.file.unlock: Lås opp
+editor.tabs.file.unlock.tooltip: Hvis siden er grået ut, kan det være andre er inne på siden og redigerer den, om du er sikker på at det ikke er tilfelle kan du klikke på denne knappen for å låse opp siden.
+editor.tabs.file.test.web: Test på nettsiden
+editor.tabs.file.test.web.tooltip: Gjør en rask test av hvordan appen vil se ut ved å klikke på www-knappen. Appen vil da vises i en ny nettside.
+editor.tabs.file.test.mob: Test på mobilen
+editor.tabs.file.test.mob.tooltip: Klikk en gang på knappen for å lage en test App som du kan laste ned til mobilen din. Dette krever at du har en QR-leser på mobilen din.
+editor.tabs.file.qrcode: QR kode
+editor.tabs.file.qrcode.tooltip: Her vil det komme en QR kode med link til mobil-appen din når appen er ferdig kompilert.
+editor.tabs.file.restore.page: Gjenopprett slettet side
+editor.tabs.file.restore.page.tooltip: Knappen vil åpne en liste over slettede sider, som du kan velge å gjenoprette ved å klikke på dem.
+editor.tabs.file.restore.component: Gjenopprett slettet komponent
+editor.tabs.file.restore.component.tooltip: Gjenoppretter slettede komponenter fra denne siden.
+editor.tabs.file.new.page: Ny side
+editor.tabs.file.new.page.tooltip: Legg til en ny side i gjeldende app
+editor.tabs.file.new.section: Ny seksjon
+editor.tabs.file.new.section.tooltip: Seksjoner brukes til å la brukeren navigere rundt appen enkelt gjennom en indeks. Du kan bruke opptil 3 nivåer.
 
-editor.tabs.insert: Insert
-editor.tabs.insert.new.page: New page
-editor.tabs.insert.new.page.tooltip: Insert a new page in the current app. After the new page open you can add content to the page.
-editor.tabs.insert.new.section: New section
-editor.tabs.insert.new.section.tooltip: Insert a new section in the app. A section is a divider, similar to headlines in Word, that is used to let the app users navigate around the app.
+editor.tabs.insert: Sett inn
+editor.tabs.insert.new.page: Ny side
+editor.tabs.insert.new.page.tooltip: Sett inn en ny side i gjeldende app. Etter at den nye siden er åpen, kan du legge til innhold på siden.
+editor.tabs.insert.new.section: Ny seksjon
+editor.tabs.insert.new.section.tooltip: Sett inn en ny seksjon i appen. En seksjon deler inn sidene i appen på lignende måte som overskrifter i Word. Det brukes til å la appbrukerne navigere rundt appen.
 
-editor.tabs.format: Format
+editor.tabs.format: Formater 
 editor.tabs.format.component.up: Flytt opp
-editor.tabs.format.component.up.tooltip: Move component up on the page
-editor.tabs.format.component.down: Move down
-editor.tabs.format.component.down.tooltip: Move component down on the page
-editor.tabs.format.component.delete: Delete
-editor.tabs.format.component.delete.tooltip: Delete the selected component 
-editor.tabs.format.component.cut: Cut
-editor.tabs.format.component.cut.tooltip: Cut the selected component to the component clipboard. You can then paste the component into another page
-editor.tabs.format.component.copy: Copy
-editor.tabs.format.component.copy.tooltip: Copy the selected component to the component clipboard. You can then paste the component into this or another page
-editor.tabs.format.component.paste: Paste
-editor.tabs.format.component.paste.tooltip: Paste the last component you copied or pasted
-editor.tabs.format.component.resize: Resize
-editor.tabs.format.component.aspect_ratio: Aspect ratio
-editor.tabs.format.component.storage: Storage
+editor.tabs.format.component.up.tooltip: Flytt komponent opp på siden.
+editor.tabs.format.component.down: Flytt ned
+editor.tabs.format.component.down.tooltip: Flytt komponent ned på siden.
+editor.tabs.format.component.delete: Slett
+editor.tabs.format.component.delete.tooltip: Slett den valgte komponenten.
+editor.tabs.format.component.cut: Klipp ut
+editor.tabs.format.component.cut.tooltip: Klipp ut den valgte komponenten til komponentutklippstavlen. Du kan deretter lime inn komponenten på en annen side.
+editor.tabs.format.component.copy: Kopier
+editor.tabs.format.component.copy.tooltip: Kopier den valgte komponenten til komponentutklippstavlen. Du kan deretter lime inn komponenten på en annen side.
+editor.tabs.format.component.paste: Lim inn
+editor.tabs.format.component.paste.tooltip: Lim inn den siste komponenten du kopierte eller klippet ut
+editor.tabs.format.component.resize: Endre størrelse
+editor.tabs.format.component.aspect_ratio: Størrelsesforhold
+editor.tabs.format.component.storage: Lagring
 editor.tabs.format.component.credentials: Credentials
 
 editor.tabs.help: Hjelp
 editor.tabs.help.tutorial: Veileder
-editor.tabs.help.tutorial.tooltip: Display Mlab's introduction tutorial, this will explain the basics of how to create an app
-editor.tabs.help.toggle_hover: Help on hover
-editor.tabs.help.toggle_hover.tooltip: Turn tooltip help for buttons on or off
+editor.tabs.help.tutorial.tooltip: Vis Mlabs introduksjonsveiledning, dette vil forklare grunnleggende om hvordan du lager en app
+editor.tabs.help.toggle_hover: Hjelp on hover
+editor.tabs.help.toggle_hover.tooltip: Slå verktøytipshjelp for knapper på eller av
+
+editor.left.menu.deleted.pages.heading: Slettet
+editor.left.menu.deleted.pages.restore: Gjenopprett
+editor.left.menu.deleted.pages.restore.tooltip: Gjenopprett slettede komponenter
+editor.left.menu.top.level.pages : Toppnivå sider
+editor.left.menu.top.level: Toppnivå
+editor.left.menu.second.level: Andre nivå
+editor.left.menu.third.level: Tredje nivå
+
+editor.modal.add.new.page.heading: Legg til ny side
+editor.modal.add.new.top.level.page: Legg til ny toppnivåside
+editor.modal.add.new.top.level.page: Legg til ny andrenivåside
+editor.modal.add.new.top.level.page: Legg til ny tredjenivåside
+editor.modal.bottom.cancel: Avbryt
+editor.modal.bottom.next: Neste

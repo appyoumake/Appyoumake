@@ -563,7 +563,7 @@ var Mlab_dt_ui = {
     },
 
     deleteSection: function(data, e) {
-        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete.section"])) {
             return;
         }
 
@@ -575,7 +575,7 @@ var Mlab_dt_ui = {
     },
 
     deletePage: function(data, e) {
-        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete.page"])) {
             return;
         }
 

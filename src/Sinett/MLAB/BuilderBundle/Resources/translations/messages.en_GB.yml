@@ -104,6 +104,9 @@ app.wizard.button.finished: Finished
 # Main Menu
 #-----------------------------------------------------
 app.mlab.menu.tooltip: Menu
+app.builder.menu.mlab.logo: MLAB
+app.builder.menu.app.edited: App name
+app.builder.menu.app.list: View all apps
 app.builder.menu.welcome.info: This is the main manu for the Mlab app builder.
 app.builder.menu.heading.links: Navigate
 app.builder.menu.links.info: List of pages you have access to
@@ -138,7 +141,7 @@ app.mlab.menu.help.notfound: No help found for this subject
 
 
 #-----------------------------------------------------
-# App builder Menu (edit app)
+# App builder Menu (edit app) - TODO old design - waht is still in use...
 #-----------------------------------------------------
 app.builder.edit.menu.tooltip: Editor menu
 app.mlab.logo.tooltip: Back to the App list
@@ -580,6 +583,9 @@ userController.msg.email.exists: A user with this email is already registered, e
 userController.createNotFoundException: Unable to find User entity.
 userController.editAction.response: You do not have the rights to edit this user, must be Super Admin
 
+fileManagement.getNewSectionConfig.new.section: New Section
+fileManagement.createNewPage.new.page: New Page
+
 
 #-----------------------------------------------------
 # JS files - starts with file name 
@@ -623,7 +629,8 @@ mlab.dt.management.js.page_update_title.alert.page.locked: Page is locked, you c
 mlab.dt.management.js.page_new.prompt.title.new.page: Please enter the title of the new page
 mlab.dt.management.js.page_copy.alert.not.copy.index.page: You can not copy the index page
 mlab.dt.management.js.page_copy.alert.not.delete.index.page: You can not delete the index page
-mlab.dt.management.js.page_copy.alert.sure.delete: Are you sure you want to delete this page? This cannot be undone!
+mlab.dt.management.js.page_copy.alert.sure.delete: Are you sure you want to delete this page? You can restore the page by going to the App tab and clicking Restore deleted page.
+management.js.page_copy.alert.sure.delete.section: Are you sure you want to delete this section?
 mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Cannot open new window, change your settings to allow popup windows
 mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (leave blank is OK)
 mlab.dt.management.js.compiler.get_app_status.prompt.version: version (leave blank is OK)
@@ -693,9 +700,9 @@ mlab.dt.management.js.websocket.error.connect: Connection to message server fail
 # new "Powerpoint-esque" UI
 editor.tabs.file: App
 editor.tabs.file.save: Save
-editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon below.
+editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon.
 editor.tabs.file.unlock: Unlock
-editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button below to unlock it.
+editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button to unlock it.
 editor.tabs.file.test.web: Test in web page
 editor.tabs.file.test.web.tooltip: Do a quick test of what the app will look like by clicking the www-button. The App will then appear in a new web page.
 editor.tabs.file.test.mob: Test on mobile
@@ -735,10 +742,23 @@ editor.tabs.format.component.aspect_ratio: Aspect ratio
 editor.tabs.format.component.storage: Storage
 editor.tabs.format.component.credentials: Credentials
 
-
-
 editor.tabs.help: Help
 editor.tabs.help.tutorial: Tutorial
 editor.tabs.help.tutorial.tooltip: Display Mlab's introduction tutorial, this will explain the basics of how to create an app
 editor.tabs.help.toggle_hover: Help on hover
 editor.tabs.help.toggle_hover.tooltip: Turn tooltip help for buttons on or off
+
+editor.left.menu.deleted.pages.heading: Deleted
+editor.left.menu.deleted.pages.restore: Restore
+editor.left.menu.deleted.pages.restore.tooltip: Restore deleted components
+editor.left.menu.top.level.pages: Top level pages
+editor.left.menu.top.level: Top level
+editor.left.menu.second.level: Second level
+editor.left.menu.third.level: Third level
+
+editor.modal.add.new.page.heading: Add new page
+editor.modal.add.new.top.level.page: Add new top level page
+editor.modal.add.new.second.level.page: Add new second level page
+editor.modal.add.new.third.level.page: Add new third level page
+editor.modal.bottom.cancel: Cancel
+editor.modal.bottom.next: Next

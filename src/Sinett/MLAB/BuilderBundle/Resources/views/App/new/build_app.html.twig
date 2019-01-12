@@ -4,29 +4,29 @@
     <div class="header" id="mlab_menu_header">
         <nav class="nav-main" id="mlab_navbar">
             <ul class="tabs">
-                <li class="active"><a href="#tab1">App</a>
+                <li class="active"><a href="#tab1">{% trans %}editor.tabs.file{% endtrans %}</a>
                     <div class="toolbox">
                         {{ include( 'SinettMLABBuilderBundle:App:new/tabs_file.html.twig' ) }}
                     </div>
                 </li>
-                <li><a href="#tab2">Insert</a>
+                <li><a href="#tab2">{% trans %}editor.tabs.insert{% endtrans %}</a>
                     <div class="toolbox" id="mlab_toolbar_components">
                         {{ include( 'SinettMLABBuilderBundle:App:new/tabs_insert.html.twig' ) }}
                     </div>
                 </li>
-                <li><a href="#tab3">Format</a>
+                <li><a href="#tab3">{% trans %}editor.tabs.format{% endtrans %}</a>
                     <div class="toolbox" id='mlab_format_menu'>
                         {{ include( 'SinettMLABBuilderBundle:App:new/tabs_format.html.twig' ) }}
                     </div>
                 </li>
-                <li><a href="#tab4">Help</a>
+                <li><a href="#tab4">{% trans %}editor.tabs.help{% endtrans %}</a>
                     <div class="toolbox">
                         {{ include( 'SinettMLABBuilderBundle:App:new/tabs_help.html.twig' ) }}
                     </div>
                 </li>
             </ul>
         </nav>
-        <div class="logo">MLAB</div>
+        <div class="logo">{% trans %}app.builder.menu.mlab.logo{% endtrans %}</div>
         <div class="nav-right">
             
             <div class="toolbox-menu warnings">
@@ -45,8 +45,8 @@
             </div>
             
             <div class="app-info" >
-                Editing: <span id="mlab_statusbar_appname"></span>
-                <a href="{{ path('app_builder_index')}}" class="view-all-apps" target="_top" title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' >View all apps</a>
+                <div class="app-name"> {% trans %}app.builder.menu.app.edited{% endtrans %}: <span id="mlab_statusbar_appname"></span> </div>
+                <div class="app-list">  <a href="{{ path('app_builder_index')}}" class="view-all-apps" target="_top" title='{% trans %}build_app.menu.tooltip.back.app.list{% endtrans %}' >{% trans %}app.builder.menu.app.list{% endtrans %}</a></div>
             </div>
             
             <div class="toolbox-menu">
@@ -55,7 +55,7 @@
                 </button>
                 <div class="menu">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        <p  >You are logged in as: {{ app.user.email }}</p>
+                        <p  >{% trans %}app.builder.menu.log.info{% endtrans %}: {{ app.user.email }}</p>
                         <hr>
                         <button class="mlab_button_new_app common-btn" onclick="window.location.href='{{ path('fos_user_security_logout') }}';">
                             {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
@@ -80,7 +80,7 @@
             <div class="pages-wrapper">
             <div class="deleted">
                 <button class="close">&times;</button>
-                <div class="title">Deleted</div>
+                <div class="title">{% trans %}editor.left.menu.deleted.pages.heading{% endtrans %}</div>
                 <ul class="list-pages with-preview">
                 </ul>
             </div>
@@ -91,7 +91,7 @@
                         <input type="radio" name="pages-list-display" value="with-titles" id="with-titles" />
                         <label for="with-titles"><i class="fas fa-bars fa-fw"></i></label>
                     </div>
-                    <div class="level-name">Top level pages</div>
+                    <div class="level-name">{% trans %}editor.left.menu.top.level.pages{% endtrans %}</div>
                     <ul class="list-pages with-preview">
                     </ul>
                 </div>
@@ -99,9 +99,9 @@
         </div>
         <div class="builder">
             <ul class="breadcrumb mlab_hidden">
-                <li><a href="#">Top Level page</a></li>
-                <li><a href="#">Second level</a></li>
-                <li><a href="#">Third level</a></li>
+                <li><a href="#">{% trans %}editor.left.menu.top.level{% endtrans %}</a></li>
+                <li><a href="#">{% trans %}editor.left.menu.second.level{% endtrans %}</a></li>
+                <li><a href="#">{% trans %}editor.left.menu.third.level{% endtrans %}</a></li>
                 <li>Page name 1</li>
             </ul>
             <div id="mlab_editor_chrome" class="app-container">
@@ -156,7 +156,7 @@
     </div>
 
     <div id="restore-components" class="modal">
-        <div class="modal-title">Restore deleted components
+        <div class="modal-title">{% trans %}editor.left.menu.deleted.pages.restore.tooltip{% endtrans %}
             <button data-close-modal class="close">&times;</button>
         </div>
         <div class="modal-content">
@@ -165,28 +165,28 @@
             </ul>
         </div>
         <div class="modal-bottom">
-            <button data-close-modal class="modal-btn secondary">Cancel</button>
-            <button class="modal-btn">Restore</button>
+            <button data-close-modal class="modal-btn secondary">{% trans %}editor.modal.bottom.cancel{% endtrans %}</button>
+            <button class="modal-btn">{% trans %}editor.left.menu.deleted.pages.restore{% endtrans %}</button>
         </div>
     </div>
 
     <div id="new-page" class="modal">
-        <div class="modal-title">Add new page
+        <div class="modal-title">{% trans %}editor.modal.add.new.page.heading{% endtrans %}
             <button data-close-modal class="close">&times;</button>
         </div>
         <div class="modal-content">
             <ul class="add-new-page-levels">
                 <li>
                     <input type="radio" name="new-page-level" value="top-level" id="top-level-new-page" checked>
-                    <label class="component" for="top-level-new-page">Add new top level page</label>
+                    <label class="component" for="top-level-new-page">{% trans %}editor.modal.add.new.top.level.page{% endtrans %}</label>
                     <ul>
                         <li>
                             <input type="radio" name="new-page-level" value="second-level" id="second-level-new-page">
-                            <label class="component" for="second-level-new-page">Add new second level page</label>
+                            <label class="component" for="second-level-new-page">{% trans %}editor.modal.add.new.second.level.page{% endtrans %}</label>
                             <ul>
                                 <li>
                                     <input type="radio" name="new-page-level" value="third-level" id="third-level-new-page">
-                                    <label class="component" for="third-level-new-page">Add new third level page</label>
+                                    <label class="component" for="third-level-new-page">{% trans %}editor.modal.add.new.third.level.page{% endtrans %}</label>
                                 </li>
                             </ul>
                         </li>
@@ -195,8 +195,8 @@
             </ul>
         </div>
         <div class="modal-bottom">
-            <button data-close-modal class="modal-btn secondary">Cancel</button>
-            <button class="modal-btn">Next</button>
+            <button data-close-modal class="modal-btn secondary">{% trans %}editor.modal.bottom.cancel{% endtrans %}</button>
+            <button class="modal-btn">{% trans %}editor.modal.bottom.next{% endtrans %}<</button>
         </div>
     </div>
 {% endblock %}

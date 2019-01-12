@@ -943,7 +943,7 @@ Mlab_dt_management.prototype = {
             return;
         }
 
-        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete.page"])) {
             return;
         }
 

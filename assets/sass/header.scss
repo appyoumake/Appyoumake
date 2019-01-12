@@ -2,6 +2,7 @@
     font-family: 'Roboto Condensed', sans-serif;
     background-color: $primary-color;
     color: $primary-text;
+    min-height: $header-height;
 
     a {
         color: $primary-text;
@@ -261,8 +262,23 @@
 }
 
 .app-info {
+    .app-name {
+        max-width: 425px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: left;
+    }
+
+    .app-list {
+        float: left;
+    }
+}
+
+.app-info {
     .view-all-apps {
-        padding: 10px;
+        padding: 2px;
+        padding-left: 25px;
     }
 }
 
@@ -366,6 +382,8 @@ input[type="checkbox"].toggle {
 
 .app-info #mlab_statusbar_appname {
     font-weight: normal;
+    font-size: 16px;
+    padding: 0px 3px;
 }
 
 /* make sure all buttons for  components list are same size. */
