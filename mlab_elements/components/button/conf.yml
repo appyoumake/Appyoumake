@@ -1,7 +1,7 @@
 # Configuration file for link component
 version: 0.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: text
+category: navigation
 category_name: {nb_NO: Tekst, en_GB: Text}
 name: button
 extended_name: { nb_NO: Lenke, en_GB: Link, default: Link }

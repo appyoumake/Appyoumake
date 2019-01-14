@@ -93,6 +93,7 @@ Mlab_dt_management.prototype = {
 //if they are not opening the index page we need to call backend again to load the page they want to open
                 if (local_page_num != "0" && local_page_num != "index" && !data.only_index) {
                     that.page_open_process(data.app_id, local_page_num);
+                    $(".nav-pages .active [data-page-num='" + local_page_num + "']")[0].scrollIntoView();
                 } else {
                     if (data.lock_status == "locked") {
                         that.parent.app.locked = true;

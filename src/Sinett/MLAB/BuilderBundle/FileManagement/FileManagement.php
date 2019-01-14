@@ -24,7 +24,7 @@ class CustomPreProcessing {
     
 //gets total number of pages in an app
     public function getnumberofpages($file_mgmt, $config, $app, $app_path) {
-   		$pages = $file_mgmt->getAppConfigValue($app, "tableOfContents");
+   		$pages = $file_mgmt->getAppConfigValue($app, "tableOfContents")["active"];
         if (!$pages) {
             $pages = glob( $app_path . "/???.html" );
         }

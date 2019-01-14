@@ -78,11 +78,7 @@ class mlab_ct_index {
         $this->variables = array_merge($this->variables, $variables);
         $index = array();
 
-        
-//first process index.html file. We check to see if this starts a new chapter through the chapter component, 
-//then we add the page title to the chapter element in the index array. 0 = no chapter specified
-
-        //TODO: sjekk om det er section i index - da må index under denne section....
+//we do NOT allow sections before index page, so this is always first.
         $index[] = [
             'level' => 0,
             'page_id' => 0,
@@ -105,7 +101,7 @@ class mlab_ct_index {
         $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $this->variables['textsize'] . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
         
 //now we have the data, time to output the HTML. If they asked for a folding layout, but did not specify any chapters, we output a plain list as for the other options
-        $activeTree = $this->activeTree($app_config["tableOfContents"]['active']);
+        $activeTree = $this->activeTree($app_config["tableOfContents"]['active'], $app_config["title"]);
         $index = array_merge($index, $activeTree);
 
         if ($this->variables['style'] == "folding") {
@@ -117,20 +113,24 @@ class mlab_ct_index {
         
     }
 
-    protected function activeTree($tableOfContents) {
+//this function returns the current list of pages in the file conf.json (see ->tableOfContents->active variable)
+    protected function activeTree($tableOfContents, $app_title) {
         $tree = [];
 
         $currentParent = [];
         $currentLevel = 1;
-        //if first item is not a section - make a face header and 
-        //$this->variables['style'] == 'summary' - so face one first section with app name (line 143)
+        
+        
+//if first item is not a section - make a face header and 
+//$this->variables['style'] == 'summary' - so face one first section with app name (line 143)
 
-        if ($this->variables['style'] == 'summary' && $tableOfContents[0]['type'] != "section") {
-                $item['level'] = $item['level'];
-                $item['page_id'] = null;
-                $item['chapter'] = $item['title'];
-                $item['children'] = [];
-        }
+/***REMOVE        if ($this->variables['style'] == 'summary' && $tableOfContents[0]['type'] != "section") {
+            array_unshift($tableOfContents, array( 'level' => $currentLevel
+                                                   'page_id' => null,
+                                                   'chapter' => $app_title;
+                                                   'children'] = [];
+                                                    ));
+        } **/
         
         foreach ($tableOfContents as &$item) {
             if($item['type'] == 'page' && $this->variables['style'] != 'summary') {
@@ -151,9 +151,9 @@ class mlab_ct_index {
                     $tree[] = $item;
                 }
             } elseif($item['type'] == 'section') {
+                $item['chapter'] = $item['title'];
                 $item['level'] = $item['level'];
                 $item['page_id'] = null;
-                $item['chapter'] = $item['title'];
                 $item['children'] = [];
 
                 if($item['level'] > 0 && $currentParent && $currentParent[$currentLevel]) {
