@@ -2,7 +2,7 @@
 # content is generated at pre compile time.
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: generated
+category: navigation
 category_name: {nb_NO: App Nav, en_GB: App navigation}
 name: index
 extended_name: { nb_NO: Innholdsliste, en_GB: Index, default: Index }

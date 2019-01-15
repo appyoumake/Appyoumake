@@ -111,6 +111,9 @@
     font-family: Arial;
     font-size: 1em;
     color: white;
+    height: calc(100% - 10px);
+    min-height: calc(100% - 10px);
+    max-height: calc(100% - 10px);
 }
 
 #mlab_page_body .mlab_settings_heading,
@@ -135,10 +138,17 @@
 #mlab_page_body .mlab_settings_text,
 #mlab_page_body .mlab_menu_text {
     font-size: 0.9em;
-    margin-top: 0.5em;
+    /* adds scrollbar to page fo some reason, even when using calc and deducting from height
+    margin-top: 0.5em; */
     cursor: alias;
+    height: calc(100% - 80px);
+    float: right;
 }
 
+#mlab_page_body .mlab_menu_text .mc_text.mc_display.mc_list.mc_bullet.mc_link.mc_internal {
+    padding: 0.2em 0.8em;
+}
+    
 #mlab_page_body .mlab_btn_color_toggle, 
 #mlab_page_body .mlab_btn_txsize_toggle,
 #mlab_page_body .mlab_btn_close,
@@ -206,7 +216,7 @@
 }
 ========================================================================== */
 
-/* hide the title of teh a1empp in menu */
+/* hide the title of the a1empp in menu */
 div.mlab_menu_text h2 {
     display: none;
 }

@@ -14,8 +14,10 @@
     };
     
     this.custom_set_link = function (el, event) {
-        this.highlight(el); //inherited from H1 component
-        this.api.setLink(el, event);
+        html_el = this.getHTMLElement(el);
+        this.highlight(html_el); //inherited from H1 component
+        html_el.attr("href", "MLAB_DT_LINK_TEMP");
+        this.api.setLink(el, event, true);
     };
 
     this.custom_toggle_button = function (el) {

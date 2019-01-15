@@ -1028,7 +1028,7 @@ Mlab_dt_api.prototype = {
  * The actual link is created in updateLink above
  * @returns {Boolean|String}
  */
-    setLink: function (el, event) {
+    setLink: function (el, event, is_button) {
 //we must first of all check that som text is chosen inside the current component
         if (!this.checkSelTextValid()) {
             alert(_tr["mlab.dt.api.js.getLink.no_selection"]);
@@ -1036,7 +1036,11 @@ Mlab_dt_api.prototype = {
         }
 
 //we need to create a temporary link straight away so that we can refer to it later, otherwise the selection will disappear.
-        document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
+//we also use this to link buttons, etc, then we do NOT call this
+        if (!is_button) {
+            document.execCommand('createlink', false, "MLAB_DT_LINK_TEMP");
+        } 
+        
 //we set a data tag, because we'll use an API call if they link to another page, etc
         $(".mlab_current_component").find("a[href=MLAB_DT_LINK_TEMP]").addClass('mc_link mc_text').attr('data-mlab-islink', 1).click(function(e) { e.preventDefault(); });
 
