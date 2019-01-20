@@ -54,6 +54,32 @@
 		document.execCommand('italic', null, null);
     };
     
+    this.custom_decrease_size = function (el) {
+		var thisTable = $(this.getHTMLElement(el));
+        thisTable.find("th,td").each(function() {
+            if ($(this).hasClass("mc_large")) {
+                $(this).removeClass("mc_large").addClass("mc_medium");
+            } else if ($(this).hasClass("mc_medium")) {
+                $(this).removeClass("mc_medium").addClass("mc_small");
+            } else {
+                $(this).addClass("mc_small");
+            }
+        });        
+    };
+    
+    this.custom_increase_size = function (el) {
+		var thisTable = $(this.getHTMLElement(el));
+        thisTable.find("th,td").each(function() {
+            if ($(this).hasClass("mc_small")) {
+                $(this).removeClass("mc_small").addClass("mc_medium");
+            } else if ($(this).hasClass("mc_medium")) {
+                $(this).removeClass("mc_medium").addClass("mc_large");
+            } else {
+                $(this).addClass("mc_large");
+            }
+        });
+    };
+    
     this.custom_align_left = function (el) {
         var table = this.getHTMLElement(el);
         var current_cell = table.find("[data-mlab-dt-table-focus='1']");
