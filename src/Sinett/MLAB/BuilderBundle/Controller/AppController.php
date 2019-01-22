@@ -1066,6 +1066,7 @@ class AppController extends Controller
                 'msg' => $this->get('translator')->trans('appController.msg.putPageAction')));
         }
         
+        
 /* Returns data about the app that may have been changed by another user working on the same app
    see loadBuilderVariablesAction for more on what happens here */
 
@@ -1106,6 +1107,92 @@ class AppController extends Controller
             'app_info' => $app_info));
 
     }
+    
+    
+    /**
+ * This is the function that stores a page in the app
+ * @param type $app_id
+ * @param type $page_num
+ */
+    public function putIconAction (Request $request, $app_id, $page_num, $old_checksum) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+
+        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+        }
+
+//create the path to the file to open
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+        
+//create file management object
+	    $file_mgmt = $this->get('file_management');
+        $fileManager = $this->get('file_management')->setApp($app);
+        $fileManager->setConfig('app');
+
+        $temp_data = $request->request->all();
+        $html = $temp_data["html"];
+        $page_thumbnail = $temp_data["pageThumbnail"];
+        $res = $fileManager->savePage(intval($page_num), $html);
+        if ($res === false) {
+            return new JsonResponse(array(
+                'result' => 'failure',
+                'msg' => $this->get('translator')->trans('appController.msg.putPageAction')));
+        }
+        
+        
+/* Returns data about the app that may have been changed by another user working on the same app
+   see loadBuilderVariablesAction for more on what happens here */
+
+//we now use the file management plugin to obtain the checksum, 
+//for this checksum we exclude the current file as we are the only ones who can change it
+        $current_page_file_name = $fileManager->getPageFileName($app_path, $page_num);
+        $mlab_app_checksum = $fileManager->getAppMD5($app, $current_page_file_name);
+        $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
+
+//we do not scan for further changes if no files were changed
+        if ($mlab_app_checksum != $old_checksum) {
+            $mlab_app_data["page_names"] = $fileManager->getPageIdAndTitles($app);
+            $app_info = array(
+                "result" => "file_changes",
+    			"mlab_app" => $mlab_app_data,
+                "mlab_app_checksum" => $mlab_app_checksum
+            );
+        } else {
+            $app_info = array(
+                "result" => "no_file_changes",
+    			"mlab_app" => $mlab_app_data
+            );
+        }
+
+        $app->setUpdated(new \DateTime());
+        $em->flush();
+            
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_update_table_of_contents',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]]);
+
+        return new JsonResponse(array(
+            'result' => 'success',
+            'app_info' => $app_info));
+
+    }
+    
     
     /**
      * Removes all locks by the specified uid
