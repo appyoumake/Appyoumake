@@ -671,7 +671,7 @@ var Mlab_dt_ui = {
                         </div>
                     </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}" data-page-thumb="ccc">
-                        <div class="preview"><img src="pageThumbnail/00${pageTOC.pageNumber}.jpg"></div>
+                        <div class="preview"><img src="/mlab_elements/apps/${mlab.dt.app.path}/1/pageThumbnail/00${pageTOC.pageNumber}.jpg"></div>
                         <div class="page-name">
                             <p title="${pageTOC.title}">${pageTOC.title}</p>
                             <button data-action-click="editPageTitle" data-page-num="${pageTOC.pageNumber}">
@@ -842,7 +842,7 @@ var Mlab_dt_ui = {
                     class="display-alt"
                     data-type="index">
                     <div data-action-click="openPage" data-page-num="${index.pageNumber}">
-                        <div class="preview"><img src="pageThumbnail/index.jpg"></div>
+                        <div class="preview"><img src="/mlab_elements/apps/${mlab.dt.app.path}/1/pageThumbnail/index.jpg"></div>
                         <div class="page-name">
                             <p title="${index.title}">${index.title}</p>
                             <button data-action-click="editPageTitle" data-page-num="${index.pageNumber}">
