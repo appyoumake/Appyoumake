@@ -1058,6 +1058,7 @@ class AppController extends Controller
 
         $temp_data = $request->request->all();
         $html = $temp_data["html"];
+        $page_thumbnail = $temp_data["pageThumbnail"];
         $res = $fileManager->savePage(intval($page_num), $html);
         if ($res === false) {
             return new JsonResponse(array(

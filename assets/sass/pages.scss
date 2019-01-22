@@ -5,6 +5,11 @@
 
     img {
         border: 1px solid $dark-color;
+        width: 100px;
+        height: 150px;
+        .selectedPage {
+        border: 3px solid $primary-color;
+        }
     }
 
     .preview {

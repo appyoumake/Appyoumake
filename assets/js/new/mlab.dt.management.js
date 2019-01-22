@@ -720,6 +720,14 @@ Mlab_dt_management.prototype = {
         }
 
         curr_el.addClass("mlab_current_component");
+  debugger;      
+//generates a thumbnail of the page
+        var pageThumbnail = this.capture_page_icon();
+        
+        if (pageThumbnail === "undefined" || pageThumbnail === null){
+//set the thumbnail to a white image
+            pageThumbnail = "data:image/octet-stream;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCACZAGADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
+        }
 
 //finally we submit the data to the server, the callback function will further execute the function specified in the fnc argument, if any
         var that = this;
@@ -727,6 +735,9 @@ Mlab_dt_management.prototype = {
 
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
             that.parent.counter_saving_page--;
+       
+            //kan det gjøres her??? TODO - så det blir i callbacken...
+            //var pageThumbnail = that.capture_page_icon();
 
             if (data.result == "success") {
                 that.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.saved.page"], false);
@@ -1447,6 +1458,23 @@ Mlab_dt_management.prototype = {
             });
             
         }
+    },
+    
+    /*
+    * Captures a page and saves it as a icon for displaying in the page list
+    */
+    capture_page_icon : function () {
+        
+        //mlab_canvas_page_thumbnail
+        return html2canvas((document.querySelector("#mlab_editor_chrome")), { scale: 0.15}).then(function (canvPageThumb) {
+
+            // Get base64URL
+            var base64URL = canvPageThumb.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
+
+            console.log("html2canvas: " + base64URL);
+            
+            //return base64URL;
+        });
     }
 
 }// end management.prototype
