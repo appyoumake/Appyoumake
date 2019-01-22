@@ -69,6 +69,11 @@ app_builder_page_save:
     defaults: { _controller: "SinettMLABBuilderBundle:App:putPage" }
     requirements: { methods: post }
 
+app_builder_page_thumb_save:
+    path:   /builder/{app_id}/{page_num}/page_thumb_put
+    defaults: { _controller: "SinettMLABBuilderBundle:App:putThumbnail" }
+    requirements: { methods: post }
+
 app_builder_page_new:
     path:   /builder/{app_id}/{uid}/page_new/{redirect_to_open}/{title}
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage", redirect_to_open: 1, title: "" }

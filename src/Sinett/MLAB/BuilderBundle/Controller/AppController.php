@@ -873,6 +873,7 @@ class AppController extends Controller
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
+                                        "page_thumb_save" => $this->generateUrl('app_builder_page_thumb_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_update_config" => $this->generateUrl('app_builder_component_update_config',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'page_num' => '_PAGENUM_', 'func_name' => '_FUNCNAME_')),
@@ -1058,7 +1059,6 @@ class AppController extends Controller
 
         $temp_data = $request->request->all();
         $html = $temp_data["html"];
-        $page_thumbnail = $temp_data["pageThumbnail"];
         $res = $fileManager->savePage(intval($page_num), $html);
         if ($res === false) {
             return new JsonResponse(array(
@@ -1109,12 +1109,12 @@ class AppController extends Controller
     }
     
     
-    /**
- * This is the function that stores a page in the app
+/**
+ * Stores page preview thumbnails for individual pages
  * @param type $app_id
  * @param type $page_num
  */
-    public function putIconAction (Request $request, $app_id, $page_num, $old_checksum) {
+    public function putThumbnailAction (Request $request, $app_id, $page_num) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1133,63 +1133,38 @@ class AppController extends Controller
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
 
-//create the path to the file to open
-        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+        $page_num = intval($page_num);
         
-//create file management object
-	    $file_mgmt = $this->get('file_management');
-        $fileManager = $this->get('file_management')->setApp($app);
-        $fileManager->setConfig('app');
+//create the path to the file to save to
+        $file_app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+//Make a pageThumbnail dir if not existing
+        if (!is_dir($file_app_path . 'pageThumbnail/')) {
+// dir doesn't exist, make it
+            mkdir($file_app_path . 'pageThumbnail/');
+        }
 
+//get thumbnail
         $temp_data = $request->request->all();
-        $html = $temp_data["html"];
-        $page_thumbnail = $temp_data["pageThumbnail"];
-        $res = $fileManager->savePage(intval($page_num), $html);
-        if ($res === false) {
-            return new JsonResponse(array(
-                'result' => 'failure',
-                'msg' => $this->get('translator')->trans('appController.msg.putPageAction')));
-        }
+        $pageThumbnail = $temp_data["pageThumbnail"];
         
-        
-/* Returns data about the app that may have been changed by another user working on the same app
-   see loadBuilderVariablesAction for more on what happens here */
-
-//we now use the file management plugin to obtain the checksum, 
-//for this checksum we exclude the current file as we are the only ones who can change it
-        $current_page_file_name = $fileManager->getPageFileName($app_path, $page_num);
-        $mlab_app_checksum = $fileManager->getAppMD5($app, $current_page_file_name);
-        $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
-
-//we do not scan for further changes if no files were changed
-        if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $fileManager->getPageIdAndTitles($app);
-            $app_info = array(
-                "result" => "file_changes",
-    			"mlab_app" => $mlab_app_data,
-                "mlab_app_checksum" => $mlab_app_checksum
-            );
+//get path to save to, different for first page (index.html)
+        if ($page_num === 0) {
+            $file_img_path = $file_app_path . "pageThumbnail/index.jpg";
         } else {
-            $app_info = array(
-                "result" => "no_file_changes",
-    			"mlab_app" => $mlab_app_data
-            );
+            $file_img_path = $file_app_path . 'pageThumbnail/' . substr("000" . $page_num, -3) . ".jpg";
         }
-
-        $app->setUpdated(new \DateTime());
-        $em->flush();
-            
-        $websocketService = $this->get('websocket_service');
-        $websocketService->send(['data' => [
-            '_type' => 'app_update_table_of_contents',
-            '_feedId' => 'app_' . $app->getUid(),
-            '_sender' => $request->get('_sender'),
-            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
-        ]]);
-
+        
+//TODO: error checking and tell others icon has changed
+//save file as jpg
+    // split the string on commas
+    // $data[ 0 ] == "data:image/png;base64"
+    // $data[ 1 ] == <actual base64 string>
+        $data = explode( ',', $pageThumbnail );
+        
+        file_put_contents ($file_img_path, base64_decode( $data[ 1 ] ));
         return new JsonResponse(array(
             'result' => 'success',
-            'app_info' => $app_info));
+            'pageNum' => $page_num));
 
     }
     

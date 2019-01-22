@@ -728,12 +728,10 @@ Mlab_dt_management.prototype = {
 //if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
             that.parent.counter_saving_page--;
        
-            //kan det gjøres her??? TODO - så det blir i callbacken...
-            //var pageThumbnail = that.capture_page_icon();
-
             if (data.result == "success") {
-                //generates a thumbnail of the page
-                this.capture_page_icon();
+
+//generates a thumbnail of the page
+                that.capture_page_icon(app_id, page_num);
                 
                 that.parent.utils.update_status("temporary", _tr["mlab.dt.management.js.update_status.saved.page"], false);
                 that.parent.flag_dirty = false;
@@ -1458,8 +1456,8 @@ Mlab_dt_management.prototype = {
     /*
     * Captures a page and saves it as a icon for displaying in the page list
     */
-    capture_page_icon : function () {
-        
+    capture_page_icon : function (app_id, page_num) {
+        var that = this;
         //mlab_canvas_page_thumbnail
         html2canvas((document.querySelector("#mlab_editor_chrome")), { scale: 0.15}).then(function (canvPageThumb) {
 
@@ -1468,16 +1466,27 @@ Mlab_dt_management.prototype = {
 
             console.log("html2canvas: " + base64URL);
             
-            //return base64URL;
-            
-            if (pageThumbnail === "undefined" || pageThumbnail === null){
-//set the thumbnail to a white image
+//set the thumbnail to a white image if there is a problem with generating the thumbnail
+            if (!base64URL){
                 console.log("html2canvas: was empty");
-                return pageThumbnail = "data:image/octet-stream;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCACZAGADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
-            } else {
-                console.log("html2canvas: " + base64URL);
-                return base64URL;
+                base64URL = "data:image/octet-stream;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCACZAGADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
             }
+            
+//finally we send the thumbnail to the servere where it is saved, when it is saved we update the preview thumbnail here
+            var url = that.parent.urls.page_thumb_save.replace("_ID_", app_id);
+            url = url.replace("_PAGE_NUM_", page_num);
+            $.post( url, {pageThumbnail: base64URL, _sender: that.parent.uid}, function( data ) {
+
+//if this counter = 0 then noone else have called it in the meantime and it is OK to restart timer
+                if (data.result == "success") {
+                    if (data.pageNum == 0) {
+                        $(".nav-pages").find("[data-page-num='" + data.pageNum + "']").find("img").attr("src", "pageThumbnail/index.jpg?timestamp=" + new Date().getTime());
+                    } else {
+                        $(".nav-pages").find("[data-page-num='" + data.pageNum + "']").find("img").attr("src", "pageThumbnail/" + ("000" + data.pageNum).slice(-3) + ".jpg?timestamp=" + new Date().getTime());
+                    }
+                }
+            });
+        
         });
     }
 

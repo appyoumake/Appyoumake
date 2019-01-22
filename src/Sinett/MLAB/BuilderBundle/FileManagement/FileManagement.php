@@ -812,17 +812,9 @@ class FileManagement {
             $title = $pageTOC['title'];
         }
         
-        //Make a pageThumbnail dir if not existing
-        if (!is_dir($file_app_path . 'pageThumbnail/')) {
-            // dir doesn't exist, make it
-            mkdir($file_app_path . 'pageThumbnail/');
-        }
-
 //get path of file to save
         if ($pageNum === 0) {
             $file_path = $file_app_path . "index.html";
-            $file_img_path = $file_app_path . "pageThumbnail/index.png";
-            file_put_contents ($file_img_path, $html);
             return file_put_contents ($file_path, $html);
         } else {
             $template_page_path = $this->app->getTemplate()->calculateFullPath($this->config["paths"]["template"]) . $this->config["app"]["new_page"];
@@ -830,12 +822,10 @@ class FileManagement {
 //We use this code to save to cache directory as well, if so we will have a complete path, not a page number
             if(is_numeric($pageNum)) {
                 $file_path = $file_app_path . substr("000" . $pageNum, -3) . ".html";
-                $file_img_path = $file_app_path . 'pageThumbnail/' . substr("000" . $pageNum, -3) . ".png";
             } else {
                 $file_path = $pageNum;
             }
             
-            file_put_contents ($file_img_path, "tester ut dette");
             return file_put_contents ($file_path, $page);
         }
     }
