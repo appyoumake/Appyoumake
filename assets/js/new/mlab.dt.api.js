@@ -1240,7 +1240,7 @@ Mlab_dt_api.prototype = {
      
                 var w = (device_width * times);
                 var h = (w / aspect_ratio[0]) * aspect_ratio[1];
-                $(this).css( {"width": w + "px", "height": h + "px"} );
+                $(this).css( {"width": w + "px", "height": h + "px", "display": "contents"} );
                 
                 if (typeof that.parent.parent.components[comp_id] != "undefined" && typeof that.parent.parent.components[comp_id].code != "undefined" && typeof that.parent.parent.components[comp_id].code.onResize != "undefined") {
                     that.parent.parent.components[comp_id].code.onResize(this);
