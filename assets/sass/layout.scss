@@ -21,7 +21,8 @@ body {
 .header {
     height: $header-height; 
     display: flex;
-    margin-bottom: #{$toolbox-height + 1px};
+    margin-bottom: #{$toolbox-height + 1px}; 
+    margin-top: #{$toolbox-height + 1px};
     z-index: 1000; /* to set top position of toolx-menu*/
     justify-content: center;
 
@@ -40,9 +41,10 @@ body {
 }
 
 .main {
-    height: calc(100% - #{$header-height});
+    height: calc(100% - (#{$header-height} + #{$toolbox-height + 1px}));
     display: flex;
     border-top: solid 1px $border-color;
+    margin-top: #{$toolbox-height + 1px};
 }
 
 .nav-pages {

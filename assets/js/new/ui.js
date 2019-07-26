@@ -649,6 +649,7 @@ var Mlab_dt_ui = {
         },
 
         page: function (pageTOC, i, level) {
+            var pg_num_url = ("000" + pageTOC.pageNumber).slice(-3) + ".jpg?timestamp=" + new Date().getTime();
             return `
                 <li
                     class="display-alt"
@@ -671,7 +672,7 @@ var Mlab_dt_ui = {
                         </div>
                     </div>
                     <div data-action-click="openPage" data-page-num="${pageTOC.pageNumber}" data-page-thumb="ccc">
-                        <div class="preview"><img src="/mlab_elements/apps/${mlab.dt.app.path}/1/pageThumbnail/00${pageTOC.pageNumber}.jpg"></div>
+                        <div class="preview"><img src="/mlab_elements/apps/${mlab.dt.app.path}/1/pageThumbnail/${pg_num_url}"></div>
                         <div class="page-name">
                             <p title="${pageTOC.title}">${pageTOC.title}</p>
                             <button data-action-click="editPageTitle" data-page-num="${pageTOC.pageNumber}">
