@@ -79,7 +79,7 @@ function Mlab_api () {
     $.ajaxSetup({ cache: false });
     $.get(path + "js/include_comp.txt")
             .done(function(data) {
-                    var components = data.split("\n");
+                    var components = data.split("\n").filter(function(el) {return el.trim().length != 0});
                     var componentsLength = components.length;
                     var componentsAdded = 0;
 

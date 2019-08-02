@@ -18,56 +18,6 @@ class mlab_ct_index {
         'displayChapterPageTitle' => true
     ];
     
-    /**
-     * Simple function to parse a page and look for/extract the following
-     * 1 - a chapter component, if found it returns thw following
-     *     1.1 name 
-     *     1.2 level (from stored variables
-     * 2 - page title 
-     * @param type $page
-     * @return int|string
-     */
-    private function findChapterHeading($page, $page_id, $def_title) {
-        $page_info = array();
-        $doc = new \DOMDocument("1.0", "utf-8");
-        libxml_use_internal_errors(true);
-        $doc->loadHTMLFile($page);
-        libxml_clear_errors();
-        $xpath = new DOMXPath($doc);
-        
-//check if there is a chapter heading here
-        $chapter = $xpath->query("//div[@data-mlab-type='chapter']");
-        if ($chapter->length > 0 ) {
-            $page_info["chapter"] = $chapter->item(0)->firstChild->textContent;
-            foreach ($chapter[0]->childNodes as $child_element) {
-                $php_class = get_class($child_element);
-                $class_pos = strpos($child_element->getAttribute("class"), "mlab_storage");
-                if ($php_class == "DOMElement" && $class_pos !== false) {
-                    $vars = json_decode($child_element->textContent, true);
-                    if (isset($vars["level"])) {
-                        $page_info["level"] = $vars["level"];
-                    } else {
-                        $page_info["level"] = $this->LEVEL_1;
-                    }
-                }
-            }
-            
-        } else {
-            $page_info["chapter"] = false;
-            $page_info["level"] = false;
-        }
-        
-        $title = $xpath->query("//title");
-        if ($title->length > 0 ) {
-            $page_info["title"] = $title->item(0)->textContent;
-        } else {
-            $page_info["title"] = $def_title;
-        }
-        
-        $page_info["page_id"] = $page_id;
-        
-        return $page_info;
-    }
 /**
  * at compile time we need to scan all the pages in the app, for each of these pages we extract the title of the page and any chapter components.
  * In the variables sent to us (this is from the JSON encoded variables stored at design time) we check to see if an index should be 
@@ -82,21 +32,11 @@ class mlab_ct_index {
         $index[] = [
             'level' => 0,
             'page_id' => 0,
-            'chapter' => $app_config["tableOfContents"]['index']['title'],
+            'title' => $app_config["tableOfContents"]['index']['title'],
+            'chapter' => false,
             'children' => []
         ];
         
-/*
- * now we process all the other files in the app
- * the steps are as follows: 
- * 1 - Check if there is a chapter heading on the page
- * 2 - Extract page title
- * 3 - Build multi-dim array which is [chapter]{[page|another chapter]}{[page|another chapter]}[page]
- */
-        // foreach ($app_config["page_order"] as $file) {
-        //     $index[] = $this->findChapterHeading($app_path . $file, intval($file), "Page " . intval($file));
-        // }
-
 //now we generate the index, we always add app title as top level and link to first page 
         $html = "    <h2><a class='mc_text mc_display mc_list mc_link mc_internal " . $this->variables['textsize'] . "' onclick='mlab.api.navigation.pageDisplay(0); return false;'>" . $app_config["title"] . "</a></h2>\n";
         
@@ -116,31 +56,20 @@ class mlab_ct_index {
 //this function returns the current list of pages in the file conf.json (see ->tableOfContents->active variable)
     protected function activeTree($tableOfContents, $app_title) {
         $tree = [];
-
         $currentParent = [];
         $currentLevel = 1;
         
-        
-//if first item is not a section - make a face header and 
-//$this->variables['style'] == 'summary' - so face one first section with app name (line 143)
-
-/***REMOVE        if ($this->variables['style'] == 'summary' && $tableOfContents[0]['type'] != "section") {
-            array_unshift($tableOfContents, array( 'level' => $currentLevel
-                                                   'page_id' => null,
-                                                   'chapter' => $app_title;
-                                                   'children'] = [];
-                                                    ));
-        } **/
-        
+//here we loop through the table of contents, we manipulate it directly 
+//by using & in front of foreach avrable which makes it a pointer, not a copy of the data
         foreach ($tableOfContents as &$item) {
+            
+//for index of style summary we exclude the pages and just use section headlines
             if($item['type'] == 'page' && $this->variables['style'] != 'summary') {
-                // modify item
-                $item = [
-                    'chapter' => false,
-                    'level' => $currentLevel,
-                    'title' => $item['title'],
-                    'page_id' => $item['pageNumber'],
-                ];
+                
+// modify item
+                $item['chapter'] = false;
+                $item['level'] = $currentLevel;
+                $item['page_id'] = $item['pageNumber'];
 
                 if(isset($currentParent[$currentLevel])) {
                     $currentParent[$currentLevel]['children'][] = $item;
@@ -150,9 +79,9 @@ class mlab_ct_index {
                 } else {
                     $tree[] = $item;
                 }
+                
             } elseif($item['type'] == 'section') {
                 $item['chapter'] = $item['title'];
-                $item['level'] = $item['level'];
                 $item['page_id'] = null;
                 $item['children'] = [];
 
@@ -188,13 +117,14 @@ class mlab_ct_index {
         return $html;
     }
 
-    
+//first param is array of one or more pages and possible children for these pages
     protected function foldedIndexLevelHtml($index) {
         $html = '';
         if ($index["chapter"]) { 
             $html .= "<details>\n";
             $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $index["page_id"] . '); return false;}">' . trim($index["chapter"]) . "</summary>\n";
             
+//TODO
             if($this->variables['displayChapterPageTitle']){
                 $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["chapter"] . "</a></p>\n";
             }
