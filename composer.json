@@ -23,7 +23,7 @@
         "sensio/generator-bundle": "~3.1.7",
         "incenteev/composer-parameter-handler": "~2.1.2",
         "friendsofsymfony/user-bundle": "dev-master",
-        "gedmo/doctrine-extensions": "dev-master",
+        "gedmo/doctrine-extensions": "~2.4.37",
         "symfony/yaml": "~3.4.17",
         "willdurand/js-translation-bundle": "~2.6.6",
         "symfony/webpack-encore-pack": "^1.0",
