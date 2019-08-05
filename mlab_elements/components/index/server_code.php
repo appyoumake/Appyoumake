@@ -30,11 +30,13 @@ class mlab_ct_index {
 
 //we do NOT allow sections before index page, so this is always first.
         $index[] = [
-            'level' => 0,
+            'level' => 1,
+            'type' => 'page',
             'page_id' => 0,
+            'page_number' => 0,
             'title' => $app_config["tableOfContents"]['index']['title'],
             'chapter' => false,
-            'children' => []
+            'filename' => "index.html"
         ];
         
 //now we generate the index, we always add app title as top level and link to first page 
@@ -122,9 +124,8 @@ class mlab_ct_index {
         $html = '';
         if ($index["chapter"]) { 
             $html .= "<details>\n";
-            $html .= '    <summary onclick="if($(this).parent().is(\'[open]\')) {mlab.api.navigation.pageDisplay(' . $index["page_id"] . '); return false;}">' . trim($index["chapter"]) . "</summary>\n";
+            $html .= '    <summary>' . trim($index["chapter"]) . "</summary>\n";
             
-//TODO
             if($this->variables['displayChapterPageTitle']){
                 $html .= "    <p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $index["page_id"] . "); return false;'>" . $index["chapter"] . "</a></p>\n";
             }
