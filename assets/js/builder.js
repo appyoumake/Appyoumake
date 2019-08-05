@@ -14,7 +14,7 @@ require('script-loader!./jquery.form.js');
 require('script-loader!./jquery.uploadfile-4.0.11.js');
 require('script-loader!./jquery.qtip.nightly.js');
 require('script-loader!./jquery.ddslick-2.0.0.js');
-require('script-loader!./jquery.qrcode-0.12.0.js');
+require('script-loader!./jquery.qrcode-0.17.0.js');
 require('script-loader!./jquery.contextmenu-1.0.0.js');
 require('script-loader!./spin.js');
 require('script-loader!./jquery.spin.js');
