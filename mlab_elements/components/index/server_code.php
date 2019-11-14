@@ -113,16 +113,17 @@ class mlab_ct_index {
     protected function foldedListHtml($indexes) {
         $html = "<div class='mc_container mc_index mc_list " . $this->variables['textsize'] . "'>\n";
         foreach ($indexes as $index) {
-            $html .= $this->foldedIndexLevelHtml($index);
+            $html .= $this->foldedIndexLevelHtml($index, 1);
         }
         $html .= "</div>";
         return $html;
     }
 
 //first param is array of one or more pages and possible children for these pages
-    protected function foldedIndexLevelHtml($index) {
+//second param tracks previous level. If we go back to same level (and not higher) we do NOT insert a new <details> tag
+    protected function foldedIndexLevelHtml($index, $prev_level) {
         $html = '';
-        if ($index["chapter"]) { 
+        if ($index["chapter"]) {
             $html .= "<details>\n";
             $html .= '    <summary>' . trim($index["chapter"]) . "</summary>\n";
             
@@ -132,7 +133,7 @@ class mlab_ct_index {
 
             if(isset($index['children'])) {
                 foreach ($index['children'] as $child) {
-                    $html .= $this->foldedIndexLevelHtml($child);
+                    $html .= $this->foldedIndexLevelHtml($child, $prev_level + 1);
                 }
             }
 
