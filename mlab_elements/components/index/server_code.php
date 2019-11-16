@@ -110,18 +110,39 @@ class mlab_ct_index {
         return $tree;
     }
 
+/***
+ * This function loops through the list of top level index items and generates a foldable item (details/summray tags) 
+ * to display in HTML.
+ */
     protected function foldedListHtml($indexes) {
+        $skip = false;
         $html = "<div class='mc_container mc_index mc_list " . $this->variables['textsize'] . "'>\n";
-        foreach ($indexes as $index) {
+        foreach ($indexes as $key => $index) {
+            if ($skip) {
+                $skip = false;
+                continue;
+            }
             $html .= $this->foldedIndexLevelHtml($index, 1);
+// HACK: Here we look ahead and see if the next item is a chapter with no title. This means we should 
+//add it to the current item so it is correctly continuing the outline at the same level as before and does not add a new top level item
+//required due to the way sections are added/edited in the Mlab designer part.
+//This hack assumes the remaining pages have no child pages...
+            $next_key = $key + 1;
+            if ( array_key_exists($next_key, $indexes) && $indexes[$next_key]["type"] === "section" && trim($indexes[$next_key]["chapter"]) === "" ) {
+                $temp_html = "";
+                foreach ($indexes[$next_key]['children'] as $child) {
+                    $temp_html .= "<p><a class='mc_text mc_display mc_list mc_link mc_internal' onclick='mlab.api.navigation.pageDisplay(" . $child["page_id"] . "); return false;'>" . $child["title"] . "</a></p>\n";                
+                }
+                $html = substr_replace($html, $temp_html, -11, 0);
+                $skip = true;
+            }
         }
         $html .= "</div>";
         return $html;
     }
 
 //first param is array of one or more pages and possible children for these pages
-//second param tracks previous level. If we go back to same level (and not higher) we do NOT insert a new <details> tag
-    protected function foldedIndexLevelHtml($index, $prev_level) {
+    protected function foldedIndexLevelHtml($index) {
         $html = '';
         if ($index["chapter"]) {
             $html .= "<details>\n";
@@ -133,7 +154,7 @@ class mlab_ct_index {
 
             if(isset($index['children'])) {
                 foreach ($index['children'] as $child) {
-                    $html .= $this->foldedIndexLevelHtml($child, $prev_level + 1);
+                    $html .= $this->foldedIndexLevelHtml($child);
                 }
             }
 
