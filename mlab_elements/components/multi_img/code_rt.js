@@ -15,7 +15,7 @@
         $(el).find("[data-mlab-ct-multi_img-role='display'] > img").on( "click", function() {
             var target = $( this ),
                 image_name = target.attr( "src" ),
-                short = image_name.substring(6, image_name.length - 37),
+                short = new String(image_name).substring(image_name.lastIndexOf('/') + 1).replace(/\W/g, '');
                 img = '<img src="' + image_name + '" alt="' + short + '" class="photo">',
                 popup = '<div data-role="popup" id="popup-' + short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="15"></div>';
 
@@ -53,7 +53,7 @@
             // 68px: 2 * 15px for top/bottom tolerance, 38px for the header.
             var maxHeight = $( window ).height() - 68 + "px";
 
-            $( "img.photo", this ).css( "max-height", maxHeight );
+            $( "#popup-" + short ).css( "max-height", maxHeight );
         });
 
         // Remove the popup after it has been closed to manage DOM size
