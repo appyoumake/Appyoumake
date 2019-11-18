@@ -53,7 +53,7 @@
             // 68px: 2 * 15px for top/bottom tolerance, 38px for the header.
             var maxHeight = $( window ).height() - 68 + "px";
 
-            $( "#popup-" + short ).css( "max-height", maxHeight );
+            $( "img.photo", this ).css( "max-height", maxHeight );
         });
 
         // Remove the popup after it has been closed to manage DOM size
