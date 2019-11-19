@@ -1,6 +1,6 @@
 /*
     Function fired when page loads. Does the following:
-        - Assigns event handlers 
+        - Assigns event handlers
         - Moves to first image
         - Loads answers for the first image
     @param {DOM object} el Component element
@@ -15,23 +15,40 @@
         $(el).find("[data-mlab-ct-multi_img-role='display'] > img").on( "click", function() {
             var target = $( this ),
                 image_name = target.attr( "src" ),
-                short = new String(image_name).substring(image_name.lastIndexOf('/') + 1).replace(/\W/g, '');
-                img = '<img src="' + image_name + '" alt="' + short + '" class="photo">',
-                popup = '<div data-role="popup" id="popup-' + short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="15"></div>';
-
-            // Create the popup.
-            $( img )
-                .appendTo( $( popup )
-                .appendTo( $.mobile.activePage )
-                .popup() )
-                .toolbar();
+                img_height = target[0].naturalHeight,
+                img_width = target[0].naturalWidth,
+                header_height = $("[data-role='header']").height(),
+                zoom_height = $( window ).height() - (header_height + 10),
+                zoom_width = $( window ).width() - 20,
+                short = new String(image_name).substring(image_name.lastIndexOf('/') + 1).replace(/\W/g, ''),
+                img = '<img src="' + image_name + '" data-image-height="' + img_height + '" data-image-width="' + img_width + '" class="photo" height="' + zoom_height + '" >', // width="' + zoom_width + '"
+                popup = '<div data-role="popup" id="popup-' + 
+                        short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="' + 
+                        header_height + ',10,10,10" data-position-to="[data-role=\'header\']"></div>';
+// Create the popup window hosting the image
+            $( img ).appendTo( $( popup ).appendTo( $.mobile.activePage ).popup() );
 
 // Wait with opening the popup until the popup image has been loaded in the DOM.
 // This ensures the popup gets the correct size and position
             $( ".photo", "#popup-" + short ).load(function() {
+                var img = $( "#popup-" + short + " > img");
+                
 // Open the popup
                 $( "#popup-" + short ).popup( "open" );
-                $( "#popup-" + short + " > img").imgViewer2();
+                console.log("before imgv");
+                                
+                img.imgViewer2({
+                    onReady: function() {
+                        var orig_height = $( this.element[0] ).data("image-height"),
+                            orig_width = $( this.element[0] ).data("image-width"),
+                            img = $( "#popup-" + short + " > img"),
+                            width = img.width(),
+                            height = img.height(),
+                            zoom = orig_height / height;
+                        this.setZoom(4).panTo([0.5,0.5]);
+                    }
+                });
+                console.log("after imgv");
 // Clear the fallback
                 clearTimeout( fallback );
             });
@@ -41,19 +58,19 @@
             }, 2000);
         });
 
-        // Set a max-height to make large images shrink to fit the screen.
+// Set a max-height to make large images shrink to fit the screen.
         $( document ).on( "popupbeforeposition", ".ui-popup", function() {
+            console.log("before popup");
             var image = $( this ).children( "img" ),
                 height = image.height(),
                 width = image.width();
 
-            // Set height and width attribute of the image
-            $( this ).attr({ "height": height, "width": width });
+// Set height and width attribute of the popup
+            var maxHeight = $( window ).height() - ($("[data-role='header']").height() + 10);
+            $( this ).attr({ "height": maxHeight, "width": ($( window ).width() - 20) });
+            $( "img.photo", this ).css( "max-height", maxHeight + "px" );
+            console.log("after popup");
 
-            // 68px: 2 * 15px for top/bottom tolerance, 38px for the header.
-            var maxHeight = $( window ).height() - 68 + "px";
-
-            $( "img.photo", this ).css( "max-height", maxHeight );
         });
 
         // Remove the popup after it has been closed to manage DOM size
@@ -102,4 +119,3 @@
         var num_active = move_to.index() + 1;
         $(el).find("[data-mlab-ct-multi_img-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
     }
-        
