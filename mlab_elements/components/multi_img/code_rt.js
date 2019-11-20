@@ -35,20 +35,20 @@
                 
 // Open the popup
                 $( "#popup-" + short ).popup( "open" );
-                console.log("before imgv");
                                 
                 img.imgViewer2({
                     onReady: function() {
+                        debugger;
                         var orig_height = $( this.element[0] ).data("image-height"),
                             orig_width = $( this.element[0] ).data("image-width"),
                             img = $( "#popup-" + short + " > img"),
                             width = img.width(),
                             height = img.height(),
-                            zoom = orig_height / height;
-                        this.setZoom(4).panTo([0.5,0.5]);
+                            zoom = Math.max((orig_height / height), (orig_width / width), 1);
+                        this.setZoom(zoom).panTo([0.5,0.5]);
                     }
                 });
-                console.log("after imgv");
+                
 // Clear the fallback
                 clearTimeout( fallback );
             });
@@ -60,7 +60,7 @@
 
 // Set a max-height to make large images shrink to fit the screen.
         $( document ).on( "popupbeforeposition", ".ui-popup", function() {
-            console.log("before popup");
+            
             var image = $( this ).children( "img" ),
                 height = image.height(),
                 width = image.width();
@@ -69,7 +69,7 @@
             var maxHeight = $( window ).height() - ($("[data-role='header']").height() + 10);
             $( this ).attr({ "height": maxHeight, "width": ($( window ).width() - 20) });
             $( "img.photo", this ).css( "max-height", maxHeight + "px" );
-            console.log("after popup");
+            
 
         });
 
