@@ -80,6 +80,7 @@ and open the template in the editor.
 
 a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer {
     line-height: 1;
+    width: unset;
 }
 
 a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_correct {
@@ -115,4 +116,5 @@ a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_wrong {
     grid-auto-rows: 1fr;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: auto;
+    clear: both;
 }
