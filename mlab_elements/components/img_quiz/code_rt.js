@@ -73,12 +73,13 @@
         var container = $(el).find("[data-mlab-ct-img_quiz-role='display']"),
             curr_img = container.find(".active"),
             num_active = curr_img.index() + 1,
-            selected_index = this.selected_questions.indexOf(num_active);
+            selected_index = this.selected_questions.indexOf(num_active),
+            total_questions = this.selected_questions.length;
     
-        if (direction === 1 && selected_index === (this.selected_questions.length - 1)) {
+        if (direction === 1 && selected_index === (total_questions - 1)) {
             alert("Quiz finished");
             return;
-        } else if (direction === 1 && selected_index < (this.selected_questions.length - 1)) {
+        } else if (direction === 1 && selected_index < (total_questions - 1)) {
             selected_index++;
         } else if (direction === -1 && selected_index > 0) {
             selected_index--;
@@ -88,7 +89,8 @@
         var move_to = container.find("img:nth-child(" + this.selected_questions[selected_index] + ")");
         curr_img.removeClass("active");
         move_to.addClass("active");
-        $(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + this.selected_questions[selected_index] + ")").addClass("active").siblings().removeClass("active");
+        $(el).find("[data-mlab-ct-img_quiz-role='indicator']").text((selected_index + 1) + "/" + total_questions);
+        //$(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + this.selected_questions[] + ")").addClass("active").siblings().removeClass("active");
         this.displayAnswers(el);
     }
     
