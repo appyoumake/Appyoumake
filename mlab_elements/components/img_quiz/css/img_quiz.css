@@ -78,6 +78,11 @@ and open the template in the editor.
     position: relative;
 }
 
+a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer {
+    line-height: 1;
+    width: unset;
+}
+
 a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_correct {
     background-color:  #42cb8c;
     border-color:  #42cb8c;
@@ -104,4 +109,12 @@ a.mc_button.mc_entry.mc_input.mlab_ct_img_quiz_answer.mc_wrong {
     background-color: #627895 !important;
     color: white !important;
     width: calc(100% - 2em) !important;
+}
+
+[data-mlab-ct-img_quiz-role="display_answers"] {
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    clear: both;
 }

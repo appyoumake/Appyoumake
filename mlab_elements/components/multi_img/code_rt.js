@@ -11,7 +11,7 @@
         $(el).find("[data-mlab-ct-multi_img-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
         $(el).find("[data-mlab-ct-multi_img-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
 
-//from http://demos.jquerymobile.com/1.4.5/popup-dynamic/
+//code to display a zoom popup (partly from http://demos.jquerymobile.com/1.4.5/popup-dynamic/)
         $(el).find("[data-mlab-ct-multi_img-role='display'] > img").on( "click", function() {
             var target = $( this ),
                 image_name = target.attr( "src" ),
@@ -24,9 +24,10 @@
                 img = '<img src="' + image_name + '" data-image-height="' + img_height + '" data-image-width="' + img_width + '" class="photo" height="' + zoom_height + '" >', // width="' + zoom_width + '"
                 popup = '<div data-role="popup" id="popup-' + 
                         short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="' + 
-                        header_height + ',10,10,10" data-position-to="[data-role=\'header\']"></div>';
+                        header_height + ',5,10,5" data-position-to="[data-role=\'header\']"></div>';
 // Create the popup window hosting the image
-            $( img ).appendTo( $( popup ).appendTo( $.mobile.activePage ).popup() );
+            var temp_popup = $( img ).appendTo( $( popup ).appendTo( $.mobile.activePage ).popup() );
+            temp_popup.prev().on('swipeleft swiperight', function(e){e.stopPropagation();e.preventDefault();})
 
 // Wait with opening the popup until the popup image has been loaded in the DOM.
 // This ensures the popup gets the correct size and position

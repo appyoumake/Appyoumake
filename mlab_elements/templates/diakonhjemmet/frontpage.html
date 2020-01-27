@@ -21,8 +21,13 @@
 <script>
 		$(function(){
 			$("[data-role=header],[data-role=footer]").toolbar();
-            $( "[data-role='panel']" ).panel();
+            $("[data-role='panel']").panel();
 		});
+//small hack to ensure hamburgermenu is always visible
+        $( document ).on( "pagecontainershow", function ( event, ui ) {
+            $("[data-role='header']").width($("[data-role='page']").width())
+        });
+
 </script>
 
 <script>
