@@ -22,12 +22,13 @@
 		$(function(){
 			$("[data-role=header],[data-role=footer]").toolbar();
             $("[data-role='panel']").panel();
+            $( "[data-role='popup']" ).popup();
 		});
 //small hack to ensure hamburgermenu is always visible
-        $( document ).on( "pagecontainershow", function ( event, ui ) {
+/*        $( document ).on( "pagecontainershow", function ( event, ui ) {
             $("[data-role='header']").width($("[data-role='page']").width())
         });
-
+*/
 </script>
 
 <script>
@@ -58,10 +59,10 @@
 </head>
 <body id="mlab_page_body">
                <!-- MENU Panel -->
-        <div data-role="panel" id="mlab_menu_panel" data-position="right" data-display="overlay" data-theme="a" class="mlab_menu_panel mlab_hide_in_app_builder ui-panel ui-panel-position-right ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open">
+        <div data-role="popup" id="mlab_menu_panel" data-position="right" data-display="overlay" data-theme="a" class="mlab_menu_panel mlab_hide_in_app_builder ui-panel ui-panel-position-right ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open">
             <div class="ui-panel-inner">
                 <!-- Menu panel content goes here -->
-                <a href="#" data-rel="close"><span class="mlab_btn_close_menu"></span></a>
+                <a href="#" data-rel="back"><span class="mlab_btn_close_menu"></span></a>
                 <div class="mlab_menu_logo"></div>
             </div>
             <br>
@@ -74,7 +75,7 @@
             <div class="mlab_header_box">
                 <div class="mlab_logo"></div> 
                 <div class="mlab_header_name">%%APP_NAME%%</div>
-                <a href="#mlab_menu_panel" class="ui-link"><div class="mlab_btn_menu btn_secondary"></div></a>
+                <a href="#mlab_menu_panel" data-rel="popup" class="ui-link"><div class="mlab_btn_menu btn_secondary"></div></a>
             </div>
         </div><!-- /Header -->
         

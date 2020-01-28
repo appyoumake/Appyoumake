@@ -364,3 +364,10 @@ div[data-mlab-type] .mc_index details > summary:after {
 b {
     color: #627895;
 }
+
+/* fixes the popup menu position */
+.ui-popup-container {
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+}
