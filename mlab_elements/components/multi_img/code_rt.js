@@ -27,8 +27,7 @@
                         header_height + ',5,10,5" data-position-to="[data-role=\'header\']"></div>';
 // Create the popup window hosting the image
             var temp_popup = $( img ).appendTo( $( popup ).appendTo( $.mobile.activePage ).popup() );
-            $("#" + temp_popup.parent().attr("id") + "-screen").on('swipeleft swiperight', function(e){e.stopPropagation();e.preventDefault();})
-            //temp_popup.prev().on('swipeleft swiperight', function(e){e.stopPropagation();e.preventDefault();})
+            temp_popup.parent().on('swipeleft swiperight', function(e){e.stopPropagation();e.preventDefault();})
 
 // Wait with opening the popup until the popup image has been loaded in the DOM.
 // This ensures the popup gets the correct size and position
