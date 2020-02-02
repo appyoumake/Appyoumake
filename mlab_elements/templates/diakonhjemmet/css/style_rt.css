@@ -366,7 +366,7 @@ b {
 }
 
 /* fixes the popup menu position */
-.ui-popup-container {
+#mlab_menu_panel-popup {
     top: 0 !important;
     right: 0 !important;
     left: auto !important;
