@@ -56,7 +56,6 @@
                                 
                 img.imgViewer2({
                     onReady: function() {
-                        debugger;
                         var orig_height = $( this.element[0] ).data("image-height"),
                             orig_width = $( this.element[0] ).data("image-width"),
                             img = $( "#popup-" + short + " > img"),
@@ -77,7 +76,7 @@
         });
 
 // Set a max-height to make large images shrink to fit the screen.
-        $( document ).on( "popupbeforeposition", ".ui-popup", function() {
+        $( document ).on( "popupbeforeposition", ".ui-popup:not(.mlab_menu_panel)", function() {
             
             var image = $( this ).children( "img" ),
                 height = image.height(),
@@ -92,7 +91,7 @@
         });
 
         // Remove the popup after it has been closed to manage DOM size
-        $( document ).on( "popupafterclose", ".ui-popup", function() {
+        $( document ).on( "popupafterclose", ".ui-popup:not(.mlab_menu_panel)", function() {
             $( this ).remove();
         });
 
