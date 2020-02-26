@@ -24,7 +24,9 @@
                 img = '<img src="' + image_name + '" data-image-height="' + img_height + '" data-image-width="' + img_width + '" class="photo" height="' + zoom_height + '" >', // width="' + zoom_width + '"
                 popup = '<div data-role="popup" id="popup-' + 
                         short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="' + 
-                        header_height + ',5,10,5" data-position-to="[data-role=\'header\']"></div>';
+                        header_height + ',5,10,5" data-position-to="[data-role=\'header\']">' +
+                        '<a id="mlab_zoom_close" href="#" data-rel="back"><span class="mlab_btn_close_menu"></span></a>' +
+                        '</div>';
 // Create the popup window hosting the image
             var temp_popup = $( img ).appendTo( $( popup ).appendTo( $.mobile.activePage ).popup() );
             temp_popup.parent().on('swipeleft swiperight', function(e){e.stopPropagation();e.preventDefault();})
@@ -46,6 +48,9 @@
                             height = img.height(),
                             zoom = Math.max((orig_height / height), (orig_width / width), 1);
                         this.setZoom(zoom).panTo([0.5,0.5]);
+                        
+//hide the hamburger menu
+                        $("#mlab_hamburger_menu").hide();
                     }
                 });
                 
@@ -75,6 +80,8 @@
 
         // Remove the popup after it has been closed to manage DOM size
         $( document ).on( "popupafterclose", ".ui-popup:not(.mlab_menu_panel)", function() {
+//show the hamburger menu
+            $("#mlab_hamburger_menu").show();
             $( this ).remove();
         });
 

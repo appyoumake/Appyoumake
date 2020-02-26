@@ -371,3 +371,13 @@ b {
     right: 0 !important;
     left: auto !important;
 }
+
+/* display the X close for zoomed images */
+.ui-popup-container.ui-popup-active .ui-popup.ui-overlay-shadow a#mlab_zoom_close {
+    display: block;
+    margin-top: -18px;   
+}
+
+.ui-popup-container.ui-popup-active .ui-popup.ui-overlay-shadow a#mlab_zoom_close span {
+    background-image: url(./img/exit_zoom.svg);
+}
