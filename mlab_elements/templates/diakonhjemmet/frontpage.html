@@ -41,6 +41,8 @@
      */
     function mlabInitialiseApp() {
         mlab.api.navigation.initialise(0, %%MLAB_CT_FUNC_GETPAGEORDER%%);
+        $.mobile.hidePageLoadingMsg();
+        
     };
   
     $(document).on('pagecreate', '#mlab_index_page', function(e) {
