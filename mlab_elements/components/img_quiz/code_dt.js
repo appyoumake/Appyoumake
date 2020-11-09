@@ -1,10 +1,27 @@
 //image and text component, inherits from img component	
+   var component = this;
    
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
+    this.onLoad = function (el) {
         var that = this;
         var that_el = el;
         this.displayAnswers(el);
+        var pasteConainer = mlab.dt.api.pasteImageReader(function(results) {
+            var url = mlab.dt.urls.component_upload_file
+                    .replace("_APPID_", mlab.dt.app.id)
+                    .replace("_COMPID_", component.config.name);
+
+            $.ajax({
+                url: url,
+                data: {image: results.dataURL, name: results.name},
+                type: 'POST',
+                success: function( json ) {
+                    component.cbAddImage(el, json.urls[0]);
+                }
+            });
+        });
+
+        el.find(".mlab_ct_img_quiz_carousel").prepend(pasteConainer)
     };
 
 //we remove answers for any quizzes before we save, they are generated on the fly at runtime and design time
@@ -14,9 +31,34 @@
         answer_container.html("");
         local_el.find("img").removeClass("active").first().addClass("active");
         local_el.find("span").removeClass("active").first().addClass("active");
+        local_el.find(".paste-container").remove();
+
         return local_el[0].outerHTML;
     };
 
+/**
+     * Callback function for MLAB API to set image selected
+     * As this is a multi-image control we add the images every time
+     * @param {type} el
+     * @param {type} img_url
+     * @returns {undefined}
+     */
+    this.cbAddImage = function(el, img_url) {
+        var config_name = $(el).data("mlab-type");
+        var guid = mlab.dt.api.getGUID();
+        var container = $(el).find("[data-mlab-ct-" + config_name + "-role='display']");
+        var indicator = $(el).find("[data-mlab-ct-" + config_name + "-role='indicator']");
+        container.css("background-image", "");
+        container.find("img").removeClass("active");
+        $("<img src='" + img_url + "' data-mlab-ct-" + config_name + "-id='" + guid + "' data class='active'>").appendTo(container);
+        var img_count = container.find("img").length;
+        var num_active = container.find(".active").index();
+        indicator.attr("data-mlab-ct-" + config_name + "-counter", img_count);
+        indicator.text(num_active + " / " + img_count);
+        // $("<span data-mlab-ct-" + config_name + "-role='current' class='active'></span>").appendTo(indicator);
+        $(el).css("background-image", '');
+    };
+    
 /**
  * Identical to the same function inthe parent multi_img, except it also displays the answers
  * @param {type} el
@@ -92,7 +134,35 @@
         if (parseInt(num) > 0) {
             mlab.dt.api.setVariable(el, "display_num_questions", num);
         }
-    };    
+    };
+    
+/**
+ * This does the actual task of displaying next/previous image.
+ * If no previous/next image exists we just bail
+ * @param {type} el
+ * @param {type} direction
+ * @returns {undefined}
+ */
+    this.showImage = function (el, direction) {
+        var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
+        var curr_img = container.find(".active");
+        if (direction == 1) {
+            var move_to = curr_img.next("img");
+            if (move_to.length == 0) {
+                move_to = container.children("img:first");
+            }
+        } else {
+            var move_to = curr_img.prev("img");
+            if (move_to.length == 0) {
+                move_to = container.children("img:last");
+            }
+        }  
+        curr_img.removeClass("active");
+        move_to.addClass("active");
+        var num_active = move_to.index();
+        var img_count = container.find("img").length;
+        $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator']").text(num_active + " / " + img_count);
+    };
     
     
 /**

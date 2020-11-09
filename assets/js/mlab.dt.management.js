@@ -56,7 +56,7 @@ Mlab_dt_management.prototype = {
                     if (typeof mlab.dt.app.compiled_files[platform] != "undefined") {
 //TODO: skille ut de 3 neste linjene som egen funksjon - dette skal brukes flere steder....
                         var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + mlab.dt.app.compiled_files[platform];
-                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                        $('#mlab_download_qr_link_' + platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
                         $('#mlab_download_link_' + platform).html("<b>URL</b>:</br>" + text);
 
 /*                        $('#mlab_download_'+ platform + '_icon').qtip({
@@ -95,7 +95,7 @@ Mlab_dt_management.prototype = {
                     if (data.lock_status == "locked") {
                         that.parent.app.locked = true;
                         $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
-                        $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                        $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                     } else {
                         that.parent.app.locked = false;
                         $("#mlab_editor_disabled").remove();
@@ -118,7 +118,7 @@ Mlab_dt_management.prototype = {
             $("#" + mlab.dt.config["app"]["content_id"]).on("paste", function(e) {
 // stop original paste from happening
                 e.preventDefault();
-                
+            
 //if they are not allowed to paste into this component we quit
                 var comp_id = $(".mlab_current_component").data("mlab-type");
                 if (typeof mlab.dt.components[comp_id].conf.paste_allowed == "undefined" || mlab.dt.components[comp_id].conf.paste_allowed === false) {
@@ -137,7 +137,7 @@ Mlab_dt_management.prototype = {
                 setTimeout( function() { $(".mlab_editor_footer_help").text(""); }, 5000);
               
                 mlab.dt.flag_dirty = true;
-            });
+        });
             
 
         });
@@ -162,7 +162,7 @@ Mlab_dt_management.prototype = {
             that.parent.utils.update_status("completed");
             if (data.result == "success") {
                 full_url = window.location.origin + data.url;
-                $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "table"}).show()
+                $("#mlab_download_qr2").empty().qrcode({text: full_url, render : "image"}).show()
                         .append("<br>")
                         .append("<a href='" + full_url + "'>" + _tr["mlab.dt.management.js.app_download_process.1"] + ": " + full_url +"</a>")
                         .append("<br>")
@@ -493,11 +493,17 @@ Mlab_dt_management.prototype = {
  * First line is a pattern from Symfony routing so we can get the updated version from symfony when we change it is YML file
  */
     page_open : function (app_id, page_num) {
-        that = this;
-        this.page_save( function() { that.page_open_process(app_id, page_num); } );
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            that.page_save( function() {
+                that.page_open_process(app_id, page_num, function() {
+                    resolve();
+                })
+            });
+        });
     },
 
-    page_open_process : function (app_id, page_num) {
+    page_open_process : function (app_id, page_num, cb) {
 
         this.parent.utils.update_status("callback", _tr["mlab.dt.management.js.update_status.opening.page"], true);
 
@@ -543,7 +549,7 @@ Mlab_dt_management.prototype = {
                 if (data.lock_status == "locked") {
                     that.parent.app.locked = true;
                     $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',.6);
-                    $("div.container").append('<div id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
+                    $("div.container").append('<div title="' + _tr["mlab.dt.management.js.lock.explanation"] + '" id="mlab_editor_disabled" style="background-color: gray; position: absolute;top:110px;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50); background-image: url(/img/page_locked.png); background-repeat: no-repeat; background-position: 95% 2%;"></div>');
                 } else {
                     that.parent.app.locked = false;
                     $("#mlab_editor_disabled").remove();
@@ -563,10 +569,12 @@ Mlab_dt_management.prototype = {
                 that.parent.utils.update_status("temporary", data.msg, false);
 
             }
-
-        } );
-
-    },
+            
+            if(cb) {
+                cb();
+            }
+        }
+    )},
 
 /**
  * Call a backend python script that uses OpenOffice to convert PPT and DOC to individual pages
@@ -854,6 +862,10 @@ Mlab_dt_management.prototype = {
 //update staus
                 that.parent.utils.update_status("completed");
                 that.parent.flag_dirty = true;
+                that.parent.app.locked = false;
+                $("#mlab_editor_disabled").remove();
+                $("#" + that.parent.config["app"]["content_id"]).fadeTo('slow',1);                  
+                
 
             } else {
                 that.parent.utils.update_status("temporary", data.msg, false);
@@ -931,7 +943,7 @@ Mlab_dt_management.prototype = {
             return;
         }
 
-        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete"])) {
+        if (!confirm(_tr["mlab.dt.management.js.page_copy.alert.sure.delete.page"])) {
             return;
         }
 
@@ -1134,7 +1146,7 @@ Mlab_dt_management.prototype = {
                         if (typeof data.filename != "undefined" && data.filename != null && data.filename != "") {
                             mlab.dt.app.compiled_files[data.platform] = data.filename;
                             var text = document.getElementsByTagName("base")[0].href.slice(0, -1) + "_compiled/" + data.filename;
-                            $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "table"});
+                            $("#mlab_download_qr_link_" + data.platform).empty().qrcode({text: text, size: 150, background: "#ffffff", foreground: "#000000", render : "image"});
                             $("#mlab_download_link_" + data.platform).html("<b>URL</b>:</br>" + text);
                             mlab.dt.utils.update_status("temporary", _tr["mlab_editor.init.js.compiling.ready"], false);
                         } else {

@@ -2,7 +2,7 @@
 
 We want to use a simple but effective group access system to templates, components, apps and categories/tags for app. This system uses just three types of users, regular user, admin and super admin. (The categories/tags are stored in the group record, so is of no concern here. Apps are automatically accessible to everyone in all groups a user belongs to, so again outside the scope of the discussion here.) 
 
-Beyond the obvious use of groups to limit access to the types of items listed above, we also want to use the differences between admin and superadmin to facilitate the use of one Mlab installation for multiple types of users who should not see each other. For instance different companies that pay to use Mlab at a hosted facility could be set up with an admin each by the super admin; each admin would be assigned access to certain templates and components. 
+Beyond the obvious use of groups to limit access to the types of items listed above, we also want to use the differences between admin and superadmin to facilitate the use of one Appyoumake installation for multiple types of users who should not see each other. For instance different companies that pay to use Appyoumake at a hosted facility could be set up with an admin each by the super admin; each admin would be assigned access to certain templates and components. 
 
 "Cascading down" from this, the regular admin would then add groups and users. The admin would automatically be assigned membership to the groups they create to keep their admin level access.
 

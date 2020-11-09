@@ -20,7 +20,10 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
-    
+     
+    .enableSassLoader()
+    .addEntry('app', './assets/sass/app.scss')
+
     //used on all pages, incl. app builder
     .addEntry('mlab', './assets/js/mlab.js')
     
@@ -32,6 +35,7 @@ Encore
     
     //used on app builder page
     .addEntry('builder', './assets/js/builder.js')
+    .addEntry('builder_new', './assets/js/new/builder.js')
     
     // see https://symfony.com/doc/current/frontend/encore/legacy-apps.html re what this does.
     // in short makes $ and jQuery global vars
@@ -53,6 +57,7 @@ Encore
     // see https://symfony.com/doc/current/frontend/encore/babel.html
 
     // REMOVE THIS WHEN Encore is updated to work with Webpack 4.x
+    /*
     .configureBabel(function(babelConfig) {
         // add additional presets
         babelConfig.presets.push('es2017');
@@ -61,6 +66,7 @@ Encore
         // no plugins are added by default, but you can add some
         // babelConfig.plugins.push('styled-jsx/babel');
     })
+    */
     
     
 ;

@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
 Unauthorized copying of this file, via any medium is strictly prohibited
 
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 *******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
@@ -27,11 +27,11 @@ class TemplateRepository extends EntityRepository
 	 * @param collection of Sinett\MLAB\BuilderBundle\Entity\Group $groups
 	 */
 	public function findAllByGroups ( $role, $groups ) {
-		$templates = array();
+        $templates = array();
         $repository = $this->getEntityManager()->getRepository('SinettMLABBuilderBundle:TemplateGroupData');
-		foreach ($groups as $group) {
-			$temp_templates = $group->getTemplates();
-			foreach ($temp_templates as $temp_template) {
+        foreach ($groups as $group) {
+            $temp_templates = $group->getTemplates();
+            foreach ($temp_templates as $temp_template) {
 //we have used a duplicate access record with a new field 
 //(long fricking story, but basically due to having spent far too lon converting another table from koin table to join+additional data table)
 //if the user is superadmin, then they always see the tempate
@@ -39,19 +39,18 @@ class TemplateRepository extends EntityRepository
                     $templates[$temp_template->getId()] = $temp_template->getArray();
                 } else {
                     $access_record = $repository->findOneBy(array('template_id' => $temp_template->getId(), 'group_id' => $group->getId()));
-//admin access is determined by bit 0
                     if ($access_record) {
                         $access_state = $access_record->getAccessState();
-                        if ( $role == "ROLE_ADMIN" & ( $access_state & 1 ) ) {
+                        if ( $role == "ROLE_ADMIN" && $access_state >= TemplateGroupData::ACCESS_STATE_ADMIN ) {
                             $templates[$temp_template->getId()] = $temp_template->getArray();
-//user access is determined by bit 1
-                        } else if ( $role == "ROLE_USER" & ( $access_state & 2 ) ) {
+                        } else if ( $role == "ROLE_USER" && $access_state >= TemplateGroupData::ACCESS_STATE_USER ) {
                             $templates[$temp_template->getId()] = $temp_template->getArray();
                         }
                     }                    
                 }
-			}
-		}
+            }
+        }
+        
 		return $templates;
 	}
     

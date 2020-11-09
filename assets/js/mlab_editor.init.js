@@ -51,6 +51,7 @@ $(document).ready(function() {
             paths: new Object(),
             app: new Object(),
             page: new Object(),
+            history: [],
 
 // individual variables used by all .dt sub functions
             flag_dirty: false,
@@ -304,11 +305,15 @@ $(document).ready(function() {
                     $("[data-mlab-comp-tool='copy']").on("click", function () { mlab.dt.design.component_copy(); });
                     $("[data-mlab-comp-tool='paste']").on("click", function () { mlab.dt.design.component_paste(); });
 
-                    $("[data-mlab-comp-tool='redo']").on("click", function () { document.execCommand("redo"); });
-                    $("[data-mlab-comp-tool='undo']").on("click", function () { document.execCommand("undo"); });
+//                    $("[data-mlab-comp-tool='redo']").on("click", function () { document.execCommand("redo"); });
+//                    $("[data-mlab-comp-tool='undo']").on("click", function () { document.execCommand("undo"); });
+
+                    $("[data-mlab-comp-tool='undo']").on("click", function () { mlab.dt.design.component_trash(); });
                     
                     $("#mlab_page_control_title").on("click", function () {
-                        mlab.dt.api.editContent(this);
+                        if( !$('#mlab_page_control_title_actions').is(":visible") ) { 
+                            mlab.dt.api.editContent(this);
+                        }
                         $('#mlab_page_control_title_actions').show();
                         $('#mlab_page_control_title').attr('title', _tr["app.builder.page.tooltip.page.name.edit"]);
                     });

@@ -1,0 +1,79 @@
+{# Format menu tools, some always, others loaded when component is selected #}
+    <div>
+        <button data-action="component.up" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.format.component.up.tooltip{% endtrans %}" >
+            <i class="fas fa-chevron-up"></i> {% trans %}editor.tabs.format.component.up{% endtrans %}
+        </button>
+        <button data-action="component.down" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.format.component.down.tooltip{% endtrans %}" >
+            <i class="fas fa-chevron-down"></i> {% trans %}editor.tabs.format.component.down{% endtrans %}
+        </button>
+    </div>  
+    <div class="v-separator"></div>
+    <div>
+        <button data-open-modal="mlab_dialog_delete" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.delete.tooltip{% endtrans %}">
+            <i class="far fa-trash-alt"></i> {% trans %}editor.tabs.format.component.delete{% endtrans %}
+        </button>
+    </div>
+    <div class="v-separator"></div>
+    <div>
+        <button data-action="component.cut" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.cut.tooltip{% endtrans %}">
+            <i class="fas fa-cut"></i> {% trans %}editor.tabs.format.component.cut{% endtrans %}
+        </button>
+    </div>
+    <div>
+        <button data-action="component.copy" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.copy.tooltip{% endtrans %}">
+            <i class="fas fa-copy"></i> {% trans %}editor.tabs.format.component.copy{% endtrans %}
+        </button>
+    </div>
+    <div>
+        <button data-action="component.paste" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.format.component.paste.tooltip{% endtrans %}">
+            <i class="fas fa-paste"></i> {% trans %}editor.tabs.format.component.paste{% endtrans %}
+        </button>
+    </div>
+    <div class="v-separator" id="mlab_common_optional_separator"></div>
+    <div>
+        <button data-action='component.tool.credentials' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.credentials{% endtrans %}'>
+            <i class="fas fa-sign-out-alt"></i> {% trans %}editor.tabs.format.component.credentials{% endtrans %}
+        </button>
+    </div>
+    <div class='toolbox-menu'>
+        <button data-open-menu='component.tool.storage_plugin' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.storage{% endtrans %}'>
+            <i class="fas fa-cloud-upload-alt"></i> {% trans %}editor.tabs.format.component.storage{% endtrans %}
+        </button>
+        {# TODO: Add list of storage plugins from mlab.dt.ui.displayComponentTools #}
+        {# data-action='component.tool.storage_plugin' #}
+    </div>
+    
+    <div class='toolbox-menu'>
+        <button data-open-menu='component.tool.size' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.resize{% endtrans %}'>
+            <i class="fas fa-expand-arrows-alt"></i> {% trans %}editor.tabs.format.component.resize{% endtrans %}
+        </button>
+        <div class='menu'>
+            <button data-action='component.tool.size' data-size="small" class='toolbox-btn btn-lg' >
+                <img src="/img/tools/sizes.png" style='width: 8px; height: 8px;'>
+            </button>
+            <button data-action='component.tool.size' data-size="medium" class='toolbox-btn btn-lg' >
+                <img src="/img/tools/sizes.png" style='width: 16px; height: 16px;'>
+            </button>
+            <button data-action='component.tool.size' data-size="large" class='toolbox-btn btn-lg' >
+                <img src="/img/tools/sizes.png" style='width: 32px; height:32px'>
+            </button>
+        </div>
+    </div>
+  
+    <div class='toolbox-menu'>
+        <button data-open-menu='component.tool.aspect' class='mlab_hidden toolbox-btn btn-lg' data-tooltip='{% trans %}build_app.components.toolbar.tooltip.aspect_ratio{% endtrans %}'>
+            <i class="fas fa-arrows-alt"></i> {% trans %}editor.tabs.format.component.aspect_ratio{% endtrans %}
+        </button>
+        <div class='menu'>
+            <button data-action='component.tool.aspect' data-aspect="16:9" class='toolbox-btn btn-lg' >
+                <img src="/img/tools/aspect-16-9.png">
+            </button>
+            <button data-action='component.tool.aspect' data-aspect="4:3" class='toolbox-btn btn-lg' >
+                <img src="/img/tools/aspect-4-3.png">
+            </button>
+            <button data-action='component.tool.aspect' data-aspect="1:1" class='toolbox-btn btn-lg' >
+                <img src="/img/tools/aspect-1-1.png">
+            </button>
+        </div>
+    </div>
+    <div class="v-separator" id="mlab_optional_custom_separator"></div>

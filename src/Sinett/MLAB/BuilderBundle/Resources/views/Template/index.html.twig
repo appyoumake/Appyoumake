@@ -1,12 +1,9 @@
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
 {% extends app.request.xmlHttpRequest ? '::ajax.html.twig' : '::base.html.twig' %}
 
@@ -20,6 +17,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 <th>{% trans %}app.admin.templates.description{% endtrans %}</th>
                 <th>{% trans %}app.admin.templates.groups{% endtrans %}</th>  
                 {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
+                    <th>{% trans %}app.admin.templates.groups_admin{% endtrans %}</th>
                     <th>{% trans %}app.admin.templates.enabled{% endtrans %}</th>
                     <th class="mlab_min_width_short"> 
                         <a class="mlab_button_new_template" href="{{ path('template_new') }}" title="{% trans %}app.admin.templates.tooltip.new{% endtrans %}"></a>

@@ -1,20 +1,17 @@
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
                 <tr id="row_app_{{ app.id }}">
 				  
                     <td class="builder_app_list_properties" title="{% trans %}app.builder.list.tooltip.properties{% endtrans %} {{ app.name }}">
 				    	<div class="builder_app_properties" onmousedown="mlab_set_app_id({{ app.id }});"></div>
 				    </td>
-                    <td class="builder_app_list_icon"><a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img data-mlab-icon-id="{{ app.id }}" src="{{ app_url ~ app.path ~ "/" ~ app.active_version ~ "/" ~ app_icon }}"></a></td>
+                    <td class="builder_app_list_icon"><a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}"><img data-mlab-icon-id="{{ app.id }}" src="{{ app_url ~ app.path ~ "/" ~ app.active_version ~ "/" ~ app_icon ~ "?" ~ date().timestamp }}"></a></td>
                     <td class="builder_app_list_name mlab_max_width_medium" title="{% trans %}app.builder.list.tooltip.name{% endtrans %}">
-                        <a href="{{ path('app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
+                        <a href="{{ path('new_app_builder_editor', { 'id': app.id, 'page_num': 'last' }) }}">{{ app.name }}</a>
 				    </td>
                     
 				    <td class="mlab_align_center">

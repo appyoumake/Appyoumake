@@ -1,6 +1,7 @@
 //image component	
 
     this.media_type = "image";
+    var component = this;
 
     this.onCreate = function (el) {
         this.onLoad(el);
@@ -11,17 +12,37 @@
     }
     
 //el = element this is initialising, config = global config from conf.yml
-	this.onLoad = function (el) {
+    this.onLoad = function (el) {
         var that = this;
         var that_el = el;
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='previous_image']").on("click", function() { that.custom_show_image_previous(that_el); } );
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='next_image']").on("click", function() { that.custom_show_image_next(that_el); } );
+        
+        var pasteConainer = mlab.dt.api.pasteImageReader(function(results) {
+            var url = mlab.dt.urls.component_upload_file
+                    .replace("_APPID_", mlab.dt.app.id)
+                    .replace("_COMPID_", component.config.name);
+
+            $.ajax({
+                url: url,
+                data: {image: results.dataURL, name: results.name},
+                type: 'POST',
+                success: function(json) {
+                    component.cbAddImage(el, json.urls[0]);
+                }
+            });
+        });
+
+        el.find(".mlab_ct_multi_img_carousel").prepend(pasteConainer)
     };
 
-	this.onSave = function (el) {
+    this.onSave = function (el) {
         var local_el = $(el).clone();
         local_el.find("img").removeClass("active").first().addClass("active");
         local_el.find("span").removeClass("active").first().addClass("active");
+        
+        local_el.find(".paste-container").remove();
+
         return local_el[0].outerHTML;
     };
     
@@ -68,11 +89,11 @@
 
     this.custom_show_image_previous = function (el) {
         this.showImage(el, -1);
-    }
+    };
     
     this.custom_show_image_next = function (el) {
         this.showImage(el, 1);
-    }
+    };
 
     this.custom_delete_image = function (el) {
         var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
@@ -86,7 +107,7 @@
             curr_img.remove();
             $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").remove();
         }
-    }
+    };
     
 
 /**
@@ -100,21 +121,21 @@
         var container = $(el).find("[data-mlab-ct-" + this.config.name + "-role='display']");
         var curr_img = container.find(".active");
         if (direction == 1) {
-            var move_to = curr_img.next();
+            var move_to = curr_img.next("img");
             if (move_to.length == 0) {
-                move_to = container.children(":first");
+                move_to = container.children("img:first");
             }
         } else {
-            var move_to = curr_img.prev();
+            var move_to = curr_img.prev("img");
             if (move_to.length == 0) {
-                move_to = container.children(":last");
+                move_to = container.children("img:last");
             }
         }  
         curr_img.removeClass("active");
         move_to.addClass("active");
-        var num_active = move_to.index() + 1;
+        var num_active = move_to.index() ;
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
-    }
+    };
     
 /**
  * This task moves the currently view image to the left or right depending on the direction 
@@ -128,14 +149,14 @@
         var curr_img = container.find(".active");
         var num_active;
         if (direction == 1) {
-            var move_to = curr_img.next();
+            var move_to = curr_img.next("img");
             if (move_to.length != 0) {
                 move_to.after(curr_img);
             } else {
                 return;
             }
         } else {
-            var move_to = curr_img.prev();
+            var move_to = curr_img.prev("img");
             if (move_to.length != 0) {
                 move_to.before(curr_img);
             } else {
@@ -143,6 +164,27 @@
             }
         }
 //update navigation dot
-        var num_active = curr_img.index() + 1;
+        var num_active = curr_img.index();
         $(el).find("[data-mlab-ct-" + this.config.name + "-role='indicator'] span:nth-child(" + num_active + ")").addClass("active").siblings().removeClass("active");
-    }
+    };
+    
+    this.preview = function (el) {
+        return { image_url: el.find('img:first').attr("src") };
+    };
+    
+    this.onKeyPress = function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            var sel, range, html;
+            sel = window.getSelection();
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            var linebreak = document.createElement("br") ;
+            range.insertNode(linebreak);
+            var linebreak = document.createElement("br") ;
+            range.insertNode(linebreak);
+            range.setStartAfter(linebreak);
+            range.setEndAfter(linebreak); 
+        }
+    };
+    

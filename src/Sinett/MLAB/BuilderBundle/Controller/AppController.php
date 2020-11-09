@@ -1,12 +1,9 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 *******************************************************************************************************************************/
 
 /**
@@ -58,7 +55,11 @@ class AppController extends Controller
         
     }
     
-    
+    public function builderNewAction()
+    {
+        return $this->render('SinettMLABBuilderBundle:App:new/builder.html.twig');
+    }
+
     /**
      * Lists all App entities for management by app designer 
      * (similar to the indexAction, but adds many other actionsr)
@@ -68,7 +69,7 @@ class AppController extends Controller
     public function builderAction()
     {
         $em = $this->getDoctrine()->getManager();
-    	$apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
+        $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroupsSortUpdated($this->getUser()->getGroups());
         return $this->render('SinettMLABBuilderBundle:App:builder.html.twig', array(
     			'apps' => $apps,
                 'app_url' => $this->container->getParameter('mlab')["urls"]["app"],
@@ -149,6 +150,7 @@ class AppController extends Controller
     	$entity = new App();
         $form = $this->createAppForm($entity, 'create');
         $form->handleRequest($request);
+        $temp_app_data = $request->request->all();
 
         if ($form->isValid()) {
 //store values in array for easy access
@@ -166,7 +168,9 @@ class AppController extends Controller
                ->getRepository('Sinett\MLAB\BuilderBundle\Entity\App')
                ->createQueryBuilder('a')
                ->where('upper(a.name) = upper(:name)')
+               ->andWhere('a.enabled = :enabled')
                ->setParameter('name', $entity->getName())
+               ->setParameter('enabled', 1)
                ->getQuery()
                ->execute();
             
@@ -210,48 +214,13 @@ class AppController extends Controller
         		$entity->addGroup($group);
         	}
 
-//do they want to copy an existing app?
-            switch ($temp_app_data["select_base"]) {
-               case "existing_app":
-                    $orig_app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_data["copyApp"]);
-                    $result = false;
-                    if ($orig_app) {
-                        $result = $file_mgmt->copyAppFiles($app_data["copyApp"], $app_destination);
-                    } 
-
-                    if ($result == false) {
-                        return new JsonResponse(array(
-                                'action' => 'ADD',
-                                'result' => 'FAILURE',
-                                'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
-                    } 
-
-//update the title of the app in the conf.json file
-                    $file_mgmt->updateAppConfigFile($app, array("title" => $entity->getName()));
-                    break;
-        
-//otherwise we use the template they specified 
-                case "template":
-                    $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
-                    if ($result !== true) {
-                        return new JsonResponse(array(
-                                'action' => 'ADD',
-                                'result' => 'FAILURE',
-                                'message' => $this->get('translator')->trans('appController.msg.createAction.2')));
-                    }
-                    break;
-
-                case "office_file":
-                    break;
-
-                default:
-                    return new JsonResponse(array(
-                            'action' => 'ADD',
-                            'result' => 'FAILURE',
-                            'message' => $this->get('translator')->trans('appController.msg.createAction.4')));
-        		        		
-        	}
-        	
+            $result = $file_mgmt->createAppFromTemplate($entity->getTemplate(), $entity);
+            if ($result !== true) {
+                return new JsonResponse(array(
+                        'action' => 'ADD',
+                        'result' => 'FAILURE',
+                        'message' => $this->get('translator')->trans('appController.msg.createAction.2')));
+            }
             
 //now we store the splash file and the icon file (if created)
             if (null != $entity->getSplashFile() && $entity->getSplashFile()->isValid()) {
@@ -383,6 +352,97 @@ class AppController extends Controller
             'entity'      => $entity,
                     ));
     }
+    
+    /**
+     * Copies a given app, the new name is posted as form data
+     *
+     */
+    public function copyAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die($this->get('translator')->trans('appController.die.no.access'));
+        }
+        
+        $new_name = trim($request->request->get('name'));
+        if (empty($new_name)) {
+            return new JsonResponse(array(
+                    'action' => 'COPY',
+                    'result' => 'FAILURE',
+                    'message' => "No name specified for app, you need to submit a name for the app to copy to."));            
+        }
+
+        
+//check if they already use this name, if so, quit
+        $exists = $em
+           ->getRepository('Sinett\MLAB\BuilderBundle\Entity\App')
+           ->createQueryBuilder('a')
+           ->where('upper(a.name) = upper(:name)')
+           ->setParameter('name', $new_name)
+           ->getQuery()
+           ->execute();
+
+        if ($exists) {
+            return new JsonResponse(array(
+                    'action' => 'COPY',
+                    'result' => 'FAILURE',
+                    'message' =>  $this->get('translator')->trans('appController.msg.createAction.1')));
+        }
+
+//get config values
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+
+        $file_mgmt = $this->get('file_management');
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+
+        if (!$app) {
+            throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
+        }
+
+//first we try to copy files, if fail there is no superfluous record in the DB
+        $guid = $file_mgmt->GUID_v4();
+        $copy_from_version_num = $app->getActiveVersion();
+        $app_source = $app->calculateFullPath($config["paths"]["app"]);
+        $app_destination = str_replace("/" . $app->getPath() . "/$copy_from_version_num/", "/$guid/1/", $app_source);
+        
+        $result = false;
+        $result = $file_mgmt->copyAppFiles($app_source, $app_destination);
+
+//now clone object, and update name and GUID (used in path and uid fields)
+        if ($result == false) {
+            return new JsonResponse(array(
+                    'action' => 'ADD',
+                    'result' => 'FAILURE',
+                    'message' => $this->get('translator')->trans('appController.msg.unable.copy.app.files')));
+        }
+        
+        $new_app = clone $app;
+        $new_app->setName($new_name);
+        $new_app->setPath($guid);
+        $new_app->setUid($config["compiler_service"]["app_creator_identifier"] . ".$guid");
+      	$new_app->setUpdatedBy($this->get('security.token_storage')->getToken()->getUser());
+        $new_app->setUpdated(new \DateTime());
+        
+//save new app
+        $em->persist($new_app);
+        $em->flush();
+        
+//create and save app version
+        $temp_app_version = new \Sinett\MLAB\BuilderBundle\Entity\AppVersion();
+        $temp_app_version->setVersion(1);
+        $temp_app_version->setEnabled(1);
+        $temp_app_version->setApp($new_app);
+        $new_app->addAppVersion($temp_app_version);
+        $new_app->setActiveVersion(1);
+        $em->flush();
+
+
+        return new JsonResponse(array(
+            'action' => 'COPY',
+            'result' => 'SUCCESS',
+            'app_id' => $new_app->getId()
+            ));        
+    }    
 
     /**
      * Displays a form to edit an existing App entity.
@@ -405,14 +465,34 @@ class AppController extends Controller
         $backgrounds = $file_mgmt->getBackgrounds();
         $foregrounds = $file_mgmt->getForegrounds();
         $temp_roles = $this->getUser()->getRoles();
+        $temp_groups = $this->getUser()->getGroups();
         $apps = $em->getRepository('SinettMLABBuilderBundle:App')->findAllByGroups($this->getUser()->getGroups());
     	$templates = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllByGroups($temp_roles[0], $this->getUser()->getGroups());
         $url_apps = $this->container->getParameter('mlab')['urls']['app'];
     	$url_templates = $this->container->getParameter('mlab')['urls']['template'];
     	$app_icon_path = $this->container->getParameter('mlab_app')['filenames']['app_icon'];
+        $tags = '';
+        $tag_level_1 = array("<option></option>");
+        $appTags = json_decode($entity->getTags());
+//this loop will get the predefined categories for all the groups the current user is a member of
+//it will store all entries in a string (they are stored as JSON objects in the DB) + preload the top level entries to put in the first drop down box
+        foreach ($temp_groups as $temp_group) {
+            $cat = trim($temp_group->getCategories());
+            if ($cat) {
+                if (strlen($tags)) { $tags .= ','; };
+                $tags .= $cat;
+                $cat_obj = json_decode($cat);
+                foreach ($cat_obj as $tag_tree) {
+                    $txt = $tag_tree->text;
+                    $selected = (isset($appTags[0]) && $appTags[0] == $txt) ? ' selected' : null;
+                    $tag_level_1[] = "<option value='$txt'$selected>$txt</option>";
+                }
+            }
+        }
+        $tags = '[' . $tags . ']';
         
         $editForm = $this->createAppForm($entity, 'update');
-        
+
         return $this->render('SinettMLABBuilderBundle:App:properties.html.twig', array(
             'entity' => $entity,
             'apps' => $apps,
@@ -427,6 +507,8 @@ class AppController extends Controller
             'icon_font_url' => $this->container->getParameter('mlab')['urls']['icon_font'],
             'icon_text_maxlength' => $this->container->getParameter('mlab_app')['icon_text_maxlength'],
             'icon_default' => $this->container->getParameter('mlab_app')['compiler_service']['default_icon'],
+            'tags' => $tags,
+            'tag_level_1' => $tag_level_1,
         ));
         
     }
@@ -461,6 +543,7 @@ class AppController extends Controller
         }
 
         $entity = $em->getRepository('SinettMLABBuilderBundle:App')->find($id);
+        $active_version = $entity->getActiveVersion();
         
         if (!$entity) {
             throw $this->createNotFoundException($this->get('translator')->trans('appController.createNotFoundException.app'));
@@ -468,22 +551,23 @@ class AppController extends Controller
         
         $editForm = $this->createAppForm($entity, 'update');
         $editForm->handleRequest($request);
+        $entity->setActiveVersion($active_version);
 
         if ($editForm->isValid()) {
 
 //get config values
-        	$config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+            $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
             
 //prepare file management service
-		    $file_mgmt = $this->get('file_management');
-		    $file_mgmt->setConfig('app');
-        	 
+            $file_mgmt = $this->get('file_management');
+            $file_mgmt->setConfig('app');
+            $app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+             /*
 //store old name and version, if these are changed we will need to rename folders, etc
             $old_entity = $entity->getArrayFlat($config["paths"]["template"]);
             $old_version = $old_entity["version"];
             $old_path = $old_entity["path"];
-        	$entity->generatePath($config["replace_in_filenames"]);
-            $app_destination = $entity->calculateFullPath($config["paths"]["app"]);
+            $entity->generatePath($config["replace_in_filenames"]);
             
             $new_path = $entity->getPath();
             $new_version = $entity->getVersion();
@@ -509,11 +593,11 @@ class AppController extends Controller
 //update the unique APP ID meta tag, stored in index.html so it follows the app as it is copied
                 $file_mgmt->func_sed(array("$app_destination/index.html"), $config["compiler_service"]["app_creator_identifier"] . $old_path, $config["compiler_service"]["app_creator_identifier"] . $new_path);
             }
-            
-        	$usr = $this->get('security.token_storage')->getToken()->getUser();
-        	$entity->setUpdatedBy($usr);
+            */
+            $usr = $this->get('security.token_storage')->getToken()->getUser();
+            $entity->setUpdatedBy($usr);
             $entity->setUid($config["compiler_service"]["app_creator_identifier"] . "." . $entity->getPath());
-		    
+            
 //now we store the splash file and the icon file (if created)
             if (null != $entity->getSplashFile() && $entity->getSplashFile()->isValid()) {
                 $splash_filename = $config["filenames"]["app_splash_screen"] . "." . $entity->getSplashFile()->getClientOriginalExtension();
@@ -524,39 +608,37 @@ class AppController extends Controller
                             'message' => $this->get('translator')->trans('appController.msg.unable.store.splach.screen')));
                 }
             }
-            
+
 //store icon creatd or use default icon
             if (null != $entity->getIconFile()) {
                 $encoded_image = str_replace(' ', '+', $entity->getIconFile());
-            } else {
-                $encoded_image = str_replace(' ', '+', $config["compiler_service"]["default_icon"]);
-            }
-            $encoded_image = str_replace("data:image/png;base64,", "", $encoded_image);
-            $png_image = base64_decode($encoded_image);
+                $encoded_image = str_replace("data:image/png;base64,", "", $encoded_image);
+                $png_image = base64_decode($encoded_image);
 
-//this will fail both if file = 0 bytes and if it fails to write file.
-            if (!file_put_contents("$app_destination/" . $config["filenames"]["app_icon"], $png_image)) {
-                return new JsonResponse(array(
-                        'action' => 'ADD',
-                        'result' => 'FAILURE',
-                        'message' => $this->get('translator')->trans('appController.msg.unable.store.icon')));
+    //this will fail both if file = 0 bytes and if it fails to write file.
+                if (!file_put_contents("$app_destination/" . $config["filenames"]["app_icon"], $png_image)) {
+                    return new JsonResponse(array(
+                            'action' => 'ADD',
+                            'result' => 'FAILURE',
+                            'message' => $this->get('translator')->trans('appController.msg.unable.store.icon')));
+                }
             }
             
                         
 //finally we save the database record 
             $em->flush();
-            
+
             return new JsonResponse(array('db_table' => 'app',
-            		'action' => 'UPDATE',
-            		'db_id' => $id,
-            		'result' => 'SUCCESS',
-            		'record' => $this->renderView('SinettMLABBuilderBundle:App:show.html.twig', array('entity' => $entity))));
+                    'action' => 'UPDATE',
+                    'db_id' => $id,
+                    'result' => 'SUCCESS',
+                    'record' => $this->renderView('SinettMLABBuilderBundle:App:list.html.twig', array('app' => $entity->getArray(), 'app_url' => $config["urls"]["app"], 'app_icon' => $config["filenames"]["app_icon"]))));
         }
             
         return new JsonResponse(array('db_table' => 'app',
-        		'db_id' => $id,
-        		'result' => 'FAILURE',
-        		'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
+                'db_id' => $id,
+                'result' => 'FAILURE',
+                'message' => $this->get('translator')->trans('appController.msg.updateAction.2')));
             
     }
     
@@ -585,8 +667,13 @@ class AppController extends Controller
         							  	  'result' => 'failure',
         								  'message' => $this->get('translator')->trans('appController.msg.deleteAction.2')));
         }
-        
-        $app_path = $entity->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+
+        $entity->setEnabled(0);
+        $em->flush();
+
+    
+// Disabled Hard delete
+/*        $app_path = $entity->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $app_path = dirname($app_path);
         
         try {
@@ -616,7 +703,7 @@ class AppController extends Controller
         							  'result' => 'failure',
         						 	  'message' => $e->getMessage()));
         } 
-        
+*/
         return new JsonResponse(array('db_table' => 'app',
         							  'db_id' => $id,
         							  'result' => 'success',
@@ -641,7 +728,7 @@ class AppController extends Controller
 
         $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
 
-        $file_mgmt = $this->get('file_management');
+        $file_mgmt = $this->get('file_management')->setApp($app);
         $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
         $res = $file_mgmt->preCompileProcessingAction($app);
         
@@ -652,6 +739,42 @@ class AppController extends Controller
         }
     }
     
+/**
+ * NEW: Opens the app page editor, loads initial app and various config details
+ * @param type $id
+ * @param type $page_num
+ */
+    public function buildAppNewAction($id, $page_num) {
+/*
+        
+// pick up config from parameters.yml, we use this mainly for paths
+        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+        unset($config["replace_in_filenames"]);
+        unset($config["verify_uploads"]);
+
+//load all the components        
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('component');*/
+        $em = $this->getDoctrine()->getManager();
+        if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($id, $this->getUser()->getGroups())) {
+            die($this->get('translator')->trans('appController.die.no.access'));
+        }
+        
+        $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($id);
+        $app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+        $yaml = new Parser();
+        $temp = $yaml->parse(@file_get_contents($this->get('kernel')->getRootDir() . '/../src/Sinett/MLAB/BuilderBundle/Resources/translations/messages.' . $this->getUser()->getLocale() . '.yml'));
+        $file_mgmt = $this->get('file_management');
+        $real_page_filename = $file_mgmt->getPageFileName($app_path, $page_num);
+
+        return $this->render('SinettMLABBuilderBundle:App:new/build_app.html.twig', array(
+                "mlab_app_page_num" => intVal($real_page_filename),
+                "mlab_app_id" => $id, 
+                "mlab_appbuilder_root_url" => $this->generateUrl('app_builder_index'),
+                "mlab_translations" => json_encode($temp)
+        ));
+    }
+        
 /**
  * Opens the app page editor, loads initial app and various config details
  * @param type $id
@@ -747,6 +870,7 @@ class AppController extends Controller
                 "mlab_urls" => array (  "new" => $this->generateUrl('app_create'),
                                         "edit" => $this->generateUrl('app_edit', array('id' => '_ID_')),
                                         "page_save" => $this->generateUrl('app_builder_page_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'old_checksum' => '_CHECKSUM_')),
+                                        "page_thumb_save" => $this->generateUrl('app_builder_page_thumb_save',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_')),
                                         "component_added" => $this->generateUrl('app_builder_component_added',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_update_config" => $this->generateUrl('app_builder_component_update_config',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_')),
                                         "component_run_function" => $this->generateUrl('app_builder_component_run_function',  array('comp_id' => '_COMPID_', 'app_id' => '_APPID_', 'page_num' => '_PAGENUM_', 'func_name' => '_FUNCNAME_')),
@@ -757,7 +881,7 @@ class AppController extends Controller
                                         "app_unlock" => $this->generateUrl('app_builder_app_unlock'),
                                         "page_get" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => 'false')),
                                         "app_open" => $this->generateUrl('app_builder_page_get',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_', 'app_open_mode' => '_OPEN_MODE_')),
-                                        "page_new" => $this->generateUrl('app_builder_page_new',  array('app_id' => '_ID_', 'uid' => '_UID_')),
+                                        "page_action" => $this->generateUrl('app_builder_page_action',  array('action' => '_ACTION_', 'app_id' => '_ID_', 'uid' => '_UID_')),
                                         "page_copy" => $this->generateUrl('app_builder_page_copy',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_delete" => $this->generateUrl('app_builder_page_delete',  array('app_id' => '_ID_', 'page_num' => '_PAGE_NUM_', 'uid' => '_UID_')),
                                         "page_reorder" => $this->generateUrl('app_builder_page_reorder',  array('app_id' => '_ID_', 'from_page' => '_FROM_PAGE_', 'to_page' => '_TO_PAGE_', 'uid' => '_UID_')),
@@ -927,31 +1051,31 @@ class AppController extends Controller
         
 //create file management object
 	    $file_mgmt = $this->get('file_management');
-        $file_mgmt->setConfig('app');
+        $fileManager = $this->get('file_management')->setApp($app);
+        $fileManager->setConfig('app');
 
         $temp_data = $request->request->all();
         $html = $temp_data["html"];
-        $title = $temp_data["title"];
-        $res = $file_mgmt->savePage($app, intval($page_num), $title, $html);
+        $res = $fileManager->savePage(intval($page_num), $html);
         if ($res === false) {
             return new JsonResponse(array(
                 'result' => 'failure',
                 'msg' => $this->get('translator')->trans('appController.msg.putPageAction')));
         }
         
+        
 /* Returns data about the app that may have been changed by another user working on the same app
    see loadBuilderVariablesAction for more on what happens here */
 
 //we now use the file management plugin to obtain the checksum, 
 //for this checksum we exclude the current file as we are the only ones who can change it
-        $current_page_file_name = $file_mgmt->getPageFileName($app_path, $page_num);
-        $mlab_app_checksum = $file_mgmt->getAppMD5($app, $current_page_file_name);
+        $current_page_file_name = $fileManager->getPageFileName($app_path, $page_num);
+        $mlab_app_checksum = $fileManager->getAppMD5($app, $current_page_file_name);
         $mlab_app_data = $app->getArrayFlat($this->container->getParameter('mlab')["paths"]["template"]);
-        $page_names = $file_mgmt->getPageIdAndTitles($app);
 
 //we do not scan for further changes if no files were changed
         if ($mlab_app_checksum != $old_checksum) {
-            $mlab_app_data["page_names"] = $page_names;
+            $mlab_app_data["page_names"] = $fileManager->getPageIdAndTitles($app);
             $app_info = array(
                 "result" => "file_changes",
     			"mlab_app" => $mlab_app_data,
@@ -969,10 +1093,10 @@ class AppController extends Controller
             
         $websocketService = $this->get('websocket_service');
         $websocketService->send(['data' => [
-            '_type' => 'app_pages_update',
+            '_type' => 'app_update_table_of_contents',
             '_feedId' => 'app_' . $app->getUid(),
             '_sender' => $request->get('_sender'),
-            'pages' => $page_names,
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
         ]]);
 
         return new JsonResponse(array(
@@ -980,6 +1104,67 @@ class AppController extends Controller
             'app_info' => $app_info));
 
     }
+    
+    
+/**
+ * Stores page preview thumbnails for individual pages
+ * @param type $app_id
+ * @param type $page_num
+ */
+    public function putThumbnailAction (Request $request, $app_id, $page_num) {
+        if ($app_id > 0) {
+	    	$em = $this->getDoctrine()->getManager();
+    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+    		return new JsonResponse(array(
+    			'result' => 'error',
+    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+    	}
+
+        if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
+            return new JsonResponse(array(
+    					'result' => 'error',
+    					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+        }
+
+        $page_num = intval($page_num);
+        
+//create the path to the file to save to
+        $file_app_path = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
+//Make a pageThumbnail dir if not existing
+        if (!is_dir($file_app_path . 'pageThumbnail/')) {
+// dir doesn't exist, make it
+            mkdir($file_app_path . 'pageThumbnail/');
+        }
+
+//get thumbnail
+        $temp_data = $request->request->all();
+        $pageThumbnail = $temp_data["pageThumbnail"];
+        
+//get path to save to, different for first page (index.html)
+        if ($page_num === 0) {
+            $file_img_path = $file_app_path . "pageThumbnail/index.jpg";
+        } else {
+            $file_img_path = $file_app_path . 'pageThumbnail/' . substr("000" . $page_num, -3) . ".jpg";
+        }
+        
+//TODO: error checking and tell others icon has changed
+//save file as jpg
+    // split the string on commas
+    // $data[ 0 ] == "data:image/png;base64"
+    // $data[ 1 ] == <actual base64 string>
+        $data = explode( ',', $pageThumbnail );
+        
+        file_put_contents ($file_img_path, base64_decode( $data[ 1 ] ));
+        return new JsonResponse(array(
+            'result' => 'success',
+            'pageNum' => $page_num));
+
+    }
+    
     
     /**
      * Removes all locks by the specified uid
@@ -996,52 +1181,160 @@ class AppController extends Controller
      * the app it will not create two with the same name
      * @param type $app_id
      */
-    public function newPageAction (Request $request, $app_id, $uid, $redirect_to_open, $title) {
+    public function newPageAction(Request $request, $app_id, $uid, $redirect_to_open, $title) {
         if ($app_id > 0) {
-	    	$em = $this->getDoctrine()->getManager();
-    		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
                 die($this->get('translator')->trans('appController.die.no.access'));
             }
-    		
-    	} else {
-    		return new JsonResponse(array(
-    			'result' => 'error',
-    			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
-    	}
-        
-//copy the template file to the app
-        $file_mgmt = $this->get('file_management');
-        $new_page_num = $file_mgmt->newPage($app, $request->request->get('title'));
-        if ($new_page_num === false) {
-            return new JsonResponse(array(
-                'result' => 'failure',
-                'msg' => $this->get('translator')->trans('appController.msg.app.id.not.specified')));
-        }
-        
-//update file counter variable in JS
-        /* TODO: Remove and replace with precompile processing 
-         * $total_pages = $file_mgmt->getTotalPageNum($app);
-         
-        $file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);
-*/
-        $page_names = $file_mgmt->getPageIdAndTitles($app);
-        $websocketService = $this->get('websocket_service');
-        $websocketService->send(['data' => [
-            '_type' => 'app_pages_update',
-            '_feedId' => 'app_' . $app->getUid(),
-            '_sender' => $request->get('_sender'),
-            'pages' => $page_names,
-        ]]);
-
-        if ($redirect_to_open) {
-            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $new_page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
+            
         } else {
             return new JsonResponse(array(
-                'result' => 'success',
-                'new_page_num' => $new_page_num,
-                "page_names" => $page_names));
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
         }
+
+        $fileManager = $this->get('file_management')->setApp($app);
+
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_update_table_of_contents',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]]);
+
+        return $this->redirect($this->generateUrl('app_builder_page_get', [
+            'app_id' => $app_id,
+            'page_num' => $page['pageNumber'],
+            'uid' => $uid,
+            'app_open_mode' => 'false'
+        ]));
+    }
+
+
+    public function pageActionAction(Request $request, $app_id, $uid, $action, $redirect_to_open, $title) {
+        if ($app_id > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+            
+        } else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+        }
+        
+        $fileManager = $this->get('file_management')->setApp($app);
+
+        switch ($action) {
+            case 'section_new':
+                $fileManager->createNewSection(
+                    $request->get('position', null),
+                    $request->get('level', null)
+                );
+                break;
+
+            case 'section_indent':
+                $fileManager->indentSection(
+                    $request->get('sectionId'),
+                    $request->get('indent')
+                );
+                break;
+            
+            case 'section_delete':
+                $fileManager->deleteSection(
+                    $request->get('sectionId')
+                );
+                break;
+            
+            case 'section_update_title':
+                $fileManager->updateSectionTitle(
+                    $request->get('sectionId'),
+                    $request->request->get('title')
+                );
+                break;
+                        
+            case 'page_update_title':
+                $fileManager->updatePageTitle(
+                    $request->get('pageNum'),
+                    $request->request->get('title')
+                );
+                break;
+            
+            case 'page_new':
+                $page = $fileManager->createNewPage(
+                    $request->get('position', null),
+                    $request->request->get('title', null)
+                );
+                
+//we may want to open pages in the background, check parameter to see if this is true.
+//if so, we do NOT go to page open
+                
+                if ($redirect_to_open) {
+                    $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                        'app_id' => $app_id,
+                        'page_num' => $page['pageNumber'],
+                        'uid' => $uid,
+                        'app_open_mode' => 'false'
+                    ]));
+                }                 
+                break;
+
+            case 'page_delete':
+                $page_to_open = $fileManager->deletePage($request->get('page_num'));
+
+                // $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                //     'app_id' => $app_id,
+                //     'page_num' => $page_to_open,
+                //     'uid' => $uid,
+                //     'app_open_mode' => 'false'
+                // ]));
+
+                break;
+
+            case 'page_restore':
+                $page = $fileManager->restorePage($request->get('page_num'));
+
+                $response = $this->redirect($this->generateUrl('app_builder_page_get', [
+                    'app_id' => $app_id,
+                    'page_num' => $page['pageNumber'],
+                    'uid' => $uid,
+                    'app_open_mode' => 'false'
+                ]));
+
+                break;
+
+            case 'toc_move':
+                $fileManager->tocMove(
+                    $request->get('node'),
+                    $request->get('position')
+                );
+                break;
+
+            default:
+                return new JsonResponse(array(
+                    'result' => 'error',
+                    'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+                break;
+        }
+
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_update_table_of_contents',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $request->get('_sender'),
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+        ]]);
+
+        return isset($response) ? $response : new JsonResponse([
+            'result' => 'success',
+            'tableOfContents' => $fileManager->appConfig['tableOfContents'],
+            'new_page_num' => ($action === 'page_new' ? $page['pageNumber'] : "")
+        ]);
     }
 
     /**
@@ -1092,7 +1385,90 @@ class AppController extends Controller
      * @param type $page_num
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function deletePageAction ($app_id, $page_num, $uid) {
+//     public function deletePageAction ($app_id, $page_num, $uid) {
+//         if ($app_id > 0) {
+// 	    	$em = $this->getDoctrine()->getManager();
+//     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+//             if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+//                 die($this->get('translator')->trans('appController.die.no.access'));
+//             }
+//     	} else {
+//     		return new JsonResponse(array(
+//     			'result' => 'error',
+//     			'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)));
+//     	}
+        
+//         if (!isset($page_num) || !is_numeric($page_num) || intval($page_num) < 0) {
+//             return new JsonResponse(array(
+//     					'result' => 'error',
+//     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
+//         }
+    	
+// 	    $file_mgmt = $this->get('file_management');
+//         $file_mgmt->setConfig('app');
+        
+// //delete file, returns number of file to open if successful
+//         $page_to_open = $file_mgmt->deletePage($app, $page_num, $uid);
+//         if ($page_to_open === false) {
+//             return new JsonResponse(array(
+//                     'result' => 'error',
+//                     'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
+//         } else {
+//             $page_names = $file_mgmt->getPageIdAndTitles($app);
+//             $websocketService = $this->get('websocket_service');
+//             $websocketService->send(['data' => [
+//                 '_type' => 'app_pages_update',
+//                 '_feedId' => 'app_' . $app->getUid(),
+//                 '_sender' => $uid,
+//                 'pages' => $page_names,
+//             ]]);
+
+// //update file counter variable in JS
+// //not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
+//             /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
+//             return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_to_open, 'uid' => $uid, 'app_open_mode' => 'false')));
+//         }
+//     }    
+    
+    
+    /**
+     * Returns list of deleted pages for the App
+     * @param type $app_id
+     * @param type $uid
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deletedPagesAction ($app_id, $uid) {
+        if ($app_id > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
+            if (!$em->getRepository('SinettMLABBuilderBundle:App')->checkAccessByGroups($app_id, $this->getUser()->getGroups())) {
+                die($this->get('translator')->trans('appController.die.no.access'));
+            }
+    	} else {
+            return new JsonResponse(array(
+                'result' => 'error',
+                'msg' => sprintf($this->get('translator')->trans('appController.msg.app.id.not.specified') . ": %d", $app_id)
+            ));
+    	}
+        
+        $file_mgmt = $this->get('file_management');
+        $file_mgmt->setConfig('app');
+        
+        $pagesList = $file_mgmt->listDeletedPages($app);
+        
+        return new JsonResponse(array(
+            'result' => 'success',
+            'pages' => $pagesList
+        ));
+    }    
+    
+    /**
+     * Restore application page
+     * @param type $app_id
+     * @param type $page_num
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function restorePageAction ($app_id, $page_num, $uid) {
         if ($app_id > 0) {
 	    	$em = $this->getDoctrine()->getManager();
     		$app = $em->getRepository('SinettMLABBuilderBundle:App')->findOneById($app_id);
@@ -1111,31 +1487,22 @@ class AppController extends Controller
     					'msg' => sprintf($this->get('translator')->trans('appController.msg.page.not.specified') . ": %d", $page_num)));
         }
     	
-	    $file_mgmt = $this->get('file_management');
+        $file_mgmt = $this->get('file_management');
         $file_mgmt->setConfig('app');
         
-//delete file, returns number of file to open if successful
-        $page_to_open = $file_mgmt->deletePage($app, $page_num, $uid);
-        if ($page_to_open === false) {
-            return new JsonResponse(array(
-                    'result' => 'error',
-                    'msg' => $this->get('translator')->trans('appController.msg.deletePageAction')));
-        } else {
-            $page_names = $file_mgmt->getPageIdAndTitles($app);
-            $websocketService = $this->get('websocket_service');
-            $websocketService->send(['data' => [
-                '_type' => 'app_pages_update',
-                '_feedId' => 'app_' . $app->getUid(),
-                '_sender' => $uid,
-                'pages' => $page_names,
-            ]]);
+        $restorePage = $file_mgmt->restorePage($app, $page_num, $uid);
+        
+        $page_names = $file_mgmt->getPageIdAndTitles($app);
+        $websocketService = $this->get('websocket_service');
+        $websocketService->send(['data' => [
+            '_type' => 'app_pages_update',
+            '_feedId' => 'app_' . $app->getUid(),
+            '_sender' => $uid,
+            'pages' => $page_names,
+        ]]);
 
-//update file counter variable in JS
-//not used anymore, we don't rename pages            $total_pages = $file_mgmt->getTotalPageNum($app);
-            /*$file_mgmt->updateAppParameter($app, "mlabrt_max", $total_pages);*/
-            return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_to_open, 'uid' => $uid, 'app_open_mode' => 'false')));
-        }
-    }    
+        return $this->redirect($this->generateUrl('app_builder_page_get', array('app_id' => $app_id, 'page_num' => $page_num, 'uid' => $uid, 'app_open_mode' => 'false')));
+    } 
     
     /**
      * imports a PPT/DOC file into current app using external python code
@@ -1251,9 +1618,10 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function componentUploadAction(Request $request, $app_id, $comp_id) {
+        $pasted_content = $request->get('image'); //if we send a pasted image to be saved it is a request element
         
-//check if upload successful and validate parameters
-        $test = empty($request->files->get('mlab_files'));
+//check if upload successful and validate parameters OR the image request element (BASE64 encoded image, see above)
+        $test = empty($request->files->get('mlab_files')) && !$pasted_content;
         if ($test) {
     		return new JsonResponse(array(
     			'result' => 'failure',
@@ -1278,75 +1646,108 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
 
 //load libraries
         $file_mgmt = $this->get('file_management');
-        
+        $max_len = $this->container->getParameter('mlab_app')['verify_uploads']['max_filename_length'];
+
 //get paths
         $path_app = $app->calculateFullPath($this->container->getParameter('mlab')['paths']['app']);
         $path_component = $this->container->getParameter('mlab')['paths']['component'] . $comp_id . "/";
         $replace_chars = $this->container->getParameter('mlab_app')['replace_in_filenames'];
         $urls = array();
         
-//loop through list of files and determine mime type and folder, generate name and move or process file
-//then return the file path
-        foreach($request->files as $uploadedFile) {
-            $width = $height = $type = $attr = null;
-            $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
-            $f_ext = $uploadedFile->guessExtension();
-            $f_mime = $uploadedFile->getMimeType();
+        if($pasted_content) {
+            $subFolder = null;
+            $data = explode(',', $pasted_content, 2);
+            $mimeType = substr($data[0], $start=strpos($data[0], ':')+1, strpos($data[0], ';')-$start);
             
-//replace "european" characters with plain ASCII 7 bit characters
-			$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
-//android allows max 100 char filenames, use config variable for this in case changes in future
-            $max_len = $this->container->getParameter('mlab_app')['verify_uploads']['max_filename_length'];
-            $f_name = substr($temp_f_name, 0, $max_len - (strlen($f_ext) + 1))  . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
-//OLD             $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
-            
-//check to see if the mime type is allowed
-            $sub_folder = false;
             foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
-                if (in_array($f_mime, $formats)) {
-                    $sub_folder = $folder;
+                if (in_array($mimeType, $formats)) {
+                    $subFolder = $folder;
                     break;
                 }
             }
+            $filePathInfo = pathinfo($request->get('name'));
+            $fileName = $filePathInfo['filename'] . '-' . md5($data[1]) . '.' . $filePathInfo['extension'];
+            $fileName = substr($fileName, -$max_len);
+            $saveTo = $path_app . $subFolder . '/' . $fileName;
             
-            if ( !$sub_folder ) {
-                return new JsonResponse( array(
-                    'result' => 'failure',
-                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')) );
+//first check if file exists, as we use MD5 checksum as part of the name, it works OK.
+            if (file_exists($saveTo)) {
+                $urls[] = $subFolder . "/" . $fileName;
+            } else {
+                if (!file_exists($path_app . $subFolder)) {
+                    mkdir($path_app . $subFolder);
+                }
+//if it does not exist we need to create the folder before trying to save it
+                $success = file_put_contents($saveTo, base64_decode($data[1]));
+
+                if($success) {
+                    $urls[] = $subFolder . "/" . $fileName;
+                }
             }
+        } else { //content not supplied as pasted BASE64 data, but as real file uploads
+        
+//loop through list of files and determine mime type and folder, generate name and move or process file
+//then return the file path
+            foreach($request->files as $uploadedFile) {
+                $width = $height = $type = $attr = null;
+                $f_name_parts = pathinfo($uploadedFile->getClientOriginalName());
+                $f_ext = $uploadedFile->guessExtension();
+                $f_mime = $uploadedFile->getMimeType();
+
+//replace "european" characters with plain ASCII 7 bit characters
+            	$temp_f_name = preg_replace(array_values($replace_chars), array_keys($replace_chars), $f_name_parts['filename']);            
+//android allows max 100 char filenames, use config variable for this in case changes in future
+                $f_name = substr($temp_f_name, 0, $max_len - (strlen($f_ext) + 1))  . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
+//OLD             $f_name = $f_name_parts['filename'] . "-" . md5_file($uploadedFile->getRealPath()); //$file_mgmt->GUID_v4();
+            
+//check to see if the mime type is allowed
+                $sub_folder = false;
+                foreach ($this->container->getParameter('mlab_app')['uploads_allowed'] as $folder => $formats) {
+                    if (in_array($f_mime, $formats)) {
+                        $sub_folder = $folder;
+                        break;
+                    }
+                }
+
+                if ( !$sub_folder ) {
+                    return new JsonResponse( array(
+                        'result' => 'failure',
+                        'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.1')) );
+                }
 
 //if the component has a routine to process the file, then we call this.
 //otherwise we just copy the file
-            $process_file = false;
-            $temp_class_name = "mlab_ct_" . $comp_id;
-
-            if (!file_exists($path_component . "server_code.php")) {
                 $process_file = false;
-            } else if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
-                return new JsonResponse(array(
-                    'result' => 'failure',
-                    'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
-            }
+                $temp_class_name = "mlab_ct_" . $comp_id;
 
-            if (class_exists($temp_class_name)) {
-                $component_class = new $temp_class_name();
-                if (method_exists($component_class, "onUpload")) {
-                    $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
-                    $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $config);
-                    if (!$url) {
-                        return new JsonResponse(array(
-                            'result' => 'failure',
-                            'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
-                    }
-                    $process_file = true;
-                    $urls[] = $url;
+                if (!file_exists($path_component . "server_code.php")) {
+                    $process_file = false;
+                } else if (!class_exists($temp_class_name) && !@(include($path_component . "server_code.php"))) {
+                    return new JsonResponse(array(
+                        'result' => 'failure',
+                        'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.2')));
                 }
-            }
+
+                if (class_exists($temp_class_name)) {
+                    $component_class = new $temp_class_name();
+                    if (method_exists($component_class, "onUpload")) {
+                        $config = array_merge_recursive($this->container->getParameter('mlab'), $this->container->getParameter('mlab_app'));
+                        $url = $component_class->onUpload($uploadedFile->getRealPath(), $f_mime, $path_app, $sub_folder, $f_name, $f_ext, $path_component, $comp_id, $config);
+                        if (!$url) {
+                            return new JsonResponse(array(
+                                'result' => 'failure',
+                                'msg' => $this->get('translator')->trans('appController.msg.componentUploadAction.3')));
+                        }
+                        $process_file = true;
+                        $urls[] = $url;
+                    }
+                }
             
 //no onupload processing, so we just copy the file            
-            if (!$process_file) {            
-                $uploadedFile->move($path_app . $sub_folder, $f_name . "." . $f_ext);
-                $urls[] = $sub_folder . "/" . $f_name . "." . $f_ext;
+                if (!$process_file) {            
+                    $uploadedFile->move($path_app . $sub_folder, $f_name . "." . $f_ext);
+                    $urls[] = $sub_folder . "/" . $f_name . "." . $f_ext;
+                }
             }
         }
 
@@ -1616,13 +2017,13 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         $files = array();
         switch ($file_type) {
             case "video":
-                $search = "*.png";
+                $search = "*.mp4";
                 break;
             case "image":
                 $search = "*";
                 break;
             case "audio":
-                $search = "*.txt";
+                $search = "*.m4a";
                 break;
             default:
                 $search = "*";
@@ -1630,7 +2031,16 @@ I tillegg kan man bruke: -t <tag det skal splittes på> -a <attributt som splitt
         }
         
         foreach (glob($app_path . $search) as $file) {
-            $files[$file_url . basename($file)] = basename($file);
+            if ($file_type === "image") {
+                $previewFile = $file;
+            } else {
+                $previewFile = substr($file, 0, -4) . '.png';
+            }
+            $files[] = [
+                'url' => $file_url . basename($file),
+                'name' => basename($file),
+                'preview' => file_exists($previewFile) ? $file_url . basename($previewFile) : null
+            ];
         }
 
         return new JsonResponse(array('result' => 'success', 'files' => $this->renderView('SinettMLABBuilderBundle:App:options.html.twig', array('files' => $files))));

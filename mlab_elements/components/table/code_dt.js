@@ -54,6 +54,63 @@
 		document.execCommand('italic', null, null);
     };
     
+    this.custom_decrease_size = function (el) {
+		var thisTable = $(this.getHTMLElement(el));
+        thisTable.find("th,td").each(function() {
+            if ($(this).hasClass("mc_large")) {
+                $(this).removeClass("mc_large").addClass("mc_medium");
+            } else if ($(this).hasClass("mc_medium")) {
+                $(this).removeClass("mc_medium").addClass("mc_small");
+            } else {
+                $(this).addClass("mc_small");
+            }
+        });        
+    };
+    
+    this.custom_increase_size = function (el) {
+		var thisTable = $(this.getHTMLElement(el));
+        thisTable.find("th,td").each(function() {
+            if ($(this).hasClass("mc_small")) {
+                $(this).removeClass("mc_small").addClass("mc_medium");
+            } else if ($(this).hasClass("mc_medium")) {
+                $(this).removeClass("mc_medium").addClass("mc_large");
+            } else {
+                $(this).addClass("mc_large");
+            }
+        });
+    };
+    
+    this.custom_align_left = function (el) {
+        var table = this.getHTMLElement(el);
+        var current_cell = table.find("[data-mlab-dt-table-focus='1']");
+        if (current_cell.length == 0) {
+            return;
+        }
+
+        current_cell.attr('align', 'left');
+        current_cell.focus();
+    };
+    
+    this.custom_align_center = function (el) {
+        var table = this.getHTMLElement(el);
+        var current_cell = table.find("[data-mlab-dt-table-focus='1']");
+        if (current_cell.length == 0) {
+            return;
+        }
+        current_cell.attr('align', 'center');
+        current_cell.focus();
+    };
+    
+    this.custom_align_right = function (el) {
+        var table = this.getHTMLElement(el);
+        var current_cell = table.find("[data-mlab-dt-table-focus='1']");
+        if (current_cell.length == 0) {
+            return;
+        }
+        current_cell.attr('align', 'right');
+        current_cell.focus();
+    };
+    
     this.custom_add_row = function (el) {
         var table = this.getHTMLElement(el);
         var current_cell = table.find("[data-mlab-dt-table-focus='1']");
@@ -100,6 +157,8 @@
         }
         var row = current_cell.parent();
 		if (row.parent().prop("tagName").toLowerCase() == "tbody") {
+            var selectRow = row.prev().length > 0 ? row.prev() : row.next();
+            selectRow.find('th, td').first().attr('data-mlab-dt-table-focus', '1');
             row.detach();
         }
     };
@@ -222,3 +281,9 @@
             }
         }
     };
+    
+    this.preview = function (el) {
+        return { text: this.getHTMLElement(el).text().replace(/\s+/g,' ').trim() };
+    };
+    
+    

@@ -1,12 +1,9 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 *******************************************************************************************************************************/
 
 /**
@@ -40,24 +37,11 @@ class TemplateController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-            $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllCheckDeleteable();
+            $entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAll();
             foreach ($entities as $entity) {
-                $group_user_access = array();
 //pick up group access names, we show admin access (bit 0 = 1) in red
-                foreach ($entity->getGroups() as $group) {
-                    $template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()));
-                    if ($template_group_data) {
-                        $access_state = $template_group_data->getAccessState();
-                        if ( ($access_state & 1) > 0) {
-                            $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
-                        } else if ( ($access_state & 2) > 0) {
-                            $group_user_access[] = $group->getName();
-                        }
-                    }
-                }
-                $entity->setGroupNames(implode(", ", $group_user_access));
+                $this->setTemplateGroupNames($entity);
             }
-                
         } else {
             
             $temp_entities = $em->getRepository('SinettMLABBuilderBundle:Template')->findAllEnabledCheckDeleteable();
@@ -68,30 +52,19 @@ class TemplateController extends Controller
 
             foreach ($temp_entities as $entity) {
                 $add_entity = false;
-                $group_user_access = array();
                 $sub_groups = $entity->getGroups();
                 foreach ($sub_groups as $group) {
                     if (in_array($group->getId(), $group_access)) { // only deal with groups that we have access to
-
 //here we check what sort of access record this is.
-//if bit 0 = 1 we have admin access, so we list it
                         $template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $entity->getId(), 'group_id' => $group->getId()));
-                        if ($template_group_data) {
-                            $access_state = $template_group_data->getAccessState();
-                            if ( ($access_state & 1) > 0 && !in_array($entity, $entities)) {
-                                $add_entity = true;
-                            } 
-
-//if bit 1 = 1 we have user access, so we add this group name to the list
-                            if ( ($access_state & 2) > 0) {
-                                $group_user_access[] = $group->getName();
-                            }
+                        if ($template_group_data && $template_group_data->getAccessState() >= TemplateGroupData::ACCESS_STATE_ADMIN) {
+                            $add_entity = true;
                         }
                     }
                 }
                 if ($add_entity) {
+                    $this->setTemplateGroupNames($entity);
                     $entities[] = $entity;
-                    $entities[sizeof($entities) - 1]->setGroupNames(implode(", ", $group_user_access));
                 }
             }            
             
@@ -236,9 +209,12 @@ class TemplateController extends Controller
      * To manipulate the access_data information correctly, and differentiate between admin and super admin modes we do this manually
      *
      */
-    public function editAction($id)
+    public function editAction($id, $access)
     {
-        
+        $accessRights = [
+            'admin' => TemplateGroupData::ACCESS_STATE_ADMIN,
+            'user' => TemplateGroupData::ACCESS_STATE_USER,
+        ];
         $em = $this->getDoctrine()->getManager();
         $template_entity = $em->getRepository('SinettMLABBuilderBundle:Template')->find($id);
         $groups = $em->getRepository('SinettMLABBuilderBundle:Group')->findAll();
@@ -249,13 +225,12 @@ class TemplateController extends Controller
 //set group to enabled if it is in the group entities
         foreach ($groups as $group) {
             if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') || in_array($group->getId(), $group_access)) { //only deal with groups that we have access to
+                $group_id = $group->getId();
                 $group->isEnabled = "false";
-                $entity = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template_entity->getId(), 'group_id' => $group->getId()));
+                $entity = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template_entity->getId(), 'group_id' => $group_id));
                 if ($entity) {
-//check if group is enabled, this is done by checking if a record exists for this group in the componentgroup table
-                    if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 1) > 0) {
-                        $group->isEnabled = "true";
-                    } else if (!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($entity->getAccessState() & 2) > 0) {
+                    $access_state = $entity->getAccessState();
+                    if ($access_state >= $accessRights[$access]) {
                         $group->isEnabled = "true";
                     }
                 }
@@ -265,6 +240,7 @@ class TemplateController extends Controller
         }
        
         return $this->render('SinettMLABBuilderBundle:Template:edit_admin.html.twig', array(
+            'access'       => $access,
             'template_id'  => $template_entity->getId(),
             'entity'       => $template_entity,
             'groups'       => $groups_to_edit,
@@ -411,15 +387,22 @@ class TemplateController extends Controller
       * This way an admin might be given access to a component through 
       *
      */
-    public function updateGroupsAction(Request $request, $template_id)
+    public function updateGroupsAction(Request $request, $template_id, $access)
     {
+        $accessRights = [
+            'admin' => TemplateGroupData::ACCESS_STATE_ADMIN,
+            'user' => TemplateGroupData::ACCESS_STATE_USER,
+        ];
+
         $em = $this->getDoctrine()->getManager();
         $temp_roles = $this->getUser()->getRoles();
         $temp_groups = $this->getUser()->getGroupsArray();
         $all_groups = $em->getRepository('SinettMLABBuilderBundle:Group')->findByRoleAndGroup($temp_roles[0], $temp_groups); //list of all thr groups the current admin is member of
         $updated_groups = $request->get('sinett_mlab_builderbundle_templategroup'); //data coming in
+        $updated_groups = $updated_groups ? $updated_groups : [];
         $template = $em->getRepository('SinettMLABBuilderBundle:Template')->find($template_id);
         
+// dd($all_groups);
         foreach ($all_groups as $group) {
              
             $group_id = $group->getId();
@@ -434,78 +417,44 @@ class TemplateController extends Controller
 //next we check if this group access setting has an existing record in the database and if the toggle bit is true or not for user (if regular admin) or admin (if super user)
             $existing_template_group_data = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template_id, 'group_id' => $group_id));
             if ($existing_template_group_data) {
-                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-                    $existing_access = (($existing_template_group_data->getAccessState() & 1) > 0);
-                } else {
-                    $existing_access = (($existing_template_group_data->getAccessState() & 2) > 0);
+                if($access == 'user') {
+                    if($isEnabled) {
+                        $accessState = TemplateGroupData::ACCESS_STATE_USER;
+                    } else {
+                        $accessState = min(TemplateGroupData::ACCESS_STATE_ADMIN, $existing_template_group_data->getAccessState());
+                    }
+                } elseif ($access == 'admin') {
+                    if($isEnabled) {
+                        $accessState = max(TemplateGroupData::ACCESS_STATE_ADMIN, $existing_template_group_data->getAccessState());
+                    } else {
+                        $accessState = TemplateGroupData::ACCESS_STATE_SUPERADMIN;
+                    }
                 }
-            }
-            
-//the group has been unchecked and the stored templategroupdata record should be updated 
-//Regular admin: basically we remove the second bit which is flipped on for user access. 
-//Superadmin: switch bit 0 to 0
-//If the remaining value is 0 it means admin does not have access, if it is 1 then admin has access
-//this allows us to preserve admin access info between turning on an off user access
-            if (!$isEnabled && $existing_access) {
-                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-                    $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() ^ 1);
-                } else if (($existing_template_group_data->getAccessState() & 2) > 0) {
-                    $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() ^ 2);
-                }
+
+                $existing_template_group_data->setAccessState($accessState);
                 $em->flush();
-                
-//no template_group_data record so did not have access before, got it now, need to create new record
-//we actually create one record directly in the TemplateGroupData table, the other we do through Doctrine by adding a new group to the $template object
-            } elseif ($isEnabled && !$existing_template_group_data) {
+            } elseif ($isEnabled && $this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
                 $new_entity = new TemplateGroupData();
                 $new_entity->setGroupId($group_id);
-                $new_entity->setTemplateId($template->getId());
-                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-                    $new_entity->setAccessState(1);
-                } else {
-                    $new_entity->setAccessState(2);
-                }
+                $new_entity->setAccessState($accessRights[$access]);
+                $new_entity->setTemplateId($template_id);
+                $new_entity->setGroup($group);
+                $new_entity->setTemplate($template);
+
                 $em->persist($new_entity);
                 $em->flush();
-                
-                $group_record = $em->getRepository('SinettMLABBuilderBundle:Group')->find($group_id);
-                $template->addGroup($group_record);
-                $em->persist($template);
-                $em->flush();
-                
-//did not have access before, got it now, need to update existing record
-            } elseif ($isEnabled && !$existing_access) {
-                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-                    $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() | 1);
-                } else {
-                    $existing_template_group_data->setAccessState($existing_template_group_data->getAccessState() | 2);
-                }
-                $em->flush();
-                
-            }  
-        }
-        
-//format the group access details
-        $group_user_access = array();
-//pick up group access names, we show admin access (bit 0 = 1) in red
-        foreach ($template->getGroups() as $group) {
-            $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template->getId(), 'group_id' => $group->getId()))->getAccessState();
-            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') && ($access_state & 1) > 0) {
-                $group_user_access[] = "<span style='color: red;'>" . $group->getName() . "</span>";
-            } else if ( ($access_state & 2) > 0) {
-                $group_user_access[] = $group->getName();
             }
+            
+
         }
-        $template->setGroupNames(implode(", ", $group_user_access));   
-        
+        $this->setTemplateGroupNames($template);
+
         return new JsonResponse(array('db_table' => 'template',
                     'action' => 'UPDATE',
                     'db_id' => $template_id,
                     'result' => 'SUCCESS',
                     'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $template))));
     }
-    
-    
     
     
     
@@ -572,14 +521,35 @@ class TemplateController extends Controller
         $em->flush();
         
         $temp_apps = $entity->getApps();
-		$entity->setCanDelete($temp_apps->count() == 0);
+        $entity->setCanDelete($temp_apps->count() == 0);
+        $this->setTemplateGroupNames($entity);
             
         return new JsonResponse(array('db_table' => 'template',
                 'action' => 'UPDATE',
                 'db_id' => $entity->getId(),
                 'result' => 'SUCCESS',
                 'record' => $this->renderView('SinettMLABBuilderBundle:Template:show.html.twig', array('entity' => $entity))));
-	        	
+                
+    }
+    
+    
+    protected function setTemplateGroupNames(&$template) {
+        $em = $this->getDoctrine()->getManager();
+        $group_admin_access = array();
+        $group_user_access = array();
+        foreach ($template->getGroups() as $group) {
+            $access_state = $em->getRepository('SinettMLABBuilderBundle:TemplateGroupData')->findOneBy(array('template_id' => $template->getId(), 'group_id' => $group->getId()))->getAccessState();
+            if ($access_state >= TemplateGroupData::ACCESS_STATE_ADMIN) {
+                $group_admin_access[] = $group->getName();
+            }
+
+            if ($access_state >= TemplateGroupData::ACCESS_STATE_USER) {
+                $group_user_access[] = $group->getName();
+            }
+        }
+        $template->setGroupNamesAdmin(implode(", ", $group_admin_access));   
+        $template->setGroupNamesUser(implode(", ", $group_user_access));   
+        
     }
     
     

@@ -1,9 +1,8 @@
-# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-# @license Proprietary and confidential
+# @copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+# @license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 # @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 # 
-# Unauthorized copying of this file, via any medium is strictly prohibited 
-# 
+ 
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData:
   type: entity
@@ -42,4 +41,18 @@ Sinett\MLAB\BuilderBundle\Entity\TemplateGroupData:
       nullable: false
       options:
         default: 0
-         
+  manyToOne:
+    template:
+      targetEntity: Template
+      inversedBy: templateGroups
+      joinColumn:
+        name: template_id
+        referencedColumnName: id
+        
+    group:
+      targetEntity: Group
+      inversedBy: templateGroups
+      joinColumn:
+        name: group_id
+        referencedColumnName: id
+      

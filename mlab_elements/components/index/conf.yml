@@ -2,10 +2,10 @@
 # content is generated at pre compile time.
 version: 1.1
 developer: Arild Bergh @ Sinett/FFI.no
-category: generated
-category_name: {nb_NO: Appnavigasjon, en_GB: App navigation}
+category: navigation
+category_name: {nb_NO: App Nav, en_GB: App navigation}
 name: index
-extended_name: { nb_NO: Innholdsliste, en_GB: App page index, default: App page index }
+extended_name: { nb_NO: Innholdsliste, en_GB: Index, default: Index }
 tooltip: { nb_NO: Innholdsliste over sidene i appen, en_GB: Index of the pages in this app, default: Index of the pages in this app }
 footer_tip: { nb_NO: Innholdslisten gir en klikkbar liste med sidene og kapitteloverskriftene som er lagt til i appen, en_GB: The index presents a clickable list of all the pages in this app for the user to navigate, default: The index presents a clickable list of all the pages in this app for the user to navigate }
 compatible: []

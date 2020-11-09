@@ -1,11 +1,8 @@
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
 <tr id="row_component_{{ entity.id }}">
 
@@ -14,10 +11,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     <td class="mlab_max_width_long">{{ entity.description }}</td>
     <td class="mlab_max_width_medium">
         {% if entity.groupNamesUser is empty %} <!-- If no group -->
-            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
+            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'user' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
             {% trans %}app.admin.components.no.group{% endtrans %}
         {% else %} <!-- If have groups -->
-            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
+            <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'user' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
                 {{ entity.groupNamesUser|raw }}
         {% endif %}  
             </a>
@@ -25,10 +22,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
     {% if is_granted("ROLE_SUPER_ADMIN") %} <!-- Show this column only for ROLE_SUPER_ADMIN  -->
         <td class="mlab_max_width_medium">
             {% if entity.groupNamesAdmin is empty %} <!-- If no group -->
-                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
+                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'admin' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'"> 
                 {% trans %}app.admin.components.no.group{% endtrans %}
             {% else %} <!-- If have groups -->
-                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
+                <a href="{{ path('componentgroup_edit', { 'component_id': entity.id, 'access': 'admin' }) }}" title="{% trans %}app.admin.components.tooltip.group{% endtrans %} '{{ entity.name }}'">  
                     {{ entity.groupNamesAdmin|raw }}
             {% endif %}  
                 </a>

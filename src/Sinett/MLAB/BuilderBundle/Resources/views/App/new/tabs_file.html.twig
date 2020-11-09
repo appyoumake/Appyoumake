@@ -1,0 +1,44 @@
+{# File menu tools #}
+    <button data-action="page.save" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.file.save.tooltip{% endtrans %}">
+        <i class="far fa-save"></i> {% trans %}editor.tabs.file.save{% endtrans %}
+    </button>
+    <button data-action="page.unlock" class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.file.unlock.tooltip{% endtrans %}">
+        <i class="fas fa-unlock-alt"></i> {% trans %}editor.tabs.file.unlock{% endtrans %}
+    </button>
+    <div class="v-separator"></div>
+    <div>
+        <button data-action="app.preview" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.file.test.web.tooltip{% endtrans %}" >
+            <i class="far fa-file-image"></i> {% trans %}editor.tabs.file.test.web{% endtrans %}
+        </button>
+        <button data-action="app.test" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.file.test.mob.tooltip{% endtrans %}" >
+            <i class="fas fa-mobile-alt"></i> {% trans %}editor.tabs.file.test.mob{% endtrans %}
+        </button>
+    </div>
+    <div class='toolbox-menu'>
+        <button data-open-menu class="toolbox-btn btn-lg" data-tooltip="{% trans %}editor.tabs.file.qrcode.tooltip{% endtrans %}" >
+            <i class="fas fa-qrcode"></i> {% trans %}editor.tabs.file.qrcode{% endtrans %}
+        </button>
+        <div class='menu'>
+            {% for platform in mlab_variables.compiler_service.supported_platforms %}
+                <div data-mlab-download-link-info='{{ platform }}'>
+                    <div id='mlab_download_qr_link_{{ platform }}' class='mlab_download_qr_link'>&nbsp;</div>
+                    <input id='mlab_download_link_{{ platform }}' class='mlab_download_link'>&nbsp;</input>
+                    <br>
+                    <button class="common-btn" onclick="mlab.dt.management.copyUrl('mlab_download_link_{{ platform }}');">Copy link to app</button>
+                </div>
+            {% endfor %}                             
+        </div>
+    </div>
+        
+        
+
+    <div class="v-separator"></div>
+    
+    <div>
+        <button data-action-click="showDeleted" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.file.restore.page.tooltip{% endtrans %}" >
+            <i class="fas fa-undo"></i> {% trans %}editor.tabs.file.restore.page{% endtrans %}
+        </button>
+        <button data-action="component.restore" class="toolbox-btn" data-tooltip="{% trans %}editor.tabs.file.restore.component.tooltip{% endtrans %}" >
+            <i class="fas fa-undo-alt"></i> {% trans %}editor.tabs.file.restore.component{% endtrans %}
+        </button>
+    </div>

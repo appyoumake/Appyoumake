@@ -75,6 +75,81 @@
     margin: 2.33em 0;
 }
 
+/* ==========================================================================
+   Login
+   ========================================================================== */
+
+.mlab_login_heading {
+    font-size: 1.5em;
+    margin: 1em 0;
+    font-family: Verdana,Arial,sans-serif;
+}
+
+.mlab_login_fields {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    max-width: 500px;
+    min-width: 300px;
+    font-size: 1em;
+    font-family: Verdana,Arial,sans-serif;
+}
+
+.mlab_login_fields * {
+    box-sizing: border-box;
+}
+
+.mlab_login_fields input[type=text], .mlab_login_fields input[type=password], .mlab_login_fields select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.mlab_login_fields input[type=text]:focus, .mlab_login_fields input[type=password]:focus, .mlab_login_fields select:focus {
+    border: 1px solid #3744a0;
+}
+
+.mlab_login_fields label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
+
+.mlab_login_fields input[type=submit] {
+    background-color: #1d2773;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    margin-top: 5px;
+    font-size: 1em;
+}
+
+.mlab_login_fields input[type=submit]:hover {
+     background-color: #3744a0;
+}
+
+.mlab_login_fields .col-30 {
+    float: left;
+    width: 30%;
+    margin-top: 6px;
+}
+
+.mlab_login_fields .col-70 {
+    float: left;
+    width: 70%;
+    margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.mlab_login_fields .row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
 
 /* ==========================================================================
    Forms
@@ -372,23 +447,32 @@
    Buttons without icon
    ========================================================================== */
 
-.mlab_base a.mlab_button_new_app {
-    color: #212121;
-    border: 1px solid #aaaaaa; 
-    background: linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%,  rgba(180, 180, 180, 1) 100%);
+.mlab_base a.mlab_buttons_front, .mlab_base a.mlab_buttons_front_selected {
     text-decoration: none;
-    border-radius: 2px;
-    transition: 0.1s linear box-shadow;
-    vertical-align: top;
-    height: 32px;
-    width: 32px;
-    background-position: center;
-    padding-right: 1.6em;
-    padding-left: 1.6em;
-    padding-top: 0.9em;
-    padding-bottom: 0.9em;
-    margin-right: 1.4em;
     line-height: 6.5em;
+    background-color: #1d2773;
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-right: 5px;
+    font-size: 1em;
+}
+
+.mlab_base a.mlab_buttons_front:hover {
+    background-color: #3744a0;
+}
+
+.mlab_base a.mlab_buttons_front_selected {
+    background-color: white;
+    border: solid #1d2773 1px;
+    color: #1d2773;
+    padding: 11px 19px;
+    cursor: default;
+        
 }
 
 /* ==========================================================================
@@ -481,7 +565,8 @@
     padding-bottom: 0.5em;
 }
 
-#builder_dialog_new_app .mlab_icon_design_input {
+#builder_dialog_new_app .mlab_icon_design_input,
+#builder_dialog_new_app .mlab_icon_design_output {
     padding-top: 0.6em;
 }
 
@@ -498,6 +583,17 @@
     padding-bottom: 0.6em;
 }
 
+#builder_dialog_new_app #mlab_make_icon {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    grid-gap: 3%;
+}
+
+#builder_dialog_new_app #mlab_scale_icon {
+    width: 256px;
+    margin: 10px;
+}
+
 #builder_dialog_new_app #mlab_make_icon label{
     width: 40%;
 }
@@ -511,7 +607,12 @@
 
 #builder_dialog_new_app #mlab_icon_text,
 #builder_dialog_new_app #mlab_local_iconfile{
-    width: 43%;  
+    width: 100%;
+}
+
+#mlab_make_icon label,
+#mlab_make_icon input {
+    margin-top: 15px;
 }
 
 
@@ -793,14 +894,21 @@
    ========================================================================== */
    
 .builder_welcome{
-   max-width: 500px;
+   max-width: 650px;
    word-wrap: break-word; 
+   line-height: 1.3em;
+   font-weight: 100;
 }
 
 .container {
     padding-left: 5.5em;
     padding-right: 5.5em;
     padding-top: 2em;
+    font-family: Verdana,Arial,sans-serif;
+} 
+
+.mlab_hide_section {
+    display: none;
 } 
 
 /* added so that the elements of the container don't wrap if the screen is made smaler than the min width */
@@ -965,16 +1073,42 @@ body.mlab_base div.mlab_top_bar_back {
 }
 
 .mlab_frontpage {
-    max-width: 800px;
+    max-width: 635px;
     margin-top: 30px;
+    margin-left: 42px;
+    font-size: 1em;
+    font-family: Verdana,Arial,sans-serif;
+    line-height: 1.3em;
+}
+.mlab_frontpage .button {
+    background-color: #1d2773;
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: left;
+    margin-top: 15px;
+    margin-right: 5px;
+    font-size: 1em;
 }
 
-.mlab_frontpage a {
-  color: darkgoldenrod;     
+.mlab_frontpage .button_selected {
+     background-color: #3744a0;
 }
 
-.mlab_frontpage .help_guide_top {
-    padding: 25px 0px 70px 80px;
+.mlab_frontpage .button:hover {
+     background-color: #3744a0;
+}
+
+.mlab_five_step_help_page {
+    max-width: 802px;
+    line-height: 1.3em;
+}
+
+.mlab_five_step_help_page .help_guide_top {
+    padding: 2px 0px 70px 5px;
     
 }
 
@@ -984,7 +1118,7 @@ body.mlab_base div.mlab_top_bar_back {
     float: left;
 }
 .help_guide_top .help_guide_heading {
-    padding: 0 20px 0 20px;
+    padding: 0 40px 0 40px;
     margin-top: 13px;
     font-weight: bold;
     font-size: 21px;
@@ -1004,15 +1138,22 @@ body.mlab_base div.mlab_top_bar_back {
     background-image: url("/img/frontpage_arrow_next.png");
 }
 
-.mlab_frontpage .help_guide_text {
-    color: #303030;
-    cursor: default;
+.help_guide_top .help_guide_back:hover,
+.help_guide_top .help_guide_next:hover {
+  opacity: 0.8;
 }
 
-.mlab_frontpage .help_guide_img {
+.mlab_five_step_help_page .help_guide_text {
+    color: #303030;
+    cursor: default;
+    padding: 8px 0px;
+}
+
+.mlab_five_step_help_page .help_guide_img {
     background-image: url("/img/frontpage_step1.png");
     background-repeat: no-repeat;
     padding: 700px 535px 0px 0px;
+    background-size: contain;
 }
 
 .mlab_base .mlab_edit_compgroup_checkbox {

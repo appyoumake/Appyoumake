@@ -90,9 +90,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             <li id="mlab_editor_menu_dropdown">    
                 <img class="basic_menu_icon" title='{% trans %}layout.menu.tooltip.editor.menu{% endtrans %}' src="/img/menu_icon.png" alt="logo" > 
             </li>
-            <li class="single menu_right">
-                <img class="mlab_help_icon" src="/img/help.png" title='{% trans %}layout.menu.tooltip.help{% endtrans %}' alt="logo" >
-            </li>
 
             <li id="mlab_user_menu_dropdown" class="menu_right">
                 <img class="mlab_user_info_icon" src="/img/user.png" title='{% trans %}layout.menu.tooltip.user.info{% endtrans %}Bruker info' alt="logo" >
@@ -113,7 +110,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
             {% else %}
 
-                <h1>{{ 'layout.login.headline'|trans({}, 'FOSUserBundle') }}</h1>
+                <h1 class="mlab_login_heading">{{ 'layout.login.headline'|trans({}, 'FOSUserBundle') }}</h1>
 
                 {% block fos_user_content %}
                 {% endblock fos_user_content %}

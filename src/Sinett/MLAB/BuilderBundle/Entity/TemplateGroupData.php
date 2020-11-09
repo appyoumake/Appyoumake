@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
 Unauthorized copying of this file, via any medium is strictly prohibited
 
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 *******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
@@ -20,6 +20,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TemplateGroupData
 {
+
+    const ACCESS_STATE_SUPERADMIN = 0;
+    const ACCESS_STATE_ADMIN = 1;
+    const ACCESS_STATE_USER = 2;
+  
     /**
      * @var integer
      */
@@ -39,6 +44,16 @@ class TemplateGroupData
      * @var int
      */
     private $access_state;
+
+    /**
+     * @var int
+     */
+    private $template;
+    
+    /**
+     * @var int
+     */
+    private $group;
     
     /**
      * Get id
@@ -119,5 +134,49 @@ class TemplateGroupData
         return $this->access_state;
     }
     
+    /**
+     * Set template
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Template $template
+     * @return ComponentGroup
+     */
+    public function setTemplate(\Sinett\MLAB\BuilderBundle\Entity\Template $template = null)
+    {
+        $this->template = $template;
     
+        return $this;
+    }
+
+    /**
+     * Get template
+     *
+     * @return \Sinett\MLAB\BuilderBundle\Entity\Template 
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * Set group
+     *
+     * @param \Sinett\MLAB\BuilderBundle\Entity\Group $group
+     * @return ComponentGroup
+     */
+    public function setGroup(\Sinett\MLAB\BuilderBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+    
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Sinett\MLAB\BuilderBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
 }

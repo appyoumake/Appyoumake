@@ -1,12 +1,9 @@
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
 {% extends '::base.html.twig' %}
 {% block title %}{% trans %}mlab.page.title.app.bulider.index{% endtrans %}{% endblock %}
@@ -37,11 +34,12 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                 title: '{% trans %}builder.popup.app.properties.title{% endtrans %}',
                 items: [
                   {label:'{% trans %}builder.popup.app.properties.label.edit.content{% endtrans %}',            icon:'/img/menu_field_edit.png',    action:function() { mlab_edit_app_content(); } },
-                  /*{label:'{% trans %}builder.popup.app.properties.label.edit.details{% endtrans %}',            icon:'/img/properties.png',         action:function() { mlab_edit_app_properties(); } },*/
+                  {label:'{% trans %}builder.popup.app.properties.label.edit.details{% endtrans %}',            icon:'/img/properties.png',         action:function() { mlab_edit_app_properties(); } },
                   null, // divider
                   {label:'{% trans %}builder.popup.app.properties.label.download{% endtrans %}',                icon:'/img/tools/down.png',         action:function() { mlab_download_app(); } },
                   {label:'{% trans %}builder.popup.app.properties.label.copy.link{% endtrans %}',               icon:'/img/copy_page.png',          action:function() { mlab_copy_app_link() } },
                   null, // divider
+                  {label:'{% trans %}builder.popup.app.properties.label.copy.app{% endtrans %}',                icon:'/img/copy_page.png',          action:function() { mlab_copy_app() } },
                   {label:'{% trans %}builder.popup.app.properties.label.new.incremental{% endtrans %}',         icon:'/img/newVersion.png',         action:function() { mlab_create_new_version(0.1); } },
                   {label:'{% trans %}builder.popup.app.properties.label.new.major{% endtrans %}',               icon:'/img/newVersion.png',         action:function() { mlab_create_new_version(1); } },
                   {label:'{% trans %}builder.popup.app.properties.label.new.branch{% endtrans %}',              icon:'/img/newVersion.png',         action:function() { mlab_create_new_branch(); } },
@@ -67,12 +65,44 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         function mlab_set_app_id(app_id) {
             mlab_current_app_id = app_id;
         }
+        
+        /**
+		 * Opens up the mlab app list section if hidden
+		*/
+		function mlab_show_app_list () {
+            if ($("#mlab_builder_section_app_list").hasClass( "mlab_hide_section" )) {
+                //show the help seciton and hide the list section
+                $("#mlab_builder_section_app_list").toggleClass("mlab_hide_section");
+                $("#mlab_builder_section_app_build_help").toggleClass("mlab_hide_section");
+                //toggle the design of the buttons
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front");
+            }
+		};
 
 		/**
 		 * Opens up the properties dialog and displays a blank form
 		*/
 		function mlab_app_new () {
 			$("#builder_dialog_new_app").load(url_new).dialog("open");
+		};
+        
+       /**
+		 * Opens up the mlab help section
+		*/
+		function mlab_show_how_to_build_app () {
+            if ($("#mlab_builder_section_app_build_help").hasClass( "mlab_hide_section" )) {
+                //show the help seciton and hide the list section
+                $("#mlab_builder_section_app_list").toggleClass("mlab_hide_section");
+                $("#mlab_builder_section_app_build_help").toggleClass("mlab_hide_section");
+                //toggle the design of the buttons
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_list").toggleClass("mlab_buttons_front");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front_selected");
+                $("#mlab_builder_button_app_build_help").toggleClass("mlab_buttons_front");
+            }
 		};
 		
 		/**
@@ -97,6 +127,38 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
         
         function mlab_copy_app_link() {
             alert(mlab_current_app_id);
+        }
+        
+        function mlab_copy_app() {
+            
+//request new app title
+            var app_title = $("#row_app_" + mlab_current_app_id).find("td:nth-child(3)").text().trim();
+            var new_app_title = prompt("Please enter the name of the new app to copy '" + app_title + "' to.", app_title + " (Copy)");
+            
+//if they have provided a name we continue
+            if (new_app_title) {
+//prepare URL to call
+                var url = "{{ path('app_copy', { id: "_ID_" } ) }}";
+                url = url.replace("_ID_", mlab_current_app_id);
+
+//prepare data to send in POST
+                var data = {name : new_app_title};
+      
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function( data ) {
+                        if (data.result == "SUCCESS") {
+                            var open_url = "{{ path('app_builder_editor', { 'id': 'APP_ID', 'page_num': 'first' }) }}";
+                            location.href = open_url.replace(/APP_ID/ , data.app_id);
+
+                        } else {
+                            alert(data.message);
+                        }                        
+                    }
+                });
+            }
         }
         
         function mlab_create_new_version(increment) {
@@ -212,22 +274,72 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block body -%}
     <h1>{% trans %}app.builder.list.main.heading{% endtrans %}</h1>
 	<p class="builder_welcome">{% trans %}app.builder.list.welcome.info{% endtrans %}</p>
-	<p><a class="mlab_button_new_app" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a></p>
-    <table class="records_list app_list" id="table_app">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
-                <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
-                <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
-                <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
-            </tr>
-        </thead>
-        <tbody>
-	        {% for app in apps %}
-		        {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
-	        {% endfor %}
-        </tbody>
-    </table>
+	<p>
+        <a id="mlab_builder_button_app_list" class="mlab_buttons_front_selected" href="javascript: mlab_show_app_list();">{% trans %}app.builder.list.app.list.button{% endtrans %}</a>
+        <a class="mlab_buttons_front" href="javascript: mlab_app_new();">{% trans %}app.builder.list.new.app.button{% endtrans %}</a>
+        <a id="mlab_builder_button_app_build_help" class="mlab_buttons_front"  href="javascript: mlab_show_how_to_build_app();">{% trans %}app.builder.list.help.tutorial.button{% endtrans %}</a> 
+    </p>
+    <div id="mlab_builder_section_app_list">
+        <table class="records_list app_list" id="table_app">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th colspan="2">{% trans %}app.builder.list.heading.app{% endtrans %}</th>
+                    <th>{% trans %}app.builder.list.heading.active_version{% endtrans %}</th>
+                    <th>{% trans %}app.builder.list.heading.last.updated{% endtrans %}</th>
+                    <th class="mlab_align_center">{% trans %}app.builder.list.heading.published{% endtrans %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in apps %}
+                    {{ include( 'SinettMLABBuilderBundle:App:list.html.twig', { 'app': app, 'app_url': app_url, 'app_icon': app_icon } ) }}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="mlab_builder_section_app_build_help" class="mlab_hide_section">
+        <div class="mlab_five_step_help_page">
+            <div class="help_guide">
+                <div class="help_guide_top">
+                    <div class="help_guide_back" onclick="help_guide_back();"></div>
+                    <p class="help_guide_heading">{% trans %}app.builder.index.page.help.guide.heading{% endtrans %}</p>
+                    <div class="help_guide_next" onclick="help_guide_next();"></div>
+                </div>
+                <p class="help_guide_text">1. {% trans %}app.builder.index.page.help.guide.text1{% endtrans %}</p> 
+                <div class="help_guide_img"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        
+            var step = 1;
+            help_text = [];
+
+            {% for i in 1..5 %}
+                help_text[{{i}}] = '{{('app.builder.index.page.help.guide.text'~i)|trans}}';
+            {% endfor %}
+
+                function help_guide_next() {
+
+                    if (step >= 5){
+                        step = 1;
+                    } else {
+                        step++;
+                    };
+                    $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
+                    $('.help_guide_text').text(step + ". " + help_text[step]);
+                };
+
+                function help_guide_back() {
+                   if (step <= 1){
+                       step = 5;
+                   } else {
+                       step--;
+                   }
+                  $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
+                  $('.help_guide_text').text(step + ". " + help_text[step]);
+                };
+
+        </script>
+    </div>
     <div id="builder_dialog_new_app"></div>
 {% endblock %}

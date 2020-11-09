@@ -6,19 +6,19 @@ Initial author: Cecilie Jackbo Gran, Sinett 3.0, FFI<br>
 Updating authors: <br>
 Comment: _Only update the version number above when component specifications change_
 
-_(If you have not already done it, you should first read [HOWTO - Template Design & Development.md](HOWTO - Template Design & Development.md) and [Mlab explained.md](Mlab explained.md))_
+_(If you have not already done it, you should first read [HOWTO - Template Design & Development.md](HOWTO - Template Design & Development.md) and [Appyoumake explained.md](Appyoumake explained.md))_
 
-This is the core template file that is copied to an app's index.html file (the first HTML5 page that the Cordova framework displays when an app is started) when a new app is created based on a template. It contains the physical layout for an app and links to all the initial CSS and Javascript files that an app requires (components may add their own Javascript and CSS files later). The layout should be based on the [jQuery Mobile framework](https://jquerymobile.com/) as Mlab is using this framework to support smart device specific features, for instance the use of swiping to move between pages. In addition it can contain Javascript code to perform certain tasks such as navigation, etc.
+This is the core template file that is copied to an app's index.html file (the first HTML5 page that the Cordova framework displays when an app is started) when a new app is created based on a template. It contains the physical layout for an app and links to all the initial CSS and Javascript files that an app requires (components may add their own Javascript and CSS files later). The layout should be based on the [jQuery Mobile framework](https://jquerymobile.com/) as Appyoumake is using this framework to support smart device specific features, for instance the use of swiping to move between pages. In addition it can contain Javascript code to perform certain tasks such as navigation, etc.
 
-Below we will go through the different elements that can be present in the frontpage.html file. Some of these are required for Mlab apps to function properly, other elements are optional and meant to enhance the experience of using Mlab apps on smart devices. As Mlab apps are based on HTML5 and related technologies there is nothing stopping you from adding additional features as long as they are HTML5 compatible and do not interfer with how Mlab works. This document is describing required and optional but common functionality to support, but if something is not mentioned here it does not disqualify it from being added to a template if it is useful.
+Below we will go through the different elements that can be present in the frontpage.html file. Some of these are required for Appyoumake apps to function properly, other elements are optional and meant to enhance the experience of using Appyoumake apps on smart devices. As Appyoumake apps are based on HTML5 and related technologies there is nothing stopping you from adding additional features as long as they are HTML5 compatible and do not interfer with how Appyoumake works. This document is describing required and optional but common functionality to support, but if something is not mentioned here it does not disqualify it from being added to a template if it is useful.
 
-**When creating this file it is important to remember that you need to support both the Mlab app editor functionality, i.e. all the design time features of Mlab, as well as the final runtime app. The former represents a particular challenge as you are in effect editing and modifying HTML5 pages inside another HTML5 page so care must be taken to avoid accidentally affecting the editing tools when trying to do something to the app page(s).**
+**When creating this file it is important to remember that you need to support both the Appyoumake app editor functionality, i.e. all the design time features of Appyoumake, as well as the final runtime app. The former represents a particular challenge as you are in effect editing and modifying HTML5 pages inside another HTML5 page so care must be taken to avoid accidentally affecting the editing tools when trying to do something to the app page(s).**
 
 * **Page layout (required)**
 
-   The basics of the layout will be familiar to anyone who has designed a website (or indeed an app). You will have some repeating elements on every page, typically navigation features such as forward/backward buttons and tools such as search, zoom, change colour scheme, etc., and some elements that are unique for each page. The latter are typically the title/headline of a page and the content of the page itself. Mlab is following jQuery Mobile conventions ith regards to creating the layout, see [https://learn.jquery.com/jquery-mobile/getting-started/](https://learn.jquery.com/jquery-mobile/getting-started/) and [http://demos.jquerymobile.com/1.4.5/pages/](http://demos.jquerymobile.com/1.4.5/pages/) for more information on this, here we will focus on Mlab specific aspects of the layout.
+   The basics of the layout will be familiar to anyone who has designed a website (or indeed an app). You will have some repeating elements on every page, typically navigation features such as forward/backward buttons and tools such as search, zoom, change colour scheme, etc., and some elements that are unique for each page. The latter are typically the title/headline of a page and the content of the page itself. Appyoumake is following jQuery Mobile conventions ith regards to creating the layout, see [https://learn.jquery.com/jquery-mobile/getting-started/](https://learn.jquery.com/jquery-mobile/getting-started/) and [http://demos.jquerymobile.com/1.4.5/pages/](http://demos.jquerymobile.com/1.4.5/pages/) for more information on this, here we will focus on Appyoumake specific aspects of the layout.
 
-   This page *must* have an div with **both** an ID and class of "mlab_editable_area". This DIV is where the HTML5 code for components are put when the app creator adds a component to the app at design time. The reason for using both an ID attribute and a class name is that we cannot locate the DIV by ID when it is manipulated in the MLAB editor tool. Typically this DIV goes inside the DIV marked as being for content in jQuery Mobile. 
+   This page *must* have an div with **both** an ID and class of "mlab_editable_area". This DIV is where the HTML5 code for components are put when the app creator adds a component to the app at design time. The reason for using both an ID attribute and a class name is that we cannot locate the DIV by ID when it is manipulated in the Appyoumake editor tool. Typically this DIV goes inside the DIV marked as being for content in jQuery Mobile. 
    
    You may also need to add some wrapper DIVs for layout or styling purposes for formatting of the content during design time. Then we will have something like this for the core content (see end of this post for a [complete frontpage.html](#user-content-example-frontpagehtml-file)):
    ```HTML
@@ -34,7 +34,7 @@ Below we will go through the different elements that can be present in the front
     </div>   
    ```
 
-   When index.html is saved at design time, the *mlab_editable_area* DIV will contain the initial page that users see when they open the app. During the [precompilation process](Mlab explained.md#app-stages) this content is removed from the DIV and stored in a separate page named 000.html. This ensures that all pages in an app are initialised in the same way during tuntime.
+   When index.html is saved at design time, the *mlab_editable_area* DIV will contain the initial page that users see when they open the app. During the [precompilation process](Appyoumake explained.md#app-stages) this content is removed from the DIV and stored in a separate page named 000.html. This ensures that all pages in an app are initialised in the same way during tuntime.
 
 * **Linked files (CSS3/Javascript) (some are required)**
 
@@ -50,7 +50,7 @@ Below we will go through the different elements that can be present in the front
 <script src="./js/mlab.api.js"></script> *
    ```
 
-   **During the design phase, Mlab updates the value of the [base href](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base) tag to the path of the app that has been opened. This is done everytime an app is either created new, or an existing app is opened. The base href tells the browser what it should use as the starting path for all files that it loads, such as CSS, Javascript and image files. The reason for doing this is that the apps that are created by the app creator may be stored (by the Mlab server) at a different location/URL than where the Mlab app editor code is stored. This is in fact encouraged for security reasons. As mentioned above, we are editing HTML pages inside a HTML page, without this modification to the base href Mlab would fail to load any linked files of an app.**
+   **During the design phase, Appyoumake updates the value of the [base href](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base) tag to the path of the app that has been opened. This is done everytime an app is either created new, or an existing app is opened. The base href tells the browser what it should use as the starting path for all files that it loads, such as CSS, Javascript and image files. The reason for doing this is that the apps that are created by the app creator may be stored (by the Appyoumake server) at a different location/URL than where the Appyoumake app editor code is stored. This is in fact encouraged for security reasons. As mentioned above, we are editing HTML pages inside a HTML page, without this modification to the base href Appyoumake would fail to load any linked files of an app.**
 
    Because of this, all paths to secondary files loaded by the browser must be relative (i.e. "./img/myfile.png" and not "/img/myfile.png"). So for Javascript and CSS files we have this code:
      ```HTML
@@ -62,7 +62,7 @@ Below we will go through the different elements that can be present in the front
 
 * **App initialisation (required)**
 
-   When the compiled app is started on a mobile device the index.html file, i.e. the file discussed here, is loaded first. As a part of this, jQuery Mobile triggers certain [events](https://api.jquerymobile.com/category/events/). Mlab uses this to perform some internal initialisation work through the [Mlab runtime API](Mlab API.html file.md), such as connecting to remote databases. When this is done Mlab will call a function named **mlabInitialiseApp()** which you need to create in frontpage.html. The function taks no parameters, and it will look something like this:
+   When the compiled app is started on a mobile device the index.html file, i.e. the file discussed here, is loaded first. As a part of this, jQuery Mobile triggers certain [events](https://api.jquerymobile.com/category/events/). Appyoumake uses this to perform some internal initialisation work through the [Appyoumake runtime API](Appyoumake API.html file.md), such as connecting to remote databases. When this is done Appyoumake will call a function named **mlabInitialiseApp()** which you need to create in frontpage.html. The function taks no parameters, and it will look something like this:
    ```Javascript
    function mlabInitialiseApp() {
      alert("Welcome to my app");
@@ -72,7 +72,7 @@ Below we will go through the different elements that can be present in the front
 
 * **Page initialisation (optional)**
 
-   Every time an Mlab app loads a different page (typically by calling the Mlab API function _navigation.pageDisplay()_ in response to the user interacting with some navigational elements, [see below](#user-content-ref-navigation)), the jQuery Mobile framework issues a number of [event calls](https://api.jquerymobile.com/category/events/). If you wish to support any of these, for instance to update a page number in a footer, etc., you can assign your own Javascript handlers to specific event. 
+   Every time an Appyoumake app loads a different page (typically by calling the Appyoumake API function _navigation.pageDisplay()_ in response to the user interacting with some navigational elements, [see below](#user-content-ref-navigation)), the jQuery Mobile framework issues a number of [event calls](https://api.jquerymobile.com/category/events/). If you wish to support any of these, for instance to update a page number in a footer, etc., you can assign your own Javascript handlers to specific event. 
    
    See these pages for a detailed description on when these events are triggered, and how: [https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/](https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/) [https://jqmtricks.wordpress.com/2014/07/13/pagecontainerbeforechange/](https://jqmtricks.wordpress.com/2014/07/13/pagecontainerbeforechange/) and [https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/](https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/). 
    
@@ -88,7 +88,7 @@ Below we will go through the different elements that can be present in the front
 
    If the template does not support navigation between different pages in an app, each page would need to individually support it. This is obviously not optimal, therefore it is recommended that your template, through the frontpage.html file, support some form of navigation. This includes, but is not limited to, the navigation code which is required to move from one page to another. 
    
-   Navigation support typically entails two parts, first there is some visual element that the user presses to trigger an event, secondly there is some code to load the page that the visual element indicates. The latter can use the Mlab runtime API functions found in the [navigation object](mlab.api.js file.md) to move between pages, typically through the use of the navigation.pageDisplay function. Some examples of visual elements you could deply include:
+   Navigation support typically entails two parts, first there is some visual element that the user presses to trigger an event, secondly there is some code to load the page that the visual element indicates. The latter can use the Appyoumake runtime API functions found in the [navigation object](mlab.api.js file.md) to move between pages, typically through the use of the navigation.pageDisplay function. Some examples of visual elements you could deply include:
 
     * An index of all pages/sections in the app displayed as text. When a text string is pressed the template code opens that specific page.
    * Previous/next buttons that move one page back or forth.
@@ -129,13 +129,13 @@ Below we will go through the different elements that can be present in the front
      }
    ```
 
-* **Extending templates with Mlab variable and/or component placeholders; why and how (optional)**
+* **Extending templates with Appyoumake variable and/or component placeholders; why and how (optional)**
    
-   As mentioned in [Mlab explained.md](Mlab explained.md) the Mlab templates frame what is known as Mlab components, and a component is a self contained set of HTML5/Javascript/CSS3 code that provides the app creator with tools to build an app. The user of the compiled app will experience it as a single set of pages, but each page will in fact have one or more components in it. 
+   As mentioned in [Appyoumake explained.md](Appyoumake explained.md) the Appyoumake templates frame what is known as Appyoumake components, and a component is a self contained set of HTML5/Javascript/CSS3 code that provides the app creator with tools to build an app. The user of the compiled app will experience it as a single set of pages, but each page will in fact have one or more components in it. 
    
    Sometimes it can be useful for a template to contain one ore more components, rather than having to recreate all the functionality of a component. A good example of this is the _index_ component. This is a core component that generates an index when an app is compiled, this index can be in one of three formats. 1) it can use just an outline of chapter headings; 2) if can use an outline of chapter headings + page titles under each chapter or 3) same as 2, but each chapter is foldable. Reusing, rather than recreating, this component will obviously save considerable time.
    
-   The template designer can add components to a template by using what is known as a placeholder. A placeholder tells Mlab where to put the component when the app is compiled, the palceholder will then be replaced with HTML5 code. All placeholders must start and end with two percentage signs (%%), the name of the component must be prefixed with MLAB_CT_COMP_ (MLAB tells Mlab that this is an Mlab placeholder, CT indicates that it should be acted upon at compile time and COMP shows that this is a component) and the name of the component as defined in the [conf.yml](COMPONENTS REFERENCE - conf.yml file.md#user-content-ref-name) such as INDEX for a component named index. As you can see the entire string must be in uppercase, and the full placeholder should then be like this:
+   The template designer can add components to a template by using what is known as a placeholder. A placeholder tells Appyoumake where to put the component when the app is compiled, the palceholder will then be replaced with HTML5 code. All placeholders must start and end with two percentage signs (%%), the name of the component must be prefixed with MLAB_CT_COMP_ (Appyoumake tells Appyoumake that this is an Appyoumake placeholder, CT indicates that it should be acted upon at compile time and COMP shows that this is a component) and the name of the component as defined in the [conf.yml](COMPONENTS REFERENCE - conf.yml file.md#user-content-ref-name) such as INDEX for a component named index. As you can see the entire string must be in uppercase, and the full placeholder should then be like this:
    
    ```html
    <div class="mlab_menu_text">%%MLAB_CT_COMP_INDEX%%</div>
@@ -143,7 +143,7 @@ Below we will go through the different elements that can be present in the front
    
    The other type of placeholder will be replaced by a single value, this is typically used for data that we do not know the value of until the app is completed. One example of this is the number of pages in an app. You may need this value to display a slider to move from page 0 (index.html) to the last page in the app. It is not possible through the Cordova framework to get this value, neither would it be realiable to ask the app creator to enter this number when he has finished the app. 
    
-   The solution is to use functions built into the Mlab precompilation process. Like the component placeholders it is made up of four elements, the first two are the same, then you use FUNC to indicate that this is a function (and not a component) followed by the name of the function that will return the value to replace the placeholder with. Curently (April 2016) there is only one function, _getnumberofpages_, that is available. To use this you will have some Javascript code like this:
+   The solution is to use functions built into the Appyoumake precompilation process. Like the component placeholders it is made up of four elements, the first two are the same, then you use FUNC to indicate that this is a function (and not a component) followed by the name of the function that will return the value to replace the placeholder with. Curently (April 2016) there is only one function, _getnumberofpages_, that is available. To use this you will have some Javascript code like this:
    
    ```javascript
    mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
@@ -153,16 +153,16 @@ Below we will go through the different elements that can be present in the front
      });
    ```
    
-   The placeholder in the example above is used in the initialisation of the navigation functionality built into Mlab, once it is initialised the Mlab navigation functions will automatically refer to this value when determining which is the last page that can be opened.
+   The placeholder in the example above is used in the initialisation of the navigation functionality built into Appyoumake, once it is initialised the Appyoumake navigation functions will automatically refer to this value when determining which is the last page that can be opened.
    
-* **Accessing/using the Mlab API in a template, why and how (optional)** <a id="ref-use-mlabapi"></a>
+* **Accessing/using the Appyoumake API in a template, why and how (optional)** <a id="ref-use-mlabapi"></a>
    
-   To provide support for some common app facilities there is an Mlab API available. An API is simply a set of Javascript functions, you can access the Mlab API functions through the global mlab.api object. To use the functionality that display a page for example, you would use the following code:
+   To provide support for some common app facilities there is an Appyoumake API available. An API is simply a set of Javascript functions, you can access the Appyoumake API functions through the global mlab.api object. To use the functionality that display a page for example, you would use the following code:
    ```javascript
    mlab.api.navigation.pageDisplay("next");
    ```
    
-   It is worth looking through the [Mlab runtime API documentation](Mlab API - runtime.md) to see a list of functions and what you can use it for, it can save you considerable time when adding interactive elements to your template.
+   It is worth looking through the [Appyoumake runtime API documentation](Appyoumake API - runtime.md) to see a list of functions and what you can use it for, it can save you considerable time when adding interactive elements to your template.
 
 ---
 ##Example frontpage.html file

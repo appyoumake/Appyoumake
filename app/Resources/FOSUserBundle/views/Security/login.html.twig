@@ -4,26 +4,40 @@
 {% if error %}
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
-    <div style="width:250px">   
-<form id="fos_user_security_check" action="{{ path("fos_user_security_check") }}" method="post" style="display: none">
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-
-    <label for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
-    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
-
-    <label for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
-    <input type="password" id="password" name="_password" required="required" />
- 
-    <label for="locale">{% trans %}select.locale{% endtrans %}</label>
-    <select id="locale" name="_locale" >
-        {% for code, name in supported_locales %}
-            <option value="{{ code }}" {% if code == app.request.cookies.get('mlab_persistent_locale') %}  selected="selected"{% endif %}>{{ name }}</li>
-        {% endfor %}
-    </select>
- 
-    <label for="submit"></label>
-    <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
-    
-</form>
+    <div class="mlab_login_fields">   
+        <form id="fos_user_security_check" action="{{ path("fos_user_security_check") }}" method="post" style="display: none">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+            <div class="row">
+                <div class="col-30">
+                    <label for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
+                </div>
+                <div class="col-70">
+                    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-30">
+                    <label for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
+                </div>
+                <div class="col-70">            
+                    <input type="password" id="password" name="_password" required="required" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-30">                   
+                    <label for="locale">{% trans %}select.locale{% endtrans %}</label>
+                </div>
+                <div class="col-70">
+                    <select id="locale" name="_locale" >
+                        {% for code, name in supported_locales %}
+                            <option value="{{ code }}" {% if code == app.request.cookies.get('mlab_persistent_locale') %}  selected="selected"{% endif %}>{{ name }}</li>
+                        {% endfor %}
+                    </select>
+               </div>
+            </div>
+            <div class="row">
+                 <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
+            </div>
+        </form>
      </div>
 {% endblock fos_user_content %}

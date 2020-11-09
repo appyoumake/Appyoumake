@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
 Unauthorized copying of this file, via any medium is strictly prohibited
 
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 *******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
@@ -281,6 +281,20 @@ class User extends BaseUser
     }
     
     /**
+     * Get role, complementary function to getRoles to force it to only work with one role
+     * From: https://stackoverflow.com/questions/28738152/sonata-fosuserbundle-edit-roles-on-edit-form/29267681
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRole()
+    {
+        if (sizeof($this->roles) > 0) {
+            return $this->roles[0];
+        } else {
+            return "";
+        }
+    }
+    
+    /**
      * Get display value
      *
      * @return \String
@@ -416,6 +430,16 @@ class User extends BaseUser
 
         return $this;
     }
+    
+/**
+ * complementary function to addRole to set only ONE role, this is how we use it now.
+ * From: https://stackoverflow.com/questions/28738152/sonata-fosuserbundle-edit-roles-on-edit-form/29267681
+ * @param type $role
+ */
+    public function setRole($role) {
+        $this->roles = array($role);
+    }
+    
     
 /**
  * Returns the locale variable, stored in the database between sessions

@@ -1,9 +1,8 @@
-# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-# @license Proprietary and confidential
+# @copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+# @license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 # @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 # 
-# Unauthorized copying of this file, via any medium is strictly prohibited 
-# 
+ 
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 template:
     path:  /
@@ -23,7 +22,7 @@ template_create:
     requirements: { methods: post }
 
 template_edit:
-    path:  /{id}/edit
+    path:  /{id}/{access}/edit
     defaults: { _controller: "SinettMLABBuilderBundle:Template:edit" }
 
 template_update:
@@ -32,7 +31,7 @@ template_update:
     requirements: { methods: post|put }
 
 template_update_group:
-    path:  /{template_id}/update_groups
+    path:  /{template_id}/{access}/update_groups
     defaults: { _controller: "SinettMLABBuilderBundle:Template:updateGroups" }
     requirements: { methods: post|put }
 

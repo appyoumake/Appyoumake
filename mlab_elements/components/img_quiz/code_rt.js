@@ -16,7 +16,7 @@
             }
             return ints;
         }
-        debugger;
+        
 //first we get the number of questions they want to display
         var display_num_questions = parseInt(mlab.api.getVariable(el, "display_num_questions")),
             total_num_questions = $(el).find("[data-mlab-ct-img_quiz-role='display'] > img").length;
@@ -27,6 +27,82 @@
         } else {
             this.selected_questions = Array.from({length: total_num_questions}, (v, k) => k+1); 
         }
+        
+//code for popup and zoom
+        $(el).find("[data-mlab-ct-img_quiz-role='display'] > img").on( "click", function() {
+            var target = $( this ),
+                image_name = target.attr( "src" ),
+                img_height = target[0].naturalHeight,
+                img_width = target[0].naturalWidth,
+                header_height = $("[data-role='header']").height(),
+                zoom_height = $( window ).height() - (header_height + 10),
+                zoom_width = $( window ).width() - 20,
+                short = new String(image_name).substring(image_name.lastIndexOf('/') + 1).replace(/\W/g, ''),
+                img = '<img src="' + image_name + '" data-image-height="' + img_height + '" data-image-width="' + img_width + '" class="photo" height="' + zoom_height + '" >', // width="' + zoom_width + '"
+                popup = '<div data-role="popup" id="popup-' + 
+                        short + '" data-short="' + short +'" data-theme="none" data-overlay-theme="a" data-corners="false" data-tolerance="' + 
+                        header_height + ',5,10,5" data-position-to="[data-role=\'header\']">' +
+                        '<a id="mlab_zoom_close" href="#" data-rel="back"><span class="mlab_btn_close_menu"></span></a>' +
+                        '</div>';
+// Create the popup window hosting the image
+            var temp_popup = $( img ).appendTo( $( popup ).appendTo( $.mobile.activePage ).popup() );
+            temp_popup.parent().on('swipeleft swiperight', function(e){e.stopPropagation();e.preventDefault();})
+
+// Wait with opening the popup until the popup image has been loaded in the DOM.
+// This ensures the popup gets the correct size and position
+            $( ".photo", "#popup-" + short ).load(function() {
+                var img = $( "#popup-" + short + " > img");
+                
+// Open the popup
+                $( "#popup-" + short ).popup( "open" );
+                                
+                img.imgViewer2({
+                    onReady: function() {
+                        var orig_height = $( this.element[0] ).data("image-height"),
+                            orig_width = $( this.element[0] ).data("image-width"),
+                            img = $( "#popup-" + short + " > img"),
+                            width = img.width(),
+                            height = img.height(),
+                            zoom = Math.max((orig_height / height), (orig_width / width), 1);
+                        this.setZoom(zoom).panTo([0.5,0.5]);
+                        
+//hide the hamburger menu
+                        $("#mlab_hamburger_menu").hide();
+                    }
+                });
+                
+// Clear the fallback
+                clearTimeout( fallback );
+            });
+// Fallback in case the browser doesn't fire a load event
+            var fallback = setTimeout(function() {
+                $( "#popup-" + short ).popup( "open" );
+            }, 2000);
+        });
+
+// Set a max-height to make large images shrink to fit the screen.
+        $( document ).on( "popupbeforeposition", ".ui-popup:not(.mlab_menu_panel)", function() {
+            
+            var image = $( this ).children( "img" ),
+                height = image.height(),
+                width = image.width();
+
+// Set height and width attribute of the popup
+            var maxHeight = $( window ).height() - ($("[data-role='header']").height() + 10);
+            $( this ).attr({ "height": maxHeight, "width": ($( window ).width() - 20) });
+            $( "img.photo", this ).css( "max-height", maxHeight + "px" );
+            
+
+        });
+
+        // Remove the popup after it has been closed to manage DOM size
+        $( document ).on( "popupafterclose", ".ui-popup:not(.mlab_menu_panel)", function() {
+//show the hamburger menu
+            $("#mlab_hamburger_menu").show();
+            $( this ).remove();
+        });
+
+//popup and zoom end code
         this.prepareImages(el);
         this.showImage(el);
         this.displayAnswers(el);
@@ -73,12 +149,13 @@
         var container = $(el).find("[data-mlab-ct-img_quiz-role='display']"),
             curr_img = container.find(".active"),
             num_active = curr_img.index() + 1,
-            selected_index = this.selected_questions.indexOf(num_active);
+            selected_index = this.selected_questions.indexOf(num_active),
+            total_questions = this.selected_questions.length;
     
-        if (direction === 1 && selected_index === (this.selected_questions.length - 1)) {
+        if (direction === 1 && selected_index === (total_questions - 1)) {
             alert("Quiz finished");
             return;
-        } else if (direction === 1 && selected_index < (this.selected_questions.length - 1)) {
+        } else if (direction === 1 && selected_index < (total_questions - 1)) {
             selected_index++;
         } else if (direction === -1 && selected_index > 0) {
             selected_index--;
@@ -88,7 +165,8 @@
         var move_to = container.find("img:nth-child(" + this.selected_questions[selected_index] + ")");
         curr_img.removeClass("active");
         move_to.addClass("active");
-        $(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + this.selected_questions[selected_index] + ")").addClass("active").siblings().removeClass("active");
+        $(el).find("[data-mlab-ct-img_quiz-role='indicator']").text((selected_index + 1) + "/" + total_questions);
+        //$(el).find("[data-mlab-ct-img_quiz-role='indicator'] span:nth-child(" + this.selected_questions[] + ")").addClass("active").siblings().removeClass("active");
         this.displayAnswers(el);
     }
     
@@ -159,7 +237,7 @@
             res = "Incorrect";
             msg = btn_clicked.data("mlab-ct-img_quiz-explanation");
         }
-        debugger;
+        
         el.find("[data-mlab-ct-img_quiz-role='result']").text(res);
         el.find('[data-mlab-ct-img_quiz-role="explain"] > p').text(msg);
         el.find('[data-mlab-ct-img_quiz-role="explain"]').slideDown();

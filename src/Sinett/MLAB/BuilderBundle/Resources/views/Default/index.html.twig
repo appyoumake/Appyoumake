@@ -1,12 +1,9 @@
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
 {% extends '::base.html.twig' %}
 {% block title %}{% trans %}mlab.page.title.index{% endtrans %}{% endblock %}
@@ -14,47 +11,15 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 
     
     <div class="mlab_frontpage">
-        <p class="frontpage_info">{% trans %}app.builder.index.page.text{% endtrans %} {% trans %}app.builder.index.page.link.text.before{% endtrans %} <a href="{{ path('app_builder_index')}}">{% trans %}app.builder.index.page.link.app.list{% endtrans %}</a> {% trans %}app.builder.index.page.link.text.after{% endtrans %}</p>
-        <div class="help_guide">
-            <br>
-            <div class="help_guide_top">
-                <div class="help_guide_back" onclick="help_guide_back();"></div>
-                <p class="help_guide_heading">{% trans %}app.builder.index.page.help.guide.heading{% endtrans %}</p>
-                <div class="help_guide_next" onclick="help_guide_next();"></div>
-            </div>
-            <p class="help_guide_text">1. {% trans %}app.builder.index.page.help.guide.text1{% endtrans %}</p> 
-            <div class="help_guide_img"></div>
-        </div>
+        {% if app.user == null %} <!-- If not loged in -->
+            <h1 class="frontpage_heading">{% trans %}app.builder.index.page.heading{% endtrans %}</h1>
+            <p class="frontpage_info">{% trans %}app.builder.index.page.text{% endtrans %}</p>
+            <a target="_top" href="{{ path('fos_user_security_login') }}"><p class="button">{% trans %}app.builder.menu.link.login{% endtrans %}</p></a>
+        {% else %} <!-- If loged in --> 
+            <!-- Automatically redirected to the builder page with the app list--> 
+        {% endif %}
+        
+        
+       
     </div>
-    <script type="text/javascript">
-        
-        var step = 1;
-        help_text = [];
-        
-        {% for i in 1..5 %}
-            help_text[{{i}}] = '{{('app.builder.index.page.help.guide.text'~i)|trans}}';
-        {% endfor %}
-            
-            function help_guide_next() {
-                
-                if (step >= 5){
-                    step = 1;
-                } else {
-                    step++;
-                };
-                $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
-                $('.help_guide_text').text(step + ". " + help_text[step]);
-            };
-            
-            function help_guide_back() {
-               if (step <= 1){
-                   step = 5;
-               } else {
-                   step--;
-               }
-              $('.help_guide_img').css('background-image', 'url("/img/frontpage_step' + step + '.png")');
-              $('.help_guide_text').text(step + ". " + help_text[step]);
-            };
-    
-    </script>
 {% endblock %}

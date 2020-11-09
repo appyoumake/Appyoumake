@@ -1,9 +1,8 @@
-# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-# @license Proprietary and confidential
+# @copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+# @license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 # @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 # 
-# Unauthorized copying of this file, via any medium is strictly prohibited 
-# 
+ 
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 %Users%: brukere
 
@@ -12,72 +11,76 @@ mlab.error.unknown: Det oppsto en ukjent feil
 #-----------------------------------------------------
 # Titel of the pages in Mlab
 #-----------------------------------------------------
-mlab.page.title.index: Velkommen til MLAB
-mlab.page.title.app.bulider.index: MLAB apper
-mlab.page.title.app.bulider.editor: MLAB app editor
-mlab.page.title.admin: MLAB admin
+mlab.page.title.index: Velkommen til Appyoumake
+mlab.page.title.app.bulider.index: Appyoumake apper
+mlab.page.title.app.bulider.editor: Appyoumake app editor
+mlab.page.title.admin: Appyoumake admin
 
 
 #-----------------------------------------------------
 # Index info page
 #-----------------------------------------------------
-app.builder.index.page.heading: Mlab
-app.builder.index.page.text: Velkommen til Mlab. Med dette rammeverket kan du lage dine egne interaktive apper.
-app.builder.index.page.link.text.before: For å komme i gang gå til
-app.builder.index.page.link.app.list: App liste
-app.builder.index.page.link.text.after: eller velg en annen handling fra menyen ovenfor.
-app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 steg
-app.builder.index.page.help.guide.text1: Start Ny App veiviseren
-app.builder.index.page.help.guide.text2: Klikk på en komponent for å legge den til på siden
-app.builder.index.page.help.guide.text3: Rediger innholdet og innstillingene til komponenten
-app.builder.index.page.help.guide.text4: Legg til flere komponenter og sider til appen er ferdig
-app.builder.index.page.help.guide.text5: Bygg appen og prøve den på mobil eller nettbrett
-
-
+app.builder.index.page.heading: Velkommen til app bygger Appyoumake
+app.builder.index.page.text: Appyoumake er et rammeverk som gir personell uten programmeringskunnskap mulighet til å lage og dele profesjonelle, interaktive apper.
+app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 trinn
+app.builder.index.page.help.guide.text1: Velg:- Ny App.
+app.builder.index.page.help.guide.text2: Opprett sider og legg til komponenter. Komponenter kan være tekst, bilder, film og lyd.
+app.builder.index.page.help.guide.text3: Rediger innholdet på sidene og innstillingene til komponentene. Utført arbeid lagres automatisk.
+app.builder.index.page.help.guide.text4: Fortsett å legg til sider og komponenter til appen er ferdig. Innholdsfortegnelsen oppdateres automatisk.
+app.builder.index.page.help.guide.text5: Velg:- Prøv App på mobil. Appen ferdigstilles og kan prøves på mobil eller nettbrett.
+ 
+ 
 #-----------------------------------------------------
 # List of apps page
 #-----------------------------------------------------
 app.builder.list.main.heading: App'er
-app.builder.list.welcome.info: Velkommen til Mlab app-bygger! <br><br> Her har du en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. Bruk knappen for å lage en ny app.
+app.builder.list.welcome.info: App liste gir deg en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. For å lage en app klikker du på Ny app knappen. Appyoumake veiledning gir deg en rask inføring i hvordan lag en app.
 app.builder.list.new.app.button: Ny App
+app.builder.list.app.list.button: App liste
+app.builder.list.help.tutorial.button: Appyoumake veiledning
 app.builder.list.heading.app: App navn
 app.builder.list.heading.published: Publisert
 app.builder.list.heading.version: Versjon
 app.builder.list.heading.active_version: Aktiv versjon
 app.builder.list.heading.last.updated: Sist oppdatert
-
+ 
 app.builder.list.tooltip.name: Klikk på navnet for å redigere appen
 app.builder.list.tooltip.properties: Menyen til
-
-
+ 
+ 
 #-----------------------------------------------------
-# New app form 
+# New app form
 #-----------------------------------------------------
 builder.new.app.basedon.tab: Baser på
 builder.new.app.select_base.tab: Velg base
 builder.new.app.name.tab: Navn
+builder.new.app.icon.tab: Ikon
 builder.new.app.classification.tab: Klassifiser
 builder.new.app.submit.tab: Lag
-
-builder.new.app.select_base.description: Velg om du ønsker at appen skal baseres på en mal, en eksisterende app eller en Office fil.
+ 
+builder.new.app.select_base.description: Velg hvilken mal appen skal baseres på. Malen vil bestemme appens utseende og navigasjonsmuligheter.
 builder.new.app.select_base.template: Mal
 builder.new.app.select_base.existing_app: Eksisterende App
 builder.new.app.select_base.office_file: Office fil
-builder.new.app.basedon.description: Velg det du ønsker å basere appen på
-
-builder.new.app.name.description: Gi appen et navn og en fyldig beskrivelse før du går videre
+ 
+builder.new.app.basedon.description: Velg hvilken mal appen skal baseres på. Malen vil bestemme appens utseende og navigasjonsmuligheter.
+ 
+builder.new.app.name.description: Gi appen et unikt navn. <br>Versjonsnummeret kan ikke endres. Det er 1 på nye apper, men om man lager en ny versjon av appen vil tallet øke.
 builder.new.app.name.name: Navn
 builder.new.app.name.descriptionLab: Beskrivelse
+builder.new.app.icon.scale: Skaler ikonet
 builder.new.app.name.selectBackground: Velg bakgrunn
+app.select.icon.no_background: Ingen bakgrunn
 builder.new.app.name.selectForground: Velg ikon
+app.select.icon.no_foreground: Inget ikon
 builder.new.app.name.iconFile: Ikon-fil
 builder.new.app.name.addIconFileImage: Legg til bilde
 builder.new.app.name.iconText: Ikon-tekst
 builder.new.app.name.addIconText: Legg til tekst
 builder.new.app.name.splashFile: Splash-fil
 builder.new.app.active_version.number: Versjonsnummer
-
-builder.new.app.classification.description: Nøkkelord vil hjelpe andre å finne appen din ved søk
+ 
+builder.new.app.classification.description: Gi appen en fyldig beskrivelse. Nøkkelord og kategorisering vil hjelpe andre å finne appen din ved søk.
 builder.new.app.classification.keywords: Nøkkelord
 builder.new.app.classification.category1: 1. Kategori
 builder.new.app.classification.category2: 2. Kategori
@@ -100,9 +103,12 @@ app.wizard.button.finished: Ferdig
 # Main Menu
 #-----------------------------------------------------
 app.mlab.menu.tooltip: Menu
-app.builder.menu.welcome.info: Dette er hovedmenyen til Mlab
+app.builder.menu.mlab.logo: Appyoumake
+app.builder.menu.app.edited: App navn
+app.builder.menu.app.list: Vis alle apper
+app.builder.menu.welcome.info: Dette er hovedmenyen til Appyoumake
 app.builder.menu.heading.links: Naviger
-app.builder.menu.links.info: Liste over sider i Mlab du har tilgang til
+app.builder.menu.links.info: Liste over sider i Appyoumake du har tilgang til
 app.builder.menu.links.app.info: For å komme til siden hvor du lager innhold til en app - klikk på navnet til appen du ønsker å jobbe med (evnt. lag en ny app først).
 app.builder.menu.heading.save: Lagre
 app.builder.menu.save.info: Appen blir lagret automatisk med jevne mellomrom. Om du ønsker å lagre nå klikk på lagre ikonet under.
@@ -139,7 +145,7 @@ app.mlab.menu.help.notfound: Ingen hjelp tilgjengelig for dette emnet
 app.builder.edit.menu.tooltip: Editor meny
 app.mlab.logo.tooltip: Tilbake til App liste
 
-app.builder.overlay.info: Vennligst vent mens Mlab åpner appen din...
+app.builder.overlay.info: Vennligst vent mens Appyoumake åpner appen din...
 app.builder.statusbar.info.permanent: Appnavn
 app.builder.statusbar.info.permanent.label: App
 
@@ -182,9 +188,9 @@ app.builder.page.tooltip.import: Importer en Powerpoint eller Word fil
 #-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
-app.admin.users.welcome: Velkommen til Mlab Bruker Admin sidene
-app.admin.apps.welcome: Velkommen til Mlab App Admin sidene
-app.system.admin.welcome: Velkommen til Mlab System Admin sidene
+app.admin.users.welcome: Velkommen til Appyoumake Bruker Admin sidene
+app.admin.apps.welcome: Velkommen til Appyoumake App Admin sidene
+app.system.admin.welcome: Velkommen til Appyoumake System Admin sidene
 
 
 #-----------------------------------------------------
@@ -405,7 +411,7 @@ build_app.components.toolbar.tooltip.delete: Slett valgt element
 build_app.components.toolbar.tooltip.help: Få hjelp til valgt element
 build_app.components.toolbar.tooltip.cut: Klipp ut valgt element, du kan lime den inn i en annen side i appen
 build_app.components.toolbar.tooltip.copy: Kopier valgt element, du kan lime den inn i en annen side i appen
-build_app.components.toolbar.tooltip.paste: Lim inn element fra Mlab utklippstavle
+build_app.components.toolbar.tooltip.paste: Lim inn element fra Appyoumake utklippstavle
 build_app.components.toolbar.tooltip.resize: Skaler element
 build_app.components.toolbar.tooltip.aspect.ratio: Velg størrelse
 build_app.components.toolbar.tooltip.storage: Velg lagringsmekanisme
@@ -421,20 +427,22 @@ build_app.components.toolbar.component.aspect.16.9: 16:9
 build_app.components.toolbar.component.aspect.1.1: 1:1
 
 build_app.tooltip.not.saved: Siste endringer ble ikke lagret
-build_app.not.saved: Mlab var ikke i stand til å lagre de siste enndringene på denne siden. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
+build_app.not.saved: Appyoumake var ikke i stand til å lagre de siste enndringene på denne siden. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
 build_app.dialog.delete.title: Slette?
 build_app.dialog.delete.text: Er du sikker på at du vil slette?
+build_app.dialog.delete.component: Er du sikker på at du vil slette denne komponenten? Inntil du forlater denne siden, kan du gjenopprette komponenten fra menylinjen
     
 build_app.footer.tooltip.help: Slå av hjelp
 build_app.footer.help: Hold musepekeren over elementet du ønsker en beskrivelse av.
-build_app.footer.help.paste.text: For å unngå formateringsproblemer i Mlab får du kun ren uformatert tekst når du limer inn tekst fra utklippstavla.
+build_app.footer.help.paste.text: For å unngå formateringsproblemer i Appyoumake får du kun ren uformatert tekst når du limer inn tekst fra utklippstavla.
 
 builder.dialog.new.app.title: App egenskaper
-builder.popup.app.properties.title: Mlab app valg
+builder.popup.app.properties.title: Appyoumake app valg
 builder.popup.app.properties.label.edit.content: Rediger appeninnhold
 builder.popup.app.properties.label.edit.details: Rediger app egenskaper
 builder.popup.app.properties.label.download: Last ned appen
 builder.popup.app.properties.label.copy.link: Kopier lenke til appen
+builder.popup.app.properties.label.copy.app: Kopier & rediger denne appen
 builder.popup.app.properties.label.new.incremental: Lag ny mindre versjonen
 builder.popup.app.properties.label.new.major: Lag ny stor versjon
 builder.popup.app.properties.label.new.branch: Lag ny del
@@ -574,6 +582,9 @@ userController.msg.email.exists: En bruker med denne eposten er allerede registr
 userController.createNotFoundException: Finner ikke brukerinfo.
 userController.editAction.response: Du har ikke tilgang til å redigere denne brukeren, bare en superbruker eller Admin har denne rettigheten
 
+fileManagement.getNewSectionConfig.new.section: Ny seksjon
+fileManagement.createNewPage.new.page: Ny side
+
 
 #-----------------------------------------------------
 # JS files - starts with file name 
@@ -617,13 +628,16 @@ mlab.dt.management.js.page_update_title.alert.page.locked: Side er stengt, denne
 mlab.dt.management.js.page_new.prompt.title.new.page: Skriv inn nytt navn på siden
 mlab.dt.management.js.page_copy.alert.not.copy.index.page: Kan ikke kopiere innholdssiden
 mlab.dt.management.js.page_copy.alert.not.delete.index.page: Kan ikke slette innholdssiden
-mlab.dt.management.js.page_copy.alert.sure.delete: Er du bombesikker på at du vil slette denne siden? Denne handlingen kan ikke gjøre om!
+mlab.dt.management.js.page_copy.alert.sure.delete.page: Er du bombesikker på at du vil slette denne siden? Du kan gjenopprette siden ved å gå til App taben og klilkke på Gjenopprett slettet side.
+mlab.dt.management.js.page_copy.alert.sure.delete.section: Er du bombesikker på at du vil slette denne seksjonen?
 mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Kan ikke åpne nytt vindu, endr innstillingene for å tillate popup-vinduer
 mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (det er OK å la den stå tom )
 mlab.dt.management.js.compiler.get_app_status.prompt.version: versjon (det er OK å la den stå tomt)
 mlab.dt.management.js.compiler.get_app_status.prompt.platform: Velg platform (iOS eller Android)
 mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Kan ikke hente app status
 mlab.dt.management.js.compiler.get_app.status.creating.app: Bygger app...
+
+mlab.dt.management.js.lock.explanation: Denne siden er låst fordi den blir redigert av en annen bruker eller i en annen fane på denne PCen. Hvis dette ikke er tilfelle (det kan også skje hvis PCen eller nettleseren krasjer), kan du låse opp siden for redigering fra menyen.
 
 mlab_editor.init.js.alert.browser.support: Denne appen vil kun virke i Chrome eller Firefox
 mlab_editor.init.js.alert.unsaved: Du har endringer som ikke er lagret, er du bombesikker på at du vil forlate siden?
@@ -661,7 +675,7 @@ mlab.dt.api.js.getLink.prompt: Vennligst skriv in URL-adressen (for denne appen)
 mlab.dt.api.js.getLink.alert: Ingen URL/webside spesifisert, kan ikke legge til lenke
 
 mlab.dt.api.js.getCredentials.dlg.title: Akkreditering
-mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Mlab skal lagre data på eller hente data fra en skytjeneste
+mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Appyoumake skal lagre data på eller hente data fra en skytjeneste
 mlab.dt.api.js.getCredentials.dlg.save: Lagre
 
 controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet
@@ -681,3 +695,69 @@ mlab.dt.api.js.getLink.no_selection: Vennligst velg noe tekst i den gjeldende ko
 
 select.locale: Velg språk
 mlab.dt.management.js.websocket.error.connect: Tilkobling til meldingsserver mislyktes, kan ikke fortsette. Sjekk Internett-tilkobling og prøv igjen.
+
+# new "Powerpoint-esque" UI
+editor.tabs.file: App
+editor.tabs.file.save: Lagre
+editor.tabs.file.save.tooltip: Appen lagres automatisk med jevne mellomrom. Hvis du vil lagre nå, klikker du på lagreikonet.
+editor.tabs.file.unlock: Lås opp
+editor.tabs.file.unlock.tooltip: Hvis siden er grået ut, kan det være andre er inne på siden og redigerer den, om du er sikker på at det ikke er tilfelle kan du klikke på denne knappen for å låse opp siden.
+editor.tabs.file.test.web: Test på nettsiden
+editor.tabs.file.test.web.tooltip: Gjør en rask test av hvordan appen vil se ut ved å klikke på www-knappen. Appen vil da vises i en ny nettside.
+editor.tabs.file.test.mob: Test på mobilen
+editor.tabs.file.test.mob.tooltip: Klikk en gang på knappen for å lage en test App som du kan laste ned til mobilen din. Dette krever at du har en QR-leser på mobilen din.
+editor.tabs.file.qrcode: QR kode
+editor.tabs.file.qrcode.tooltip: Her vil det komme en QR kode med link til mobil-appen din når appen er ferdig kompilert.
+editor.tabs.file.restore.page: Gjenopprett slettet side
+editor.tabs.file.restore.page.tooltip: Knappen vil åpne en liste over slettede sider, som du kan velge å gjenoprette ved å klikke på dem.
+editor.tabs.file.restore.component: Gjenopprett slettet komponent
+editor.tabs.file.restore.component.tooltip: Gjenoppretter slettede komponenter fra denne siden.
+editor.tabs.file.new.page: Ny side
+editor.tabs.file.new.page.tooltip: Legg til en ny side i gjeldende app
+editor.tabs.file.new.section: Ny seksjon
+editor.tabs.file.new.section.tooltip: Seksjoner brukes til å la brukeren navigere rundt appen enkelt gjennom en indeks. Du kan bruke opptil 3 nivåer.
+
+editor.tabs.insert: Sett inn
+editor.tabs.insert.new.page: Ny side
+editor.tabs.insert.new.page.tooltip: Sett inn en ny side i gjeldende app. Etter at den nye siden er åpen, kan du legge til innhold på siden.
+editor.tabs.insert.new.section: Ny seksjon
+editor.tabs.insert.new.section.tooltip: Sett inn en ny seksjon i appen. En seksjon deler inn sidene i appen på lignende måte som overskrifter i Word. Det brukes til å la appbrukerne navigere rundt appen.
+
+editor.tabs.format: Formater 
+editor.tabs.format.component.up: Flytt opp
+editor.tabs.format.component.up.tooltip: Flytt komponent opp på siden.
+editor.tabs.format.component.down: Flytt ned
+editor.tabs.format.component.down.tooltip: Flytt komponent ned på siden.
+editor.tabs.format.component.delete: Slett
+editor.tabs.format.component.delete.tooltip: Slett den valgte komponenten.
+editor.tabs.format.component.cut: Klipp ut
+editor.tabs.format.component.cut.tooltip: Klipp ut den valgte komponenten til komponentutklippstavlen. Du kan deretter lime inn komponenten på en annen side.
+editor.tabs.format.component.copy: Kopier
+editor.tabs.format.component.copy.tooltip: Kopier den valgte komponenten til komponentutklippstavlen. Du kan deretter lime inn komponenten på en annen side.
+editor.tabs.format.component.paste: Lim inn
+editor.tabs.format.component.paste.tooltip: Lim inn den siste komponenten du kopierte eller klippet ut
+editor.tabs.format.component.resize: Endre størrelse
+editor.tabs.format.component.aspect_ratio: Størrelsesforhold
+editor.tabs.format.component.storage: Lagring
+editor.tabs.format.component.credentials: Credentials
+
+editor.tabs.help: Hjelp
+editor.tabs.help.tutorial: Veileder
+editor.tabs.help.tutorial.tooltip: Vis Appyoumakes introduksjonsveiledning, dette vil forklare grunnleggende om hvordan du lager en app
+editor.tabs.help.toggle_hover: Hjelp on hover
+editor.tabs.help.toggle_hover.tooltip: Slå verktøytipshjelp for knapper på eller av
+
+editor.left.menu.deleted.pages.heading: Slettet
+editor.left.menu.deleted.pages.restore: Gjenopprett
+editor.left.menu.deleted.pages.restore.tooltip: Gjenopprett slettede komponenter
+editor.left.menu.top.level.pages : Toppnivå sider
+editor.left.menu.top.level: Toppnivå
+editor.left.menu.second.level: Andre nivå
+editor.left.menu.third.level: Tredje nivå
+
+editor.modal.add.new.page.heading: Legg til ny side
+editor.modal.add.new.top.level.page: Legg til ny toppnivåside
+editor.modal.add.new.top.level.page: Legg til ny andrenivåside
+editor.modal.add.new.top.level.page: Legg til ny tredjenivåside
+editor.modal.bottom.cancel: Avbryt
+editor.modal.bottom.next: Neste

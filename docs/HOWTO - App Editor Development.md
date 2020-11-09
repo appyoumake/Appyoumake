@@ -1,4 +1,4 @@
-#Information pertaining to working with/editing the core Mlab app editor/admin code
+#Information pertaining to working with/editing the core Appyoumake app editor/admin code
 
 #####THIS DOCUMENT IS NOT COMPLETED AS OF 14 APRIL 2016
 
@@ -8,17 +8,17 @@ Initial author: Arild Bergh, Sinett 3.0, FFI<br>
 Updating authors: <br>
 Comment: _Only update the version number above when component specifications change_
 
-_[HOWTO - Install Mlab on server.md](HOWTO - Install Mlab on server.md) provides additional information that can be useful when editing the Mlab code_
+_[HOWTO - Install Appyoumake on server.md](HOWTO - Install Appyoumake on server.md) provides additional information that can be useful when editing the Appyoumake code_
 
-##MLAB Symfony for devs
+##Appyoumake Symfony for devs
 
-* See [MLAB Symfony for sysadmins ](https://docs.google.com/a/bergh.fm/document/d/13Z5MFbvLOMAuSL81ng1-6XE82oEsGu0_6oi2OcsdQGg/edit)to get this running on a server.
+* See [Appyoumake Symfony for sysadmins ](https://docs.google.com/a/bergh.fm/document/d/13Z5MFbvLOMAuSL81ng1-6XE82oEsGu0_6oi2OcsdQGg/edit)to get this running on a server.
 
 * Then check out the code from Github
 
 ## Tools used
 
-* MLAB is wrtten in the Symfony framework, see here for documentation: [http://symfony.com/doc/current/quick_tour/the_big_picture.html](http://symfony.com/doc/current/quick_tour/the_big_picture.html)
+* Appyoumake is wrtten in the Symfony framework, see here for documentation: [http://symfony.com/doc/current/quick_tour/the_big_picture.html](http://symfony.com/doc/current/quick_tour/the_big_picture.html)
 
 * It has used the admin generator tool to create the skeleton app: [http://symfony.com/blog/symfony2-getting-easier-interactive-generators](http://symfony.com/blog/symfony2-getting-easier-interactive-generators)
 
@@ -71,9 +71,9 @@ To load files such as images and stylesheets correctly for Cordova apps we chang
 
 ----
 
-How to code for the MLAB editor
+How to code for the Appyoumake editor
 
-We use an object called Mlab for all JS component interaction. It has the following hierarchy (within each level *this* is set to refer to that hierarchy):
+We use an object called Appyoumake for all JS component interaction. It has the following hierarchy (within each level *this* is set to refer to that hierarchy):
 
 mlab = core object, if there are properties here that are not prefixed with dt, then it is for runtime
 

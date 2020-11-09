@@ -1,11 +1,8 @@
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 #}
 {# src/Sinett/MLAB/BuilderBundle/Resources/views/Form/fields.html.twig #}
 {% extends 'form_div_layout.html.twig' %}
@@ -13,7 +10,6 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
 {% block choice_widget %}
     {% spaceless %}
         <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
-            <option value="" ></option>
             {% if preferred_choices|length > 0 %}
                 {% set options = preferred_choices %}
                 {{ block('choice_widget_options') }}
@@ -23,7 +19,7 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
             {% endif %}
             {% set options = templates %}
             {% for group_label, choice in options %}
-                <option data-imagesrc="{{ url_templates ~ choice.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.description }}" value="{{ choice.id }}">{{ choice.description }}</option>
+                <option data-imagesrc="{{ url_templates ~ choice.path ~ '/thumbnail.jpg' }}" data-description="{{ choice.description }}" value="{{ choice.id }}" {% if entity.template and choice.id == entity.template.id %} selected{% endif %}>{{ choice.description }}</option>
             {% endfor %}
         </select>
     {% endspaceless %}

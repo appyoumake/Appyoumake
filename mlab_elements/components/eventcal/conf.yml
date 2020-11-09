@@ -2,7 +2,7 @@
 
 autorun_on_create: custom_set_options
 category: serviceconnections
-category_name: {nb_NO: Serviceconnections, en_GB: Serviceconnections}
+category_name: {nb_NO: Tjenester, en_GB: Services}
 # compatible (array of Strings, optional)
 credentials: ["apikey"]
 # custom (Object (key/value style), required if custom functions are written in the code_dt.js code, see comment)
@@ -27,6 +27,9 @@ tooltip: { nb_NO: Google Event Kalender, en_GB: Google Event Calendar, default: 
 # unique (Boolean, optional)
 version: 0.9
 # visible (Boolean)
+
+# can be internet or network, latter is local network.
+requires_network: internet
 
 custom:
     settings: {calendarId: '', fromDate: '', toDate: ''}

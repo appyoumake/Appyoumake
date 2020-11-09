@@ -86,3 +86,11 @@
             local_el.text(this.api.getLocaleComponentMessage(this.config.name, ["placeholder"]));
         }
     }
+    
+    this.preview = function (el) {
+        var text = el.text();
+        if (text.length > 25){
+            text = text.substring(0, 22) + '…';
+        }
+        return { text: text };        
+    }

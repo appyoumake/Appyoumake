@@ -82,3 +82,7 @@ and open the template in the editor.
     width: calc(width);
     height: calc(height);
 }
+
+.ui-popup-screen.in {
+  background-color: gray !important;
+}

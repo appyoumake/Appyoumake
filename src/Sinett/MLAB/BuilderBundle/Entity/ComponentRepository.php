@@ -1,12 +1,12 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
 Unauthorized copying of this file, via any medium is strictly prohibited
 
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
+
 *******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle\Entity;
@@ -55,13 +55,11 @@ class ComponentRepository extends EntityRepository
                         $components[] = $temp_component->getPath();
                     } else {
                         $access_record = $comp_group_repo->findOneBy(array('component' => $temp_component->getId(), 'group' => $group->getId()));
-//admin access is determined by bit 0
                         if ($access_record) {
                             $access_state = $access_record->getAccessState();
-                            if ( $role == "ROLE_ADMIN" & ( $access_state & 1 ) ) {
+                            if ( $role == "ROLE_ADMIN" && $access_state <= ComponentGroup::ACCESS_STATE_ADMIN ) {
                                 $components[] = $temp_component->getPath();
-//user access is determined by bit 1
-                            } else if ( $role == "ROLE_USER" & ( $access_state & 2 ) ) {
+                            } else if ( $role == "ROLE_USER" && $access_state <= ComponentGroup::ACCESS_STATE_USER ) {
                                 $components[] = $temp_component->getPath();
                             }
                         }                    

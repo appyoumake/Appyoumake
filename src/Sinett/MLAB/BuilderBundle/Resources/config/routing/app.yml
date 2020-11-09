@@ -1,9 +1,8 @@
-# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-# @license Proprietary and confidential
+# @copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+# @license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 # @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 # 
-# Unauthorized copying of this file, via any medium is strictly prohibited 
-# 
+ 
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 app:
     path:  /
@@ -20,6 +19,11 @@ app_new:
 app_create:
     path:  /create
     defaults: { _controller: "SinettMLABBuilderBundle:App:create" }
+    requirements: { methods: post }
+
+app_copy:
+    path:  /{id}/copy
+    defaults: { _controller: "SinettMLABBuilderBundle:App:copy" }
     requirements: { methods: post }
 
 app_edit:
@@ -49,7 +53,7 @@ app_builder_index:
 
 app_builder_editor:
     path:   /builder/{id}/{page_num}/build
-    defaults: { _controller: "SinettMLABBuilderBundle:App:buildApp" }
+    defaults: { _controller: "SinettMLABBuilderBundle:App:buildAppNew" }
 
 app_builder_page_get:
     path:   /builder/{app_id}/{page_num}/{uid}/{app_open_mode}/page_get
@@ -64,9 +68,19 @@ app_builder_page_save:
     defaults: { _controller: "SinettMLABBuilderBundle:App:putPage" }
     requirements: { methods: post }
 
+app_builder_page_thumb_save:
+    path:   /builder/{app_id}/{page_num}/page_thumb_put
+    defaults: { _controller: "SinettMLABBuilderBundle:App:putThumbnail" }
+    requirements: { methods: post }
+
 app_builder_page_new:
     path:   /builder/{app_id}/{uid}/page_new/{redirect_to_open}/{title}
     defaults: { _controller: "SinettMLABBuilderBundle:App:newPage", redirect_to_open: 1, title: "" }
+    requirements: { methods: post }
+
+app_builder_page_action:
+    path:   /builder/{app_id}/{uid}/action/{action}/{redirect_to_open}/{title}
+    defaults: { _controller: "SinettMLABBuilderBundle:App:pageAction", redirect_to_open: 1, title: "" }
     requirements: { methods: post }
 
 app_builder_page_copy:
@@ -76,6 +90,14 @@ app_builder_page_copy:
 app_builder_page_delete:
     path:   /builder/{app_id}/{page_num}/{uid}/page_delete
     defaults: { _controller: "SinettMLABBuilderBundle:App:deletePage" }
+    
+app_builder_deleted_pages:
+    path:   /builder/{app_id}/{uid}/deleted_pages
+    defaults: { _controller: "SinettMLABBuilderBundle:App:deletedPages" }
+    
+app_builder_page_restore:
+    path:   /builder/{app_id}/{page_num}/{uid}/page_restore
+    defaults: { _controller: "SinettMLABBuilderBundle:App:restorePage" }
     
 app_builder_page_reorder:
     path:   /builder/{app_id}/{from_page}/{to_page}/{uid}/page_reorder
@@ -147,3 +169,6 @@ app_import_file:
     defaults: { _controller: "SinettMLABBuilderBundle:App:importFile" }
     requirements: { methods: post }
 
+new_app_builder_editor:
+    path:   /new/builder/{id}/{page_num}/build
+    defaults: { _controller: "SinettMLABBuilderBundle:App:buildAppNew" }

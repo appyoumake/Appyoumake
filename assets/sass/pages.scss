@@ -1,0 +1,471 @@
+.nav-pages {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 0.8em;
+    border-right: 1px solid $border-color;
+
+    img {
+        border: 1px solid $dark-color;
+        width: 100px;
+        height: 150px;
+        .selectedPage {
+        border: 3px solid $primary-color;
+        }
+    }
+
+    .preview {
+        display: none;
+    }
+
+    .delete-alt {
+        @include btn-reset;
+        margin: 0 0 1.2em 0;
+
+        font-size: 2em;
+    }
+
+    .with-preview {
+        .preview {
+            display: inline-block;
+        }
+
+        p {
+            margin: 4px 0;
+        }
+    }
+
+    .with-titles {
+        .delete-alt {
+            font-size: 1.4em;
+            margin-bottom: 0;
+        }
+
+        .delete {
+            font-size: 1.4em;
+            margin-right: 10px;
+        }
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0 0px 0 16px;
+        flex-grow: 1;
+    }
+
+    li {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        margin-bottom: 10px;
+
+        .delete, .delete-alt {
+            // display: none;
+            visibility: hidden;
+        }
+        &:hover {
+            > .delete, > .delete-alt {
+                visibility: visible;
+            }
+            > .insert-new-here{
+                display: block;
+            }
+        }
+        [data-action-click=openPage] {
+            cursor: pointer;
+            position: relative;
+        }
+
+        &.display-alt{
+            [data-open-page] {
+                flex-grow: 1;
+            }
+        }
+
+        &.insert-before {
+            &:before {
+                content: '';
+                width: 100%;
+                position: absolute;
+                top: -10px;
+                border-bottom: 2px dashed blue;
+            }
+        }
+
+        &.insert-after {
+            &:after {
+                content: '';
+                width: 100%;
+                position: absolute;
+                top: -10px;
+                border-bottom: 2px dashed blue;
+            }
+        }
+
+        .insert-new-here > button, &.insert-in-section button{
+            @include btn-reset;
+            color: $secondary-text;
+            background-color: $secondary-color;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+        }
+        .insert-new-here{
+            // display: none;
+            opacity: 0;
+
+            position: absolute;
+            width: 100%;
+            height: 25%;
+            text-align: right;
+            z-index: 1200;
+
+            &.insert-before-page {
+                top: -6px;
+                border-top: 2px dashed blue;
+                > button {
+                    top: -12.5px;
+                }
+
+                .select {
+                    top:-30px;
+                }
+            }
+
+            &.insert-after-page {
+                bottom: -6px;
+                border-bottom: 2px dashed blue;
+
+                > button {
+                    bottom: -34px;
+                }
+
+                .select {
+                    top: 20px;
+                }
+            }
+
+            > button {
+                position: relative;
+            }
+
+            &:hover {
+                opacity: 1;
+                // display: block;
+            }
+        }
+
+        .insert-new-here{
+            .select {
+                visibility: hidden;
+                transition: visibility 1s, opacity 0.2s ease;
+                position: absolute;
+                right: 30px;
+                background-color: $light-color;
+                border: 1px solid $dark-color;
+                z-index: 1;
+
+                button {
+                    @include btn-reset;
+                    display: block;
+                    margin:0 auto;
+                    padding: 5px 15px;
+                }
+            }
+            > button:focus ~ .select {
+                visibility: visible;
+            }
+        }
+
+        &.insert-in-section{
+            min-height: 1em;
+            button {
+                margin: 0 auto;
+            }
+        }
+
+    }
+
+    [draggable="true"] {
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+
+
+
+    .level-name, .page-name {
+        display: flex;
+        flex: 0 0 100%;
+        p {
+            max-width:75px;
+
+            &:not([contenteditable=true]) {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+            }
+        }
+
+        button {
+            @include btn-reset;
+            display: none;
+            margin: 0 5px;
+            padding: 2px;
+        }
+        &:hover {
+            button {
+                display: inline-block;
+            }
+        }
+
+        button.indent {
+            border-radius: 50%;
+            width:20px;
+            height:20px;
+            background-color: $secondary-color;
+            color: $light-text;
+        }
+    }
+    .level-name p {
+        font-weight: bold;
+    }
+
+    [data-type=page] p {
+        height: 1em;
+        
+        button {
+            @include btn-reset;
+            display: none;
+        }
+        &:not([contenteditable=true]):hover {
+            button {
+                display: inline-block;
+            }
+        }
+    }
+
+    .active {
+        position: relative;
+        ul.with-preview li:not(.display-alt) {
+            align-items: flex-start;
+            justify-content: unset;
+            position: relative;
+            .delete{
+                position: relative;
+                left: -10px;
+                top: -10px;
+            }
+
+            p {
+                /* display: inline-block; */
+                position: absolute;
+                top: 50%;
+                /* bottom: 0; */
+                left: 100%;
+                width: 80px;
+                margin-top: -7px;
+                margin-left: 10px;
+            }
+        }
+
+        >.level-name {
+            color: $top-level-text;
+            padding: 10px 0 10px 16px;
+        }
+        > ul {
+            padding-top: 20px;
+            li {
+
+                &.section-level-0 {
+                    > .level-name {
+                        color: $second-level-text;
+                    }
+
+                    > ul {
+                        border-left: 2px solid $second-level-text;
+                    }
+                }
+                &.section-level-1 {
+                    > .level-name {
+                        color: $third-level-text;
+                    }
+
+                    > ul {
+                        border-left: 2px solid $third-level-text;
+                    }
+                }
+
+            
+
+
+
+
+
+                margin-right: 10px;
+
+            }
+        }
+    }
+
+    .deleted {
+
+        background-color: $deleted-list-color;
+        color: $deleted-list-text;
+        box-shadow: inset -10px 0 50px -10px rgba(0, 0, 0, 0.7);
+
+        padding-bottom: 19px; /* fix hidden scroller bottom arrow */
+        .title {
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 1.5em;
+            line-height: 3em;
+        }
+
+        .image {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            &:hover {
+                &:after {
+                    content: 'Restore page';
+                    background-color: $deleted-restore-color;
+                    color: $deleted-restore-text;
+                    position: absolute;
+                    padding: 0 7px;
+                    font-size: 1.2em;
+                    line-height: 1.5em;
+                    border-radius: 10px;
+                    display: block;
+                    top: calc(50% - 0.6em);
+                    margin: 0 0.2em;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+                }
+            }
+        }
+
+    }
+
+}
+
+ul.restore-deleted-pages-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    label.component {
+        display: flex;
+        padding: 12px;
+        cursor: pointer;
+    }
+
+    .preview {
+        margin-right: 12px;
+    }
+
+    input {
+        display: none;
+        &:checked+label{
+            background-color: $secondary-color;
+            color: $light-text;
+        }
+    }
+}
+
+#restore-components .modal-content {
+    padding: 0;
+}
+
+ul.add-new-page-levels {
+    list-style: none;
+    margin: 40px 0;
+    padding: 0;
+    ul {
+        list-style: none;
+        padding: 0 0 0 15px;
+        margin: 0;
+    }
+
+    label {
+        display: block;
+        padding: 15px;
+        line-height: 2em;
+        font-size: 1em;
+        color: $light-text;
+        margin-bottom: 15px;
+        position: relative;
+        user-select: none;
+    }
+
+    input[type=radio] {
+        display: none;
+
+        &:checked + label {
+            &:after {
+                content: '';
+                display: block;
+                border-bottom: 2px solid $light-text;
+                border-right: 2px solid $light-text;
+                width: 7px;
+                height: 18px;
+                position: absolute;
+                right: 25px;
+                top: calc(50% - 13px);
+                transform: rotate(45deg);
+
+            }
+        } 
+    }
+
+    > li {
+        > label {
+            background-color: $top-level-text;
+        }
+        > ul {
+            border-left: 1px solid $second-level-text;
+            > li {
+                > label {
+                    background-color: $second-level-text;
+                }
+                > ul {
+                    border-left: 1px solid $third-level-text;
+
+                    > li {
+                        > label {
+                            background-color: $third-level-text;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.change-display {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    
+    input {
+        display: none;
+        &:checked {
+            &+label {
+                background: $secondary-color;
+                color: $light-text;
+            }
+        }
+    }
+
+    label {
+        display: inline-block;
+        cursor: pointer;
+        border-radius: 3px;
+        color: $shadow-color;
+        padding: 4px;
+    }
+}

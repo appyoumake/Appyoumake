@@ -1,9 +1,8 @@
-# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-# @license Proprietary and confidential
+# @copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+# @license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 # @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 # 
-# Unauthorized copying of this file, via any medium is strictly prohibited 
-# 
+ 
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 %Users%: brukere
 
@@ -12,72 +11,76 @@ mlab.error.unknown: Unknown error occured
 #-----------------------------------------------------
 # Title of the pages in Mlab
 #-----------------------------------------------------
-mlab.page.title.index: Welcome to MLAB
-mlab.page.title.app.bulider.index: MLAB apps
-mlab.page.title.app.bulider.editor: MLAB app editor
-mlab.page.title.admin: MLAB admin
+mlab.page.title.index: Welcome to Appyoumake
+mlab.page.title.app.bulider.index: Appyoumake apps
+mlab.page.title.app.bulider.editor: Appyoumake app editor
+mlab.page.title.admin: Appyoumake admin
 
 
 #-----------------------------------------------------
 # Index info page
 #-----------------------------------------------------
-app.builder.index.page.heading: Mlab
-app.builder.index.page.text: Welcome to Mlab. With this tool you can create your own interactive apps.
-app.builder.index.page.link.text.before: To get started go to the
-app.builder.index.page.link.app.list: App list
-app.builder.index.page.link.text.after: or chose a different action from the menu above.
+app.builder.index.page.heading: Welcome to the app builder Appyoumake
+app.builder.index.page.text: Appyoumake is a framework that allows staff without programming knowledge to create and share professional, interactive apps.
 app.builder.index.page.help.guide.heading: How to create an app in 5 steps
-app.builder.index.page.help.guide.text1: Start the New App wizard
-app.builder.index.page.help.guide.text2: Click on a component to add to page
-app.builder.index.page.help.guide.text3: Edit the component content and settings
-app.builder.index.page.help.guide.text4: Add more components and pages until the app is completed
-app.builder.index.page.help.guide.text5: Build the app and try it on a mobile or tablet 
-
-
+app.builder.index.page.help.guide.text1: Select:- New App.
+app.builder.index.page.help.guide.text2: Create pages and add components. Components can be text, images, videos and audio.
+app.builder.index.page.help.guide.text3: Edit the contents of the pages and the settings of the components. Work performed is automatically saved.
+app.builder.index.page.help.guide.text4: Continue adding pages and components until the app is finished. The table of content is updated automatically.
+app.builder.index.page.help.guide.text5: Select:- Try App on Mobile. The app is completed and can be tested on mobile or tablet.
+ 
+ 
 #-----------------------------------------------------
 # List of apps page
 #-----------------------------------------------------
 app.builder.list.main.heading: Apps
-app.builder.list.welcome.info: Welcome to Mlab app builder! <br><br> Here is a list of apps you can access. You can edit them by clicking on the app name. Use the button to create a new app.
+app.builder.list.welcome.info: The app list gives you the list of apps you have access to and you can edit them by clicking on the app name. To create an app, click the New app button. Appyoumake tutorial gives you a quick introduction to how to create an app.
 app.builder.list.new.app.button: New App
+app.builder.list.app.list.button: App List
+app.builder.list.help.tutorial.button: Appyoumake Tutorial
 app.builder.list.heading.app: App Name
 app.builder.list.heading.published: Published
 app.builder.list.heading.version: Version
 app.builder.list.heading.active_version: Active version
 app.builder.list.heading.last.updated: Last updated
-
+ 
 app.builder.list.tooltip.name: Click on the name to edit the app
 app.builder.list.tooltip.properties: Menu for
-
-
+ 
+ 
 #-----------------------------------------------------
-# New App Form 
+# New App Form
 #-----------------------------------------------------
 builder.new.app.basedon.tab: Based on
 builder.new.app.select_base.tab: Choose base
 builder.new.app.name.tab: Name
+builder.new.app.icon.tab: Icon
 builder.new.app.classification.tab: Classify
 builder.new.app.submit.tab: Make
-
-builder.new.app.select_base.description: Choose whether you want the app to be based on a template, an existing app or an Office file.
+ 
+builder.new.app.select_base.description: Choose which template the app should be based on. The template will determine the app's appearance and navigation capabilities.
 builder.new.app.select_base.template: Template
 builder.new.app.select_base.existing_app: Existing App
 builder.new.app.select_base.office_file: Office file
-builder.new.app.basedon.description: Choose what you want to base the app on
-
-builder.new.app.name.description: Give the app a name and a full description before proceeding
+ 
+builder.new.app.basedon.description: Choose which template the app should be based on. The template will determine the app's appearance and navigation capabilities.
+ 
+builder.new.app.name.description: Give the app a unique name. <br> Version number can not be changed. It is always 1 for new apps, but if you create a new version of the app, the number will increase.
 builder.new.app.name.name: Name
 builder.new.app.name.descriptionLab: Description
+builder.new.app.icon.scale: Scale the icon
 builder.new.app.name.selectBackground: Choose background
+app.select.icon.no_background: No background
 builder.new.app.name.selectForground: Choose icon
+app.select.icon.no_foreground: No icon
 builder.new.app.name.iconFile: Icon file
 builder.new.app.name.addIconFileImage: Add image
 builder.new.app.name.iconText: Icon text
 builder.new.app.name.addIconText: Add text
 builder.new.app.name.splashFile: Splash file
 builder.new.app.active_version.number: Version number
-
-builder.new.app.classification.description: Keywords will help others find your app when searching
+ 
+builder.new.app.classification.description: Give the app a full description. Keywords and categorization will help others find your app when searching.
 builder.new.app.classification.keywords: Keywords
 builder.new.app.classification.category1: 1. Category
 builder.new.app.classification.category2: 2. Category
@@ -100,7 +103,10 @@ app.wizard.button.finished: Finished
 # Main Menu
 #-----------------------------------------------------
 app.mlab.menu.tooltip: Menu
-app.builder.menu.welcome.info: This is the main manu for the Mlab app builder.
+app.builder.menu.mlab.logo: Appyoumake
+app.builder.menu.app.edited: App name
+app.builder.menu.app.list: View all apps
+app.builder.menu.welcome.info: This is the main manu for the Appyoumake app builder.
 app.builder.menu.heading.links: Navigate
 app.builder.menu.links.info: List of pages you have access to
 app.builder.menu.links.app.info: To get to the page where you create content for an app - click the name of the app you want to work with (or create a new app first).
@@ -134,12 +140,12 @@ app.mlab.menu.help.notfound: No help found for this subject
 
 
 #-----------------------------------------------------
-# App builder Menu (edit app)
+# App builder Menu (edit app) - TODO old design - waht is still in use...
 #-----------------------------------------------------
 app.builder.edit.menu.tooltip: Editor menu
 app.mlab.logo.tooltip: Back to the App list
 
-app.builder.overlay.info: Please wait while Mlab opens your app...
+app.builder.overlay.info: Please wait while Appyoumake opens your app...
 app.builder.statusbar.info.permanent: App name
 app.builder.statusbar.info.permanent.label: App
 
@@ -182,9 +188,9 @@ app.builder.page.tooltip.import: Import a Powerpoint or Word file
 #-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
-app.admin.users.welcome: Welcome to the Mlab User Admin Pages
-app.admin.apps.welcome: Welcome to the Mlab App Admin Pages
-app.system.admin.welcome: Welcome to the Mlab System Admin Pages
+app.admin.users.welcome: Welcome to the Appyoumake User Admin Pages
+app.admin.apps.welcome: Welcome to the Appyoumake App Admin Pages
+app.system.admin.welcome: Welcome to the Appyoumake System Admin Pages
 
 
 #-----------------------------------------------------
@@ -405,7 +411,7 @@ build_app.components.toolbar.tooltip.delete: Delete selected component
 build_app.components.toolbar.tooltip.help: Get help about selected component
 build_app.components.toolbar.tooltip.cut: Cut selected component, you can paste it into another page in this app
 build_app.components.toolbar.tooltip.copy: Copy selected component, you can paste it into another page in this app
-build_app.components.toolbar.tooltip.paste: Paste component from Mlab clipboard
+build_app.components.toolbar.tooltip.paste: Paste component from Appyoumake clipboard
 build_app.components.toolbar.tooltip.resize: Resize component
 build_app.components.toolbar.tooltip.aspect.ratio: Select aspect ratio
 build_app.components.toolbar.tooltip.storage: Select storage mechanism
@@ -421,20 +427,22 @@ build_app.components.toolbar.component.aspect.16.9: 16:9
 build_app.components.toolbar.component.aspect.1.1: 1:1
 
 build_app.tooltip.not.saved: The latest changes were not saved
-build_app.not.saved: Mlab was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
+build_app.not.saved: Appyoumake was not able to save the latest changes on this page before it could do what you asked for. Do you want to continue without saving, trying to save again or stop what you tried to do?
 build_app.dialog.delete.title: Delete?
 build_app.dialog.delete.text: Are you sure you want to delete?
+build_app.dialog.delete.component: Are you sure you want to delete this component? Until you leave this page you can restore it from the menu bar.
 
 build_app.footer.tooltip.help: Turn help off
 build_app.footer.help: Hold the mouse over the item you wish to describe.
-build_app.footer.help.paste.text: To avoid formatting problems in Mlab you only get plain unformatted text when you paste text from the clipboard.
+build_app.footer.help.paste.text: To avoid formatting problems in Appyoumake you only get plain unformatted text when you paste text from the clipboard.
 
 builder.dialog.new.app.title: App details
-builder.popup.app.properties.title: Mlab app options
+builder.popup.app.properties.title: Appyoumake app options
 builder.popup.app.properties.label.edit.content: Edit app content
 builder.popup.app.properties.label.edit.details: Edit app details
 builder.popup.app.properties.label.download: Download the app
 builder.popup.app.properties.label.copy.link: Copy link to the app
+builder.popup.app.properties.label.copy.app: Copy & edit this app
 builder.popup.app.properties.label.new.incremental: Create a new incremental version
 builder.popup.app.properties.label.new.major: Create a new major version
 builder.popup.app.properties.label.new.branch: Create a new branch
@@ -574,6 +582,9 @@ userController.msg.email.exists: A user with this email is already registered, e
 userController.createNotFoundException: Unable to find User entity.
 userController.editAction.response: You do not have the rights to edit this user, must be Super Admin
 
+fileManagement.getNewSectionConfig.new.section: New Section
+fileManagement.createNewPage.new.page: New Page
+
 
 #-----------------------------------------------------
 # JS files - starts with file name 
@@ -617,13 +628,16 @@ mlab.dt.management.js.page_update_title.alert.page.locked: Page is locked, you c
 mlab.dt.management.js.page_new.prompt.title.new.page: Please enter the title of the new page
 mlab.dt.management.js.page_copy.alert.not.copy.index.page: You can not copy the index page
 mlab.dt.management.js.page_copy.alert.not.delete.index.page: You can not delete the index page
-mlab.dt.management.js.page_copy.alert.sure.delete: Are you sure you want to delete this page? This cannot be undone!
+mlab.dt.management.js.page_copy.alert.sure.delete: Are you sure you want to delete this page? You can restore the page by going to the App tab and clicking Restore deleted page.
+management.js.page_copy.alert.sure.delete.section: Are you sure you want to delete this section?
 mlab.dt.management.js.page_preview_process.alert.cannot.open.new.window: Cannot open new window, change your settings to allow popup windows
 mlab.dt.management.js.compiler.get_app_status.prompt.db.id: app database ID (leave blank is OK)
 mlab.dt.management.js.compiler.get_app_status.prompt.version: version (leave blank is OK)
 mlab.dt.management.js.compiler.get_app_status.prompt.platform: platform (ios or android) (leave blank is OK)
 mlab.dt.management.js.compiler.get_app_status.alert.unable.get.app.status: Unable to get app status
 mlab.dt.management.js.compiler.get_app.status.creating.app: Creating app...
+
+mlab.dt.management.js.lock.explanation: This page is locked because it is being edited by another user or in another tab on this PC. If this is not the case (it may also occur if your PC or browser crashed) then you can unlock it for editing from the menu.
 
 mlab_editor.init.js.alert.browser.support: This web app will only work in Chrome/Chromium or Firefox
 mlab_editor.init.js.alert.unsaved: You have unsaved changes, do you want to lose these?
@@ -661,7 +675,7 @@ mlab.dt.api.js.getLink.prompt: Please enter the URL or page number (for pages in
 mlab.dt.api.js.getLink.alert: No URL/page specified, cannot add link
 
 mlab.dt.api.js.getCredentials.dlg.title: Credentials
-mlab.dt.api.js.getCredentials.dlg.text: Credentials are items such as URLs or passwords that Mlab require to connect to a cloud service
+mlab.dt.api.js.getCredentials.dlg.text: Credentials are items such as URLs or passwords that Appyoumake require to connect to a cloud service
 mlab.dt.api.js.getCredentials.dlg.save: Save
 
 controller.help.msg.comp_id.empty: No component ID specified when trying to retrieve component help file
@@ -669,7 +683,7 @@ controller.help.msg.file.notfound: Component help file not found
 
 mlab.dt.api.js.getLink.heading: Add link
 mlab.dt.api.js.getLink.app_page: I want to link to a page in my app
-mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it. Enter title of page below.
+mlab.dt.api.js.getLink.new_page: I want to create a new page and link to it.
 mlab.dt.api.js.getLink.url: I want to link to an external website
 mlab.dt.api.js.getLink.ok: OK
 mlab.dt.api.js.getLink.cancel: Cancel
@@ -681,3 +695,69 @@ mlab.dt.api.js.getLink.no_selection: Please select som text inside the current c
 
 select.locale: Select language
 mlab.dt.management.js.websocket.error.connect: Connection to message server failed, cannot continue. Check Internet connection and try again.
+
+# new "Powerpoint-esque" UI
+editor.tabs.file: App
+editor.tabs.file.save: Save
+editor.tabs.file.save.tooltip: The app will automatically be saved at regular intervals. If you want to save now click on the save icon.
+editor.tabs.file.unlock: Unlock
+editor.tabs.file.unlock.tooltip: If the page is greyed out, you can click on the button to unlock it.
+editor.tabs.file.test.web: Test in web page
+editor.tabs.file.test.web.tooltip: Do a quick test of what the app will look like by clicking the www-button. The App will then appear in a new web page.
+editor.tabs.file.test.mob: Test on mobile
+editor.tabs.file.test.mob.tooltip: Click once on the button to create a test App that you can download to your mobile. This requires that you have a QR reader on your mobile.
+editor.tabs.file.qrcode: QR code
+editor.tabs.file.qrcode.tooltip: QR code
+editor.tabs.file.restore.page: Restore deleted page
+editor.tabs.file.restore.page.tooltip: Restore deleted page
+editor.tabs.file.restore.component: Restore deleted component
+editor.tabs.file.restore.component.tooltip: Restore deleted component
+editor.tabs.file.new.page: New page
+editor.tabs.file.new.page.tooltip: Add a new page to the current app
+editor.tabs.file.new.section: New section
+editor.tabs.file.new.section.tooltip: Sections are used to let the user navigate around the app easily through an index. You can use up to 3 levels.
+
+editor.tabs.insert: Insert
+editor.tabs.insert.new.page: New page
+editor.tabs.insert.new.page.tooltip: Insert a new page in the current app. After the new page open you can add content to the page.
+editor.tabs.insert.new.section: New section
+editor.tabs.insert.new.section.tooltip: Insert a new section in the app. A section is a divider, similar to headlines in Word, that is used to let the app users navigate around the app.
+
+editor.tabs.format: Format
+editor.tabs.format.component.up: Move up
+editor.tabs.format.component.up.tooltip: Move component up on the page
+editor.tabs.format.component.down: Move down
+editor.tabs.format.component.down.tooltip: Move component down on the page
+editor.tabs.format.component.delete: Delete
+editor.tabs.format.component.delete.tooltip: Delete the selected component 
+editor.tabs.format.component.cut: Cut
+editor.tabs.format.component.cut.tooltip: Cut the selected component to the component clipboard. You can then paste the component into another page
+editor.tabs.format.component.copy: Copy
+editor.tabs.format.component.copy.tooltip: Copy the selected component to the component clipboard. You can then paste the component into this or another page
+editor.tabs.format.component.paste: Paste
+editor.tabs.format.component.paste.tooltip: Paste the last component you copied or pasted
+editor.tabs.format.component.resize: Resize
+editor.tabs.format.component.aspect_ratio: Aspect ratio
+editor.tabs.format.component.storage: Storage
+editor.tabs.format.component.credentials: Credentials
+
+editor.tabs.help: Help
+editor.tabs.help.tutorial: Tutorial
+editor.tabs.help.tutorial.tooltip: Display Appyoumake's introduction tutorial, this will explain the basics of how to create an app
+editor.tabs.help.toggle_hover: Help on hover
+editor.tabs.help.toggle_hover.tooltip: Turn tooltip help for buttons on or off
+
+editor.left.menu.deleted.pages.heading: Deleted
+editor.left.menu.deleted.pages.restore: Restore
+editor.left.menu.deleted.pages.restore.tooltip: Restore deleted components
+editor.left.menu.top.level.pages: Top level pages
+editor.left.menu.top.level: Top level
+editor.left.menu.second.level: Second level
+editor.left.menu.third.level: Third level
+
+editor.modal.add.new.page.heading: Add new page
+editor.modal.add.new.top.level.page: Add new top level page
+editor.modal.add.new.second.level.page: Add new second level page
+editor.modal.add.new.third.level.page: Add new third level page
+editor.modal.bottom.cancel: Cancel
+editor.modal.bottom.next: Next

@@ -65,14 +65,21 @@ function Mlab_api () {
     Also splitting in index_html, because we do not know what parameters there are.
  */
     var mlab_ready_triggered = false;
-    var path = '' + window.location.href.split('index.html')[0];
+    
+//in new design #tab1 etc gets added to URL, so check if we're in design mode or not.
+    var url = window.location.href;
+    if (url.includes("index.html")) {
+        var path = '' + url.split('index.html')[0];
+    } else {
+        var path = '' + url.split('#')[0];
+    }
 /* MK: When jQuery loads a file ending with .js (and no content-type response header is set) it assumes a JS file. When this 
     file proves not to be a JS file, the success handler is never fired. Suggest renaming to .txt.
 */
     $.ajaxSetup({ cache: false });
     $.get(path + "js/include_comp.txt")
             .done(function(data) {
-                    var components = data.split("\n");
+                    var components = data.split("\n").filter(function(el) {return el.trim().length != 0});
                     var componentsLength = components.length;
                     var componentsAdded = 0;
 
@@ -785,7 +792,7 @@ Mlab_api.prototype = {
 //have calculated the file name, now we need to try to load it
 //Adds a differens between swipe and click
             if (swipe){
-                    $.mobile.pageContainer.pagecontainer("change", filename, { transition: "slide" });    
+                    $.mobile.pageContainer.pagecontainer("change", filename, swipe);    
             } else {
                     $.mobile.pageContainer.pagecontainer("change", filename, { transition: "flip" });                   
             }
@@ -938,8 +945,8 @@ $(document).ready(function() {
             mlab.api.display.prepareRegularComponents(event);
 //Swipe
             $('div.ui-page')
-                .on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", true); console.log("right swipe"); })
-                .on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", true); console.log("left swipe");});
+                .on("swiperight", function () { mlab.api.navigation.pageDisplay("previous", { transition: "slide", reverse: true }); console.log("right swipe"); })
+                .on("swipeleft", function () { mlab.api.navigation.pageDisplay("next", { transition: "slide"}); console.log("left swipe");});
         });
 
 //general pagecontainerbeforeshow, run component code for components that require size information, ie. display is done

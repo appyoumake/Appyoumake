@@ -4,14 +4,11 @@
         <meta charset='UTF-8' />
         <title>{% block title %}{% trans %}mlab.page.title.app.bulider.editor{% endtrans %}{% endblock %}</title>
 {#
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 @author Arild Bergh/Sinett 3.0 programme (firstname.lastname@ffi.no)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 
 #}
         {% block stylesheets %}
@@ -228,7 +225,10 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                     <a target='_top' href='{{ path('fos_user_security_logout') }}'>{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></p>
                                 {% endif %}
                             </div>
-                        </div><!-- End User menu container -->                       
+                        </div><!-- End User menu container --> 
+                        <li class='menu_right'>
+                            <a class="mlab_statusbar_permanent_label" onclick='window.location.href = window.location.href.replace("/builder/", "/new/builder/")'>Preview update</a>
+                        </li>
                     </ul>
                     
                      <div id='mlab_page_control'>
@@ -239,11 +239,11 @@ For the full copyright and license information, please view the LICENSE_MLAB fil
                                 <button id='mlab_page_control_cancel_title' class='mlab_dt_button_cancel_left' title='{% trans %}app.builder.page.tooltip.cancel{% endtrans %}'>{% trans %}app.builder.page.cancel{% endtrans %}</button>
                             </div>
                             <img id='mlab_page_control_pagelist' src='/img/tools/dropdown.png' title='{% trans %}app.builder.page.tooltip.pagelist{% endtrans %}'>
-                            <img data-mlab-comp-tool='redo' class='mlab_tools mlab_button_redo' src='/img/tools/redo.png' title='{% trans %}build_app.page.tooltip.redo{% endtrans %}'>
-                            <img data-mlab-comp-tool='undo' class='mlab_tools mlab_tools_space mlab_button_undo' src='/img/tools/undo.png' title='{% trans %}build_app.page.tooltip.undo{% endtrans %}'> 
+                            <!-- <img data-mlab-comp-tool='redo' class='mlab_tools mlab_button_redo' src='/img/tools/redo.png' title='{% trans %}build_app.page.tooltip.redo{% endtrans %}'> -->
+                            <img data-mlab-comp-tool='undo' class='mlab_tools mlab_tools_space mlab_button_undo' style="display: none" src='/img/tools/undo.png' title='{% trans %}build_app.page.tooltip.undo{% endtrans %}'> 
                             <img id='mlab_page_control_new' src='/img/menu_new_icon.png' title='{% trans %}app.builder.page.tooltip.new{% endtrans %}'>
                             <!-- <img id='mlab_page_control_import' src='/img/menu_copy_icon.png' title='{% trans %}app.builder.page.tooltip.import{% endtrans %}' > -->
-                            
+                            <div id="mlab_history" onclick="$('#mlab_history').hide();"></div>
                     </div>
                  </div>
 
