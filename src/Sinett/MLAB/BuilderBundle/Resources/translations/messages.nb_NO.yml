@@ -1,9 +1,8 @@
-# @copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-# @license Proprietary and confidential
+# @copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+# @license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 # @author Cecilie Jackbo Gran/Sinett 3.0 programme (firstname.middlename.lastname@ffi.no)
 # 
-# Unauthorized copying of this file, via any medium is strictly prohibited 
-# 
+ 
 # For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 %Users%: brukere
 
@@ -12,17 +11,17 @@ mlab.error.unknown: Det oppsto en ukjent feil
 #-----------------------------------------------------
 # Titel of the pages in Mlab
 #-----------------------------------------------------
-mlab.page.title.index: Velkommen til MLAB
-mlab.page.title.app.bulider.index: MLAB apper
-mlab.page.title.app.bulider.editor: MLAB app editor
-mlab.page.title.admin: MLAB admin
+mlab.page.title.index: Velkommen til Appyoumake
+mlab.page.title.app.bulider.index: Appyoumake apper
+mlab.page.title.app.bulider.editor: Appyoumake app editor
+mlab.page.title.admin: Appyoumake admin
 
 
 #-----------------------------------------------------
 # Index info page
 #-----------------------------------------------------
-app.builder.index.page.heading: Velkommen til app bygger Mlab
-app.builder.index.page.text: Mlab er et rammeverk som gir personell uten programmeringskunnskap mulighet til å lage og dele profesjonelle, interaktive apper.
+app.builder.index.page.heading: Velkommen til app bygger Appyoumake
+app.builder.index.page.text: Appyoumake er et rammeverk som gir personell uten programmeringskunnskap mulighet til å lage og dele profesjonelle, interaktive apper.
 app.builder.index.page.help.guide.heading: Hvordan lage en app i 5 trinn
 app.builder.index.page.help.guide.text1: Velg:- Ny App.
 app.builder.index.page.help.guide.text2: Opprett sider og legg til komponenter. Komponenter kan være tekst, bilder, film og lyd.
@@ -35,10 +34,10 @@ app.builder.index.page.help.guide.text5: Velg:- Prøv App på mobil. Appen ferdi
 # List of apps page
 #-----------------------------------------------------
 app.builder.list.main.heading: App'er
-app.builder.list.welcome.info: App liste gir deg en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. For å lage en app klikker du på Ny app knappen. Mlab veiledning gir deg en rask inføring i hvordan lag en app.
+app.builder.list.welcome.info: App liste gir deg en liste over app'er du har tilgang til og du kan redigere dem ved å klikke på app-navnet. For å lage en app klikker du på Ny app knappen. Appyoumake veiledning gir deg en rask inføring i hvordan lag en app.
 app.builder.list.new.app.button: Ny App
 app.builder.list.app.list.button: App liste
-app.builder.list.help.tutorial.button: Mlab veiledning
+app.builder.list.help.tutorial.button: Appyoumake veiledning
 app.builder.list.heading.app: App navn
 app.builder.list.heading.published: Publisert
 app.builder.list.heading.version: Versjon
@@ -104,12 +103,12 @@ app.wizard.button.finished: Ferdig
 # Main Menu
 #-----------------------------------------------------
 app.mlab.menu.tooltip: Menu
-app.builder.menu.mlab.logo: MLAB
+app.builder.menu.mlab.logo: Appyoumake
 app.builder.menu.app.edited: App navn
 app.builder.menu.app.list: Vis alle apper
-app.builder.menu.welcome.info: Dette er hovedmenyen til Mlab
+app.builder.menu.welcome.info: Dette er hovedmenyen til Appyoumake
 app.builder.menu.heading.links: Naviger
-app.builder.menu.links.info: Liste over sider i Mlab du har tilgang til
+app.builder.menu.links.info: Liste over sider i Appyoumake du har tilgang til
 app.builder.menu.links.app.info: For å komme til siden hvor du lager innhold til en app - klikk på navnet til appen du ønsker å jobbe med (evnt. lag en ny app først).
 app.builder.menu.heading.save: Lagre
 app.builder.menu.save.info: Appen blir lagret automatisk med jevne mellomrom. Om du ønsker å lagre nå klikk på lagre ikonet under.
@@ -146,7 +145,7 @@ app.mlab.menu.help.notfound: Ingen hjelp tilgjengelig for dette emnet
 app.builder.edit.menu.tooltip: Editor meny
 app.mlab.logo.tooltip: Tilbake til App liste
 
-app.builder.overlay.info: Vennligst vent mens Mlab åpner appen din...
+app.builder.overlay.info: Vennligst vent mens Appyoumake åpner appen din...
 app.builder.statusbar.info.permanent: Appnavn
 app.builder.statusbar.info.permanent.label: App
 
@@ -189,9 +188,9 @@ app.builder.page.tooltip.import: Importer en Powerpoint eller Word fil
 #-----------------------------------------------------
 # Admin + System pages welcome
 #-----------------------------------------------------
-app.admin.users.welcome: Velkommen til Mlab Bruker Admin sidene
-app.admin.apps.welcome: Velkommen til Mlab App Admin sidene
-app.system.admin.welcome: Velkommen til Mlab System Admin sidene
+app.admin.users.welcome: Velkommen til Appyoumake Bruker Admin sidene
+app.admin.apps.welcome: Velkommen til Appyoumake App Admin sidene
+app.system.admin.welcome: Velkommen til Appyoumake System Admin sidene
 
 
 #-----------------------------------------------------
@@ -412,7 +411,7 @@ build_app.components.toolbar.tooltip.delete: Slett valgt element
 build_app.components.toolbar.tooltip.help: Få hjelp til valgt element
 build_app.components.toolbar.tooltip.cut: Klipp ut valgt element, du kan lime den inn i en annen side i appen
 build_app.components.toolbar.tooltip.copy: Kopier valgt element, du kan lime den inn i en annen side i appen
-build_app.components.toolbar.tooltip.paste: Lim inn element fra Mlab utklippstavle
+build_app.components.toolbar.tooltip.paste: Lim inn element fra Appyoumake utklippstavle
 build_app.components.toolbar.tooltip.resize: Skaler element
 build_app.components.toolbar.tooltip.aspect.ratio: Velg størrelse
 build_app.components.toolbar.tooltip.storage: Velg lagringsmekanisme
@@ -428,17 +427,17 @@ build_app.components.toolbar.component.aspect.16.9: 16:9
 build_app.components.toolbar.component.aspect.1.1: 1:1
 
 build_app.tooltip.not.saved: Siste endringer ble ikke lagret
-build_app.not.saved: Mlab var ikke i stand til å lagre de siste enndringene på denne siden. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
+build_app.not.saved: Appyoumake var ikke i stand til å lagre de siste enndringene på denne siden. Vil du fortsette uten å lagre, prøve å lagre igjen eller stoppe det du prøvde å gjøre?
 build_app.dialog.delete.title: Slette?
 build_app.dialog.delete.text: Er du sikker på at du vil slette?
 build_app.dialog.delete.component: Er du sikker på at du vil slette denne komponenten? Inntil du forlater denne siden, kan du gjenopprette komponenten fra menylinjen
     
 build_app.footer.tooltip.help: Slå av hjelp
 build_app.footer.help: Hold musepekeren over elementet du ønsker en beskrivelse av.
-build_app.footer.help.paste.text: For å unngå formateringsproblemer i Mlab får du kun ren uformatert tekst når du limer inn tekst fra utklippstavla.
+build_app.footer.help.paste.text: For å unngå formateringsproblemer i Appyoumake får du kun ren uformatert tekst når du limer inn tekst fra utklippstavla.
 
 builder.dialog.new.app.title: App egenskaper
-builder.popup.app.properties.title: Mlab app valg
+builder.popup.app.properties.title: Appyoumake app valg
 builder.popup.app.properties.label.edit.content: Rediger appeninnhold
 builder.popup.app.properties.label.edit.details: Rediger app egenskaper
 builder.popup.app.properties.label.download: Last ned appen
@@ -676,7 +675,7 @@ mlab.dt.api.js.getLink.prompt: Vennligst skriv in URL-adressen (for denne appen)
 mlab.dt.api.js.getLink.alert: Ingen URL/webside spesifisert, kan ikke legge til lenke
 
 mlab.dt.api.js.getCredentials.dlg.title: Akkreditering
-mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Mlab skal lagre data på eller hente data fra en skytjeneste
+mlab.dt.api.js.getCredentials.dlg.text: Akkrediteringer er detaljer som URL eller passord som behøves når Appyoumake skal lagre data på eller hente data fra en skytjeneste
 mlab.dt.api.js.getCredentials.dlg.save: Lagre
 
 controller.help.msg.comp_id.empty: Ingen komponent ID spesifisert når komponenthjelpefilen ble forsøkt lastet
@@ -744,7 +743,7 @@ editor.tabs.format.component.credentials: Credentials
 
 editor.tabs.help: Hjelp
 editor.tabs.help.tutorial: Veileder
-editor.tabs.help.tutorial.tooltip: Vis Mlabs introduksjonsveiledning, dette vil forklare grunnleggende om hvordan du lager en app
+editor.tabs.help.tutorial.tooltip: Vis Appyoumakes introduksjonsveiledning, dette vil forklare grunnleggende om hvordan du lager en app
 editor.tabs.help.toggle_hover: Hjelp on hover
 editor.tabs.help.toggle_hover.tooltip: Slå verktøytipshjelp for knapper på eller av
 

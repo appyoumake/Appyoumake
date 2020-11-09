@@ -1,11 +1,8 @@
 <?php
 /*******************************************************************************************************************************
-@copyright Copyright (c) 2013-2016, Norwegian Defence Research Establishment (FFI) - All Rights Reserved
-@license Proprietary and confidential
+@copyright Copyright (c) 2013-2020, Norwegian Defence Research Establishment (FFI)
+@license Licensed under the Apache License, Version 2.0 (For the full copyright and license information, please view the /LICENSE_MLAB file that was distributed with this source code)
 
-Unauthorized copying of this file, via any medium is strictly prohibited 
-
-For the full copyright and license information, please view the LICENSE_MLAB file that was distributed with this source code.
 *******************************************************************************************************************************/
 
 namespace Sinett\MLAB\BuilderBundle;

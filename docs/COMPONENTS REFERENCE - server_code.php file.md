@@ -6,13 +6,13 @@ Initial author: Arild Bergh, Sinett 3.0, FFI<br>
 Updating authors: <br>
 Comment: _Only update the version number above when component specifications change_
 
-_(If you have not already done it, you should first read [HOWTO - Component Development.md](HOWTO - Component Development.md) and [Mlab explained.md](Mlab explained.md))_
+_(If you have not already done it, you should first read [HOWTO - Component Development.md](HOWTO - Component Development.md) and [Appyoumake explained.md](Appyoumake explained.md))_
 
-This is an optional file containing code that is run on the server (**not** in the browser) at certain points in the app creation process. See _App creation workflow and Mlab automated action_ in [HOWTO - Component Development.md](HOWTO - Component Development.md) for more explanation on these automated actions. The file is specific to each component and is stored in the component directory together with [code_dt.js](COMPONENTS%20REFERENCE%20-%20code_dt.js%20file.md) and [code_rt.js](COMPONENTS%20REFERENCE%20-%20code_rt.js%20file.md). It is written in the server scripting language PHP (which is also used for the Mlab App Builder). 
+This is an optional file containing code that is run on the server (**not** in the browser) at certain points in the app creation process. See _App creation workflow and Appyoumake automated action_ in [HOWTO - Component Development.md](HOWTO - Component Development.md) for more explanation on these automated actions. The file is specific to each component and is stored in the component directory together with [code_dt.js](COMPONENTS%20REFERENCE%20-%20code_dt.js%20file.md) and [code_rt.js](COMPONENTS%20REFERENCE%20-%20code_rt.js%20file.md). It is written in the server scripting language PHP (which is also used for the Appyoumake App Builder). 
 
 The purpose of this is to a) support functions that can only run on the server (such as converting images and videos to a standard format), and b) support modifications to a component's HTML through advanced processing on the server (for example generating an index of the pages in an app just before it is being compiled). 
 
-In addition to three fixed functions ([onCreate](#ref-oncreate), [onUpload](#ref-onupload) and [onCompile](#ref-oncompile)) you can have any custom function in this file and have Mlab execute the code at compile time. This is done by creating a function called (for example) myfunction, and then putting a placeholder in your [template](HOWTO%20-%20Template%20Design%20%26%20Development.md) (or even inside another component!) that must look like this: _%%MLAB_CT_FUNC_MYFUNCTION%%_. The double percentage signs indicates to Mlab that this is a placholder and the prefix _MLAB_CT_FUNC__ is used to distinguish this from other types of placeholders, and it also uses the MLAB -> compile time name space. See [example below](#ref-custom) for more on custom functions.
+In addition to three fixed functions ([onCreate](#ref-oncreate), [onUpload](#ref-onupload) and [onCompile](#ref-oncompile)) you can have any custom function in this file and have Appyoumake execute the code at compile time. This is done by creating a function called (for example) myfunction, and then putting a placeholder in your [template](HOWTO%20-%20Template%20Design%20%26%20Development.md) (or even inside another component!) that must look like this: _%%MLAB_CT_FUNC_MYFUNCTION%%_. The double percentage signs indicates to Appyoumake that this is a placholder and the prefix _MLAB_CT_FUNC__ is used to distinguish this from other types of placeholders, and it also uses the Appyoumake -> compile time name space. See [example below](#ref-custom) for more on custom functions.
 
 This file is not required, thus none of the functions in it are required either. If they are present then they must be wrapped in a class called *mlab_ct_xx*, where ct indicates compiletime xx is the name of the component. So for the *index* component this would be *mlab_ct_index* (always use lower case).
 
@@ -32,7 +32,7 @@ class mlab_ct_index {
 }
 ```
 **Parameters:**
- * $path_app: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Mlab app has and 1 = the version number. Under this path you can expoect to find /css and /js directories where you place Javascript or CSS files. This will let you edit files, download files into this directory, etc.
+ * $path_app: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Appyoumake app has and 1 = the version number. Under this path you can expoect to find /css and /js directories where you place Javascript or CSS files. This will let you edit files, download files into this directory, etc.
  * $path_component: The full path to the path where the component files are, this could for instance be used to load the conf.yml settings if you need access to the component's settings. This would typically be /path/to/mlab/component_directory/this_component/1, where this_component = the name (also sometimes called ID as it is unique) of the component.
  * $comp_id: The unique name of the component, for instance _index_.
 
@@ -51,7 +51,7 @@ class mlab_ct_index {
 ```
 **Parameters:**
  * $file_uploaded: the full path to the file just uploaded, typically this will be in a a directory below the main app directory. If this is a video it goes into /video subdirectory, images go into /img subdirectory, etc.
- * $path_app: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Mlab app has and 1 = the version number. Under this path you can expect to find /css and /js directories where you place Javascript or CSS files. This will let you edit files, download files into this directory, etc.
+ * $path_app: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Appyoumake app has and 1 = the version number. Under this path you can expect to find /css and /js directories where you place Javascript or CSS files. This will let you edit files, download files into this directory, etc.
  * $path_component: The full path to the path where the component files are, this could for instance be used to load the conf.yml settings if you need access to the component's settings. This would typically be /path/to/mlab/component_directory/this_component/1, where this_component = the name (also sometimes called ID as it is unique) of the component.
  * $comp_id: The unique name of the component, for instance _index_.
 
@@ -68,14 +68,14 @@ class mlab_ct_h1 {
 }
 ```
 **Parameters:**
- * $app_config: Content of the conf.json file as a PHP object that is created for each app, and used by Mlab to store details such as the last compilation checksum, title of the app, permissions required, etc. 
+ * $app_config: Content of the conf.json file as a PHP object that is created for each app, and used by Appyoumake to store details such as the last compilation checksum, title of the app, permissions required, etc. 
  * $html_node: The components visible HTML5 code (i.e. NOT the two additional elements that are script elements for storing data and on the fly generated Javascript) as a [PHP DOMNode](http://php.net/manual/en/class.domnode.php).
  * $html_text: The same as above, but as HTML text.
- * $app_path: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Mlab app has and 1 = the version number. Under this path you can expect to find /css and /js directories where you place Javascript or CSS files. 
+ * $app_path: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Appyoumake app has and 1 = the version number. Under this path you can expect to find /css and /js directories where you place Javascript or CSS files. 
  * $variables: The variables stored at design time by this component. For instance the _googlemap_ component stores information about where the map should be centred, the zoom level, etc. in these variables. This is an associative array.
 
 **Function:** *MLAB_CT_FUNC_MYFUNCTION($app_config, $app_object, $app_path) <a id="ref-custom"></a>
->These functions replace a placeholder in the page that Mlab is currently processing before compiling an app. You can create any PHP function that returns HTML5 code back to the calling function. 
+>These functions replace a placeholder in the page that Appyoumake is currently processing before compiling an app. You can create any PHP function that returns HTML5 code back to the calling function. 
 ```PHP
 class mlab_ct_h1 {
   public function myfunction($app_config, $app_object, $app_path) {
@@ -84,6 +84,6 @@ class mlab_ct_h1 {
 }
 ```
 **Parameters:**
- * $app_config: Content of the conf.json file as a PHP object that is created for each app, and used by Mlab to store details such as the last compilation checksum, title of the app, permissions required, etc. 
- * $app_object: A [Doctrine](http://www.doctrine-project.org/) object which contains the row from the _app_ table in the Mlab database tha represents the current app. Can be read, but not written to. You access value through a traditional "getter", so to get the current version you can use _$app_object->getActiveVersion();_ for instance.
- * $app_path: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Mlab app has and 1 = the version number. Under this path you can expect to find /css and /js directories where you place Javascript or CSS files. 
+ * $app_config: Content of the conf.json file as a PHP object that is created for each app, and used by Appyoumake to store details such as the last compilation checksum, title of the app, permissions required, etc. 
+ * $app_object: A [Doctrine](http://www.doctrine-project.org/) object which contains the row from the _app_ table in the Appyoumake database tha represents the current app. Can be read, but not written to. You access value through a traditional "getter", so to get the current version you can use _$app_object->getActiveVersion();_ for instance.
+ * $app_path: The full path to the app directory. This will typically be /path/to/mlab/app_directory/this_app/1, where this_app = a unique 32 bytes ID that each Appyoumake app has and 1 = the version number. Under this path you can expect to find /css and /js directories where you place Javascript or CSS files. 
