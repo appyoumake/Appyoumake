@@ -3588,88 +3588,51 @@ class="anchor"></span>**Item:** *component* (String, optional)
 > component **category** (and not individual component) are specified,
 > for page related rules se [*pages*](#Template_Conf_Pages) below.
 
--   components (top level header indicating the rules that applies to
-    > each component on a page)
+> * components (top level header indicating the rules that applies to each component on a page)
+>   * video: (the component category, for instance text, headline, video, audio, image)
+>     * min: (next level is min or max, indicating the bottom and top values acceptable)
+>       * count: (final level has three settings, count = min/max number of )
+>       * size: (for video & audio this is length in seconds, for text it is number of words and the size in bytes for images)
+>       * message: (message to display if the rule is not followed)
 
-<!-- -->
-
--   video: (the component category, for instance text, headline, video,
-    > audio, image)
-
-<!-- -->
-
--   min: (next level is min or max, indicating the bottom and top values
-    > acceptable)
-
-<!-- -->
-
--   count: (final level has three settings, count = min/max number of )
-
--   size: (for video & audio this is length in seconds, for text it is
-    > number of words and the size in bytes for images)
-
--   message: (message to display if the rule is not followed)
-
-> Example:
-
-components:
-
-video:
-
-min:
-
-count: 0
-
-size: 15
-
-message: Your videos should be at least 15 second long.
-
-max:
-
-count: 2
-
-size: 600
-
-message: We recommend maximum 2 videos/10 minutes per page
-
-text:
-
-max:
-
-count: 3
-
-size: 300
-
-message: You should have max 3 text boxes w/max 300 words per page
+>Example:
+```yml
+components: 
+  video:
+    min: 
+      count: 0
+      size: 15
+      message: Your videos should be at least 15 second long.
+    max: 
+      count: 2
+      size: 600
+      message: We recommend maximum 2 videos of 10 minutes length per page
+  text:
+    max: 
+      count: 3
+      size: 300
+      message: You should have max 3 text boxes with max 300 words per page
+```
 
 **Item:** *developer* (String, optional)
-
 > Name(s) of the developer(s) of this template.
-
+```yml
 developer: Harold Spruce
+```
 
 **Item:** *name* (String, required)
-
 > The name of the template, for instance "todo\_list".
-
-name: todo\_list
+```yml
+name: todo_list
+```
 
 Comments:
 
--   This must match the name of the folder it is in. If you use Appyoumake's
-    > internal template installer (read about
-    > deployment [here](#deploying-a-template)) the template folder will
-    > be created from this setting when it is installed, so this is
-    > automatic.
+-   **This must match the name of the folder it is in. If you use Appyoumake's internal template installer (read about deployment [here](#deploying-a-template)) the template folder will be created from this setting when it is installed, so this is automatic.
 
--   This must be unique. You must therefore check existing Appyoumake
-    > templates before naming it. If you try to install a template with
-    > a non-unique name, then it will attempt to replace the existing
-    > template with the same name.
+-   **This must be unique. You must therefore check existing Appyoumake templates before naming it. If you try to install a template with a non-unique name, then it will attempt to replace the existing template with the same name.
 
--   This must be lower case and cannot have spaces in it! This is partly
-    > for compatibility with different web servers on different
-    > platforms.
+-   **This must be lower case and cannot have spaces in it! This is partly for compatibility with different web servers on different platforms.
 
     <span id="Template_Conf_Pages"
     class="anchor"></span>**Item:** *pages* (array of arrays, optional)
@@ -3680,19 +3643,15 @@ Comments:
 > of pages in the app (minimum/maximum), and not to the content of the
 > pages.
 
+```yml
 pages:
-
-min:
-
-count: 1
-
-message: You should have at least 1 pages in an app of this type
-
-max:
-
-count: 60
-
-message: You should have max 60 pages in an app of this type
+  min:
+    count: 1
+    message: You should have at least 1 pages in an app of this type
+  max:
+    count: 60
+    message: You should have max 60 pages in an app of this type
+```
 
 **Item:** *plugins* (array of Strings, optional)
 
@@ -3712,7 +3671,9 @@ message: You should have max 60 pages in an app of this type
 > and ensures that the plugin is added to the final app before it is
 > compiled.
 
-plugins: \["cordova-plugin-geolocation, cordova-plugin-battery-status"\]
+```yml
+plugins: ["cordova-plugin-geolocation, cordova-plugin-battery-status"]
+```
 
 **Item:** *tooltip* (Object/String, required)
 
@@ -3726,15 +3687,18 @@ plugins: \["cordova-plugin-geolocation, cordova-plugin-battery-status"\]
 > in the backend parameters.yml file and is obtained via the
 > mlab.dt.api.getLocale() function.
 
-tooltip: { nb\_NO: Mal for gjøremålsliste apptyper, en\_GB: Template for
-todo list style app, default: Template for todo list style app }
+```yml
+tooltip: { nb_NO: Mal for gjøremålsliste apptyper, en_GB: Template for todo list style app, default: Template for todo list style app }
+```
 
 **Item:** *version* (String, optional but recommended)
 
 > Version number of template, useful to know that one has the correct
 > version installed in case of debugging issues.
 
+```yml
 version: 0.9
+```
 
 The frontpage.html template file in detail
 ==========================================
@@ -3800,25 +3764,18 @@ purposes for formatting of the content during design time. Then we will
 have something like this for the core content (see a [complete
 frontpage.html here](#example-frontpage.html-file)):
 
-&lt;div data-role="page"&gt;
-
-&lt;!-- The CONTENT of the page - filled in via the App builder --&gt;
-
-&lt;div class="mlab\_content\_wrapper"&gt;
-
-&lt;div role="main" class="mlab\_main\_body\_content"&gt;
-
-&lt;div id="mlab\_editable\_area" class="mlab\_editable\_area"&gt;
-
-&lt;!-- Where the content/components is placed --&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;&lt;!-- /Content --&gt;
-
-&lt;/div&gt;
+```HTML
+    <div data-role="page">
+        <!-- The CONTENT of the page - filled in via the App builder -->
+        <div class="mlab_content_wrapper">
+            <div role="main" class="mlab_main_body_content">
+                <div id="mlab_editable_area" class="mlab_editable_area">
+                    <!-- Where the content/components is placed -->
+                </div>
+            </div>
+        </div><!-- /Content -->
+    </div>   
+```
 
 When index.html is saved at design time, the *mlab\_editable\_area* DIV
 will contain the initial page that users see when they open the app.
@@ -3838,21 +3795,16 @@ The required files are listed below, those marked with an asterisk are
 libraries you just need to add to your template folders, the rest you
 must create yourself, either from existing examples or from scratch:
 
-&lt;link rel="stylesheet" href="./css/jquery-mobile.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/style.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/style\_rt.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/mlab\_component.css"&gt;
-
-&lt;script src="./js/jquery.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/jquery-ui.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/jquery-mobile.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/mlab.api.js"&gt;&lt;/script&gt;
+```HTML
+    <link rel="stylesheet" href="./css/jquery-mobile.css"> *
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style_rt.css">
+    <link rel="stylesheet" href="./css/mlab_component.css">
+    <script src="./js/jquery.js"></script> *
+    <script src="./js/jquery-ui.js"></script> *
+    <script src="./js/jquery-mobile.js"></script> *
+    <script src="./js/mlab.api.js"></script> *
+```
 
 During the design phase, Appyoumake updates the value of the base href
 **(**<https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base>**)**
@@ -3871,9 +3823,10 @@ Because of this, all paths to secondary files loaded by the browser must
 be relative (i.e. "./img/myfile.png" and not "/img/myfile.png"). So for
 Javascript and CSS files we have this code:
 
-&lt;link rel="stylesheet" href="./css/include.css"&gt;
-
-&lt;script src="./js/jquery.js"&gt;&lt;/script&gt;
+```HTML
+    <link rel="stylesheet" href="./css/include.css">
+    <script src="./js/jquery.js"></script>
+```
 
 Additionally, images for style sheets must be in a folder below the /css
 folder: ./css/img or ./css/images for example.
@@ -3891,11 +3844,11 @@ When this is done Appyoumake will call a function named
 *mlabInitialiseApp()* which you need to create in frontpage.html. The
 function takes no parameters, and it will look something like this:
 
-function mlabInitialiseApp() {
-
-alert("Welcome to my app");
-
-};
+ ```Javascript
+   function mlabInitialiseApp() {
+     alert("Welcome to my app");
+   };
+```
 
 It must be a global function, see end of this section for [an example of
 this function](#example-frontpage.html-file). You can use this for
@@ -3916,9 +3869,9 @@ etc., you can assign your own Javascript handlers to specific event.
 
 See these pages for a detailed description on when these events are
 triggered, and how:
-[<u>https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/</u>](https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/)
-[<u>https://jqmtricks.wordpress.com/2014/07/13/pagecontainerbeforechange/</u>](https://jqmtricks.wordpress.com/2014/07/13/pagecontainerbeforechange/) and
-[<u>https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/</u>](https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/).
+   * [<u>https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/</u>](https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/)
+   * [<u>https://jqmtricks.wordpress.com/2014/07/13/pagecontainerbeforechange/</u>](https://jqmtricks.wordpress.com/2014/07/13/pagecontainerbeforechange/) and
+   * [<u>https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/</u>](https://jqmtricks.wordpress.com/2014/05/23/jquery-mobile-page-events-extra/).
 
 One useful thing is to filter what page(s) an event is handled for, the
 example below is only triggered for the page with id
@@ -3928,12 +3881,11 @@ initially loaded. Here we tell jQuery that when the element with the
 class of *mlab\_nav\_previous\_page* is clicked we should move to the
 previous page.
 
-$(document).on('pagecreate', '\#mlab\_index\_page', function(e) {
-
-$(".mlab\_nav\_previous\_page").on("click", function () {
-mlab.api.navigation.pageDisplay("previous"); });
-
-});
+```Javascript
+   $(document).on('pagecreate', '#mlab_index_page', function(e) {
+     $(".mlab_nav_previous_page").on("click", function () { mlab.api.navigation.pageDisplay("previous"); });
+    });
+```
 
 **Navigation support (optional, but usually a good idea)**
 ----------------------------------------------------------
@@ -3974,15 +3926,12 @@ yet another HTML element event, for instance when someone clicks on a
 "Next" button. This could look like this in Javascript executed when the
 index.html page is loaded:
 
-$(document).on('pagecreate', '\#mlab\_index\_page', function(e) {
-
-$(".mlab\_nav\_previous\_page").on("click", function () {
-mlab.api.navigation.pageDisplay("previous"); });
-
-$(".mlab\_nav\_next\_page").on("click", function () {
-mlab.api.navigation.pageDisplay("next"); });
-
-});
+```Javascript   
+   $(document).on('pagecreate', '#mlab_index_page', function(e) {
+     $(".mlab_nav_previous_page").on("click", function () { mlab.api.navigation.pageDisplay("previous"); });
+     $(".mlab_nav_next_page").on("click", function () { mlab.api.navigation.pageDisplay("next"); });
+   });
+```
 
 **General usability support (optional)**
 ----------------------------------------
@@ -4004,9 +3953,7 @@ Javascript amending classes for content containers.
 
 Some common usability features include:
 
--   Show/hide any header/footer/navigation elements, typically to
-    > provide more space to read. Done by trapping single touches on the
-    > main content of the page.
+-   Show/hide any header/footer/navigation elements, typically to provide more space to read. Done by trapping single touches on the main content of the page.
 
 -   Scale text.
 
@@ -4016,16 +3963,16 @@ Some common usability features include:
 
 Code that changes the colour could look like this:
 
-&lt;div class="mlab\_btn\_color\_toggle"
-onclick="$('\#mlab\_page\_body').toggleClass('mlab\_color\_toggle');")"&gt;Toggle&lt;/div&gt;
+```html
+     <div class="mlab_btn_color_toggle" onclick="$('#mlab_page_body').toggleClass('mlab_color_toggle');")">Toggle</div>
+```
 
-\#mlab\_page\_body.mlab\_color\_toggle {
-
-background-color: white;
-
-color: black;
-
-}
+```css
+     #mlab_page_body.mlab_color_toggle {
+       background-color: white;
+       color: black;
+     }
+```
 
 **Extending templates with Appyoumake variable and/or component placeholders; why and how (optional)**
 ------------------------------------------------------------------------------------------------
@@ -4060,8 +4007,9 @@ the [conf.yml](#Conf_Comp_Item_Name) such as INDEX for a component named
 index. As you can see the entire string must be in uppercase, and the
 full placeholder should then be like this:
 
-&lt;div
-class="mlab\_menu\_text"&gt;%%MLAB\_CT\_COMP\_INDEX%%&lt;/div&gt;
+```html
+   <div class="mlab_menu_text">%%MLAB_CT_COMP_INDEX%%</div>
+```
 
 The other type of placeholder will be replaced by a single value, this
 is typically used for data that we do not know the value of until the
@@ -4079,16 +4027,13 @@ will return the value to replace the placeholder with. Currently (April
 2016) there is only one function, *getnumberofpages*, that is available.
 To use this you will have some Javascript code like this:
 
-mlab.api.navigation.initialise(0,
-"%%MLAB\_CT\_FUNC\_GETNUMBEROFPAGES%%");
-
-$(function(){
-
-$("\[data-role=header\],\[data-role=footer\]").toolbar();
-
-$( "\[data-role='panel'\]" ).panel();
-
-});
+```javascript
+   mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
+     $(function(){
+       $("[data-role=header],[data-role=footer]").toolbar();
+       $( "[data-role='panel']" ).panel();
+     });
+```
 
 The placeholder in the example above is used in the initialisation of
 the navigation functionality built into Appyoumake. Once it is initialised the
@@ -4104,7 +4049,9 @@ access the Appyoumake API functions through the global mlab.api object. To use
 the functionality that display a page for example, you would use the
 following code:
 
-mlab.api.navigation.pageDisplay("next");
+```javascript
+   mlab.api.navigation.pageDisplay("next");
+```
 
 It is worth looking through the [*Appyoumake runtime API
 documentation*](#the-mlab-runtime-api) to see a list of functions and
@@ -4114,281 +4061,143 @@ interactive elements to your template.
 Example frontpage.html file
 ---------------------------
 
-&lt;!DOCTYPE html&gt;
-
-&lt;html&gt;
-
-&lt;head&gt;
-
-&lt;title&gt;Add page title here&lt;/title&gt;
-
-&lt;meta name="viewport" content="width=device-width,
-initial-scale=1"&gt;
-
-&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"
-/&gt;
-
-&lt;meta name="mlab:app\_uid" content="%%APP\_UID%%" /&gt;
-
-&lt;link rel="stylesheet" href="./css/jquery-mobile.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/style.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/style\_rt.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/mlab\_component.css"&gt;
-
-&lt;link rel="stylesheet" href="./css/include.css"&gt;
-
-&lt;script src="./js/jquery.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/jquery-ui.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/jquery-mobile.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/mlab.api.js"&gt;&lt;/script&gt;
-
-&lt;script src="./js/include.js"&gt;&lt;/script&gt;
-
-&lt;script&gt;
-
-//&lt;!\[CDATA\[
-
-// When document is ready we assign the mlab.api.navigation.pageDisplay
-call to various page navigation elements
-
-function mlabInitialiseApp() {
-
-mlab.api.navigation.initialise(0,
-"%%MLAB\_CT\_FUNC\_GETNUMBEROFPAGES%%");
-
-$(function(){
-
-$("\[data-role=header\],\[data-role=footer\]").toolbar();
-
-$( "\[data-role='panel'\]" ).panel();
-
-});
-
-};
-
-$(document).on('pagecreate', '\#mlab\_index\_page', function(e) {
-
-$(".mlab\_nav\_previous\_page").on("click", function () {
-mlab.api.navigation.pageDisplay("previous"); });
-
-$(".mlab\_nav\_next\_page").on("click", function () {
-mlab.api.navigation.pageDisplay("next"); });
-
-$(".mlab\_btn\_color\_toggle").on("vclick", function () {
-mlab.api.settings.pageColorToggle("mlab\_page\_body", "mc\_text"); });
-
-$(".mlab\_btn\_txsize\_toggle").on("vclick", function () {
-mlab.api.settings.pageTextSizeToggle("mlab\_main\_body\_content"); });
-
-});
-
-&lt;/script&gt;
-
-&lt;/head&gt;
-
-&lt;body id="mlab\_page\_body"&gt;
-
-&lt;!-- MENU Panel --&gt;
-
-&lt;div data-role="panel" id="mlab\_menu\_panel" data-position="left"
-data-display="overlay" data-theme="a" class="mlab\_menu\_panel
-mlab\_hide\_in\_app\_builder ui-panel ui-panel-position-left
-ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open"&gt;
-
-&lt;div class="ui-panel-inner"&gt;
-
-&lt;!-- Menu panel content goes here --&gt;
-
-&lt;a href="\#" data-rel="close"&gt;&lt;div
-class="mlab\_btn\_close\_menu"&gt;&lt;/div&gt;&lt;/a&gt;
-
-&lt;div class="mlab\_menu\_heading"&gt;Meny&lt;/div&gt;
-
-&lt;hr class="mlab\_hr\_panel"&gt;
-
-&lt;div
-class="mlab\_menu\_text"&gt;%%MLAB\_CT\_COMP\_INDEX%%&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;!-- /Menu panel --&gt;
-
-&lt;!-- SETTINGS Panel --&gt;
-
-&lt;div data-role="panel" id="mlab\_settings\_panel"
-data-position="right" data-display="overlay" data-theme="b"
-class="mlab\_settings\_panel mlab\_hide\_in\_app\_builder ui-panel
-ui-panel-position-right ui-panel-display-overlay ui-body-a
-ui-panel-animate ui-panel-open"&gt;
-
-&lt;div class="ui-panel-inner"&gt;
-
-&lt;!-- Settings panel content goes here --&gt;
-
-&lt;div class="mlab\_creators"&gt;Made by Sinett&lt;/div&gt;
-
-&lt;a href="\#" data-rel="close"&gt;&lt;div
-class="mlab\_btn\_close"&gt;&lt;/div&gt;&lt;/a&gt;
-
-&lt;div class="mlab\_settings\_heading"&gt;Settinger&lt;/div&gt;
-
-&lt;hr class="mlab\_hr\_panel"&gt;
-
-&lt;div class="mlab\_btn\_color\_toggle"&gt;&lt;/div&gt;
-
-&lt;div class="mlab\_btn\_txsize\_toggle"&gt;&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;!-- /Settings panel --&gt;
-
-&lt;!-- The HEADER with navigation, menu and settings --&gt;
-
-&lt;div data-role="header" data-theme="a" class="mlab\_header
-mlab\_hide\_in\_app\_builder" data-position="fixed"&gt;
-
-&lt;div class="mlab\_header\_box"&gt;
-
-&lt;a href="\#mlab\_menu\_panel"&gt;&lt;div class="mlab\_btn\_menu
-btn\_secondary"&gt;&lt;/div&gt;&lt;/a&gt;
-
-&lt;div class="mlab\_nav\_previous\_page"&gt;&lt;/div&gt;
-
-&lt;div class="mlab\_btn\_heraldisk"&gt;&lt;/div&gt;
-
-&lt;div class="mlab\_page\_name"&gt;&lt;/div&gt;
-
-&lt;a href="\#mlab\_settings\_panel"&gt;&lt;div
-class="mlab\_btn\_settings"&gt;&lt;/div&gt;&lt;/a&gt;
-
-&lt;div class="mlab\_nav\_next\_page"&gt;&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;!-- /Header --&gt;
-
-&lt;!-- Main content area --&gt;
-
-&lt;div data-role="page" id="mlab\_index\_page"&gt;
-
-&lt;div class="mlab\_content\_wrapper"&gt;
-
-&lt;div role="main" class="mlab\_main\_body\_content"&gt;
-
-&lt;div id="mlab\_editable\_area" class="mlab\_editable\_area"&gt;
-
-&lt;!-- Where the content/components is placed --&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;!-- /Content --&gt;
-
-&lt;script&gt;
-
-$( document ).on( "pagecreate", function ( event ) {
-
-if (mlab.api == null) {
-
-var curr\_page = 0;
-
-} else {
-
-var curr\_page = mlab.api.navigation.current\_page;
-
-}
-
-var last\_page = Number("%%MLAB\_CT\_FUNC\_GETNUMBEROFPAGES%%");
-
-switch (curr\_page) {
-
-case 0:
-
-//First page in the app
-
-if ($(".mlab\_nav\_previous\_page").hasClass('mlab\_hide')) { // do
-nothing
-
-} else { //hide the previous button on the first page
-
-$(".mlab\_nav\_previous\_page").addClass('mlab\_hide');
-
-}
-
-if (last\_page == 0) { //the app only has one page - hide the next
-button
-
-$(".mlab\_nav\_next\_page").addClass('mlab\_hide');
-
-} else if ($(".mlab\_nav\_next\_page").hasClass('mlab\_hide')) {
-
-$(".mlab\_nav\_next\_page").removeClass('mlab\_hide');
-
-}
-
-break;
-
-case last\_page: //Last page in the app and the app has more than one
-page
-
-if ($(".mlab\_nav\_next\_page").hasClass('mlab\_hide')) { // do nothing
-
-} else { //hide the next button on the last page
-
-$(".mlab\_nav\_next\_page").addClass('mlab\_hide');
-
-}
-
-if ($(".mlab\_nav\_previous\_page").hasClass('mlab\_hide')) {
-
-$(".mlab\_nav\_previous\_page").removeClass('mlab\_hide');
-
-}
-
-break;
-
-default:
-
-if ($(".mlab\_nav\_next\_page").hasClass('mlab\_hide')) {
-
-$(".mlab\_nav\_next\_page").removeClass('mlab\_hide');
-
-}
-
-if ($(".mlab\_nav\_previous\_page").hasClass('mlab\_hide')) {
-
-$(".mlab\_nav\_previous\_page").removeClass('mlab\_hide');
-
-}
-
-break;
-
-}
-
-});
-
-&lt;/script&gt;
-
-&lt;/body&gt;
-
-&lt;/html&gt;
+```HTML
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add page title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="mlab:app_uid" content="%%APP_UID%%" />
+<link rel="stylesheet" href="./css/jquery-mobile.css">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/style_rt.css">
+<link rel="stylesheet" href="./css/mlab_component.css">
+<link rel="stylesheet" href="./css/include.css">
+<script src="./js/jquery.js"></script>
+<script src="./js/jquery-ui.js"></script>
+<script src="./js/jquery-mobile.js"></script>
+<script src="./js/mlab.api.js"></script>
+<script src="./js/include.js"></script>
+
+<script>
+    //<![CDATA[
+    // When document is ready we assign the mlab.api.navigation.pageDisplay call to various page navigation elements
+    function mlabInitialiseApp() {
+        mlab.api.navigation.initialise(0, "%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
+				$(function(){
+				   $("[data-role=header],[data-role=footer]").toolbar();
+				   $( "[data-role='panel']" ).panel();
+				});
+    };
+    $(document).on('pagecreate', '#mlab_index_page', function(e) {
+        $(".mlab_nav_previous_page").on("click", function () { mlab.api.navigation.pageDisplay("previous"); });
+        $(".mlab_nav_next_page").on("click", function () { mlab.api.navigation.pageDisplay("next"); });
+        $(".mlab_btn_color_toggle").on("vclick", function () { mlab.api.settings.pageColorToggle("mlab_page_body", "mc_text"); });
+        $(".mlab_btn_txsize_toggle").on("vclick", function () { mlab.api.settings.pageTextSizeToggle("mlab_main_body_content"); });
+    });
+</script>
+
+</head>
+<body id="mlab_page_body">
+<!-- MENU Panel -->
+        <div data-role="panel" id="mlab_menu_panel" data-position="left" data-display="overlay" data-theme="a" class="mlab_menu_panel mlab_hide_in_app_builder ui-panel ui-panel-position-left ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open">
+            <div class="ui-panel-inner">
+                <!-- Menu panel content goes here -->
+                <a href="#" data-rel="close"><div class="mlab_btn_close_menu"></div></a>
+                <div class="mlab_menu_heading">Meny</div>
+                <hr class="mlab_hr_panel">
+                <div class="mlab_menu_text">%%MLAB_CT_COMP_INDEX%%</div>
+            </div>
+        </div>
+<!-- /Menu panel -->
+        
+<!-- SETTINGS Panel -->
+        <div data-role="panel" id="mlab_settings_panel" data-position="right" data-display="overlay" data-theme="b" class="mlab_settings_panel mlab_hide_in_app_builder ui-panel ui-panel-position-right ui-panel-display-overlay ui-body-a ui-panel-animate ui-panel-open">
+            <div class="ui-panel-inner">
+                <!-- Settings panel content goes here -->
+                <div class="mlab_creators">Made by Sinett</div> 
+                <a href="#" data-rel="close"><div class="mlab_btn_close"></div></a>
+                <div class="mlab_settings_heading">Settinger</div>
+                <hr class="mlab_hr_panel">
+                <div class="mlab_btn_color_toggle"></div>
+                <div class="mlab_btn_txsize_toggle"></div> 
+            </div>
+        </div>
+<!-- /Settings panel -->
+        
+<!-- The HEADER with navigation, menu and settings -->
+        <div data-role="header" data-theme="a" class="mlab_header mlab_hide_in_app_builder" data-position="fixed">  
+            <div class="mlab_header_box">
+                <a href="#mlab_menu_panel"><div class="mlab_btn_menu btn_secondary"></div></a>
+                <div class="mlab_nav_previous_page"></div>
+                <div class="mlab_btn_heraldisk"></div> 
+                <div class="mlab_page_name"></div> 
+                <a href="#mlab_settings_panel"><div class="mlab_btn_settings"></div></a>
+                <div class="mlab_nav_next_page"></div>
+            </div>
+        </div>
+<!-- /Header -->
+        
+<!-- Main content area -->
+    <div data-role="page" id="mlab_index_page">
+        <div class="mlab_content_wrapper">
+            <div role="main" class="mlab_main_body_content">
+                <div id="mlab_editable_area" class="mlab_editable_area">
+                    <!-- Where the content/components is placed -->
+                </div>
+            </div>
+        </div>
+    </div>   
+<!-- /Content -->
+        
+    <script>
+        $( document ).on( "pagecreate", function ( event ) {
+            if (mlab.api == null) {
+               var curr_page = 0;
+            } else {
+                var curr_page = mlab.api.navigation.current_page;
+            }
+
+            var last_page = Number("%%MLAB_CT_FUNC_GETNUMBEROFPAGES%%");
+            switch (curr_page) {
+                case 0:
+                    //First page in the app
+                    if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) { // do nothing
+                    } else { //hide the previous button on the first page
+                        $(".mlab_nav_previous_page").addClass('mlab_hide'); 
+                    }
+                    if (last_page == 0) { //the app only has one page - hide the next button
+                        $(".mlab_nav_next_page").addClass('mlab_hide'); 
+                    } else if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_next_page").removeClass('mlab_hide');
+                    }
+                    break;
+
+                case last_page: //Last page in the app and the app has more than one page
+                    if ($(".mlab_nav_next_page").hasClass('mlab_hide')) { // do nothing
+                    } else { //hide the next button on the last page
+                        $(".mlab_nav_next_page").addClass('mlab_hide');
+                    }
+                     if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_previous_page").removeClass('mlab_hide');
+                    }
+                    break;
+
+                default:
+                    if ($(".mlab_nav_next_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_next_page").removeClass('mlab_hide');
+                    }
+                    if ($(".mlab_nav_previous_page").hasClass('mlab_hide')) {
+                        $(".mlab_nav_previous_page").removeClass('mlab_hide');
+                    }
+                    break;
+            }
+    });
+    </script>
+</body>
+</html>
+```
 
 The page.html template file in detail
 =====================================
@@ -4432,38 +4241,24 @@ first page.
 
 Example of a page.html file:
 
-&lt;!DOCTYPE html&gt;
-
-&lt;html&gt;
-
-&lt;head&gt;
-
-&lt;title&gt;%%TITLE%%&lt;/title&gt;
-
-&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"
-/&gt;
-
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div data-role="page" data-title="%%TITLE%%"&gt;
-
-&lt;div class="mlab\_content\_wrapper"&gt;
-
-&lt;div role="main" class="mlab\_main\_body\_content"&gt;
-
-%%CONTENT%%
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-
-&lt;/body&gt;
-
-&lt;/html&gt;
+```HTML
+<!DOCTYPE html>
+<html>
+<head>
+<title>%%TITLE%%</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    <div data-role="page" data-title="%%TITLE%%">
+        <div class="mlab_content_wrapper">
+            <div role="main" class="mlab_main_body_content">
+                %%CONTENT%%
+            </div>
+        </div>
+    </div>   
+</body>
+</html>
+```
 
 Appyoumake CSS(3) template styling in detail
 ======================================
@@ -4509,91 +4304,44 @@ something like "red\_label" we use a three level hierarchy which works
 as follows, always using mc\_ (Appyoumake Component) as the prefix to avoid
 clashing with other styles:
 
--   Level one, basic element type
+  * Level one, basic element type
+   * .mc_text (all text elements, regardless of whether it is \<input type=textare"> or \<h1>)
+   * .mc_container (elements that contain other elements, like a DIV)
+   * .mc_figure (all that is not text or container)
 
-<!-- -->
+  * Level two for mc_text or mc_figure, related to the possible actions for the element
+   * .mc_link (clickable link leaning to something else, either a popup dialog box, another page, etc.)
+   * .mc_interactive (typically video or audio elements that you can start/stop, etc)
+   * .mc_display ("output" only, i.e. it is for showing information)
+   * .mc_entry ("input" only, i.e. the opposite of the previous one)
 
--   .mc\_text (all text elements, regardless of whether it is &lt;input
-    > type=textarea"&gt; or &lt;h1&gt;)
+  * Level three, additional action type classes
+   * .mc_correct
+   * .mc_blurred
+   * .mc_required
+   * .mc_info
+   * .mc_output
+   * .mc_input
+   * .mc_resizable 
+   * .mc_heading 
+   * .mc_chapter 
+   * .mc_ingress 
+   * .mc_figure_with_caption 
+   * .mc_figure_in_text 
+   * .mc_numeric 
+   * .mc_bullet 
+   * .mc_enabled 
+   * .mc_disabled 
+   * .mc_emphasize 
+   * .mc_depreciate 
+   * .mc_internal 
+   * .mc_external 
+   * .mc_map 
+   * .mc_timebased 
+   * .mc_live_output 
+   * .mc_list
 
--   .mc\_container (elements that contain other elements, like a DIV)
-
--   .mc\_figure (all that is not text or container)
-
-<!-- -->
-
--   Level two for mc\_text or mc\_figure, related to the possible
-    actions for the element
-
-<!-- -->
-
--   .mc\_link (clickable link leaning to something else, either a popup
-    > dialog box, another page, etc.)
-
--   .mc\_interactive (typically video or audio elements that you can
-    > start/stop, etc.)
-
--   .mc\_display ("output" only, i.e. it is for showing information)
-
--   .mc\_entry ("input" only, i.e. the opposite of the previous one)
-
-<!-- -->
-
--   Level three, additional action type classes
-
-<!-- -->
-
--   .mc\_correct
-
--   .mc\_blurred
-
--   .mc\_required
-
--   .mc\_info
-
--   .mc\_output
-
--   .mc\_input
-
--   .mc\_resizable
-
--   .mc\_heading
-
--   .mc\_chapter
-
--   .mc\_ingress
-
--   .mc\_figure\_with\_caption
-
--   .mc\_figure\_in\_text
-
--   .mc\_numeric
-
--   .mc\_bullet
-
--   .mc\_enabled
-
--   .mc\_disabled
-
--   .mc\_emphasize
-
--   .mc\_depreciate
-
--   .mc\_internal
-
--   .mc\_external
-
--   .mc\_map
-
--   .mc\_timebased
-
--   .mc\_live\_output
-
--   .mc\_list
-
-<!-- -->
-
--   Level three (potentially four), display related classes
+  * Level three (potentially four), display related classes
 
     The following classes are utility classes which are used to indicate
     the size of an element relative to other HTML5 elements on a page.
@@ -4607,46 +4355,38 @@ clashing with other styles:
     they can be changed at design time, something that must be
     considered when the classes are defined in the style sheet.
 
-<!-- -->
+   * .mc_large 
+   * .mc_medium 
+   * .mc_small
 
--   .mc\_large
+    The following classes are only used to overrule the default horizontal
+    positioning of elements, style sheets may choose not to support them
+    if they want to enforce certain positions for all component elements.
 
--   .mc\_medium
-
--   .mc\_small
-
-> The following classes are only used to overrule the default horizontal
-> positioning of elements, style sheets may choose not to support them
-> if they want to enforce certain positions for all component elements.
-
--   .mc\_left
-
--   .mc\_right
-
--   .mc\_center
+   * .mc_left 
+   * .mc_right 
+   * .mc_center 
 
 ### **Some examples of component styling**
 
 This can be used for data entry text boxes that are disabled (for
 example):
 
-\#mlab\_editor .mc\_text.mc\_entry.mc\_blurred,
-
-.mlab\_main\_body\_content .mc\_text.mc\_entry.mc\_blurred {
-
-color: lightgray;
-
-}
+ ```css
+  #mlab_editor .mc_text.mc_entry.mc_blurred,
+  .mlab_main_body_content .mc_text.mc_entry.mc_blurred {
+    color: lightgray;
+  }
+  ```
 
 Another example, useful for labels of input fields that are required
 
-\#mlab\_editor .mc\_text.mc\_display.mc\_required,
-
-.mlab\_main\_body\_content .mc\_text.mc\_display.mc\_required {
-
-color: red;
-
-}
+  ```css
+  #mlab_editor .mc_text.mc_display.mc_required,
+  .mlab_main_body_content .mc_text.mc_display.mc_required {
+    color: red;
+  }
+  ```
 
 These classes should be put in a separate style sheet, by convention
 this is usually named *mlab\_component.css*. You need to style all
@@ -4675,11 +4415,11 @@ For example, if you want to display all images (in apps based on your
 template that is) with a red solid border you cannot simply create a
 rule like this:
 
-img {
-
-border: 5px solid red;
-
-}
+```css
+    img {
+      border: 5px solid red;
+    }
+```
 
 This would not only set the image borders in the apps being created to
 red, it would also affect all the other image elements, such as the
@@ -4688,11 +4428,11 @@ highlighting the images in apps would also highlight tools that are used
 for the app, but are not part of the app. Instead you need to do
 something like:
 
-.mlab\_main\_body\_content img {
-
-border: 5px solid red;
-
-}
+```css
+    .mlab_main_body_content img {
+      border: 5px solid red;
+    }
+```
 
 The second example uses a class that should be applied to the main page
 content DIV (see [example here](#example-frontpage.html-file)), thus
@@ -4715,11 +4455,11 @@ content area (mlab\_main\_body\_content) and finally the element you
 want to do something about (for instance img). Then you would have a
 rule like this:
 
-\#mlab\_editor \#mlab\_editable\_area .mlab\_main\_body\_content img {
-
-box-shadow: 10px 10px 5px \#888888;
-
-}
+```css
+    #mlab_editor #mlab_editable_area .mlab_main_body_content img {
+      box-shadow: 10px 10px 5px #888888;
+    }
+```
 
 This would only apply to the design time styling. If you needed strong
 specificity for design time **and** runtime you can do something like
@@ -4727,12 +4467,11 @@ this (assuming you follow convention and gives an ID of mlab\_page\_body
 to
 the [frontpage.html](#the-frontpage.html-template-file-in-detail) body):
 
-\#mlab\_editor \#mlab\_editable\_area .mlab\_main\_body\_content img,
-\#mlab\_page\_body .mlab\_main\_body\_content img {
-
-box-shadow: 10px 10px 5px \#888888;
-
-}
+```css
+    #mlab_editor #mlab_editable_area .mlab_main_body_content img, #mlab_page_body .mlab_main_body_content img {
+      box-shadow: 10px 10px 5px #888888;
+    }
+```
 
 Finally, you need to be careful when using the "position" property in
 components. If you use the *position: absolute;* for components,
@@ -4849,54 +4588,47 @@ design time must be customised to work properly.
 
 The Appyoumake namespace hierarchy is as follows:
 
--   mlab\_ (fixed top level name for anything relating to Appyoumake, means
-    > that it will not be confused with names in external libraries such
-    > as a jQuery plugin)
+-   mlab\_ (fixed top level name for anything relating to Appyoumake, means that it will not be confused with names in external libraries such as a jQuery plugin)
 
--   dt\_/ct\_/rt\_/cp\_ (dt (design time) ct (compile time) and rt
-    > (runtime) indicates which of the [Appyoumake app
-    > stages](#app-stages) this should apply to.
+-   dt\_/ct\_/rt\_/cp\_ (dt (design time) ct (compile time) and rt (runtime) indicates which of the [Appyoumake app stages](#app-stages) this should apply to.
 
 -   templatename\_ (the unique name of a template)
 
--   mystring (the final part of the namespace, this is anything you
-    > choose, you only have to make sure this part is unique within your
-    > own component.
+-   mystring (the final part of the namespace, this is anything you choose, you only have to make sure this part is unique within your own component.
 
 Examples:
 
--   mlab\_dt\_mytemplate\_labels (could be used to style labels used by
-    > the template)
+-   mlab\_dt\_mytemplate\_labels (could be used to style labels used by the template)
 
 -   mlab\_rt\_mytemplate\_fontsize (could be used as a Javascript
-    > variable name to hold the current font size)
+    variable name to hold the current font size)
 
 Related to the namespace issue we have a few other issues:
 
 -   Avoid the use of global variables if you need to add Javascript to
-    > your template. Appyoumake cannot enforce this, but it is bad practice
-    > and should be avoided at all costs. Instead create an object using
-    > the above namespace rules, and then add the variable to this, so
-    > you will have my\_object.my\_variable to store the data.
+    your template. Appyoumake cannot enforce this, but it is bad practice
+    and should be avoided at all costs. Instead create an object using
+    the above namespace rules, and then add the variable to this, so
+    you will have my\_object.my\_variable to store the data.
 
 -   If, despite all this, you do have to use a global variable, attach
-    > it to the systemwide *document* variable, again using the above
-    > name space rules.
+    it to the systemwide *document* variable, again using the above
+    name space rules.
 
 -   Generally one should avoid the use of the ID attributes for an HTML
-    > element. The HTML5 ID attribute must be unique for an entire
-    > document and in Appyoumake multiple pages may be loaded into the
-    > document at the same time. This would cause any use of IDs (for
-    > instance in calls to jQuery) to fail. Instead you should identify
-    > elements inside your component using unique combinations of HTML
-    > data tags and/or classes. For instance, if you have two images, a
-    > thumbnail and a full size version of the image, these could be
-    > identified by assigning them classes such as
-    > mlab\_dt\_mytemplate\_thumb and mlab\_dt\_mytemplate\_full for
-    > styling purposes. To manipulate the element or read information
-    > from it, it would be more appropriate to use the data attribute,
-    > again using a namespace. You then get, for instance,
-    > data-mlab-dt-mytemplate-element="somevalue".
+    element. The HTML5 ID attribute must be unique for an entire
+    document and in Appyoumake multiple pages may be loaded into the
+    document at the same time. This would cause any use of IDs (for
+    instance in calls to jQuery) to fail. Instead you should identify
+    elements inside your component using unique combinations of HTML
+    data tags and/or classes. For instance, if you have two images, a
+    thumbnail and a full size version of the image, these could be
+    identified by assigning them classes such as
+    mlab\_dt\_mytemplate\_thumb and mlab\_dt\_mytemplate\_full for
+    styling purposes. To manipulate the element or read information
+    from it, it would be more appropriate to use the data attribute,
+    again using a namespace. You then get, for instance,
+    data-mlab-dt-mytemplate-element="somevalue".
 
 The same name spaces should also be used for other HTML attributes. For
 instance to add a data attribute to an element use data-mlab-dt-xxxx for
